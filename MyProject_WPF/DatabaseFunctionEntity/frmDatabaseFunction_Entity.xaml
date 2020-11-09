@@ -1,0 +1,72 @@
+﻿<UserControl xmlns:MyCommonWPFControls="clr-namespace:MyCommonWPFControls;assembly=MyCommonWPFControls"  x:Class="MyProject_WPF.frmDatabaseFunction_Entity"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+       
+         xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        mc:Ignorable="d"
+      d:DesignHeight="600" d:DesignWidth="800">
+    <Grid    FlowDirection="RightToLeft">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid>
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height=" auto"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Margin="10" x:Name="grdSelectFunction">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="نام" Grid.Row="0" ></TextBlock>
+                <TextBox  x:Name="txtName"  Width="200" HorizontalAlignment="Left" Grid.Row="0"  Grid.Column="1"/>
+                <TextBlock Text="عنوان" Grid.Row="1" ></TextBlock>
+                <TextBox  x:Name="txtTitle" Grid.Row="1" HorizontalAlignment="Stretch" Grid.Column="1"/>
+                <TextBlock Grid.Row="2" Text="کد تابع"></TextBlock>
+                <MyCommonWPFControls:MySearchLookup  Grid.Row="2" x:Name="lokDatabaseFunction" HorizontalAlignment="Stretch" Grid.Column="1"></MyCommonWPFControls:MySearchLookup>
+                <!--<TextBlock  Grid.Row="1" x:Name="lblDatabaseFunction"  HorizontalAlignment="Stretch" Grid.Column="1"></TextBlock>-->
+                <!--<Button x:Name="btnAddDatabaseFunction"  Width="90" Height="20" Content="افزودن فایل ..." Grid.Column="2" Click="btnAddDatabaseFunction_Click"></Button>-->
+
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <!--<Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="عنوان"></TextBlock>
+                    <TextBox x:Name="txtTitle" Grid.Column="1"></TextBox>
+                </Grid>-->
+                <telerik:RadGridView AutoGenerateColumns="False" Grid.Row="1" x:Name="dtgDatabaseFunctionParams" >
+                    <telerik:RadGridView.Columns>
+                        <telerik:GridViewDataColumn Header="نام پارامتر" DataMemberBinding="{Binding FunctionColumnParamName}" />
+                        <telerik:GridViewDataColumn Header="نوع پارامتر" DataMemberBinding="{Binding FunctionDataType}" />
+                        <telerik:GridViewComboBoxColumn  x:Name="colEntityColumn"  Header="ستون مرتبط" DataMemberBinding="{Binding ColumnID}" />
+                    </telerik:RadGridView.Columns>
+                </telerik:RadGridView>
+            </Grid>
+                  
+          
+        </Grid>
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Button Width="120" HorizontalAlignment="Right" Content="لیست کدها" x:Name="btnCodeList" Click="btnCodeList_Click" Margin="0"/>
+            <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="ثبت و انتخاب" x:Name="btnSave" Click="btnSave_Click"></Button>
+        </StackPanel>
+    </Grid>
+</UserControl>
