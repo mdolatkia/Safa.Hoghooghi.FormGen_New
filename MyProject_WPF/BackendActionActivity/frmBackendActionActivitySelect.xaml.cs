@@ -48,7 +48,7 @@ namespace MyProject_WPF
             var listColumns = new Dictionary<string, string>();
             listColumns.Add("Title", "اقدام مرتبط");
             listColumns.Add("Step", "مرحله مرتبط");
-
+            listColumns.Add("EntityAlias", "موجودیت مرتبط");
 
             SelectorGrid = ControlHelper.SetSelectorGrid(dtgActionActivities, listColumns);
             SelectorGrid.DataItemSelected += SelectorGrid_DataItemSelected;
@@ -167,10 +167,10 @@ namespace MyProject_WPF
         //{
         //    return new List<Enum_ActionActivityType>() { Enum_ActionActivityType.CodeFunction, Enum_ActionActivityType.DatabaseFunction };
         //}
-        private void View_ItemSaved(object sender, SavedItemArg e)
-        {
-            GetEntityActionActivities(EntityID);
-        }
+        //private void View_ItemSaved(object sender, SavedItemArg e)
+        //{
+        //    GetEntityActionActivities(EntityID);
+        //}
 
         private void btnSelect_Click(object sender, RoutedEventArgs e)
         {

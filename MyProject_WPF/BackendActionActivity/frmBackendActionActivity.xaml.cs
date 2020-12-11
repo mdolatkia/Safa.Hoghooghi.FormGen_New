@@ -47,10 +47,11 @@ namespace MyProject_WPF
         //bool VisualActions { set; get; }
         //  bool IncludeSteps { set; get; }
         //فرم جدا هم صدا زده شود 
+        int sentEntityID = 0;
         public frmBackendActionActivity(int actionActivityID, int entityID)
         {
             InitializeComponent();
-            //EntityID = entityID;
+            sentEntityID = entityID;
             //Catalog = catalog;
 
 
@@ -74,14 +75,19 @@ namespace MyProject_WPF
             //    SetCodeFunctions();
             if (ActionActivityID == 0)
             {
-                Message = new BackendActionActivityDTO();
-                Message.EntityID = entityID;
-                ShowMessage();
+                SetNewItem();
             }
             else
                 GetActionActivity(ActionActivityID);
 
             CheckTabVisibilities();
+        }
+
+        private void SetNewItem()
+        {
+            Message = new BackendActionActivityDTO();
+            Message.EntityID = sentEntityID;
+            ShowMessage();
         }
 
         private void SetLookups()
@@ -171,6 +177,7 @@ namespace MyProject_WPF
         private void View_DatabaseFunctionEntityUpdated(object sender, DatabaseFunctionEntitySelectedArg e)
         {
             lokEntityDatabaseFunction.SelectedValue = e.DatabaseFunctionEntityID;
+            MyProjectManager.GetMyProjectManager.CloseDialog(sender);
         }
 
         private void LokCodeFunction_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
@@ -190,6 +197,7 @@ namespace MyProject_WPF
         private void View_CodeFunctionUpdated(object sender, DataItemSelectedArg e)
         {
             lokCodeFunction.SelectedValue = e.ID;
+            MyProjectManager.GetMyProjectManager.CloseDialog(sender);
         }
 
         private void LokCodeFunction_SearchFilterChanged(object sender, MyCommonWPFControls.SearchFilterArg e)
@@ -425,8 +433,7 @@ namespace MyProject_WPF
 
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
-            Message = new BackendActionActivityDTO();
-            ShowMessage();
+            SetNewItem();
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
@@ -440,6 +447,16 @@ namespace MyProject_WPF
         private void View_BackendActionActivitySelected(object sender, int e)
         {
             GetActionActivity(e);
+            MyProjectManager.GetMyProjectManager.CloseDialog(sender);
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (Message.ID != 0)
+            {
+                bizActionActivity.DeleteBackendActionActivity(Message.ID);
+                SetNewItem();
+            }
         }
 
         //private void btnSearch_Click(object sender, RoutedEventArgs e)

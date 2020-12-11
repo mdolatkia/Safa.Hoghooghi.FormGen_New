@@ -22,13 +22,13 @@ namespace MyModelManager
                 {
                     //اینجا درست بشه
                     if (entityID != 0)
-                        listBackendActionActivity = listBackendActionActivity.Where(x => x.TableDrivedEntityID == entityID);
+                        listBackendActionActivity = listBackendActionActivity.Where(x => x.TableDrivedEntityID == null || x.TableDrivedEntityID == entityID);
                     else
                         listBackendActionActivity = listBackendActionActivity.Where(x => x.TableDrivedEntityID == null);
                 }
                 else
                 {
-                    listBackendActionActivity.Where(x => x.TableDrivedEntityID == null);
+                    listBackendActionActivity.Where(x => x.TableDrivedEntityID == entityID);
                 }
 
 
@@ -44,7 +44,7 @@ namespace MyModelManager
                     List<short> BackendActionActivityStepIds = new List<short>();
                     foreach (var BackendActionActivityStep in BackendActionActivitySteps)
                         BackendActionActivityStepIds.Add((short)BackendActionActivityStep);
-                    listBackendActionActivity = listBackendActionActivity.Where(x => BackendActionActivityStepIds.Contains(x.StepType)) ;
+                    listBackendActionActivity = listBackendActionActivity.Where(x => BackendActionActivityStepIds.Contains(x.StepType));
                 }
 
                 foreach (var item in listBackendActionActivity)
@@ -101,6 +101,10 @@ namespace MyModelManager
 
             result.ID = item.ID;
             result.EntityID = item.TableDrivedEntityID ?? 0;
+            if(item.TableDrivedEntity!=null)
+            {
+                result.EntityAlias = item.TableDrivedEntity.Alias;
+            }
             result.Step = (Enum_EntityActionActivityStep)item.StepType;
             result.ResultSensetive = item.ResultSensetive == true;
             //result.BackendActionActivityType = (Enum_ActionActivityType)item.ActivityType;
@@ -152,7 +156,12 @@ namespace MyModelManager
 
         public void DeleteBackendActionActivity(int iD)
         {
-            throw new NotImplementedException();
+            using (var projectContext = new DataAccess.MyProjectEntities())
+            {
+                var dbBackendActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.ID == iD);
+                projectContext.BackendActionActivity.Remove(dbBackendActionActivity);
+                projectContext.SaveChanges();
+            }
         }
     }
     public enum Enum_GetBackendActionActivityType

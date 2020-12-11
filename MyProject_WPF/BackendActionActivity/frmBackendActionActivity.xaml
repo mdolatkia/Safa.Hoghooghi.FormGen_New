@@ -91,6 +91,7 @@
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="ثبت" x:Name="btnSave" Click="btnSave_Click"></Button>
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="جدید" x:Name="btnNew" Click="btnNew_Click"></Button>
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="جستجو" x:Name="btnSearch" Click="btnSearch_Click"></Button>
+            <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="حذف" x:Name="btnDelete" Click="btnDelete_Click"></Button>
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="بازگشت" x:Name="btnReturn" Click="btnReturn_Click"></Button>
         </StackPanel>
     </Grid>

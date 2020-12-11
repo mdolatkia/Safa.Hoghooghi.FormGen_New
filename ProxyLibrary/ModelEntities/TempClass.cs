@@ -2364,11 +2364,12 @@ namespace ModelEntites
 
         public string Title { set; get; }
         public int EntityID { set; get; }
-
+        
         public Enum_EntityActionActivityStep Step { set; get; }
         public bool ResultSensetive { set; get; }
 
         public Enum_ActionActivityType Type { set; get; }
+        public string EntityAlias { get; set; }
     }
 
     public class ArchiveTagDTO

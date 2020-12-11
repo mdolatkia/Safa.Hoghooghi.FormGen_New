@@ -3,6 +3,7 @@ using ModelEntites;
 using ProxyLibrary;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -607,7 +608,64 @@ namespace MyModelManager
                         }
                     }
                 }
-                projectContext.SaveChanges();
+
+                var genericBeforeLoadBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.BeforeLoad && x.TableDrivedEntityID == null && x.Title == "اصلاح تاريخ تک رقمي");
+                if (genericBeforeLoadBackenActionActivity == null)
+                {
+                    genericBeforeLoadBackenActionActivity = new BackendActionActivity();
+                    genericBeforeLoadBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.BeforeLoad;
+                    genericBeforeLoadBackenActionActivity.Title = "اصلاح تاريخ تک رقمي";
+                    genericBeforeLoadBackenActionActivity.Type = 0;
+                    genericBeforeLoadBackenActionActivity.ResultSensetive = false;
+                    genericBeforeLoadBackenActionActivity.CodeFunction = new CodeFunction();
+                    genericBeforeLoadBackenActionActivity.CodeFunction.Path = @"E:\Safa.Hoghooghi.FormGen_New\MyTestImplLibrary\bin\Debug\MyTestImplLibrary.dll";
+                    genericBeforeLoadBackenActionActivity.CodeFunction.ClassName = "MyTestImplLibrary.BeforeLoadTest";
+                    genericBeforeLoadBackenActionActivity.CodeFunction.FunctionName = "EditPersianDateMonthDay";
+                    genericBeforeLoadBackenActionActivity.CodeFunction.Type = 0;
+                    genericBeforeLoadBackenActionActivity.CodeFunction.ReturnType = "ModelEntites.FunctionResult";
+                    genericBeforeLoadBackenActionActivity.CodeFunction.Name = "اصلاح تاريخ تک رقمي";
+                    projectContext.BackendActionActivity.Add(genericBeforeLoadBackenActionActivity);
+                }
+                if (legalPerson != null)
+                {
+                    var beforeLoadBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.BeforeLoad && x.TableDrivedEntityID == legalPerson.ID && x.Title == "اصلاح عنوان شرکت");
+                    if (beforeLoadBackenActionActivity == null)
+                    {
+                        beforeLoadBackenActionActivity = new BackendActionActivity();
+                        beforeLoadBackenActionActivity.TableDrivedEntityID = legalPerson.ID;
+                        beforeLoadBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.BeforeLoad;
+                        beforeLoadBackenActionActivity.Title = "اصلاح عنوان شرکت";
+                        beforeLoadBackenActionActivity.Type = 0;
+                        beforeLoadBackenActionActivity.ResultSensetive = false;
+                        beforeLoadBackenActionActivity.CodeFunction = new CodeFunction();
+                        beforeLoadBackenActionActivity.CodeFunction.Path = @"E:\Safa.Hoghooghi.FormGen_New\MyTestImplLibrary\bin\Debug\MyTestImplLibrary.dll";
+                        beforeLoadBackenActionActivity.CodeFunction.ClassName = "MyTestImplLibrary.BeforeLoadTest";
+                        beforeLoadBackenActionActivity.CodeFunction.FunctionName = "EditLegalPersonName";
+                        beforeLoadBackenActionActivity.CodeFunction.Type = 0;
+                        beforeLoadBackenActionActivity.CodeFunction.ReturnType = "ModelEntites.FunctionResult";
+                        beforeLoadBackenActionActivity.CodeFunction.Name = "اصلاح عنوان شرکت";
+                        projectContext.BackendActionActivity.Add(beforeLoadBackenActionActivity);
+                    }
+                }
+                try
+                {
+                    projectContext.SaveChanges();
+
+                }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                            eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                                ve.PropertyName, ve.ErrorMessage);
+                        }
+                    }
+                    throw;
+                }
             }
         }
 

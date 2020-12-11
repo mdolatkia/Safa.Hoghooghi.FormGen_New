@@ -246,7 +246,7 @@ namespace MyProject_WPF
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
-
+            MyProjectManager.GetMyProjectManager.CloseDialog(this);
         }
 
         private void btnSelectCode_Click(object sender, RoutedEventArgs e)
