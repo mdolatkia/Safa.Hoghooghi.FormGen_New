@@ -57,19 +57,25 @@ namespace MyTestImplLibrary
             }
             return result;
         }
-        public FunctionResult EditLegalPersonName(CodeFunctionParamManyDataItems datas)
+        public FunctionResult EditRealPersonNationalCode(CodeFunctionParamManyDataItems datas)
         {
             FunctionResult result = new FunctionResult();
             foreach (var data in datas.DataItems)
             {
                 if (data != null)
                 {
-                    foreach (var property in data.Properties.Where(x => x.Column != null && x.Column.Name.ToLower() == "name"
+                    foreach (var property in data.Properties.Where(x => x.Column != null && x.Column.Name.ToLower() == "nationalcode"
                     && x.Column.OriginalColumnType == Enum_ColumnType.String))
                     {
-                        if (property.Value != null && property.Value.ToString().Contains("شرکت "))
+                        if (property.Value != null && property.Value.ToString().Length < 10)
                         {
-                            property.Value = property.Value.ToString().Replace("شرکت ", "");
+                            var len = 10 - property.Value.ToString().Length;
+                            string add = "";
+                            for (int i = 1; i <= len; i++)
+                            {
+                                add += "0";
+                            }
+                            property.Value = add + property.Value.ToString();
                         }
                     }
                 }
