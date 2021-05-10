@@ -573,7 +573,7 @@ namespace MyUILibrary
                     else
                         value = MyGeneralLibrary.ReflectionHelper.GetDefaultValue(column.DotNetType);
                 }
-                result.AddProperty(column, value);
+               // result.AddProperty(column, value);
             }
             return result;
         }

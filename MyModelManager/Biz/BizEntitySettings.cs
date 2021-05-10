@@ -519,7 +519,7 @@ namespace MyModelManager
                 if (serviceRequest != null)
                 {
                     var persianDateColumn = serviceRequest.Table.Column.FirstOrDefault(x => x.Name == "PersianDate");
-                    if (persianDateColumn != null)
+                    if (persianDateColumn != null && persianDateColumn.DateColumnType != null)
                         persianDateColumn.DateColumnType.ShowMiladiDateInUI = true;
                     var timeColumn = serviceRequest.Table.Column.FirstOrDefault(x => x.Name == "Time");
                     if (timeColumn != null)
@@ -626,25 +626,189 @@ namespace MyModelManager
                     genericBeforeLoadBackenActionActivity.CodeFunction.Name = "اصلاح تاريخ تک رقمي";
                     projectContext.BackendActionActivity.Add(genericBeforeLoadBackenActionActivity);
                 }
-                if (legalPerson != null)
+                if (realPerson != null)
                 {
-                    var beforeLoadBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.BeforeLoad && x.TableDrivedEntityID == legalPerson.ID && x.Title == "اصلاح عنوان شرکت");
+                    var beforeLoadBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.BeforeLoad && x.TableDrivedEntityID == realPerson.ID && x.Title == "اصلاح شماره ملی شخص حقیقی");
                     if (beforeLoadBackenActionActivity == null)
                     {
                         beforeLoadBackenActionActivity = new BackendActionActivity();
-                        beforeLoadBackenActionActivity.TableDrivedEntityID = legalPerson.ID;
+                        beforeLoadBackenActionActivity.TableDrivedEntityID = realPerson.ID;
                         beforeLoadBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.BeforeLoad;
-                        beforeLoadBackenActionActivity.Title = "اصلاح عنوان شرکت";
+                        beforeLoadBackenActionActivity.Title = "اصلاح شماره ملی شخص حقیقی";
                         beforeLoadBackenActionActivity.Type = 0;
                         beforeLoadBackenActionActivity.ResultSensetive = false;
                         beforeLoadBackenActionActivity.CodeFunction = new CodeFunction();
                         beforeLoadBackenActionActivity.CodeFunction.Path = @"E:\Safa.Hoghooghi.FormGen_New\MyTestImplLibrary\bin\Debug\MyTestImplLibrary.dll";
                         beforeLoadBackenActionActivity.CodeFunction.ClassName = "MyTestImplLibrary.BeforeLoadTest";
-                        beforeLoadBackenActionActivity.CodeFunction.FunctionName = "EditLegalPersonName";
+                        beforeLoadBackenActionActivity.CodeFunction.FunctionName = "EditRealPersonNationalCode";
                         beforeLoadBackenActionActivity.CodeFunction.Type = 0;
                         beforeLoadBackenActionActivity.CodeFunction.ReturnType = "ModelEntites.FunctionResult";
                         beforeLoadBackenActionActivity.CodeFunction.Name = "اصلاح عنوان شرکت";
                         projectContext.BackendActionActivity.Add(beforeLoadBackenActionActivity);
+                    }
+                }
+
+                var genericBeforeSaveBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.BeforeSave && x.TableDrivedEntityID == null && x.Title == "اعتبارسنجی درخواست");
+                if (genericBeforeSaveBackenActionActivity == null)
+                {
+                    genericBeforeSaveBackenActionActivity = new BackendActionActivity();
+                    genericBeforeSaveBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.BeforeSave;
+                    genericBeforeSaveBackenActionActivity.Title = "اعتبارسنجی درخواست";
+                    genericBeforeSaveBackenActionActivity.Type = 0;
+                    genericBeforeSaveBackenActionActivity.ResultSensetive = false;
+                    genericBeforeSaveBackenActionActivity.CodeFunction = new CodeFunction();
+                    genericBeforeSaveBackenActionActivity.CodeFunction.Path = @"E:\Safa.Hoghooghi.FormGen_New\MyTestImplLibrary\bin\Debug\MyTestImplLibrary.dll";
+                    genericBeforeSaveBackenActionActivity.CodeFunction.ClassName = "MyTestImplLibrary.BeforeSaveTest";
+                    genericBeforeSaveBackenActionActivity.CodeFunction.FunctionName = "CheckRequestIsValid";
+                    genericBeforeSaveBackenActionActivity.CodeFunction.Type = 0;
+                    genericBeforeSaveBackenActionActivity.CodeFunction.ReturnType = "ModelEntites.FunctionResult";
+                    genericBeforeSaveBackenActionActivity.CodeFunction.Name = "اعتبارسنجی درخواست";
+                    projectContext.BackendActionActivity.Add(genericBeforeSaveBackenActionActivity);
+
+                }
+                if (legalPerson != null)
+                {
+                    var beforeSaveBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.BeforeSave && x.TableDrivedEntityID == legalPerson.ID && x.Title == "اصلاح عبارت شرکت در عنوان شخص حقوقی");
+                    if (beforeSaveBackenActionActivity == null)
+                    {
+                        beforeSaveBackenActionActivity = new BackendActionActivity();
+                        beforeSaveBackenActionActivity.TableDrivedEntityID = legalPerson.ID;
+                        beforeSaveBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.BeforeSave;
+                        beforeSaveBackenActionActivity.Title = "اصلاح عبارت شرکت در عنوان شخص حقوقی";
+                        beforeSaveBackenActionActivity.Type = 0;
+                        beforeSaveBackenActionActivity.ResultSensetive = false;
+                        beforeSaveBackenActionActivity.CodeFunction = new CodeFunction();
+                        beforeSaveBackenActionActivity.CodeFunction.Path = @"E:\Safa.Hoghooghi.FormGen_New\MyTestImplLibrary\bin\Debug\MyTestImplLibrary.dll";
+                        beforeSaveBackenActionActivity.CodeFunction.ClassName = "MyTestImplLibrary.BeforeSaveTest";
+                        beforeSaveBackenActionActivity.CodeFunction.FunctionName = "EditLegalPersonName";
+                        beforeSaveBackenActionActivity.CodeFunction.Type = 0;
+                        beforeSaveBackenActionActivity.CodeFunction.ReturnType = "ModelEntites.FunctionResult";
+                        beforeSaveBackenActionActivity.CodeFunction.Name = "اصلاح عبارت شرکت در عنوان شخص حقوقی";
+                        projectContext.BackendActionActivity.Add(beforeSaveBackenActionActivity);
+                    }
+                }
+
+
+                var genericBeforeDeleteBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.BeforeDelete && x.TableDrivedEntityID == null && x.Title == "اعتبارسنجی درخواست حذف");
+                if (genericBeforeDeleteBackenActionActivity == null)
+                {
+                    genericBeforeDeleteBackenActionActivity = new BackendActionActivity();
+                    genericBeforeDeleteBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.BeforeDelete;
+                    genericBeforeDeleteBackenActionActivity.Title = "اعتبارسنجی درخواست حذف";
+                    genericBeforeDeleteBackenActionActivity.Type = 0;
+                    genericBeforeDeleteBackenActionActivity.ResultSensetive = false;
+                    genericBeforeDeleteBackenActionActivity.CodeFunction = new CodeFunction();
+                    genericBeforeDeleteBackenActionActivity.CodeFunction.Path = @"E:\Safa.Hoghooghi.FormGen_New\MyTestImplLibrary\bin\Debug\MyTestImplLibrary.dll";
+                    genericBeforeDeleteBackenActionActivity.CodeFunction.ClassName = "MyTestImplLibrary.BeforeDeleteTest";
+                    genericBeforeDeleteBackenActionActivity.CodeFunction.FunctionName = "CheckRequestIsValid";
+                    genericBeforeDeleteBackenActionActivity.CodeFunction.Type = 0;
+                    genericBeforeDeleteBackenActionActivity.CodeFunction.ReturnType = "ModelEntites.FunctionResult";
+                    genericBeforeDeleteBackenActionActivity.CodeFunction.Name = "اعتبارسنجی درخواست حذف";
+                    projectContext.BackendActionActivity.Add(genericBeforeDeleteBackenActionActivity);
+
+                }
+
+                if (serviceRequest != null)
+                {
+                    var beforeDeleteBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.BeforeDelete && x.TableDrivedEntityID == serviceRequest.ID && x.Title == "اعتبارسنجی حذف درخواست سرویس");
+                    if (beforeDeleteBackenActionActivity == null)
+                    {
+                        beforeDeleteBackenActionActivity = new BackendActionActivity();
+                        beforeDeleteBackenActionActivity.TableDrivedEntityID = serviceRequest.ID;
+                        beforeDeleteBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.BeforeDelete;
+                        beforeDeleteBackenActionActivity.Title = "اعتبارسنجی حذف درخواست سرویس";
+                        beforeDeleteBackenActionActivity.Type = 0;
+                        beforeDeleteBackenActionActivity.ResultSensetive = false;
+                        beforeDeleteBackenActionActivity.CodeFunction = new CodeFunction();
+                        beforeDeleteBackenActionActivity.CodeFunction.Path = @"E:\Safa.Hoghooghi.FormGen_New\MyTestImplLibrary\bin\Debug\MyTestImplLibrary.dll";
+                        beforeDeleteBackenActionActivity.CodeFunction.ClassName = "MyTestImplLibrary.BeforeDeleteTest";
+                        beforeDeleteBackenActionActivity.CodeFunction.FunctionName = "ValidateServiceRequest";
+                        beforeDeleteBackenActionActivity.CodeFunction.Type = 0;
+                        beforeDeleteBackenActionActivity.CodeFunction.ReturnType = "ModelEntites.FunctionResult";
+                        beforeDeleteBackenActionActivity.CodeFunction.Name = "اعتبارسنجی حذف درخواست سرویس";
+                        projectContext.BackendActionActivity.Add(beforeDeleteBackenActionActivity);
+                    }
+                }
+
+
+
+
+                if (serviceConclusion != null  )
+                {
+                    var sp_CalculateCustomerValue = projectContext.DatabaseFunction.FirstOrDefault(x => x.FunctionName == "sp_CalculateCustomerValue");
+                    if (sp_CalculateCustomerValue != null)
+                    {
+                        DatabaseFunction_TableDrivedEntity serviceConclusionDatabaseFunctionEntity = projectContext.DatabaseFunction_TableDrivedEntity.FirstOrDefault(x => x.TableDrivedEntityID == serviceConclusion.ID && x.DatabaseFunctionID == sp_CalculateCustomerValue.ID);
+                        if (serviceConclusionDatabaseFunctionEntity == null)
+                        {
+                            serviceConclusionDatabaseFunctionEntity = new DatabaseFunction_TableDrivedEntity();
+                            serviceConclusionDatabaseFunctionEntity.TableDrivedEntityID = serviceConclusion.ID;
+                            serviceConclusionDatabaseFunctionEntity.DatabaseFunctionID = sp_CalculateCustomerValue.ID;
+                            serviceConclusionDatabaseFunctionEntity.Title = "محاسبه ارزش مشتری";
+                            serviceConclusionDatabaseFunctionEntity.Name = "CustomerValue";
+                            projectContext.DatabaseFunction_TableDrivedEntity.Add(serviceConclusionDatabaseFunctionEntity);
+                        }
+
+                        var conclusionIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "ID");
+
+                        if (conclusionIDColumn != null && serviceConclusionDatabaseFunctionEntity.ID == 0)
+                        {
+                            if (sp_CalculateCustomerValue.DatabaseFunctionParameter.Any(x => x.ParamName == "@serviceConclusionID"))
+                                serviceConclusionDatabaseFunctionEntity.DatabaseFunction_TableDrivedEntity_Columns.Add(new DatabaseFunction_TableDrivedEntity_Columns()
+                                { ColumnID = conclusionIDColumn.ID, DatabaseFunctionParameter = sp_CalculateCustomerValue.DatabaseFunctionParameter.First(x => x.ParamName == "@serviceConclusionID") });
+
+                        }
+                        var afterSaveBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.AfterSave && x.TableDrivedEntityID == serviceConclusion.ID && x.Title == "محاسبه ارزش مشتری");
+                        if (afterSaveBackenActionActivity == null)
+                        {
+                            afterSaveBackenActionActivity = new BackendActionActivity();
+                            afterSaveBackenActionActivity.TableDrivedEntityID = serviceConclusion.ID;
+                            afterSaveBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.AfterSave;
+                            afterSaveBackenActionActivity.Title = "محاسبه ارزش مشتری";
+                            afterSaveBackenActionActivity.Type = 1;
+                            afterSaveBackenActionActivity.ResultSensetive = false;
+
+                            afterSaveBackenActionActivity.DatabaseFunction_TableDrivedEntity = serviceConclusionDatabaseFunctionEntity;
+                            projectContext.BackendActionActivity.Add(afterSaveBackenActionActivity);
+                        }
+                    }
+                    var sp_CalculateCustomerValueByServiceRequestID = projectContext.DatabaseFunction.FirstOrDefault(x => x.FunctionName == "sp_CalculateCustomerValueByServiceRequestID");
+                    if (sp_CalculateCustomerValueByServiceRequestID != null)
+                    {
+                        DatabaseFunction_TableDrivedEntity serviceConclusionDatabaseFunctionEntity = projectContext.DatabaseFunction_TableDrivedEntity.FirstOrDefault(x => x.TableDrivedEntityID == serviceConclusion.ID && x.DatabaseFunctionID == sp_CalculateCustomerValueByServiceRequestID.ID);
+                        if (serviceConclusionDatabaseFunctionEntity == null)
+                        {
+                            serviceConclusionDatabaseFunctionEntity = new DatabaseFunction_TableDrivedEntity();
+                            serviceConclusionDatabaseFunctionEntity.TableDrivedEntityID = serviceConclusion.ID;
+                            serviceConclusionDatabaseFunctionEntity.DatabaseFunctionID = sp_CalculateCustomerValueByServiceRequestID.ID;
+                            serviceConclusionDatabaseFunctionEntity.Title = "محاسبه ارزش مشتری بعد از حذف";
+                            serviceConclusionDatabaseFunctionEntity.Name = "CustomerValueAfterDelete";
+                            projectContext.DatabaseFunction_TableDrivedEntity.Add(serviceConclusionDatabaseFunctionEntity);
+                        }
+
+                        var serviceRequestIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "RequestServiceID");
+
+                        if (serviceRequestIDColumn != null && serviceConclusionDatabaseFunctionEntity.ID == 0)
+                        {
+                            if (sp_CalculateCustomerValueByServiceRequestID.DatabaseFunctionParameter.Any(x => x.ParamName == "@serviceRequestID"))
+                                serviceConclusionDatabaseFunctionEntity.DatabaseFunction_TableDrivedEntity_Columns.Add(new DatabaseFunction_TableDrivedEntity_Columns()
+                                { ColumnID = serviceRequestIDColumn.ID, DatabaseFunctionParameter = sp_CalculateCustomerValueByServiceRequestID.DatabaseFunctionParameter.First(x => x.ParamName == "@serviceRequestID") });
+
+                        }
+
+                        var afterDeleteBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.AfterDelete && x.TableDrivedEntityID == serviceConclusion.ID && x.Title == "محاسبه ارزش مشتری بعد از حذف");
+                        if (afterDeleteBackenActionActivity == null)
+                        {
+                            afterDeleteBackenActionActivity = new BackendActionActivity();
+                            afterDeleteBackenActionActivity.TableDrivedEntityID = serviceConclusion.ID;
+                            afterDeleteBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.AfterDelete;
+                            afterDeleteBackenActionActivity.Title = "محاسبه ارزش مشتری بعد از حذف";
+                            afterDeleteBackenActionActivity.Type = 1;
+                            afterDeleteBackenActionActivity.ResultSensetive = false;
+
+                            afterDeleteBackenActionActivity.DatabaseFunction_TableDrivedEntity = serviceConclusionDatabaseFunctionEntity;
+                            projectContext.BackendActionActivity.Add(afterDeleteBackenActionActivity);
+                        }
                     }
                 }
                 try

@@ -168,7 +168,7 @@ namespace MyProject_WPF
 
         private void LokEntityDatabaseFunction_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
         {
-            var selectedItem = lokEntityDatabaseFunction.SelectedItem as CodeFunctionDTO;
+            var selectedItem = lokEntityDatabaseFunction.SelectedItem as DatabaseFunction_EntityDTO;
             var view = new frmDatabaseFunction_Entity((selectedItem == null ? 0 : selectedItem.ID), EntityID);
             view.DatabaseFunctionEntityUpdated += View_DatabaseFunctionEntityUpdated;
             MyProjectManager.GetMyProjectManager.ShowDialog(view, "تعریف ارتباط دیتابیس فانکشن و موجودیت", Enum_WindowSize.Big);
@@ -244,8 +244,8 @@ namespace MyProject_WPF
                     if (id > 0)
                     {
                         //lokSecondSideEntity.ItemsSource = bizTableDrivedEntity.GetAllEntities();
-                        var item = bizDatabaseFunction.GetDatabaseFunction(MyProjectManager.GetMyProjectManager.GetRequester(), id);
-                        e.ResultItemsSource = new List<DatabaseFunctionDTO> { item };
+                        var item = bizDatabaseFunction.GetDatabaseFunctionEntity(MyProjectManager.GetMyProjectManager.GetRequester(), id);
+                        e.ResultItemsSource = new List<DatabaseFunction_EntityDTO> { item };
                     }
                     else
                         e.ResultItemsSource = null;

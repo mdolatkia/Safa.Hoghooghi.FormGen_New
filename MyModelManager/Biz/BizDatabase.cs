@@ -3,6 +3,7 @@ using ModelEntites;
 using MyGeneralLibrary;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,7 +66,7 @@ namespace MyModelManager
                     dbDatabase.DatabaseUISetting = new DatabaseUISetting();
 
                 dbDatabase.DatabaseUISetting.FlowDirectionLTR = databaseSetting.FlowDirectionLTR;
-              dbDatabase.DatabaseUISetting.ShowMiladiDateInUI = databaseSetting.ShowMiladiDateInUI;
+                dbDatabase.DatabaseUISetting.ShowMiladiDateInUI = databaseSetting.ShowMiladiDateInUI;
                 dbDatabase.DatabaseUISetting.StringDateColumnIsMiladi = databaseSetting.StringDateColumnIsMiladi;
 
                 projectContext.SaveChanges();
@@ -292,7 +293,52 @@ namespace MyModelManager
                 projectContext.SaveChanges();
                 return dbDatabase.ID;
             }
+
         }
+
+
+        public void CheckDatabaseInfoExists()
+        {
+            var context = new MyProjectEntities();
+            DBServer dbserver = context.DBServer.FirstOrDefault(x => x.Name == "Localhost");
+            if (dbserver == null)
+            {
+                dbserver = new DBServer();
+                dbserver.Name = "Localhost";
+                dbserver.Title = "Localhost";
+                context.DBServer.Add(dbserver);
+            }
+
+            if (!context.DatabaseInformation.Any(x => x.Name == "DBProductService"))
+            {
+                DatabaseInformation db = new DatabaseInformation();
+                db.ConnectionString = "Data Source=Localhost;Initial Catalog=DBProductService;Integrated Security=True;MultipleActiveResultSets=True;";
+                db.Name = "DBProductService";
+                db.Title = "خدمات و سرويس";
+                db.DBType = "SQLServer";
+                db.DBServer = dbserver;
+                db.DBHasDate = false;
+               
+
+                db.SecurityObject = new SecurityObject();
+                db.SecurityObject.Type = (int)DatabaseObjectCategory.Database;
+
+                context.DatabaseInformation.Add(db);
+            }
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (DbUpdateException e)
+            {
+                //Add your code to inspect the inner exception and/or
+                //e.Entries here.
+                //Or just use the debugger.
+                //Added this catch (after the comments below) to make it more obvious 
+                //how this code might help this specific problem
+            }
+        }
+
         //public bool TestConnection(int databaseID)
         //{
         //    var 

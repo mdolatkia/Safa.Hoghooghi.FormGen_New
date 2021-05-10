@@ -14,19 +14,18 @@ namespace MyDataEditManagerBusiness
 {
     public class EditDataActionActivityManager
     {
-        public void DoBeforeEditActionActivities(DR_Requester requester, List<EditQueryResultItem> items)
+        public void DoBeforeEditActionActivities(DR_Requester requester, List<EditQueryPreItem> items)
         {
             BizBackendActionActivity bizActionActivity = new BizBackendActionActivity();
-            foreach (var editQuertyResult in items.Where(x => x.QueryItem.QueryType == Enum_QueryItemType.Insert || x.QueryItem.QueryType == Enum_QueryItemType.Update))
+            foreach (var editQuertyResult in items)
             {
-                var queryItem = editQuertyResult.QueryItem;
-                var actionActivities = bizActionActivity.GetActionActivities(queryItem.DataItem.TargetEntityID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.BeforeSave },true, true);
+                var actionActivities = bizActionActivity.GetActionActivities(editQuertyResult.DataItem.TargetEntityID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.BeforeSave },true, true);
                 CodeFunctionHandler codeFunctionHelper = new CodeFunctionHandler();
                 foreach (var entityActionActivity in actionActivities)
                 {
                     if (entityActionActivity.CodeFunctionID != 0)
                     {
-                        var resultFunction = codeFunctionHelper.GetCodeFunctionResult(requester, entityActionActivity.CodeFunctionID, queryItem.DataItem);
+                        var resultFunction = codeFunctionHelper.GetCodeFunctionResult(requester, entityActionActivity.CodeFunctionID, editQuertyResult.DataItem);
                         if (resultFunction.Exception != null)
                         {
                             editQuertyResult.BeforeSaveActionActivitiesResult = Enum_DR_SimpleResultType.ExceptionThrown;
@@ -35,18 +34,15 @@ namespace MyDataEditManagerBusiness
                         }
                     }
                 }
-                //foreach (var child in dataItem.ChildRelationshipInfos)
-                //{
-                //    DoBeforeSaveActionActivities(requester, child.RelatedData.ToList(), result);
-                //    if (result.Result == Enum_DR_ResultType.ExceptionThrown)
-                //        return;
-                //}
             }
-
+        }
+        public void DoBeforeDeleteActionActivities(DR_Requester requester, List<EditQueryResultItem> items)
+        {
+            BizBackendActionActivity bizActionActivity = new BizBackendActionActivity();
             foreach (var editQuertyResult in items.Where(x => x.QueryItem.QueryType == Enum_QueryItemType.Delete))
             {
                 var queryItem = editQuertyResult.QueryItem;
-                var actionActivities = bizActionActivity.GetActionActivities(queryItem.TargetEntity.ID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.BeforeDelete },true, true);
+                var actionActivities = bizActionActivity.GetActionActivities(queryItem.TargetEntity.ID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.BeforeDelete }, true, true);
                 CodeFunctionHandler codeFunctionHelper = new CodeFunctionHandler();
                 foreach (var entityActionActivity in actionActivities)
                 {
@@ -65,6 +61,7 @@ namespace MyDataEditManagerBusiness
 
             }
         }
+
         public void DoAfterEditActionActivities(DR_Requester requester, List<EditQueryResultItem> items)
         {
             BizBackendActionActivity bizActionActivity = new BizBackendActionActivity();
@@ -73,7 +70,7 @@ namespace MyDataEditManagerBusiness
                 var queryItem = editQuertyResult.QueryItem;
                 if (queryItem.QueryType == Enum_QueryItemType.Insert || queryItem.QueryType == Enum_QueryItemType.Update)
                 {
-                    var actionActivities = bizActionActivity.GetActionActivities(queryItem.DataItem.TargetEntityID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.AfterSave },true, true);
+                    var actionActivities = bizActionActivity.GetActionActivities(queryItem.DataItem.TargetEntityID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.AfterSave },false, true);
                     CodeFunctionHandler codeFunctionHelper = new CodeFunctionHandler();
                     DatabaseFunctionHandler databaseFunctionHandler = new DatabaseFunctionHandler();
                     foreach (var entityActionActivity in actionActivities)
@@ -105,7 +102,7 @@ namespace MyDataEditManagerBusiness
             foreach (var editQuertyResult in items.Where(x => x.QueryItem.QueryType == Enum_QueryItemType.Delete))
             {
                 var queryItem = editQuertyResult.QueryItem;
-                var actionActivities = bizActionActivity.GetActionActivities(queryItem.TargetEntity.ID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.AfterDelete },true, true);
+                var actionActivities = bizActionActivity.GetActionActivities(queryItem.TargetEntity.ID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.AfterDelete },false, true);
                 CodeFunctionHandler codeFunctionHelper = new CodeFunctionHandler();
                 DatabaseFunctionHandler databaseFunctionHandler = new DatabaseFunctionHandler();
                 foreach (var entityActionActivity in actionActivities)

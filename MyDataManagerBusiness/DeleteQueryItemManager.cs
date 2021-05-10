@@ -178,6 +178,7 @@ namespace MyDataEditManagerBusiness
                 DP_DataRepository rootDeleteITem = new DP_DataRepository(item.TargetEntityID, item.TargetEntityAlias);
                 rootDeleteITem.SetProperties(item.GetProperties());
                 rootDeleteITem.DataView = item.DataView;
+                rootDeleteITem.EntityListView = item.EntityListView;
                 rootDeleteITem.IsFullData = item.IsFullData;
 
                 var loop = GetTreeItems(requester, rootDeleteITem, rootDeleteITem);

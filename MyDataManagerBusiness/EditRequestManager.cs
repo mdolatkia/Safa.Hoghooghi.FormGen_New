@@ -27,92 +27,110 @@ namespace MyDataEditManagerBusiness
         public DR_ResultEdit Process(DR_EditRequest request)
         {
             DR_ResultEdit result = new DR_ResultEdit();
-            //var internalResult = GetInternalResult(request as DR_EditRequest);
-            var allQueryItems = editQueryItemManager.GetQueryItems(request.Requester, request.EditPackages);
-            if (allQueryItems.Any(x => string.IsNullOrEmpty(x.Query)))
+            var preEditQueryResults = new List<EditQueryPreItem>();
+            foreach (var item in request.EditPackages)
+                preEditQueryResults.Add(new EditQueryPreItem(item));
+
+            actionActivityManager.DoBeforeEditActionActivities(request.Requester, preEditQueryResults);
+            if (preEditQueryResults.Any(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
             {
-                throw new Exception("sdfsdf");
-            }
-
-            CheckPermissoinToEdit(request.Requester, result, allQueryItems);
-            if (result.Result == Enum_DR_ResultType.ExceptionThrown)
-                return result;
-
-            var editQueryResults = new List<EditQueryResultItem>();
-            foreach (var item in allQueryItems)
-                editQueryResults.Add(new EditQueryResultItem(item));
-
-            actionActivityManager.DoBeforeEditActionActivities(request.Requester, editQueryResults);
-            if (editQueryResults.Any(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
-            {
-                var exceptionItem = editQueryResults.First(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown);
+                var exceptionItem = preEditQueryResults.First(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown);
                 result.Result = Enum_DR_ResultType.ExceptionThrown;
                 var logResult = bizLogManager.AddLog(GetBeforeSaveExceptionLog(exceptionItem), request.Requester);
                 if (!string.IsNullOrEmpty(logResult))
                     result.Details.Add(ToResultDetail("خطا در ثبت لاگ", "", logResult));
-                result.Details.Add(ToResultDetail(exceptionItem.QueryItem.DataItem.ViewInfo, "فعالیتهای قبل از ذخیره شدن داده با خطا همراه بود", exceptionItem.BeforeSaveActionActivitiesMessage));
+                result.Details.Add(ToResultDetail(exceptionItem.DataItem.ViewInfo, "فعالیتهای قبل از ذخیره شدن داده با خطا همراه بود", exceptionItem.BeforeSaveActionActivitiesMessage));
 
             }
             else
             {
-                var transactionresult = ConnectionManager.ExecuteTransactionalQueryItems(allQueryItems);
-                if (transactionresult.Successful)
+                //var internalResult = GetInternalResult(request as DR_EditRequest);
+                var allQueryItems = editQueryItemManager.GetQueryItems(request.Requester, request.EditPackages);
+                if (allQueryItems.Any(x => string.IsNullOrEmpty(x.Query)))
                 {
-                    actionActivityManager.DoAfterEditActionActivities(request.Requester, editQueryResults);
-                    var logResult = bizLogManager.AddLogs(GetUpdateDataSuccessfulLogs(editQueryResults), request.Requester);
+                    throw new Exception("sdfsdf");
+                }
+
+                CheckPermissoinToEdit(request.Requester, result, allQueryItems);
+                if (result.Result == Enum_DR_ResultType.ExceptionThrown)
+                    return result;
+
+                var editQueryResults = new List<EditQueryResultItem>();
+                foreach (var item in allQueryItems)
+                    editQueryResults.Add(new EditQueryResultItem(item));
+
+                actionActivityManager.DoBeforeDeleteActionActivities(request.Requester, editQueryResults);
+                if (editQueryResults.Any(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
+                {
+                    var exceptionItem = editQueryResults.First(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown);
+                    result.Result = Enum_DR_ResultType.ExceptionThrown;
+                    var logResult = bizLogManager.AddLog(GetBeforeDeleteExceptionLog(exceptionItem), request.Requester);
                     if (!string.IsNullOrEmpty(logResult))
                         result.Details.Add(ToResultDetail("خطا در ثبت لاگ", "", logResult));
+                    result.Details.Add(ToResultDetail(exceptionItem.QueryItem.DataItem.ViewInfo, "فعالیتهای قبل از ذخیره شدن داده با خطا همراه بود", exceptionItem.BeforeSaveActionActivitiesMessage));
 
-                    foreach (var item in request.EditPackages)
-                    {
-                        var baseData = new DP_BaseData(item.TargetEntityID, item.TargetEntityAlias);
-                        var listKeyProperties = new List<EntityInstanceProperty>();
-                        if (item.IsNewItem && item.KeyProperties.Any(x => x.IsIdentity))
-                        {
-                            var dataItem = editQueryResults.First(x => x.QueryItem.DataItem == item).QueryItem.DataItem;
-                            foreach (var key in dataItem.KeyProperties)
-                                baseData.Properties.Add(key);
-                        }
-                        else
-                        {
-                            foreach (var key in item.KeyProperties)
-                                baseData.Properties.Add(key);
-                        }
-                        result.UpdatedItems.Add(baseData);
-                    }
-
-                    if (editQueryResults.Any(x => x.AfterSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
-                    {
-                        result.Result = Enum_DR_ResultType.JustMajorFunctionDone;
-                        foreach (var item in editQueryResults.Where(x => x.AfterSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
-                        {
-                            result.Details.Add(ToResultDetail(item.QueryItem.DataItem.ViewInfo, "فعالیتهای بعد از ذخیره شدن داده با خطا همراه بود", item.AfterSaveActionActivitiesMessage));
-                        }
-                    }
-                    else
-                    {
-                        result.Result = Enum_DR_ResultType.SeccessfullyDone;
-                    }
                 }
                 else
                 {
-                    result.Result = Enum_DR_ResultType.ExceptionThrown;
-                    if (editQueryResults.Any(x => x.DataUpdateResult == Enum_DR_SimpleResultType.ExceptionThrown))
+                    var transactionresult = ConnectionManager.ExecuteTransactionalQueryItems(allQueryItems);
+                    if (transactionresult.Successful)
                     {
-                        foreach (var item in transactionresult.QueryItems.Where(x => x.Exception != null))
-                        {
-                            editQueryResults.First(x => x.QueryItem == item.QueryItem).DataUpdateMessage = item.Exception.Message;
-                            editQueryResults.First(x => x.QueryItem == item.QueryItem).DataUpdateResult = Enum_DR_SimpleResultType.ExceptionThrown;
-                        }
-                        var exceptionItem = editQueryResults.First(x => x.DataUpdateResult == Enum_DR_SimpleResultType.ExceptionThrown);
-                        var logResult = bizLogManager.AddLog(GetUpdateDataExceptionLog(exceptionItem), request.Requester);
+                        actionActivityManager.DoAfterEditActionActivities(request.Requester, editQueryResults);
+                        var logResult = bizLogManager.AddLogs(GetUpdateDataSuccessfulLogs(editQueryResults), request.Requester);
                         if (!string.IsNullOrEmpty(logResult))
                             result.Details.Add(ToResultDetail("خطا در ثبت لاگ", "", logResult));
-                        result.Details.Add(ToResultDetail(exceptionItem.QueryItem.DataItem.ViewInfo, "ذخیره شدن داده با خطا همراه بود", exceptionItem.DataUpdateMessage));
+
+                        foreach (var item in request.EditPackages)
+                        {
+                            var baseData = new DP_BaseData(item.TargetEntityID, item.TargetEntityAlias);
+                            var listKeyProperties = new List<EntityInstanceProperty>();
+                            if (item.IsNewItem && item.KeyProperties.Any(x => x.IsIdentity))
+                            {
+                                var dataItem = editQueryResults.First(x => x.QueryItem.DataItem == item).QueryItem.DataItem;
+                                foreach (var key in dataItem.KeyProperties)
+                                    baseData.Properties.Add(key);
+                            }
+                            else
+                            {
+                                foreach (var key in item.KeyProperties)
+                                    baseData.Properties.Add(key);
+                            }
+                            result.UpdatedItems.Add(baseData);
+                        }
+
+                        if (editQueryResults.Any(x => x.AfterSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
+                        {
+                            result.Result = Enum_DR_ResultType.JustMajorFunctionDone;
+                            foreach (var item in editQueryResults.Where(x => x.AfterSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
+                            {
+                                result.Details.Add(ToResultDetail(item.QueryItem.DataItem.ViewInfo, "فعالیتهای بعد از ذخیره شدن داده با خطا همراه بود", item.AfterSaveActionActivitiesMessage));
+                            }
+                        }
+                        else
+                        {
+                            result.Result = Enum_DR_ResultType.SeccessfullyDone;
+                        }
                     }
                     else
                     {
-                        result.Details.Add(ToResultDetail("خطای عمومی ثبت", "ذخیره شدن داده با خطا همراه بود", transactionresult.Message));
+                        result.Result = Enum_DR_ResultType.ExceptionThrown;
+                        if (editQueryResults.Any(x => x.DataUpdateResult == Enum_DR_SimpleResultType.ExceptionThrown))
+                        {
+                            foreach (var item in transactionresult.QueryItems.Where(x => x.Exception != null))
+                            {
+                                editQueryResults.First(x => x.QueryItem == item.QueryItem).DataUpdateMessage = item.Exception.Message;
+                                editQueryResults.First(x => x.QueryItem == item.QueryItem).DataUpdateResult = Enum_DR_SimpleResultType.ExceptionThrown;
+                            }
+                            var exceptionItem = editQueryResults.First(x => x.DataUpdateResult == Enum_DR_SimpleResultType.ExceptionThrown);
+                            var logResult = bizLogManager.AddLog(GetUpdateDataExceptionLog(exceptionItem), request.Requester);
+                            if (!string.IsNullOrEmpty(logResult))
+                                result.Details.Add(ToResultDetail("خطا در ثبت لاگ", "", logResult));
+                            result.Details.Add(ToResultDetail(exceptionItem.QueryItem.DataItem.ViewInfo, "ذخیره شدن داده با خطا همراه بود", exceptionItem.DataUpdateMessage));
+                        }
+                        else
+                        {
+                            result.Details.Add(ToResultDetail("خطای عمومی ثبت", "ذخیره شدن داده با خطا همراه بود", transactionresult.Message));
+                        }
                     }
                 }
             }
@@ -240,7 +258,14 @@ namespace MyDataEditManagerBusiness
             dataLog.MainType = GetLogType(queryItem);
             return dataLog;
         }
-
+        private DataLogDTO GetBaseLog(DP_DataRepository dataItem)
+        {
+            var dataLog = new DataLogDTO();
+            dataLog.LocationInfo = "";
+            dataLog.Duration = 0;
+            dataLog.DatItem = dataItem;
+            return dataLog;
+        }
         DeleteQueryItemManager deleteQueryItemManager = new DeleteQueryItemManager();
         public DR_ResultDelete Process(DR_DeleteRequest request)
         {
@@ -263,12 +288,12 @@ namespace MyDataEditManagerBusiness
             if (result.Result == Enum_DR_ResultType.ExceptionThrown)
                 return result;
 
-            actionActivityManager.DoBeforeEditActionActivities(request.Requester, editQueryResults);
+            actionActivityManager.DoBeforeDeleteActionActivities(request.Requester, editQueryResults);
             if (editQueryResults.Any(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
             {
                 var exceptionItem = editQueryResults.First(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown);
                 result.Result = Enum_DR_ResultType.ExceptionThrown;
-                var logResult = bizLogManager.AddLog(GetBeforeSaveExceptionLog(exceptionItem), request.Requester);
+                var logResult = bizLogManager.AddLog(GetBeforeDeleteExceptionLog(exceptionItem), request.Requester);
                 if (!string.IsNullOrEmpty(logResult))
                     result.Details.Add(ToResultDetail("خطا در ثبت لاگ", "", logResult));
                 result.Details.Add(ToResultDetail(exceptionItem.QueryItem.DataItem.ViewInfo, "فعالیتهای قبل از ذخیره شدن داده با خطا همراه بود", exceptionItem.BeforeSaveActionActivitiesMessage));
@@ -383,7 +408,14 @@ namespace MyDataEditManagerBusiness
             }
             return dataLog;
         }
-        private DataLogDTO GetBeforeSaveExceptionLog(EditQueryResultItem item)
+        private DataLogDTO GetBeforeSaveExceptionLog(EditQueryPreItem item)
+        {
+            var dataLog = GetBaseLog(item.DataItem);
+            dataLog.MajorException = true;
+            dataLog.MajorFunctionExceptionMessage = item.BeforeSaveActionActivitiesMessage;
+            return dataLog;
+        }
+        private DataLogDTO GetBeforeDeleteExceptionLog(EditQueryResultItem item)
         {
             var dataLog = GetBaseLog(item.QueryItem);
             dataLog.MajorException = true;
@@ -490,6 +522,18 @@ namespace MyDataEditManagerBusiness
         public List<EditQueryResultItem> EditQueryResults { set; get; }
         //    public Enum_DR_ResultType Result { set; get; }
     }
+    public class EditQueryPreItem
+    {
+        public EditQueryPreItem(DP_DataRepository dataItem)
+        {
+            DataItem = dataItem;
+        }
+        public DP_DataRepository DataItem { set; get; }
+        public string BeforeSaveActionActivitiesMessage { set; get; }
+        public Enum_DR_SimpleResultType BeforeSaveActionActivitiesResult { set; get; }
+
+    }
+
     public class EditQueryResultItem
     {
         public EditQueryResultItem(QueryItem queryItem)

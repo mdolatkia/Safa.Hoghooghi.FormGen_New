@@ -26,5 +26,16 @@ namespace MyTestImplLibrary
             }
             return result;
         }
+
+        public FunctionResult CheckRequestIsValid(CodeFunctionParamOneDataItem data)
+        {
+            FunctionResult result = new FunctionResult();
+            if (data.Requester.Identity == 666)
+            {
+            throw new Exception("کاربر غیر مجاز");
+            }
+
+            return result;
+        }
     }
 }

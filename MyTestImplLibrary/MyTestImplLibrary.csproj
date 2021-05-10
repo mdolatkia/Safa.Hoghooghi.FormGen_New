@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionActivityTest.cs" />
+    <Compile Include="BeforeDeleteTest.cs" />
     <Compile Include="BeforeSaveTest.cs" />
     <Compile Include="DBProductService\DateTimeHelper.cs" />
     <Compile Include="DBProductService\ServiceItemHelper.cs" />

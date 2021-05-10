@@ -95,6 +95,7 @@ namespace ProxyLibrary
     }
     public enum DataLogType
     {
+        Unknown,
         DataInsert,
         DataEdit,
         DataDelete,
@@ -102,8 +103,8 @@ namespace ProxyLibrary
         ArchiveDelete,
         LetterInsert,
         LetterUpdate,
-        LetterDelete,
-        Unknown
+        LetterDelete
+        
     }
 
 }

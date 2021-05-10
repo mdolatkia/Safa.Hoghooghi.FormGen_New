@@ -101,7 +101,7 @@ namespace MyCodeFunctionLibrary
             catch (Exception ex)
             {
                
-                result.Exception = ex;
+                result.Exception = ex.InnerException;
 
             }
             return result;

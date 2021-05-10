@@ -32,7 +32,7 @@ namespace MyProject_WPF
         public void StartApp()
         {
             new BizUser().CheckAdminUserExists();
-
+            new BizDatabase().CheckDatabaseInfoExists();
             var frm = new frmLogin();
             frm.LoginRequested += Frm_LoginRequested;
             //frmFormula frm = new frmFormula(0,67);
