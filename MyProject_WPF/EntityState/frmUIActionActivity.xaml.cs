@@ -293,7 +293,7 @@ namespace MyProject_WPF
         private void optEntityReadonly_Checked(object sender, RoutedEventArgs e)
         {
             HideTabs();
-
+            tabControl.SelectedItem = null;
         }
         private void optUIEnablity_Checked(object sender, RoutedEventArgs e)
         {

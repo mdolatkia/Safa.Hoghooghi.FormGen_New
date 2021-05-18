@@ -153,7 +153,14 @@ namespace MyModelManager
 
                 }
                 var legalPerson = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "LegalPerson" && x.Table.DBSchema.DatabaseInformationID == databaseID);
-
+                if (legalPerson != null)
+                {
+                    var legalPersonName = legalPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
+                    if (legalPersonName != null)
+                    {
+                        legalPersonName.IsMandatory = true;
+                    }
+                }
                 var genericPerson = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "GenericPerson" && x.Table.DBSchema.DatabaseInformationID == databaseID);
                 if (genericPerson != null)
                 {
@@ -519,8 +526,14 @@ namespace MyModelManager
                 if (serviceRequest != null)
                 {
                     var persianDateColumn = serviceRequest.Table.Column.FirstOrDefault(x => x.Name == "PersianDate");
-                    if (persianDateColumn != null && persianDateColumn.DateColumnType != null)
-                        persianDateColumn.DateColumnType.ShowMiladiDateInUI = true;
+                    if (persianDateColumn != null)
+                    {
+                        persianDateColumn.IsReadonly = true;
+                        if (persianDateColumn.DateColumnType != null)
+                            persianDateColumn.DateColumnType.ShowMiladiDateInUI = true;
+
+
+                    }
                     var timeColumn = serviceRequest.Table.Column.FirstOrDefault(x => x.Name == "Time");
                     if (timeColumn != null)
                     {
@@ -589,6 +602,25 @@ namespace MyModelManager
                         codeColumn.StringColumnType.MaxLength = 3;
                         codeColumn.StringColumnType.MinLength = 3;
                     }
+                    var isAgencyColumn = office.Table.Column.FirstOrDefault(x => x.Name == "IsAgency");
+                    var isWorkshopColumn = office.Table.Column.FirstOrDefault(x => x.Name == "IsWorkshop");
+                    if (isAgencyColumn != null && isWorkshopColumn != null && codeColumn!=null)
+                    {
+                        var officeDefaultCodeState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == office.ID && x.Title == "کد پیش فرض سازمان");
+                        if (officeDefaultCodeState == null)
+                        {
+                            officeDefaultCodeState = new TableDrivedEntityState();
+                            officeDefaultCodeState.Title = "کد پیش فرض سازمان";
+                            officeDefaultCodeState.TableDrivedEntityID = office.ID;
+                            officeDefaultCodeState.ColumnID = isAgencyColumn.ID;
+                            officeDefaultCodeState.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = "true" });
+                            var uiActionActivity = new UIActionActivity();
+                            officeDefaultCodeState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                            uiActionActivity.Type = (short)Enum_ActionActivityType.ColumnValue;
+                            uiActionActivity.UIColumnValue.Add(new UIColumnValue() { ColumnID = codeColumn.ID, ExactValue = "1" });
+                        }
+                    }
+
                 }
 
                 var region = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "Region" && x.Table.DBSchema.DatabaseInformationID == databaseID);
@@ -607,6 +639,31 @@ namespace MyModelManager
 
                         }
                     }
+                }
+                var genericPersonAddress = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "GenericPersonAddress" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+                if (genericPersonAddress != null && region != null)
+                {
+                    var relaitonship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == genericPersonAddress.ID && x.TableDrivedEntityID2 == region.ID);
+                    if (relaitonship != null)
+                        relaitonship.RelationshipType.IsOtherSideMandatory = true;
+                }
+
+                var isaGenereicPerson = projectContext.ISARelationship.FirstOrDefault(x => x.Name == "ISA_OnPK_GenericPerson");
+                if (isaGenereicPerson != null)
+                {
+                    isaGenereicPerson.IsDisjoint = true;
+                    isaGenereicPerson.IsTolatParticipation = true;
+                }
+                var isaGenereicPersonCustomer = projectContext.ISARelationship.FirstOrDefault(x => x.Name == "GenericPerson_Customer");
+                if (isaGenereicPersonCustomer != null)
+                {
+                    isaGenereicPersonCustomer.IsTolatParticipation = false;
+                }
+
+                var unionServiceConclusionItem = projectContext.UnionRelationshipType.FirstOrDefault(x => x.Name == "Union_ServiceConclusionItem");
+                if (unionServiceConclusionItem != null)
+                {
+                    unionServiceConclusionItem.IsTolatParticipation = false;
                 }
 
                 var genericBeforeLoadBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.BeforeLoad && x.TableDrivedEntityID == null && x.Title == "اصلاح تاريخ تک رقمي");
@@ -733,7 +790,7 @@ namespace MyModelManager
 
 
 
-                if (serviceConclusion != null  )
+                if (serviceConclusion != null)
                 {
                     var sp_CalculateCustomerValue = projectContext.DatabaseFunction.FirstOrDefault(x => x.FunctionName == "sp_CalculateCustomerValue");
                     if (sp_CalculateCustomerValue != null)
