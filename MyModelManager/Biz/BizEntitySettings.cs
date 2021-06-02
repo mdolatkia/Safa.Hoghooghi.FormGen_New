@@ -3,6 +3,7 @@ using ModelEntites;
 using ProxyLibrary;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
@@ -147,6 +148,8 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var dbDatabase = projectContext.DatabaseInformation.FirstOrDefault(x => x.ID == databaseID);
+                var customer = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "Customer" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+                var productItem = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ProductItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
                 var realPerson = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "RealPerson" && x.Table.DBSchema.DatabaseInformationID == databaseID);
                 if (realPerson != null)
                 {
@@ -454,6 +457,56 @@ namespace MyModelManager
                     if (ConclusionItemPriceColumn != null)
                         ConclusionItemPriceColumn.Formula = ConclusionItemPriceFormula;
 
+
+
+
+                    var confirmedColumn = serviceConclusionItem.Table.Column.FirstOrDefault(x => x.Name == "Confirmed");
+                    if (confirmedColumn != null)
+                    {
+                        var readonlyTypeOfConclusionItem = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == serviceConclusionItem.ID && x.Title == "فقط خواندنی سازی نوع مورد خلاصه سرویس");
+                        if (readonlyTypeOfConclusionItem == null)
+                        {
+                            readonlyTypeOfConclusionItem = new TableDrivedEntityState();
+                            readonlyTypeOfConclusionItem.Title = "فقط خواندنی سازی نوع مورد خلاصه سرویس";
+                            readonlyTypeOfConclusionItem.TableDrivedEntityID = serviceConclusionItem.ID;
+                            readonlyTypeOfConclusionItem.ColumnID = confirmedColumn.ID;
+                            readonlyTypeOfConclusionItem.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = "true" });
+                            var uiActionActivity = new UIActionActivity();
+                            uiActionActivity.Title = "فقط خواندنی سازی نوع";
+                            readonlyTypeOfConclusionItem.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                            uiActionActivity.Type = (short)Enum_ActionActivityType.UIEnablity;
+                            uiActionActivity.TableDrivedEntityID = serviceConclusionItem.ID;
+                            uiActionActivity.UIEnablityDetails.Add(new UIEnablityDetails() { ColumnID = typeColumn.ID, Readonly = true });
+                            projectContext.TableDrivedEntityState.Add(readonlyTypeOfConclusionItem);
+                        }
+
+
+                        if (serviceItem != null && serviceAdditionalItem != null)
+                        {
+                            var serviceItemRelationship = serviceConclusionItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusionItem.ID && x.TableDrivedEntityID2 == serviceItem.ID);
+                            var serviceAdditionalItemRelationship = serviceConclusionItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusionItem.ID && x.TableDrivedEntityID2 == serviceAdditionalItem.ID);
+                            if (serviceItemRelationship != null && serviceAdditionalItemRelationship != null)
+                            {
+                                var readonlyRelationships = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == serviceConclusionItem.ID && x.Title == "فقط خواندنی سازی روابط");
+                                if (readonlyRelationships == null)
+                                {
+                                    readonlyRelationships = new TableDrivedEntityState();
+                                    readonlyRelationships.Title = "فقط خواندنی سازی روابط";
+                                    readonlyRelationships.TableDrivedEntityID = serviceConclusionItem.ID;
+                                    readonlyRelationships.ColumnID = confirmedColumn.ID;
+                                    readonlyRelationships.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = "true" });
+                                    var uiActionActivity = new UIActionActivity();
+                                    uiActionActivity.Title = "فقط خواندنی سازی روابط";
+                                    readonlyRelationships.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                                    uiActionActivity.Type = (short)Enum_ActionActivityType.UIEnablity;
+                                    uiActionActivity.TableDrivedEntityID = serviceConclusionItem.ID;
+                                    uiActionActivity.UIEnablityDetails.Add(new UIEnablityDetails() { RelationshipID = serviceItemRelationship.ID, Readonly = true });
+                                    uiActionActivity.UIEnablityDetails.Add(new UIEnablityDetails() { RelationshipID = serviceAdditionalItemRelationship.ID, Readonly = true });
+                                    projectContext.TableDrivedEntityState.Add(readonlyRelationships);
+                                }
+                            }
+                        }
+                    }
                 }
                 Column ConclusionTotalPriceColumn = null;
                 var serviceConclusion = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceConclusion" && x.Table.DBSchema.DatabaseInformationID == databaseID);
@@ -580,6 +633,53 @@ namespace MyModelManager
                             employeeRoleColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "1", KeyTitle = "مدیر" });
                             employeeRoleColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "2", KeyTitle = "کارشناس" });
                         }
+
+                        var employeeRole2Column = employee.Table.Column.FirstOrDefault(x => x.Name == "EmployeeRole2");
+                        if (employeeRole2Column != null)
+                        {
+                            if (employeeRole2Column.ColumnValueRange == null)
+                            {
+                                employeeRole2Column.ColumnValueRange = new ColumnValueRange();
+
+                                employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "1", Tag1 = "1", KeyTitle = "مدیر سطح 1" });
+                                employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "2", Tag1 = "1", KeyTitle = "مدیر سطح 2" });
+                                employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "3", Tag1 = "2", KeyTitle = "کارشناس سطح 1" });
+                                employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "4", Tag1 = "2", KeyTitle = "کارشناس سطح 2" });
+                            }
+
+                            var employeeRole2ModirState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == employee.ID && x.Title == "فیلتر نقش 2 کارمند برای مدیر");
+                            if (employeeRole2ModirState == null)
+                            {
+                                employeeRole2ModirState = new TableDrivedEntityState();
+                                employeeRole2ModirState.Title = "فیلتر نقش 2 کارمند برای مدیر";
+                                employeeRole2ModirState.TableDrivedEntityID = employee.ID;
+                                employeeRole2ModirState.ColumnID = employeeRoleColumn.ID;
+                                employeeRole2ModirState.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = "1" });
+                                var uiActionActivity = new UIActionActivity();
+                                uiActionActivity.Title = "نقش 2 برای مدیر";
+                                employeeRole2ModirState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                                uiActionActivity.Type = (short)Enum_ActionActivityType.ColumnValueRange;
+                                uiActionActivity.TableDrivedEntityID = employee.ID;
+                                uiActionActivity.UIColumnValueRange.Add(new UIColumnValueRange() { ColumnValueRange = employeeRole2Column.ColumnValueRange, EnumTag = (short)EnumColumnValueRangeTag.Tag1, Value = "1" });
+                                projectContext.TableDrivedEntityState.Add(employeeRole2ModirState);
+                            }
+                            var employeeRole2KarshenasState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == employee.ID && x.Title == "فیلتر نقش 2 کارمند برای کارشناس");
+                            if (employeeRole2KarshenasState == null)
+                            {
+                                employeeRole2KarshenasState = new TableDrivedEntityState();
+                                employeeRole2KarshenasState.Title = "فیلتر نقش 2 کارمند برای کارشناس";
+                                employeeRole2KarshenasState.TableDrivedEntityID = employee.ID;
+                                employeeRole2KarshenasState.ColumnID = employeeRoleColumn.ID;
+                                employeeRole2KarshenasState.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = "2" });
+                                var uiActionActivity = new UIActionActivity();
+                                uiActionActivity.Title = "نقش 2 برای کارشناس";
+                                employeeRole2KarshenasState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                                uiActionActivity.Type = (short)Enum_ActionActivityType.ColumnValueRange;
+                                uiActionActivity.TableDrivedEntityID = employee.ID;
+                                uiActionActivity.UIColumnValueRange.Add(new UIColumnValueRange() { ColumnValueRange = employeeRole2Column.ColumnValueRange, EnumTag = (short)EnumColumnValueRangeTag.Tag1, Value = "2" });
+                                projectContext.TableDrivedEntityState.Add(employeeRole2KarshenasState);
+                            }
+                        }
                     }
                 }
                 var office = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "Office" && x.Table.DBSchema.DatabaseInformationID == databaseID);
@@ -604,20 +704,56 @@ namespace MyModelManager
                     }
                     var isAgencyColumn = office.Table.Column.FirstOrDefault(x => x.Name == "IsAgency");
                     var isWorkshopColumn = office.Table.Column.FirstOrDefault(x => x.Name == "IsWorkshop");
-                    if (isAgencyColumn != null && isWorkshopColumn != null && codeColumn!=null)
+                    if (isAgencyColumn != null && isWorkshopColumn != null && codeColumn != null && workshopLevelColumn != null)
                     {
-                        var officeDefaultCodeState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == office.ID && x.Title == "کد پیش فرض سازمان");
-                        if (officeDefaultCodeState == null)
+                        var agencyDefaultCodeState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == office.ID && x.Title == "کد پیش فرض سازمان برای آژانس");
+                        if (agencyDefaultCodeState == null)
                         {
-                            officeDefaultCodeState = new TableDrivedEntityState();
-                            officeDefaultCodeState.Title = "کد پیش فرض سازمان";
-                            officeDefaultCodeState.TableDrivedEntityID = office.ID;
-                            officeDefaultCodeState.ColumnID = isAgencyColumn.ID;
-                            officeDefaultCodeState.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = "true" });
+                            agencyDefaultCodeState = new TableDrivedEntityState();
+                            agencyDefaultCodeState.Title = "کد پیش فرض سازمان برای آژانس";
+                            agencyDefaultCodeState.TableDrivedEntityID = office.ID;
+                            agencyDefaultCodeState.ColumnID = isAgencyColumn.ID;
+                            agencyDefaultCodeState.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = "true" });
                             var uiActionActivity = new UIActionActivity();
-                            officeDefaultCodeState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                            uiActionActivity.Title = "مقدار پیش فرض کد 10";
+                            agencyDefaultCodeState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
                             uiActionActivity.Type = (short)Enum_ActionActivityType.ColumnValue;
-                            uiActionActivity.UIColumnValue.Add(new UIColumnValue() { ColumnID = codeColumn.ID, ExactValue = "1" });
+                            uiActionActivity.TableDrivedEntityID = office.ID;
+                            uiActionActivity.UIColumnValue.Add(new UIColumnValue() { ColumnID = codeColumn.ID, ExactValue = "10" });
+                            projectContext.TableDrivedEntityState.Add(agencyDefaultCodeState);
+                        }
+                        var workshopDefaultCodeState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == office.ID && x.Title == "کد پیش فرض سازمان برای ورکشاپ");
+                        if (workshopDefaultCodeState == null)
+                        {
+                            workshopDefaultCodeState = new TableDrivedEntityState();
+                            workshopDefaultCodeState.Title = "کد پیش فرض سازمان برای ورکشاپ";
+                            workshopDefaultCodeState.TableDrivedEntityID = office.ID;
+                            workshopDefaultCodeState.ColumnID = isWorkshopColumn.ID;
+                            workshopDefaultCodeState.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = "true" });
+                            var uiActionActivity = new UIActionActivity();
+                            uiActionActivity.Title = "مقدار پیش فرض کد 20";
+                            workshopDefaultCodeState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                            uiActionActivity.Type = (short)Enum_ActionActivityType.ColumnValue;
+                            uiActionActivity.TableDrivedEntityID = office.ID;
+                            uiActionActivity.UIColumnValue.Add(new UIColumnValue() { ColumnID = codeColumn.ID, ExactValue = "20" });
+                            projectContext.TableDrivedEntityState.Add(workshopDefaultCodeState);
+                        }
+
+                        var hideWorkshopLevelState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == office.ID && x.Title == "مخفی کردن سطح ورکشاپ برای آژانس");
+                        if (hideWorkshopLevelState == null)
+                        {
+                            hideWorkshopLevelState = new TableDrivedEntityState();
+                            hideWorkshopLevelState.Title = "مخفی کردن سطح ورکشاپ برای آژانس";
+                            hideWorkshopLevelState.TableDrivedEntityID = office.ID;
+                            hideWorkshopLevelState.ColumnID = isAgencyColumn.ID;
+                            hideWorkshopLevelState.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = "true" });
+                            var uiActionActivity = new UIActionActivity();
+                            uiActionActivity.Title = "مخفی کردن سطح ورکشاپ";
+                            hideWorkshopLevelState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                            uiActionActivity.Type = (short)Enum_ActionActivityType.UIEnablity;
+                            uiActionActivity.TableDrivedEntityID = office.ID;
+                            uiActionActivity.UIEnablityDetails.Add(new UIEnablityDetails() { ColumnID = workshopLevelColumn.ID, Hidden = true });
+                            projectContext.TableDrivedEntityState.Add(hideWorkshopLevelState);
                         }
                     }
 
@@ -638,6 +774,43 @@ namespace MyModelManager
                             typeColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "شهر" });
 
                         }
+
+                        var regionCountryReadonly = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == region.ID && x.Title == "فقط خواندنی سازی کشورها");
+                        if (regionCountryReadonly == null)
+                        {
+                            regionCountryReadonly = new TableDrivedEntityState();
+                            regionCountryReadonly.Title = "فقط خواندنی سازی کشورها";
+                            regionCountryReadonly.TableDrivedEntityID = region.ID;
+                            regionCountryReadonly.ColumnID = typeColumn.ID;
+                            regionCountryReadonly.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = "کشور" });
+                            var uiActionActivity = new UIActionActivity();
+                            uiActionActivity.Title = "فقط خواندنی سازی کشورها";
+                            regionCountryReadonly.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                            uiActionActivity.Type = (short)Enum_ActionActivityType.EntityReadonly;
+                            uiActionActivity.TableDrivedEntityID = region.ID;
+                            projectContext.TableDrivedEntityState.Add(regionCountryReadonly);
+                        }
+                        var regionParentRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == region.ID && x.TableDrivedEntityID2 == region.ID && x.MasterTypeEnum == 1);
+                        if (regionParentRelationship != null)
+                        {
+                            var regionCountryHideParent = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == region.ID && x.Title == "مخفی سازی رابطه پدر برای کشورها");
+                            if (regionCountryHideParent == null)
+                            {
+                                regionCountryHideParent = new TableDrivedEntityState();
+                                regionCountryHideParent.Title = "مخفی سازی رابطه پدر برای کشورها";
+                                regionCountryHideParent.TableDrivedEntityID = region.ID;
+                                regionCountryHideParent.ColumnID = typeColumn.ID;
+                                regionCountryHideParent.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = "کشور" });
+                                var uiActionActivity = new UIActionActivity();
+                                uiActionActivity.Title = "مخفی سازی رابطه پدر";
+                                regionCountryHideParent.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                                uiActionActivity.Type = (short)Enum_ActionActivityType.UIEnablity;
+                                uiActionActivity.TableDrivedEntityID = region.ID;
+                                uiActionActivity.UIEnablityDetails.Add(new UIEnablityDetails() { RelationshipID = regionParentRelationship.ID, Hidden = true });
+                                projectContext.TableDrivedEntityState.Add(regionCountryHideParent);
+                            }
+                        }
+
                     }
                 }
                 var genericPersonAddress = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "GenericPersonAddress" && x.Table.DBSchema.DatabaseInformationID == databaseID);
@@ -828,6 +1001,276 @@ namespace MyModelManager
                             afterSaveBackenActionActivity.DatabaseFunction_TableDrivedEntity = serviceConclusionDatabaseFunctionEntity;
                             projectContext.BackendActionActivity.Add(afterSaveBackenActionActivity);
                         }
+
+                        if (!serviceConclusion.EntityListView.Any(x => x.Title == "لیست پیش فرض خلاصه سرویس"))
+                        {
+                            var serviceConclusaionListView = new EntityListView();
+                            serviceConclusaionListView.TableDrivedEntityID = serviceConclusion.ID;
+                            //    projectContext.EntityListView.Add(serviceConclusaionListView);
+                            serviceConclusaionListView.Title = "لیست پیش فرض خلاصه سرویس";
+                            serviceConclusion.EntityListView1 = serviceConclusaionListView;
+                            if (conclusionIDColumn != null)
+                            {
+                                var idColumn = new EntityListViewColumns() { Column = conclusionIDColumn, Alias = "شناسه", WidthUnit = 1, IsDescriptive = true, OrderID = 1 };
+                                serviceConclusaionListView.EntityListViewColumns.Add(idColumn);
+                            }
+                            var serviceRequestIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "RequestServiceID");
+                            if (serviceRequestIDColumn != null)
+                            {
+                                var serviceRequestIDListViewColumn = new EntityListViewColumns() { Column = serviceRequestIDColumn, Alias = "شناسه درخواست سرویس", WidthUnit = 1, IsDescriptive = true, OrderID = 2 };
+                                serviceConclusaionListView.EntityListViewColumns.Add(serviceRequestIDListViewColumn);
+                            }
+                            if (serviceRequest != null)
+                            {
+                                var serviceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
+                                if (serviceRequestRelationship != null)
+                                {
+                                    var serviceRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, serviceRequestRelationship.ID.ToString());
+                                    if (serviceRequestRelationshipTail != null)
+                                    {
+                                        if (customer != null)
+                                        {
+                                            var serviceRequestCustomerRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == customer.ID);
+                                            if (serviceRequestCustomerRelationship != null)
+                                            {
+                                                var serviceRequestCustomerRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, customer, serviceRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString());
+                                                if (serviceRequestCustomerRelationshipTail != null)
+                                                {
+                                                    var customerCodeColumn = customer.Table.Column.FirstOrDefault(x => x.Name == "Code");
+                                                    if (customerCodeColumn != null)
+                                                    {
+                                                        var serviceResuestCustomerCode = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestCustomerRelationshipTail, Column = customerCodeColumn, Alias = "کد مشتری", WidthUnit = 1, IsDescriptive = false, OrderID = 3 };
+                                                        serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestCustomerCode);
+                                                    }
+                                                    if (genericPerson != null)
+                                                    {
+                                                        var genericPersonNameColumn = genericPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
+
+                                                        var serviceRequestCustomerGenericPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == customer.ID && x.TableDrivedEntityID2 == genericPerson.ID);
+                                                        if (serviceRequestCustomerGenericPersonRelationship != null)
+                                                        {
+                                                            var serviceRequestCustomerGenericPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, genericPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString()
+                                                                + "," + serviceRequestCustomerGenericPersonRelationship.ID.ToString());
+                                                            if (serviceRequestCustomerGenericPersonRelationshipTail != null)
+                                                            {
+                                                                var serviceResuestCustomerName = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestCustomerGenericPersonRelationshipTail, Column = genericPersonNameColumn, Alias = "نام مشتری", WidthUnit = 2, IsDescriptive = false, OrderID = 4 };
+                                                                serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestCustomerName);
+
+
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                        if (productItem != null)
+                                        {
+                                            var serviceRequestProductItemRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == productItem.ID);
+                                            if (serviceRequestProductItemRelationship != null)
+                                            {
+                                                var serviceRequestProductItemRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, productItem, serviceRequestRelationship.ID.ToString() + "," + serviceRequestProductItemRelationship.ID.ToString());
+                                                if (serviceRequestProductItemRelationshipTail != null)
+                                                {
+                                                    var productItemModelColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "ProductModel");
+                                                    if (productItemModelColumn != null)
+                                                    {
+                                                        var serviceResuestProductItemModel = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemModelColumn, Alias = "مدل کالا", WidthUnit = 2, IsDescriptive = false, OrderID = 5 };
+                                                        serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestProductItemModel);
+                                                    }
+                                                    var productItemBrandColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "BrandTitle");
+                                                    if (productItemBrandColumn != null)
+                                                    {
+                                                        var serviceResuestProductItemModel = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemBrandColumn, Alias = "برند کالا", WidthUnit = 2, IsDescriptive = false, OrderID = 6 };
+                                                        serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestProductItemModel);
+                                                    }
+                                                    var productItemSerialColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "Serial");
+                                                    if (productItemSerialColumn != null)
+                                                    {
+                                                        var serviceResuestProductItemModel = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemSerialColumn, Alias = "سریال کالا", WidthUnit = 2, IsDescriptive = false, OrderID = 7 };
+                                                        serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestProductItemModel);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (office != null)
+                                        {
+                                            var serviceRequestOfficeRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == office.ID);
+                                            if (serviceRequestOfficeRelationship != null)
+                                            {
+                                                var serviceRequestOfficeRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, office, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString());
+                                                if (serviceRequestOfficeRelationshipTail != null)
+                                                {
+                                                    var officeCodeColumn = office.Table.Column.FirstOrDefault(x => x.Name == "Code");
+                                                    if (officeCodeColumn != null)
+                                                    {
+                                                        var serviceResuestOfficeCode = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestOfficeRelationshipTail, Column = officeCodeColumn, Alias = "کد دفتر", WidthUnit = 1, IsDescriptive = false, OrderID = 8 };
+                                                        serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestOfficeCode);
+                                                    }
+                                                    if (legalPerson != null)
+                                                    {
+                                                        var legalPersonNameColumn = legalPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
+
+                                                        var serviceRequestOfficelegalPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == office.ID && x.TableDrivedEntityID2 == legalPerson.ID);
+                                                        if (serviceRequestOfficelegalPersonRelationship != null)
+                                                        {
+                                                            var serviceRequestOfficelegalPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion,legalPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString()
+                                                                + "," + serviceRequestOfficelegalPersonRelationship.ID.ToString());
+                                                            if (serviceRequestOfficelegalPersonRelationshipTail != null)
+                                                            {
+                                                                var serviceResuestOfficeName = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestOfficelegalPersonRelationshipTail, Column = legalPersonNameColumn, Alias = "نام دفتر", WidthUnit = 2, IsDescriptive = false, OrderID = 9 };
+                                                                serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestOfficeName);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        if (!serviceConclusion.EntitySearch1.Any(x => x.Title == "جستجوی پیش فرض خلاصه سرویس"))
+                        {
+                            var serviceConclusaionSearch = new EntitySearch();
+                            serviceConclusaionSearch.TableDrivedEntityID = serviceConclusion.ID;
+                            //    projectContext.EntitySearch.Add(serviceConclusaionSearch);
+                            serviceConclusaionSearch.Title = "جستجوی پیش فرض خلاصه سرویس";
+                            serviceConclusion.EntitySearch = serviceConclusaionSearch;
+                            if (conclusionIDColumn != null)
+                            {
+                                var idColumn = new EntitySearchColumns() { Column = conclusionIDColumn, Alias = "شناسه", OrderID = 1 };
+                                serviceConclusaionSearch.EntitySearchColumns.Add(idColumn);
+                            }
+                            var serviceRequestIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "RequestServiceID");
+                            if (serviceRequestIDColumn != null)
+                            {
+                                var serviceRequestIDSearchColumn = new EntitySearchColumns() { Column = serviceRequestIDColumn, Alias = "شناسه درخواست سرویس", OrderID = 2 };
+                                serviceConclusaionSearch.EntitySearchColumns.Add(serviceRequestIDSearchColumn);
+                            }
+                            if (serviceRequest != null)
+                            {
+                                var serviceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
+                                if (serviceRequestRelationship != null)
+                                {
+                                    var serviceRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, serviceRequestRelationship.ID.ToString());
+                                    if (serviceRequestRelationshipTail != null)
+                                    {
+                                        if (customer != null)
+                                        {
+                                            var serviceRequestCustomerRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == customer.ID);
+                                            if (serviceRequestCustomerRelationship != null)
+                                            {
+                                                var serviceRequestCustomerRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, customer, serviceRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString());
+                                                if (serviceRequestCustomerRelationshipTail != null)
+                                                {
+                                                    var customerCodeColumn = customer.Table.Column.FirstOrDefault(x => x.Name == "Code");
+                                                    if (customerCodeColumn != null)
+                                                    {
+                                                        var serviceResuestCustomerCode = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestCustomerRelationshipTail, Column = customerCodeColumn, Alias = "کد مشتری", OrderID = 3 };
+                                                        serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestCustomerCode);
+                                                    }
+                                                    if (genericPerson != null)
+                                                    {
+                                                        var genericPersonNameColumn = genericPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
+
+                                                        var serviceRequestCustomerGenericPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == customer.ID && x.TableDrivedEntityID2 == genericPerson.ID);
+                                                        if (serviceRequestCustomerGenericPersonRelationship != null)
+                                                        {
+                                                            var serviceRequestCustomerGenericPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, genericPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString()
+                                                                + "," + serviceRequestCustomerGenericPersonRelationship.ID.ToString());
+                                                            if (serviceRequestCustomerGenericPersonRelationshipTail != null)
+                                                            {
+                                                                var serviceResuestCustomerName = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestCustomerGenericPersonRelationshipTail, Column = genericPersonNameColumn, Alias = "نام مشتری", OrderID = 4 };
+                                                                serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestCustomerName);
+
+
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                        if (productItem != null)
+                                        {
+                                            var serviceRequestProductItemRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == productItem.ID);
+                                            if (serviceRequestProductItemRelationship != null)
+                                            {
+                                                var serviceRequestProductItemRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, productItem, serviceRequestRelationship.ID.ToString() + "," + serviceRequestProductItemRelationship.ID.ToString());
+                                                if (serviceRequestProductItemRelationshipTail != null)
+                                                {
+                                                    var productItemModelColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "ProductModel");
+                                                    if (productItemModelColumn != null)
+                                                    {
+                                                        var serviceResuestProductItemModel = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemModelColumn, Alias = "مدل کالا", OrderID = 5 };
+                                                        serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestProductItemModel);
+                                                    }
+                                                    var productItemBrandColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "BrandTitle");
+                                                    if (productItemBrandColumn != null)
+                                                    {
+                                                        var serviceResuestProductItemModel = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemBrandColumn, Alias = "برند کالا", OrderID = 6 };
+                                                        serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestProductItemModel);
+                                                    }
+                                                    var productItemSerialColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "Serial");
+                                                    if (productItemSerialColumn != null)
+                                                    {
+                                                        var serviceResuestProductItemModel = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemSerialColumn, Alias = "سریال کالا", OrderID = 7 };
+                                                        serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestProductItemModel);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (office != null)
+                                        {
+                                            var serviceRequestOfficeRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == office.ID);
+                                            if (serviceRequestOfficeRelationship != null)
+                                            {
+                                                var serviceRequestOfficeRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, office, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString());
+                                                if (serviceRequestOfficeRelationshipTail != null)
+                                                {
+                                                    var officeCodeColumn = office.Table.Column.FirstOrDefault(x => x.Name == "Code");
+                                                    if (officeCodeColumn != null)
+                                                    {
+                                                        var serviceResuestOfficeCode = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestOfficeRelationshipTail, Column = officeCodeColumn, Alias = "کد دفتر", OrderID = 8 };
+                                                        serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestOfficeCode);
+                                                    }
+                                                    if (legalPerson != null)
+                                                    {
+                                                        var legalPersonNameColumn = legalPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
+
+                                                        var serviceRequestOfficelegalPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == office.ID && x.TableDrivedEntityID2 == legalPerson.ID);
+                                                        if (serviceRequestOfficelegalPersonRelationship != null)
+                                                        {
+                                                            var serviceRequestOfficelegalPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, legalPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString()
+                                                                + "," + serviceRequestOfficelegalPersonRelationship.ID.ToString());
+                                                            if (serviceRequestOfficelegalPersonRelationshipTail != null)
+                                                            {
+                                                                var serviceResuestOfficeName = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestOfficelegalPersonRelationshipTail, Column = legalPersonNameColumn, Alias = "نام دفتر", OrderID = 9 };
+                                                                serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestOfficeName);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     var sp_CalculateCustomerValueByServiceRequestID = projectContext.DatabaseFunction.FirstOrDefault(x => x.FunctionName == "sp_CalculateCustomerValueByServiceRequestID");
                     if (sp_CalculateCustomerValueByServiceRequestID != null)
@@ -873,6 +1316,10 @@ namespace MyModelManager
                     projectContext.SaveChanges();
 
                 }
+                catch (DbUpdateException e)
+                {
+                    throw e;
+                }
                 catch (DbEntityValidationException e)
                 {
                     foreach (var eve in e.EntityValidationErrors)
@@ -887,6 +1334,22 @@ namespace MyModelManager
                     }
                     throw;
                 }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        }
+
+        private EntityRelationshipTail GetRelationshipTail(MyProjectEntities projectContext, TableDrivedEntity entity, TableDrivedEntity targetEntity, string path)
+        {
+            if (projectContext.EntityRelationshipTail.Any(x => x.TableDrivedEntityID == entity.ID && x.RelationshipPath == path))
+                return projectContext.EntityRelationshipTail.First(x => x.TableDrivedEntityID == entity.ID && x.RelationshipPath == path);
+            else
+            {
+                var result = new EntityRelationshipTail() { TableDrivedEntityID = entity.ID, RelationshipPath = path, TargetEntityID = targetEntity.ID };
+                projectContext.EntityRelationshipTail.Add(result);
+                return result;
             }
         }
 

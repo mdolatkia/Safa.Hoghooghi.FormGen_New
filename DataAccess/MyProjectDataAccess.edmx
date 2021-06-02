@@ -2253,6 +2253,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UIColumnValueRange_ColumnValueRange">
+          <End Role="ColumnValueRange" Type="Self.ColumnValueRange" Multiplicity="1" />
+          <End Role="UIColumnValueRange" Type="Self.UIColumnValueRange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ColumnValueRange">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UIColumnValueRange">
+              <PropertyRef Name="ColumnValueRangeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UIEnablityDetails_Relationship">
           <End Role="Relationship" Type="Self.Relationship" Multiplicity="0..1" />
           <End Role="UIEnablityDetails" Type="Self.UIEnablityDetails" Multiplicity="*" />
@@ -5070,6 +5082,10 @@
             <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
             <End Role="TableDrivedEntityStateValues" EntitySet="TableDrivedEntityStateValues" />
           </AssociationSet>
+          <AssociationSet Name="FK_UIColumnValueRange_ColumnValueRange" Association="Self.FK_UIColumnValueRange_ColumnValueRange">
+            <End Role="ColumnValueRange" EntitySet="ColumnValueRange" />
+            <End Role="UIColumnValueRange" EntitySet="UIColumnValueRange" />
+          </AssociationSet>
           <AssociationSet Name="FK_UIEnablityDetails_Relationship" Association="Self.FK_UIEnablityDetails_Relationship">
             <End Role="Relationship" EntitySet="Relationship" />
             <End Role="UIEnablityDetails" EntitySet="UIEnablityDetails" />
@@ -6275,6 +6291,10 @@
             <End Role="ColumnValueRange" EntitySet="ColumnValueRange" />
             <End Role="ColumnValueRangeDetails" EntitySet="ColumnValueRangeDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK_UIColumnValueRange_ColumnValueRange" Association="MyProjectModel.FK_UIColumnValueRange_ColumnValueRange">
+            <End Role="ColumnValueRange" EntitySet="ColumnValueRange" />
+            <End Role="UIColumnValueRange" EntitySet="UIColumnValueRange" />
+          </AssociationSet>
           <AssociationSet Name="FK_CrosstabReportColumns_EntityListView" Association="MyProjectModel.FK_CrosstabReportColumns_EntityListView">
             <End Role="EntityListViewColumns" EntitySet="EntityListViewColumns" />
             <End Role="CrosstabReportColumns" EntitySet="CrosstabReportColumns" />
@@ -7354,6 +7374,7 @@
           <Property Name="ID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_ColumnValueRange_Column" FromRole="ColumnValueRange" ToRole="Column" />
           <NavigationProperty Name="ColumnValueRangeDetails" Relationship="MyProjectModel.FK_ColumnValueRangeDetails_ColumnValueRangeDetails" FromRole="ColumnValueRange" ToRole="ColumnValueRangeDetails" />
+          <NavigationProperty Name="UIColumnValueRange" Relationship="MyProjectModel.FK_UIColumnValueRange_ColumnValueRange" FromRole="ColumnValueRange" ToRole="UIColumnValueRange" />
         </EntityType>
         <EntityType Name="ColumnValueRangeDetails">
           <Key>
@@ -8588,6 +8609,7 @@
           <Property Name="ColumnValueRangeID" Type="Int32" Nullable="false" />
           <Property Name="EnumTag" Type="Int16" Nullable="false" />
           <Property Name="Value" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ColumnValueRange" Relationship="MyProjectModel.FK_UIColumnValueRange_ColumnValueRange" FromRole="UIColumnValueRange" ToRole="ColumnValueRange" />
           <NavigationProperty Name="UIActionActivity" Relationship="MyProjectModel.FKUIColumnVa986416" FromRole="UIColumnValueRange" ToRole="UIActionActivity" />
         </EntityType>
         <EntityType Name="UIEnablityDetails">
@@ -9792,6 +9814,18 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="ColumnValueRangeDetails">
+              <PropertyRef Name="ColumnValueRangeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UIColumnValueRange_ColumnValueRange">
+          <End Type="MyProjectModel.ColumnValueRange" Role="ColumnValueRange" Multiplicity="1" />
+          <End Type="MyProjectModel.UIColumnValueRange" Role="UIColumnValueRange" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ColumnValueRange">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UIColumnValueRange">
               <PropertyRef Name="ColumnValueRangeID" />
             </Dependent>
           </ReferentialConstraint>

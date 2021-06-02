@@ -20,6 +20,7 @@ namespace DataAccess
         public short EnumTag { get; set; }
         public string Value { get; set; }
     
+        public virtual ColumnValueRange ColumnValueRange { get; set; }
         public virtual UIActionActivity UIActionActivity { get; set; }
     }
 }

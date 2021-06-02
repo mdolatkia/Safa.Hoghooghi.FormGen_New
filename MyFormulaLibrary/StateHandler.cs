@@ -50,19 +50,27 @@ namespace MyFormulaFunctionStateFunctionLibrary
             {
                 DataitemRelatedColumnValueHandler dataitemRelatedColumnValueHandler = new MyFormulaFunctionStateFunctionLibrary.DataitemRelatedColumnValueHandler();
                 var value = dataitemRelatedColumnValueHandler.GetValueSomeHow(requester, mainDataItem, state.RelationshipTail, state.ColumnID);
+                if(value ==null)
+                {
+                    value = "<Null>";
+                }
                 if (state.EntityStateOperator == Enum_EntityStateOperator.Equals)
-                    result.Result = state.Values.Any(x => x.Value.Equals(value));
+                    result.Result = state.Values.Any(x => x.Value.Equals(value.ToString().ToLower()));
                 else
-                    result.Result = !state.Values.Any(x => x.Value.Equals(value));
+                    result.Result = !state.Values.Any(x => x.Value.Equals(value.ToString().ToLower()));
             }
             else if (state.FormulaID != 0)
             {
                 FormulaFunctionHandler FormulaFunctionHandler = new FormulaFunctionHandler();
                 var value = FormulaFunctionHandler.CalculateFormula(state.FormulaID, mainDataItem, requester);
+                if (value.Result == null)
+                {
+                    value.Result = "<Null>";
+                }
                 if (state.EntityStateOperator == Enum_EntityStateOperator.Equals)
-                    result.Result = state.Values.Any(x => x.Value.Equals(value.Result));
+                    result.Result = state.Values.Any(x => x.Value.ToLower().Equals(value.Result.ToString().ToLower()));
                 else
-                    result.Result = !state.Values.Any(x => x.Value.Equals(value.Result));
+                    result.Result = !state.Values.Any(x => x.Value.ToLower().Equals(value.Result.ToString().ToLower()));
             }
             return result;
 

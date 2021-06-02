@@ -46,9 +46,14 @@ namespace MyProject_WPF
 
             SelectorGrid = ControlHelper.SetSelectorGrid(dtgItems, listColumns);
             SelectorGrid.DataItemSelected += SelectorGrid_DataItemSelected;
-
-      
+            this.Loaded += FrmEntityListViewSelect_Loaded;
         }
+
+        private void FrmEntityListViewSelect_Loaded(object sender, RoutedEventArgs e)
+        {
+            GetEntityListViews();
+        }
+
         private void SelectorGrid_DataItemSelected(object sender, object e)
         {
             CheckSelectedItem(e);
@@ -65,12 +70,6 @@ namespace MyProject_WPF
                         EntityListViewSelected(this, new EntityListViewSelectedArg() { EntityListViewID = selected.ID });
                 }
             }
-        }
-
-        private void FrmFormula_Loaded(object sender, RoutedEventArgs e)
-        {
-            GetEntityListViews();
-
         }
      
         private void GetEntityListViews()
