@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyProject", "MyProject\MyProject.csproj", "{555F97DE-8618-4666-B094-1B200AA16DB3}"
 EndProject
@@ -28,6 +28,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySecurity", "MySecurity\MySecurity.csproj", "{878D3665-BE5E-401F-A859-C81D3406E5C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyProject_WPF", "MyProject_WPF\MyProject_WPF.csproj", "{807F51A0-3A82-4CD6-ADEF-397621AAC22B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0286E910-498B-4A14-ABDA-8CFC0E2C0CF9} = {0286E910-498B-4A14-ABDA-8CFC0E2C0CF9}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyModelManager", "MyModelManager\MyModelManager.csproj", "{C85C5486-CA1A-4963-8594-C85E441CEBC2}"
 EndProject
@@ -807,5 +810,8 @@ Global
 		{0BBD2EE2-18E4-4135-A87D-F800DDDDE099} = {AEBDED62-5D0E-4EA8-8097-0D56DFC2EA77}
 		{AD8BA5D8-8F9A-4353-A1DE-9BE0C3CBBC3F} = {AEBDED62-5D0E-4EA8-8097-0D56DFC2EA77}
 		{1CAAD937-7B4F-475C-B489-DB97C6F8AAF2} = {AEBDED62-5D0E-4EA8-8097-0D56DFC2EA77}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {620B813A-963B-4580-A26D-A1D7F27C5FF9}
 	EndGlobalSection
 EndGlobal

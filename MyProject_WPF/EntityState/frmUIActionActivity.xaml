@@ -41,7 +41,7 @@
                 <RadioButton x:Name="optEntityReadonly" Margin="10,0,10,0" Checked="optEntityReadonly_Checked">فقط خواندنی سازی موجودیت</RadioButton>
                 <RadioButton x:Name="optUIColumnValueRange" Margin="10,0,10,0" Checked="optUIColumnValueRange_Checked">فیلتر بازه داده</RadioButton>
             </StackPanel>
-            <TabControl Grid.Row="1">
+            <TabControl x:Name="tabControl" Grid.Row="1">
                 <TabItem x:Name="tabColumnValue" Header="مقادیر ستونها">
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
