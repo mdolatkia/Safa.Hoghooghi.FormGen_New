@@ -23,9 +23,9 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <TextBlock Text="نام کاربری"></TextBlock>
-            <TextBox Width="200" Text="kia" Style="{DynamicResource TextBoxStyle}" Grid.Column="1" x:Name="txtUserName"></TextBox>
+            <TextBox Width="200" Text="dolatkia" Style="{DynamicResource TextBoxStyle}" Grid.Column="1" x:Name="txtUserName"></TextBox>
             <TextBlock Grid.Row="1" Text="کلمه عبور"></TextBlock>
-            <TextBox Width="200" Text="1" Style="{DynamicResource TextBoxStyle}" Grid.Row="1" Grid.Column="1" x:Name="txtPassword"></TextBox>
+            <TextBox Width="200" Text="123" Style="{DynamicResource TextBoxStyle}" Grid.Row="1" Grid.Column="1" x:Name="txtPassword"></TextBox>
         </Grid>
         <TextBlock Grid.Row="2" x:Name="lblMessage"></TextBlock>
         <StackPanel Grid.Row="3" HorizontalAlignment="Right" Orientation="Horizontal">

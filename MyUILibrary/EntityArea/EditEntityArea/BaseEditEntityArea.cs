@@ -2997,9 +2997,10 @@ namespace MyUILibrary.EntityArea
             bool isDataView = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
              AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
             var dataList = GetDataList();
-            if (AreaInitializer.SourceRelation == null && DataEntryEntity.IsReadonly)
+            var saveCommand = GetCommand(typeof(SaveCommand));
+            if (saveCommand!=null && AreaInitializer.SourceRelation == null && DataEntryEntity.IsReadonly)
             {
-                var saveCommand = GetCommand(typeof(SaveCommand));
+              
                 bool saveEnable = true;
                 if (!dataList.Any())
                     saveEnable = false;

@@ -105,20 +105,20 @@ namespace MyDataSearchManagerBusiness
             //}
 
 
-            try
-            {
+            //try
+            //{
 
                 var dataTable = GetDataTableBySearchDataItems(request.Requester, request.SearchDataItems.TargetEntityID, request.SearchDataItems, request.SecurityMode, null, request.EntityViewID, request.MaxDataItems, request.OrderByEntityViewColumnID, request.SortType);
                 result.ResultDataItems = DataTableToDP_ViewRepository(dataTable.Item1, dataTable.Item2, dataTable.Item3);
                 result.Result = Enum_DR_ResultType.SeccessfullyDone;
 
 
-            }
-            catch (Exception ex)
-            {
-                result.Result = Enum_DR_ResultType.ExceptionThrown;
-                result.Message = "خطا در جستجو" + Environment.NewLine + ex.Message;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    result.Result = Enum_DR_ResultType.ExceptionThrown;
+            //    result.Message = "خطا در جستجو" + Environment.NewLine + ex.Message;
+            //}
             return result;
         }
 

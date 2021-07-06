@@ -20,7 +20,7 @@ namespace MyModelManager
             var objectCategory = (DatabaseObjectCategory)securityObject.Type;
             var possibleActionTree = GetActionsByCategory(objectCategory);
             //////////////////////////////// فعلا برای سرعت بیشتر
-            return GetAllActions();
+            //return GetAllActions();
 
             List<List<SecurityAction>> AllPostAccess = new List<List<SecurityAction>>();
             foreach (var post in posts)
@@ -309,7 +309,7 @@ namespace MyModelManager
             SecurityActionTreeItem noaccess = new SecurityActionTreeItem();
             noaccess.Action = SecurityAction.NoAccess;
             result.Add(noaccess);
-
+    
 
             SecurityActionTreeItem access = new SecurityActionTreeItem();
             access.Action = SecurityAction.Access;

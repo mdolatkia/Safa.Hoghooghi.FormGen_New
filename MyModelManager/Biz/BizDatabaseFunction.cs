@@ -286,17 +286,18 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
+                var listSchema = new List<DBSchema>();
                 foreach (var newEntity in listNew)
                 {
                     if (ItemImportingStarted != null)
                         ItemImportingStarted(this, new ItemImportingStartedArg() { ItemName = "Creating" + " " + newEntity.Name, TotalProgressCount = listNew.Count, CurrentProgress = listNew.IndexOf(newEntity) + 1 });
-                    UpdateEntityInModel(projectContext, databaseID, newEntity);
+                    UpdateEntityInModel(projectContext, databaseID, newEntity, listSchema);
                 }
                 foreach (var editEntity in listEdit)
                 {
                     if (ItemImportingStarted != null)
                         ItemImportingStarted(this, new ItemImportingStartedArg() { ItemName = "Updating" + " " + editEntity.Name, TotalProgressCount = listEdit.Count, CurrentProgress = listEdit.IndexOf(editEntity) + 1 });
-                    UpdateEntityInModel(projectContext, databaseID, editEntity);
+                    UpdateEntityInModel(projectContext, databaseID, editEntity, listSchema);
                 }
                 foreach (var deleteEntity in listDeleted)
                 {
@@ -308,16 +309,18 @@ namespace MyModelManager
                 projectContext.SaveChanges();
             }
         }
-        private void UpdateEntityInModel(MyProjectEntities projectContext, int databaseID, DatabaseFunctionDTO function)
+        private void UpdateEntityInModel(MyProjectEntities projectContext, int databaseID, DatabaseFunctionDTO function, List<DBSchema> listAddedSchema)
         {
+            DBSchema dbSchema = null;
             var schema = function.RelatedSchema;
-            var dbSchema = projectContext.DBSchema.FirstOrDefault(x => x.DatabaseInformationID == databaseID && x.Name == schema);
+            dbSchema = listAddedSchema.FirstOrDefault(x => x.DatabaseInformationID == databaseID && x.Name == function.RelatedSchema);
             if (dbSchema == null)
             {
                 dbSchema = new DBSchema() { DatabaseInformationID = databaseID, Name = schema };
                 dbSchema.SecurityObject = new SecurityObject();
                 dbSchema.SecurityObject.Type = (int)DatabaseObjectCategory.Schema;
                 projectContext.DBSchema.Add(dbSchema);
+                listAddedSchema.Add(dbSchema);
             }
 
             var dbFunction = projectContext.DatabaseFunction.Include("DatabaseFunctionParameter").FirstOrDefault(x => x.FunctionName == function.Name && x.DBSchema.DatabaseInformationID == databaseID);

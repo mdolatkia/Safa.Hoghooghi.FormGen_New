@@ -128,7 +128,7 @@ namespace MyUILibrary.EntityArea
             //try
             //{
             var result = GetSearchResult(searchItems);
-
+            if(result!=null)
             UseSearchResult(result, select);
 
             //}

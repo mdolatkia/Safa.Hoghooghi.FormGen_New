@@ -544,7 +544,7 @@ namespace MyUILibrary
                 object value = null;
                 if (column.CustomFormulaID != 0 && column.CalculateFormulaAsDefault == true)
                 {
-                    continue;
+                   
                 }
                 else if (!string.IsNullOrEmpty(column.DefaultValue))
                 {
@@ -564,7 +564,7 @@ namespace MyUILibrary
             //برای اینکه دیتاآیتم را با بیشترین مقادیر داشته باشیم
             foreach (var column in columns)
             {
-                object value = "";
+                object value = null;
                 if (column.CustomFormulaID != 0 && column.CalculateFormulaAsDefault == true)
                 {
                     var res = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.CalculateFormula(column.CustomFormulaID, result, AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
@@ -572,8 +572,10 @@ namespace MyUILibrary
                         value = res.Result;
                     else
                         value = MyGeneralLibrary.ReflectionHelper.GetDefaultValue(column.DotNetType);
+                    result.GetProperty(column.ID).Value = value;
+                    result.GetOriginalProperty(column.ID).Value = value;
                 }
-               // result.AddProperty(column, value);
+              
             }
             return result;
         }

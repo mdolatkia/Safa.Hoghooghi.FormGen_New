@@ -574,8 +574,9 @@ namespace MyModelManager
                         stringDateTimeColumn.DateTimeColumnType.ShowAMPMFormat = true;
                     }
                 }
-
                 var serviceRequest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequest" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+                var serviceRequest_RequestType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequest_RequestType" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+                var serviceRequestType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequestType" && x.Table.DBSchema.DatabaseInformationID == databaseID);
                 if (serviceRequest != null)
                 {
                     var persianDateColumn = serviceRequest.Table.Column.FirstOrDefault(x => x.Name == "PersianDate");
@@ -605,13 +606,14 @@ namespace MyModelManager
                     }
 
                 }
-                var srviceRequestReview = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequestReview" && x.Table.DBSchema.DatabaseInformationID == databaseID);
-                if (srviceRequestReview != null)
+                var serviceRequestReviewItems = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequestReviewItems" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+                var serviceRequestReview = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequestReview" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+                if (serviceRequestReview != null)
                 {
-                    var autoDateColumn = srviceRequestReview.Table.Column.FirstOrDefault(x => x.Name == "AutoDate");
+                    var autoDateColumn = serviceRequestReview.Table.Column.FirstOrDefault(x => x.Name == "AutoDate");
                     if (autoDateColumn != null)
                         autoDateColumn.DateColumnType.StringDateIsMiladi = true;
-                    var autoTimeColumn = srviceRequestReview.Table.Column.FirstOrDefault(x => x.Name == "AutoTime");
+                    var autoTimeColumn = serviceRequestReview.Table.Column.FirstOrDefault(x => x.Name == "AutoTime");
                     if (autoTimeColumn != null)
                     {
                         autoTimeColumn.TimeColumnType.ShowAMPMFormat = true;
@@ -1114,7 +1116,7 @@ namespace MyModelManager
                                                         var serviceRequestOfficelegalPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == office.ID && x.TableDrivedEntityID2 == legalPerson.ID);
                                                         if (serviceRequestOfficelegalPersonRelationship != null)
                                                         {
-                                                            var serviceRequestOfficelegalPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion,legalPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString()
+                                                            var serviceRequestOfficelegalPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, legalPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString()
                                                                 + "," + serviceRequestOfficelegalPersonRelationship.ID.ToString());
                                                             if (serviceRequestOfficelegalPersonRelationshipTail != null)
                                                             {
@@ -1130,14 +1132,6 @@ namespace MyModelManager
                                 }
                             }
                         }
-
-
-
-
-
-
-
-
 
 
 
@@ -1196,12 +1190,9 @@ namespace MyModelManager
                                                             {
                                                                 var serviceResuestCustomerName = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestCustomerGenericPersonRelationshipTail, Column = genericPersonNameColumn, Alias = "نام مشتری", OrderID = 4 };
                                                                 serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestCustomerName);
-
-
                                                             }
                                                         }
                                                     }
-
                                                 }
                                             }
                                         }
@@ -1311,6 +1302,755 @@ namespace MyModelManager
                         }
                     }
                 }
+
+
+
+                var organizationTypeTamirgah = projectContext.OrganizationType.FirstOrDefault(x => x.Name == "تعمیرگاه");
+                if (organizationTypeTamirgah == null)
+                {
+                    organizationTypeTamirgah = new OrganizationType() { SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationType }, Name = "تعمیرگاه" };
+                    projectContext.OrganizationType.Add(organizationTypeTamirgah);
+                }
+                var organizationTypeDaftarKhadamat = projectContext.OrganizationType.FirstOrDefault(x => x.Name == "دفتر خدمات");
+                if (organizationTypeDaftarKhadamat == null)
+                {
+                    organizationTypeDaftarKhadamat = new OrganizationType() { SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationType }, Name = "دفتر خدمات" };
+                    projectContext.OrganizationType.Add(organizationTypeDaftarKhadamat);
+                }
+                var organizationTamirgahTajrish = projectContext.Organization.FirstOrDefault(x => x.Name == "تعمیرگاه تجریش");
+                if (organizationTamirgahTajrish == null)
+                {
+                    organizationTamirgahTajrish = new Organization() { SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.Organization }, Name = "تعمیرگاه تجریش", OrganizationType = organizationTypeTamirgah };
+                    projectContext.Organization.Add(organizationTamirgahTajrish);
+                }
+                var organizationDaftarVanak = projectContext.Organization.FirstOrDefault(x => x.Name == "دفتر ونک");
+                if (organizationDaftarVanak == null)
+                {
+                    organizationDaftarVanak = new Organization() { SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.Organization }, Name = "دفتر ونک", OrganizationType = organizationTypeDaftarKhadamat };
+                    projectContext.Organization.Add(organizationDaftarVanak);
+                }
+
+                var roleTamirkar = projectContext.RoleType.FirstOrDefault(x => x.Name == "تعمیرکار");
+                if (roleTamirkar == null)
+                {
+                    roleTamirkar = new RoleType() { SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.RoleType }, Name = "تعمیرکار" };
+                    projectContext.RoleType.Add(roleTamirkar);
+                }
+                var roleOperatorService = projectContext.RoleType.FirstOrDefault(x => x.Name == "اپراتور ثبت درخواست");
+                if (roleOperatorService == null)
+                {
+                    roleOperatorService = new RoleType() { SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.RoleType }, Name = "اپراتور ثبت درخواست" };
+                    projectContext.RoleType.Add(roleOperatorService);
+                }
+                var roleRahbarEdare = projectContext.RoleType.FirstOrDefault(x => x.Name == "راهبر اداره");
+                if (roleRahbarEdare == null)
+                {
+                    roleRahbarEdare = new RoleType() { SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.RoleType }, Name = "راهبر اداره" };
+                    projectContext.RoleType.Add(roleRahbarEdare);
+                }
+                var roleReviewerService = projectContext.RoleType.FirstOrDefault(x => x.Name == "بررسی کننده درخواست");
+                if (roleReviewerService == null)
+                {
+                    roleReviewerService = new RoleType() { SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.RoleType }, Name = "بررسی کننده درخواست" };
+                    projectContext.RoleType.Add(roleReviewerService);
+                }
+                var roleMaaliService = projectContext.RoleType.FirstOrDefault(x => x.Name == "مسئول مالی سرویس");
+                if (roleMaaliService == null)
+                {
+                    roleMaaliService = new RoleType() { SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.RoleType }, Name = "مسئول مالی سرویس" };
+                    projectContext.RoleType.Add(roleMaaliService);
+                }
+                var roleRahbarKol = projectContext.RoleType.FirstOrDefault(x => x.Name == "راهبر کل");
+                if (roleRahbarKol == null)
+                {
+                    roleRahbarKol = new RoleType() { SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.RoleType }, Name = "راهبر کل" };
+                    projectContext.RoleType.Add(roleRahbarKol);
+                }
+
+                var organizationTypeTamirgahRoleTamirkar = projectContext.OrganizationType_RoleType.FirstOrDefault(x => x.OrganizationTypeID == organizationTypeTamirgah.ID
+                && x.RoleTypeID == roleTamirkar.ID);
+                if (organizationTypeTamirgahRoleTamirkar == null)
+                {
+                    organizationTypeTamirgahRoleTamirkar = new OrganizationType_RoleType()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationTypeRoleType },
+                        OrganizationType = organizationTypeTamirgah,
+                        RoleType = roleTamirkar
+                    };
+                    projectContext.OrganizationType_RoleType.Add(organizationTypeTamirgahRoleTamirkar);
+                }
+                var organizationTypeTamirgahRoleRahbarEdare = projectContext.OrganizationType_RoleType.FirstOrDefault(x => x.OrganizationTypeID == organizationTypeTamirgah.ID
+               && x.RoleTypeID == roleRahbarEdare.ID);
+                if (organizationTypeTamirgahRoleRahbarEdare == null)
+                {
+                    organizationTypeTamirgahRoleRahbarEdare = new OrganizationType_RoleType()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationTypeRoleType },
+                        OrganizationType = organizationTypeTamirgah,
+                        RoleType = roleRahbarEdare
+                    };
+                    projectContext.OrganizationType_RoleType.Add(organizationTypeTamirgahRoleRahbarEdare);
+                }
+                var organizationTypeDaftarRoleRahbarEdare = projectContext.OrganizationType_RoleType.FirstOrDefault(x => x.OrganizationTypeID == organizationTypeDaftarKhadamat.ID
+              && x.RoleTypeID == roleRahbarEdare.ID);
+                if (organizationTypeDaftarRoleRahbarEdare == null)
+                {
+                    organizationTypeDaftarRoleRahbarEdare = new OrganizationType_RoleType()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationTypeRoleType },
+                        OrganizationType = organizationTypeDaftarKhadamat,
+                        RoleType = roleRahbarEdare
+                    };
+                    projectContext.OrganizationType_RoleType.Add(organizationTypeDaftarRoleRahbarEdare);
+                }
+                var organizationTypeDaftarRoleOperatorService = projectContext.OrganizationType_RoleType.FirstOrDefault(x => x.OrganizationTypeID == organizationTypeDaftarKhadamat.ID
+              && x.RoleTypeID == roleOperatorService.ID);
+                if (organizationTypeDaftarRoleOperatorService == null)
+                {
+                    organizationTypeDaftarRoleOperatorService = new OrganizationType_RoleType()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationTypeRoleType },
+                        OrganizationType = organizationTypeDaftarKhadamat,
+                        RoleType = roleOperatorService
+                    };
+                    projectContext.OrganizationType_RoleType.Add(organizationTypeDaftarRoleOperatorService);
+                }
+                var organizationTypeDaftarRoleMaaliService = projectContext.OrganizationType_RoleType.FirstOrDefault(x => x.OrganizationTypeID == organizationTypeDaftarKhadamat.ID
+            && x.RoleTypeID == roleMaaliService.ID);
+                if (organizationTypeDaftarRoleMaaliService == null)
+                {
+                    organizationTypeDaftarRoleMaaliService = new OrganizationType_RoleType()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationTypeRoleType },
+                        OrganizationType = organizationTypeDaftarKhadamat,
+                        RoleType = roleMaaliService
+                    };
+                    projectContext.OrganizationType_RoleType.Add(organizationTypeDaftarRoleMaaliService);
+                }
+                var organizationTypeDaftarRoleReviewer = projectContext.OrganizationType_RoleType.FirstOrDefault(x => x.OrganizationTypeID == organizationTypeDaftarKhadamat.ID
+              && x.RoleTypeID == roleReviewerService.ID);
+                if (organizationTypeDaftarRoleReviewer == null)
+                {
+                    organizationTypeDaftarRoleReviewer = new OrganizationType_RoleType()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationTypeRoleType },
+                        OrganizationType = organizationTypeDaftarKhadamat,
+                        RoleType = roleReviewerService
+                    };
+                    projectContext.OrganizationType_RoleType.Add(organizationTypeDaftarRoleReviewer);
+                }
+                var organizationTypeDaftarRoleRahbarKol = projectContext.OrganizationType_RoleType.FirstOrDefault(x => x.OrganizationTypeID == organizationTypeDaftarKhadamat.ID
+             && x.RoleTypeID == roleRahbarKol.ID);
+                if (organizationTypeDaftarRoleRahbarKol == null)
+                {
+                    organizationTypeDaftarRoleRahbarKol = new OrganizationType_RoleType()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationTypeRoleType },
+                        OrganizationType = organizationTypeDaftarKhadamat,
+                        RoleType = roleRahbarKol
+                    };
+                    projectContext.OrganizationType_RoleType.Add(organizationTypeDaftarRoleRahbarKol);
+                }
+
+                var userRezayi = projectContext.User.FirstOrDefault(x => x.UserName == "Rezayi");
+                if (userRezayi == null)
+                {
+                    userRezayi = new User()
+                    {
+                        UserName = "Rezayi",
+                        FirstName = "مجید",
+                        LastName = "رضایی",
+                        Password = "123"
+                    };
+                    projectContext.User.Add(userRezayi);
+                }
+                var userZahed = projectContext.User.FirstOrDefault(x => x.UserName == "Zahed");
+                if (userZahed == null)
+                {
+                    userZahed = new User()
+                    {
+                        UserName = "Zahed",
+                        FirstName = "وحید",
+                        LastName = "زاهد",
+                        Password = "123"
+                    };
+                    projectContext.User.Add(userZahed);
+                }
+                var userPirazad = projectContext.User.FirstOrDefault(x => x.UserName == "Pirazad");
+                if (userPirazad == null)
+                {
+                    userPirazad = new User()
+                    {
+                        UserName = "Pirazad",
+                        FirstName = "نرگش",
+                        LastName = "پیرآزاد",
+                        Password = "123"
+                    };
+                    projectContext.User.Add(userPirazad);
+                }
+                var userDolatkhah = projectContext.User.FirstOrDefault(x => x.UserName == "Dolatkhah");
+                if (userDolatkhah == null)
+                {
+                    userDolatkhah = new User()
+                    {
+                        UserName = "Dolatkhah",
+                        FirstName = "مریم",
+                        LastName = "دولتخواه",
+                        Password = "123"
+                    };
+                    projectContext.User.Add(userDolatkhah);
+                }
+                var userMovaseghi = projectContext.User.FirstOrDefault(x => x.UserName == "Movaseghi");
+                if (userMovaseghi == null)
+                {
+                    userMovaseghi = new User()
+                    {
+                        UserName = "Movaseghi",
+                        FirstName = "فاطمه",
+                        LastName = "موثقی",
+                        Password = "123"
+                    };
+                    projectContext.User.Add(userMovaseghi);
+                }
+                var userKosari = projectContext.User.FirstOrDefault(x => x.UserName == "Kosari");
+                if (userKosari == null)
+                {
+                    userKosari = new User()
+                    {
+                        UserName = "Kosari",
+                        FirstName = "سعید",
+                        LastName = "کوثری",
+                        Password = "123"
+                    };
+                    projectContext.User.Add(userKosari);
+                }
+                var userAfshari = projectContext.User.FirstOrDefault(x => x.UserName == "Afshari");
+                if (userAfshari == null)
+                {
+                    userAfshari = new User()
+                    {
+                        UserName = "Afshari",
+                        FirstName = "صالح",
+                        LastName = "افشاری",
+                        Password = "123"
+                    };
+                    projectContext.User.Add(userAfshari);
+                }
+                var userKarimi = projectContext.User.FirstOrDefault(x => x.UserName == "Karimi");
+                if (userKarimi == null)
+                {
+                    userKarimi = new User()
+                    {
+                        UserName = "Karimi",
+                        FirstName = "سمانه",
+                        LastName = "کریمی",
+                        Password = "123"
+                    };
+                    projectContext.User.Add(userKarimi);
+                }
+
+                var userDolatkia = projectContext.User.FirstOrDefault(x => x.UserName == "Dolatkia");
+                if (userDolatkia == null)
+                {
+                    userDolatkia = new User()
+                    {
+                        UserName = "Dolatkia",
+                        FirstName = "میثم",
+                        LastName = "دولت کیا",
+                        Password = "123"
+                    };
+                    projectContext.User.Add(userDolatkia);
+                }
+
+                var organizationTamirgahTajrishTamirkarPost1 = projectContext.OrganizationPost.FirstOrDefault(x => x.UserID == userRezayi.ID
+                 && x.Name == "تعمیرکار 1");
+                if (organizationTamirgahTajrishTamirkarPost1 == null)
+                {
+                    organizationTamirgahTajrishTamirkarPost1 = new OrganizationPost()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationPost },
+                        Name = "تعمیرکار 1",
+                        OrganizationType_RoleType = organizationTypeTamirgahRoleTamirkar,
+                        Organization = organizationTamirgahTajrish,
+                        User = userRezayi
+                    };
+                    projectContext.OrganizationPost.Add(organizationTamirgahTajrishTamirkarPost1);
+                }
+                var organizationTamirgahTajrishTamirkarPost2 = projectContext.OrganizationPost.FirstOrDefault(x => x.UserID == userZahed.ID
+                && x.Name == "تعمیرکار 2");
+                if (organizationTamirgahTajrishTamirkarPost2 == null)
+                {
+                    organizationTamirgahTajrishTamirkarPost2 = new OrganizationPost()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationPost },
+                        Name = "تعمیرکار 2",
+                        OrganizationType_RoleType = organizationTypeTamirgahRoleTamirkar,
+                        Organization = organizationTamirgahTajrish,
+                        User = userZahed
+                    };
+                    projectContext.OrganizationPost.Add(organizationTamirgahTajrishTamirkarPost2);
+                }
+                var organizationTamirgahTajrishTamirkarPost3 = projectContext.OrganizationPost.FirstOrDefault(x => x.UserID == userPirazad.ID
+                && x.Name == "تعمیرکار 3");
+                if (organizationTamirgahTajrishTamirkarPost3 == null)
+                {
+                    organizationTamirgahTajrishTamirkarPost3 = new OrganizationPost()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationPost },
+                        Name = "تعمیرکار 3",
+                        OrganizationType_RoleType = organizationTypeTamirgahRoleTamirkar,
+                        Organization = organizationTamirgahTajrish,
+                        User = userPirazad
+                    };
+                    projectContext.OrganizationPost.Add(organizationTamirgahTajrishTamirkarPost3);
+                }
+                var organizationTamirgahTajrishRahbar1 = projectContext.OrganizationPost.FirstOrDefault(x => x.UserID == userRezayi.ID
+                && x.Name == "راهبر 1");
+                if (organizationTamirgahTajrishRahbar1 == null)
+                {
+                    organizationTamirgahTajrishRahbar1 = new OrganizationPost()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationPost },
+                        Name = "راهبر 1",
+                        OrganizationType_RoleType = organizationTypeTamirgahRoleRahbarEdare,
+                        Organization = organizationTamirgahTajrish,
+                        User = userRezayi
+                    };
+                    projectContext.OrganizationPost.Add(organizationTamirgahTajrishRahbar1);
+                }
+
+                var organizationDaftarVanakOperator1 = projectContext.OrganizationPost.FirstOrDefault(x => x.UserID == userDolatkhah.ID
+             && x.Name == "اپراتور 1");
+                if (organizationDaftarVanakOperator1 == null)
+                {
+                    organizationDaftarVanakOperator1 = new OrganizationPost()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationPost },
+                        Name = "اپراتور 1",
+                        OrganizationType_RoleType = organizationTypeDaftarRoleOperatorService,
+                        Organization = organizationDaftarVanak,
+                        User = userDolatkhah
+                    };
+                    projectContext.OrganizationPost.Add(organizationDaftarVanakOperator1);
+                }
+                var organizationDaftarVanakOperator2 = projectContext.OrganizationPost.FirstOrDefault(x => x.UserID == userMovaseghi.ID
+            && x.Name == "اپراتور 2");
+                if (organizationDaftarVanakOperator2 == null)
+                {
+                    organizationDaftarVanakOperator2 = new OrganizationPost()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationPost },
+                        Name = "اپراتور 2",
+                        OrganizationType_RoleType = organizationTypeDaftarRoleOperatorService,
+                        Organization = organizationDaftarVanak,
+                        User = userMovaseghi
+                    };
+                    projectContext.OrganizationPost.Add(organizationDaftarVanakOperator2);
+                }
+                var organizationDaftarVanakReviewer1 = projectContext.OrganizationPost.FirstOrDefault(x => x.UserID == userKosari.ID
+            && x.Name == "بررسی کننده درخواست 1");
+                if (organizationDaftarVanakReviewer1 == null)
+                {
+                    organizationDaftarVanakReviewer1 = new OrganizationPost()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationPost },
+                        Name = "بررسی کننده درخواست 1",
+                        OrganizationType_RoleType = organizationTypeDaftarRoleReviewer,
+                        Organization = organizationDaftarVanak,
+                        User = userKosari
+                    };
+                    projectContext.OrganizationPost.Add(organizationDaftarVanakReviewer1);
+                }
+                var organizationDaftarVanakRahbar1 = projectContext.OrganizationPost.FirstOrDefault(x => x.UserID == userAfshari.ID
+          && x.Name == "راهبر اداره 1");
+                if (organizationDaftarVanakRahbar1 == null)
+                {
+                    organizationDaftarVanakRahbar1 = new OrganizationPost()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationPost },
+                        Name = "راهبر اداره 1",
+                        OrganizationType_RoleType = organizationTypeDaftarRoleRahbarEdare,
+                        Organization = organizationDaftarVanak,
+                        User = userAfshari
+                    };
+                    projectContext.OrganizationPost.Add(organizationDaftarVanakRahbar1);
+                }
+                var organizationDaftarVanakMaali1 = projectContext.OrganizationPost.FirstOrDefault(x => x.UserID == userKarimi.ID
+        && x.Name == "مسئول مالی سرویس 1");
+                if (organizationDaftarVanakMaali1 == null)
+                {
+                    organizationDaftarVanakMaali1 = new OrganizationPost()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationPost },
+                        Name = "مسئول مالی سرویس 1",
+                        OrganizationType_RoleType = organizationTypeDaftarRoleMaaliService,
+                        Organization = organizationDaftarVanak,
+                        User = userKarimi
+                    };
+                    projectContext.OrganizationPost.Add(organizationDaftarVanakMaali1);
+                }
+                var organizationDaftarVanakRahbarKol = projectContext.OrganizationPost.FirstOrDefault(x => x.UserID == userDolatkia.ID
+       && x.Name == "راهبر کل 1");
+                if (organizationDaftarVanakRahbarKol == null)
+                {
+                    organizationDaftarVanakRahbarKol = new OrganizationPost()
+                    {
+                        SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationPost },
+                        Name = "راهبر کل 1",
+                        OrganizationType_RoleType = organizationTypeDaftarRoleRahbarKol,
+                        Organization = organizationDaftarVanak,
+                        User = userDolatkia
+                    };
+                    projectContext.OrganizationPost.Add(organizationDaftarVanakRahbarKol);
+                }
+
+                if (organizationTypeTamirgah != null)
+                {
+                    var organizationTypeTamirgahPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == databaseID && x.SecuritySubjectID == organizationTypeTamirgah.ID);
+                    if (organizationTypeTamirgahPermission == null)
+                    {
+                        organizationTypeTamirgahPermission = new Permission() { SecurityObjectID = databaseID, SecuritySubject = organizationTypeTamirgah.SecuritySubject };
+                        organizationTypeTamirgahPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ReadOnly.ToString() });
+                        organizationTypeTamirgahPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterView.ToString() });
+                        organizationTypeTamirgahPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveView.ToString() });
+                        projectContext.Permission.Add(organizationTypeTamirgahPermission);
+
+                    }
+                }
+                if (organizationTypeDaftarKhadamat != null)
+                {
+                    var organizationTypeDaftarKhadamatPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == databaseID && x.SecuritySubjectID == organizationTypeDaftarKhadamat.ID);
+                    if (organizationTypeDaftarKhadamatPermission == null)
+                    {
+                        organizationTypeDaftarKhadamatPermission = new Permission() { SecurityObjectID = databaseID, SecuritySubject = organizationTypeDaftarKhadamat.SecuritySubject };
+                        organizationTypeDaftarKhadamatPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ReadOnly.ToString() });
+                        organizationTypeDaftarKhadamatPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterView.ToString() });
+                        organizationTypeDaftarKhadamatPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveView.ToString() });
+                        projectContext.Permission.Add(organizationTypeDaftarKhadamatPermission);
+
+                    }
+                }
+                var workshopSchema = projectContext.DBSchema.FirstOrDefault(x => x.Name == "Workshop");
+                if (roleTamirkar != null && workshopSchema != null)
+                {
+                    var roleTamirkarPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == workshopSchema.ID && x.SecuritySubjectID == roleTamirkar.ID);
+                    if (roleTamirkarPermission == null)
+                    {
+                        roleTamirkarPermission = new Permission() { SecurityObjectID = workshopSchema.ID, SecuritySubject = roleTamirkar.SecuritySubject };
+                        roleTamirkarPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                        roleTamirkarPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                        roleTamirkarPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                        projectContext.Permission.Add(roleTamirkarPermission);
+
+                    }
+                }
+                if (roleOperatorService != null)
+                {
+                    if (serviceRequest != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == serviceRequest.ID && x.SecuritySubjectID == roleOperatorService.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = serviceRequest.ID, SecuritySubject = roleOperatorService.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                    if (serviceRequest_RequestType != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == serviceRequest_RequestType.ID && x.SecuritySubjectID == roleOperatorService.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = serviceRequest_RequestType.ID, SecuritySubject = roleOperatorService.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                    if (customer != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == customer.ID && x.SecuritySubjectID == roleOperatorService.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = customer.ID, SecuritySubject = roleOperatorService.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                    if (genericPerson != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == genericPerson.ID && x.SecuritySubjectID == roleOperatorService.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = genericPerson.ID, SecuritySubject = roleOperatorService.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                    if (realPerson != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == realPerson.ID && x.SecuritySubjectID == roleOperatorService.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = realPerson.ID, SecuritySubject = roleOperatorService.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                    if (legalPerson != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == legalPerson.ID && x.SecuritySubjectID == roleOperatorService.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = legalPerson.ID, SecuritySubject = roleOperatorService.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                    if (genericPersonAddress != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == genericPersonAddress.ID && x.SecuritySubjectID == roleOperatorService.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = genericPersonAddress.ID, SecuritySubject = roleOperatorService.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                    if (productItem != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == productItem.ID && x.SecuritySubjectID == roleOperatorService.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = productItem.ID, SecuritySubject = roleOperatorService.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                }
+                if (roleReviewerService != null)
+                {
+                    if (serviceRequestReview != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == serviceRequestReview.ID && x.SecuritySubjectID == roleReviewerService.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = serviceRequestReview.ID, SecuritySubject = roleReviewerService.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                    if (serviceRequestReviewItems != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == serviceRequestReviewItems.ID && x.SecuritySubjectID == roleReviewerService.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = serviceRequestReviewItems.ID, SecuritySubject = roleReviewerService.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                }
+                var accountingSchema = projectContext.DBSchema.FirstOrDefault(x => x.Name == "Accounting");
+                if (roleMaaliService != null && accountingSchema != null)
+                {
+                    if (serviceConclusion != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == accountingSchema.ID && x.SecuritySubjectID == roleMaaliService.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = accountingSchema.ID, SecuritySubject = roleMaaliService.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                }
+                var commonSchema = projectContext.DBSchema.FirstOrDefault(x => x.Name == "Common");
+
+                if (roleRahbarEdare != null && commonSchema != null && region != null)
+                {
+                    var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == commonSchema.ID && x.SecuritySubjectID == roleRahbarEdare.ID);
+                    if (roleOperatorPermission == null)
+                    {
+                        roleOperatorPermission = new Permission() { SecurityObjectID = commonSchema.ID, SecuritySubject = roleRahbarEdare.SecuritySubject };
+                        roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                        roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                        roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                        projectContext.Permission.Add(roleOperatorPermission);
+
+                    }
+                    var roleOperatorNoPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == region.ID && x.SecuritySubjectID == roleRahbarEdare.ID);
+                    if (roleOperatorNoPermission == null)
+                    {
+                        roleOperatorNoPermission = new Permission() { SecurityObjectID = region.ID, SecuritySubject = roleRahbarEdare.SecuritySubject };
+                        roleOperatorNoPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ReadOnly.ToString() });
+                        projectContext.Permission.Add(roleOperatorNoPermission);
+
+                    }
+                }
+                if (organizationTypeTamirgahRoleRahbarEdare != null)
+                {
+                    if (serviceRequestType != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == serviceRequestType.ID && x.SecuritySubjectID == organizationTypeTamirgahRoleRahbarEdare.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = serviceRequestType.ID, SecuritySubject = organizationTypeTamirgahRoleRahbarEdare.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ReadOnly.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                    if (productItem != null)
+                    {
+                        var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == productItem.ID && x.SecuritySubjectID == organizationTypeTamirgahRoleRahbarEdare.ID);
+                        if (roleOperatorPermission == null)
+                        {
+                            roleOperatorPermission = new Permission() { SecurityObjectID = productItem.ID, SecuritySubject = organizationTypeTamirgahRoleRahbarEdare.SecuritySubject };
+                            roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ReadOnly.ToString() });
+                            projectContext.Permission.Add(roleOperatorPermission);
+
+                        }
+                    }
+                    if (customer != null)
+                    {
+                        var customerCodeColumn = customer.Table.Column.FirstOrDefault(x => x.Name == "Code");
+                        if (customerCodeColumn != null)
+                        {
+                            var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == customerCodeColumn.ID && x.SecuritySubjectID == organizationTypeTamirgahRoleRahbarEdare.ID);
+                            if (roleOperatorPermission == null)
+                            {
+                                roleOperatorPermission = new Permission() { SecurityObjectID = customerCodeColumn.ID, SecuritySubject = organizationTypeTamirgahRoleRahbarEdare.SecuritySubject };
+                                roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ReadOnly.ToString() });
+                                projectContext.Permission.Add(roleOperatorPermission);
+
+                            }
+                        }
+                    }
+                }
+
+                if (roleRahbarKol != null)
+                {
+                    var roleOperatorPermission = projectContext.Permission.FirstOrDefault(x => x.SecurityObjectID == databaseID && x.SecuritySubjectID == roleRahbarKol.ID);
+                    if (roleOperatorPermission == null)
+                    {
+                        roleOperatorPermission = new Permission() { SecurityObjectID = databaseID, SecuritySubject = roleRahbarKol.SecuritySubject };
+                        roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.EditAndDelete.ToString() });
+                        roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.ArchiveEdit.ToString() });
+                        roleOperatorPermission.Permission_Action.Add(new Permission_Action() { Action = SecurityAction.LetterEdit.ToString() });
+                        projectContext.Permission.Add(roleOperatorPermission);
+
+                    }
+                }
+
+                var archivefolderGeneral = projectContext.ArchiveFolder.FirstOrDefault(x => x.Name == "مدارک عمومي");
+                if (archivefolderGeneral == null)
+                    projectContext.ArchiveFolder.Add(new ArchiveFolder() { Name = "مدارک عمومي" });
+                if (serviceRequest != null)
+                {
+                    var archivefolderSpecific = projectContext.ArchiveFolder.FirstOrDefault(x => x.Name == "ضمانتنامه");
+                    if (archivefolderSpecific == null)
+                        projectContext.ArchiveFolder.Add(new ArchiveFolder() { Name = "ضمانتنامه", TableDrivedEntity = serviceRequest });
+                }
+
+                var archiveTagGeneralAsl = projectContext.ArchiveTag.FirstOrDefault(x => x.Name == "اصل");
+                if (archiveTagGeneralAsl == null)
+                    projectContext.ArchiveTag.Add(new ArchiveTag() { Name = "اصل" });
+                var archiveTagGeneralCopy = projectContext.ArchiveTag.FirstOrDefault(x => x.Name == "کپی");
+                if (archiveTagGeneralCopy == null)
+                    projectContext.ArchiveTag.Add(new ArchiveTag() { Name = "کپی" });
+
+                if (serviceRequest != null)
+                {
+                    var archiveTagSpecific = projectContext.ArchiveTag.FirstOrDefault(x => x.Name == "مدرک اصلي");
+                    if (archiveTagSpecific == null)
+                        projectContext.ArchiveTag.Add(new ArchiveTag() { Name = "مدرک اصلي", TableDrivedEntity = serviceRequest });
+                }
+
+                if (serviceRequest != null && serviceRequestReview != null)
+                {
+                    serviceRequestReview.LoadArchiveRelatedItems = true;
+                    var serviceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == serviceRequestReview.ID);
+                    if (serviceRequestRelationship != null)
+                    {
+                        var serviceRequestRelationshipTail = GetRelationshipTail(projectContext, serviceRequest, serviceRequestReview, serviceRequestRelationship.ID.ToString());
+                        if (serviceRequestRelationshipTail != null)
+                        {
+                            var entityArchiveRelationshipTails = projectContext.EntityArchiveRelationshipTails.FirstOrDefault(x => x.TableDrivedEntityID == serviceRequest.ID && x.EntityRelationshipTailID == serviceRequestRelationshipTail.ID);
+                            if (entityArchiveRelationshipTails == null)
+                            {
+                                projectContext.EntityArchiveRelationshipTails.Add(new EntityArchiveRelationshipTails() { TableDrivedEntityID = serviceRequest.ID, EntityRelationshipTail = serviceRequestRelationshipTail });
+                            }
+                            var entityLetterRelationshipTails = projectContext.EntityLetterRelationshipTails.FirstOrDefault(x => x.TableDrivedEntityID == serviceRequest.ID && x.EntityRelationshipTailID == serviceRequestRelationshipTail.ID);
+                            if (entityLetterRelationshipTails == null)
+                            {
+                                projectContext.EntityLetterRelationshipTails.Add(new EntityLetterRelationshipTails() { TableDrivedEntityID = serviceRequest.ID, EntityRelationshipTail = serviceRequestRelationshipTail });
+                            }
+                        }
+                        var serviceRequestReviewRelationshipTail = GetRelationshipTail(projectContext, serviceRequestReview, serviceRequest, serviceRequestRelationship.RelationshipID.ToString());
+                        if (serviceRequestReviewRelationshipTail != null)
+                        {
+                            var entityArchiveRelationshipTails = projectContext.EntityArchiveRelationshipTails.FirstOrDefault(x => x.TableDrivedEntityID == serviceRequestReview.ID && x.EntityRelationshipTailID == serviceRequestReviewRelationshipTail.ID);
+                            if (entityArchiveRelationshipTails == null)
+                            {
+                                projectContext.EntityArchiveRelationshipTails.Add(new EntityArchiveRelationshipTails() { TableDrivedEntityID = serviceRequestReview.ID, EntityRelationshipTail = serviceRequestReviewRelationshipTail });
+                            }
+                            var entityLetterRelationshipTails = projectContext.EntityLetterRelationshipTails.FirstOrDefault(x => x.TableDrivedEntityID == serviceRequestReview.ID && x.EntityRelationshipTailID == serviceRequestReviewRelationshipTail.ID);
+                            if (entityLetterRelationshipTails == null)
+                            {
+                                projectContext.EntityLetterRelationshipTails.Add(new EntityLetterRelationshipTails() { TableDrivedEntityID = serviceRequestReview.ID, EntityRelationshipTail = serviceRequestReviewRelationshipTail });
+                            }
+                        }
+
+                      
+                    }
+
+                    var letterTypeService = projectContext.LetterType.FirstOrDefault(x => x.Name == "درخواست سرویس");
+                    if (letterTypeService == null)
+                    {
+                        projectContext.LetterType.Add(new LetterType() { Name = "درخواست سرویس",TableDrivedEntityID=serviceRequest.ID });
+                    }
+                }
+                var letterType = projectContext.LetterType.FirstOrDefault(x => x.Name == "نوع نامشخص");
+                if (letterType == null)
+                {
+                    projectContext.LetterType.Add(new LetterType() { Name = "نوع نامشخص" });
+                }
+
+
+                داده نامه 
                 try
                 {
                     projectContext.SaveChanges();

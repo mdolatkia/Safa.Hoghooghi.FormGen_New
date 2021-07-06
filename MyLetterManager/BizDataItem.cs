@@ -186,7 +186,7 @@ namespace MyDataItemManager
 
             var dataItems = context.MyDataItem.Where(x => x.TableDrivedEntityID == tableDrivedEntityID);
             foreach (var keyColumn in keyProperties)
-                dataItems = dataItems.Where(x => x.MyDataItemKeyColumns.Any(y => y.ColumnID == keyColumn.ColumnID && y.Value == keyColumn.Value));
+                dataItems = dataItems.Where(x => x.MyDataItemKeyColumns.Any(y => y.ColumnID == keyColumn.ColumnID && y.Value == keyColumn.Value.ToString()));
             MyDataItem = dataItems.FirstOrDefault();
             return MyDataItem;
 

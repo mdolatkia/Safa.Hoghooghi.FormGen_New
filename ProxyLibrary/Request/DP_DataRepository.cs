@@ -245,6 +245,10 @@ namespace ProxyLibrary
                 return DataView.Properties.FirstOrDefault(x => x.ColumnID == columnID);
             }
         }
+        public EntityInstanceProperty GetOriginalProperty(int columnID)
+        {
+            return OriginalProperties.FirstOrDefault(x => x.ColumnID == columnID);
+        }
         //public void AddProperty(EntityInstanceProperty property)
         //{
         //    Properties.Add(property);
