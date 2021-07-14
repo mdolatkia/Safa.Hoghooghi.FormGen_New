@@ -56,9 +56,14 @@ namespace MyUIGenerator.UIControlHelper
             }
             else if (correspondingTypeProperty.ColumnType == Enum_ColumnType.Date)
             {
-                showMiladiDate = correspondingTypeProperty.DateColumnType.ShowMiladiDateInUI;
-                stringDateIsMiladi = correspondingTypeProperty.DateColumnType.StringDateIsMiladi;
+                //??نباید DateColumnType نال باشد. فعلا ایف گذاشته شد
+                if (correspondingTypeProperty.DateColumnType != null)
+                {
+                    showMiladiDate = correspondingTypeProperty.DateColumnType.ShowMiladiDateInUI;
+                    stringDateIsMiladi = correspondingTypeProperty.DateColumnType.StringDateIsMiladi;
+                }
                 hasnotTimePicker = true;
+
             }
             else if (correspondingTypeProperty.ColumnType == Enum_ColumnType.Time)
             {

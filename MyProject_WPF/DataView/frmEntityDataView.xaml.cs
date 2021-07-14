@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 using ModelEntites;
-
+using MyCommonWPFControls;
 using MyFormulaFunctionStateFunctionLibrary;
 
 using MyModelManager;
@@ -40,9 +40,43 @@ namespace MyProject_WPF
             //SetRelationships();
             //SetRelationshipTails();
             GetEntityCommand(entityID);
+
+            ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
+            colDataViewRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
+
             //ControlHelper.GenerateContextMenu(dtgRelationships);
         }
+        private void ColRelationshipTail_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
+        {
+            frmEntityRelationshipTail frm = null;
+            frm = new frmEntityRelationshipTail(EntityID);
+            MyProjectManager.GetMyProjectManager.ShowDialog(frm, "رابطه های مرتبط");
+            frm.ItemSelected += (sender1, e1) => Frm_TailSelected(sender1, e1, (sender as MyStaticLookup));
+        }
+        private void Frm_TailSelected(object sender1, EntityRelationshipTailSelectedArg e1, MyStaticLookup myStaticLookup)
+        {
+            SetRelationshipTails();
+            myStaticLookup.SelectedValue = e1.EntityRelationshipTailID;
+        }
 
+        private void SetRelationshipTails()
+        {
+            BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
+            var relationshipTails = bizEntityRelationshipTail.GetEntityRelationshipTails(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+
+            //colDataGridRelationshipTail.DisplayMemberPath = "EntityPath";
+            //colDataGridRelationshipTail.SelectedValueMemberPath = "ID";
+            //colDataGridRelationshipTail.ItemsSource = relationshipTails;
+
+            colDataViewRelationshipTail.DisplayMemberPath = "EntityPath";
+            colDataViewRelationshipTail.SelectedValueMemberPath = "ID";
+            colDataViewRelationshipTail.ItemsSource = relationshipTails;
+
+            //colReportRelationshipTail.DisplayMemberPath = "EntityPath";
+            //colReportRelationshipTail.SelectedValueMemberPath = "ID";
+            //colReportRelationshipTail.ItemsSource = relationshipTails;
+
+        }
         //private void SetRelationshipTails()
         //{//چک شود فقط یکی ازین دو پر شوند
         //    var relationshipTails = bizEntityRelationshipTail.GetEntityRelationshipTails(EntityID);
@@ -79,6 +113,7 @@ namespace MyProject_WPF
         private void ShowMessage()
         {
             lokEntityDataView.SelectedValue = Message.EntityListViewID;
+            dtgDataViewRelationships.ItemsSource = Message.DataViewRelationships;
             //dtgRelationships.ItemsSource = Message.EntityDataViewRelationships;
             if (Message.IconContent != null)
             {

@@ -41,14 +41,14 @@ namespace MyProject_WPF
             SetRelationshipTails();
             GetDataMenuSetting(entityID);
             ControlHelper.GenerateContextMenu(dtgDataGridRelationships);
-            ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
+            //ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
             ControlHelper.GenerateContextMenu(dtgReportRelationships);
 
             //ControlHelper.GenerateContextMenu(dtgExternalReports);
             dtgReportRelationships.RowLoaded += DtgColumns_RowLoaded;
             dtgReportRelationships.CellEditEnded += DtgConditions_CellEditEnded;
             colReportRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
-            colDataViewRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
+            //colDataViewRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
             colDataGridRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
 
         }
@@ -61,9 +61,9 @@ namespace MyProject_WPF
             colDataGridRelationshipTail.SelectedValueMemberPath = "ID";
             colDataGridRelationshipTail.ItemsSource = relationshipTails;
 
-            colDataViewRelationshipTail.DisplayMemberPath = "EntityPath";
-            colDataViewRelationshipTail.SelectedValueMemberPath = "ID";
-            colDataViewRelationshipTail.ItemsSource = relationshipTails;
+            //colDataViewRelationshipTail.DisplayMemberPath = "EntityPath";
+            //colDataViewRelationshipTail.SelectedValueMemberPath = "ID";
+            //colDataViewRelationshipTail.ItemsSource = relationshipTails;
 
             colReportRelationshipTail.DisplayMemberPath = "EntityPath";
             colReportRelationshipTail.SelectedValueMemberPath = "ID";
@@ -121,11 +121,11 @@ namespace MyProject_WPF
             Message = bizEntityReportSetting.GetDataMenuSetting(MyProjectManager.GetMyProjectManager.GetRequester(), entityID, false);
             ShowMessage();
         }
-
+        کلا عوض بشه دیتا ویو ستینگ اختصاصی بشه
         private void ShowMessage()
         {
             dtgReportRelationships.ItemsSource = Message.ReportRelationships;
-            dtgDataViewRelationships.ItemsSource = Message.DataViewRelationships;
+          
             dtgDataGridRelationships.ItemsSource = Message.GridViewRelationships;
 
             foreach (var item in Message.ReportRelationships)

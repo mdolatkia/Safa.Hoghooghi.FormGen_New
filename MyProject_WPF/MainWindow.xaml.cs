@@ -23,6 +23,11 @@ using System.Windows.Threading;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
 using Telerik.Windows;
+using MyDataSearchManagerBusiness;
+using ProxyLibrary;
+using DataAccess;
+using MyDataItemManager;
+using MyModelCustomSetting;
 
 namespace MyProject_WPF
 {
@@ -157,10 +162,11 @@ namespace MyProject_WPF
         }
         private void customSettingContextMenu_ItemClick(object sender, Telerik.Windows.RadRoutedEventArgs e, DatabaseDTO db)
         {
-            BizEntitySettings bizEntitySettings = new BizEntitySettings();
+           BizCustomSettings bizCustomSettings = new BizCustomSettings();
             //try
             //{
-            bizEntitySettings.SetCustomSettings(db.ID);
+
+            bizCustomSettings.SetCustomSettings(db.ID, MyProjectManager.GetMyProjectManager.GetRequester());
             MessageBox.Show("تنظیمات اختصاصی انجام شد");
             //}
             //catch (Exception ex)
@@ -168,6 +174,38 @@ namespace MyProject_WPF
             //    MessageBox.Show(ex.Message);
             //}
         }
+
+        //private int GetDataItemID(DatabaseDTO db)
+        //{
+        //    try
+        //    {
+        //        using (var projectContext = new MyProjectEntities())
+        //        {
+        //            var serviceRequest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequest" && x.Table.DBSchema.DatabaseInformationID == db.ID);
+        //            if (serviceRequest != null)
+        //            {
+        //                SearchRequestManager searchRequestManager = new SearchRequestManager();
+        //                DR_SearchViewRequest item = new DR_SearchViewRequest(MyProjectManager.GetMyProjectManager.GetRequester(),
+        //                     new DP_SearchRepository() { TargetEntityID = serviceRequest.ID });
+        //                item.MaxDataItems = 1;
+        //                item.SecurityMode = SecurityMode.View;
+
+        //                var res = searchRequestManager.Process(item);
+        //                if (res != null && res.ResultDataItems.Any())
+        //                {
+        //                    BizDataItem biz = new BizDataItem();
+        //                    return biz.GetOrCreateDataItem(res.ResultDataItems[0]);
+        //                }
+        //            }
+        //        }
+        //        return 0;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return 0;
+        //    }
+        //}
+
         private void ContextMenu_ItemClick(object sender, Telerik.Windows.RadRoutedEventArgs e, DatabaseDTO db)
         {
             var frm = new DatabaseImportWizard(db.ID);

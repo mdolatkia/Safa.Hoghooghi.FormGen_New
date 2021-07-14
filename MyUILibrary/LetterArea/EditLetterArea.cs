@@ -26,7 +26,15 @@ namespace MyUILibrary.EntityArea
         {
             AreaInitializer = areaInitializer;
             //EntityID = entityId;
-
+            if (AreaInitializer.LetterID != 0)
+            {
+                LetterMessage = AgentUICoreMediator.GetAgentUICoreMediator.LetterManager.GetLetter(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.LetterID, true);
+                AreaInitializer.DataInstance = LetterMessage.DataItem;
+            }
+            else
+            {
+                LetterMessage = new LetterDTO();
+            }
             var permissions = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetEntityAssignedPermissions(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), areaInitializer.DataInstance.TargetEntityID, false);
             if (!permissions.GrantedActions.Any(x => x == SecurityAction.LetterEdit))
             {
@@ -52,15 +60,7 @@ namespace MyUILibrary.EntityArea
             relatedLetterSearchLookup.SelectionChanged += RelatedLetterSearchLookup_SelectionChanged;
             View.AddRelatedLetterSelector(relatedLetterSearchLookup);
 
-            if (AreaInitializer.LetterID != 0)
-            {
-                LetterMessage = AgentUICoreMediator.GetAgentUICoreMediator.LetterManager.GetLetter(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.LetterID, true);
-                AreaInitializer.DataInstance = LetterMessage.DataItem;
-            }
-            else
-            {
-                LetterMessage = new LetterDTO();
-            }
+          
             ShowLetter();
             var letterTemplates = AgentUICoreMediator.GetAgentUICoreMediator.LetterManager.GetMainLetterTemplates(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.DataInstance.TargetEntityID);
             View.LetterTemplates = letterTemplates;
@@ -148,18 +148,12 @@ namespace MyUILibrary.EntityArea
         {
             if (LetterSetting != null && LetterSetting.LetterExternalInfoCodeID != 0)
             {
-
-
                 View.UpdateMessage();
-
                 LetterDTO sendingLetter = new LetterDTO();
                 sendingLetter.ExternalCode = e.ExternalCode;
                 var result = codeFunctionHandler.GetCodeFunctionResult(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), LetterSetting.LetterExternalInfoCodeID, sendingLetter);
                 if (result.Exception == null)
                 {
-
-
-
                     if (!string.IsNullOrEmpty(sendingLetter.Title))
                         LetterMessage.Title = sendingLetter.Title;
                     LetterMessage.LetterDate = sendingLetter.LetterDate;

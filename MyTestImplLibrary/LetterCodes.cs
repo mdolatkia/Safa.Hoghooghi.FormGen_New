@@ -13,19 +13,19 @@ namespace MyTestImplLibrary
         public FunctionResult BeforeLoad(LetterFunctionParam Param)
         {
             FunctionResult result = new FunctionResult();
-            Param.Letter.Title += "_a";
+            Param.Letter.Desc += "BeforeLoad,";
             return result;
         }
         public FunctionResult BeforeSave(LetterFunctionParam Param)
         {
             FunctionResult result = new FunctionResult();
-            //Param.Letter.Title += "_a";
+            Param.Letter.Desc += "BeforeSave,";
             return result;
         }
         public FunctionResult AfterSave(LetterFunctionParam Param)
         {
             FunctionResult result = new FunctionResult();
-            //Param.Letter.Title += "_a";
+            Param.Letter.Desc += "AfterSave,";
             return result;
         }
         public FunctionResult ExternalCode(LetterFunctionParam Param)

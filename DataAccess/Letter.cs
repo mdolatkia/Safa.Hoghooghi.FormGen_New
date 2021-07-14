@@ -27,7 +27,7 @@ namespace DataAccess
         public string Desc { get; set; }
         public Nullable<bool> IsGeneratedOrSelected { get; set; }
         public int LetterTypeID { get; set; }
-        public System.DateTime LetterDate { get; set; }
+        public Nullable<System.DateTime> LetterDate { get; set; }
         public System.DateTime CreationDate { get; set; }
         public Nullable<int> RelatedLetterID { get; set; }
         public bool FromExternalSource { get; set; }

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MyProject_WPF"
+        
         mc:Ignorable="d"
       d:DesignWidth="600" d:DesignHeight="600">
     <Grid FlowDirection="RightToLeft">
@@ -16,7 +16,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
             </Grid.RowDefinitions>
@@ -47,7 +47,15 @@
             </Grid>
             <TextBlock Grid.Row="1" Text="نمایش لیست"></TextBlock>
             <MyCommonWPFControls:MyStaticLookup  Grid.Row="1" Grid.ColumnSpan="3" x:Name="lokEntityDataView" HorizontalAlignment="Stretch" Grid.Column="1"></MyCommonWPFControls:MyStaticLookup>
-          
+            <TextBlock Grid.Row="2" VerticalAlignment="Top" Text="روابط نمای داده"></TextBlock>
+            <telerik:RadGridView x:Name="dtgDataViewRelationships" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" AutoGenerateColumns="False">
+                <telerik:RadGridView.Columns>
+                    <!--<MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipID}"  x:Name="colRelationship" Header="روابط"></MyCommonWPFControls:MyStaticLookupColumn>-->
+                    <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True"  NewItemEnabled="True" x:Name="colDataViewRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
+                    <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
+                    <telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>
+                </telerik:RadGridView.Columns>
+            </telerik:RadGridView>
             <!--<TextBlock Grid.Row="2" Text="مشخصات"></TextBlock>
             <TabControl MinHeight="150"  Grid.Row="2" Grid.ColumnSpan="3" Grid.Column="1">
                

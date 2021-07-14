@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MyProject_WPF"
+        
         mc:Ignorable="d"
       d:DesignWidth="600" d:DesignHeight="600" FlowDirection="RightToLeft">
     <Grid >
@@ -22,16 +22,16 @@
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>
-            <TabItem Header="روابط نمایش داده">
+            <!--<TabItem Header="روابط نمایش داده">
                 <telerik:RadGridView x:Name="dtgDataViewRelationships" AutoGenerateColumns="False">
                     <telerik:RadGridView.Columns>
-                        <!--<MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipID}"  x:Name="colRelationship" Header="روابط"></MyCommonWPFControls:MyStaticLookupColumn>-->
+                        --><!--<MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipID}"  x:Name="colRelationship" Header="روابط"></MyCommonWPFControls:MyStaticLookupColumn>--><!--
                         <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True"  NewItemEnabled="True" x:Name="colDataViewRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
                         <telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
-            </TabItem>
+            </TabItem>-->
             <TabItem Header="روابط گرید">
                 <telerik:RadGridView x:Name="dtgDataGridRelationships" AutoGenerateColumns="False">
                     <telerik:RadGridView.Columns>

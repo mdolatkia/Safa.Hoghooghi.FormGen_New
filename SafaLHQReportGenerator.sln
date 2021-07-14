@@ -93,6 +93,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPersianDatePicker", "WpfPersianDatePicker\WpfPersianDatePicker.csproj", "{6FF02AF8-F08B-45C1-A03A-DF287E90CDD0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyModelCustomSetting", "MyModelCustomSetting\MyModelCustomSetting.csproj", "{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -802,6 +804,24 @@ Global
 		{6FF02AF8-F08B-45C1-A03A-DF287E90CDD0}.Release|x64.Build.0 = Release|Any CPU
 		{6FF02AF8-F08B-45C1-A03A-DF287E90CDD0}.Release|x86.ActiveCfg = Release|Any CPU
 		{6FF02AF8-F08B-45C1-A03A-DF287E90CDD0}.Release|x86.Build.0 = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Debug|x64.Build.0 = Debug|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Debug|x86.Build.0 = Debug|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release with Code Analysis|x64.ActiveCfg = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release with Code Analysis|x64.Build.0 = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release with Code Analysis|x86.ActiveCfg = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release with Code Analysis|x86.Build.0 = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release|x64.ActiveCfg = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release|x64.Build.0 = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release|x86.ActiveCfg = Release|Any CPU
+		{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

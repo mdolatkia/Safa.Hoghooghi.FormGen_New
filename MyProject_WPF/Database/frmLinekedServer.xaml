@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MyProject_WPF"  xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+               xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d"  xmlns:MyCommonWPFControls="clr-namespace:MyCommonWPFControls;assembly=MyCommonWPFControls"
            Background="WhiteSmoke" FlowDirection="RightToLeft">
     <Grid d:DesignWidth="380" Margin="5"  d:DesignHeight="600" >

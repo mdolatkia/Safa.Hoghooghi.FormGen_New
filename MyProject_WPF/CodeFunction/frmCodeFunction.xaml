@@ -43,7 +43,7 @@
             <Button Grid.Row="3"  x:Name="btnSelectCode"  Width="90" Height="25" Content="انتخاب فایل ..." Grid.Column="2" Click="btnSelectCode_Click"></Button>
 
             <TextBlock Grid.Row="4" Text="نام کلاس"></TextBlock>
-            <MyCommonWPFControls:MyStaticLookup SelectionChanged="lokClassName_SelectionChanged" x:Name="lokClassName" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="1" Margin="2,2,0,2" ></MyCommonWPFControls:MyStaticLookup>
+            <MyCommonWPFControls:MyStaticLookup  SelectionChanged="lokClassName_SelectionChanged" x:Name="lokClassName" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="1" Margin="2,2,0,2" ></MyCommonWPFControls:MyStaticLookup>
             <TextBlock Grid.Row="5"  Text="نام تابع"></TextBlock>
             <MyCommonWPFControls:MyStaticLookup x:Name="lokFunctionName" SelectionChanged="lokFunctionName_SelectionChanged"  HorizontalAlignment="Stretch" Grid.Row="5" Grid.Column="1" Margin="2,2,0,2" ></MyCommonWPFControls:MyStaticLookup>
 

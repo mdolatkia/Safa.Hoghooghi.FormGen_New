@@ -128,7 +128,7 @@ namespace MyLetterGenerator
             {
                 if (plainField.tmpParentTail == parentTail)
                 {
-                    var bizField = letterTemplete.PlainFields.FirstOrDefault(x => x.FieldName == plainField.FieldName);
+                    var bizField = letterTemplete.PlainFields.FirstOrDefault(x => x.FieldName.ToLower() == plainField.FieldName.ToLower());
                     if (bizField != null)
                     {
 
@@ -139,7 +139,7 @@ namespace MyLetterGenerator
                             //درست شود
                             var property = dataviewItem.Properties.FirstOrDefault(x => x.RelativeName == bizField.EntityListViewColumns.RelativeColumnName);
                             if (property != null)
-                                (plainField.LetterField as Field).Result.Text = property.Value==null?"":property.Value.ToString();
+                                (plainField.LetterField as Field).Result.Text = property.Value == null ? "" : property.Value.ToString();
 
                         }
                         else if (bizField.FormulaID != 0)
@@ -160,7 +160,7 @@ namespace MyLetterGenerator
 
             foreach (var relationshipField in relationshipFields)
             {
-                var bizField = letterTemplete.RelationshipFields.FirstOrDefault(x => x.FieldName == relationshipField.FieldName);
+                var bizField = letterTemplete.RelationshipFields.FirstOrDefault(x => x.FieldName.ToLower() == relationshipField.FieldName.ToLower());
                 if (bizField != null)
                 {
                     //List<EntityInstanceProperty> columnValues = new List<EntityInstanceProperty>();
@@ -590,7 +590,7 @@ namespace MyLetterGenerator
                     fieldName = splt[0] + "_" + splt[1];
                 var endField = GetRelationshipFieldEnd(field.Item1, allFormFileds);
                 if (endField != null)
-                    if (ItemIsInRangeOf(endField, end))
+                    if (ItemIsInRangeOf(endField,start, end))
                     {
                         if (!ItemIsInRangeOfChilds(field.Item2, relationshipFields))
                         {
@@ -613,7 +613,7 @@ namespace MyLetterGenerator
                             //////}
                             var tail = (parentTail == "" ? "" : parentTail + ",") + fieldName;
 
-                            SetRelatoinshipTree(newField, newField.PartialLetterTemplate.PlainFields, newField.PartialLetterTemplate.RelationshipFields, allFormFileds, parentTail);
+                            SetRelatoinshipTree(newField, newField.PartialLetterTemplate.PlainFields, newField.PartialLetterTemplate.RelationshipFields, allFormFileds, tail);
                             relationshipFields.Add(newField);
                         }
                     }
@@ -623,7 +623,7 @@ namespace MyLetterGenerator
                 var splt = field.Item1.Split('_');
                 var fieldName = field.Item1;// splt[0] + "_" + splt[1];
 
-                if (ItemIsInRangeOf(field.Item2, end))
+                if (ItemIsInRangeOf(field.Item2,start, end))
                 {
                     if (!ItemIsInRangeOfChilds(field.Item2, relationshipFields))
                     {
@@ -684,11 +684,14 @@ namespace MyLetterGenerator
             return false;
         }
 
-        private bool ItemIsInRangeOf(Field endField, int end)
+        private bool ItemIsInRangeOf(Field field, int end)
         {
-            return endField.Result.Start < end;
+            return field.Result.Start < end;
         }
-
+        private bool ItemIsInRangeOf(Field field, int start, int end)
+        {
+            return field.Result.Start > start && field.Result.Start < end;
+        }
         private Field GetRelationshipFieldEnd(string fieldName, List<Tuple<string, Field>> allFormFileds)
         {
             var endName = fieldName.Replace("_start", "_end");

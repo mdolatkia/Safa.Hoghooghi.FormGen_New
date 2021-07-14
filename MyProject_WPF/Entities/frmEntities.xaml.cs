@@ -615,7 +615,6 @@ namespace MyProject_WPF
                     listReportSetting.Click += (sender1, EventArgs) => customMenuItem_ClickMenuSetting(sender, e, source.DataContext as TableDrivedEntityDTO);
 
 
-
                 }
 
 
@@ -625,10 +624,10 @@ namespace MyProject_WPF
                 var listViewMenu = AddMenu(dataViewGMenu.Items, "لیست نمایش", "", "../Images/listView.png");
                 listViewMenu.Click += (sender1, EventArgs) => customMenuItem_ClickListView(sender, e, source.DataContext as TableDrivedEntityDTO);
 
-                var dataViewMenu = AddMenu(dataViewGMenu.Items, "نمایش داده", "", "../Images/dataview.png");
+                var dataViewMenu = AddMenu(dataViewGMenu.Items, "نمای عمومی گرافیکی", "", "../Images/dataview.png");
                 dataViewMenu.Click += (sender1, EventArgs) => customMenuItem_EntityDataView(sender, e, source.DataContext as TableDrivedEntityDTO);
 
-                var dataGridMenu = AddMenu(dataViewGMenu.Items, "گرید داده", "", "../Images/listView.png");
+                var dataGridMenu = AddMenu(dataViewGMenu.Items, "نمای عمومی جدولی", "", "../Images/listView.png");
                 dataGridMenu.Click += (sender1, EventArgs) => customMenuItem_EntityGridView(sender, e, source.DataContext as TableDrivedEntityDTO);
 
 

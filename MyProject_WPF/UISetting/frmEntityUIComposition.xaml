@@ -1,7 +1,7 @@
 ﻿<UserControl
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:local="clr-namespace:MyProject_WPF" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"  x:Class="MyProject_WPF.frmEntityUIComposition"
+         xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"  x:Class="MyProject_WPF.frmEntityUIComposition"
          Background="WhiteSmoke"  FlowDirection="RightToLeft"  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"   mc:Ignorable="d"   d:DesignHeight="500"  d:DesignWidth="600">
     <Grid >
         <Grid.RowDefinitions>

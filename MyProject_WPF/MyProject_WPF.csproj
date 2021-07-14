@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MyProject_WPF</RootNamespace>
     <AssemblyName>MyProject_WPF</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -165,7 +166,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationCore">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationCore.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
@@ -1098,6 +1101,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
+      <Project>{C01F0A21-457A-4DFC-A623-0ED6CC00AD86}</Project>
+      <Name>DataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MyCommonWPFControls\MyCommonWPFControls.csproj">
       <Project>{df529814-4102-4145-9345-b405ed79138a}</Project>
       <Name>MyCommonWPFControls</Name>
@@ -1109,10 +1116,6 @@
     <ProjectReference Include="..\MyDatabaseToObject\MyDatabaseToObject.csproj">
       <Project>{bb4870cd-5a28-474c-a513-491af655988f}</Project>
       <Name>MyDatabaseToObject</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MyDataManagerBusiness\MyDataEditManagerBusiness.csproj">
-      <Project>{015494b7-335c-4b3f-b896-278e4fe3b878}</Project>
-      <Name>MyDataEditManagerBusiness</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyDataSearchManagerBusiness\MyDataSearchManagerBusiness.csproj">
       <Project>{518BDF6D-0AD2-44DD-945D-DCF74BB4A055}</Project>
@@ -1137,6 +1140,10 @@
     <ProjectReference Include="..\MyLetterManager\MyDataItemManager.csproj">
       <Project>{14CAAA31-D18C-4D10-805D-5E0E7E2C5B02}</Project>
       <Name>MyDataItemManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyModelCustomSetting\MyModelCustomSetting.csproj">
+      <Project>{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}</Project>
+      <Name>MyModelCustomSetting</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyModelGenerator\MyModelGenerator.csproj">
       <Project>{3a828530-4845-4d05-b809-a3812ac4b26a}</Project>

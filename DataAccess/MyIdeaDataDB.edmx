@@ -108,7 +108,7 @@
           <Property Name="Desc" Type="varchar(max)" />
           <Property Name="IsGeneratedOrSelected" Type="bit" />
           <Property Name="LetterTypeID" Type="int" Nullable="false" />
-          <Property Name="LetterDate" Type="datetime" Nullable="false" />
+          <Property Name="LetterDate" Type="datetime" />
           <Property Name="CreationDate" Type="datetime" Nullable="false" />
           <Property Name="RelatedLetterID" Type="int" />
           <Property Name="FromExternalSource" Type="bit" Nullable="false" />
@@ -716,7 +716,7 @@
           <Property Name="Desc" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="IsGeneratedOrSelected" Type="Boolean" />
           <Property Name="LetterTypeID" Type="Int32" Nullable="false" />
-          <Property Name="LetterDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LetterDate" Type="DateTime" Precision="3" />
           <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="RelatedLetterID" Type="Int32" />
           <Property Name="FromExternalSource" Type="Boolean" Nullable="false" />

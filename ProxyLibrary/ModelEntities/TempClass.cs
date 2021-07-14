@@ -2029,7 +2029,7 @@ namespace ModelEntites
         public string Title { set; get; }
         public string ExternalCode { set; get; }
         public string Desc { set; get; }
-        public DateTime LetterDate { set; get; }
+        public DateTime? LetterDate { set; get; }
         public FileRepositoryDTO AttechedFile { set; get; }
         public int AttechedFileID { set; get; }
         public bool HasAttechedFile { set; get; }

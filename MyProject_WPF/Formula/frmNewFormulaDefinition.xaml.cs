@@ -27,7 +27,7 @@ using ProxyLibrary;
 using Telerik.Windows.Documents.Model.Styles;
 using System.Timers;
 using System.Windows.Threading;
-using MyDataSearchManagerBusiness;
+
 using MyUILibrary.EntityArea;
 using MyUIGenerator;
 using System.Windows.Documents;

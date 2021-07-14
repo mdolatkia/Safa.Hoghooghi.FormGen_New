@@ -78,7 +78,7 @@ namespace MyDataItemManager
                         MyDataItem.Info = (dataItem as DP_DataRepository).ViewInfo;
 
                     foreach (var keyColumn in dataItem.KeyProperties)
-                        MyDataItem.MyDataItemKeyColumns.Add(new MyDataItemKeyColumns() { ColumnID = keyColumn.ColumnID, Value = keyColumn.Value==null?null:keyColumn.Value.ToString() });
+                        MyDataItem.MyDataItemKeyColumns.Add(new MyDataItemKeyColumns() { ColumnID = keyColumn.ColumnID, Value = keyColumn.Value == null ? null : keyColumn.Value.ToString() });
                     model.MyDataItem.Add(MyDataItem);
                     model.SaveChanges();
                 }
@@ -101,6 +101,16 @@ namespace MyDataItemManager
         //}
         SearchRequestManager searchRequestManager = new SearchRequestManager();
 
+        public DP_DataView GetDataItem(DR_Requester requester, int dataItemID, bool lastInfo)
+        {
+            using (var model = new MyIdeaDataDBEntities())
+            {
+                var MyDataItem = model.MyDataItem.FirstOrDefault(x => x.ID == dataItemID);
+                if (MyDataItem != null)
+                    return ToDataViewDTO(requester, MyDataItem, lastInfo);
+            }
+            return null;
+        }
         public DP_DataView ToDataViewDTO(DR_Requester requester, MyDataItem dbDataItem, bool lastInfo)
         {
             DP_DataView result = null;

@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8E642D79-DCC3-4BB1-968A-A949FB58149C}</ProjectGuid>
+    <ProjectGuid>{0D731FA5-9E13-4565-9DAF-B6A9169F64DB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MyWorkflowRequestManager</RootNamespace>
-    <AssemblyName>MyWorkflowRequestManager</AssemblyName>
+    <RootNamespace>MyModelCustomSetting</RootNamespace>
+    <AssemblyName>MyModelCustomSetting</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BizRequest.cs" />
+    <Compile Include="BizCustomSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -52,17 +52,17 @@
       <Project>{C01F0A21-457A-4DFC-A623-0ED6CC00AD86}</Project>
       <Name>DataAccess</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MyFormulaLibrary\MyFormulaFunctionStateFunctionLibrary.csproj">
-      <Project>{27638591-E3A9-4697-87C5-19C33E24A658}</Project>
-      <Name>MyFormulaFunctionStateFunctionLibrary</Name>
+    <ProjectReference Include="..\MyDataSearchManagerBusiness\MyDataSearchManagerBusiness.csproj">
+      <Project>{518BDF6D-0AD2-44DD-945D-DCF74BB4A055}</Project>
+      <Name>MyDataSearchManagerBusiness</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyLetterGenerator\MyLetterGenerator.csproj">
+      <Project>{9F61E0ED-FAB1-47C5-AED2-3B9DB06DEFB2}</Project>
+      <Name>MyLetterGenerator</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyLetterManager\MyDataItemManager.csproj">
       <Project>{14CAAA31-D18C-4D10-805D-5E0E7E2C5B02}</Project>
       <Name>MyDataItemManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MyModelManager\MyModelManager.csproj">
-      <Project>{C85C5486-CA1A-4963-8594-C85E441CEBC2}</Project>
-      <Name>MyModelManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProxyLibrary\ProxyLibrary.csproj">
       <Project>{2AD586DD-C9BE-42D3-8EF7-E9657F992503}</Project>
@@ -70,11 +70,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
