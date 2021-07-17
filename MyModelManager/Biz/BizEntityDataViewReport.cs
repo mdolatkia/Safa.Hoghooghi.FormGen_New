@@ -56,7 +56,7 @@ namespace MyModelManager
         {
             EntityDataViewReportDTO result = new EntityDataViewReportDTO();
             bizEntitySearchableReport.ToEntitySearchableReportDTO(item.EntitySearchableReport, result, withDetails);
-            result.DefaultEntityListViewID = item.DefaultEntityListViewID ?? 0;
+            result.DataMenuSettingID = item.DataMenuSettingID;
 
             return result;
         }
@@ -77,7 +77,7 @@ namespace MyModelManager
                 else
                     bizEntitySearchableReport.ToUpdateEntitySearchableReport(dbEntitySpecifiedReport.EntitySearchableReport, message);
 
-                dbEntitySpecifiedReport.DefaultEntityListViewID = message.DefaultEntityListViewID;
+                dbEntitySpecifiedReport.DataMenuSettingID = message.DataMenuSettingID;
 
                 //while (dbEntityDataViewReport.EntityDataViewReportSubs1.Any())
                 //    projectContext.EntityDataViewReportSubs.Remove(dbEntityDataViewReport.EntityDataViewReportSubs1.First());

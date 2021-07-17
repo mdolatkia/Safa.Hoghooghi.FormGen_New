@@ -22,7 +22,7 @@ namespace MyUILibrary.DataViewArea
         public I_GeneralEntitySearchArea GeneralEntitySearchArea { set; get; }
         public void SetAreaInitializerSpecialized(DataViewAreaInitializer initParam)
         {
-            GridViewSetting = AgentUICoreMediator.GetAgentUICoreMediator.GridViewManager.GetGridViewSetting(initParam.EntityID);
+            //GridViewSetting = AgentUICoreMediator.GetAgentUICoreMediator.GridViewManager.GetGridViewSetting(initParam.EntityID);
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetViewOfGridViewArea();
             View.InfoClicked += View_InfoClicked;
         }
@@ -30,10 +30,10 @@ namespace MyUILibrary.DataViewArea
         {
             set; get;
         }
-        public GridViewSettingDTO GridViewSetting
-        {
-            set; get;
-        }
+        //public GridViewSettingDTO GridViewSetting
+        //{
+        //    set; get;
+        //}
         bool UICompositionsCalled;
         EntityUICompositionCompositeDTO _UICompositions;
         public EntityUICompositionCompositeDTO UICompositions

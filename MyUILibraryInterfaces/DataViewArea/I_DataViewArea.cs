@@ -20,10 +20,11 @@ namespace MyUILibraryInterfaces.DataViewArea
         //I_SearchEntityArea SearchEntityArea { set; get; }
         //DP_SearchRepository SearchRepository { set; get; }
         I_GeneralEntitySearchArea GeneralEntitySearchArea { set; get; }
-        void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepository searchRepository, I_DataViewItem defaultDataViewItem,bool dataViewOrGridView, int defaultEntityListViewID);
+        void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepository searchRepository, I_DataViewItem defaultDataViewItem,bool dataViewOrGridView, int dataMenuSettingID);
     }
     public interface I_DataArea
     {
+        DataMenuSettingDTO DataMenuSetting { set; get; }
         I_DataViewAreaContainer DataViewAreaContainer { set; get; }
         DataViewAreaInitializer AreaInitializer { set; get; }
         void SetAreaInitializer(DataViewAreaInitializer initParam);
@@ -34,7 +35,7 @@ namespace MyUILibraryInterfaces.DataViewArea
     {
         //event EventHandler DataItemsSearchedByUser;
         //   event EventHandler<DataViewAreaRequestedArg> RelatedDataViewArearequested;
-        DataViewSettingDTO DataViewSetting { set; get; }
+        //DataMenuSettingDTO DataViewSetting { set; get; }
 
         new I_View_DataViewArea View { set; get; }
 
@@ -46,7 +47,7 @@ namespace MyUILibraryInterfaces.DataViewArea
     }
     public interface I_GridViewArea : I_DataArea
     {
-        GridViewSettingDTO GridViewSetting { set; get; }
+      //  GridViewSettingDTO GridViewSetting { set; get; }
         new I_View_GridViewArea View { set; get; }
 
         void SetItems(List<DP_DataView> resultDataItems);
@@ -123,7 +124,7 @@ namespace MyUILibraryInterfaces.DataViewArea
     {
         public string Title { set; get; }
         public int EntityID { set; get; }
-        public int EntityListViewID { get; set; }
+        public int DataMenuSettingID { get; set; }
         //public TableDrivedEntityDTO Entitiy { set; get; }
         //public DP_SearchRepository SearchRepository { set; get; }
     }
@@ -136,7 +137,7 @@ namespace MyUILibraryInterfaces.DataViewArea
         public bool UserCanChangeSearchRepository { get; set; }
         //public DP_SearchRepository PreDefinedSearch { get; set; }
         public bool ShowInitializeSearchRepository { get; set; }
-        public int EntityListViewID { get; set; }
+        public int DataMenuSettingID { get; set; }
         //public bool InitialSearchShouldBeIncluded { get; set; }
     }
     public class DataViewAreaRequestedArg : EventArgs

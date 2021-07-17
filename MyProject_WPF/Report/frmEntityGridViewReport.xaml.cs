@@ -37,7 +37,7 @@ namespace MyProject_WPF
             //  SetSubReports();
             //    SetSubReportRelationships();
             SetEntityPreDefinedSearchList();
-            SetEntityListViews();
+            SetDataMenuSetting();
             if (entityViewReportID != 0)
             {
                 GetEntityGridViewReport(entityViewReportID);
@@ -83,38 +83,38 @@ namespace MyProject_WPF
             SetEntityPreDefinedSearchList();
             lookup.SelectedValue = e.ID;
         }
-      
-        private void SetEntityListViews()
+
+        private void SetDataMenuSetting()
         {
-            if (lokEntityListView.ItemsSource == null)
+            if (lokDataMenuSetting.ItemsSource == null)
             {
-                lokEntityListView.EditItemClicked += LokEntityListView_EditItemClicked;
+                lokDataMenuSetting.EditItemClicked += lokDataMenuSetting_EditItemClicked;
             }
-            BizEntityListView biz = new BizEntityListView();
-            lokEntityListView.DisplayMember = "Title";
-            lokEntityListView.SelectedValueMember = "ID";
-            lokEntityListView.ItemsSource = biz.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+            BizDataMenuSetting biz = new BizDataMenuSetting();
+            lokDataMenuSetting.DisplayMember = "Title";
+            lokDataMenuSetting.SelectedValueMember = "ID";
+            lokDataMenuSetting.ItemsSource = biz.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
         }
 
-        private void LokEntityListView_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
+        private void lokDataMenuSetting_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
         {
             var lookup = (sender as MyStaticLookup);
-            frmEntityListView view;
+            frmDataMenuSetting view;
             if (lookup.SelectedItem == null)
             {
-                view = new frmEntityListView(EntityID, 0);
+                view = new frmDataMenuSetting(EntityID, 0);
             }
             else
             {
-                view = new frmEntityListView(EntityID, (int)lookup.SelectedValue);
+                view = new frmDataMenuSetting(EntityID, (int)lookup.SelectedValue);
             }
-            view.EntityListViewUpdated += (sender1, e1) => View_EntityListViewUpdated(sender1, e1, lookup);
+            view.DataUpdated += (sender1, e1) => View_EntityListViewUpdated(sender1, e1, lookup);
             MyProjectManager.GetMyProjectManager.ShowDialog(view, "تنظیمات نامه");
         }
-        private void View_EntityListViewUpdated(object sender, EntityListViewUpdatedArg e, MyStaticLookup lookup)
+        private void View_EntityListViewUpdated(object sender, int e, MyStaticLookup lookup)
         {
-            SetEntityListViews();
-            lookup.SelectedValue = e.ID;
+            SetDataMenuSetting();
+            lookup.SelectedValue = e;
         }
         //private void SetSubReportRelationships()
         //{
@@ -142,7 +142,7 @@ namespace MyProject_WPF
         private void ShowMessage()
         {
             txtReportName.Text = Message.ReportTitle;
-            lokEntityListView.SelectedValue = Message.DefaultEntityListViewID;
+            lokDataMenuSetting.SelectedValue = Message.DataMenuSettingID;
             lokSearchRepository.SelectedValue = Message.SearchRepositoryID;
 
             //  dtgSubReports.ItemsSource = Message.EntityGridViewReportSubs;
@@ -157,7 +157,7 @@ namespace MyProject_WPF
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            if (lokEntityListView.SelectedItem == null)
+            if (lokDataMenuSetting.SelectedItem == null)
             {
                 MessageBox.Show("لطفا ابتدا لیست ستونها را ثبت و انتخاب نمایید");
                 return;
@@ -169,7 +169,7 @@ namespace MyProject_WPF
             }
             Message.TableDrivedEntityID = EntityID;
             Message.ReportTitle = txtReportName.Text;
-            Message.DefaultEntityListViewID = (int)lokEntityListView.SelectedValue;
+            Message.DataMenuSettingID = (int)lokDataMenuSetting.SelectedValue;
            
             if (lokSearchRepository.SelectedItem != null)
                 Message.SearchRepositoryID = (int)lokSearchRepository.SelectedValue;

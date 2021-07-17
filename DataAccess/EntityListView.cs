@@ -16,11 +16,10 @@ namespace DataAccess
     {
         public EntityListView()
         {
-            this.DataViewSetting = new HashSet<DataViewSetting>();
+            this.DataMenuSetting = new HashSet<DataMenuSetting>();
             this.EntityChartReport = new HashSet<EntityChartReport>();
             this.EntityCrosstabReport = new HashSet<EntityCrosstabReport>();
             this.EntityListReport = new HashSet<EntityListReport>();
-            this.GridViewSetting = new HashSet<GridViewSetting>();
             this.LetterTemplate = new HashSet<LetterTemplate>();
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
             this.TableDrivedEntity1 = new HashSet<TableDrivedEntity>();
@@ -30,11 +29,10 @@ namespace DataAccess
         public int TableDrivedEntityID { get; set; }
         public string Title { get; set; }
     
-        public virtual ICollection<DataViewSetting> DataViewSetting { get; set; }
+        public virtual ICollection<DataMenuSetting> DataMenuSetting { get; set; }
         public virtual ICollection<EntityChartReport> EntityChartReport { get; set; }
         public virtual ICollection<EntityCrosstabReport> EntityCrosstabReport { get; set; }
         public virtual ICollection<EntityListReport> EntityListReport { get; set; }
-        public virtual ICollection<GridViewSetting> GridViewSetting { get; set; }
         public virtual ICollection<LetterTemplate> LetterTemplate { get; set; }
         public virtual ICollection<EntityListViewColumns> EntityListViewColumns { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }

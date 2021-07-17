@@ -17,15 +17,30 @@ namespace DataAccess
         public DataMenuSetting()
         {
             this.DataMenuDataViewRelationship = new HashSet<DataMenuDataViewRelationship>();
+            this.DataMenuDataViewRelationship1 = new HashSet<DataMenuDataViewRelationship>();
             this.DataMenuGridViewRelationship = new HashSet<DataMenuGridViewRelationship>();
+            this.DataMenuGridViewRelationship1 = new HashSet<DataMenuGridViewRelationship>();
             this.DataMenuReportRelationship = new HashSet<DataMenuReportRelationship>();
+            this.EntityDataViewReport = new HashSet<EntityDataViewReport>();
+            this.EntityGridViewReport = new HashSet<EntityGridViewReport>();
+            this.TableDrivedEntity1 = new HashSet<TableDrivedEntity>();
         }
     
         public int ID { get; set; }
+        public int TableDrivedEntityID { get; set; }
+        public int EntityListViewID { get; set; }
+        public string Name { get; set; }
+        public byte[] IconContent { get; set; }
     
         public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship { get; set; }
+        public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship1 { get; set; }
         public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }
+        public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship1 { get; set; }
         public virtual ICollection<DataMenuReportRelationship> DataMenuReportRelationship { get; set; }
+        public virtual EntityListView EntityListView { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
+        public virtual ICollection<EntityDataViewReport> EntityDataViewReport { get; set; }
+        public virtual ICollection<EntityGridViewReport> EntityGridViewReport { get; set; }
+        public virtual ICollection<TableDrivedEntity> TableDrivedEntity1 { get; set; }
     }
 }

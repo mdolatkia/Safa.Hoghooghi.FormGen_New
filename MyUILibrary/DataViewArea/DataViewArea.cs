@@ -29,7 +29,7 @@ namespace MyUILibrary.DataViewArea
 
         public void SetAreaInitializerSpecialized(DataViewAreaInitializer initParam)
         {
-            DataViewSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataViewManager.GetDataViewSetting(initParam.EntityID);
+            //DataViewSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataViewManager.GetDataViewSetting(initParam.EntityID);
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetViewOfDataViewArea();
         }
 

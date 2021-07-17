@@ -29,52 +29,52 @@ namespace MyModelManager
         //    //CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.DataView, entityID.ToString());
         //    return result;
         //}
-        public DataViewSettingDTO GetDataViewSetting(int entitiyID, bool withDetails)
-        {
-            List<DataViewSettingDTO> result = new List<DataViewSettingDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
-            {
-                var item = projectContext.DataViewSetting.FirstOrDefault(x => x.ID == entitiyID);
-                if (item != null)
-                    return ToDataViewSettingDTO(item, withDetails);
-                else
-                    return null;
-            }
-        }
+        //public DataViewSettingDTO GetDataViewSetting(int entitiyID, bool withDetails)
+        //{
+        //    List<DataViewSettingDTO> result = new List<DataViewSettingDTO>();
+        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    {
+        //        var item = projectContext.DataViewSetting.FirstOrDefault(x => x.ID == entitiyID);
+        //        if (item != null)
+        //            return ToDataViewSettingDTO(item, withDetails);
+        //        else
+        //            return null;
+        //    }
+        //}
         BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
-        private DataViewSettingDTO ToDataViewSettingDTO(DataViewSetting item, bool withDetails)
-        {
-            DataViewSettingDTO result = new DataViewSettingDTO();
-            result.EntityListViewID = item.EntityListViewID ?? 0;
-            result.IconContent = item.IconContent;
+        //private DataViewSettingDTO ToDataViewSettingDTO(DataViewSetting item, bool withDetails)
+        //{
+        //    DataViewSettingDTO result = new DataViewSettingDTO();
+        //    result.EntityListViewID = item.EntityListViewID ?? 0;
+        //    result.IconContent = item.IconContent;
            
-            //if (result.CodeFunctionID != 0 && withDetails)
-            //{
-            //    var bizCodeFunction = new BizCodeFunction();
-            //    result.CodeFunction = bizCodeFunction.GetCodeFunction(item.CodeFunctionID);
-            //}
-            //result.TableDrivedEntityID = item.TableDrivedEntityID;
-            result.ID = item.ID;
+        //    //if (result.CodeFunctionID != 0 && withDetails)
+        //    //{
+        //    //    var bizCodeFunction = new BizCodeFunction();
+        //    //    result.CodeFunction = bizCodeFunction.GetCodeFunction(item.CodeFunctionID);
+        //    //}
+        //    //result.TableDrivedEntityID = item.TableDrivedEntityID;
+        //    result.ID = item.ID;
 
 
-            return result;
-        }
-        public void UpdateEntityDataViews(int entityID, DataViewSettingDTO message)
-        {
-            using (var projectContext = new DataAccess.MyProjectEntities())
-            {
-                var dbEntity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
+        //    return result;
+        //}
+        //public void UpdateEntityDataViews(int entityID, DataViewSettingDTO message)
+        //{
+        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    {
+        //        var dbEntity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
 
-                if (dbEntity.DataViewSetting == null)
-                {
-                    dbEntity.DataViewSetting = new DataAccess.DataViewSetting();
-                }
+        //        if (dbEntity.DataViewSetting == null)
+        //        {
+        //            dbEntity.DataViewSetting = new DataAccess.DataViewSetting();
+        //        }
                
-                dbEntity.DataViewSetting.EntityListViewID = (message.EntityListViewID != 0 ? message.EntityListViewID : (int?)null);
-                dbEntity.DataViewSetting.IconContent = message.IconContent;
-                projectContext.SaveChanges();
-            }
-        }
+        //        dbEntity.DataViewSetting.EntityListViewID = (message.EntityListViewID != 0 ? message.EntityListViewID : (int?)null);
+        //        dbEntity.DataViewSetting.IconContent = message.IconContent;
+        //        projectContext.SaveChanges();
+        //    }
+        //}
     }
 
 }

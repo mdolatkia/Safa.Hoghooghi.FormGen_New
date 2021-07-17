@@ -26,8 +26,8 @@
             </Grid.ColumnDefinitions>
             <TextBlock Text="نام گزارش"/>
             <TextBox Grid.Column="1" x:Name="txtReportName"/>
-            <TextBlock Grid.Column="2" Text="لیست ستونها"/>
-            <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" NewItemEnabled="True" EditItemEnabled="True"  x:Name="lokEntityListView" Grid.Column="3" />
+            <TextBlock Grid.Column="2" Text="تنظیمات منوی داده"/>
+            <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" NewItemEnabled="True" EditItemEnabled="True"  x:Name="lokDataMenuSetting" Grid.Column="3" />
         
             <TextBlock Grid.Column="0" Grid.Row="1" Text="جستجوی پیش فرض"/>
             <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" NewItemEnabled="True" EditItemEnabled="True"  x:Name="lokSearchRepository"  />

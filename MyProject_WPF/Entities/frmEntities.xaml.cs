@@ -34,6 +34,7 @@ namespace MyProject_WPF
         BizTable bizTable = new BizTable();
         int DatabaseID { set; get; }
         MySearchLookupColumn formulaColumn;
+        MySearchLookupColumn dataMenuSettingColumn;
         public frmEntities(int databaseID)
         {
             InitializeComponent();
@@ -173,6 +174,9 @@ namespace MyProject_WPF
                 formulaColumn.EditItemClicked += formulaColumn_EditItemClicked;
                 dataGrid.Columns.Add(formulaColumn);
 
+
+            
+
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("CalculateFormulaAsDefault", "محاسبه پیش فرض", false, null, GridViewColumnType.CheckBox));
 
 
@@ -225,6 +229,9 @@ namespace MyProject_WPF
 
             }
         }
+
+      
+
         private void formulaColumn_EditItemClicked(object sender, EditItemClickEventArg e)
         {
             int formulaID = 0;
@@ -240,7 +247,6 @@ namespace MyProject_WPF
         }
         private void SetFormulas()
         {
-            BizFormula bizFormula = new BizFormula();
             //var entity = dtgRuleEntity.SelectedItem as TableDrivedEntityDTO;
             //var formulas = bizFormula.GetFormulas(entityID);
             formulaColumn.DisplayMemberPath = "Name";
@@ -619,16 +625,16 @@ namespace MyProject_WPF
 
 
 
-                var dataViewGMenu = AddMenu(contextMenu.Items, "نمایش داده ها", "", "../Images/view.png");
+         //       var dataViewGMenu = AddMenu(contextMenu.Items, "نمایش داده ها", "", "../Images/view.png");
 
-                var listViewMenu = AddMenu(dataViewGMenu.Items, "لیست نمایش", "", "../Images/listView.png");
+                var listViewMenu = AddMenu(contextMenu.Items, "لیست نمایش", "", "../Images/listView.png");
                 listViewMenu.Click += (sender1, EventArgs) => customMenuItem_ClickListView(sender, e, source.DataContext as TableDrivedEntityDTO);
 
-                var dataViewMenu = AddMenu(dataViewGMenu.Items, "نمای عمومی گرافیکی", "", "../Images/dataview.png");
-                dataViewMenu.Click += (sender1, EventArgs) => customMenuItem_EntityDataView(sender, e, source.DataContext as TableDrivedEntityDTO);
+                //var dataViewMenu = AddMenu(dataViewGMenu.Items, "نمای عمومی گرافیکی", "", "../Images/dataview.png");
+                //dataViewMenu.Click += (sender1, EventArgs) => customMenuItem_EntityDataView(sender, e, source.DataContext as TableDrivedEntityDTO);
 
-                var dataGridMenu = AddMenu(dataViewGMenu.Items, "نمای عمومی جدولی", "", "../Images/listView.png");
-                dataGridMenu.Click += (sender1, EventArgs) => customMenuItem_EntityGridView(sender, e, source.DataContext as TableDrivedEntityDTO);
+                //var dataGridMenu = AddMenu(dataViewGMenu.Items, "نمای عمومی جدولی", "", "../Images/listView.png");
+                //dataGridMenu.Click += (sender1, EventArgs) => customMenuItem_EntityGridView(sender, e, source.DataContext as TableDrivedEntityDTO);
 
 
 
@@ -723,16 +729,16 @@ namespace MyProject_WPF
             frmDataLink frm = new frmDataLink(entity.ID, 0);
             MyProjectManager.GetMyProjectManager.ShowDialog(frm, "لینک داده", Enum_WindowSize.Big);
         }
-        void customMenuItem_EntityGridView(object sender, RoutedEventArgs e, TableDrivedEntityDTO entity)
-        {
-            frmEntityGridView frm = new frmEntityGridView(entity.ID);
-            MyProjectManager.GetMyProjectManager.ShowDialog(frm, "گرید داده", Enum_WindowSize.Big);
-        }
-        void customMenuItem_EntityDataView(object sender, RoutedEventArgs e, TableDrivedEntityDTO entity)
-        {
-            frmEntityDataView frm = new frmEntityDataView(entity.ID);
-            MyProjectManager.GetMyProjectManager.ShowDialog(frm, "نمایش داده", Enum_WindowSize.Big);
-        }
+        //void customMenuItem_EntityGridView(object sender, RoutedEventArgs e, TableDrivedEntityDTO entity)
+        //{
+        //    frmEntityGridView frm = new frmEntityGridView(entity.ID);
+        //    MyProjectManager.GetMyProjectManager.ShowDialog(frm, "گرید داده", Enum_WindowSize.Big);
+        //}
+        //void customMenuItem_EntityDataView(object sender, RoutedEventArgs e, TableDrivedEntityDTO entity)
+        //{
+        //    frmEntityDataView frm = new frmEntityDataView(entity.ID);
+        //    MyProjectManager.GetMyProjectManager.ShowDialog(frm, "نمایش داده", Enum_WindowSize.Big);
+        //}
         void customMenuItem_EntityParameters(object sender, RoutedEventArgs e, TableDrivedEntityDTO entity)
         {
             frmFormula frm = new frmFormula(0, entity.ID);
@@ -822,7 +828,7 @@ namespace MyProject_WPF
 
         void customMenuItem_ClickMenuSetting(object sender, RoutedEventArgs e, TableDrivedEntityDTO entity)
         {
-            frmDataMenuSetting frm = new frmDataMenuSetting(entity.ID);
+            frmDataMenuSetting frm = new frmDataMenuSetting(entity.ID,0);
             MyProjectManager.GetMyProjectManager.ShowDialog(frm, "frmDataMenuSetting", Enum_WindowSize.Big);
         }
         void customMenuItem_ClickExternalReport(object sender, RoutedEventArgs e, TableDrivedEntityDTO entity)

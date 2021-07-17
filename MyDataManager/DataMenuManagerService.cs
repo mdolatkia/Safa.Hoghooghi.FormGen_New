@@ -15,10 +15,14 @@ namespace MyDataManagerService
     public class DataMenuManagerService
     {
         BizDataMenuSetting bizDataMenuSetting = new BizDataMenuSetting();
-        //public DataMenuSettingDTO GetDataMenuSetting(int entityID)
-        //{
-        //    return bizDataMenuSetting.GetDataMenuSetting(entityID, true);
-        //}
+        public DataMenuSettingDTO GetDataMenuSetting(DR_Requester requester, int ID)
+        {
+            return bizDataMenuSetting.GetDataMenuSetting(requester, ID, true);
+        }
+        public DataMenuSettingDTO GetDefaultDataMenuSetting(DR_Requester requester, int entityID)
+        {
+            return bizDataMenuSetting.GetDefaultDataMenuSetting(requester, entityID, true);
+        }
         public List<DataMenu> GetDataMenu(DR_Requester requester, DP_DataView dataItem)
         {
             return bizDataMenuSetting.GetDataMenu(requester, dataItem);

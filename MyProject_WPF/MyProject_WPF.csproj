@@ -308,9 +308,6 @@
     <Compile Include="EntityState\frmUIActionActivitySelect.xaml.cs">
       <DependentUpon>frmUIActionActivitySelect.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GridView\frmEntityGridView.xaml.cs">
-      <DependentUpon>frmEntityGridView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Letter\frmLetterRelationships.xaml.cs">
       <DependentUpon>frmLetterRelationships.xaml</DependentUpon>
     </Compile>
@@ -320,9 +317,6 @@
     </Compile>
     <Compile Include="DataLink\frmDataLinkSelect.xaml.cs">
       <DependentUpon>frmDataLinkSelect.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DataView\frmEntityDataView.xaml.cs">
-      <DependentUpon>frmEntityDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Letter\frmPartialLetterTemplate.xaml.cs">
       <DependentUpon>frmPartialLetterTemplate.xaml</DependentUpon>
@@ -643,10 +637,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="DataView\frmEntityDataView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="DBImport\DatabaseImportWizard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -730,10 +720,6 @@
     <Page Include="Entities\frmEntities.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GridView\frmEntityGridView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Letter\frmLetterRelationships.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1387,6 +1373,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\method.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DataView\" />
+    <Folder Include="GridView\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -29,26 +29,37 @@ namespace MyProject_WPF
     {
         BizEntitySearchableReport bizEntitySearchableReport = new BizEntitySearchableReport();
         DataMenuSettingDTO Message { set; get; }
-        BizDataMenuSetting bizEntityReportSetting = new BizDataMenuSetting();
+        BizDataMenuSetting bizDataMenuSetting = new BizDataMenuSetting();
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
+
+        public event EventHandler<int> DataUpdated;
         int EntityID { set; get; }
 
-        public frmDataMenuSetting(int entityID)
+        public frmDataMenuSetting(int entityID, int dataMenuSettingID)
         {
             InitializeComponent();
             EntityID = entityID;
             SetRelationshipTails();
-            GetDataMenuSetting(entityID);
+
+            if (dataMenuSettingID == 0)
+            {
+                Message = new  DataMenuSettingDTO();
+                ShowMessage();
+            }
+            else
+                GetDataMenuSetting(dataMenuSettingID);
+
+
             ControlHelper.GenerateContextMenu(dtgDataGridRelationships);
-            //ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
+            ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
             ControlHelper.GenerateContextMenu(dtgReportRelationships);
 
             //ControlHelper.GenerateContextMenu(dtgExternalReports);
             dtgReportRelationships.RowLoaded += DtgColumns_RowLoaded;
             dtgReportRelationships.CellEditEnded += DtgConditions_CellEditEnded;
             colReportRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
-            //colDataViewRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
+            colDataViewRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
             colDataGridRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
 
         }
@@ -61,9 +72,9 @@ namespace MyProject_WPF
             colDataGridRelationshipTail.SelectedValueMemberPath = "ID";
             colDataGridRelationshipTail.ItemsSource = relationshipTails;
 
-            //colDataViewRelationshipTail.DisplayMemberPath = "EntityPath";
-            //colDataViewRelationshipTail.SelectedValueMemberPath = "ID";
-            //colDataViewRelationshipTail.ItemsSource = relationshipTails;
+            colDataViewRelationshipTail.DisplayMemberPath = "EntityPath";
+            colDataViewRelationshipTail.SelectedValueMemberPath = "ID";
+            colDataViewRelationshipTail.ItemsSource = relationshipTails;
 
             colReportRelationshipTail.DisplayMemberPath = "EntityPath";
             colReportRelationshipTail.SelectedValueMemberPath = "ID";
@@ -116,14 +127,17 @@ namespace MyProject_WPF
             myStaticLookup.SelectedValue = e1.EntityRelationshipTailID;
         }
 
-        private void GetDataMenuSetting(int entityID)
+        private void GetDataMenuSetting(int ID)
         {
-            Message = bizEntityReportSetting.GetDataMenuSetting(MyProjectManager.GetMyProjectManager.GetRequester(), entityID, false);
+            Message = bizDataMenuSetting.GetDataMenuSetting(MyProjectManager.GetMyProjectManager.GetRequester(), ID, true);
             ShowMessage();
         }
-        کلا عوض بشه دیتا ویو ستینگ اختصاصی بشه
         private void ShowMessage()
         {
+            if (Message.ID == 0)
+                btnSetDataMenuSetting.IsEnabled = false;
+            else
+                btnSetDataMenuSetting.IsEnabled = true;
             dtgReportRelationships.ItemsSource = Message.ReportRelationships;
           
             dtgDataGridRelationships.ItemsSource = Message.GridViewRelationships;
@@ -131,6 +145,30 @@ namespace MyProject_WPF
             foreach (var item in Message.ReportRelationships)
             {
                 SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), item);
+            }
+
+            lokEntityDataView.SelectedValue = Message.EntityListViewID;
+            if (Message.IconContent != null)
+            {
+                grdExisting.Visibility = Visibility.Visible;
+                grdAddFile.Visibility = Visibility.Collapsed;
+                txtExistingFile.Text = "دارای فایل";
+            }
+            else
+            {
+                grdExisting.Visibility = Visibility.Collapsed;
+                grdAddFile.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void AddFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Icons (*.png,*.ico)|*.png;*.ico|All files (*.*)|*.*";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (openFileDialog.ShowDialog() == true)
+            {
+                txtFilePath.Text = openFileDialog.FileName;
             }
         }
         //private void AddFile_Click(object sender, RoutedEventArgs e)
@@ -209,21 +247,41 @@ namespace MyProject_WPF
                 MessageBox.Show("انتخاب رابطه و گزارش برای لیست گزارشات اجباری می باشد");
                 return;
             }
+            if (txtFilePath.Text != "")
+            {
+                Message.IconContent = File.ReadAllBytes(txtFilePath.Text);
+            }
+            if (lokEntityDataView.SelectedItem != null)
+                Message.EntityListViewID = (int)lokEntityDataView.SelectedValue;
+            else
+                Message.EntityListViewID = 0;
             Message.EntityID = EntityID;
-            bizEntityReportSetting.UpdateEntityReportDataMenuSettings(EntityID, Message);
+            bizDataMenuSetting.UpdateEntityReportDataMenuSettings(EntityID, Message);
             MessageBox.Show("اطلاعات ثبت شد");
         }
-
+        private void RemoveFile_Click(object sender, RoutedEventArgs e)
+        {
+            txtFilePath.Text = "";
+            grdExisting.Visibility = Visibility.Collapsed;
+            grdAddFile.Visibility = Visibility.Visible;
+            Message.IconContent = null;
+        }
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        //private void btnNew_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Message = new  DataMenuSettingDTO();
-        //    ShowMessage();
-        //}
+        private void btnNew_Click(object sender, RoutedEventArgs e)
+        {
+            Message = new DataMenuSettingDTO();
+            ShowMessage();
+        }
+
+        private void BtnSetDataMenuSetting_Click(object sender, RoutedEventArgs e)
+        {
+            if (bizDataMenuSetting.SetDefaultDataMenuSetting(EntityID, Message.ID))
+                MessageBox.Show("تنظیمات منوی پیشفرض تعیین شد");
+        }
 
         //private void RemoveFile_Click(object sender, RoutedEventArgs e)
         //{

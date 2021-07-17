@@ -84,8 +84,6 @@
     <Compile Include="EntityUICompositionService.cs" />
     <Compile Include="DataLinkManagerService.cs" />
     <Compile Include="DataSearchManagerService.cs" />
-    <Compile Include="GridViewManagerService.cs" />
-    <Compile Include="DataViewManagerService.cs" />
     <Compile Include="BasicUISettingService.cs" />
     <Compile Include="CodeFunctionManagerService.cs" />
     <Compile Include="ArchiveManagerService.cs" />

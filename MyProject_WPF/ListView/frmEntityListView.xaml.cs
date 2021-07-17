@@ -30,7 +30,7 @@ namespace MyProject_WPF
         private EntityListViewDTO Message { set; get; }
         BizEntityListView bizEntityListView = new BizEntityListView();
         int EntityID { set; get; }
-        int EntityListViewID { set; get; }
+      //  int EntityListViewID { set; get; }
         public event EventHandler<EntityListViewUpdatedArg> EntityListViewUpdated;
         public frmEntityListView(int entityID, int entityListViewID)
         {
@@ -40,15 +40,15 @@ namespace MyProject_WPF
             var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
             if (entity.IsView)
                 colRelationshipTail.IsVisible = false;
-            EntityListViewID = entityListViewID;
+           // EntityListViewID = entityListViewID;
             SetRelationshipTails();
-            if (EntityListViewID == 0)
+            if (entityListViewID == 0)
             {
                 Message = new EntityListViewDTO();
                 ShowMessage();
             }
             else
-                GetEntityEntityListView(EntityListViewID);
+                GetEntityEntityListView(entityListViewID);
             dtgColumns.RowLoaded += DtgColumns_RowLoaded;
             dtgColumns.CellEditEnded += DtgConditions_CellEditEnded;
             colRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;

@@ -1181,7 +1181,7 @@ namespace ModelEntites
         {
         }
 
-        public int DefaultEntityListViewID { set; get; }
+        public int DataMenuSettingID { set; get; }
 
     }
     public class EntityDataLinkReportDTO : EntityReportDTO
@@ -1199,7 +1199,7 @@ namespace ModelEntites
         {
         }
 
-        public int DefaultEntityListViewID { set; get; }
+        public int DataMenuSettingID { set; get; }
 
     }
     //public class EntityListReportGroupedDTO : EntityReportDTO
@@ -1444,10 +1444,15 @@ namespace ModelEntites
             GridViewRelationships = new List<ModelEntites.DataMenuGridViewRelationshipDTO>();
         }
         public int ID { set; get; }
+        public string Name { set; get; }
+        public int EntityID { set; get; }
+
         public List<DataMenuDataViewRelationshipDTO> DataViewRelationships { set; get; }
         public List<DataMenuReportRelationshipDTO> ReportRelationships { set; get; }
         public List<DataMenuGridViewRelationshipDTO> GridViewRelationships { set; get; }
-        public int EntityID { set; get; }
+
+        public byte[] IconContent { set; get; }
+        public int EntityListViewID { set; get; }
 
     }
 
@@ -1797,31 +1802,31 @@ namespace ModelEntites
         Two,
         Unlimited
     }
-    public class DataViewSettingDTO
-    {
-        public DataViewSettingDTO()
-        {
-            //EntityDataViewRelationships = new List<ModelEntites.DataMenuDataViewRelationshipDTO>();
-        }
-        public int ID { set; get; }
-        public byte[] IconContent { set; get; }
-        public int EntityListViewID { set; get; }
+    //public class DataViewSettingDTO
+    //{
+    //    public DataViewSettingDTO()
+    //    {
+    //        //EntityDataViewRelationships = new List<ModelEntites.DataMenuDataViewRelationshipDTO>();
+    //    }
+    //    public int ID { set; get; }
+    //    public byte[] IconContent { set; get; }
+    //    public int EntityListViewID { set; get; }
 
-    }
+    //}
 
 
 
-    public class GridViewSettingDTO
-    {
-        public GridViewSettingDTO()
-        {
-            //EntityGridViewRelationships = new List<ModelEntites.DataMenuGridViewRelationshipDTO>();
-        }
-        public int ID { set; get; }
-        //public byte[] IconContent { set; get; }
-        public int EntityListViewID { set; get; }
+    //public class GridViewSettingDTO
+    //{
+    //    public GridViewSettingDTO()
+    //    {
+    //        //EntityGridViewRelationships = new List<ModelEntites.DataMenuGridViewRelationshipDTO>();
+    //    }
+    //    public int ID { set; get; }
+    //    //public byte[] IconContent { set; get; }
+    //    public int EntityListViewID { set; get; }
 
-    }
+    //}
 
 
 

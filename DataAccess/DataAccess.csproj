@@ -211,9 +211,6 @@
     <Compile Include="DataMenuSetting.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataViewSetting.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Include="DateColumnType.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
@@ -342,9 +339,6 @@
     </Compile>
     <Compile Include="FormulaUsageParemeters.cs">
       <DependentUpon>MyIdeaDataDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="GridViewSetting.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="GroupUISetting.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>

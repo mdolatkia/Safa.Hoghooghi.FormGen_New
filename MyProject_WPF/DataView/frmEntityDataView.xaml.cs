@@ -112,9 +112,11 @@ namespace MyProject_WPF
 
         private void ShowMessage()
         {
-            lokEntityDataView.SelectedValue = Message.EntityListViewID;
+            
             dtgDataViewRelationships.ItemsSource = Message.DataViewRelationships;
             //dtgRelationships.ItemsSource = Message.EntityDataViewRelationships;
+
+            lokEntityDataView.SelectedValue = Message.EntityListViewID;
             if (Message.IconContent != null)
             {
                 grdExisting.Visibility = Visibility.Visible;

@@ -60,7 +60,6 @@ namespace DataAccess
         public virtual DbSet<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }
         public virtual DbSet<DataMenuReportRelationship> DataMenuReportRelationship { get; set; }
         public virtual DbSet<DataMenuSetting> DataMenuSetting { get; set; }
-        public virtual DbSet<DataViewSetting> DataViewSetting { get; set; }
         public virtual DbSet<DateColumnType> DateColumnType { get; set; }
         public virtual DbSet<DateTimeColumnType> DateTimeColumnType { get; set; }
         public virtual DbSet<DBSchema> DBSchema { get; set; }
@@ -92,7 +91,6 @@ namespace DataAccess
         public virtual DbSet<ExplicitOneToOneRelationshipType> ExplicitOneToOneRelationshipType { get; set; }
         public virtual DbSet<Formula> Formula { get; set; }
         public virtual DbSet<FormulaItems> FormulaItems { get; set; }
-        public virtual DbSet<GridViewSetting> GridViewSetting { get; set; }
         public virtual DbSet<GroupUISetting> GroupUISetting { get; set; }
         public virtual DbSet<ImplicitOneToOneRelationshipType> ImplicitOneToOneRelationshipType { get; set; }
         public virtual DbSet<ISARelationship> ISARelationship { get; set; }

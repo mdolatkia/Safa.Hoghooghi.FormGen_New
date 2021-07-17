@@ -163,17 +163,17 @@ namespace MyUILibrary.DataViewArea
         {
             DataViewAreas.Clear();
             CurrentDataViewArea = null;
-            AddDataViewArea(GeneralEntitySearchArea.SelectedEntity.ID, GeneralEntitySearchArea.SelectedEntity.Alias, null, AreaInitializer.EntityListViewID, AreaInitializer.DataViewOrGridView);
+            AddDataViewArea(GeneralEntitySearchArea.SelectedEntity.ID, GeneralEntitySearchArea.SelectedEntity.Alias, null, AreaInitializer.DataMenuSettingID, AreaInitializer.DataViewOrGridView);
             FirstDataView = DataViewAreas[0];
         }
-        public void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepository searchRepository, I_DataViewItem causingDataViewItem, bool dataViewOrGridView, int defaultEntityListViewID)
+        public void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepository searchRepository, I_DataViewItem causingDataViewItem, bool dataViewOrGridView, int dataMenuSettingID)
         {
             if (CurrentDataViewArea != null && CurrentDataViewArea is I_DataViewArea)
                 (CurrentDataViewArea as I_DataViewArea).DefaultDataViewItem = causingDataViewItem;
 
-            AddDataViewArea(entityID, title, searchRepository, defaultEntityListViewID, dataViewOrGridView);
+            AddDataViewArea(entityID, title, searchRepository, dataMenuSettingID, dataViewOrGridView);
         }
-        private void AddDataViewArea(int entityID, string title, DP_SearchRepository searchRepository, int entityListViewID, bool dataViewOrGridView)
+        private void AddDataViewArea(int entityID, string title, DP_SearchRepository searchRepository, int dataMenuSettingID, bool dataViewOrGridView)
         {
             DataArea dataArea = null;
             if (dataViewOrGridView)
@@ -187,7 +187,7 @@ namespace MyUILibrary.DataViewArea
             var firstInit = new DataViewAreaInitializer();
             //  firstInit.UserCanChangeSearch = userCanChangeSearch;
             //   firstInit.SearchRepository = searchRepository;
-            firstInit.EntityListViewID = entityListViewID;
+            firstInit.DataMenuSettingID = dataMenuSettingID;
             firstInit.EntityID = entityID;
             firstInit.Title = title;
             //firstInit.CausingRelationship = causingRelationship;

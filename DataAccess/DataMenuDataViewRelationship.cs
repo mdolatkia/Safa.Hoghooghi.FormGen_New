@@ -18,8 +18,10 @@ namespace DataAccess
         public int EntityRelationshipTailID { get; set; }
         public string Group1 { get; set; }
         public int DataMenuSettingID { get; set; }
+        public Nullable<int> TargetDataMenuSettingID { get; set; }
     
         public virtual DataMenuSetting DataMenuSetting { get; set; }
+        public virtual DataMenuSetting DataMenuSetting1 { get; set; }
         public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
     }
 }

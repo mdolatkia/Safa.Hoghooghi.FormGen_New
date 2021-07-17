@@ -18,11 +18,13 @@ namespace DataAccess
         public int RelationshipID { get; set; }
         public Nullable<int> ValueRelationshipTailID { get; set; }
         public int ValueColumnID { get; set; }
+        public Nullable<int> SearchRelationshipTailID { get; set; }
         public int SearchColumnID { get; set; }
     
         public virtual Column Column { get; set; }
         public virtual Column Column1 { get; set; }
         public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
+        public virtual EntityRelationshipTail EntityRelationshipTail1 { get; set; }
         public virtual Relationship Relationship { get; set; }
     }
 }

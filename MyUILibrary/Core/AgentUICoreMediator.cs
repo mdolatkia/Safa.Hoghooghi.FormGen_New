@@ -55,10 +55,10 @@ namespace MyUILibrary
         public StateManagerService StateManager = new StateManagerService();
         public LetterManagerService LetterManager = new LetterManagerService();
         public DataItemManagerService DataItemManager = new DataItemManagerService();
-        public DataViewManagerService DataViewManager = new DataViewManagerService();
+      //  public DataViewManagerService DataViewManager = new DataViewManagerService();
         public EntityListViewManagerService EntityListViewManager = new EntityListViewManagerService();
         public DataSearchManagerService DataSearchManager = new DataSearchManagerService();
-        public GridViewManagerService GridViewManager = new GridViewManagerService();
+      //  public GridViewManagerService GridViewManager = new GridViewManagerService();
         public DataLinkManagerService DataLinkManager = new DataLinkManagerService();
         public ReportManagerService ReportManager = new ReportManagerService();
         public DataMenuManagerService DataMenuManager = new DataMenuManagerService();
@@ -648,7 +648,7 @@ namespace MyUILibrary
                     UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + report.ID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
                     return;
                 }
-                ShowDataViewGridViewArea(report.TableDrivedEntityID, report.ReportTitle, dialog, userCanChangeSearch, true, initializeSearchRepository, showInitializeSearchRepository, dvreport.DefaultEntityListViewID, hostDataViewArea, defaultDataViewItem);
+                ShowDataViewGridViewArea(report.TableDrivedEntityID, report.ReportTitle, dialog, userCanChangeSearch, true, initializeSearchRepository, showInitializeSearchRepository, dvreport.DataMenuSettingID, hostDataViewArea, defaultDataViewItem);
 
             }
             else if (report.SearchableReportType == SearchableReportType.GridView)
@@ -659,7 +659,7 @@ namespace MyUILibrary
                     UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + report.ID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
                     return;
                 }
-                ShowDataViewGridViewArea(report.TableDrivedEntityID, report.ReportTitle, dialog, userCanChangeSearch, false, initializeSearchRepository, showInitializeSearchRepository, dvreport.DefaultEntityListViewID, hostDataViewArea, defaultDataViewItem);
+                ShowDataViewGridViewArea(report.TableDrivedEntityID, report.ReportTitle, dialog, userCanChangeSearch, false, initializeSearchRepository, showInitializeSearchRepository, dvreport.DataMenuSettingID, hostDataViewArea, defaultDataViewItem);
             }
             else if (report.SearchableReportType == SearchableReportType.ExternalReport)
             {
@@ -803,23 +803,21 @@ namespace MyUILibrary
 
 
         //}
-        public void ShowDataViewGridViewArea(int entityId, string title, bool dialog, bool userCanChangeSearch, bool dataViewOrGridView, DP_SearchRepository initializeSearchRepository, bool showInitializeSearchRepository, int entityListViewID, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
+        public void ShowDataViewGridViewArea(int entityId, string title, bool dialog, bool userCanChangeSearch, bool dataViewOrGridView, DP_SearchRepository initializeSearchRepository, bool showInitializeSearchRepository, int dataMenuSettingID, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
         {
 
             if (hostDataViewArea != null)
             {
-                hostDataViewArea.DataViewAreaContainer.AddDataViewAreaFromOutSide(entityId, title, initializeSearchRepository, defaultDataViewItem, true, entityListViewID);
+                hostDataViewArea.DataViewAreaContainer.AddDataViewAreaFromOutSide(entityId, title, initializeSearchRepository, defaultDataViewItem, true, dataMenuSettingID);
             }
             else
             {
-
-
-
+                inja
                 var initializer = new MyUILibraryInterfaces.DataViewArea.DataViewAreaContainerInitializer();
                 initializer.EntityID = entityId;
                 initializer.Title = title;
                 initializer.DataViewOrGridView = dataViewOrGridView;
-                initializer.EntityListViewID = entityListViewID;
+                initializer.DataMenuSettingID = dataMenuSettingID;
                 //   initializer.PreDefinedSearch = preDefinedSearch;
                 initializer.ShowInitializeSearchRepository = showInitializeSearchRepository;
                 initializer.UserCanChangeSearchRepository = userCanChangeSearch;

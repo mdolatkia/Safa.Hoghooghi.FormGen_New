@@ -11,44 +11,87 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
-        <TabControl MinHeight="150" >
-            <TabItem Header="روابط گزارشات">
-                <telerik:RadGridView x:Name="dtgReportRelationships" AutoGenerateColumns="False">
-                    <telerik:RadGridView.Columns>
-                        <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True" NewItemEnabled="True" x:Name="colReportRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
-                        <telerik:GridViewComboBoxColumn x:Name="colReports" ItemsSourceBinding="{Binding vwReports}" Header="گزارشات" DataMemberBinding="{Binding EntitySearchableReportID}" />
-                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
-                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>
-                    </telerik:RadGridView.Columns>
-                </telerik:RadGridView>
-            </TabItem>
-            <!--<TabItem Header="روابط نمایش داده">
-                <telerik:RadGridView x:Name="dtgDataViewRelationships" AutoGenerateColumns="False">
-                    <telerik:RadGridView.Columns>
-                        --><!--<MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipID}"  x:Name="colRelationship" Header="روابط"></MyCommonWPFControls:MyStaticLookupColumn>--><!--
-                        <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True"  NewItemEnabled="True" x:Name="colDataViewRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
-                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
-                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>
-                    </telerik:RadGridView.Columns>
-                </telerik:RadGridView>
-            </TabItem>-->
-            <TabItem Header="روابط گرید">
-                <telerik:RadGridView x:Name="dtgDataGridRelationships" AutoGenerateColumns="False">
-                    <telerik:RadGridView.Columns>
-                        <!--<MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipID}"  x:Name="colRelationship" Header="روابط"></MyCommonWPFControls:MyStaticLookupColumn>-->
-                        <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True" NewItemEnabled="True" x:Name="colDataGridRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
-                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
-                        <telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>
-                    </telerik:RadGridView.Columns>
-                </telerik:RadGridView>
-            </TabItem>
-        </TabControl>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Text="عنوان"></TextBlock>
+                <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtName"></TextBox>
+                <TextBlock Grid.Row="1" Text="آیکون"></TextBlock>
+                <Grid x:Name="grdAddFile" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition ></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="txtFilePath" ></TextBox>
+                    <Button Grid.Column="1" x:Name="AddFile" Click="AddFile_Click" Content="انتخاب" Width="60"></Button>
+                </Grid>
+                <Grid x:Name="grdExisting" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition ></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="txtExistingFile" ></TextBox>
+                    <Button Grid.Column="1" x:Name="RemoveFile" Click="RemoveFile_Click" Content="حذف" Width="60"></Button>
+                </Grid>
+                <TextBlock Grid.Row="2" Text="نمایش لیست"></TextBlock>
+                <MyCommonWPFControls:MyStaticLookup  Grid.Row="2" Grid.ColumnSpan="3" x:Name="lokEntityDataView" HorizontalAlignment="Stretch" Grid.Column="1"></MyCommonWPFControls:MyStaticLookup>
+            </Grid>
+            <TabControl Grid.Row="1" MinHeight="150" >
+                <TabItem Header="روابط گزارشات">
+                    <telerik:RadGridView x:Name="dtgReportRelationships" AutoGenerateColumns="False">
+                        <telerik:RadGridView.Columns>
+                            <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True" NewItemEnabled="True" x:Name="colReportRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
+                            <telerik:GridViewComboBoxColumn x:Name="colReports" ItemsSourceBinding="{Binding vwReports}" Header="گزارشات" DataMemberBinding="{Binding EntitySearchableReportID}" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>
+                        </telerik:RadGridView.Columns>
+                    </telerik:RadGridView>
+                </TabItem>
+                <TabItem Header="روابط نمایش داده">
+                    <telerik:RadGridView x:Name="dtgDataViewRelationships" AutoGenerateColumns="False">
+                        <telerik:RadGridView.Columns>
+                            <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipID}"  x:Name="colRelationship" Header="روابط"></MyCommonWPFControls:MyStaticLookupColumn>
+                            <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True"  NewItemEnabled="True" x:Name="colDataViewRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>
+                        </telerik:RadGridView.Columns>
+                    </telerik:RadGridView>
+                </TabItem>
+                <TabItem Header="روابط گرید">
+                    <telerik:RadGridView x:Name="dtgDataGridRelationships" AutoGenerateColumns="False">
+                        <telerik:RadGridView.Columns>
+                            <!--<MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipID}"  x:Name="colRelationship" Header="روابط"></MyCommonWPFControls:MyStaticLookupColumn>-->
+                            <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True" NewItemEnabled="True" x:Name="colDataGridRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>
+                        </telerik:RadGridView.Columns>
+                    </telerik:RadGridView>
+                </TabItem>
+            </TabControl>
+        </Grid>
 
 
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="ثبت" x:Name="btnSave" Click="btnSave_Click"></Button>
+            <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="جدید" x:Name="btnNew" Click="btnNew_Click"></Button>
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="بازگشت" x:Name="btnReturn" Click="btnReturn_Click"></Button>
+            <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="لیست پیش فرض شود" x:Name="btnSetDataMenuSetting" Click="BtnSetDataMenuSetting_Click"></Button>
+
         </StackPanel>
     </Grid>
 </UserControl>

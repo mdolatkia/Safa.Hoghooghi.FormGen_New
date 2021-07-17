@@ -26,6 +26,7 @@ namespace DataAccess
             this.DatabaseFunction_TableDrivedEntity = new HashSet<DatabaseFunction_TableDrivedEntity>();
             this.DataLinkDefinition = new HashSet<DataLinkDefinition>();
             this.DataLinkDefinition1 = new HashSet<DataLinkDefinition>();
+            this.DataMenuSetting = new HashSet<DataMenuSetting>();
             this.EntityDeterminer = new HashSet<EntityDeterminer>();
             this.EntityListView = new HashSet<EntityListView>();
             this.EntityRelationshipTail = new HashSet<EntityRelationshipTail>();
@@ -75,6 +76,7 @@ namespace DataAccess
         public bool ColumnsReviewed { get; set; }
         public bool SelectAsComboBox { get; set; }
         public Nullable<int> DeterminerColumnID { get; set; }
+        public Nullable<int> DataMenuSettingID { get; set; }
     
         public virtual ICollection<ArchiveFolder> ArchiveFolder { get; set; }
         public virtual ICollection<ArchiveTag> ArchiveTag { get; set; }
@@ -87,8 +89,8 @@ namespace DataAccess
         public virtual ICollection<DatabaseFunction_TableDrivedEntity> DatabaseFunction_TableDrivedEntity { get; set; }
         public virtual ICollection<DataLinkDefinition> DataLinkDefinition { get; set; }
         public virtual ICollection<DataLinkDefinition> DataLinkDefinition1 { get; set; }
-        public virtual DataMenuSetting DataMenuSetting { get; set; }
-        public virtual DataViewSetting DataViewSetting { get; set; }
+        public virtual ICollection<DataMenuSetting> DataMenuSetting { get; set; }
+        public virtual DataMenuSetting DataMenuSetting1 { get; set; }
         public virtual ICollection<EntityDeterminer> EntityDeterminer { get; set; }
         public virtual ICollection<EntityListView> EntityListView { get; set; }
         public virtual EntityListView EntityListView1 { get; set; }
@@ -100,7 +102,6 @@ namespace DataAccess
         public virtual ICollection<EntityUIComposition> EntityUIComposition { get; set; }
         public virtual ICollection<EntityValidation> EntityValidation { get; set; }
         public virtual ICollection<Formula> Formula { get; set; }
-        public virtual GridViewSetting GridViewSetting { get; set; }
         public virtual LetterEnabledEntities LetterEnabledEntities { get; set; }
         public virtual ICollection<LetterTemplate> LetterTemplate { get; set; }
         public virtual ICollection<LetterType> LetterType { get; set; }
