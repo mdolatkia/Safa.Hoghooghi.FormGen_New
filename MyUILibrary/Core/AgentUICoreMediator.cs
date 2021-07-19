@@ -219,7 +219,7 @@ namespace MyUILibrary
 
         private void DataViewMenu_Clicked(object sender, EventArgs e)
         {
-            ShowDataViewGridViewArea(0, "گرید داده", false, true, true, null, false, 0, null, null);
+            ShowDataViewGridViewArea(0, "نمای داده", false, true, true, null, false, 0, null, null);
         }
 
         private void LetterMenu_Clicked(object sender, EventArgs e)
@@ -808,11 +808,11 @@ namespace MyUILibrary
 
             if (hostDataViewArea != null)
             {
-                hostDataViewArea.DataViewAreaContainer.AddDataViewAreaFromOutSide(entityId, title, initializeSearchRepository, defaultDataViewItem, true, dataMenuSettingID);
+                hostDataViewArea.DataViewAreaContainer.AddDataViewAreaFromOutSide(entityId, title, initializeSearchRepository, defaultDataViewItem, dataViewOrGridView, dataMenuSettingID);
             }
             else
             {
-                inja
+                
                 var initializer = new MyUILibraryInterfaces.DataViewArea.DataViewAreaContainerInitializer();
                 initializer.EntityID = entityId;
                 initializer.Title = title;

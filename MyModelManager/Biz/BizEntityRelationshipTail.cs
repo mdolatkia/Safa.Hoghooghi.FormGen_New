@@ -136,7 +136,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var ittem = ToEntityRelationshipTailDTO(projectContext, tail.RelationshipPath, tail.TableDrivedEntityID, tail.TableDrivedEntity.Alias, tail.TargetEntityID, tail.TableDrivedEntity1.Alias, null, false);
+                var ittem = ToEntityRelationshipTailDTO(projectContext, tail.RelationshipPath, tail.TableDrivedEntityID, tail.TableDrivedEntity1.Alias, tail.TargetEntityID, tail.TableDrivedEntity.Alias, null, false);
                 ittem.Item1.ID = tail.ID;
 
                 return ittem.Item1;

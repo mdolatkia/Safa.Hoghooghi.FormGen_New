@@ -12,11 +12,16 @@ namespace MyUILibraryInterfaces.DataMenuArea
 {
     public class DataMenuAreaInitializer
     {
+        public DataMenuAreaInitializer(int dataMenuSettingID)
+        {
+            DataMenuSettingID = dataMenuSettingID;
+        }
         public object SourceView { set; get; }
         public DP_DataView DataItem { set; get; }
         //public List<EntityInstanceProperty> KeyProperties { set; get; }
         public I_DataArea HostDataViewArea { set; get; }
         public I_DataViewItem HostDataViewItem { set; get; }
+        public int DataMenuSettingID { set; get; }
         //public Dictionary<string, EntityRelationshipTailDTO> DataViewRelationshipTails { set; get; }
         //public Dictionary<string, EntityRelationshipTailDTO> GridViewRelationshipTails { get; set; }
     }

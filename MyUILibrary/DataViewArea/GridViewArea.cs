@@ -121,7 +121,7 @@ namespace MyUILibrary.DataViewArea
                 var dataView = e.DataView as DP_DataView;
                 //var menus = GetGridViewItemMenus(GridViewItem);
                 //GridViewItem.ShowGridViewItemMenus(menus);
-                var menuInitializer = new DataMenuAreaInitializer();
+                var menuInitializer = new DataMenuAreaInitializer(AreaInitializer.DataMenuSettingID);
                 menuInitializer.SourceView = e.UIElement;
                 menuInitializer.HostDataViewArea = this;
 

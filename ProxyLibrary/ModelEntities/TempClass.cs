@@ -1463,11 +1463,14 @@ namespace ModelEntites
 
         }
         public int ID { set; get; }
-        // public int RelationshipID { set; get; }
+         public int TargetDataMenuSettingID { set; get; }
         public int RelationshipTailID { set; get; }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }
         public string Group1 { set; get; }
         public string Group2 { set; get; }
+
+        public List<DataMenuSettingDTO> vwDataMenuSettings { set; get; }
+
     }
 
     public class DataMenuReportRelationshipDTO
@@ -1493,12 +1496,14 @@ namespace ModelEntites
         {
 
         }
+        public int TargetDataMenuSettingID { set; get; }
         public int ID { set; get; }
         // public int RelationshipID { set; get; }
         public int RelationshipTailID { set; get; }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }
         public string Group1 { set; get; }
         public string Group2 { set; get; }
+        public List<DataMenuSettingDTO> vwDataMenuSettings { set; get; }
     }
 
 
@@ -1525,6 +1530,7 @@ namespace ModelEntites
         public EntityRelationshipTailDTO DataviewRelationshipTail { get; set; }
         public EntityRelationshipTailDTO GridviewRelationshipTail { get; set; }
         public EntityDirectReportDTO DirectReport { get; set; }
+        public int TargetDataMenuSettingID { get; set; }
     }
 
     public enum DataMenuType

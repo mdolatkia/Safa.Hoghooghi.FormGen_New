@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="84bc6a464cdf489191fdd2ec5ce7d5f4" Name="Diagram1" ZoomLevel="44">
+      <Diagram DiagramId="84bc6a464cdf489191fdd2ec5ce7d5f4" Name="Diagram1" ZoomLevel="152">
         <EntityTypeShape EntityType="MyProjectModel.ArchiveFolder" Width="1.5" PointX="19.5" PointY="200.25" />
         <EntityTypeShape EntityType="MyProjectModel.ArchiveTag" Width="1.5" PointX="19.5" PointY="117.625" />
         <EntityTypeShape EntityType="MyProjectModel.EntityArchiveRelationshipTails" Width="1.5" PointX="21.75" PointY="174.625" />
@@ -36,7 +36,7 @@
         <EntityTypeShape EntityType="MyProjectModel.DatabaseUISetting" Width="1.5" PointX="8.25" PointY="155" />
         <EntityTypeShape EntityType="MyProjectModel.DataLinkDefinition" Width="1.5" PointX="19.5" PointY="120.25" />
         <EntityTypeShape EntityType="MyProjectModel.DataLinkDefinition_EntityRelationshipTail" Width="1.5" PointX="21.75" PointY="163.125" />
-        <EntityTypeShape EntityType="MyProjectModel.DataMenuDataViewRelationship" Width="1.5" PointX="29" PointY="170.875" />
+        <EntityTypeShape EntityType="MyProjectModel.DataMenuDataViewRelationship" Width="1.75" PointX="29.125" PointY="171.375" IsExpanded="true" />
         <EntityTypeShape EntityType="MyProjectModel.DataMenuGridViewRelationship" Width="1.5" PointX="29" PointY="166.875" />
         <EntityTypeShape EntityType="MyProjectModel.DataMenuReportRelationship" Width="1.5" PointX="29" PointY="174.875" />
         <EntityTypeShape EntityType="MyProjectModel.DataMenuSetting" Width="1.5" PointX="24.75" PointY="136.375" />

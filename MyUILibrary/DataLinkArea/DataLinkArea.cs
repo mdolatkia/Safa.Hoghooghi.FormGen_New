@@ -363,7 +363,7 @@ namespace MyUILibrary.DataLinkArea
             {
                 //var menus = GetDataViewItemMenus(dataViewItem);
                 //dataViewItem.ShowDataViewItemMenus(menus);
-                var menuInitializer = new DataMenuAreaInitializer();
+                var menuInitializer = new DataMenuAreaInitializer(0);
                 //menuInitializer.HostDataViewArea = this;
                 //menuInitializer.HostDataViewItem = dataViewItem;
                 menuInitializer.SourceView = sender;

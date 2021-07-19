@@ -2119,7 +2119,7 @@ namespace MyModelCustomSetting
                         letterCodeFunctoin.Type = (short)Enum_CodeFunctionParamType.LetterFunction;
                         letterCodeFunctoin.ReturnType = "ModelEntites.FunctionResult";
                         letterCodeFunctoin.Name = "قبل از لود نامه";
-                        
+
                     }
                     letterSetting.CodeFunction4 = letterCodeFunctoin;
                 }
@@ -2138,6 +2138,45 @@ namespace MyModelCustomSetting
                         letterCodeFunctoin.Name = "تبدیل به خارجی";
                     }
                     letterSetting.CodeFunction = letterCodeFunctoin;
+                }
+
+
+
+                if (customer != null && customer.EntityListViewID != null)
+                {
+                    var customerDataMenuSetting = projectContext.DataMenuSetting.FirstOrDefault(x => x.TableDrivedEntityID == customer.ID && x.Name == "تنظیمات منوی مشتری و صورتحساب");
+                    if (customerDataMenuSetting == null)
+                    {
+                        customerDataMenuSetting = new DataMenuSetting();
+                        customerDataMenuSetting.Name = "تنظیمات منوی مشتری و صورتحساب";
+                        customerDataMenuSetting.TableDrivedEntityID = customer.ID;
+                        customerDataMenuSetting.EntityListViewID = customer.EntityListViewID.Value;
+                        projectContext.DataMenuSetting.Add(customerDataMenuSetting);
+                        var customerToServiceRequest = customer.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceRequest.ID);
+                        var serviceRequestToServiceConclusion = serviceRequest.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusion.ID);
+                        var conclusionToItems = serviceConclusion.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusionItem.ID);
+                        var tailCustomerToConclusion = GetRelationshipTail(projectContext, customer, serviceConclusion, customerToServiceRequest.ID + "," + serviceRequestToServiceConclusion.ID);
+
+                        var dataViewRel = new DataMenuDataViewRelationship();
+                        dataViewRel.EntityRelationshipTail = tailCustomerToConclusion;
+                        dataViewRel.DataMenuSetting1 = new DataMenuSetting();
+                        customerDataMenuSetting.DataMenuDataViewRelationship.Add(dataViewRel);
+                        customer.DataMenuSetting1 = customerDataMenuSetting;
+
+
+                        dataViewRel.DataMenuSetting1 = new DataMenuSetting();
+                        serviceConclusion.DataMenuSetting1 = dataViewRel.DataMenuSetting1;
+                        dataViewRel.DataMenuSetting1.Name = "تنظیمات منوی صورتحساب و جزئیات";
+                        dataViewRel.DataMenuSetting1.TableDrivedEntityID = serviceConclusion.ID;
+                        dataViewRel.DataMenuSetting1.EntityListViewID = serviceConclusion.EntityListViewID.Value;
+
+                        var conclusionToItemsRelMenu = new DataMenuGridViewRelationship();
+                        var tailconclusionToItemsRel = GetRelationshipTail(projectContext, serviceConclusion,serviceConclusionItem, conclusionToItems.ID.ToString());
+                        conclusionToItemsRelMenu.EntityRelationshipTail = tailconclusionToItemsRel;
+                        conclusionToItemsRelMenu.TargetDataMenuSettingID = null;
+                        dataViewRel.DataMenuSetting1.DataMenuGridViewRelationship.Add(conclusionToItemsRelMenu);
+
+                    }
                 }
                 try
                 {

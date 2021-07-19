@@ -27,7 +27,7 @@ namespace MyUILibrary.DataMenuArea
             if (Menus == null)
             {
                 var Menus = new List<DataMenuUI>();
-                var dataMenus = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDataMenu(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.DataItem);
+                var dataMenus = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDataMenu(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.DataItem, AreaInitializer.DataMenuSettingID);
                 AddUIMenu(Menus, dataMenus);
                 return Menus;
             }
@@ -64,7 +64,7 @@ namespace MyUILibrary.DataMenuArea
                 else if (dataMenuUI.DataMenu.Type == DataMenuType.RelationshipTailDataGrid)
                 {
                     var searchDataTuple = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipTailDataManager.GetTargetSearchItemFromRelationshipTail(AreaInitializer.DataItem, dataMenu.GridviewRelationshipTail);
-                    AgentUICoreMediator.GetAgentUICoreMediator.ShowDataViewGridViewArea(dataMenu.GridviewRelationshipTail.TargetEntityID, dataMenu.GridviewRelationshipTail.TargetEntityAlias, true, false, false, searchDataTuple, true, 0, AreaInitializer.HostDataViewArea, AreaInitializer.HostDataViewItem);
+                    AgentUICoreMediator.GetAgentUICoreMediator.ShowDataViewGridViewArea(dataMenu.GridviewRelationshipTail.TargetEntityID, dataMenu.GridviewRelationshipTail.TargetEntityAlias, true, false, false, searchDataTuple, true, dataMenu.TargetDataMenuSettingID, AreaInitializer.HostDataViewArea, AreaInitializer.HostDataViewItem);
                 }
                 else if (dataMenuUI.DataMenu.Type == DataMenuType.DataLink)
                 {
@@ -73,7 +73,7 @@ namespace MyUILibrary.DataMenuArea
                 else if (dataMenuUI.DataMenu.Type == DataMenuType.RelationshipTailDataView)
                 {
                     var searchDataTuple = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipTailDataManager.GetTargetSearchItemFromRelationshipTail(AreaInitializer.DataItem, dataMenu.DataviewRelationshipTail);
-                    AgentUICoreMediator.GetAgentUICoreMediator.ShowDataViewGridViewArea(dataMenu.GridviewRelationshipTail.TargetEntityID, dataMenu.GridviewRelationshipTail.TargetEntityAlias, true, false, true, searchDataTuple, true, 0, AreaInitializer.HostDataViewArea, AreaInitializer.HostDataViewItem);
+                    AgentUICoreMediator.GetAgentUICoreMediator.ShowDataViewGridViewArea(dataMenu.DataviewRelationshipTail.TargetEntityID, dataMenu.DataviewRelationshipTail.TargetEntityAlias, true, false, true, searchDataTuple, true, dataMenu.TargetDataMenuSettingID, AreaInitializer.HostDataViewArea, AreaInitializer.HostDataViewItem);
                 }
                 else if (dataMenuUI.DataMenu.Type == DataMenuType.DirectReport)
                 {
@@ -81,7 +81,7 @@ namespace MyUILibrary.DataMenuArea
                 }
                 else if (dataMenuUI.DataMenu.Type == DataMenuType.ViewRel)
                 {
-                    var menuInitializer = new DataMenuAreaInitializer();
+                    var menuInitializer = new DataMenuAreaInitializer(0);
                     menuInitializer.HostDataViewArea = AreaInitializer.HostDataViewArea;
                     menuInitializer.HostDataViewItem = AreaInitializer.HostDataViewItem;
                     menuInitializer.SourceView = AreaInitializer.SourceView;

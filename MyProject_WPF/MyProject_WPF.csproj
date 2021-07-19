@@ -227,6 +227,9 @@
     <Compile Include="Database\frmSQLConnectionString.xaml.cs">
       <DependentUpon>frmSQLConnectionString.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataMenu\frmDataMenuSettingSelect.xaml.cs">
+      <DependentUpon>frmDataMenuSettingSelect.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DrivedEntities\SelectDrivedEntites.xaml.cs">
       <DependentUpon>SelectDrivedEntites.xaml</DependentUpon>
     </Compile>
@@ -588,6 +591,10 @@
     <Page Include="Database\frmSQLConnectionString.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataMenu\frmDataMenuSettingSelect.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="DrivedEntities\SelectDrivedEntites.xaml">
       <SubType>Designer</SubType>

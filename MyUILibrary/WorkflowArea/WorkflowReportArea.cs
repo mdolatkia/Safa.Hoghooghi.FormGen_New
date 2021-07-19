@@ -51,7 +51,7 @@ namespace MyUILibrary.WorkflowArea
                 var wfRequest = e.DataItem as WorkflowRequestDTO;
                 if (wfRequest.DataItem != null)
                 {
-                    var menuInitializer = new DataMenuAreaInitializer();
+                    var menuInitializer = new DataMenuAreaInitializer(0);
                     menuInitializer.SourceView = e.UIElement;
                     menuInitializer.DataItem = wfRequest.DataItem;
                     AgentUICoreMediator.GetAgentUICoreMediator.ShowMenuArea(menuInitializer);

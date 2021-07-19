@@ -47,7 +47,7 @@ namespace MyUILibrary.DataViewArea
                 View.SetItemsTotalCount(countResult.ResultCount);
             else
             {
-                  AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo(countResult.Message,"",Temp.InfoColor.Red);
+                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo(countResult.Message, "", Temp.InfoColor.Red);
                 return;
             }
             //سکوریتی داده اعمال میشود
@@ -194,20 +194,18 @@ namespace MyUILibrary.DataViewArea
             if (AreaInitializer.DataMenuSettingID != 0)
                 DataMenuSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDataMenuSetting(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.DataMenuSettingID);
             else
-                DataMenuSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDataMenuSetting(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.DataMenuSettingID);
-            //    if (AreaInitializer.EntityListViewID != 0)
-            //        SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityListViewID);
-            //    else
-            //        SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), DataViewSetting.EntityListViewID);
-            //}
-            //else
-            //    SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetDefaultEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+                DataMenuSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDefaultDataMenuSetting(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+
+            if (DataMenuSetting != null && DataMenuSetting.EntityListViewID != 0)
+                SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), DataMenuSetting.EntityListViewID);
+            else
+                SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetDefaultEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
 
             SetEntitiyListViews();
             SetEntityOrderColumns();
 
             //ManageSecurity();
-          
+
         }
 
         private void View_OrderColumnsChanged(object sender, EventArgs e)
