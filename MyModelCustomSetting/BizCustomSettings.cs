@@ -2171,10 +2171,47 @@ namespace MyModelCustomSetting
                         dataViewRel.DataMenuSetting1.EntityListViewID = serviceConclusion.EntityListViewID.Value;
 
                         var conclusionToItemsRelMenu = new DataMenuGridViewRelationship();
-                        var tailconclusionToItemsRel = GetRelationshipTail(projectContext, serviceConclusion,serviceConclusionItem, conclusionToItems.ID.ToString());
+                        var tailconclusionToItemsRel = GetRelationshipTail(projectContext, serviceConclusion, serviceConclusionItem, conclusionToItems.ID.ToString());
                         conclusionToItemsRelMenu.EntityRelationshipTail = tailconclusionToItemsRel;
                         conclusionToItemsRelMenu.TargetDataMenuSettingID = null;
                         dataViewRel.DataMenuSetting1.DataMenuGridViewRelationship.Add(conclusionToItemsRelMenu);
+
+                    }
+                    var mnuMain = projectContext.NavigationTree.FirstOrDefault(x => x.ItemIdentity == databaseID);
+                    if (mnuMain != null)
+                    {
+                        var mnuDataViewFolder = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "نمای داده");
+                        if (mnuDataViewFolder == null)
+                        {
+                            mnuDataViewFolder = new NavigationTree();
+                            mnuDataViewFolder.ItemTitle = "نمای داده";
+                            mnuDataViewFolder.ParentID = mnuMain.ID;
+                            mnuDataViewFolder.Category = DatabaseObjectCategory.Folder.ToString();
+                            projectContext.NavigationTree.Add(mnuDataViewFolder);
+                        }
+
+                        var mnuCustomerDataView = projectContext.NavigationTree.FirstOrDefault(x => x.Category == DatabaseObjectCategory.DataView.ToString() && x.ItemIdentity == customer.ID);
+                        if (mnuCustomerDataView == null)
+                        {
+                            mnuCustomerDataView = new NavigationTree();
+                            mnuCustomerDataView.ItemTitle = "نمای داده مشتری";
+                            mnuCustomerDataView.NavigationTree2 = mnuDataViewFolder;
+                            mnuCustomerDataView.Category = DatabaseObjectCategory.DataView.ToString();
+                            mnuCustomerDataView.ItemIdentity = customer.ID;
+                            mnuCustomerDataView.TableDrivedEntityID = customer.ID;
+                            projectContext.NavigationTree.Add(mnuCustomerDataView);
+                        }
+                        var mnuCustomerDataGrid = projectContext.NavigationTree.FirstOrDefault(x => x.Category == DatabaseObjectCategory.GridView.ToString() && x.ItemIdentity == customer.ID);
+                        if (mnuCustomerDataGrid == null)
+                        {
+                            mnuCustomerDataGrid = new NavigationTree();
+                            mnuCustomerDataGrid.ItemTitle = "گرید داده مشتری";
+                            mnuCustomerDataGrid.NavigationTree2 = mnuDataViewFolder;
+                            mnuCustomerDataGrid.Category = DatabaseObjectCategory.GridView.ToString();
+                            mnuCustomerDataGrid.ItemIdentity = customer.ID;
+                            mnuCustomerDataGrid.TableDrivedEntityID = customer.ID;
+                            projectContext.NavigationTree.Add(mnuCustomerDataGrid);
+                        }
 
                     }
                 }

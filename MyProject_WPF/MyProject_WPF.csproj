@@ -75,9 +75,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=5.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoMapper.5.1.1\lib\net45\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper">
+      <HintPath>..\Componenets\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="DynamicExpresso.Core, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamicExpresso.Core.2.3.1\lib\net45\DynamicExpresso.Core.dll</HintPath>
@@ -1094,10 +1093,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
-      <Project>{C01F0A21-457A-4DFC-A623-0ED6CC00AD86}</Project>
-      <Name>DataAccess</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MyCommonWPFControls\MyCommonWPFControls.csproj">
       <Project>{df529814-4102-4145-9345-b405ed79138a}</Project>
       <Name>MyCommonWPFControls</Name>

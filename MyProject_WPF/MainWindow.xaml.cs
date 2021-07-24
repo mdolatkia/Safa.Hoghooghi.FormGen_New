@@ -25,7 +25,7 @@ using Telerik.Windows.Controls.GridView;
 using Telerik.Windows;
 using MyDataSearchManagerBusiness;
 using ProxyLibrary;
-using DataAccess;
+
 using MyDataItemManager;
 using MyModelCustomSetting;
 
