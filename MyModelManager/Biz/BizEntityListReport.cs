@@ -81,7 +81,7 @@ namespace MyModelManager
                     EntityListReportSubsDTO subReport = new EntityListReportSubsDTO();
                     subReport.Title = dbSubReport.Title;
                     subReport.OrderID = dbSubReport.OrderID ?? 0;
-                    subReport.EntityRelationshipTailID = dbSubReport.EntityRelationshipTailID.Value;
+                    subReport.EntityRelationshipTailID = dbSubReport.EntityRelationshipTailID;
                     subReport.EntityListReportID = dbSubReport.ChildEntityListReportID;
                     foreach (var subColumn in dbSubReport.EntityListReportSubsColumns)
                     {

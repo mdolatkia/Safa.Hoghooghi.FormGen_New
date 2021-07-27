@@ -17,7 +17,6 @@ namespace DataAccess
         public SearchRepository()
         {
             this.EntitySearchableReport = new HashSet<EntitySearchableReport>();
-            this.Phrase = new HashSet<Phrase>();
         }
     
         public int ID { get; set; }
@@ -26,14 +25,13 @@ namespace DataAccess
         public Nullable<int> RelationshipFromCount { get; set; }
         public Nullable<int> RelationshipToCount { get; set; }
         public Nullable<bool> IsSimpleSearch { get; set; }
-        public Nullable<int> TableDrivedEntityID { get; set; }
+        public int TableDrivedEntityID { get; set; }
         public Nullable<int> EntitySearchID { get; set; }
         public string Title { get; set; }
     
         public virtual EntitySearch EntitySearch { get; set; }
         public virtual ICollection<EntitySearchableReport> EntitySearchableReport { get; set; }
         public virtual LogicPhrase LogicPhrase { get; set; }
-        public virtual ICollection<Phrase> Phrase { get; set; }
         public virtual Relationship Relationship { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
     }

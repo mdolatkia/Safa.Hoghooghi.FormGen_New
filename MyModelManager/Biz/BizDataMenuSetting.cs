@@ -15,6 +15,7 @@ namespace MyModelManager
     public class BizDataMenuSetting
     {
         BizProcess bizProcess = new BizProcess();
+        BizEntityDirectReport bizEntityDirectReport = new BizEntityDirectReport();
         BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
         BizEntityReport bizEntityReport = new BizEntityReport();
         SecurityHelper securityHelper = new SecurityHelper();
@@ -97,12 +98,27 @@ namespace MyModelManager
                     result.GridViewRelationships.Add(ToDataMenuGridViewRelationshipDTO(item, tail));
                 }
             }
+            foreach (var item in entity.DataMenuDirectReportRelationship)
+            {
+                if (bizEntityReport.DataIsAccessable(requester, item.EntityDirectReportID))
+                    result.DirectReports.Add(ToDataMenuDirectReportRelationshipDTO(requester, item));
+            }
             result.EntityListViewID = entity.EntityListViewID;
             result.Name = entity.Name;
             result.ID = entity.ID;
             if (withDetails)
                 result.IconContent = entity.IconContent;
             return result;
+        }
+
+        private DataMenuDirectReportRelationshipDTO ToDataMenuDirectReportRelationshipDTO(DR_Requester requester, DataMenuDirectReportRelationship item)
+        {
+            var rel = new DataMenuDirectReportRelationshipDTO();
+            rel.EntityDirectReportID = item.EntityDirectReportID;
+            rel.EntityDirectReport = bizEntityDirectReport.ToEntityDirectReportDTO(requester, item.EntityDirectlReport);
+            rel.Group1 = item.Group1;
+
+            return rel;
         }
 
         private DataMenuGridViewRelationshipDTO ToDataMenuGridViewRelationshipDTO(DataMenuGridViewRelationship dbRel, EntityRelationshipTailDTO tail)
@@ -184,18 +200,7 @@ namespace MyModelManager
                 }
 
 
-                //گزارش مستقیم روی خود داده موجودیت
-                BizEntityDirectReport bizEntityDirectReport = new BizEntityDirectReport();
-                var directReports = bizEntityDirectReport.GetEntityDirectReports(requester, entityID);
-                if (directReports.Any())
-                {
-                    var directReportRootMenu = AddMenu(result, "گزارش مستقیم", "", DataMenuType.Folder);
-                    foreach (var directReport in directReports)
-                    {
-                        var directReportMenu = AddMenu(directReportRootMenu.SubMenus, directReport.ReportTitle, "", DataMenuType.DirectReport);
-                        directReportMenu.DirectReport = directReport;
-                    }
-                }
+
 
                 //لینک های داده
                 BizDataLink bizDataLink = new MyModelManager.BizDataLink();
@@ -230,7 +235,6 @@ namespace MyModelManager
                             }
                         }
                     }
-
                     //نمای داده های مرتبط
                     if (dataMenuSetting.DataViewRelationships.Any())
                     {
@@ -246,7 +250,6 @@ namespace MyModelManager
                             }
                         }
                     }
-
                     if (dataMenuSetting.GridViewRelationships.Any())
                     {
                         var gridViewRootMenu = AddMenu(result, "گرید داده های مرتبط", "", DataMenuType.Folder);
@@ -258,6 +261,19 @@ namespace MyModelManager
                                 var gridViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.RelationshipTail.TargetEntityAlias, rel.RelationshipTail.EntityPath, DataMenuType.RelationshipTailDataGrid);
                                 gridViewRelMenu.GridviewRelationshipTail = rel.RelationshipTail;
                                 gridViewRelMenu.TargetDataMenuSettingID = rel.TargetDataMenuSettingID;
+                            }
+                        }
+                    }
+                    if (dataMenuSetting.DirectReports.Any())
+                    {
+                        var gridViewRootMenu = AddMenu(result, "گزارشات مستقیم", "", DataMenuType.Folder);
+                        foreach (var group in dataMenuSetting.DirectReports.GroupBy(x => x.Group1 ?? ""))
+                        {
+                            DataMenu parentGroupMenu = GetGroupMenu(gridViewRootMenu, group.Key);
+                            foreach (var rel in group)
+                            {
+                                var gridViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.EntityDirectReport.ReportTitle, "", DataMenuType.DirectReport);
+                                gridViewRelMenu.DirectReport = rel.EntityDirectReport;
                             }
                         }
                     }
@@ -404,6 +420,17 @@ namespace MyModelManager
                         dbRel.TargetDataMenuSettingID = null;
                     dbEntity.DataMenuGridViewRelationship.Add(dbRel);
                 }
+
+                while (dbEntity.DataMenuDirectReportRelationship.Any())
+                    projectContext.DataMenuDirectReportRelationship.Remove(dbEntity.DataMenuDirectReportRelationship.First());
+                foreach (var item in message.DirectReports)
+                {
+                    DataMenuDirectReportRelationship dbRel = new DataMenuDirectReportRelationship();
+                    dbRel.EntityDirectReportID = item.EntityDirectReportID;
+                    dbRel.Group1 = item.Group1;
+                    dbEntity.DataMenuDirectReportRelationship.Add(dbRel);
+                }
+
                 dbEntity.TableDrivedEntityID = message.EntityID;
                 dbEntity.Name = message.Name;
                 dbEntity.EntityListViewID = message.EntityListViewID;

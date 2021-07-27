@@ -65,8 +65,8 @@ namespace MyModelManager
         //}
         internal void ToEntitySearchableReportDTO(EntitySearchableReport entitySearchableReport, EntitySearchableReportDTO entitySearchableReportDTO, bool withDetails)
         {
-            bizEntityReport.ToEntityReportDTO(entitySearchableReport.EntityReport, entitySearchableReportDTO);
-            entitySearchableReport.SearchRepositoryID = entitySearchableReport.SearchRepositoryID ?? 0;
+            bizEntityReport.ToEntityReportDTO(entitySearchableReport.EntityReport, entitySearchableReportDTO,false);
+            entitySearchableReportDTO.SearchRepositoryID = entitySearchableReport.SearchRepositoryID ?? 0;
             if (entitySearchableReport.SearchRepository != null)
                 entitySearchableReportDTO.SearchRepository = bizSearchRepository.ToSearchRepositoryDTO(entitySearchableReport.SearchRepository);
             entitySearchableReportDTO.SearchableReportType = (SearchableReportType)entitySearchableReport.SearchableReportType;

@@ -214,7 +214,7 @@ namespace MyModelManager
             DateColumnTypeDTO result = new DateColumnTypeDTO();
             result.ColumnID = item.ColumnID;
             result.ShowMiladiDateInUI = item.ShowMiladiDateInUI;
-            result.StringDateIsMiladi = item.StringDateIsMiladi;
+            result.StringDateIsMiladi = item.StringDateIsMiladi == true;
             //     result.ValueIsPersianDate = item.ValueIsPersianDate;
             return result;
         }
@@ -234,8 +234,8 @@ namespace MyModelManager
             TimeColumnTypeDTO result = new TimeColumnTypeDTO();
             result.ColumnID = item.ColumnID;
             result.ShowMiladiTime = item.ShowMiladiTime;
-            result.StringTimeIsMiladi = item.StringTimeIsMiladi;
-            result.StringTimeISAMPMFormat = item.StringTimeISAMPMFormat;
+            result.StringTimeIsMiladi = item.StringTimeIsMiladi == true;
+            result.StringTimeISAMPMFormat = item.StringTimeISAMPMFormat == true;
             result.ShowAMPMFormat = item.ShowAMPMFormat;
             //     result.ValueIsPersianDate = item.ValueIsPersianDate;
             return result;
@@ -258,9 +258,9 @@ namespace MyModelManager
             result.HideTimePicker = item.HideTimePicker;
             result.ShowAMPMFormat = item.ShowAMPMFormat;
             result.ShowMiladiDateInUI = item.ShowMiladiDateInUI;
-            result.StringDateIsMiladi = item.StringDateIsMiladi;
-            result.StringTimeIsMiladi = item.StringTimeIsMiladi;
-            result.StringTimeISAMPMFormat = item.StringTimeISAMPMFormat;
+            result.StringDateIsMiladi = item.StringDateIsMiladi == true;
+            result.StringTimeIsMiladi = item.StringTimeIsMiladi == true;
+            result.StringTimeISAMPMFormat = item.StringTimeISAMPMFormat == true;
 
             return result;
         }

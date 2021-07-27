@@ -55,10 +55,10 @@ namespace MyUILibrary
         public StateManagerService StateManager = new StateManagerService();
         public LetterManagerService LetterManager = new LetterManagerService();
         public DataItemManagerService DataItemManager = new DataItemManagerService();
-      //  public DataViewManagerService DataViewManager = new DataViewManagerService();
+        //  public DataViewManagerService DataViewManager = new DataViewManagerService();
         public EntityListViewManagerService EntityListViewManager = new EntityListViewManagerService();
         public DataSearchManagerService DataSearchManager = new DataSearchManagerService();
-      //  public GridViewManagerService GridViewManager = new GridViewManagerService();
+        //  public GridViewManagerService GridViewManager = new GridViewManagerService();
         public DataLinkManagerService DataLinkManager = new DataLinkManagerService();
         public ReportManagerService ReportManager = new ReportManagerService();
         public DataMenuManagerService DataMenuManager = new DataMenuManagerService();
@@ -115,7 +115,7 @@ namespace MyUILibrary
         //  bool loginSucceeded = false;
         public void StartApp()
         {
-           
+
             LoginForm = UIManager.GetLoginForm();
             LoginForm.LoginRequested += LoginForm_LoginRequested;
             LoginForm.ShowForm();
@@ -484,7 +484,7 @@ namespace MyUILibrary
             }
             else if (item.ObjectCategory == DatabaseObjectCategory.Report)
             {
-                ShowReportAreaFromMenu(Convert.ToInt32(item.ObjectIdentity), false);
+                ShowReportArea(Convert.ToInt32(item.ObjectIdentity), false);
             }
             else if (item.ObjectCategory == DatabaseObjectCategory.Archive)
             {
@@ -604,7 +604,26 @@ namespace MyUILibrary
         //{
 
         //}
-        private void ShowReportAreaFromMenu(int reportID, bool dialog)
+        //private void ShowReportAreaFromMenu(int reportID, bool dialog, DP_SearchRepository initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewIte)
+        //{
+        //    var report = ReportManager.GetReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), reportID);
+        //    if (report == null)
+        //    {
+        //        UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + reportID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
+        //        return;
+        //    }
+        //    //ShowSearchableReportArea(report, dialog, userCanChange, null, report.PreDefinedSearch);
+        //    if (report.ReportType == ReportType.DirectReport)
+        //    {
+        //        ShowDirectReport(reportID, dialog, null);
+        //    }
+        //    else if (report.ReportType == ReportType.SearchableReport)
+        //    {
+        //        ShowSearchableReportArea(report, dialog, null, true, false, null, null);
+        //    }
+
+        //}
+        public void ShowReportArea(int reportID, bool dialog, DP_SearchRepository initializeSearchRepository = null, bool userCanChangeSearch = true, bool showInitializeSearchRepository = false, I_DataArea hostDataViewArea = null, I_DataViewItem defaultDataViewItem = null)
         {
             var report = ReportManager.GetReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), reportID);
             if (report == null)
@@ -619,7 +638,7 @@ namespace MyUILibrary
             }
             else if (report.ReportType == ReportType.SearchableReport)
             {
-                ShowSearchableReportArea(report, dialog, null, true, false, null, null);
+                ShowSearchableReportArea(report, dialog, initializeSearchRepository, userCanChangeSearch, showInitializeSearchRepository, hostDataViewArea, defaultDataViewItem);
             }
 
         }
@@ -638,8 +657,12 @@ namespace MyUILibrary
                     UIManager.GetDialogWindow().ShowDialog(area.MainView, "گزارش", Enum_WindowSize.Maximized);
             }
         }
-        public void ShowSearchableReportArea(EntityReportDTO report, bool dialog, DP_SearchRepository initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
+        private void ShowSearchableReportArea(EntityReportDTO report, bool dialog, DP_SearchRepository initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
         {
+            if (hostDataViewArea == null && initializeSearchRepository == null)
+            {
+                initializeSearchRepository = report.SearchRepository;
+            }
             if (report.SearchableReportType == SearchableReportType.DataView)
             {
                 var dvreport = ReportManager.GetDataViewReport(GetRequester(), report.ID);
@@ -648,6 +671,7 @@ namespace MyUILibrary
                     UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + report.ID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
                     return;
                 }
+
                 ShowDataViewGridViewArea(report.TableDrivedEntityID, report.ReportTitle, dialog, userCanChangeSearch, true, initializeSearchRepository, showInitializeSearchRepository, dvreport.DataMenuSettingID, hostDataViewArea, defaultDataViewItem);
 
             }
@@ -659,6 +683,7 @@ namespace MyUILibrary
                     UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + report.ID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
                     return;
                 }
+
                 ShowDataViewGridViewArea(report.TableDrivedEntityID, report.ReportTitle, dialog, userCanChangeSearch, false, initializeSearchRepository, showInitializeSearchRepository, dvreport.DataMenuSettingID, hostDataViewArea, defaultDataViewItem);
             }
             else if (report.SearchableReportType == SearchableReportType.ExternalReport)
@@ -733,6 +758,8 @@ namespace MyUILibrary
 
         private void ShowExternalReport(EntityReportDTO report, bool userCanChange, DP_SearchRepository initializeSearchRepository, bool showInitializeSearchRepository, bool dialog)
         {
+
+
             ExternalReportAreaInitializer initializer = new ExternalReportAreaInitializer();
             initializer.ReportID = report.ID;
             initializer.UserCanChangeSearch = userCanChange;
@@ -812,7 +839,7 @@ namespace MyUILibrary
             }
             else
             {
-                
+
                 var initializer = new MyUILibraryInterfaces.DataViewArea.DataViewAreaContainerInitializer();
                 initializer.EntityID = entityId;
                 initializer.Title = title;

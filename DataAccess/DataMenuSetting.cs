@@ -24,6 +24,7 @@ namespace DataAccess
             this.EntityDataViewReport = new HashSet<EntityDataViewReport>();
             this.EntityGridViewReport = new HashSet<EntityGridViewReport>();
             this.TableDrivedEntity1 = new HashSet<TableDrivedEntity>();
+            this.DataMenuDirectReportRelationship = new HashSet<DataMenuDirectReportRelationship>();
         }
     
         public int ID { get; set; }
@@ -42,5 +43,6 @@ namespace DataAccess
         public virtual ICollection<EntityDataViewReport> EntityDataViewReport { get; set; }
         public virtual ICollection<EntityGridViewReport> EntityGridViewReport { get; set; }
         public virtual ICollection<TableDrivedEntity> TableDrivedEntity1 { get; set; }
+        public virtual ICollection<DataMenuDirectReportRelationship> DataMenuDirectReportRelationship { get; set; }
     }
 }

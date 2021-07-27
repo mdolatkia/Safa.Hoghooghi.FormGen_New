@@ -51,16 +51,7 @@
                 <MyCommonWPFControls:MyStaticLookup  Grid.Row="2" Grid.ColumnSpan="3" x:Name="lokEntityDataView" HorizontalAlignment="Stretch" Grid.Column="1"></MyCommonWPFControls:MyStaticLookup>
             </Grid>
             <TabControl Grid.Row="1" MinHeight="150" >
-                <TabItem Header="روابط گزارشات">
-                    <telerik:RadGridView x:Name="dtgReportRelationships" AutoGenerateColumns="False">
-                        <telerik:RadGridView.Columns>
-                            <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True" NewItemEnabled="True" x:Name="colReportRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
-                            <telerik:GridViewComboBoxColumn x:Name="colReports" ItemsSourceBinding="{Binding vwReports}" Header="گزارشات" DataMemberBinding="{Binding EntitySearchableReportID}" />
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
-                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>
-                        </telerik:RadGridView.Columns>
-                    </telerik:RadGridView>
-                </TabItem>
+      
                 <TabItem Header="روابط نمایش داده">
                     <telerik:RadGridView x:Name="dtgDataViewRelationships" AutoGenerateColumns="False">
                         <telerik:RadGridView.Columns>
@@ -81,6 +72,25 @@
                             <MyCommonWPFControls:MyStaticLookupColumn x:Name="colDataGridRelTargetDataMenuSetting" ItemsSourceBinding="{Binding vwDataMenuSettings}" Header="منوی داده" DataMemberBinding="{Binding TargetDataMenuSettingID}" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>
+                        </telerik:RadGridView.Columns>
+                    </telerik:RadGridView>
+                </TabItem>
+                <TabItem Header="روابط گزارشات">
+                    <telerik:RadGridView x:Name="dtgReportRelationships" AutoGenerateColumns="False">
+                        <telerik:RadGridView.Columns>
+                            <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True" NewItemEnabled="True" x:Name="colReportRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
+                            <telerik:GridViewComboBoxColumn x:Name="colReports" ItemsSourceBinding="{Binding vwReports}" Header="گزارشات" DataMemberBinding="{Binding EntitySearchableReportID}" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>
+                        </telerik:RadGridView.Columns>
+                    </telerik:RadGridView>
+                </TabItem>
+                <TabItem Header="گزارشات خارجی مستقیم">
+                    <telerik:RadGridView x:Name="dtgDirectReport" AutoGenerateColumns="False">
+                        <telerik:RadGridView.Columns>
+                            <MyCommonWPFControls:MyStaticLookupColumn  x:Name="colDirectReport" Header="ستون" DataMemberBinding="{Binding EntityDirectReportID}" />
+                            <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
+                            <!--<telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>-->
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </TabItem>

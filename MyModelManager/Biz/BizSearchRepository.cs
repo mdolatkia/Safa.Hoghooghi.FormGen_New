@@ -44,7 +44,7 @@ namespace MyModelManager
                     //    projectContext.SearchRepository.Add(dbPreDefinedSearch);
                     //}
                     if (dbPreDefinedSearch != null)
-                        RemoveSearchRepository(projectContext, dbPreDefinedSearch);
+                        RemoveSearchRepository(projectContext, dbPreDefinedSearch, true);
                     var phrase = CreateSearchRepository(projectContext, preDefinedSearch);
                     projectContext.SaveChanges();
                     return phrase.ID;
@@ -67,16 +67,16 @@ namespace MyModelManager
         }
         private DataAccess.Phrase CreateSearchRepository(MyProjectEntities projectContext, DP_SearchRepository searchRepository)
         {
-            DataAccess.Phrase phrase = new DataAccess.Phrase();
-            phrase.Type = 1;
-            projectContext.Phrase.Add(phrase);
-            phrase.SearchRepository = new SearchRepository();
-            var dbSearchRepository = phrase.SearchRepository;
-
+            //DataAccess.Phrase phrase = new DataAccess.Phrase();
+            //phrase.Type = 1;
+            //projectContext.Phrase.Add(phrase);
+            //phrase.SearchRepository = new SearchRepository();
+            var dbSearchRepository = new SearchRepository();
+            projectContext.SearchRepository.Add(dbSearchRepository);
 
             //projectContext.LogicPhrase.Add(dbLogicPhrase);
             //dbSearchRepository.Phrase.Add(new DataAccess.Phrase());
-            dbSearchRepository.LogicPhrase = ToLogicPhrase(projectContext, searchRepository as ProxyLibrary.LogicPhrase).Item1;
+            dbSearchRepository.LogicPhrase = ToLogicPhrase(projectContext, searchRepository as ProxyLibrary.LogicPhraseDTO).Item1;
             //   ToLogicPhraseAsPhrase(searchRepository as ProxyLibrary.LogicPhrase)
             dbSearchRepository.IsSimpleSearch = searchRepository.IsSimpleSearch;
             if (searchRepository.EntitySearchID != 0)
@@ -98,13 +98,14 @@ namespace MyModelManager
                 dbSearchRepository.SourceRelationID = null;
             //   SetLogicPhrase(dbSearchRepository.LogicPhrase, searchRepository as ProxyLibrary.LogicPhrase);
 
-            return phrase;
+            //رابطه یونیو
+            return dbSearchRepository.LogicPhrase.Phrase.First();
         }
 
 
 
 
-        private void SetLogicPhrase(MyProjectEntities projectContext, DataAccess.LogicPhrase dbLogicPhrase, ProxyLibrary.LogicPhrase logicPhrase)
+        private void SetLogicPhrase(MyProjectEntities projectContext, DataAccess.LogicPhrase dbLogicPhrase, ProxyLibrary.LogicPhraseDTO logicPhrase)
         {
             dbLogicPhrase.AndOrType = logicPhrase.AndOrType == AndORType.And ? true : false;
             foreach (var phrase in logicPhrase.Phrases)
@@ -114,8 +115,8 @@ namespace MyModelManager
                     dbPhrase = ToColumnPhrase(projectContext, phrase as SearchProperty).Item2;
                 else if (phrase is DP_SearchRepository)
                     dbPhrase = CreateSearchRepository(projectContext, phrase as DP_SearchRepository);
-                else if (phrase is ProxyLibrary.LogicPhrase)
-                    dbPhrase = ToLogicPhrase(projectContext, phrase as ProxyLibrary.LogicPhrase).Item2;
+                else if (phrase is ProxyLibrary.LogicPhraseDTO)
+                    dbPhrase = ToLogicPhrase(projectContext, phrase as ProxyLibrary.LogicPhraseDTO).Item2;
                 dbPhrase.LogicPhrase1 = dbLogicPhrase;
             }
         }
@@ -133,7 +134,7 @@ namespace MyModelManager
         //    dbphrase.LogicPhrase = ToLogicPhrase(logicPhrase);
         //    return dbphrase;
         //}
-        private Tuple<DataAccess.LogicPhrase, DataAccess.Phrase> ToLogicPhrase(MyProjectEntities projectContext, ProxyLibrary.LogicPhrase logicPhrase)
+        private Tuple<DataAccess.LogicPhrase, DataAccess.Phrase> ToLogicPhrase(MyProjectEntities projectContext, ProxyLibrary.LogicPhraseDTO logicPhrase)
         {
             //if (logicPhrase.Phrases.Any())
             //{
@@ -171,48 +172,57 @@ namespace MyModelManager
             return new Tuple<ColumnPhrase, DataAccess.Phrase>(dbColumnPhrase, phrase);
         }
 
-        private void RemoveLogicPhrase(MyProjectEntities projectContext, DataAccess.LogicPhrase logicPhrase)
-        {
-            while (logicPhrase.Phrase1.Any())
-            {
-                foreach (var item in logicPhrase.Phrase1.ToList())
-                {
-                    RemovePhrase(projectContext, item);
-                }
-            }
-            projectContext.LogicPhrase.Remove(logicPhrase);
-        }
+        //private void RemoveLogicPhrase(MyProjectEntities projectContext, DataAccess.LogicPhrase logicPhrase)
+        //{
+        //    while (logicPhrase.Phrase1.Any())
+        //    {
+        //        foreach (var item in logicPhrase.Phrase1.ToList())
+        //        {
+        //            RemovePhrase(projectContext, item);
+        //        }
+        //    }
+        //    projectContext.LogicPhrase.Remove(logicPhrase);
+        //}
 
-        private void RemovePhrase(MyProjectEntities projectContext, DataAccess.Phrase item)
+        private void RemovePhrase(MyProjectEntities projectContext, DataAccess.Phrase item, bool removeSearchRepository)
         {
             if (item.ColumnPhraseID != null)
             {
                 projectContext.ColumnPhrase.Remove(item.ColumnPhrase);
                 //  item.ColumnPhrase = null;
             }
-            else if (item.SearchRepositoryID != null)
-            {
-                RemovePhrase(projectContext, item.SearchRepository.LogicPhrase.Phrase.First());
-                //    projectContext.LogicPhrase.Remove(item.SearchRepository.LogicPhrase);
-                //projectContext.SearchRepository.Remove(item.SearchRepository);
+            //else if (item.SearchRepositoryID != null)
+            //{
+            //    RemovePhrase(projectContext, item.SearchRepository.LogicPhrase.Phrase.First());
+            //    //    projectContext.LogicPhrase.Remove(item.SearchRepository.LogicPhrase);
+            //    //projectContext.SearchRepository.Remove(item.SearchRepository);
 
-                // item.SearchRepository = null;
-            }
+            //    // item.SearchRepository = null;
+            //}
             else if (item.LogicPhraseID != null)
             {
                 //Phrase1 به ParentLogicPhraseID ربط دارد
                 foreach (var litem in item.LogicPhrase.Phrase1.ToList())
-                    RemovePhrase(projectContext, litem);
+                    RemovePhrase(projectContext, litem, true);
+
+                if (item.LogicPhrase.SearchRepository != null)
+                {
+                    if (removeSearchRepository)
+                        RemoveSearchRepository(projectContext, item.LogicPhrase.SearchRepository, false);
+                }
                 projectContext.LogicPhrase.Remove(item.LogicPhrase);
                 //    item.LogicPhrase = null;
             }
             projectContext.Phrase.Remove(item);
         }
-        private void RemoveSearchRepository(MyProjectEntities projectContext, SearchRepository searchRepository)
+        private void RemoveSearchRepository(MyProjectEntities projectContext, SearchRepository searchRepository, bool withPhrases)
         {
-
-            if (searchRepository.Phrase.Any())
-                RemovePhrase(projectContext, searchRepository.Phrase.First());
+            if (withPhrases)
+            {
+                if (searchRepository.LogicPhrase.Phrase.Any())
+                    RemovePhrase(projectContext, searchRepository.LogicPhrase.Phrase.First(), false);
+            }
+            projectContext.SearchRepository.Remove(searchRepository);
         }
 
         //public DP_SearchRepository ToSearchRepository(SearchRepository entityPreDefinedSearch, bool withDetails)
@@ -241,22 +251,32 @@ namespace MyModelManager
         //    return result;
         //}
 
-        private ProxyLibrary.LogicPhrase ToLogicPhraseDTO(DataAccess.LogicPhrase logicPhrase)
+        private ProxyLibrary.LogicPhraseDTO ToLogicPhraseDTO(DataAccess.LogicPhrase logicPhrase)
         {
-            ProxyLibrary.LogicPhrase result = new ProxyLibrary.LogicPhrase();
-            SetLogicPhraseDTO(logicPhrase, result);
+            ProxyLibrary.LogicPhraseDTO result = null;
+            if (logicPhrase.SearchRepository != null)
+            {
+                result = ToSearchRepositoryDTO(logicPhrase.SearchRepository);
+            }
+            else
+            {
+                result = new ProxyLibrary.LogicPhraseDTO();
+                SetLogicPhraseDTO(logicPhrase, result);
+            }
+
             return result;
         }
 
-        private void SetLogicPhraseDTO(DataAccess.LogicPhrase logicPhrase, ProxyLibrary.LogicPhrase logicPhraseDTO)
+        private void SetLogicPhraseDTO(DataAccess.LogicPhrase logicPhrase, ProxyLibrary.LogicPhraseDTO logicPhraseDTO)
         {
             logicPhraseDTO.AndOrType = logicPhrase.AndOrType ? AndORType.And : AndORType.Or;
+
             foreach (var dbPhrase in logicPhrase.Phrase1)
             {
                 if (dbPhrase.ColumnPhrase != null)
                     logicPhraseDTO.Phrases.Add(ToColumnPhraseDTO(dbPhrase.ColumnPhrase));
-                else if (dbPhrase.SearchRepository != null)
-                    logicPhraseDTO.Phrases.Add(ToSearchRepositoryDTO(dbPhrase.SearchRepository));
+                //else if (dbPhrase.SearchRepository != null)
+                //    logicPhraseDTO.Phrases.Add(ToSearchRepositoryDTO(dbPhrase.SearchRepository));
                 else if (dbPhrase.LogicPhrase != null)
                     logicPhraseDTO.Phrases.Add(ToLogicPhraseDTO(dbPhrase.LogicPhrase));
             }
@@ -266,7 +286,7 @@ namespace MyModelManager
             DP_SearchRepository searchRepository = null;
             if (SearchRepository.SourceRelationID == null)
             {
-                searchRepository = new DP_SearchRepository(SearchRepository.TableDrivedEntityID ?? 0);
+                searchRepository = new DP_SearchRepository(SearchRepository.TableDrivedEntityID);
                 searchRepository.Title = SearchRepository.TableDrivedEntity.Alias;
             }
             else

@@ -33,14 +33,14 @@ namespace MyUILibrary.EntityArea
         public InternalReportArea(InternalReportAreaInitializer initParam)
         {
             AreaInitializer = initParam;
-            var entityReport = AgentUICoreMediator.GetAgentUICoreMediator.ReportManager.GetReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), initParam.ReportID);
-            if (entityReport == null)
-            {
-                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + initParam.ReportID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
-                return;
-            }
-
-            View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfInternalReportArea();
+            //var entityReport = AgentUICoreMediator.GetAgentUICoreMediator.ReportManager.GetReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), initParam.ReportID);
+            //if (entityReport == null)
+            //{
+            //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + initParam.ReportID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
+            //    return;
+            //}
+           
+              View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfInternalReportArea();
             View.Title = AreaInitializer.Title;
             View.OrderColumnsChanged += View_OrderColumnsChanged;
             View.ExceptionThrown += View_ExceptionThrown;
@@ -186,7 +186,7 @@ namespace MyUILibrary.EntityArea
                     else if (View.GetSortText == "Descending")
                         request.SortType = Enum_OrderBy.Descending;
                 }
-                var reportEngineConnection = "engine=RestService;uri=http://localhost:12345/api/reports;useDefaultCredentials=True";
+                var reportEngineConnection = "engine=RestService;uri=http://localhost/MyReportRestServices/api/reports;useDefaultCredentials=True";
                 List<Type> types = new List<Type>();
                 types.Add(typeof(DP_SearchRepository));
                 //types.Add(typeof(LogicPhrase));
@@ -226,9 +226,9 @@ namespace MyUILibrary.EntityArea
             {
                 if (item is DP_SearchRepository)
                     RemoveUnWantedTypes(item as DP_SearchRepository);
-                else if (item is LogicPhrase)
+                else if (item is LogicPhraseDTO)
                 {
-                    foreach (var log in (item as LogicPhrase).Phrases)
+                    foreach (var log in (item as LogicPhraseDTO).Phrases)
                     {
                         if (log is DP_SearchRepository)
                             RemoveUnWantedTypes(log as DP_SearchRepository);

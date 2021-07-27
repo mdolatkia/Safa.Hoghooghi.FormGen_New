@@ -105,7 +105,7 @@ namespace MyProject_WPF
             Message.TableDrivedEntityID = EntityID;
             Message.ReportTitle = txtReportName.Text;
             Message.URL = txtURL.Text;
-            bizEntityExternalReport.UpdateEntityExternalReports(Message);
+            bizEntityExternalReport.UpdateEntityExternalReports(MyProjectManager.GetMyProjectManager.GetRequester(), Message);
             MessageBox.Show("اطلاعات ثبت شد");
         }
 

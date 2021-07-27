@@ -1,7 +1,9 @@
 ﻿using DataAccess;
 using ModelEntites;
 using MyCacheManager;
+using MyConnectionManager;
 using MyGeneralLibrary;
+using ProxyLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,7 +66,7 @@ namespace MyModelManager
 
             return result;
         }
-        public void UpdateEntityExternalReports(EntityExternalReportDTO message)
+        public void UpdateEntityExternalReports(DR_Requester requester, EntityExternalReportDTO message)
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
@@ -84,8 +86,83 @@ namespace MyModelManager
                 dbEntitySpecifiedReport.URL = message.URL;
                 if (dbEntitySpecifiedReport.ID == 0)
                     projectContext.EntityExternalReport.Add(dbEntitySpecifiedReport);
+
+                var entity = new BizTableDrivedEntity().GetSimpleEntityWithColumns(requester, message.TableDrivedEntityID);
+                CreateReportTable(entity);
+                //ساختن جدول معادل
+
                 projectContext.SaveChanges();
             }
+        }
+        public bool CreateReportTable(DR_Requester requester, int entityID)
+        {
+            var entity = new BizTableDrivedEntity().GetSimpleEntityWithColumns(requester, entityID);
+            return CreateReportTable(entity);
+        }
+        private bool CreateReportTable(TableDrivedEntityDTO entity)
+        {
+            var dbHelper = ConnectionManager.GetDBHelper(entity.DatabaseID);
+            var tmpTableName = "xr_" + entity.TableName;
+            try
+            {
+                var drop = "drop table " + tmpTableName;
+                var dropRes = dbHelper.ExecuteNonQuery(drop);
+            }
+            catch
+            {
+
+            }
+
+            var res = dbHelper.CreateTable(tmpTableName, GetExternalReportTableColumns(entity));
+            return res != 0;
+            //SearchRequestManager searchRequestManager = new SearchRequestManager();
+            //var query = searchRequestManager.GetSelectFromExternal(requester, entityID, searchItem, true, ModelEntites.SecurityMode.View);
+            //var entity = bizTableDrivedEntity.GetSimpleEntity(requester, entityID);
+
+
+            //var select = "select " + query.Item1 + "," + id + " as ReportKey" + " " + query.Item2;
+
+            //var inserted = TargetDatabaseManager.InsertFromQueryToTargetDB(entityID, tmpTableName, select);
+            //if (inserted)
+            //    return id;
+        }
+        List<ColumnDTO> GetExternalReportTableColumns(TableDrivedEntityDTO entity)
+        {
+            var columns = entity.Columns.Where(x => x.PrimaryKey).ToList();
+            columns.Add(new ColumnDTO() { Name = "ReportKey", ColumnType = Enum_ColumnType.Numeric, DataType = "int" });
+            return columns;
+        }
+        public bool InsertDataIntoExternalReportTable(DR_Requester requester, int reportID, int entityID, int id, string fromquery)
+        {
+            var entity = new BizTableDrivedEntity().GetSimpleEntityWithColumns(requester, entityID);
+            var tmpTableName = "xr_" + entity.TableName;
+            var columns = GetExternalReportTableColumns(entity);
+            var selectColumns = "";
+            foreach (var item in columns)
+            {
+                if (item.Name != "ReportKey")
+                {
+                    selectColumns += (selectColumns == "" ? "" : ",") + entity.TableName + "." + item.Name;
+                }
+                else
+                {
+                    selectColumns += (selectColumns == "" ? "" : ",") + id + " as ReportKey";
+                }
+            }
+            var query = "select " + selectColumns + " " + fromquery;
+
+
+            var dbHelper = ConnectionManager.GetDBHelper(entity.DatabaseID);
+
+            string result = "";
+
+            result = "Insert into " + tmpTableName + " " + query;
+
+            dbHelper.ExecuteNonQuery(result);
+
+            return true;
+
+
         }
     }
 

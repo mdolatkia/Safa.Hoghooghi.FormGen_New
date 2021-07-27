@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Collections.Specialized;
 using System.Data.Common;
 using MyGeneralLibrary;
+using ModelEntites;
 
 namespace MyConnectionManager
 {
@@ -18,10 +19,10 @@ namespace MyConnectionManager
         {
             return SQLTransaction;
         }
-        public TransactionResult ExecuteTransactionalQueryItems(List<QueryItem> queryItems)
-        {
-            throw new NotImplementedException();
-        }
+        //public TransactionResult ExecuteTransactionalQueryItems(List<QueryItem> queryItems)
+        //{
+        //    throw new NotImplementedException();
+        //}
         SqlTransaction SQLTransaction { set; get; }
         SqlConnection SQLConnection { set; get; }
         public SQLHelper(SqlConnection sqlConnection, bool withTransaction)
@@ -216,7 +217,7 @@ namespace MyConnectionManager
                         SQLConnection.Open();
                     if (parameters == null)
                         parameters = new List<IDataParameter>();
-                    IDataParameter returnParameter = parameters.First(x=>x.ParameterName== outputParameterName);
+                    IDataParameter returnParameter = parameters.First(x => x.ParameterName == outputParameterName);
                     //if (!parameters.Any(x => x.Direction == ParameterDirection.InputOutput ||
                     // x.Direction == ParameterDirection.Output || x.Direction == ParameterDirection.ReturnValue))
                     //{
@@ -278,6 +279,55 @@ namespace MyConnectionManager
         public DbConnection GetDBConnection()
         {
             return SQLConnection;
+        }
+
+        public int CreateTable(string tmpTableName, List<ColumnDTO> columnDTOs)
+        {
+            try
+            {
+                DataSet dt = new DataSet();
+                SqlCommand command = new SqlCommand();
+
+                try
+                {
+                    if (SQLTransaction != null)
+                    {
+                        command.Transaction = SQLTransaction;
+                    }
+                    if (SQLConnection.State != ConnectionState.Open)
+                        SQLConnection.Open();
+                    command.Connection = SQLConnection;
+                    var query = "CREATE TABLE " + tmpTableName + " (";
+                    var fields = "";
+                    foreach (var item in columnDTOs)
+                    {
+                        var dataType = "";
+                        if (item.ColumnType == Enum_ColumnType.String)
+                            dataType = item.DataType + "(255)";
+                        else
+                            dataType = item.DataType;
+                        fields += (fields == "" ? "" : ",") + item.Name + " " + dataType;
+                    }
+                    query += fields + ")";
+                    command.CommandText = query;
+
+                    return command.ExecuteNonQuery();
+
+                }
+                finally
+                {
+                    if (SQLTransaction == null)
+                    {
+                        if (SQLConnection != null)
+                            SQLConnection.Close();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 

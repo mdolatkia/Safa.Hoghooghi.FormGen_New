@@ -111,7 +111,7 @@ namespace MyReportManager
                 objectDataSource = new Telerik.Reporting.ObjectDataSource();
                 //EntityListViewDTO listView = CreateListView();
                 //CheckSubReportRelationshipColumnExistsInSelect(ChartReportReportDTO.EntityListView);
-                objectDataSource.DataSource = searchRequestManager.GetDataTableBySearchDataItems(Request.Requester, ChartReportReportDTO.TableDrivedEntityID, Request.SearchDataItems, SecurityMode.View, ChartReportReportDTO.EntityListView, 0);
+                objectDataSource.DataSource = searchRequestManager.GetDataTableBySearchDataItems(Request.Requester, ChartReportReportDTO.TableDrivedEntityID, Request.SearchDataItems, SecurityMode.View, ChartReportReportDTO.EntityListView, 0).Item3;
 
             }
             report.DataSource = objectDataSource;

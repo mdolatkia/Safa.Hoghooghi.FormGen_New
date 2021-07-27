@@ -34,12 +34,7 @@ namespace MyUILibrary.EntityArea
         {
             AreaInitializer = initParam;
 
-            var entityReport = AgentUICoreMediator.GetAgentUICoreMediator.ReportManager.GetReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), initParam.ReportID);
-            if (entityReport == null)
-            {
-                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + initParam.ReportID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
-                return;
-            }
+         
 
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfExternalReportArea();
             View.Title = AreaInitializer.Title;

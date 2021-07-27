@@ -32,7 +32,7 @@ namespace MyDataManagerService
         //}
         public EntityReportDTO GetReport(DR_Requester requester, int reportID)
         {
-            return bizEntityReport.GetEntityReport(requester, reportID);
+            return bizEntityReport.GetEntityReport(requester, reportID, true);
         }
 
         //اینجا دسترسی چک نشه؟

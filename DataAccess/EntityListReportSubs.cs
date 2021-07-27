@@ -24,7 +24,7 @@ namespace DataAccess
         public int ChildEntityListReportID { get; set; }
         public Nullable<short> OrderID { get; set; }
         public string Title { get; set; }
-        public Nullable<int> EntityRelationshipTailID { get; set; }
+        public int EntityRelationshipTailID { get; set; }
     
         public virtual EntityListReport EntityListReport { get; set; }
         public virtual EntityListReport EntityListReport1 { get; set; }

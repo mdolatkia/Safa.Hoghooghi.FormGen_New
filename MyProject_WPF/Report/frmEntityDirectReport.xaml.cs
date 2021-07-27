@@ -35,6 +35,7 @@ namespace MyProject_WPF
         {
             InitializeComponent();
             EntityID = entityID;
+            SetColumns();
             if (entityDirectReportID != 0)
             {
                 GetEntityDirectReport(entityDirectReportID);
@@ -44,8 +45,17 @@ namespace MyProject_WPF
                 Message = new EntityDirectReportDTO();
                 ShowMessage();
             }
+            ControlHelper.GenerateContextMenu(dtgColumns);
+
         }
 
+        private void SetColumns()
+        {
+            BizColumn bizColumn = new BizColumn();
+            colColumn.SelectedValueMemberPath = "ID";
+            colColumn.DisplayMemberPath = "Name";
+            colColumn.ItemsSource = bizColumn.GetAllColumns(EntityID, true).Where(x => x.PrimaryKey).ToList();
+        }
 
         private void GetEntityDirectReport(int entityViewReportID)
         {
@@ -57,6 +67,7 @@ namespace MyProject_WPF
         {
             txtReportName.Text = Message.ReportTitle;
             txtURL.Text = Message.URL;
+            dtgColumns.ItemsSource = Message.EntityDirectlReportParameters;
         }
         //private void AddFile_Click(object sender, RoutedEventArgs e)
         //{
@@ -76,10 +87,16 @@ namespace MyProject_WPF
                 MessageBox.Show("URL اجباری می باشد");
                 return;
             }
+         
+            if (Message.EntityDirectlReportParameters.Count==0)
+            {
+                MessageBox.Show("جدول پارامتر اجباری می باشد");
+                return;
+            }
             Message.TableDrivedEntityID = EntityID;
             Message.ReportTitle = txtReportName.Text; ;
             Message.URL = txtURL.Text; ;
-
+           
             Message.TableDrivedEntityID = EntityID;
             Message.ID = bizEntityDirectReport.UpdateEntityDirectReport(Message);
             MessageBox.Show("اطلاعات ثبت شد");

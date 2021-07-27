@@ -99,7 +99,7 @@ namespace MyUILibrary.DataMenuArea
                 else if (dataMenuUI.DataMenu.Type == DataMenuType.RelationshipTailSearchableReport)
                 {
                     var searchItem = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipTailDataManager.GetTargetSearchItemFromRelationshipTail(AreaInitializer.DataItem, dataMenu.ReportRelationshipTail.RelationshipTail);
-                    AgentUICoreMediator.GetAgentUICoreMediator.ShowSearchableReportArea(dataMenu.ReportRelationshipTail.EntityReport, true, searchItem, false, true, AreaInitializer.HostDataViewArea, AreaInitializer.HostDataViewItem);
+                    AgentUICoreMediator.GetAgentUICoreMediator.ShowReportArea(dataMenu.ReportRelationshipTail.EntityReport.ID, true, searchItem, false, true, AreaInitializer.HostDataViewArea, AreaInitializer.HostDataViewItem);
                 }
                 else if (dataMenuUI.DataMenu.Type == DataMenuType.Workflow)
                 {

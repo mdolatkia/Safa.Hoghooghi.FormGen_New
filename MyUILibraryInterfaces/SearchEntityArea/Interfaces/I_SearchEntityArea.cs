@@ -47,7 +47,7 @@ namespace MyUILibrary.EntityArea
         void OnSearchDataDefined(DP_SearchRepository logicPhrase);
         DP_SearchRepository GetSearchRepository();
         bool ShowSearchRepository(DP_SearchRepository item);
-        LogicPhrase GetQuickSearchLogicPhrase(string text, EntitySearchDTO entitySearch);
+        LogicPhraseDTO GetQuickSearchLogicPhrase(string text, EntitySearchDTO entitySearch);
         event EventHandler<SearchDataArg> SearchDataDefined;
         List<I_Command> SearchCommands
         {
@@ -244,7 +244,7 @@ namespace MyUILibrary.EntityArea
     }
     public class SearchLogicArg : EventArgs
     {
-        public LogicPhrase SearchItems
+        public LogicPhraseDTO SearchItems
         {
             get;
             set;
@@ -276,7 +276,7 @@ namespace MyUILibrary.EntityArea
     }
     public class AdvanceOrRaw
     {
-        public LogicPhrase LogicPhrase { set; get; }
+        public LogicPhraseDTO LogicPhrase { set; get; }
         public List<SearchProperty> SearchProperties { set; get; }
     }
 }

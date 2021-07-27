@@ -16,6 +16,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
@@ -27,7 +28,13 @@
             <TextBox Grid.Column="1" x:Name="txtReportName"/>
             <TextBlock Grid.Column="0" Grid.Row="1" Text="URL"/>
             <TextBox x:Name="txtURL" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" />
-            <!--<Button  Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Grid.Column="2" Click="Button_Click">تعریف جستجوی پیش فرض</Button>-->
+            <TextBlock Grid.Column="0" Grid.Row="2" Text="نام پارامتر"/>
+            <telerik:RadGridView x:Name="dtgColumns" AutoGenerateColumns="False" Height="150"  Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="2">
+                <telerik:RadGridView.Columns>
+                    <MyCommonWPFControls:MyStaticLookupColumn  x:Name="colColumn" Header="ستون" DataMemberBinding="{Binding ColumnID}" />
+                    <telerik:GridViewDataColumn Header="نام پارامتر" DataMemberBinding="{Binding ParameterName}" />
+                </telerik:RadGridView.Columns>
+            </telerik:RadGridView>
         </Grid>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">

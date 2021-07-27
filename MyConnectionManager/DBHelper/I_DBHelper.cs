@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ModelEntites;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -22,6 +23,7 @@ namespace MyConnectionManager
         object ExecuteScalar(string query, List<IDataParameter> parameters = null);
         TestConnectionResult TestConnection();
         object ExecuteStoredProcedure(string spName, List<IDataParameter> parameters, string outputParameterName);
+        int CreateTable(string tmpTableName, List<ColumnDTO> columnDTOs);
         //static int NonQuery(string query, IList<SqlParameter> parametros);
         //static object Scalar(string query, List<SqlParameter> parametros);
     }

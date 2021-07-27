@@ -209,7 +209,7 @@ namespace MyUILibrary.EntityArea
             {
                 result.Add(prop);
             }
-            foreach (LogicPhrase logic in phrase.Where(x => x is LogicPhrase))
+            foreach (LogicPhraseDTO logic in phrase.Where(x => x is LogicPhraseDTO))
             {
                 return GetSearchProperties(logic.Phrases, result);
             }
@@ -311,7 +311,7 @@ namespace MyUILibrary.EntityArea
             List<SimpleSearchOperator> result = new List<SimpleSearchOperator>();
             if (column.ID != 0)
             {
-                if (column.ColumnType == Enum_ColumnType.String || column.ColumnType == Enum_ColumnType.String)
+                if (column.ColumnType == Enum_ColumnType.String )
                 {
                     result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر" });
                     result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل" });
@@ -323,6 +323,16 @@ namespace MyUILibrary.EntityArea
                     result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر" });
                     result.Add(new SimpleSearchOperator() { Operator = CommonOperator.SmallerThan, Title = "کوچکتر از" });
                     result.Add(new SimpleSearchOperator() { Operator = CommonOperator.BiggerThan, Title = "بزرگتر از" });
+                }
+                else if (column.ColumnType == Enum_ColumnType.Date)
+                {
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.SmallerThan, Title = "کوچکتر از" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.BiggerThan, Title = "بزرگتر از" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.StartsWith, Title = "شروع شود با" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.EndsWith, Title = "تمام شود با" });
+                   
                 }
             }
             return result;
@@ -401,7 +411,7 @@ namespace MyUILibrary.EntityArea
                 var value = property.ControlManager.GetValue(null);
                 if (PropertyHasValue(property, value))
                 {
-                    LogicPhrase logic = null;
+                    LogicPhraseDTO logic = null;
                     if (property.EntitySearchColumn.RelationshipTail == null)
                         logic = firstRepository;
                     else
@@ -423,7 +433,7 @@ namespace MyUILibrary.EntityArea
                 if (relControl.EditNdTypeArea.GetDataList().Any())
                 {
                     var data = relControl.EditNdTypeArea.GetDataList().First();
-                    LogicPhrase logic = AgentHelper.GetOrCreateSearchRepositoryFromRelationshipTail(firstRepository, relControl.EntitySearchColumn.RelationshipTail, data);
+                    LogicPhraseDTO logic = AgentHelper.GetOrCreateSearchRepositoryFromRelationshipTail(firstRepository, relControl.EntitySearchColumn.RelationshipTail, data);
 
                     //foreach (var property in data.KeyProperties)
                     //{
@@ -470,9 +480,9 @@ namespace MyUILibrary.EntityArea
             return firstRepository;
         }
 
-        public LogicPhrase GetQuickSearchLogicPhrase(string text, EntitySearchDTO entitySearch)
+        public LogicPhraseDTO GetQuickSearchLogicPhrase(string text, EntitySearchDTO entitySearch)
         {
-            LogicPhrase quickSearchLogic = new LogicPhrase();
+            LogicPhraseDTO quickSearchLogic = new LogicPhraseDTO();
             quickSearchLogic.AndOrType = AndORType.Or;
             foreach (var item in entitySearch.EntitySearchAllColumns)
             {
@@ -483,7 +493,7 @@ namespace MyUILibrary.EntityArea
                     searchProperty.ColumnID = item.ColumnID;
                     searchProperty.IsKey = item.Column.PrimaryKey;
                     searchProperty.Value = text;
-                    LogicPhrase logic = null;
+                    LogicPhraseDTO logic = null;
                     if (item.RelationshipTail == null)
                         logic = quickSearchLogic;
                     else

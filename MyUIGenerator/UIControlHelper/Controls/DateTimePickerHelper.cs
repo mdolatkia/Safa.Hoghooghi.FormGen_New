@@ -27,10 +27,10 @@ namespace MyUIGenerator.UIControlHelper
         public FrameworkElement MainControl { get { return textBox; } }
         public FrameworkElement WholeControl { get { return theGrid; } }
 
-        bool? stringDateIsMiladi;
-        bool? stringTimeIsMiladi;
+        bool stringDateIsMiladi;
+        bool stringTimeIsMiladi;
         bool valueIsString = false;
-        bool? stringTimeISAMPMFormat;
+        bool stringTimeISAMPMFormat;
         bool hasnotTimePicker;
         bool hideTimePicker;
         bool hideMiladiDatePicker;
@@ -221,7 +221,7 @@ namespace MyUIGenerator.UIControlHelper
 
         public object GetValue()
         {
-            return ReadValueFromControl((textBox as MyDateTimePicker).SelectedDateTime, GetConverterParameter());
+             return ReadValueFromControl((textBox as MyDateTimePicker).SelectedDateTime, GetConverterParameter());
 
         }
 

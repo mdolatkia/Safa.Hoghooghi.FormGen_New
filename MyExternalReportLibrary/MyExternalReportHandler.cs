@@ -2,7 +2,6 @@
 using MyConnectionManager;
 using MyDataSearchManagerBusiness;
 using MyModelManager;
-using MyTargetDatabaseManager;
 using ProxyLibrary;
 using System;
 using System.Collections.Generic;
@@ -16,6 +15,7 @@ namespace MyExternalReportLibrary
     {
         public long GetExternalReportKey(DR_Requester requester, int reportID, int entityID, DP_SearchRepository searchItem)
         {
+            BizEntityExternalReport bizEntityExternalReport = new BizEntityExternalReport();
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
             SearchRequestManager searchRequestManager = new SearchRequestManager();
             var query = searchRequestManager.GetSelectFromExternal(requester, entityID, searchItem, true, ModelEntites.SecurityMode.View);
@@ -25,7 +25,7 @@ namespace MyExternalReportLibrary
             {
                 //  var transactionresult = ConnectionManager.ExecuteTransactionalQueryItems(allQueryItems.Where(x => !string.IsNullOrEmpty(x.Query)).ToList());
 
-                var guid = Guid.NewGuid().ToString();
+                //var guid = Guid.NewGuid().ToString();
                 var id = 0;
                 using (var model = new MyIdeaDataDBEntities())
                 {
@@ -39,9 +39,8 @@ namespace MyExternalReportLibrary
                 }
                 if (id != 0)
                 {
-                    var select = "select " + query.Item1 + "," + id + " as ReportKey" + " " + query.Item2;
-                    var tmpTableName = "xr_" + entity.TableName;
-                    var inserted = TargetDatabaseManager.InsertFromQueryToTargetDB(entityID, tmpTableName, select);
+                    var inserted = bizEntityExternalReport.InsertDataIntoExternalReportTable(requester, reportID, entityID, id, query.Item2);
+
                     if (inserted)
                         return id;
                 }

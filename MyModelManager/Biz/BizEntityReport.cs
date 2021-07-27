@@ -36,7 +36,7 @@ namespace MyModelManager
                     if (DataIsAccessable(requester, dbItem))
                     {
                         var nItem = new EntityReportDTO();
-                        ToEntityReportDTO(dbItem, nItem);
+                        ToEntityReportDTO(dbItem, nItem,false);
                         result.Add(nItem);
                     }
                 }
@@ -45,15 +45,16 @@ namespace MyModelManager
             //CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.Validation, entityID.ToString());
             return result;
         }
-        public EntityReportDTO GetEntityReport(DR_Requester requester, int EntityReportID)
+        public EntityReportDTO GetEntityReport(DR_Requester requester, int EntityReportID, bool withSearchInfo)
         {
+            //withSearchInfo این یجوریه! حذف بشه
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var dbItem = projectContext.EntityReport.First(x => x.ID == EntityReportID);
                 if (DataIsAccessable(requester, dbItem))
                 {
                     var nItem = new EntityReportDTO();
-                    ToEntityReportDTO(dbItem, nItem);
+                    ToEntityReportDTO(dbItem, nItem, withSearchInfo);
                     return nItem;
                 }
                 else
@@ -98,7 +99,7 @@ namespace MyModelManager
         //        return result;
         //}
 
-        internal void ToEntityReportDTO(EntityReport entityReport, EntityReportDTO entityReportDTO)
+        internal void ToEntityReportDTO(EntityReport entityReport, EntityReportDTO entityReportDTO,bool withSearchInfo)
         {
             entityReportDTO.ID = entityReport.ID;
             entityReportDTO.ReportType = (ReportType)entityReport.ReportType;
@@ -107,6 +108,7 @@ namespace MyModelManager
             if(entityReport.EntitySearchableReport!=null)
             {
                 entityReportDTO.SearchableReportType = (SearchableReportType)entityReport.EntitySearchableReport.SearchableReportType;
+                entityReportDTO.SearchRepository = new BizSearchRepository().ToSearchRepositoryDTO(entityReport.EntitySearchableReport.SearchRepository);
             }
         }
 

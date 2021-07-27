@@ -59,11 +59,15 @@ namespace MyUILibrary.EntityArea
             {
                 foreach (var item in e.DataItem.KeyProperties)
                 {
-                    var param = item.Column.Name + "=" + item.Value;
-                    if (url.Contains("?"))
-                        url += "&" + param;
-                    else
-                        url += "?" + param;
+                    var paramCol = EntityDirectReport.EntityDirectlReportParameters.FirstOrDefault(x => x.ColumnID == item.ColumnID);
+                    if (paramCol != null)
+                    {
+                        var param = paramCol.ParameterName + "=" + item.Value;
+                        if (url.Contains("?"))
+                            url += "&" + param;
+                        else
+                            url += "?" + param;
+                    }
                 }
                 System.Diagnostics.Process.Start(url);
             }

@@ -104,7 +104,7 @@ namespace MyUILibrary.EntityArea.Commands
                     foreach (var item in reuslt.UpdatedItems)
                     {
                         var listProperties = new List<EntityInstanceProperty>();
-                        LogicPhrase logicPhrase = new LogicPhrase();
+                        LogicPhraseDTO logicPhrase = new LogicPhraseDTO();
                         foreach (var keyProperty in item.KeyProperties)
                             logicPhrase.Phrases.Add(new SearchProperty() { ColumnID = keyProperty.ColumnID, Value = keyProperty.Value });
                         searchDataItem.AndOrType = AndORType.Or;

@@ -1318,7 +1318,7 @@ namespace MyUILibrary
 
         //}
 
-        internal static DP_SearchRepository GetOrCreateSearchRepositoryFromRelationshipTail(LogicPhrase result, EntityRelationshipTailDTO relationshipTail, DP_BaseData lastDataItem)
+        internal static DP_SearchRepository GetOrCreateSearchRepositoryFromRelationshipTail(LogicPhraseDTO result, EntityRelationshipTailDTO relationshipTail, DP_BaseData lastDataItem)
         {
             if (relationshipTail == null)
             {
@@ -1345,7 +1345,7 @@ namespace MyUILibrary
                 if (result.Phrases.Any(x => x is DP_SearchRepository && (x as DP_SearchRepository).SourceRelationship.ID == relationshipTail.Relationship.ID))
                 {
                     var childSearchPhrase = result.Phrases.First(x => x is DP_SearchRepository && (x as DP_SearchRepository).SourceRelationship.ID == relationshipTail.Relationship.ID);
-                    return GetOrCreateSearchRepositoryFromRelationshipTail(childSearchPhrase as LogicPhrase, relationshipTail.ChildTail, lastDataItem);
+                    return GetOrCreateSearchRepositoryFromRelationshipTail(childSearchPhrase as LogicPhraseDTO, relationshipTail.ChildTail, lastDataItem);
                 }
                 else
                 {

@@ -124,7 +124,7 @@ namespace ModelEntites
     {
         public int ColumnID { set; get; }
         public bool ShowMiladiDateInUI { set; get; }
-        public bool? StringDateIsMiladi { set; get; }
+        public bool StringDateIsMiladi { set; get; }
     }
     public class DateTimeColumnTypeDTO
     {
@@ -132,9 +132,9 @@ namespace ModelEntites
         public bool ShowMiladiDateInUI { set; get; }
         public bool HideTimePicker { set; get; }
         public bool ShowAMPMFormat { set; get; }
-        public bool? StringDateIsMiladi { set; get; }
-        public bool? StringTimeIsMiladi { set; get; }
-        public bool? StringTimeISAMPMFormat { set; get; }
+        public bool StringDateIsMiladi { set; get; }
+        public bool StringTimeIsMiladi { set; get; }
+        public bool StringTimeISAMPMFormat { set; get; }
     }
     public class TimeColumnTypeDTO
     {
@@ -142,8 +142,8 @@ namespace ModelEntites
         //public int MaxLength { get; set; }
         public bool ShowAMPMFormat { set; get; }
         public bool ShowMiladiTime { set; get; }
-        public bool? StringTimeISAMPMFormat { get; set; }
-        public bool? StringTimeIsMiladi { get; set; }
+        public bool StringTimeISAMPMFormat { get; set; }
+        public bool StringTimeIsMiladi { get; set; }
         //     public bool StringValueIsMiladi { set; get; }
 
         //  public bool ValueIsPersianDate { set; get; }
@@ -1130,6 +1130,8 @@ namespace ModelEntites
         public int TableDrivedEntityID { set; get; }
         public ReportType ReportType { set; get; }
         public SearchableReportType SearchableReportType { set; get; }
+
+        public DP_SearchRepository SearchRepository { set; get; }
         //public EntityListReportDTO EntityListReport { set; get; }
         //public EntityListReportGroupedDTO EntityListReportGrouped { set; get; }
         //public EntityChartReportDTO EntityChartReport { set; get; }
@@ -1442,6 +1444,7 @@ namespace ModelEntites
             ReportRelationships = new List<DataMenuReportRelationshipDTO>();
             DataViewRelationships = new List<DataMenuDataViewRelationshipDTO>();
             GridViewRelationships = new List<ModelEntites.DataMenuGridViewRelationshipDTO>();
+            DirectReports = new List<DataMenuDirectReportRelationshipDTO>();
         }
         public int ID { set; get; }
         public string Name { set; get; }
@@ -1450,7 +1453,7 @@ namespace ModelEntites
         public List<DataMenuDataViewRelationshipDTO> DataViewRelationships { set; get; }
         public List<DataMenuReportRelationshipDTO> ReportRelationships { set; get; }
         public List<DataMenuGridViewRelationshipDTO> GridViewRelationships { set; get; }
-
+        public List<DataMenuDirectReportRelationshipDTO> DirectReports { set; get; }
         public byte[] IconContent { set; get; }
         public int EntityListViewID { set; get; }
 
@@ -1505,7 +1508,13 @@ namespace ModelEntites
         public string Group2 { set; get; }
         public List<DataMenuSettingDTO> vwDataMenuSettings { set; get; }
     }
-
+    public partial class DataMenuDirectReportRelationshipDTO
+    {
+        public int ID { get; set; }
+        public string Group1 { get; set; }
+        public int EntityDirectReportID { get; set; }
+        public EntityDirectReportDTO EntityDirectReport { set; get; }
+    }
 
     public class DataMenu
     {
@@ -1553,10 +1562,18 @@ namespace ModelEntites
     {
         public EntityDirectReportDTO()
         {
-
+            EntityDirectlReportParameters = new List<EntityDirectlReportParameterDTO>();
         }
 
         public string URL { set; get; }
+        public List<EntityDirectlReportParameterDTO> EntityDirectlReportParameters { set; get; }
+    }
+    public partial class EntityDirectlReportParameterDTO
+    {
+        public int ID { get; set; }
+        public int ColumnID { get; set; }
+        public string ParameterName { get; set; }
+      
     }
     public class EntityCrosstabReportDTO : EntitySearchableReportDTO
     {
@@ -2679,7 +2696,7 @@ namespace ModelEntites
         Formula,
         Command,
         Report,
-        DirectDataReport,
+    //    DirectDataReport,
         RootMenu,
         Menu,
         Archive,

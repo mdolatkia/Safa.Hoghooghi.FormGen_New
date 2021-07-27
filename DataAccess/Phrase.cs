@@ -18,12 +18,10 @@ namespace DataAccess
         public Nullable<int> ParentLogicPhraseID { get; set; }
         public Nullable<int> ColumnPhraseID { get; set; }
         public Nullable<int> LogicPhraseID { get; set; }
-        public Nullable<int> SearchRepositoryID { get; set; }
         public short Type { get; set; }
     
         public virtual ColumnPhrase ColumnPhrase { get; set; }
         public virtual LogicPhrase LogicPhrase { get; set; }
         public virtual LogicPhrase LogicPhrase1 { get; set; }
-        public virtual SearchRepository SearchRepository { get; set; }
     }
 }

@@ -312,7 +312,7 @@ namespace MyModelManager
             if (!context.DatabaseInformation.Any(x => x.Name == "DBProductService"))
             {
                 DatabaseInformation db = new DatabaseInformation();
-                db.ConnectionString = "Data Source=Localhost;Initial Catalog=DBProductService;Integrated Security=True;MultipleActiveResultSets=True;";
+                db.ConnectionString = "Data Source=.;Initial Catalog=DBProductService;User ID=sa;Password=123;MultipleActiveResultSets=True;";// "Data Source=Localhost;Initial Catalog=DBProductService;Integrated Security=True;MultipleActiveResultSets=True;";
                 db.Name = "DBProductService";
                 db.Title = "خدمات و سرويس";
                 db.DBType = "SQLServer";

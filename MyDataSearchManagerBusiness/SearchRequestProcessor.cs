@@ -361,9 +361,9 @@ namespace MyDataSearchManagerBusiness
             if (result == null) result = new List<SearchProperty>();
             if (phrase is SearchProperty)
                 result.Add(phrase as SearchProperty);
-            else if (phrase is LogicPhrase && !(phrase is DP_SearchRepository))
+            else if (phrase is LogicPhraseDTO && !(phrase is DP_SearchRepository))
             {
-                var logicPhrase = phrase as LogicPhrase;
+                var logicPhrase = phrase as LogicPhraseDTO;
                 foreach (var item in logicPhrase.Phrases)
                 {
                     GetPropertyPhrase(item, result);
@@ -371,7 +371,7 @@ namespace MyDataSearchManagerBusiness
             }
             return result;
         }
-        private List<DP_SearchRepository> GetRelationshipPhrases(LogicPhrase logicPhrase, List<DP_SearchRepository> result = null)
+        private List<DP_SearchRepository> GetRelationshipPhrases(LogicPhraseDTO logicPhrase, List<DP_SearchRepository> result = null)
         {
             if (result == null) result = new List<DP_SearchRepository>();
             foreach (var phrase in logicPhrase.Phrases)
@@ -380,9 +380,9 @@ namespace MyDataSearchManagerBusiness
                 {
                     result.Add(phrase as DP_SearchRepository);
                 }
-                else if (phrase is LogicPhrase && !(phrase is DP_SearchRepository))
+                else if (phrase is LogicPhraseDTO && !(phrase is DP_SearchRepository))
                 {
-                    GetRelationshipPhrases(phrase as LogicPhrase, result);
+                    GetRelationshipPhrases(phrase as LogicPhraseDTO, result);
                 }
             }
 
@@ -472,7 +472,7 @@ namespace MyDataSearchManagerBusiness
 
                     foreach (var item in post.Item2)
                     {
-                        LogicPhrase logicPhrase = new LogicPhrase();
+                        LogicPhraseDTO logicPhrase = new LogicPhraseDTO();
 
                         //اینجا مهمه کا ان باشه یا اور
                         //در واقع مشخص کننده اینه که اون شرطهایی که برای یک پست در فرم دسترسی داده برای یک سابجکت تعریف شده اند اند بشوند یا اور
@@ -480,7 +480,7 @@ namespace MyDataSearchManagerBusiness
                         //logicPhrase.AndOrType = item.ConditionAndORType;
                         foreach (var condition in item.Conditions)
                         {
-                            LogicPhrase conditionLogicPhrase = null;
+                            LogicPhraseDTO conditionLogicPhrase = null;
 
                             if (condition.RelationshipTailID == 0)
                             {
@@ -490,7 +490,7 @@ namespace MyDataSearchManagerBusiness
                             else
                             {
                                 var currentSearchRepository = CreateChildSearchRepository(mainSearchDataItem, condition.RelationshipTail, logicPhrase);
-                                conditionLogicPhrase = currentSearchRepository.Item2 as LogicPhrase;
+                                conditionLogicPhrase = currentSearchRepository.Item2 as LogicPhraseDTO;
                                 if (!logicPhrase.Phrases.Contains(currentSearchRepository.Item1))
                                     logicPhrase.Phrases.Add(currentSearchRepository.Item1);
                             }
@@ -567,7 +567,7 @@ namespace MyDataSearchManagerBusiness
             return commandStr;
         }
 
-        private Tuple<DP_SearchRepository, DP_SearchRepository> CreateChildSearchRepository(DP_SearchRepository parentRepository, EntityRelationshipTailDTO relationshipTail, LogicPhrase parentLogicPhrase)
+        private Tuple<DP_SearchRepository, DP_SearchRepository> CreateChildSearchRepository(DP_SearchRepository parentRepository, EntityRelationshipTailDTO relationshipTail, LogicPhraseDTO parentLogicPhrase)
         {//اولی و آخری را برمیگگرداند
          //parentRepository اولی فکر کنم بیخود باشد زیرا از بیرون معلومه که چی فرستاده شده یا همان 
             DP_SearchRepository firstRepository = null;
@@ -575,7 +575,7 @@ namespace MyDataSearchManagerBusiness
             CreateChildSearchRepository(parentRepository, relationshipTail, parentLogicPhrase, ref firstRepository, ref lastRepository);
             return new Tuple<DP_SearchRepository, DP_SearchRepository>(firstRepository, lastRepository);
         }
-        private DP_SearchRepository CreateChildSearchRepository(DP_SearchRepository parentRepository, EntityRelationshipTailDTO relationshipTail, LogicPhrase parentLogicPhrase, ref DP_SearchRepository firstRepository, ref DP_SearchRepository lastRepository)
+        private DP_SearchRepository CreateChildSearchRepository(DP_SearchRepository parentRepository, EntityRelationshipTailDTO relationshipTail, LogicPhraseDTO parentLogicPhrase, ref DP_SearchRepository firstRepository, ref DP_SearchRepository lastRepository)
         {
 
 
@@ -601,7 +601,7 @@ namespace MyDataSearchManagerBusiness
                 if (firstRepository == null)
                     firstRepository = newRepository;
 
-                var childRepository = CreateChildSearchRepository(newRepository, relationshipTail.ChildTail, newRepository as LogicPhrase, ref firstRepository, ref lastRepository);
+                var childRepository = CreateChildSearchRepository(newRepository, relationshipTail.ChildTail, newRepository as LogicPhraseDTO, ref firstRepository, ref lastRepository);
                 if (childRepository != null)
                 {
                     //LogicPhrase cphrase = newRepository.Phrase as LogicPhrase;
@@ -610,7 +610,7 @@ namespace MyDataSearchManagerBusiness
                     ////    cphrase = new LogicPhrase();
                     ////    newRepository.Phrase = cphrase;
                     ////}
-                    (newRepository as LogicPhrase).Phrases.Add(childRepository);
+                    (newRepository as LogicPhraseDTO).Phrases.Add(childRepository);
 
 
                 }
@@ -846,9 +846,9 @@ namespace MyDataSearchManagerBusiness
                 return GetRelatedSearchParams(requester, searchRepository, tableAlias, tableIndex, connectionEntity);
 
             }
-            else if (phrase is LogicPhrase)
+            else if (phrase is LogicPhraseDTO)
             {
-                var logicPhrase = (phrase as LogicPhrase);
+                var logicPhrase = (phrase as LogicPhraseDTO);
                 var result = "";
                 foreach (var internalPhrase in logicPhrase.Phrases)
                 {

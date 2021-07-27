@@ -17,6 +17,7 @@ namespace DataAccess
         public Column()
         {
             this.CodeFunction_TableDrivedEntity_Parameters = new HashSet<CodeFunction_TableDrivedEntity_Parameters>();
+            this.EntityDirectlReportParameters = new HashSet<EntityDirectlReportParameters>();
             this.RelationshipSearchFilter = new HashSet<RelationshipSearchFilter>();
             this.RelationshipSearchFilter1 = new HashSet<RelationshipSearchFilter>();
             this.SuperToSubRelationshipType = new HashSet<SuperToSubRelationshipType>();
@@ -66,6 +67,7 @@ namespace DataAccess
         public virtual Formula Formula { get; set; }
         public virtual ColumnValueRange ColumnValueRange { get; set; }
         public virtual DateTimeColumnType DateTimeColumnType { get; set; }
+        public virtual ICollection<EntityDirectlReportParameters> EntityDirectlReportParameters { get; set; }
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter { get; set; }
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter1 { get; set; }
         public virtual TimeColumnType TimeColumnType { get; set; }

@@ -856,7 +856,7 @@ namespace ProxyLibrary
         //public int EntityListViewColumnsID { get; set; }
     }
 
-    public class DP_SearchRepository : LogicPhrase /*: RootPhrase*/
+    public class DP_SearchRepository : LogicPhraseDTO /*: RootPhrase*/
     {
         public DP_SearchRepository()
         {
@@ -933,9 +933,9 @@ namespace ProxyLibrary
     //{
 
     //}
-    public class LogicPhrase : Phrase
+    public class LogicPhraseDTO : Phrase
     {
-        public LogicPhrase()
+        public LogicPhraseDTO()
         {
             Phrases = new List<ProxyLibrary.Phrase>();
         }

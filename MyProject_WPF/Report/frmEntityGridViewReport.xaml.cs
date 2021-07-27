@@ -91,7 +91,7 @@ namespace MyProject_WPF
                 lokDataMenuSetting.EditItemClicked += lokDataMenuSetting_EditItemClicked;
             }
             BizDataMenuSetting biz = new BizDataMenuSetting();
-            lokDataMenuSetting.DisplayMember = "Title";
+            lokDataMenuSetting.DisplayMember = "Name";
             lokDataMenuSetting.SelectedValueMember = "ID";
             lokDataMenuSetting.ItemsSource = biz.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
         }

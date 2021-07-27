@@ -212,7 +212,7 @@ namespace MyUIGenerator.UIControlHelper.Controls
         private static void OnSelectedDateTimeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
 
-            MyDateTimePicker myDateTimePicker = (MyDateTimePicker)sender;
+             MyDateTimePicker myDateTimePicker = (MyDateTimePicker)sender;
             if (!myDateTimePicker.miladiIsChangingProperty)
             {
                 myDateTimePicker.propertyIsChangingMiladi = true;

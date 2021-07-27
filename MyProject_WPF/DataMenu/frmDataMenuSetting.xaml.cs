@@ -42,6 +42,7 @@ namespace MyProject_WPF
             EntityID = entityID;
             SetRelationshipTails();
             SetDataViewList();
+            SetDirectReports();
             if (dataMenuSettingID == 0)
             {
                 Message = new DataMenuSettingDTO();
@@ -54,6 +55,7 @@ namespace MyProject_WPF
             ControlHelper.GenerateContextMenu(dtgDataGridRelationships);
             ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
             ControlHelper.GenerateContextMenu(dtgReportRelationships);
+            ControlHelper.GenerateContextMenu(dtgDirectReport);
 
             //ControlHelper.GenerateContextMenu(dtgExternalReports);
             dtgReportRelationships.RowLoaded += DtgColumns_RowLoaded;
@@ -75,6 +77,15 @@ namespace MyProject_WPF
             colDataViewRelTargetDataMenuSetting.EditItemEnabled = true;
             colDataViewRelTargetDataMenuSetting.EditItemClicked += ColDataGridRelTargetDataMenuSetting_EditItemClicked;
             colDataGridRelTargetDataMenuSetting.EditItemClicked += ColDataGridRelTargetDataMenuSetting_EditItemClicked;
+        }
+
+        private void SetDirectReports()
+        {
+            BizEntityDirectReport bizEntityDirectReport = new BizEntityDirectReport();
+        var reports=    bizEntityDirectReport.GetEntityDirectReports(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+            colDirectReport.SelectedValueMemberPath = "ID";
+            colDirectReport.DisplayMemberPath = "ReportTitle";
+            colDirectReport.ItemsSource = reports;
         }
 
         private void ColDataGridRelTargetDataMenuSetting_EditItemClicked(object sender, EditItemClickEventArg e)
@@ -244,6 +255,7 @@ namespace MyProject_WPF
             dtgReportRelationships.ItemsSource = Message.ReportRelationships;
             dtgDataViewRelationships.ItemsSource = Message.DataViewRelationships;
             dtgDataGridRelationships.ItemsSource = Message.GridViewRelationships;
+            dtgDirectReport.ItemsSource = Message.DirectReports;
             txtName.Text = Message.Name;
             foreach (var item in Message.ReportRelationships)
             {

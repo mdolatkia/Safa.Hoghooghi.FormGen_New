@@ -131,7 +131,7 @@ namespace MyUILibrary.EntityArea
         private void RootAndMenu_Clicked(object sender, EventArgs e, AdvanceSearchNode node, bool and)
         {
 
-            var logicPhrase = new LogicPhrase();
+            var logicPhrase = new LogicPhraseDTO();
             logicPhrase.AndOrType = (and ? AndORType.And : AndORType.Or);
             AddLogicNode(node, logicPhrase);
 
@@ -177,7 +177,7 @@ namespace MyUILibrary.EntityArea
         //    }
         //    return newnode;
         //}
-        private AdvanceSearchNode AddLogicNode(AdvanceSearchNode parentNode, LogicPhrase logicPhrase)
+        private AdvanceSearchNode AddLogicNode(AdvanceSearchNode parentNode, LogicPhraseDTO logicPhrase)
         {
             if (RootNode == null && logicPhrase is DP_SearchRepository)
                 firstRepository = logicPhrase as DP_SearchRepository;
@@ -226,11 +226,11 @@ namespace MyUILibrary.EntityArea
             {
                 if (item is DP_SearchRepository)
                 {
-                    AddLogicNode(newnode, (item as LogicPhrase));
+                    AddLogicNode(newnode, (item as LogicPhraseDTO));
                 }
-                else if (item is LogicPhrase)
+                else if (item is LogicPhraseDTO)
                 {
-                    AddLogicNode(newnode, (item as LogicPhrase));
+                    AddLogicNode(newnode, (item as LogicPhraseDTO));
                 }
                 else if (item is SearchProperty)
                 {
@@ -285,8 +285,8 @@ namespace MyUILibrary.EntityArea
         {
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(view);
 
-            if (node.Phrase is LogicPhrase)
-                (node.Phrase as LogicPhrase).Phrases.Add(e.SearchItems);
+            if (node.Phrase is LogicPhraseDTO)
+                (node.Phrase as LogicPhraseDTO).Phrases.Add(e.SearchItems);
 
             AddLogicNode(node, e.SearchItems);
         }
@@ -310,8 +310,8 @@ namespace MyUILibrary.EntityArea
             {
                 node.ParentNode.NodeManager.RemoveItem(node.NodeManager);
                 node.ParentNode.ChildItems.Remove(node);
-                (node.ParentNode.Phrase as LogicPhrase).Phrases.Remove(node.Phrase);
-                (node.ParentNode.Phrase as LogicPhrase).Phrases.Add(e.SearchItems);
+                (node.ParentNode.Phrase as LogicPhraseDTO).Phrases.Remove(node.Phrase);
+                (node.ParentNode.Phrase as LogicPhraseDTO).Phrases.Add(e.SearchItems);
                 AddLogicNode(node.ParentNode, e.SearchItems);
             }
 
@@ -360,9 +360,9 @@ namespace MyUILibrary.EntityArea
             {
                 parentNode.NodeManager.RemoveItem(node.NodeManager);
                 parentNode.ChildItems.Remove(node);
-                if (parentNode.Phrase is LogicPhrase)
+                if (parentNode.Phrase is LogicPhraseDTO)
                 {
-                    (parentNode.Phrase as LogicPhrase).Phrases.Remove(node.Phrase);
+                    (parentNode.Phrase as LogicPhraseDTO).Phrases.Remove(node.Phrase);
                 }
             }
         }
@@ -389,8 +389,8 @@ namespace MyUILibrary.EntityArea
             foreach (var phrase in e.SearchItems)
             {
                 AddSearchPropertyNode(phrase, andOrNode);
-                if (andOrNode.Phrase is LogicPhrase)
-                    (andOrNode.Phrase as LogicPhrase).Phrases.Add(phrase);
+                if (andOrNode.Phrase is LogicPhraseDTO)
+                    (andOrNode.Phrase as LogicPhraseDTO).Phrases.Add(phrase);
             }
         }
         public DP_SearchRepository GetSearchRepository()

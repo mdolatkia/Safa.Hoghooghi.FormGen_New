@@ -16,7 +16,7 @@ namespace MyReportManager
 
         public ReportSource GetReportSource(DR_Requester requester, RR_ReportSourceRequest request)
         {
-            var report = bizEntityReport.GetEntityReport(request.Requester, request.ReportID);
+            var report = bizEntityReport.GetEntityReport(request.Requester, request.ReportID,false);
             if(report==null)
             {
                 throw new Exception("دسترسی به گزارش به شناسه" + " " + request.ReportID + " " + "امکانپذیر نمی باشد");
