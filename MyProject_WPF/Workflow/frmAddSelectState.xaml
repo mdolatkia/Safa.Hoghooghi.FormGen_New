@@ -49,7 +49,9 @@
                 <TabItem Header="فرمول">
                     <telerik:RadGridView Grid.Row="2" AutoGenerateColumns="False"  x:Name="dtgFormulaList" >
                         <telerik:RadGridView.Columns>
-                            <telerik:GridViewComboBoxColumn Header="فرمول"  DataMemberBinding="{Binding FormulaID}" />
+                            <!--<telerik:GridViewComboBoxColumn Header="فرمول"  DataMemberBinding="{Binding FormulaID}" />-->
+                            <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding FormulaID}"  x:Name="colFormula" Header="فرمول"></MyCommonWPFControls:MyStaticLookupColumn>
+                            <telerik:GridViewDataColumn Header="برقرار باشد/نباشد"  DataMemberBinding="{Binding TrueFalse}" />
                             <telerik:GridViewDataColumn Header="پیام"  DataMemberBinding="{Binding Message}" />
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>

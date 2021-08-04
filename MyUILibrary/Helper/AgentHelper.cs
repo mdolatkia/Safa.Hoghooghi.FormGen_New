@@ -62,7 +62,8 @@ namespace MyUILibrary
 
             string shdate = date;
             var t = shdate.Split('/');
-            int Y = Convert.ToInt32(t[0]);
+            string year = t[0];
+            int Y =Convert.ToInt32( year);
             int M = Convert.ToInt32(t[1]);
             int D = (t[2].Length > 2) ? Convert.ToInt32(t[2].Substring(0, 2)) : Convert.ToInt32(t[2]);
             DateTime MDate = P.ToDateTime(Y, M, D, 0, 0, 0, 0);
@@ -592,8 +593,8 @@ namespace MyUILibrary
             {
                 if (item.TargetEntityID == item1.TargetEntityID)
                 {
-                    if (item.KeyProperties.All(x => item1.KeyProperties.Any(y => x.ColumnID == y.ColumnID && x.Value == y.Value))
-                        && item1.KeyProperties.All(x => item.KeyProperties.Any(y => x.ColumnID == y.ColumnID && x.Value == y.Value)))
+                    if (item.KeyProperties.All(x => item1.KeyProperties.Any(y => x.ColumnID == y.ColumnID && x.Value.Equals(y.Value)))
+                        && item1.KeyProperties.All(x => item.KeyProperties.Any(y => x.ColumnID == y.ColumnID && x.Value.Equals(y.Value))))
                         return true;
                 }
             }

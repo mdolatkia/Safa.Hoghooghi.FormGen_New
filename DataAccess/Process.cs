@@ -16,7 +16,6 @@ namespace DataAccess
     {
         public Process()
         {
-            this.Action = new HashSet<Action>();
             this.Activity = new HashSet<Activity>();
             this.EntityGroup = new HashSet<EntityGroup>();
             this.State = new HashSet<State>();
@@ -29,7 +28,6 @@ namespace DataAccess
         public Nullable<int> TableDrivedEntityID { get; set; }
     
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        public virtual ICollection<Action> Action { get; set; }
         public virtual ICollection<Activity> Activity { get; set; }
         public virtual ICollection<EntityGroup> EntityGroup { get; set; }
         public virtual ICollection<State> State { get; set; }

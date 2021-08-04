@@ -124,19 +124,24 @@ namespace MyUILibrary.WorkflowArea
             //////    }
             //////}
 
+            var tuples = AgentUICoreMediator.GetAgentUICoreMediator.workflowService.GetRequestActions(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), e.Request.RequestActionIDs);
 
-            var requestActions = AgentUICoreMediator.GetAgentUICoreMediator.workflowService.GetRequestActions(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), e.Request.RequestActionIDs);
 
-            foreach (var requestAction in requestActions)
+            foreach (var tuple in tuples)
             {
-                var requestActionMenu = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetMenuItem(e.ContextMenu, requestAction.TransitionAction.Name, "requestAction" + requestAction.ID, requestAction.TargetReason);
+                var tooltip = "";
+               foreach(var item in tuple.Item2)
+                {
+                    tooltip += (tooltip == "" ? "" : ",") + item.OrganizationPost.Name;
+                }
+                var requestActionMenu = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetMenuItem(e.ContextMenu, tuple.Item1.Name, "transitionAction" + tuple.Item1.ID, tooltip);
                 requestActionMenu.IsDeletable = true;
 
-                var mnuAction = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetMenuItem(requestActionMenu.MenuItem, "تایید اقدام", "requestActionOK" + requestAction.ID);
+                var mnuAction = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetMenuItem(requestActionMenu.MenuItem, "تایید اقدام", "transitionActionOk" + tuple.Item1.ID);
                 mnuAction.IsDeletable = true;
-                mnuAction.MenuItemClicked += (sender1, e1) => MnuAction_MenuItemClicked(sender1, e1, requestAction);
+                mnuAction.MenuItemClicked += (sender1, e1) => MnuAction_MenuItemClicked(sender1, e1, tuple);
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.AddMenuSeprator(requestActionMenu.MenuItem);
-                foreach (var entityGroup in requestAction.TransitionAction.EntityGroups)
+                foreach (var entityGroup in tuple.Item1.EntityGroups)
                 {
                     var mnuGroup = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetMenuItem(requestActionMenu.MenuItem, entityGroup.Name, "entityGroup" + entityGroup.ID);
                     mnuGroup.IsDeletable = true;
@@ -256,17 +261,17 @@ namespace MyUILibrary.WorkflowArea
         //////    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(workflowRequesActionArea.View, wfActionDTO.Name, Enum_WindowSize.Big);
 
         //////}
-        private void MnuAction_MenuItemClicked(object sender, EventArgs e, RequestActionDTO requestAction)
+        private void MnuAction_MenuItemClicked(object sender, EventArgs e, Tuple<TransitionActionDTO, List<RequestActionDTO>> tuple)
         {
-            WorkflowRequesActionArea workflowRequesActionArea = new WorkflowArea.WorkflowRequesActionArea(requestAction);
+            WorkflowRequesActionArea workflowRequesActionArea = new WorkflowArea.WorkflowRequesActionArea(tuple);
             workflowRequesActionArea.RequesActionConfirmed += WorkflowRequesActionArea_RequesActionConfirmed;
-            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(workflowRequesActionArea.View, requestAction.TransitionAction.Action.Name, Enum_WindowSize.Big);
+            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(workflowRequesActionArea.View, tuple.Item1.Name, Enum_WindowSize.Big);
 
         }
 
         private void WorkflowRequesActionArea_RequesActionConfirmed(object sender, RequestActionDTO e)
         {
-            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عملیات با عنوان" + " " + "'" + e.TransitionAction.Action.Name + "'" + " " + "انجام شد");
+            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عملیات با عنوان" + " " + "'" + e.TransitionAction.Name + "'" + " " + "انجام شد");
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog((sender as WorkflowRequesActionArea).View);
             ShowCartableData();
         }

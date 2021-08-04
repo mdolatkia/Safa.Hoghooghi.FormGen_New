@@ -88,9 +88,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Include="Activity.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>

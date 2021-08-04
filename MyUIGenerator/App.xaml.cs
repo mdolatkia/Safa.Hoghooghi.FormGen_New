@@ -33,6 +33,8 @@ namespace MyUIGenerator
             //Test tt = new Test();
             //tt.ShowDialog();
             //return;
+
+
             var UIManager = UIManagerGenerator.GetUIManager();
             UIManager.StartApp();
 

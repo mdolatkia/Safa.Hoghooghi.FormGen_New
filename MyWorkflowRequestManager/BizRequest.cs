@@ -17,57 +17,69 @@ namespace MyWorkflowRequestManager
     public class BizRequest
     {
         BizDataItem bizDataItem = new BizDataItem();
-        public int CreateWorkflowRequest(CreateRequestDTO requestMessage, DR_Requester requester)
+        public BaseResult CreateWorkflowRequest(CreateRequestDTO requestMessage, DR_Requester requester)
         {
+            BaseResult result = new BaseResult();
             using (var context = new MyIdeaDataDBEntities())
             {
                 using (var modelContext = new MyProjectEntities())
                 {
-                    var request = new Request();
-                    request.ProcessID = requestMessage.ProcessID;
-                    request.Title = requestMessage.Title;
-                    //request.Desc = requestMessage.Desc;
-                    request.Date = DateTime.Now;
-                    request.CreatorUserID = requester.Identity;
-                    request.CurrentStateID = requestMessage.CurrentStateID;
-                    //   request.CreatorPostID = requestMessage.CreatorPostID;
-                    if (requestMessage.DatItem != null)
+                    try
                     {
-                        if (requestMessage.DatItem.DataItemID == 0)
-                        {
-                            request.MyDataItemID = bizDataItem.GetOrCreateDataItem(requestMessage.DatItem);
-                        }
-                        else
-                        {
-                            request.MyDataItemID = requestMessage.DatItem.DataItemID;
 
+
+                        var request = new Request();
+                        request.ProcessID = requestMessage.ProcessID;
+                        request.Title = requestMessage.Title;
+                        //request.Desc = requestMessage.Desc;
+                        request.Date = DateTime.Now;
+                        request.CreatorUserID = requester.Identity;
+                        request.CurrentStateID = requestMessage.CurrentStateID;
+                        //   request.CreatorPostID = requestMessage.CreatorPostID;
+                        if (requestMessage.DatItem != null)
+                        {
+                            if (requestMessage.DatItem.DataItemID == 0)
+                            {
+                                request.MyDataItemID = bizDataItem.GetOrCreateDataItem(requestMessage.DatItem);
+                            }
+                            else
+                            {
+                                request.MyDataItemID = requestMessage.DatItem.DataItemID;
+
+                            }
                         }
+                        //foreach (var item in requestMessage.RequestData)
+                        //    request.RequestData.Add(new RequestData() { ColumnID = item.ColumnID, Value = item.Value });
+                        foreach (var item in requestMessage.RequestNotes)
+                        {
+                            RequestNote dbNote = GetDBRequestNote(context, item, requester.Identity);
+                            request.RequestNote.Add(dbNote);
+                        }
+                        //foreach (var item in requestMessage.RequestFiles)
+                        //{
+                        //    var dbFile = ToRequestFile(item, requester.Identity);
+                        //    request.RequestFile.Add(dbFile);
+                        //}
+                        context.Request.Add(request);
+
+                        //var transition = context.Transition.First(x => x.CurrentStateID == null && x.NextStateID == requestMessage.FirstStateID);
+                        ////AddNewRequestActions(context, request, transition);
+                        //foreach (var requestAction in request.RequestAction)
+                        //    RequestActionToCompleted(context, request, requestAction, requester);
+                        //CheckRequestActionsForTransition(context, request, requester);
+
+                        RequestEnteredToState(context, modelContext, requestMessage.OutgoingTransitoinActions, request, request.CurrentStateID, requester, null, requestMessage.DatItem);
+                        context.SaveChanges();
+                        result.Result = Enum_DR_ResultType.SeccessfullyDone;
                     }
-                    //foreach (var item in requestMessage.RequestData)
-                    //    request.RequestData.Add(new RequestData() { ColumnID = item.ColumnID, Value = item.Value });
-                    foreach (var item in requestMessage.RequestNotes)
+                    catch (Exception ex)
                     {
-                        RequestNote dbNote = GetDBRequestNote(context, item, requester.Identity);
-                        request.RequestNote.Add(dbNote);
+                        result.Message = ex.Message;
+                        result.Result = Enum_DR_ResultType.ExceptionThrown;
                     }
-                    //foreach (var item in requestMessage.RequestFiles)
-                    //{
-                    //    var dbFile = ToRequestFile(item, requester.Identity);
-                    //    request.RequestFile.Add(dbFile);
-                    //}
-                    context.Request.Add(request);
-
-                    //var transition = context.Transition.First(x => x.CurrentStateID == null && x.NextStateID == requestMessage.FirstStateID);
-                    ////AddNewRequestActions(context, request, transition);
-                    //foreach (var requestAction in request.RequestAction)
-                    //    RequestActionToCompleted(context, request, requestAction, requester);
-                    //CheckRequestActionsForTransition(context, request, requester);
-
-                    RequestEnteredToState(context, modelContext, requestMessage.OutgoingTransitoinActions, request, request.CurrentStateID, requester, null, requestMessage.DatItem);
-                    context.SaveChanges();
-                    return request.ID;
                 }
             }
+            return result;
         }
         private void RequestEnteredToState(MyIdeaDataDBEntities context, MyProjectEntities modelContext, List<PossibleTransitionActionDTO> roleTransitoinActions, Request dbrequest, int currentStateID, DR_Requester requester, RequestAction lastRequestAction, DP_DataView dataItem = null)
         {
@@ -80,7 +92,7 @@ namespace MyWorkflowRequestManager
                 {
                     foreach (var formula in dbState.State_Formula)
                     {
-                        var validFormula = ValidRequestActionToCompleted(context, modelContext, formula.FormulaID, dataItem, requester);
+                        var validFormula = ValidRequestActionToCompleted(context, modelContext, formula.FormulaID, dataItem, requester, formula.TrueFalse);
                         if (!validFormula)
                         {
                             string message = formula.Message;
@@ -152,7 +164,7 @@ namespace MyWorkflowRequestManager
                     var requestAction = new RequestAction();
                     requestAction.PossibleTransitionActionID = transitionAction.ID;
                     requestAction.PossibleTransitionID = transitionAction.TransitionID;
-                    requestAction.PossibleActionID = transitionAction.ActionID;
+                    //  requestAction.PossibleActionID = transitionAction.ActionID;
                     requestAction.StateID = transition.CurrentStateID;
                     requestAction.IsActive = true;
                     requestAction.IsCompleted = false;
@@ -223,9 +235,9 @@ namespace MyWorkflowRequestManager
             return result;
         }
 
-        public List<RequestActionDTO> GetRequestActions(DR_Requester requester, List<int> requestActionIDs)
+        public List<Tuple<TransitionActionDTO, List<RequestActionDTO>>> GetRequestActions(DR_Requester requester, List<int> requestActionIDs)
         {
-            List<RequestActionDTO> result = new List<RequestActionDTO>();
+            List<Tuple<TransitionActionDTO, List<RequestActionDTO>>> result = new List<Tuple<TransitionActionDTO, List<RequestActionDTO>>>();
             using (var context = new MyIdeaDataDBEntities())
             {
                 //  var targetTypeRequester = (int)TargetType.Requester;
@@ -238,31 +250,20 @@ namespace MyWorkflowRequestManager
                 //  || (y.TransitionAction.Action.ActionTarget.Any(z => z.TargetType == targetTypeRoleMemeber) && requester.PostIds.Contains(y.OrganizationPostID))
                 //  ));
 
-                foreach (var item in list)
+                foreach (var group in list.GroupBy(x => x.PossibleTransitionActionID))
                 {
 
-                    //    new  TransitionActionDTO();
-                    //requestAction.TransitionAction.ActionID = item.TransitionAction.ActionID;
-                    ////requestAction.TransitionAction.TransitionID = item.TransitionAction.TransitionID;
-                    //requestAction.TransitionAction.TransitionActionID = item.TransitionActionID;
-                    //requestAction.TransitionAction.ActionName = item.TransitionAction.Action.Name;
-                    //requestAction.TransitionAction.EntityGroupRelationships = new List<EntityGroupRelationship>();
-                    //foreach (var group in item.TransitionAction.TransitionAction_EntityGroup)
-                    //{
-                    //    foreach (var relationship in group.EntityGroup.EntityGroup_Relationship)
-                    //    {
-                    //        EntityGroupRelationship egRelationship = new EntityGroupRelationship();
-                    //        egRelationship.EntityGroupName = group.EntityGroup.Name;
-                    //        egRelationship.RelationshipID = relationship.RelationshipID;
-                    //        egRelationship.EntityID = relationship.Relationship.TableDrivedEntityID2;
-                    //        egRelationship.EntityName = relationship.Relationship.TableDrivedEntity1.Name;
-                    //        requestAction.TransitionAction.EntityGroupRelationships.Add(egRelationship);
-                    //    }
-                    //}
-                    result.Add(ToRequestActionDTO(requester, item, true));
+                    BizTransition bizTransition = new BizTransition();
+                    var transitionAction = bizTransition.GetTransitionAction(requester, group.Key);
+                    List<RequestActionDTO> requestActions = new List<RequestActionDTO>();
+                    foreach (var item in group)
+                    {
+                        requestActions.Add(ToRequestActionDTO(requester, item, true));
+                    }
+                    result.Add(new Tuple<TransitionActionDTO, List<RequestActionDTO>>(transitionAction, requestActions));
                 }
-                return result;
             }
+            return result;
         }
 
         public RequestDiagramDTO GetRequestDiagram(DR_Requester requester, int requestID)
@@ -626,7 +627,7 @@ namespace MyWorkflowRequestManager
             RequestActionDTO requestAction = new RequestActionDTO();
             requestAction.ID = item.ID;
             requestAction.RequestID = item.RequestID;
-            requestAction.PossibleActionID = item.PossibleActionID;
+            // requestAction.PossibleActionID = item.PossibleActionID;
             requestAction.PossibleTransitionID = item.PossibleTransitionID;
             requestAction.IsActive = item.IsActive;
             requestAction.IsCompleted = item.IsCompleted;
@@ -729,69 +730,77 @@ namespace MyWorkflowRequestManager
 
 
 
-        public void SaveRequestAction(RequestActionConfirmDTO requestAction, DR_Requester requester)
+        public BaseResult SaveRequestAction(RequestActionConfirmDTO requestAction, DR_Requester requester)
         {
+            BaseResult result = new BaseResult();
             using (var context = new MyIdeaDataDBEntities())
             {
                 using (var modelContext = new MyProjectEntities())
                 {
-                    //var dbRequestAction = context.RequestAction.First(x => x.ActionID == requestAction.ActionID && x.RequestID == requestAction.RequestID && x.OrganizationPostID == requestAction.RequesterPostID);
-                    var dbRequestAction = context.RequestAction.First(x => x.ID == requestAction.RequestActionID);
-                    var transitionAction = modelContext.TransitionAction.First(x => x.ID == dbRequestAction.PossibleTransitionActionID);
-                    if (transitionAction.TransitionAction_Formula.Any())
+                    try
                     {
-                        var dataItem = bizDataItem.ToDataViewDTO(requester, dbRequestAction.Request1.MyDataItem, false);
-                        if (dataItem != null)
+                        //var dbRequestAction = context.RequestAction.First(x => x.ActionID == requestAction.ActionID && x.RequestID == requestAction.RequestID && x.OrganizationPostID == requestAction.RequesterPostID);
+                        var dbRequestAction = context.RequestAction.First(x => x.ID == requestAction.RequestActionID);
+                        var transitionAction = modelContext.TransitionAction.First(x => x.ID == dbRequestAction.PossibleTransitionActionID);
+                        if (transitionAction.TransitionAction_Formula.Any())
                         {
-                            foreach (var formula in transitionAction.TransitionAction_Formula)
+                            var dataItem = bizDataItem.ToDataViewDTO(requester, dbRequestAction.Request1.MyDataItem, false);
+                            if (dataItem != null)
                             {
-                                var validFormula = ValidRequestActionToCompleted(context, modelContext, formula.FormulaID, dataItem, requester);
-                                if (!validFormula)
+                                foreach (var formula in transitionAction.TransitionAction_Formula)
                                 {
-                                    string message = formula.Message;
-                                    if (string.IsNullOrEmpty(message))
-                                        message = "فرمول رعایت نشده است";
-                                    throw (new Exception(message));
+                                    var validFormula = ValidRequestActionToCompleted(context, modelContext, formula.FormulaID, dataItem, requester, formula.TrueFalse);
+                                    if (!validFormula)
+                                    {
+                                        string message = formula.Message;
+                                        if (string.IsNullOrEmpty(message))
+                                            message = "فرمول رعایت نشده است";
+                                        throw (new Exception(message));
+                                    }
                                 }
                             }
+                            else
+                                throw new Exception("داده ای برای آزمایش فرمول موجود نیست");
                         }
-                        else
-                            throw new Exception("داده ای برای آزمایش فرمول موجود نیست");
-                    }
+                        var transition = transitionAction.Transition;
+                        dbRequestAction.DateTimeCompleted = DateTime.Now;
+                        dbRequestAction.Description = requestAction.Description;
+                        dbRequestAction.IsCompleted = true;
+                        dbRequestAction.DoerUserID = requester.Identity;
+                        bool transitoinIsCompleted = TransitionIsCompleted(dbRequestAction.Request1, transition, dbRequestAction);
+                        //    var alltransitionActions = dbRequestAction.Request.RequestAction.Where(x => x.TransitionID == transitionID);
+                        //if (alltransitionActions.All(x => x.IsCompleted))
+                        if (transitoinIsCompleted)
+                        {
+                            dbRequestAction.LedToState = transition.NextStateID;
+                            DoTransition(context, modelContext, requestAction.OutgoingTransitoinActions, dbRequestAction.Request1, transition, requester, dbRequestAction);
+                        }
+                        //if (transition.TransitionAction.Where(x=> x.RequestAction))
 
-                    var transition = transitionAction.Transition;
-                    dbRequestAction.DateTimeCompleted = DateTime.Now;
-                    dbRequestAction.Description = requestAction.Description;
-                    dbRequestAction.IsCompleted = true;
-                    dbRequestAction.DoerUserID = requester.Identity;
-                    bool transitoinIsCompleted = TransitionIsCompleted(dbRequestAction.Request1, transition, dbRequestAction);
-                    //    var alltransitionActions = dbRequestAction.Request.RequestAction.Where(x => x.TransitionID == transitionID);
-                    //if (alltransitionActions.All(x => x.IsCompleted))
-                    if (transitoinIsCompleted)
+                        //   var request = dbRequestAction.Request;
+                        //CheckRequestActionsForTransition(context, request, requester);
+                        context.SaveChanges();
+                        result.Result = Enum_DR_ResultType.SeccessfullyDone;
+                    }
+                    catch (Exception ex)
                     {
-                        dbRequestAction.LedToState = transition.NextStateID;
-                        DoTransition(context, modelContext, requestAction.OutgoingTransitoinActions, dbRequestAction.Request1, transition, requester, dbRequestAction);
+                        result.Message = ex.Message;
+                        result.Result = Enum_DR_ResultType.ExceptionThrown;
                     }
-                    //if (transition.TransitionAction.Where(x=> x.RequestAction))
-
-                    //   var request = dbRequestAction.Request;
-                    //CheckRequestActionsForTransition(context, request, requester);
-                    context.SaveChanges();
-
-
-
                 }
             }
+            return result;
         }
 
-        private bool ValidRequestActionToCompleted(MyIdeaDataDBEntities context, MyProjectEntities modelContext, int formulaID, DP_DataView dataItem, DR_Requester requester)
+        private bool ValidRequestActionToCompleted(MyIdeaDataDBEntities context, MyProjectEntities modelContext, int formulaID, DP_DataView dataItem, DR_Requester requester, bool TrueFalse)
         {
             bool isValid = true;
 
             FormulaFunctionHandler formulaFunctionHandler = new FormulaFunctionHandler();
             BizTableDrivedEntity bizEntity = new BizTableDrivedEntity();
             var result = formulaFunctionHandler.CalculateFormula(formulaID, dataItem, requester);
-            if (Convert.ToBoolean(result.Result))
+            var boolResult = Convert.ToBoolean(result.Result);
+            if ((TrueFalse && boolResult) || (!TrueFalse && !boolResult))
             {
                 return true;
             }
@@ -922,7 +931,7 @@ namespace MyWorkflowRequestManager
         //    }
         //    return result;
         //}
-        public PossibleTransitionActionResult GetNextPossibleTransitionActionByRequestActionID(int requestActionID, OrganizationPostDTO organizationPost)
+        public PossibleTransitionActionResult GetNextPossibleTransitionActionByRequestActionID(int requestActionID)
         {
             PossibleTransitionActionResult result = new PossibleTransitionActionResult();
             using (var context = new MyIdeaDataDBEntities())
@@ -933,6 +942,7 @@ namespace MyWorkflowRequestManager
                     //List<int> adminPosts = null;
                     // int creatorPostId = 0;
                     var dbRequestAction = context.RequestAction.FirstOrDefault(x => x.ID == requestActionID);
+
                     //   var dbrequest = dbRequestAction.Request;
                     //درخاست دهنده یا شروع کننده جریان کار
                     //  creatorPostId = dbRequestAction.Request1.CreatorPostID;
@@ -942,7 +952,7 @@ namespace MyWorkflowRequestManager
                     //List<int> completedTransition = new List<int>();
                     // bool transitoinIsCompleted = false;
                     var transition = modelContext.Transition.First(x => x.ID == dbRequestAction.PossibleTransitionID);
-
+                    var transitionAction = modelContext.TransitionAction.First(x => x.ID == dbRequestAction.PossibleTransitionActionID);
                     bool transitoinIsCompleted = TransitionIsCompleted(dbRequestAction.Request1, transition, dbRequestAction);
                     //  !context.RequestAction.Any(x => !x.IsCompleted && x.IsActive == true && x.RequestID == dbRequestAction.ID && x.ID != dbRequestAction.ID && x.TransitionID == dbRequestAction.TransitionID);
                     //foreach (var item in requestActions)
@@ -965,7 +975,7 @@ namespace MyWorkflowRequestManager
                     {
                         if (transitoinIsCompleted)
                         {
-                            var possibleTransitionActions = GetNextPossibleTransitionActions(transition.State1, organizationPost, context, dbRequestAction.RequestID);
+                            var possibleTransitionActions = GetNextPossibleTransitionActions(transition.State1, context, dbRequestAction.RequestID);
                             result.PossibleTransitionActions = possibleTransitionActions.Item1;
                             result.SharedOrganizationPosts = possibleTransitionActions.Item2;
                         }
@@ -977,27 +987,42 @@ namespace MyWorkflowRequestManager
             }
             return result;
         }
-
-        public PossibleTransitionActionResult GetNextPossibleTransitionActionByStateID(int stateID, OrganizationPostDTO organizationPost)
+        public PossibleTransitionActionResult GetNextPossibleTransitionActionByStateID(int stateID)
         {
             PossibleTransitionActionResult result = new PossibleTransitionActionResult();
             using (var context = new MyIdeaDataDBEntities())
             {
                 using (var modelContext = new MyProjectEntities())
                 {
-                    BizRole bizRole = new BizRole();
-                    //var outGoingTransition = modelContext.Transition.First(x => x.CurrentStateID == stateID);
+                    //  var transitionAction = modelContext.TransitionAction.FirstOrDefault(x => x.ID == parentTransitionActionID);
                     var state = modelContext.State.First(x => x.ID == stateID);
-
-                    //از وضعیت شروع فقط یدونه ترنزیشن باید بره
-                    var possibleTransitionActions = GetNextPossibleTransitionActions(state, organizationPost, context, 0);
+                    var possibleTransitionActions = GetNextPossibleTransitionActions(state, context, 0);
                     result.PossibleTransitionActions = possibleTransitionActions.Item1;
                     result.SharedOrganizationPosts = possibleTransitionActions.Item2;
                 }
             }
             return result;
         }
-        private Tuple<List<PossibleTransitionActionDTO>, List<TransitionActionOrganizationPostDTO>> GetNextPossibleTransitionActions(State state, OrganizationPostDTO organizationPost, MyIdeaDataDBEntities context, int requestID)
+        //private PossibleTransitionActionResult GetNextPossibleTransitionActionByStateID(TransitionAction parentTransitionAction, int stateID, OrganizationPostDTO organizationPost)
+        //{
+        //    PossibleTransitionActionResult result = new PossibleTransitionActionResult();
+        //    using (var context = new MyIdeaDataDBEntities())
+        //    {
+        //        using (var modelContext = new MyProjectEntities())
+        //        {
+        //            BizRole bizRole = new BizRole();
+        //            //var outGoingTransition = modelContext.Transition.First(x => x.CurrentStateID == stateID);
+        //            var state = modelContext.State.First(x => x.ID == stateID);
+
+        //            //از وضعیت شروع فقط یدونه ترنزیشن باید بره
+        //            var possibleTransitionActions = GetNextPossibleTransitionActions(parentTransitionAction, state, organizationPost, context, 0);
+        //            result.PossibleTransitionActions = possibleTransitionActions.Item1;
+        //            result.SharedOrganizationPosts = possibleTransitionActions.Item2;
+        //        }
+        //    }
+        //    return result;
+        //}
+        private Tuple<List<PossibleTransitionActionDTO>, List<TransitionActionOrganizationPostDTO>> GetNextPossibleTransitionActions(State state, MyIdeaDataDBEntities context, int requestID)
         {
             List<PossibleTransitionActionDTO> result = new List<PossibleTransitionActionDTO>();
             foreach (var transition in state.Transition)
@@ -1049,11 +1074,11 @@ namespace MyWorkflowRequestManager
                                 foreach (var post in orgtypetoletype.OrganizationPost)
                                 {
 
-                                    if (!transitionAction.CanSendOtherOrganizations)
-                                    {
-                                        if (post.OrganizationID != organizationPost.OrganizationID)
-                                            continue;
-                                    }
+                                    //if (actiontarget.CanSendOtherOrganizations != true)
+                                    //{
+                                    //  if (post.OrganizationID != organizationPost.OrganizationID)
+                                    //     continue;
+                                    ////}
                                     var title = "نقش سازمانی";
                                     if (postIDs.ContainsKey(post.ID))
                                     {
@@ -1100,7 +1125,7 @@ namespace MyWorkflowRequestManager
                     PossibleTransitionActionDTO transitoinActionPost = new PossibleTransitionActionDTO();
                     // transitoinActionPost.Name = transitionAction.Action.Name;
                     transitoinActionPost.MultipleUserEnabled = transitionAction.MultipleUserEnabled;
-                    transitoinActionPost.CanSendOtherOrganizations = transitionAction.CanSendOtherOrganizations;
+                    // transitoinActionPost.CanSendOtherOrganizations = transitionAction.CanSendOtherOrganizations;
                     transitoinActionPost.TransitionActionID = transitionAction.ID;
                     transitoinActionPost.TransitionID = transition.ID;
                     transitoinActionPost.TransitionName = transition.Name;

@@ -14,38 +14,38 @@ namespace MyModelManager
 {
     public class BizAction
     {
-        public List<WFActionDTO> GetActions(int processID)
-        {
-            List<WFActionDTO> result = new List<WFActionDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
-            {
-                var listAction = projectContext.Action.Where(x => x.ProcessID == processID);
-                foreach (var item in listAction)
-                    result.Add(ToActionDTO(item));
-            }
-            return result;
-        }
-        public WFActionDTO GetAction(int ActionsID)
-        {
+        //public List<WFActionDTO> GetActions(int processID)
+        //{
+        //    List<WFActionDTO> result = new List<WFActionDTO>();
+        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    {
+        //        var listAction = projectContext.Action.Where(x => x.ProcessID == processID);
+        //        foreach (var item in listAction)
+        //            result.Add(ToActionDTO(item));
+        //    }
+        //    return result;
+        //}
+        //public WFActionDTO GetAction(int ActionsID)
+        //{
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
-            {
-                var dbAction = projectContext.Action.First(x => x.ID == ActionsID);
-                return ToActionDTO(dbAction);
-            }
-        }
-        public WFActionDTO ToActionDTO(DataAccess.Action item)
-        {
-            WFActionDTO result = new WFActionDTO();
-            result.ID = item.ID;
-            result.Name = item.Name;
-            result.ActionType = (ActionType)item.ActionTypeID;
-            result.ProcessID = item.ProcessID;
-            result.Description = item.Description;
+        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    {
+        //        var dbAction = projectContext.Action.First(x => x.ID == ActionsID);
+        //        return ToActionDTO(dbAction);
+        //    }
+        //}
+        //public WFActionDTO ToActionDTO(DataAccess.Action item)
+        //{
+        //    WFActionDTO result = new WFActionDTO();
+        //    result.ID = item.ID;
+        //    result.Name = item.Name;
+        //    result.ActionType = (ActionType)item.ActionTypeID;
+        //    result.ProcessID = item.ProcessID;
+        //    result.Description = item.Description;
 
           
-            return result;
-        }
+        //    return result;
+        //}
 
         public List<ActionType> GetActionTypes()
         {
@@ -65,24 +65,24 @@ namespace MyModelManager
             return Enum.GetValues(typeof(ActionType)).Cast<ActionType>().ToList();
         }
 
-        public int UpdateActions(WFActionDTO message)
-        {
-            using (var projectContext = new DataAccess.MyProjectEntities())
-            {
-                var dbAction = projectContext.Action.FirstOrDefault(x => x.ID == message.ID);
-                if (dbAction == null)
-                    dbAction = new DataAccess.Action();
-                dbAction.ID = message.ID;
-                dbAction.Name = message.Name;
-                dbAction.ActionTypeID = Convert.ToInt16(message.ActionType);
-                dbAction.ProcessID = message.ProcessID;
-                dbAction.Description = message.Description;
+        //public int UpdateActions(WFActionDTO message)
+        //{
+        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    {
+        //        var dbAction = projectContext.Action.FirstOrDefault(x => x.ID == message.ID);
+        //        if (dbAction == null)
+        //            dbAction = new DataAccess.Action();
+        //        dbAction.ID = message.ID;
+        //        dbAction.Name = message.Name;
+        //        dbAction.ActionTypeID = Convert.ToInt16(message.ActionType);
+        //        dbAction.ProcessID = message.ProcessID;
+        //        dbAction.Description = message.Description;
               
-                if (dbAction.ID == 0)
-                    projectContext.Action.Add(dbAction);
-                projectContext.SaveChanges();
-                return dbAction.ID;
-            }
-        }
+        //        if (dbAction.ID == 0)
+        //            projectContext.Action.Add(dbAction);
+        //        projectContext.SaveChanges();
+        //        return dbAction.ID;
+        //    }
+        //}
     }
 }

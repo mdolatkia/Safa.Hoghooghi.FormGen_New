@@ -1,4 +1,4 @@
-﻿<Window
+﻿<Window xmlns:Views="clr-namespace:WpfPersianDatePicker.Views;assembly=WpfPersianDatePicker" 
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -13,6 +13,6 @@
         <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Height="25" Margin="49,28,0,0" VerticalAlignment="Top" Width="126" Click="button_Click"/>
 
         <Controls:MyDateTimePicker  x:Name="txtDate" HorizontalAlignment="Left" Height="31" Margin="49,108,-8,0" VerticalAlignment="Top" Width="251"/>
-
+<Views:PDatePicker x:Name="txtDate1" Margin="-80,46,80,-46" />
     </Grid>
 </Window>

@@ -83,11 +83,11 @@
                 </telerik:RadGridView>
             </TabItem>
     
-            <TabItem  Header="اقدامات">
+            <!--<TabItem  Header="اقدامات">
               
                     <telerik:RadGridView AutoGenerateColumns="False" IsReadOnly="True"  x:Name="dtgActions" >
                         <telerik:RadContextMenu.ContextMenu  >
-                            <!--منو تکراری است با فرم سلکت - کد کلی بشود-->
+                            --><!--منو تکراری است با فرم سلکت - کد کلی بشود--><!--
                         <telerik:RadContextMenu>
                             <telerik:RadMenuItem x:Name="mnuAddNewAction" Header="افزودن فعالیت" Click="mnuAddNewAction_Click"></telerik:RadMenuItem>
                             <telerik:RadMenuItem x:Name="mnuEditAction" Header="اصلاح فعالیت" Click="mnuEditAction_Click"></telerik:RadMenuItem>
@@ -100,7 +100,7 @@
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                  
-            </TabItem>
+            </TabItem>-->
             <TabItem Header="فعالیتها">
                 <telerik:RadGridView  AutoGenerateColumns="False" IsReadOnly="True" x:Name="dtgActivities" >
                     <telerik:RadContextMenu.ContextMenu  >

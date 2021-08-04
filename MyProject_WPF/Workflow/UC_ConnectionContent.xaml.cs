@@ -63,16 +63,16 @@ namespace MyProject_WPF
             var actionTooltip = "";
             foreach (var item in transition.TransitionActions)
             {
-                if (item.Action == null)
-                {
-                    if (item.ActionID != 0)
-                    {
-                        BizAction bizAction = new MyModelManager.BizAction();
-                        item.Action = bizAction.GetAction(item.ActionID);
+                //if (item.Action == null)
+                //{
+                //    if (item.ActionID != 0)
+                //    {
+                //        BizAction bizAction = new MyModelManager.BizAction();
+                //        item.Action = bizAction.GetAction(item.ActionID);
 
-                    }
-                }
-                actionTooltip += (actionTooltip == "" ? "" : Environment.NewLine) + item.Action.Name;
+                //    }
+                //}
+                actionTooltip += (actionTooltip == "" ? "" : Environment.NewLine) + item.Name;
             }
 
             var activityTooltip = "";

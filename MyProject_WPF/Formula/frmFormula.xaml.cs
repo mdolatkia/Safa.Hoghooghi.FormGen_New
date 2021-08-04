@@ -331,6 +331,7 @@ namespace MyProject_WPF
         private IEnumerable GetTypes()
         {
             return new List<Type>() {
+            typeof(bool),
             typeof(string),
             typeof(char),
             typeof(byte),

@@ -16,8 +16,8 @@ namespace DataAccess
     {
         public int TransitionActionID { get; set; }
         public int FormulaID { get; set; }
-        public Nullable<bool> Dummy { get; set; }
         public string Message { get; set; }
+        public bool TrueFalse { get; set; }
     
         public virtual Formula Formula { get; set; }
         public virtual TransitionAction TransitionAction { get; set; }

@@ -34,13 +34,14 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="نام گروه"></TextBlock>
                 <TextBox x:Name="txtName" Grid.Column="1"></TextBox>
-                <TextBlock Text="نام اقدام" Grid.Row="1"></TextBlock>
-                <TextBox x:Name="txtDescription" Grid.Row="1" Grid.ColumnSpan="3" Height="80" Grid.Column="1"></TextBox>
+                <!--<TextBlock Text="نام اقدام" Grid.Row="1"></TextBlock>
+                <TextBox x:Name="txtDescription" Grid.Row="1" Grid.ColumnSpan="3" Height="80" Grid.Column="1"></TextBox>-->
             </Grid>
             <TextBlock Grid.Row="1" HorizontalAlignment="Left" Text="موجودیتها"></TextBlock>
-            <telerik:RadGridView Grid.Row="2" AutoGenerateColumns="False"  x:Name="dtgEntities" >
+            <telerik:RadGridView Grid.Row="2" AutoGenerateColumns="False"  x:Name="dtgRelationshipTails" >
                 <telerik:RadGridView.Columns>
-                    <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipID}"  />
+                    <!--<MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipID}"  />-->
+                  <MyCommonWPFControls:MyStaticLookupColumn Header="رابطه" x:Name="colRelationshipTail"  DataMemberBinding="{Binding RelationshipTailID}" />
                     <!--<telerik:GridViewComboBoxColumn Header="رابطه" DataMemberBinding="{Binding RelationshipID}" />-->
                 </telerik:RadGridView.Columns>
             </telerik:RadGridView>

@@ -20,32 +20,45 @@ namespace MyUILibrary.WorkflowArea
             get; set;
         }
         // public int RequestID { set; get; }
-        public RequestActionDTO RequestAction { set; get; }
-        public WorkflowRequesActionArea(RequestActionDTO requestAction)
+        public RequestActionDTO RequestAction
         {
-            RequestAction = requestAction;
+            get
+            {
+                if (View.CurrentUserSelectedOrganizationPost != null)
+                {
+                    return Tuple.Item2.First(x => x.OrganizationPost.ID == View.CurrentUserSelectedOrganizationPost.ID);
+                }
+                return null;
+
+            }
+        }
+        Tuple<TransitionActionDTO, List<RequestActionDTO>> Tuple;
+        public WorkflowRequesActionArea(Tuple<TransitionActionDTO, List<RequestActionDTO>> tuple)
+        {
+            Tuple = tuple;
+            // RequestAction = requestAction;
             // var requestAction = menuItem.DataContext as RequestActionDTO;
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetRequestActionForm();
             View.RequestActionConfirmed += View_RequestActionConfirmed;
-            View.CurrentUserOrganizationPostChanged += View_OrganizationPostChanged;
+            //     View.CurrentUserOrganizationPostChanged += View_OrganizationPostChanged;
             View.AddTargetSelectionView(ViewTargetSelection);
             View.CloseRequested += View_CloseRequested;
-            View.ActionTitle = requestAction.TransitionAction.Name;
-            View.TargetReason = requestAction.TargetReason;
-            var posts = new List<OrganizationPostDTO>() { requestAction.OrganizationPost };
+            View.ActionTitle = tuple.Item1.Name;
+            //  View.TargetReason = requestAction.TargetReason;
+            var posts = tuple.Item2.Select(x => x.OrganizationPost).ToList();
             View.OrganizationPosts = posts;
-            if (posts.Count == 1)
+            if (posts.Any())
                 View.CurrentUserSelectedOrganizationPost = posts.First();
-
+            CheckOutgoingTransitionActions();
         }
         private void View_CloseRequested(object sender, EventArgs e)
         {
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(sender);
         }
-        private void View_OrganizationPostChanged(object sender, OrganizationPostDTO e)
-        {
-            CheckOutgoingTransitionActions();
-        }
+        //private void View_OrganizationPostChanged(object sender, OrganizationPostDTO e)
+        //{
+
+        //}
 
         private void CheckOutgoingTransitionActions()
         {
@@ -92,9 +105,16 @@ namespace MyUILibrary.WorkflowArea
 
             message.OutgoingTransitoinActions = ViewTargetSelection.OutgoingTransitoinActions;
 
-            AgentUICoreMediator.GetAgentUICoreMediator.workflowService.SaveRequestAction(message, AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
-            if (RequesActionConfirmed != null)
-                RequesActionConfirmed(this, RequestAction);
+            var result = AgentUICoreMediator.GetAgentUICoreMediator.workflowService.SaveRequestAction(message, AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
+            if (result.Result == Enum_DR_ResultType.SeccessfullyDone)
+            {
+                if (RequesActionConfirmed != null)
+                    RequesActionConfirmed(this, RequestAction);
+            }
+            else
+            {
+                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage("ارجاع کار ایجاد نشد" + Environment.NewLine + result.Message);
+            }
 
         }
 

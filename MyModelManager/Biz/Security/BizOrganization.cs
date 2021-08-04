@@ -41,7 +41,7 @@ namespace MyModelManager
                 foreach (var dbpost in item.OrganizationPost)
                 {
                     OrganizationPostDTO post = new OrganizationPostDTO();
-                    post.CurrentUserID = dbpost.UserID??0;
+                    post.CurrentUserID = dbpost.UserID ?? 0;
                     post.OrganizationTypeRoleTypeID = dbpost.OrganizationType_RoleTypeID;
                     post.Name = dbpost.Name;
                     result.OrganizationPosts.Add(post);
@@ -67,10 +67,19 @@ namespace MyModelManager
                 dbOrganization.Name = organizationDto.Name;
                 dbOrganization.OrganizationTypeID = organizationDto.OrganizationTypeID;
 
-                //چیزی حذف نمیشود
+                List<OrganizationPost> removedItems = new List<OrganizationPost>();
+                foreach (var post in dbOrganization.OrganizationPost)
+                {
+                    if (!organizationDto.OrganizationPosts.Any(x => x.ID == post.ID))
+                        removedItems.Add(post);
+                }
+                foreach (var item in removedItems.ToList())
+                {
+                    context.OrganizationPost.Remove(item);
+                }
                 foreach (var post in organizationDto.OrganizationPosts)
                 {
-                    var dbPost = dbOrganization.OrganizationPost.FirstOrDefault(x => x.ID == post.ID);
+                    var dbPost = dbOrganization.OrganizationPost.FirstOrDefault(x => post.ID != 0 && x.ID == post.ID);
                     if (dbPost == null)
                     {
                         dbPost = new OrganizationPost();
@@ -185,8 +194,8 @@ namespace MyModelManager
             OrganizationPostDTO result = new OrganizationPostDTO();
             result.ID = item.ID;
             result.Name = item.Name;
-            result.CurrentUserID = item.UserID??0;
-            if (result.CurrentUserID!=0)
+            result.CurrentUserID = item.UserID ?? 0;
+            if (result.CurrentUserID != 0)
             {
                 BizUser bizUser = new MyModelManager.BizUser();
                 result.CurrentUser = bizUser.GetUser(result.CurrentUserID);

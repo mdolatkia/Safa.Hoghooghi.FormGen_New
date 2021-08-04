@@ -23,7 +23,7 @@ namespace MyModelManager
             {
                 var listTransition = projectContext.Transition.Where(x => x.ProcessID == processID);
                 foreach (var item in listTransition)
-                    result.Add(ToTransitionDTO(requester,item, withDetails));
+                    result.Add(ToTransitionDTO(requester, item, withDetails));
             }
             return result;
         }
@@ -92,7 +92,7 @@ namespace MyModelManager
 
                 foreach (var act in item.TransitionAction)
                 {
-                    result.TransitionActions.Add(ToTransitionAction(requester,act, withDetails));
+                    result.TransitionActions.Add(ToTransitionAction(requester, act, withDetails));
                 }
             }
             return result;
@@ -106,13 +106,16 @@ namespace MyModelManager
             BizTransition bizTransition = new BizTransition();
             var result = new TransitionActionDTO();
             result.ID = dbTransitionAction.ID;
-            result.ActionID = dbTransitionAction.ActionID;
+            if (dbTransitionAction.ActionTypeID != null)
+                result.ActionType = (ActionType)dbTransitionAction.ActionTypeID;
+            else
+                result.ActionType = ActionType.Approve;
             result.MultipleUserEnabled = dbTransitionAction.MultipleUserEnabled;
-            result.CanSendOtherOrganizations = dbTransitionAction.CanSendOtherOrganizations;
+     
             result.Name = dbTransitionAction.Name;
             if (withDetails)
             {
-                result.Action = bizAction.ToActionDTO(dbTransitionAction.Action);
+                //   result.Action = bizAction.ToActionDTO(dbTransitionAction.Action);
                 result.Transition = bizTransition.ToSimpleTransitionDTO(dbTransitionAction.Transition);
 
                 BizTarget bizTarget = new BizTarget();
@@ -121,6 +124,7 @@ namespace MyModelManager
                 {
                     TransitionActionTargetDTO at = new TransitionActionTargetDTO();
                     at.ID = target.ID;
+               //     at.CanSendOtherOrganizations = target.CanSendOtherOrganizations==true;
                     at.TargetType = (TargetType)target.TargetType;
                     if (target.RoleTypeID != null)
                     {
@@ -135,6 +139,7 @@ namespace MyModelManager
                     var sf = new TransitionActionFormulaDTO();
                     sf.FormulaID = sbsf.FormulaID;
                     sf.Message = sbsf.Message;
+                    sf.TrueFalse = sbsf.TrueFalse;
                     result.Formulas.Add(sf);
                 }
                 foreach (var entityGroup in dbTransitionAction.TransitionAction_EntityGroup)
@@ -211,7 +216,7 @@ namespace MyModelManager
                         foreach (var msgActivity in message.TransitionActivities)
                         {
                             TransitionActivity dbTransitionActivity = null;
-                            if (!dbTransition.TransitionActivity.Any(x => x.ActivityID == msgActivity.ID))
+                            if (!dbTransition.TransitionActivity.Any(x => msgActivity.ID != 0 && x.ActivityID == msgActivity.ID))
                             {
                                 dbTransitionActivity = new TransitionActivity();
                                 dbTransition.TransitionActivity.Add(dbTransitionActivity);
@@ -243,7 +248,7 @@ namespace MyModelManager
                         foreach (var msgTransitionAction in message.TransitionActions)
                         {
                             TransitionAction dbTransitionAction = null;
-                            if (!dbTransition.TransitionAction.Any(x => x.ID == msgTransitionAction.ID))
+                            if (!dbTransition.TransitionAction.Any(x => msgTransitionAction.ID != 0 && x.ID == msgTransitionAction.ID))
                             {
                                 dbTransitionAction = new TransitionAction();
                                 dbTransition.TransitionAction.Add(dbTransitionAction);
@@ -251,9 +256,9 @@ namespace MyModelManager
                             }
                             else
                                 dbTransitionAction = dbTransition.TransitionAction.FirstOrDefault(x => x.ID == msgTransitionAction.ID);
-                            dbTransitionAction.ActionID = msgTransitionAction.ActionID;
+                            dbTransitionAction.ActionTypeID = (short)msgTransitionAction.ActionType;
                             dbTransitionAction.MultipleUserEnabled = msgTransitionAction.MultipleUserEnabled;
-                            dbTransitionAction.CanSendOtherOrganizations = msgTransitionAction.CanSendOtherOrganizations;
+                           
 
                             dbTransitionAction.Name = msgTransitionAction.Name;
 
@@ -270,7 +275,7 @@ namespace MyModelManager
 
                             foreach (var item in msgTransitionAction.Targets)
                             {
-                                TransitionActionTarget dbTransitionActionTarget = dbTransitionAction.TransitionActionTarget.FirstOrDefault(x => x.ID == item.ID);
+                                TransitionActionTarget dbTransitionActionTarget = dbTransitionAction.TransitionActionTarget.FirstOrDefault(x => item.ID != 0 && x.ID == item.ID);
                                 if (dbTransitionActionTarget == null)
                                 {
                                     dbTransitionActionTarget = new TransitionActionTarget();
@@ -278,6 +283,7 @@ namespace MyModelManager
 
                                 }
                                 dbTransitionActionTarget.TargetType = (Int16)item.TargetType;
+                            //    dbTransitionActionTarget.CanSendOtherOrganizations = item.CanSendOtherOrganizations;
                                 if (dbTransitionActionTarget.RoleTypeID != 0)
                                     dbTransitionActionTarget.RoleTypeID = item.RoleTypeID;
                                 else
@@ -297,13 +303,14 @@ namespace MyModelManager
 
                             foreach (var item in msgTransitionAction.Formulas)
                             {
-                                TransitionAction_Formula dbTransitionAction_Formula = dbTransitionAction.TransitionAction_Formula.FirstOrDefault(x => x.FormulaID == item.FormulaID);
+                                TransitionAction_Formula dbTransitionAction_Formula = dbTransitionAction.TransitionAction_Formula.FirstOrDefault(x => item.FormulaID != 0 && x.FormulaID == item.FormulaID);
                                 if (dbTransitionAction_Formula == null)
                                 {
                                     dbTransitionAction_Formula = new TransitionAction_Formula();
                                     dbTransitionAction.TransitionAction_Formula.Add(dbTransitionAction_Formula);
 
                                 }
+                                dbTransitionAction_Formula.TrueFalse = item.TrueFalse;
                                 dbTransitionAction_Formula.FormulaID = item.FormulaID;
                                 dbTransitionAction_Formula.Message = item.Message;
                             }
@@ -320,7 +327,7 @@ namespace MyModelManager
 
                             foreach (var item in msgTransitionAction.EntityGroups)
                             {
-                                TransitionAction_EntityGroup dbTransitionAction_EntityGroup = dbTransitionAction.TransitionAction_EntityGroup.FirstOrDefault(x => x.EntityGroupID == item.ID);
+                                TransitionAction_EntityGroup dbTransitionAction_EntityGroup = dbTransitionAction.TransitionAction_EntityGroup.FirstOrDefault(x => item.ID != 0 && x.EntityGroupID == item.ID);
                                 if (dbTransitionAction_EntityGroup == null)
                                 {
                                     dbTransitionAction_EntityGroup = new TransitionAction_EntityGroup();

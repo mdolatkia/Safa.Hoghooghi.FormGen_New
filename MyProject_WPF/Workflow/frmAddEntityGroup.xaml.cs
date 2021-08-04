@@ -23,7 +23,7 @@ namespace MyProject_WPF
     /// <summary>
     /// Interaction logic for frmAddSelectAction.xaml
     /// </summary>
-    public partial class frmAddEntityGroup: UserControl
+    public partial class frmAddEntityGroup : UserControl
     {
         int ProcessID { set; get; }
 
@@ -31,35 +31,64 @@ namespace MyProject_WPF
         BizEntityGroup bizEntityGroup = new BizEntityGroup();
         public event EventHandler<SavedItemArg> ItemSaved;
         int EntityID { set; get; }
+        BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
+
         public frmAddEntityGroup(int processID, int entityID, int entityGroupID)
         {
             InitializeComponent();
             ProcessID = processID;
             EntityID = entityID;
-            SetBaseData();
+            SetRelationshipTails();
+      
+
+            ControlHelper.GenerateContextMenu(dtgRelationshipTails);
+
+            colRelationshipTail.NewItemEnabled = true;
+            colRelationshipTail.EditItemEnabled = true;
+            colRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
+
             if (entityGroupID != 0)
                 GetEntityGroup(entityGroupID);
             else
                 SetNewItem();
-
-            ControlHelper.GenerateContextMenu(dtgEntities);
-
         }
-
-        private void SetBaseData()
+        private void ColRelationshipTail_EditItemClicked(object sender, EditItemClickEventArg e)
         {
-            BizRelationship bizRelationship = new BizRelationship();
-            var col7 = dtgEntities.Columns[0] as MyStaticLookupColumn;
-            BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-            var entity = bizTableDrivedEntity.GetTableDrivedEntity(EntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
-            col7.ItemsSource= entity.Relationships;
-            col7.DisplayMemberPath = "Name";
-            col7.SelectedValueMemberPath = "ID";
+          
+                frmEntityRelationshipTail view = new frmEntityRelationshipTail(EntityID);
+                MyProjectManager.GetMyProjectManager.ShowDialog(view, "رابطه");
+                view.ItemSelected += (sender1, e1) => View_ItemSelected(sender1, e1, (sender as MyStaticLookup));
+           
+        }
+        private void View_ItemSelected(object sender, EntityRelationshipTailSelectedArg e, MyStaticLookup lookup)
+        {
+            SetRelationshipTails();
+            lookup.SelectedValue = e.EntityRelationshipTailID;
+        }
+        private void SetRelationshipTails()
+        {
+            //BizRelationship bizRelationship = new BizRelationship();
+            //var col7 = dtgEntities.Columns[0] as MyStaticLookupColumn;
+            //BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+            //var entity = bizTableDrivedEntity.GetTableDrivedEntity(EntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
+            //col7.ItemsSource = entity.Relationships;
+            //col7.DisplayMemberPath = "Name";
+            //col7.SelectedValueMemberPath = "ID";
+
+
+    
+                var relationshipTails = bizEntityRelationshipTail.GetEntityRelationshipTails(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+                relationshipTails.Add(new ModelEntites.EntityRelationshipTailDTO() { ID = 0, EntityPath = "موجودیت اصلی" });
+                colRelationshipTail.DisplayMemberPath = "EntityPath";
+                colRelationshipTail.SelectedValueMemberPath = "ID";
+                colRelationshipTail.ItemsSource = relationshipTails;
+      
+
         }
 
         //private void Col7_SearchFilterChanged(object sender, SearchFilterArg e)
         //{
-         
+
 
         //    if (!string.IsNullOrEmpty(e.SingleFilterValue))
         //    {
@@ -87,7 +116,7 @@ namespace MyProject_WPF
 
         private void GetEntityGroup(int entityGroupID)
         {
-            Message = bizEntityGroup.GetEntityGroup(entityGroupID, true);
+            Message = bizEntityGroup.GetEntityGroup(MyProjectManager.GetMyProjectManager.GetRequester(), entityGroupID, true);
             ShowMessage();
         }
 
@@ -97,7 +126,8 @@ namespace MyProject_WPF
             //    ProcessID = Message.ProcessID;
             txtName.Text = Message.Name;
             //txtDescription.Text = Message.Description;
-            dtgEntities.ItemsSource = Message.Relationships;
+            dtgRelationshipTails.ItemsSource = Message.Relationships;
+
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -131,7 +161,7 @@ namespace MyProject_WPF
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            MyProjectManager.GetMyProjectManager().CloseDialog(this);
+            MyProjectManager.GetMyProjectManager.CloseDialog(this);
         }
     }
 

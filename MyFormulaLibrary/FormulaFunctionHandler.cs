@@ -26,13 +26,13 @@ namespace MyFormulaFunctionStateFunctionLibrary
         {
             return FormulaInstanceInternalHelper.GetExpressionEvaluator(dataItem, requester, definition, usedFormulaIDs);
         }
-        public FunctionResult CalculateFormula(int formulaID, DP_DataView dataItem, DR_Requester requester, List<int> usedFormulaIDs = null)
-        {
-            //DP_DataRepository data = new DP_DataRepository(mainDataItem.TargetEntityID, mainDataItem.TargetEntityAlias);
-            //data.Properties = mainDataItem.Properties;
-            return CalculateFormula(formulaID,dataItem, requester, usedFormulaIDs);
-        }
-        public FunctionResult CalculateFormula(int formulaID, DP_DataRepository dataItem, DR_Requester requester, List<int> usedFormulaIDs = null)
+        //public FunctionResult CalculateFormula(int formulaID, DP_DataView dataItem, DR_Requester requester, List<int> usedFormulaIDs = null)
+        //{
+        //    //DP_DataRepository data = new DP_DataRepository(mainDataItem.TargetEntityID, mainDataItem.TargetEntityAlias);
+        //    //data.Properties = mainDataItem.Properties;
+        //    return CalculateFormula(formulaID,dataItem, requester, usedFormulaIDs);
+        //}
+        public FunctionResult CalculateFormula(int formulaID, DP_BaseData dataItem, DR_Requester requester, List<int> usedFormulaIDs = null)
         {
             FunctionResult result = null;
             var formula = bizFormula.GetFormula(requester, formulaID, true);

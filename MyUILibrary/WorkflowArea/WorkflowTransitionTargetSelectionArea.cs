@@ -33,7 +33,6 @@ namespace MyUILibrary.WorkflowArea
             {
                 foreach (var item in ViewTargetSelection.OutgoingTransitoinActions)
                 {
-
                     if (item.OrganizationPosts.Count(x => x.Selected) == 0)
                     {
                         AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage("برای اقدام" + " " + item.Title + " " + "کاربر هدف انتخاب نشده است");
@@ -59,15 +58,15 @@ namespace MyUILibrary.WorkflowArea
 
         public PossibleTransitionActionResult CheckOutgoingTransitionActions(I_WorkflowRequesActionArea requestActionArea)
         {
-            var trainsitionActionUesrs = AgentUICoreMediator.GetAgentUICoreMediator.workflowService.GetNextPossibleTransitionActionByRequestActionID(requestActionArea.RequestAction.ID, requestActionArea.View.CurrentUserSelectedOrganizationPost);
+            var trainsitionActionUesrs = AgentUICoreMediator.GetAgentUICoreMediator.workflowService.GetNextPossibleTransitionActionByRequestActionID(requestActionArea.RequestAction.ID);
             SetTargetViewProperties(trainsitionActionUesrs);
             return trainsitionActionUesrs;
         }
         public void CheckOutgoingTransitionActions(I_WorkflowCreateRequestArea workflowCreateRequestArea)
         {
-            if (workflowCreateRequestArea.View.SelectedStateID != 0 && workflowCreateRequestArea.View.CurrentUserSelectedOrganizationPost != null)
+            if (workflowCreateRequestArea.View.SelectedStateID != 0)
             {
-                var trainsitionActionUesrs = AgentUICoreMediator.GetAgentUICoreMediator.workflowService.GetNextPossibleTransitionActionByStateID(workflowCreateRequestArea.View.SelectedStateID, workflowCreateRequestArea.View.CurrentUserSelectedOrganizationPost);
+                var trainsitionActionUesrs = AgentUICoreMediator.GetAgentUICoreMediator.workflowService.GetNextPossibleTransitionActionByStateID(workflowCreateRequestArea.View.SelectedStateID);
                 SetTargetViewProperties(trainsitionActionUesrs);
             }
             else

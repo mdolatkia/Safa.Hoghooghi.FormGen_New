@@ -501,8 +501,8 @@
     <Compile Include="Workflow\frmAddActivity.xaml.cs">
       <DependentUpon>frmAddActivity.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Workflow\frmAddAction.xaml.cs">
-      <DependentUpon>frmAddAction.xaml</DependentUpon>
+    <Compile Include="Workflow\frmAddEntityGroup.xaml.cs">
+      <DependentUpon>frmAddEntityGroup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Workflow\frmAddSelectState.xaml.cs">
       <DependentUpon>frmAddSelectState.xaml</DependentUpon>
@@ -1022,6 +1022,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Workflow\frmAddEntityGroup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Workflow\frmTransitionInfo.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1035,10 +1039,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Workflow\frmAddActivity.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Workflow\frmAddAction.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

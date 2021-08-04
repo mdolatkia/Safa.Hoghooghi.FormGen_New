@@ -69,10 +69,10 @@ namespace MyModelManager
                 //result.AdminRoleGroup = bizRole.ToRoleGroupDTO(item.RoleGroup);
 
                 BizAction bizAction = new BizAction();
-                foreach (var citem in item.Action)
-                {
-                    result.Actions.Add(bizAction.ToActionDTO(citem));
-                }
+                //foreach (var citem in item.Action)
+                //{
+                //    result.Actions.Add(bizAction.ToActionDTO(citem));
+                //}
                 BizActivity bizActivity = new BizActivity();
                 foreach (var citem in item.Activity)
                 {

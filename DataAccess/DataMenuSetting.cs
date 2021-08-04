@@ -18,13 +18,13 @@ namespace DataAccess
         {
             this.DataMenuDataViewRelationship = new HashSet<DataMenuDataViewRelationship>();
             this.DataMenuDataViewRelationship1 = new HashSet<DataMenuDataViewRelationship>();
+            this.DataMenuDirectReportRelationship = new HashSet<DataMenuDirectReportRelationship>();
             this.DataMenuGridViewRelationship = new HashSet<DataMenuGridViewRelationship>();
             this.DataMenuGridViewRelationship1 = new HashSet<DataMenuGridViewRelationship>();
             this.DataMenuReportRelationship = new HashSet<DataMenuReportRelationship>();
             this.EntityDataViewReport = new HashSet<EntityDataViewReport>();
             this.EntityGridViewReport = new HashSet<EntityGridViewReport>();
             this.TableDrivedEntity1 = new HashSet<TableDrivedEntity>();
-            this.DataMenuDirectReportRelationship = new HashSet<DataMenuDirectReportRelationship>();
         }
     
         public int ID { get; set; }
@@ -35,6 +35,7 @@ namespace DataAccess
     
         public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship { get; set; }
         public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship1 { get; set; }
+        public virtual ICollection<DataMenuDirectReportRelationship> DataMenuDirectReportRelationship { get; set; }
         public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }
         public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship1 { get; set; }
         public virtual ICollection<DataMenuReportRelationship> DataMenuReportRelationship { get; set; }
@@ -43,6 +44,5 @@ namespace DataAccess
         public virtual ICollection<EntityDataViewReport> EntityDataViewReport { get; set; }
         public virtual ICollection<EntityGridViewReport> EntityGridViewReport { get; set; }
         public virtual ICollection<TableDrivedEntity> TableDrivedEntity1 { get; set; }
-        public virtual ICollection<DataMenuDirectReportRelationship> DataMenuDirectReportRelationship { get; set; }
     }
 }

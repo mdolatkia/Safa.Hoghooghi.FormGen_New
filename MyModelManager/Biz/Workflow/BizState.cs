@@ -46,6 +46,7 @@ namespace MyModelManager
                     var sf = new StateFormulaDTO();
                     sf.FormulaID = sbsf.FormulaID;
                     sf.Message = sbsf.Message;
+                    sf.TrueFalse = sbsf.TrueFalse;
                     result.Formulas.Add(sf);
                 }
             }
@@ -90,6 +91,7 @@ namespace MyModelManager
                     var dbState_Formula = new State_Formula();
                     dbState_Formula.FormulaID = msgActionTarget.FormulaID;
                     dbState_Formula.Message  = msgActionTarget.Message;
+                    dbState_Formula.TrueFalse = msgActionTarget.TrueFalse;
                     dbState.State_Formula.Add(dbState_Formula);
                 }
 

@@ -26,7 +26,7 @@ namespace MyUILibrary.WorkflowArea
     }
     public interface I_WorkflowRequesActionArea
     {
-        RequestActionDTO RequestAction { set; get; }
+        RequestActionDTO RequestAction {  get; }
         I_View_RequestAction View { set; get; }
     }
     public interface I_WorkflowNoteArea
@@ -79,7 +79,7 @@ namespace MyUILibrary.WorkflowArea
     }
     public interface I_View_WorkflowTransition
     {
-        event EventHandler<OrganizationPostDTO> CurrentUserOrganizationPostChanged;
+     //   event EventHandler<OrganizationPostDTO> CurrentUserOrganizationPostChanged;
         OrganizationPostDTO CurrentUserSelectedOrganizationPost { set; get; }
         void AddTargetSelectionView(I_View_WorkflowTransitionTargetSelection view);
     }

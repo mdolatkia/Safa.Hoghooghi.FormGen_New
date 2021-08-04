@@ -32,25 +32,51 @@ namespace MyProject_WPF
         BizProcess bizProcess = new BizProcess();
         BizEntityGroup bizEntityGroup = new BizEntityGroup();
         TransitionDTO Transition { set; get; }
-
-        public frmTransitionInfo(TransitionDTO transition)
+        ProcessDTO Process { set; get; }
+        public frmTransitionInfo(ProcessDTO process, TransitionDTO transition)
         {
             InitializeComponent();
             Transition = transition;
             //TransitionActions = transitionActions;
+            Process = process;
+
             ShowMessage();
             SetBaseData();
             dtgTransitionActionList.SelectionChanged += dtgTransitionActionList_SelectionChanged;
 
-            ControlHelper.GenerateContextMenu(dtgFormList);
             ControlHelper.GenerateContextMenu(dtgFormulaList);
             ControlHelper.GenerateContextMenu(dtgTransitionActionList);
             ControlHelper.GenerateContextMenu(dtgListActivities);
+            ControlHelper.GenerateContextMenu(dtgEntityGroup);
+
 
             ControlHelper.GenerateContextMenu(dtgActionTargets);
             dtgActionTargets.CellEditEnded += DtgActionTargets_CellEditEnded;
             dtgActionTargets.RowLoaded += DtgActionTargets_RowLoaded;
 
+
+            colEntityGroup.EditItemEnabled = true;
+            colEntityGroup.NewItemEnabled = true;
+            colEntityGroup.EditItemClicked += ColEntityGroup_EditItemClicked;
+        }
+
+        private void ColEntityGroup_EditItemClicked(object sender, EditItemClickEventArg e)
+        {
+            frmAddEntityGroup view;
+            if ((sender as MyStaticLookup).SelectedItem == null)
+                view = new MyProject_WPF.frmAddEntityGroup(Transition.ProcessID, Process.EntityID, 0);
+            else
+            {
+                var id = ((sender as MyStaticLookup).SelectedItem as ActivityDTO).ID;
+                view = new MyProject_WPF.frmAddEntityGroup(Transition.ProcessID, Process.EntityID, id);
+            }
+            view.ItemSaved += (sender1, e1) => View_ItemSavedEntityGroup(sender1, e1, (sender as MyStaticLookup));
+            MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
+        }
+        private void View_ItemSavedEntityGroup(object sender, SavedItemArg e, MyStaticLookup lookup)
+        {
+            SetEntityGroups();
+            lookup.SelectedValue = e.ID;
         }
         private void DtgActionTargets_RowLoaded(object sender, RowLoadedEventArgs e)
         {
@@ -82,32 +108,39 @@ namespace MyProject_WPF
             if (dtgTransitionActionList.SelectedItem != null)
             {
                 var item = dtgTransitionActionList.SelectedItem as TransitionActionDTO;
-                dtgFormList.ItemsSource = item.EntityGroups;
-                dtgFormulaList.ItemsSource = item.Formulas;
-                dtgActionTargets.ItemsSource = item.Targets;
+                TransitionActionSelected(item);
             }
         }
+
+        private void TransitionActionSelected(TransitionActionDTO item)
+        {
+            dtgEntityGroup.ItemsSource = item.EntityGroups;
+            dtgFormulaList.ItemsSource = item.Formulas;
+            dtgActionTargets.ItemsSource = item.Targets;
+        }
+
         BizTarget bizTarget = new BizTarget();
         BizRoleType bizRoleType = new BizRoleType();
 
         private void SetBaseData()
         {
-            GetActions();
+            //     GetActions();
             GetActivitys();
-            GetFormulaAndForms();
-
+            SetFormulas();
+            SetEntityGroups();
+            colActionType.ItemsSource = bizAction.GetActionTypes();
             colTargetType.ItemsSource = bizTarget.GetTargetTypes();
             colRoleType.ItemsSource = bizRoleType.GetAllRoleTypes();
             colRoleType.DisplayMemberPath = "Name";
             colRoleType.SelectedValueMemberPath = "ID";
         }
 
-        private void GetFormulaAndForms()
+        private void SetFormulas()
         {
-            var process = bizProcess.GetProcess(MyProjectManager.GetMyProjectManager.GetRequester(), Transition.ProcessID, false);
+
             BizFormula bizFormula = new BizFormula();
 
-            var listAllFormula = bizFormula.GetFormulas(process.EntityID);
+            var listAllFormula = bizFormula.GetFormulas(Process.EntityID);
             List<FormulaDTO> listValidFormula = new List<FormulaDTO>();
             foreach (var formula in listAllFormula)
             {
@@ -121,41 +154,44 @@ namespace MyProject_WPF
             colFormula.DisplayMemberPath = "Name";
             colFormula.SelectedValueMemberPath = "ID";
 
-            colForm.ItemsSource = bizEntityGroup.GetEntityGroups(MyProjectManager.GetMyProjectManager.GetRequester(), Transition.ProcessID);
-            colForm.DisplayMemberPath = "Name";
-            colForm.SelectedValueMemberPath = "ID";
-        }
 
-        private void GetActions()
-        {
-            if (colAction.ItemsSource == null)
-            {
-                colAction.DisplayMemberPath = "Name";
-                colAction.SelectedValueMemberPath = "ID";
-                colAction.EditItemClicked += ColAction_EditItemClicked;
-            }
-            var actions = bizAction.GetActions(Transition.ProcessID);
-            colAction.ItemsSource = actions;
         }
+        void SetEntityGroups()
+        {
+            colEntityGroup.ItemsSource = bizEntityGroup.GetEntityGroups(MyProjectManager.GetMyProjectManager.GetRequester(), Transition.ProcessID);
+            colEntityGroup.DisplayMemberPath = "Name";
+            colEntityGroup.SelectedValueMemberPath = "ID";
+        }
+        //private void GetActions()
+        //{
+        //    if (colAction.ItemsSource == null)
+        //    {
+        //        colAction.DisplayMemberPath = "Name";
+        //        colAction.SelectedValueMemberPath = "ID";
+        //        colAction.EditItemClicked += ColAction_EditItemClicked;
+        //    }
+        //    var actions = bizAction.GetActions(Transition.ProcessID);
+        //    colAction.ItemsSource = actions;
+        //}
 
-        private void ColAction_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
-        {
-            frmAddAction view;
-            if ((sender as MyStaticLookup).SelectedItem == null)
-                view = new MyProject_WPF.frmAddAction(Transition.ProcessID, 0);
-            else
-            {
-                var id = ((sender as MyStaticLookup).SelectedItem as WFActionDTO).ID;
-                view = new MyProject_WPF.frmAddAction(Transition.ProcessID, id);
-            }
-            view.ItemSaved += (sender1, e1) => View_ItemSaved1(sender1, e1, (sender as MyStaticLookup));
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
-        }
-        private void View_ItemSaved1(object sender, SavedItemArg e, MyStaticLookup lookup)
-        {
-            GetActions();
-            lookup.SelectedValue = e.ID;
-        }
+        //private void ColAction_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
+        //{
+        //    frmAddAction view;
+        //    if ((sender as MyStaticLookup).SelectedItem == null)
+        //        view = new MyProject_WPF.frmAddAction(Transition.ProcessID, 0);
+        //    else
+        //    {
+        //        var id = ((sender as MyStaticLookup).SelectedItem as WFActionDTO).ID;
+        //        view = new MyProject_WPF.frmAddAction(Transition.ProcessID, id);
+        //    }
+        //    view.ItemSaved += (sender1, e1) => View_ItemSaved1(sender1, e1, (sender as MyStaticLookup));
+        //    MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
+        //}
+        //private void View_ItemSaved1(object sender, SavedItemArg e, MyStaticLookup lookup)
+        //{
+        //    GetActions();
+        //    lookup.SelectedValue = e.ID;
+        //}
 
         private void GetActivitys()
         {
@@ -193,6 +229,12 @@ namespace MyProject_WPF
             txtTitle.Text = Transition.Name;
             dtgTransitionActionList.ItemsSource = Transition.TransitionActions;
             dtgListActivities.ItemsSource = Transition.TransitionActivities;
+            if (Transition.TransitionActions.Any())
+            {
+                // dtgTransitionActionList. = Transition.TransitionActions.First();
+                TransitionActionSelected(Transition.TransitionActions.First());
+            }
+
         }
 
 

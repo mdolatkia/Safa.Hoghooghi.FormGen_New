@@ -39,7 +39,7 @@ namespace MyProject_WPF
             if (ID == 0)
             {
                 DatabaseFunctionEntity = new DatabaseFunction_EntityDTO();
-                lokDatabaseFunction.ItemsSource = bizDatabaseFunction.GetDatabaseFunctionEntityByEntityID(MyProjectManager.GetMyProjectManager.GetRequester(), Entity.ID);
+                lokDatabaseFunction.ItemsSource = bizDatabaseFunction.GetDatabaseFunctions(MyProjectManager.GetMyProjectManager.GetRequester(), Enum_DatabaseFunctionType.None, Entity.DatabaseID);
             }
             else
             {
@@ -124,7 +124,7 @@ namespace MyProject_WPF
         {
             dtgDatabaseFunctionParams.ItemsSource = null;
             List<DatabaseFunction_Entity_ColumnDTO> gridColumns = new List<DatabaseFunction_Entity_ColumnDTO>();
-            foreach (var item in functionColumns.Where(x=>x.InputOutput==Enum_DatabaseFunctionParameterType.Input|| x.InputOutput == Enum_DatabaseFunctionParameterType.InputOutput))
+            foreach (var item in functionColumns.Where(x => x.InputOutput == Enum_DatabaseFunctionParameterType.Input || x.InputOutput == Enum_DatabaseFunctionParameterType.InputOutput))
             {
                 var row = new DatabaseFunction_Entity_ColumnDTO();
                 row.DatabaseFunctionParameterID = item.ID;

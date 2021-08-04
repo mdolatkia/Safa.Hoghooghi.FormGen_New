@@ -5,6 +5,7 @@ using MyDataSearchManagerBusiness;
 using MyLetterGenerator;
 using MyModelManager;
 using ProxyLibrary;
+using ProxyLibrary.Workflow;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
@@ -901,6 +902,7 @@ namespace MyModelCustomSetting
 
 
                             var serviceRequestIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "RequestServiceID");
+
                             if (serviceRequestIDColumn != null)
                             {
                                 var serviceRequestIDListViewColumn = new EntityListViewColumns() { Column = serviceRequestIDColumn, Alias = "شناسه درخواست سرویس", WidthUnit = 1, IsDescriptive = true, OrderID = 2 };
@@ -908,18 +910,18 @@ namespace MyModelCustomSetting
                             }
                             if (serviceRequest != null)
                             {
-                                var serviceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
-                                if (serviceRequestRelationship != null)
+                                var serviceConclusionRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
+                                if (serviceConclusionRequestRelationship != null)
                                 {
-                                    var serviceRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, serviceRequestRelationship.ID.ToString());
-                                    if (serviceRequestRelationshipTail != null)
+                                    var serviceConclusionRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, serviceConclusionRequestRelationship.ID.ToString());
+                                    if (serviceConclusionRequestRelationshipTail != null)
                                     {
                                         if (customer != null)
                                         {
                                             var serviceRequestCustomerRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == customer.ID);
                                             if (serviceRequestCustomerRelationship != null)
                                             {
-                                                var serviceRequestCustomerRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, customer, serviceRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString());
+                                                var serviceRequestCustomerRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, customer, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString());
                                                 if (serviceRequestCustomerRelationshipTail != null)
                                                 {
                                                     var customerCodeColumn = customer.Table.Column.FirstOrDefault(x => x.Name == "Code");
@@ -935,7 +937,7 @@ namespace MyModelCustomSetting
                                                         var serviceRequestCustomerGenericPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == customer.ID && x.TableDrivedEntityID2 == genericPerson.ID);
                                                         if (serviceRequestCustomerGenericPersonRelationship != null)
                                                         {
-                                                            var serviceRequestCustomerGenericPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, genericPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString()
+                                                            var serviceRequestCustomerGenericPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, genericPerson, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString()
                                                                 + "," + serviceRequestCustomerGenericPersonRelationship.ID.ToString());
                                                             if (serviceRequestCustomerGenericPersonRelationshipTail != null)
                                                             {
@@ -955,7 +957,7 @@ namespace MyModelCustomSetting
                                             var serviceRequestProductItemRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == productItem.ID);
                                             if (serviceRequestProductItemRelationship != null)
                                             {
-                                                var serviceRequestProductItemRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, productItem, serviceRequestRelationship.ID.ToString() + "," + serviceRequestProductItemRelationship.ID.ToString());
+                                                var serviceRequestProductItemRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, productItem, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestProductItemRelationship.ID.ToString());
                                                 if (serviceRequestProductItemRelationshipTail != null)
                                                 {
                                                     var productItemModelColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "ProductModel");
@@ -984,7 +986,7 @@ namespace MyModelCustomSetting
                                             var serviceRequestOfficeRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == office.ID);
                                             if (serviceRequestOfficeRelationship != null)
                                             {
-                                                var serviceRequestOfficeRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, office, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString());
+                                                var serviceRequestOfficeRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, office, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString());
                                                 if (serviceRequestOfficeRelationshipTail != null)
                                                 {
                                                     var officeCodeColumn = office.Table.Column.FirstOrDefault(x => x.Name == "Code");
@@ -1000,7 +1002,7 @@ namespace MyModelCustomSetting
                                                         var serviceRequestOfficelegalPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == office.ID && x.TableDrivedEntityID2 == legalPerson.ID);
                                                         if (serviceRequestOfficelegalPersonRelationship != null)
                                                         {
-                                                            var serviceRequestOfficelegalPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, legalPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString()
+                                                            var serviceRequestOfficelegalPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, legalPerson, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString()
                                                                 + "," + serviceRequestOfficelegalPersonRelationship.ID.ToString());
                                                             if (serviceRequestOfficelegalPersonRelationshipTail != null)
                                                             {
@@ -1493,13 +1495,13 @@ namespace MyModelCustomSetting
                     projectContext.OrganizationPost.Add(organizationTamirgahTajrishTamirkarPost3);
                 }
                 var organizationTamirgahTajrishRahbar1 = projectContext.OrganizationPost.FirstOrDefault(x => x.UserID == userRezayi.ID
-                && x.Name == "راهبر 1");
+                && x.Name == "راهبر اداره 1");
                 if (organizationTamirgahTajrishRahbar1 == null)
                 {
                     organizationTamirgahTajrishRahbar1 = new OrganizationPost()
                     {
                         SecuritySubject = new SecuritySubject() { Type = (short)SecuritySubjectType.OrganizationPost },
-                        Name = "راهبر 1",
+                        Name = "راهبر اداره 1",
                         OrganizationType_RoleType = organizationTypeTamirgahRoleRahbarEdare,
                         Organization = organizationTamirgahTajrish,
                         User = userRezayi
@@ -1886,28 +1888,36 @@ namespace MyModelCustomSetting
                     if (archiveTagSpecific == null)
                         projectContext.ArchiveTag.Add(new ArchiveTag() { Name = "مدرک اصلي", TableDrivedEntity = serviceRequest });
                 }
+                var serviceRequestToReviewRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == serviceRequestReview.ID);
+                var serviceRequestToReviewRelationshipTail = GetRelationshipTail(projectContext, serviceRequest, serviceRequestReview, serviceRequestToReviewRelationship.ID.ToString());
+
+                var serviceRequestServiceItemRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == serviceItem.ID);
+                var serviceRequestServiceItemRelationshipTail = GetRelationshipTail(projectContext, serviceRequest, serviceItem, serviceRequestServiceItemRelationship.ID.ToString());
+
+                var serviceRequestConclusionRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == serviceConclusion.ID);
+                var serviceRequestConclusionRelationshipTail = GetRelationshipTail(projectContext, serviceRequest, serviceConclusion, serviceRequestConclusionRelationship.ID.ToString());
+
                 LetterType letterTypeService = null;
                 if (serviceRequest != null && serviceRequestReview != null)
                 {
                     serviceRequestReview.LoadArchiveRelatedItems = true;
-                    var serviceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == serviceRequestReview.ID);
-                    if (serviceRequestRelationship != null)
+                    if (serviceRequestToReviewRelationship != null)
                     {
-                        var serviceRequestRelationshipTail = GetRelationshipTail(projectContext, serviceRequest, serviceRequestReview, serviceRequestRelationship.ID.ToString());
-                        if (serviceRequestRelationshipTail != null)
+
+                        if (serviceRequestToReviewRelationshipTail != null)
                         {
-                            var entityArchiveRelationshipTails = projectContext.EntityArchiveRelationshipTails.FirstOrDefault(x => x.TableDrivedEntityID == serviceRequest.ID && x.EntityRelationshipTailID == serviceRequestRelationshipTail.ID);
+                            var entityArchiveRelationshipTails = projectContext.EntityArchiveRelationshipTails.FirstOrDefault(x => x.TableDrivedEntityID == serviceRequest.ID && x.EntityRelationshipTailID == serviceRequestToReviewRelationshipTail.ID);
                             if (entityArchiveRelationshipTails == null)
                             {
-                                projectContext.EntityArchiveRelationshipTails.Add(new EntityArchiveRelationshipTails() { TableDrivedEntityID = serviceRequest.ID, EntityRelationshipTail = serviceRequestRelationshipTail });
+                                projectContext.EntityArchiveRelationshipTails.Add(new EntityArchiveRelationshipTails() { TableDrivedEntityID = serviceRequest.ID, EntityRelationshipTail = serviceRequestToReviewRelationshipTail });
                             }
-                            var entityLetterRelationshipTails = projectContext.EntityLetterRelationshipTails.FirstOrDefault(x => x.TableDrivedEntityID == serviceRequest.ID && x.EntityRelationshipTailID == serviceRequestRelationshipTail.ID);
+                            var entityLetterRelationshipTails = projectContext.EntityLetterRelationshipTails.FirstOrDefault(x => x.TableDrivedEntityID == serviceRequest.ID && x.EntityRelationshipTailID == serviceRequestToReviewRelationshipTail.ID);
                             if (entityLetterRelationshipTails == null)
                             {
-                                projectContext.EntityLetterRelationshipTails.Add(new EntityLetterRelationshipTails() { TableDrivedEntityID = serviceRequest.ID, EntityRelationshipTail = serviceRequestRelationshipTail });
+                                projectContext.EntityLetterRelationshipTails.Add(new EntityLetterRelationshipTails() { TableDrivedEntityID = serviceRequest.ID, EntityRelationshipTail = serviceRequestToReviewRelationshipTail });
                             }
                         }
-                        var serviceRequestReviewRelationshipTail = GetRelationshipTail(projectContext, serviceRequestReview, serviceRequest, serviceRequestRelationship.RelationshipID.ToString());
+                        var serviceRequestReviewRelationshipTail = GetRelationshipTail(projectContext, serviceRequestReview, serviceRequest, serviceRequestToReviewRelationship.RelationshipID.ToString());
                         if (serviceRequestReviewRelationshipTail != null)
                         {
                             var entityArchiveRelationshipTails = projectContext.EntityArchiveRelationshipTails.FirstOrDefault(x => x.TableDrivedEntityID == serviceRequestReview.ID && x.EntityRelationshipTailID == serviceRequestReviewRelationshipTail.ID);
@@ -2233,23 +2243,23 @@ namespace MyModelCustomSetting
                     conclusionSearch.Title = "جستجوی صورتحساب بر اساس تاریخ";
                     conclusionSearch.TableDrivedEntityID = serviceConclusion.ID;
 
-                    var serviceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
-                    if (serviceRequestRelationship != null)
+                    var conclusionServiceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
+                    if (conclusionServiceRequestRelationship != null)
                     {
-                        var serviceRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, serviceRequestRelationship.ID.ToString());
-                        if (serviceRequestRelationshipTail != null)
+                        var conclusionServiceRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, conclusionServiceRequestRelationship.ID.ToString());
+                        if (conclusionServiceRequestRelationshipTail != null)
                         {
 
                             if (persianDateColumn != null)
                             {
                                 searchColumnAzDate = new EntitySearchColumns();
-                                searchColumnAzDate.EntityRelationshipTail = serviceRequestRelationshipTail;
+                                searchColumnAzDate.EntityRelationshipTail = conclusionServiceRequestRelationshipTail;
                                 searchColumnAzDate.ColumnID = persianDateColumn.ID;
                                 searchColumnAzDate.Alias = "تاریخ درخواست سرویس از";
                                 conclusionSearch.EntitySearchColumns.Add(searchColumnAzDate);
 
                                 searchColumnTaDate = new EntitySearchColumns();
-                                searchColumnTaDate.EntityRelationshipTail = serviceRequestRelationshipTail;
+                                searchColumnTaDate.EntityRelationshipTail = conclusionServiceRequestRelationshipTail;
                                 searchColumnTaDate.ColumnID = persianDateColumn.ID;
                                 searchColumnTaDate.Alias = "تاریخ درخواست سرویس تا";
                                 conclusionSearch.EntitySearchColumns.Add(searchColumnTaDate);
@@ -2596,7 +2606,7 @@ namespace MyModelCustomSetting
                     conclusionExternalReport.EntitySearchableReport = new EntitySearchableReport();
                     conclusionExternalReport.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.ExternalReport;
                     conclusionExternalReport.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
-                    conclusionExternalReport.EntitySearchableReport.EntityExternalReport = new  EntityExternalReport();
+                    conclusionExternalReport.EntitySearchableReport.EntityExternalReport = new EntityExternalReport();
                     conclusionExternalReport.EntitySearchableReport.EntityExternalReport.URL = "http://dolatkiam/ReportServer/Pages/ReportViewer.aspx?%2fRequestConclusionsByReportKey";
 
                     projectContext.EntityReport.Add(conclusionExternalReport);
@@ -2660,12 +2670,243 @@ namespace MyModelCustomSetting
 
 
 
+                var process = projectContext.Process.FirstOrDefault(x => x.Name == "جریان کار درخواست سرویس" && x.TableDrivedEntityID == serviceRequest.ID);
+                State stateFirst = null;
+                State stateReview = null;
+                State stateService = null;
+                State stateConclusion = null;
+                State stateEnd = null;
+                State stateCanceled = null;
+                State stateNotServicable = null;
+
+                bool processIsNew = false;
+                if (process == null)
+                {
+                    processIsNew = true;
+                    process = new Process();
+                    process.Name = "جریان کار درخواست سرویس";
+                    process.TableDrivedEntityID = serviceRequest.ID;
+                    projectContext.Process.Add(process);
+
+                    var entityGroupRequest = new EntityGroup();
+                    entityGroupRequest.Name = "ثبت درخواست";
+                    process.EntityGroup.Add(entityGroupRequest);
+                    entityGroupRequest.EntityGroup_Relationship.Add(new EntityGroup_Relationship() { EntityRelationshipTail = null });
+
+                    var entityGroupReview = new EntityGroup();
+                    entityGroupReview.Name = "بررسی درخواست";
+                    process.EntityGroup.Add(entityGroupReview);
+                    entityGroupReview.EntityGroup_Relationship.Add(new EntityGroup_Relationship() { EntityRelationshipTail = serviceRequestToReviewRelationshipTail });
+
+
+                    var entityGroupService = new EntityGroup();
+                    entityGroupService.Name = "ثبت تعمیرات";
+                    process.EntityGroup.Add(entityGroupService);
+                    entityGroupService.EntityGroup_Relationship.Add(new EntityGroup_Relationship() { EntityRelationshipTail = serviceRequestServiceItemRelationshipTail });
+
+
+                    var entityGroupConclusion = new EntityGroup();
+                    entityGroupConclusion.Name = "ثبت صورتحساب";
+                    process.EntityGroup.Add(entityGroupConclusion);
+                    entityGroupService.EntityGroup_Relationship.Add(new EntityGroup_Relationship() { EntityRelationshipTail = serviceRequestConclusionRelationshipTail });
+
+
+                    stateFirst = new State();
+                    stateFirst.Name = "ثبت درخواست";
+                    stateFirst.StateTypeID = (short)StateType.Start;
+                    process.State.Add(stateFirst);
+                    var firstStateFormula = new State_Formula();
+                    var hasReviewFormula = projectContext.Formula.FirstOrDefault(x => x.Name == "HasReview");
+                    if (hasReviewFormula == null)
+                    {
+                        hasReviewFormula = new Formula();
+                        hasReviewFormula.ResultType = "System.Boolean";
+                        hasReviewFormula.Name = "HasReview";
+                        hasReviewFormula.Title = "بررسي سرويس ندارد";
+                        hasReviewFormula.TableDrivedEntityID = serviceRequest.ID;
+                        hasReviewFormula.LinearFormula = new LinearFormula();
+                        hasReviewFormula.LinearFormula.FormulaText = "x.OTO_ServiceRequestReview!=null";
+                        projectContext.Formula.Add(hasReviewFormula);
+                    }
+                    firstStateFormula.Formula = hasReviewFormula;
+                    firstStateFormula.TrueFalse = false;
+                    firstStateFormula.Message = "این درخواست قبلا بررسی شده است";
+                    stateFirst.State_Formula.Add(firstStateFormula);
+
+
+                    stateReview = new State();
+                    stateReview.Name = "بررسي درخواست";
+                    stateReview.StateTypeID = (short)StateType.Normal;
+                    process.State.Add(stateReview);
+
+                    stateService = new State();
+                    stateService.Name = "در حال سرويس مي باشد";
+                    stateService.StateTypeID = (short)StateType.Normal;
+                    process.State.Add(stateService);
+
+                    stateConclusion = new State();
+                    stateConclusion.Name = "در حال صدور صورتحساب مي باشد";
+                    stateConclusion.StateTypeID = (short)StateType.Normal;
+                    process.State.Add(stateConclusion);
+
+                    stateEnd = new State();
+                    stateEnd.Name = "صورتحساب تسويه شد و اتمام کار";
+                    stateEnd.StateTypeID = (short)StateType.End;
+                    process.State.Add(stateEnd);
+
+                    var clearedDatabaseFunction = projectContext.DatabaseFunction.FirstOrDefault(x => x.FunctionName == "ServiceRequestIsValidToClosed");
+                    if (clearedDatabaseFunction != null)
+                    {
+                        var endStateFormula = new State_Formula();
+                        var clearedFormula = projectContext.Formula.FirstOrDefault(x => x.Name == "ServiceRequestCleared");
+                        if (clearedFormula == null)
+                        {
+                            clearedFormula = new Formula();
+                            clearedFormula.ResultType = "System.Boolean";
+                            clearedFormula.Title = "سرویس تسویه شده است";
+                            clearedFormula.Name = "Cleared";
+                            clearedFormula.TableDrivedEntityID = serviceRequest.ID;
+                            clearedFormula.DatabaseFunction_TableDrivedEntity = new DatabaseFunction_TableDrivedEntity();
+                            clearedFormula.DatabaseFunction_TableDrivedEntity.DatabaseFunction = clearedDatabaseFunction;
+                            clearedFormula.DatabaseFunction_TableDrivedEntity.Name = "ServiceRequestCleared";
+                            clearedFormula.DatabaseFunction_TableDrivedEntity.TableDrivedEntityID = serviceRequest.ID;
+                            var idColumn = serviceRequest.Table.Column.FirstOrDefault(x => x.Name == "ID");
+                            var parameterColumn = clearedDatabaseFunction.DatabaseFunctionParameter.FirstOrDefault(x => x.ParamName == "@ServiceRequestID");
+                            clearedFormula.DatabaseFunction_TableDrivedEntity.DatabaseFunction_TableDrivedEntity_Columns.Add(
+                                new DatabaseFunction_TableDrivedEntity_Columns() { ColumnID = idColumn.ID, DatabaseFunctionParameterID = parameterColumn.ID });
+                            projectContext.Formula.Add(clearedFormula);
+                        }
+                        endStateFormula.Formula = clearedFormula;
+                        endStateFormula.TrueFalse = true;
+                        endStateFormula.Message = "این درخواست تسویه شده است";
+                        stateEnd.State_Formula.Add(endStateFormula);
+                    }
+
+                    stateCanceled = new State();
+                    stateCanceled.Name = "درخواست لغو شد و اتمام کار";
+                    stateCanceled.StateTypeID = (short)StateType.End;
+                    process.State.Add(stateCanceled);
+
+                    stateNotServicable = new State();
+                    stateNotServicable.Name = "قابل تعمير نمي باشد و اتمام";
+                    stateNotServicable.StateTypeID = (short)StateType.End;
+                    process.State.Add(stateNotServicable);
+
+
+
+
+                    var stateFirstTostateReview = new Transition();
+                    stateFirstTostateReview.Name = "ارسال به بررسي درخواست";
+                    stateFirstTostateReview.State = stateFirst;
+                    stateFirstTostateReview.State1 = stateReview;
+                    process.Transition.Add(stateFirstTostateReview);
+                    stateFirstTostateReview.TransitionAction.Add(new TransitionAction() { Name = "تاييد و ارسال به بررسي درخواست", ActionTypeID = (short)ActionType.Approve });
+                    stateFirstTostateReview.TransitionAction.First().TransitionAction_EntityGroup.Add(new TransitionAction_EntityGroup() { EntityGroup = entityGroupRequest });
+                    stateFirstTostateReview.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarEdare });
+                    stateFirstTostateReview.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarKol });
+                    stateFirstTostateReview.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleOperatorService });
+
+
+
+                    var stateReviewTostateService = new Transition();
+                    stateReviewTostateService.Name = "ارسال به تعميرات";
+                    stateReviewTostateService.State = stateReview;
+                    stateReviewTostateService.State1 = stateService;
+                    process.Transition.Add(stateReviewTostateService);
+                    stateReviewTostateService.TransitionAction.Add(new TransitionAction() { Name = "تاييد و ارسال به تعميرات", ActionTypeID = (short)ActionType.Approve });
+                    stateReviewTostateService.TransitionAction.First().TransitionAction_EntityGroup.Add(new TransitionAction_EntityGroup() { EntityGroup = entityGroupReview });
+                    stateReviewTostateService.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarEdare });
+                    stateReviewTostateService.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarKol });
+                    stateReviewTostateService.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleReviewerService });
+
+                    stateReviewTostateService.TransitionAction.First().TransitionAction_Formula.Add(new TransitionAction_Formula()
+                    {
+                        Formula = hasReviewFormula,
+                        Message = "بررسي درخواست ثبت نشده است",
+                        TrueFalse = true
+                    });
+
+
+                    var stateServiceTostateConclusion = new Transition();
+                    stateServiceTostateConclusion.Name = "ارسال به صورتحساب";
+                    stateServiceTostateConclusion.State = stateService;
+                    stateServiceTostateConclusion.State1 = stateConclusion;
+                    process.Transition.Add(stateServiceTostateConclusion);
+                    stateServiceTostateConclusion.TransitionAction.Add(new TransitionAction() { Name = "تاييد و ارسال به صورتحساب", MultipleUserEnabled = true, ActionTypeID = (short)ActionType.Approve });
+                    stateServiceTostateConclusion.TransitionAction.First().TransitionAction_EntityGroup.Add(new TransitionAction_EntityGroup() { EntityGroup = entityGroupService });
+                    stateServiceTostateConclusion.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarEdare });
+                    stateServiceTostateConclusion.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarKol });
+                    stateServiceTostateConclusion.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleOperatorService });
+
+
+                    var stateConclusionTostateEnd = new Transition();
+                    stateConclusionTostateEnd.Name = "اتمام جريان کار";
+                    stateConclusionTostateEnd.State = stateConclusion;
+                    stateConclusionTostateEnd.State1 = stateEnd;
+                    process.Transition.Add(stateConclusionTostateEnd);
+                    stateConclusionTostateEnd.TransitionAction.Add(new TransitionAction() { Name = "اتمام جريان کار", ActionTypeID = (short)ActionType.Approve });
+                    stateConclusionTostateEnd.TransitionAction.First().TransitionAction_EntityGroup.Add(new TransitionAction_EntityGroup() { EntityGroup = entityGroupConclusion });
+                    stateConclusionTostateEnd.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarEdare });
+                    stateConclusionTostateEnd.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarKol });
+                    stateConclusionTostateEnd.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleMaaliService });
+
+
+
+                    var stateReviewTostateCanceled = new Transition();
+                    stateReviewTostateCanceled.Name = "درخواست قابل اجرا نمي باشد";
+                    stateReviewTostateCanceled.State = stateReview;
+                    stateReviewTostateCanceled.State1 = stateCanceled;
+                    process.Transition.Add(stateReviewTostateCanceled);
+                    stateReviewTostateCanceled.TransitionAction.Add(new TransitionAction() { Name = "درخواست قابل اجرا نمي باشد", ActionTypeID = (short)ActionType.Cancel });
+                    stateReviewTostateCanceled.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarEdare });
+                    stateReviewTostateCanceled.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarKol });
+                    stateReviewTostateCanceled.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleReviewerService });
+
+
+                    var stateServiceTostateNotServicable = new Transition();
+                    stateServiceTostateNotServicable.Name = "قابل تعمیر نمی باشد";
+                    stateServiceTostateNotServicable.State = stateService;
+                    stateServiceTostateNotServicable.State1 = stateNotServicable;
+                    process.Transition.Add(stateServiceTostateNotServicable);
+                    stateServiceTostateNotServicable.TransitionAction.Add(new TransitionAction() { Name = "قابل تعمیر نمی باشد", ActionTypeID = (short)ActionType.Cancel });
+                    stateServiceTostateNotServicable.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarEdare });
+                    stateServiceTostateNotServicable.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarKol });
+                    stateServiceTostateNotServicable.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleOperatorService });
+
+
+
+                    var stateReviewTostateFirst = new Transition();
+                    stateReviewTostateFirst.Name = "بازگشت به ثبت سرویس";
+                    stateReviewTostateFirst.State = stateReview;
+                    stateReviewTostateFirst.State1 = stateFirst;
+                    process.Transition.Add(stateReviewTostateFirst);
+                    stateReviewTostateFirst.TransitionAction.Add(new TransitionAction() { Name = "بازگشت به ثبت سرویس", ActionTypeID = (short)ActionType.Deny });
+                    stateReviewTostateFirst.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarEdare });
+                    stateReviewTostateFirst.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleRahbarKol });
+                    stateReviewTostateFirst.TransitionAction.First().TransitionActionTarget.Add(new TransitionActionTarget() { TargetType = (short)TargetType.RoleMembers, RoleType = roleReviewerService });
+
+
+                }
 
 
 
                 try
                 {
                     projectContext.SaveChanges();
+
+                    if (processIsNew)
+                    {
+
+                        process.TransitionFlowSTR = @"<?xml version=""1.0"" encoding=""utf-8""?><RadDiagram Version=""2020.2""><Metadata Type=""Telerik.Windows.Controls.RadDiagram"" Id=""dfd25c17-f7e3-4e86-8fd6-8b4605cd6308"" Zoom=""1"" Position=""0;0""><Title>Diagram [7/31/2021 11:49:53 AM]</Title><Description></Description></Metadata><Groups /><Shapes QNs=""MyProject_WPF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;""><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""23b3ba9b-903a-43eb-91b4-ea16019a9db8"" ZIndex=""2"" Position=""1460;116"" Background=""#FFFF0000"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateFirst"" Title=""ثبت درخواست""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" ZIndex=""2"" Position=""1191;120"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateReview"" Title=""آماده براي بررسي درخواست""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""302637ea-08f9-4e91-b8ba-b4247b87d129"" ZIndex=""2"" Position=""952;117"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateService"" Title=""در حال سرويس مي باشد""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""9b6c3168-da3a-4255-a0a5-b51bb7152070"" ZIndex=""2"" Position=""700;120"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateConclusion"" Title=""در حال صدور صورتحساب مي باشد""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""76c2cb54-6d47-49b1-a52c-f46d851c9545"" ZIndex=""2"" Position=""460;120"" Background=""#FFFF0000"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateEnd"" Title=""صورتحساب تسويه شد و اتمام کار""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""21bf6a45-0c4d-41b2-9d01-dd8779ecf292"" ZIndex=""2"" Position=""1279;315"" Background=""#FFFF0000"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateCanceled"" Title=""درخواست لغو شد و اتمام کار""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""40873817-a0e4-4cea-80f3-4fdf973df384"" ZIndex=""2"" Position=""1062;306"" Background=""#FFFF0000"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateNotServicable"" Title=""قابل تعمير نمي باشد و اتمام""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape></Shapes><Connections QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""ca28dc0a-c62d-40f6-9f56-d6651b40246e"" ZIndex=""1"" Position=""1291;146"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""1460;146"" Source=""23b3ba9b-903a-43eb-91b4-ea16019a9db8"" EndPoint=""1291;150"" Target=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""8a637286-d20b-4d6b-8509-3f54b7672a23"" ZIndex=""1"" Position=""1052;147"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""1191;150"" Source=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" EndPoint=""1052;147"" Target=""302637ea-08f9-4e91-b8ba-b4247b87d129"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""8f17ed01-5485-4e05-95b2-0a161801997a"" ZIndex=""1"" Position=""800;147"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""952;147"" Source=""302637ea-08f9-4e91-b8ba-b4247b87d129"" EndPoint=""800;150"" Target=""9b6c3168-da3a-4255-a0a5-b51bb7152070"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""2d97676e-ba58-4580-bbea-e56af9b78fbc"" ZIndex=""1"" Position=""560;150"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""700;150"" Source=""9b6c3168-da3a-4255-a0a5-b51bb7152070"" EndPoint=""560;150"" Target=""76c2cb54-6d47-49b1-a52c-f46d851c9545"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""0e7b550f-3064-4d7a-a5a2-6cfe478304e2"" ZIndex=""1"" Position=""1241;180"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""1241;180"" Source=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" EndPoint=""1329;315"" Target=""21bf6a45-0c4d-41b2-9d01-dd8779ecf292"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""e7d8e6f7-ede1-4db7-80a7-9a4c1a156f9c"" ZIndex=""1"" Position=""1291;146"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""1291;150"" Source=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" EndPoint=""1460;146"" Target=""23b3ba9b-903a-43eb-91b4-ea16019a9db8"" ConnectionType=""Spline"" UseFreeConnectors=""False"" ConnectionPoints=""1375.5;193"" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""2c9449af-44e0-4b31-9a2b-ee696b010258"" ZIndex=""1"" Position=""1052;147"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""1052;147"" Source=""302637ea-08f9-4e91-b8ba-b4247b87d129"" EndPoint=""1191;150"" Target=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" ConnectionType=""Spline"" UseFreeConnectors=""False"" ConnectionPoints=""1121.5;193.5"" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""528b3af2-20c6-453c-b0dc-816dc7a3ad38"" ZIndex=""1"" Position=""1002;177"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""1002;177"" Source=""302637ea-08f9-4e91-b8ba-b4247b87d129"" EndPoint=""1112;306"" Target=""40873817-a0e4-4cea-80f3-4fdf973df384"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /></Connections></RadDiagram>";
+                        process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateFirst", stateFirst.ID.ToString());
+                        process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateReview", stateReview.ID.ToString());
+                        process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateService", stateService.ID.ToString());
+                        process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateConclusion", stateConclusion.ID.ToString());
+                        process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateEnd", stateEnd.ID.ToString());
+                        process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateCanceled", stateCanceled.ID.ToString());
+                        process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateNotServicable", stateNotServicable.ID.ToString());
+                        //process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateFirst", stateFirst.ID.ToString());
+                    }
 
                     var mnuConclustionDataViewReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش نمای داده صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == dataViewReport.ID);
                     if (mnuConclustionDataViewReport == null)
@@ -2809,6 +3050,9 @@ namespace MyModelCustomSetting
                         mnuCustomerDirectReport.TableDrivedEntityID = customer.ID;
                         projectContext.NavigationTree.Add(mnuCustomerDirectReport);
                     }
+
+
+
                     projectContext.SaveChanges();
                 }
                 catch (DbUpdateException e)

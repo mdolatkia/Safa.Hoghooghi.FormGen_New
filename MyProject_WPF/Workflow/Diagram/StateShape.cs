@@ -50,7 +50,7 @@ namespace MyProject_WPF.Diagram
     ///     <MyNamespace:StateShape/>
     ///
     /// </summary>
-    public class StateShape : RadDiagramShapeBase
+    public class StateShape : RadDiagramShape
     {
         public event EventHandler<StateShapeEditArg> StateShapeEdit;
         public bool IsInDiagram = false;
@@ -142,10 +142,10 @@ namespace MyProject_WPF.Diagram
           null
       );
 
-        static StateShape()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(StateShape), new FrameworkPropertyMetadata(typeof(StateShape)));
-        }
+        //static StateShape()
+        //{
+        //    DefaultStyleKeyProperty.OverrideMetadata(typeof(StateShape), new FrameworkPropertyMetadata(typeof(StateShape)));
+        //}
     }
     public class StateShapeEditArg : EventArgs
     {

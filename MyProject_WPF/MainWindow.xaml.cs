@@ -451,7 +451,7 @@ namespace MyProject_WPF
             var title = "جریان کار";
             if (!CheckPaneExists(title))
             {
-                frmProcess frm = new frmProcess(0);
+                frmProcess frm = new frmProcess(1005);
                 AddPane(frm, title);
             }
         }

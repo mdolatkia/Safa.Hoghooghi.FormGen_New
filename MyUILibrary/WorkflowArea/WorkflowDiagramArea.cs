@@ -74,7 +74,7 @@ namespace MyUILibrary.WorkflowArea
                         duration = dif.Seconds + "ثانیه";
                     connector.Duration = duration;
 
-                    var tooltip = "اقدام :" + " " + item.TransitionAction.Action.Name;
+                    var tooltip = "اقدام :" + " " + item.TransitionAction.Name;
                     tooltip += Environment.NewLine + "پست سازمانی اقدام کننده :" + " " + item.OrganizationPost.Name;
                     if (item.User != null)
                         tooltip += Environment.NewLine + "کاربر اقدام کننده :" + " " + item.User.FullName;
@@ -84,7 +84,7 @@ namespace MyUILibrary.WorkflowArea
                     if (!string.IsNullOrEmpty(item.Description))
                         tooltip += Environment.NewLine + "توضیحات :" + " " + item.Description;
                     connector.Tooltip = tooltip;
-                    connector.Action = item.TransitionAction.Action.Name;
+                    connector.Action = item.TransitionAction.Name;
                     index++;
                 }
             }

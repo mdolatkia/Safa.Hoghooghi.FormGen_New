@@ -46,14 +46,7 @@ namespace MyProject_WPF
             dtgEntityGroup.SelectionChanged += DtgEntityGroup_SelectionChanged;
             SetEntities();
             SetRoles();
-            if (processID == 0)
-            {
-                tabForm.IsEnabled = false;
-                Message = new ProcessDTO();
-                ShowProcessDTO();
-            }
-            else
-                GetProcess(processID);
+        
 
             //ControlHelper.GenerateContextMenu(dtgAdminRoleTypes);
             lokEntities.SelectionChanged += LokEntities_SelectionChanged;
@@ -65,6 +58,15 @@ namespace MyProject_WPF
             colRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
             ControlHelper.GenerateContextMenu(dtgEntityGroup);
             ControlHelper.GenerateContextMenu(dtgRelationshipTails);
+
+            if (processID == 0)
+            {
+                tabForm.IsEnabled = false;
+                Message = new ProcessDTO();
+                ShowProcessDTO();
+            }
+            else
+                GetProcess(processID);
 
         }
 
@@ -234,7 +236,7 @@ namespace MyProject_WPF
             lokEntities.SelectedValue = Message.EntityID;
 
             //lokAdminRoleGroup.SelectedValue = Message.AdminRoleGroupID;
-            dtgActions.ItemsSource = Message.Actions;
+        //    dtgActions.ItemsSource = Message.Actions;
             dtgActivities.ItemsSource = Message.Activities;
             dtgEntityGroup.ItemsSource = Message.EntityGroups;
             dtgRelationshipTails.ItemsSource = null;
@@ -287,28 +289,28 @@ namespace MyProject_WPF
             Message = new ProcessDTO();
             ShowProcessDTO();
         }
-        private void mnuAddNewAction_Click(object sender, RoutedEventArgs e)
-        {
-            frmAddAction view = new frmAddAction(Message.ID, 0);
-            view.ItemSaved += View_ItemSaved1;
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
-        }
-        private void mnuEditAction_Click(object sender, RoutedEventArgs e)
-        {
-            var menuItem = sender as RadMenuItem;
-            var contextMenu = menuItem.Parent as RadContextMenu;
-            var source = contextMenu.GetClickedElement<GridViewRow>();
-            if (contextMenu != null && source != null)
-            {
-                frmAddAction view = new frmAddAction(Message.ID, (source.DataContext as WFActionDTO).ID);
-                view.ItemSaved += View_ItemSaved1;
-                MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
-            }
-        }
-        private void View_ItemSaved1(object sender, SavedItemArg e)
-        {
-            dtgActions.ItemsSource = bizAction.GetActions(Message.ID);
-        }
+        //private void mnuAddNewAction_Click(object sender, RoutedEventArgs e)
+        //{
+        //    frmAddAction view = new frmAddAction(Message.ID, 0);
+        //    view.ItemSaved += View_ItemSaved1;
+        //    MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
+        //}
+        //private void mnuEditAction_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var menuItem = sender as RadMenuItem;
+        //    var contextMenu = menuItem.Parent as RadContextMenu;
+        //    var source = contextMenu.GetClickedElement<GridViewRow>();
+        //    if (contextMenu != null && source != null)
+        //    {
+        //        frmAddAction view = new frmAddAction(Message.ID, (source.DataContext as WFActionDTO).ID);
+        //        view.ItemSaved += View_ItemSaved1;
+        //        MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
+        //    }
+        //}
+        //private void View_ItemSaved1(object sender, SavedItemArg e)
+        //{
+        //    dtgActions.ItemsSource = bizAction.GetActions(Message.ID);
+        //}
 
         private void mnuAddNewActivity_Click(object sender, RoutedEventArgs e)
         {
@@ -360,7 +362,7 @@ namespace MyProject_WPF
 
         private void mnuAddNewState_Click(object sender, Telerik.Windows.RadRoutedEventArgs e)
         {
-            frmAddSelectState view = new frmAddSelectState(Message.ID, 0);
+            frmAddSelectState view = new frmAddSelectState(Message, 0);
             view.ItemSaved += View_ItemSaved3;
             MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
         }
@@ -372,7 +374,7 @@ namespace MyProject_WPF
             var source = contextMenu.GetClickedElement<GridViewRow>();
             if (contextMenu != null && source != null)
             {
-                frmAddSelectState view = new frmAddSelectState(Message.ID, (source.DataContext as WFStateDTO).ID);
+                frmAddSelectState view = new frmAddSelectState(Message, (source.DataContext as WFStateDTO).ID);
                 view.ItemSaved += View_ItemSaved3;
                 MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
             }

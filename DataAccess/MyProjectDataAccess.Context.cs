@@ -156,7 +156,6 @@ namespace DataAccess
         public virtual DbSet<SecurityObject> SecurityObject { get; set; }
         public virtual DbSet<SecuritySubject> SecuritySubject { get; set; }
         public virtual DbSet<User> User { get; set; }
-        public virtual DbSet<Action> Action { get; set; }
         public virtual DbSet<Activity> Activity { get; set; }
         public virtual DbSet<ActivityTarget> ActivityTarget { get; set; }
         public virtual DbSet<ActivityTarget_RoleType> ActivityTarget_RoleType { get; set; }

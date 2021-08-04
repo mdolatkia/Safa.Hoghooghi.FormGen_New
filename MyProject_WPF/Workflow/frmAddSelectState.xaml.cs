@@ -26,16 +26,18 @@ namespace MyProject_WPF
     /// </summary>
     public partial class frmAddSelectState : UserControl
     {
-        int ProcessID { set; get; }
+   //     int ProcessID { set; get; }
         BizActivity bizActivity = new BizActivity();
         WFStateDTO Message = new WFStateDTO();
         BizState bizState = new BizState();
         public event EventHandler<SavedItemArg> ItemSaved;
-        public frmAddSelectState(int processID, int stateID)
+        ProcessDTO Process { set; get; }
+        public frmAddSelectState(ProcessDTO process, int stateID)
         {
             InitializeComponent();
-            ProcessID = processID;
+            Process = process;
             SetBaseData();
+            SetFormulas();
             if (stateID != 0)
                 GetState(stateID);
             else
@@ -43,7 +45,54 @@ namespace MyProject_WPF
             ControlHelper.GenerateContextMenu(dtgFormulaList);
             ControlHelper.GenerateContextMenu(dtgStateActivities);
 
+            colFormula.EditItemEnabled = true;
+            colFormula.NewItemEnabled = true;
+            colFormula.EditItemClicked += ColFormula_EditItemClicked;
         }
+
+        private void SetFormulas()
+        {
+
+            var listAllFormula = bizFormula.GetFormulas(Process.EntityID);
+            List<FormulaDTO> listValidFormula = new List<FormulaDTO>();
+            foreach (var formula in listAllFormula)
+            {
+                if (formula.ResultDotNetType == typeof(bool) ||
+                    formula.ResultDotNetType == typeof(Boolean))
+                {
+                    listValidFormula.Add(formula);
+                }
+            }
+            colFormula.ItemsSource = listValidFormula;
+            colFormula.DisplayMemberPath = "Name";
+            colFormula.SelectedValueMemberPath = "ID";
+        }
+
+        private void ColFormula_EditItemClicked(object sender, EditItemClickEventArg e)
+        {
+            frmFormula view;
+            var selectedField = e.DataConext as StateFormulaDTO;
+            if (selectedField != null)
+            {
+                if ((sender as MyStaticLookup).SelectedItem == null)
+                    view = new MyProject_WPF.frmFormula(0, Process.EntityID);
+                else
+                {
+                    var id = ((sender as MyStaticLookup).SelectedItem as FormulaDTO).ID;
+                    view = new MyProject_WPF.frmFormula(id, Process.EntityID);
+                }
+                view.FormulaUpdated += (sender1, e1) => View_ItemSavedFormula(sender1, e1, (sender as MyStaticLookup));
+                MyProjectManager.GetMyProjectManager.ShowDialog(view, "فرمول", Enum_WindowSize.Big);
+            }
+        }
+
+        private void View_ItemSavedFormula(object sender, FormulaSelectedArg e, MyStaticLookup lookup)
+        {
+            SetFormulas();
+            lookup.SelectedValue = e.FormulaID;
+        }
+
+
         BizFormula bizFormula = new BizFormula();
 
         private void SetBaseData()
@@ -55,21 +104,8 @@ namespace MyProject_WPF
             GetActivities();
 
             BizProcess bizProcess = new BizProcess();
-            var process = bizProcess.GetProcess(MyProjectManager.GetMyProjectManager.GetRequester(), ProcessID, false);
-            var col3 = dtgFormulaList.Columns[0] as GridViewComboBoxColumn;
-            var listAllFormula = bizFormula.GetFormulas(process.EntityID);
-            List<FormulaDTO> listValidFormula = new List<FormulaDTO>();
-            foreach (var formula in listAllFormula)
-            {
-                if (formula.ResultDotNetType == typeof(bool) ||
-                    formula.ResultDotNetType == typeof(Boolean))
-                {
-                    listValidFormula.Add(formula);
-                }
-            }
-            col3.ItemsSource = listValidFormula;
-            col3.DisplayMemberPath = "Name";
-            col3.SelectedValueMemberPath = "ID";
+       //     var process = bizProcess.GetProcess(MyProjectManager.GetMyProjectManager.GetRequester(), ProcessID, false);
+
             //var col8 = dtgStateTargets.Columns[1] as GridViewComboBoxColumn;
             //col8.ItemsSource = WorkflowHelper.GetGroups(Message.ProcessID);
             //col8.DisplayMemberPath = "Name";
@@ -86,7 +122,7 @@ namespace MyProject_WPF
                 colActivities.EditItemEnabled = true;
                 colActivities.EditItemClicked += colPartialLetterTemplates_EditItemClicked;
             }
-            colActivities.ItemsSource = bizActivity.GetActivities(ProcessID, false);
+            colActivities.ItemsSource = bizActivity.GetActivities(Process.ID, false);
         }
         private void colPartialLetterTemplates_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
         {
@@ -95,11 +131,11 @@ namespace MyProject_WPF
             if (selectedField != null)
             {
                 if ((sender as MyStaticLookup).SelectedItem == null)
-                    view = new MyProject_WPF.frmAddActivity(ProcessID, 0);
+                    view = new MyProject_WPF.frmAddActivity(Process.ID, 0);
                 else
                 {
                     var id = ((sender as MyStaticLookup).SelectedItem as ActivityDTO).ID;
-                    view = new MyProject_WPF.frmAddActivity(ProcessID, id);
+                    view = new MyProject_WPF.frmAddActivity(Process.ID, id);
                 }
                 view.ItemSaved += (sender1, e1) => View_ItemSaved1(sender1, e1, (sender as MyStaticLookup));
                 MyProjectManager.GetMyProjectManager.ShowDialog(view, "فعالیتها", Enum_WindowSize.Big);
@@ -146,7 +182,7 @@ namespace MyProject_WPF
                 MessageBox.Show("نوع وارد نشده است");
                 return;
             }
-            Message.ProcessID = ProcessID;
+            Message.ProcessID = Process.ID;
             Message.Name = txtName.Text;
             Message.Description = txtDescription.Text;
             Message.StateType = (StateType)cmbType.SelectedItem;

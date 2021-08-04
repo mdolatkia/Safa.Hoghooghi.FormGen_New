@@ -15,7 +15,7 @@ namespace ProxyLibrary.Workflow
             //AdminRoles = new List<RoleDTO>();
             //AdminRoleTypes = new List<RoleTypeDTO>();
             States = new List<Workflow.WFStateDTO>();
-            Actions = new List<Workflow.WFActionDTO>();
+         //   Actions = new List<Workflow.WFActionDTO>();
             Activities = new List<Workflow.ActivityDTO>();
             EntityGroups = new List<Workflow.EntityGroupDTO>();
 
@@ -32,7 +32,7 @@ namespace ProxyLibrary.Workflow
         //public List<RoleDTO> ProcessRoles { get; set; }
         //public List<RoleGroupDTO> ProcessInitializerRoleGroups { get; set; }
         public List<WFStateDTO> States { get; set; }
-        public List<WFActionDTO> Actions { get; set; }
+   //     public List<WFActionDTO> Actions { get; set; }
         public List<ActivityDTO> Activities { get; set; }
         public List<EntityGroupDTO> EntityGroups { get; set; }
 
@@ -62,6 +62,7 @@ namespace ProxyLibrary.Workflow
         public int FormulaID { set; get; }
         //public FormulaDTO Formula { set; get; }
         public string Message { set; get; }
+        public bool TrueFalse { get; set; }
     }
     public class RequestDiagramDTO
     {
@@ -175,15 +176,16 @@ namespace ProxyLibrary.Workflow
         }
 
         public int ID { get; set; }
-        public int ActionID { set; get; }
-        public WFActionDTO Action { set; get; }
+        //  public int ActionID { set; get; }
+        //public WFActionDTO Action { set; get; }
+        public ActionType ActionType { get; set; }
         public SimpleTransitionDTO Transition { set; get; }
         public List<EntityGroupDTO> EntityGroups { set; get; }
         public List<TransitionActionFormulaDTO> Formulas { set; get; }
         public bool MultipleUserEnabled { set; get; }
         public string Name { set; get; }
         public List<TransitionActionTargetDTO> Targets { get; set; }
-        public bool CanSendOtherOrganizations { get; set; }
+       
     }
     public class SimpleTransitionDTO
     {
@@ -202,26 +204,27 @@ namespace ProxyLibrary.Workflow
         public int FormulaID { set; get; }
         //public FormulaDTO Formula { set; get; }
         public string Message { set; get; }
+        public bool TrueFalse { get; set; }
     }
-    public class WFActionDTO
-    {
-        public WFActionDTO()
-        {
+    //public class WFActionDTO
+    //{
+    //    public WFActionDTO()
+    //    {
 
-        }
+    //    }
 
-        public int ID { get; set; }
-        public int ProcessID { get; set; }
-        //public int ActionTypeID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public Nullable<bool> vwSelected { get; set; }
-        public ActionType ActionType { get; set; }
-        //public  Process Process { get; set; }
+    //    public int ID { get; set; }
+    //    public int ProcessID { get; set; }
+    //    //public int ActionTypeID { get; set; }
+    //    public string Name { get; set; }
+    //    public string Description { get; set; }
+    //    public Nullable<bool> vwSelected { get; set; }
+    //    public ActionType ActionType { get; set; }
+    //    //public  Process Process { get; set; }
 
 
-        //public  ICollection<TransitionAction> TransitionAction { get; set; }
-    }
+    //    //public  ICollection<TransitionAction> TransitionAction { get; set; }
+    //}
     public class TransitionActionTargetDTO
     {
         public TransitionActionTargetDTO()
@@ -231,6 +234,7 @@ namespace ProxyLibrary.Workflow
         public int ID { get; set; }
         public TargetType TargetType { get; set; }
         //public RoleGroupDTO RoleGroup { get; set; }
+     //   public bool CanSendOtherOrganizations { get; set; }
         public int RoleTypeID { get; set; }
         public RoleTypeDTO RoleType { get; set; }
     }
@@ -372,7 +376,7 @@ namespace ProxyLibrary.Workflow
         public int TransitionActionID { set; get; }
         public bool MultipleUserEnabled { set; get; }
         public List<TransitionActionOrganizationPostDTO> OrganizationPosts { set; get; }
-        public bool CanSendOtherOrganizations { get; set; }
+        //public bool CanSendOtherOrganizations { get; set; }
         public ItemColor Color { set; get; }
     }
     public enum ItemColor
@@ -447,7 +451,7 @@ namespace ProxyLibrary.Workflow
         public DateTime? DateTimeCompleted { set; get; }
         public TransitionActionDTO TransitionAction { set; get; }
         public int PossibleTransitionActionID { get; set; }
-        public int PossibleActionID { get; set; }
+       // public int PossibleActionID { get; set; }
         public int PossibleTransitionID { get; set; }
         public int CausingRequestActionID { get; set; }
         public int LedToState { get; set; }

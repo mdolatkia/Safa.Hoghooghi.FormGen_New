@@ -34,13 +34,17 @@ namespace MyProject_WPF
         BizProcess bizProcess = new BizProcess();
         BizState bizState = new BizState();
         int ProcessID { set; get; }
+        ProcessDTO Process { set; get; }
         public List<WFStateDTO> States { get; set; }
         public List<Tuple<TransitionDTO, IConnection>> TransitionConnections = new List<Tuple<TransitionDTO, IConnection>>();
         public frmTransitions(int processID)
         {
             InitializeComponent();
             SetRadButtons();
+
             ProcessID = processID;
+            Process = bizProcess.GetProcess(MyProjectManager.GetMyProjectManager.GetRequester(), processID, false);
+
             SerializationService.Default.ItemSerializing += Default_ItemSerializing;
             diagram.ShapeDeserialized += Diagram_ShapeDeserialized;
             diagram.ShapeSerialized += diagram_ShapeSerialized;
@@ -149,7 +153,7 @@ namespace MyProject_WPF
 
         private void Content_TransitionInfo(object sender, TransitionEditArg e)
         {
-            frmTransitionInfo view = new frmTransitionInfo(e.Transition);
+            frmTransitionInfo view = new frmTransitionInfo(Process, e.Transition);
             view.InfoConfirmed += View_InfoConfirmed;
             MyProjectManager.GetMyProjectManager.ShowDialog(view, "Transition", Enum_WindowSize.Big);
         }
@@ -224,7 +228,7 @@ namespace MyProject_WPF
 
         private void StateShape_StateShapeEdit(object sender, StateShapeEditArg e)
         {
-            frmAddSelectState view = new frmAddSelectState(ProcessID, e.StateID);
+            frmAddSelectState view = new frmAddSelectState(Process, e.StateID);
             view.ItemSaved += (sender1, e1) => View_ItemSaved(sender1, e1, (sender as StateShape));
             MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
         }
@@ -511,7 +515,7 @@ namespace MyProject_WPF
 
         void btnNewState_Click(object sender, RoutedEventArgs e)
         {
-            frmAddSelectState view = new frmAddSelectState(ProcessID, 0);
+            frmAddSelectState view = new frmAddSelectState(Process, 0);
             view.ItemSaved += view_ItemSaved;
             MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
         }

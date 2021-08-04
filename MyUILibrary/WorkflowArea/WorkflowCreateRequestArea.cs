@@ -23,11 +23,11 @@ namespace MyUILibrary.WorkflowArea
         {
             ProcessList = AgentUICoreMediator.GetAgentUICoreMediator.workflowService.GetProcessesForExecution(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetWorkflowReauestCreationForm(ProcessList);
-           
+
             View.WorkflowRequestCreate += View_WorkflowRequestCreate;
             View.ProcessSelected += View_ProcessSelected;
             View.StateSelected += View_StateSelected;
-            View.CurrentUserOrganizationPostChanged += View_OrganizationPostChanged;
+            //View.CurrentUserOrganizationPostChanged += View_OrganizationPostChanged;
             View.AddTargetSelectionView(ViewTargetSelection);
             View.CloseRequested += View_CloseRequested;
             //View.WorkflowRequesterChanged += View_WorkflowRequesterChanged;
@@ -40,6 +40,8 @@ namespace MyUILibrary.WorkflowArea
             View.CreatorOrganizationPosts = posts;
             if (posts.Count == 1)
                 View.CurrentUserSelectedOrganizationPost = posts.First();
+
+            CheckOutgoingTransitionActions(this);
         }
 
         private void View_CloseRequested(object sender, EventArgs e)
@@ -47,10 +49,10 @@ namespace MyUILibrary.WorkflowArea
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(sender);
         }
 
-        private void View_OrganizationPostChanged(object sender, OrganizationPostDTO e)
-        {
-            CheckOutgoingTransitionActions(this);
-        }
+        //private void View_OrganizationPostChanged(object sender, OrganizationPostDTO e)
+        //{
+
+        //}
 
         I_EditEntityAreaOneData SearchEditEntityArea;
         private void View_ProcessSelected(object sender, ProcessSelectedArg e)
@@ -153,22 +155,30 @@ namespace MyUILibrary.WorkflowArea
             requestMessage.CurrentStateID = View.SelectedStateID;
             //requestMessage.RequestFiles = View.RequestFiles;
             requestMessage.RequestNotes = View.RequestNotes;
-          
+
             //if (view.ProcessAdmins != null)
             //    e.Request.AdminPostIDs = view.ProcessAdmins.Select(x => x.ID).ToList();
             //if (view.ProcessStackholders != null)
             //    e.Request.StackHolderPostIDs = view.ProcessStackholders.Select(x => x.ID).ToList();
 
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
-            AgentUICoreMediator.GetAgentUICoreMediator.workflowService.CreateWorkflowRequest(requestMessage, requester);
-            //(sender as I_View_WorkflowRequestCreator).ShowMessage("ایجاد شد");
-            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage("جریان کار ایجاد شد");
-            if (SearchEditEntityArea != null)
-                SearchEditEntityArea.ClearData(false);
-            View.Title = "";
+
+            var result = AgentUICoreMediator.GetAgentUICoreMediator.workflowService.CreateWorkflowRequest(requestMessage, requester);
+
+            if (result.Result == Enum_DR_ResultType.SeccessfullyDone)
+            {
+                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage("جریان کار ایجاد شد");
+                if (SearchEditEntityArea != null)
+                    SearchEditEntityArea.ClearData(false);
+                View.Title = "";
+            }
+            else
+                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage("جریان کار ایجاد نشد" + Environment.NewLine + result.Message);
+          
+         
         }
 
-       
+
 
         //private void View_WorkflowStackholderSearched(object sender, WorkflowStackholderSearchArg e)
         //{
@@ -179,8 +189,8 @@ namespace MyUILibrary.WorkflowArea
         {
             CheckOutgoingTransitionActions(this);
         }
-     
- 
+
+
         //private void View_WorkflowRequesterChanged(object sender, WorkflowRequesterChangedArg e)
         //{
         //    var view = (sender as I_View_WorkflowRequestCreator);

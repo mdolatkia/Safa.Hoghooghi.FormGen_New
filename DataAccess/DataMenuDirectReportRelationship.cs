@@ -19,7 +19,7 @@ namespace DataAccess
         public string Group1 { get; set; }
         public int EntityDirectReportID { get; set; }
     
-        public virtual EntityDirectlReport EntityDirectlReport { get; set; }
         public virtual DataMenuSetting DataMenuSetting { get; set; }
+        public virtual EntityDirectlReport EntityDirectlReport { get; set; }
     }
 }

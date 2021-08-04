@@ -23,12 +23,10 @@ namespace DataAccess
     
         public int ID { get; set; }
         public int TransitionID { get; set; }
-        public int ActionID { get; set; }
         public bool MultipleUserEnabled { get; set; }
         public string Name { get; set; }
-        public bool CanSendOtherOrganizations { get; set; }
+        public Nullable<short> ActionTypeID { get; set; }
     
-        public virtual Action Action { get; set; }
         public virtual Transition Transition { get; set; }
         public virtual ICollection<TransitionActionTarget> TransitionActionTarget { get; set; }
         public virtual ICollection<TransitionAction_EntityGroup> TransitionAction_EntityGroup { get; set; }

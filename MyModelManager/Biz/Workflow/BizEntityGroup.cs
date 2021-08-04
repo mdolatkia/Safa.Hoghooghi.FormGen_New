@@ -26,21 +26,21 @@ namespace MyModelManager
             }
             return result;
         }
-        //public EntityGroupDTO GetEntityGroup(DR_Requester requester, int id, bool withDetails)
-        //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
-        //    {
-        //        var entityGroup = projectContext.EntityGroup.First(x => x.ID == id);
-        //        return GetEntityGroup(requester, entityGroup, withDetails);
-        //    }
-        //}
-        //public EntityGroupDTO GetEntityGroup(DR_Requester requester, EntityGroup entityGroup, bool withDetails)
-        //{
-        //    if (DataIsAccessable(requester, entityGroup))
-        //        return ToEntityGroupDTO(requester, entityGroup, withDetails);
-        //    else
-        //        return null;
-        //}
+        public EntityGroupDTO GetEntityGroup(DR_Requester requester, int id, bool withDetails)
+        {
+            using (var projectContext = new DataAccess.MyProjectEntities())
+            {
+                var entityGroup = projectContext.EntityGroup.First(x => x.ID == id);
+                return GetEntityGroup(requester, entityGroup, withDetails);
+            }
+        }
+        private EntityGroupDTO GetEntityGroup(DR_Requester requester, EntityGroup entityGroup, bool withDetails)
+        {
+            if (DataIsAccessable(requester, entityGroup))
+                return ToEntityGroupDTO(requester, entityGroup, withDetails);
+            else
+                return null;
+        }
         private bool DataIsAccessable(DR_Requester requester, EntityGroup entityGroup)
         {
             return true;
@@ -122,32 +122,32 @@ namespace MyModelManager
             return egr;
         }
 
-        //public int UpdateEntityGroups(EntityGroupDTO message)
-        //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
-        //    {
-        //        var dbEntityGroup = projectContext.EntityGroup.FirstOrDefault(x => x.ID == message.ID);
-        //        if (dbEntityGroup == null)
-        //            dbEntityGroup = new DataAccess.EntityGroup();
-        //        dbEntityGroup.ID = message.ID;
-        //        dbEntityGroup.ProcessID = message.ProcessID;
-        //        dbEntityGroup.Name = message.Name;
-        //        while (dbEntityGroup.EntityGroup_Relationship.Any())
-        //            projectContext.EntityGroup_Relationship.Remove(dbEntityGroup.EntityGroup_Relationship.First());
-        //        foreach (var msg in message.Relationships)
-        //        {
-        //            var db = new EntityGroup_Relationship();
-        //            if (msg.RelationshipTailID != 0)
-        //                db.EntityRelationshipTailID = msg.RelationshipTailID;
-        //            else
-        //                db.EntityRelationshipTailID = null;
-        //            dbEntityGroup.EntityGroup_Relationship.Add(db);
-        //        }
-        //        if (dbEntityGroup.ID == 0)
-        //            projectContext.EntityGroup.Add(dbEntityGroup);
-        //        projectContext.SaveChanges();
-        //        return dbEntityGroup.ID;
-        //    }
-        //}
+        public int UpdateEntityGroups(EntityGroupDTO message)
+        {
+            using (var projectContext = new DataAccess.MyProjectEntities())
+            {
+                var dbEntityGroup = projectContext.EntityGroup.FirstOrDefault(x => x.ID == message.ID);
+                if (dbEntityGroup == null)
+                    dbEntityGroup = new DataAccess.EntityGroup();
+                dbEntityGroup.ID = message.ID;
+                dbEntityGroup.ProcessID = message.ProcessID;
+                dbEntityGroup.Name = message.Name;
+                while (dbEntityGroup.EntityGroup_Relationship.Any())
+                    projectContext.EntityGroup_Relationship.Remove(dbEntityGroup.EntityGroup_Relationship.First());
+                foreach (var msg in message.Relationships)
+                {
+                    var db = new EntityGroup_Relationship();
+                    if (msg.RelationshipTailID != 0)
+                        db.EntityRelationshipTailID = msg.RelationshipTailID;
+                    else
+                        db.EntityRelationshipTailID = null;
+                    dbEntityGroup.EntityGroup_Relationship.Add(db);
+                }
+                if (dbEntityGroup.ID == 0)
+                    projectContext.EntityGroup.Add(dbEntityGroup);
+                projectContext.SaveChanges();
+                return dbEntityGroup.ID;
+            }
+        }
     }
 }

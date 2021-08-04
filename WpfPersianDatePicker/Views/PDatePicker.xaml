@@ -41,11 +41,21 @@
                                 ValidatesOnDataErrors=True,
                                 ValidatesOnExceptions=True,
                                 UpdateSourceTrigger=PropertyChanged,
-                                Mode=TwoWay,
-                                Converter={StaticResource ConvToPersianNumberConverter}}"
+                                Mode=TwoWay}"
+                
                      HorizontalAlignment="Stretch"
                      TextChanged="dateTextBoxTextChanged"
                      >
+            <!--Text="{Binding
+                                ElementName=pcal1,
+                                Path=SelectedPersianDate,
+                                NotifyOnValidationError=True,
+                                ValidatesOnDataErrors=True,
+                                ValidatesOnExceptions=True,
+                                UpdateSourceTrigger=PropertyChanged,
+                                Mode=TwoWay
+                                ,Converter={StaticResource ConvToPersianNumberConverter}
+                        }"-->
         </TextBox>
 
         <TextBlock

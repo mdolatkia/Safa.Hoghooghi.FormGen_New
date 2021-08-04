@@ -169,7 +169,7 @@
                                 </VisualStateGroup>
                                 <VisualStateGroup x:Name="ActiveConectionStates">
                                     <VisualState x:Name="NormalActiveConnectionState" />
-                                    <VisualState x:Name="ActiveConnectionInsideShape">
+                                    <!--<VisualState x:Name="ActiveConnectionInsideShape">
                                         <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Duration="0"
                                                Storyboard.TargetName="ActiveSelectedBorder"
@@ -181,7 +181,7 @@
                                             </DiscreteObjectKeyFrame>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
-                                    </VisualState>
+                                    </VisualState>-->
                                 </VisualStateGroup>
                                 <VisualStateGroup x:Name="ConnectorsAdornerVisibilityStates">
                                     <VisualState x:Name="ConnectorsAdornerCollapsed" />
@@ -276,7 +276,7 @@
                                         <RowDefinition></RowDefinition>
                                     </Grid.RowDefinitions>
                                     <TextBlock HorizontalAlignment="Stretch" TextAlignment="Center" x:Name="txtTitle" Text="{TemplateBinding Title}"></TextBlock>
-                                    <Button x:Name="btnActivitieqs" Content="فعالیتها"/>
+                                    <!--<Button x:Name="btnActivitieqs" Content="فعالیتها"/>-->
                                     <Grid HorizontalAlignment="Center" Grid.Row="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition></ColumnDefinition>

@@ -18,6 +18,7 @@ namespace DataAccess
         public int StateID { get; set; }
         public int FormulaID { get; set; }
         public string Message { get; set; }
+        public bool TrueFalse { get; set; }
     
         public virtual Formula Formula { get; set; }
         public virtual State State { get; set; }

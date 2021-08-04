@@ -29,6 +29,8 @@ namespace MyUIGenerator.UIControlHelper.Controls
             txtShamsiDatePicker.SelectedDateChanged += TxtShamsiDatePicker_SelectedDateChanged;
             txtMiladiDatePicker.SelectionChanged += TxtMiladiDatePicker_SelectedDateChanged;
             txtTimePicker.SelectionChanged += TxtTimePicker_SelectionChanged;
+
+          
         }
 
 

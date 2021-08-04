@@ -41,7 +41,7 @@
                 <TextBlock Text="نام اقدام" Grid.Row="1"></TextBlock>
                 <TextBox x:Name="txtDescription" Grid.Row="1" Grid.ColumnSpan="3" Height="80" Grid.Column="1"></TextBox>
             </Grid>
-            <TextBlock Grid.Row="1" HorizontalAlignment="Left" Text="طرفها"></TextBlock>
+            <!--<TextBlock Grid.Row="1" HorizontalAlignment="Left" Text="طرفها"></TextBlock>-->
      
             <!--<TextBlock Grid.Row="3" HorizontalAlignment="Left" Text="نقش ها"></TextBlock>
             <telerik:RadGridView Grid.Row="4" AutoGenerateColumns="False" NewRowPosition="Top" x:Name="dtgTargetRoles" >

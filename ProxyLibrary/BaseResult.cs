@@ -8,6 +8,7 @@ namespace ProxyLibrary
         {
             Details = new List<ProxyLibrary.ResultDetail>();
         }
+        public long ID { set; get; }
         public string Message { set; get; }
         public Enum_DR_ResultType Result { set; get; }
         public List<ResultDetail> Details { set; get; }

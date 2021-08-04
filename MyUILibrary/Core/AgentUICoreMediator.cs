@@ -175,8 +175,18 @@ namespace MyUILibrary
             I_MainFormMenu exitMenu = UIManager.AddMainFormMenu("خروج", "images\\close.png");
             exitMenu.Clicked += ExitMenu_Clicked;
 
+            I_MainFormMenu reLoginChangeUserMenu = UIManager.AddMainFormMenu("ورود مجدد با کاربر دیگر", "images\\refresh.png");
+            reLoginChangeUserMenu.Clicked += ReLoginChangeUserMenu_Clicked;
+
             I_MainFormMenu reLoginMenu = UIManager.AddMainFormMenu("ورود مجدد", "images\\refresh.png");
             reLoginMenu.Clicked += ReLoginMenu_Clicked;
+
+
+        }
+
+        private void ReLoginChangeUserMenu_Clicked(object sender, EventArgs e)
+        {
+           // throw new NotImplementedException();
         }
 
         private void ReLoginMenu_Clicked(object sender, EventArgs e)

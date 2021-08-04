@@ -25,11 +25,12 @@ namespace MyUIGenerator
             InitializeComponent();
 
 
-            aa = new DataItem();
-            aa.Date = DateTime.Today.AddDays(3);
+            //aa = new DataItem();
+            //aa.Date = DateTime.Today.AddDays(3);
+            txtDate1.SelectedPersianDate = "1400/05/05";
+            //SetBinding();
+            txtDate.SelectedDateTime = DateTime.Now;
 
-            SetBinding();
-            //   txtDate.setb
         }
 
 

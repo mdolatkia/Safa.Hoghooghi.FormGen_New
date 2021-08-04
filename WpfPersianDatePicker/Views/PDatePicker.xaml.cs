@@ -173,6 +173,8 @@ namespace WpfPersianDatePicker.Views
             if (persianCalnedarPopup.IsOpen)
                 persianCalnedarPopup.IsOpen = false;
             dateTextBox.Focus();
+            if (SelectedPersianDate != dateTextBox.Text)
+                SelectedPersianDate = dateTextBox.Text;
         }
 
         private void openCalendarButtonClick(object sender, RoutedEventArgs e)

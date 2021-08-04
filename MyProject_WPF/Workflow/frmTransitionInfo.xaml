@@ -38,9 +38,10 @@
                         <telerik:RadGridView AutoGenerateColumns="False" IsReadOnly="False"  x:Name="dtgTransitionActionList" >
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewDataColumn Header="عنوان"  DataMemberBinding="{Binding Name}"  />
-                                <MyCommonWPFControls:MyStaticLookupColumn EditItemEnabled="True" NewItemEnabled="True" DataMemberBinding="{Binding ActionID}"  x:Name="colAction" Header="اقدام"></MyCommonWPFControls:MyStaticLookupColumn>
+                                <!--<MyCommonWPFControls:MyStaticLookupColumn EditItemEnabled="True" NewItemEnabled="True" DataMemberBinding="{Binding ActionID}"  x:Name="colAction" Header="اقدام"></MyCommonWPFControls:MyStaticLookupColumn>-->
+                                <telerik:GridViewComboBoxColumn Header="نوع اقدام" x:Name="colActionType" DataMemberBinding="{Binding ActionType}" />
+
                                 <telerik:GridViewDataColumn Header="توسط چند کاربر"  DataMemberBinding="{Binding MultipleUserEnabled}" />
-                                <telerik:GridViewDataColumn Header="ارسال به سایر سازمانها"  DataMemberBinding="{Binding CanSendOtherOrganizations}" />
 
                             </telerik:RadGridView.Columns>
                             
@@ -51,6 +52,8 @@
                                     <telerik:RadGridView.Columns>
                                         <telerik:GridViewComboBoxColumn Header="هدف" x:Name="colTargetType" DataMemberBinding="{Binding TargetType}" />
                                         <telerik:GridViewComboBoxColumn x:Name="colRoleType" Header="نوع نقش" DataMemberBinding="{Binding RoleTypeID}" />
+                                        <!--<telerik:GridViewDataColumn Header="ارسال به سایر سازمانها"  DataMemberBinding="{Binding CanSendOtherOrganizations}" />-->
+
                                     </telerik:RadGridView.Columns>
                                 </telerik:RadGridView>
                             </TabItem>
@@ -58,14 +61,18 @@
                                 <telerik:RadGridView AutoGenerateColumns="False"  Grid.Column="1" x:Name="dtgFormulaList" >
                                     <telerik:RadGridView.Columns>
                                         <telerik:GridViewComboBoxColumn Header="فرمول" x:Name="colFormula"  DataMemberBinding="{Binding FormulaID}" />
+                                        <telerik:GridViewDataColumn Header="برقرار باشد/نباشد"  DataMemberBinding="{Binding TrueFalse}" />
                                         <telerik:GridViewDataColumn Header="پیام"  DataMemberBinding="{Binding Message}" />
                                     </telerik:RadGridView.Columns>
                                 </telerik:RadGridView>
                             </TabItem>
                             <TabItem x:Name="tabForms" Header="گروه فرمها">
-                                <telerik:RadGridView AutoGenerateColumns="False" Grid.Column="1" x:Name="dtgFormList" >
+                                <telerik:RadGridView AutoGenerateColumns="False" Grid.Column="1" x:Name="dtgEntityGroup" >
                                     <telerik:RadGridView.Columns>
-                                        <telerik:GridViewComboBoxColumn Header="گروه فرم" x:Name="colForm" DataMemberBinding="{Binding ID}" />
+                                        <!--<telerik:GridViewComboBoxColumn Header="گروه فرم" x:Name="colForm" DataMemberBinding="{Binding ID}" />-->
+
+                                        <MyCommonWPFControls:MyStaticLookupColumn EditItemEnabled="True" NewItemEnabled="True" DataMemberBinding="{Binding ID}"  x:Name="colEntityGroup" Header="عنوان گروه فرم"></MyCommonWPFControls:MyStaticLookupColumn>
+
                                     </telerik:RadGridView.Columns>
                                 </telerik:RadGridView>
                             </TabItem>

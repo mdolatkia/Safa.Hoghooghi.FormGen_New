@@ -34,7 +34,7 @@
                 <TextBox  x:Name="txtName"  Width="200" HorizontalAlignment="Left" Grid.Row="0"  Grid.Column="1"/>
                 <TextBlock Text="عنوان" Grid.Row="1" ></TextBlock>
                 <TextBox  x:Name="txtTitle" Grid.Row="1" HorizontalAlignment="Stretch" Grid.Column="1"/>
-                <TextBlock Grid.Row="2" Text="کد تابع"></TextBlock>
+                <TextBlock Grid.Row="2" Text="تابع"></TextBlock>
                 <MyCommonWPFControls:MySearchLookup  Grid.Row="2" x:Name="lokDatabaseFunction" HorizontalAlignment="Stretch" Grid.Column="1"></MyCommonWPFControls:MySearchLookup>
                 <!--<TextBlock  Grid.Row="1" x:Name="lblDatabaseFunction"  HorizontalAlignment="Stretch" Grid.Column="1"></TextBlock>-->
                 <!--<Button x:Name="btnAddDatabaseFunction"  Width="90" Height="20" Content="افزودن فایل ..." Grid.Column="2" Click="btnAddDatabaseFunction_Click"></Button>-->

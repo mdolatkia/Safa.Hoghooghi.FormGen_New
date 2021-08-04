@@ -26,7 +26,7 @@ namespace MyWorkflowService
         }
 
 
-        public int CreateWorkflowRequest(CreateRequestDTO requestMessage, DR_Requester requester)
+        public BaseResult CreateWorkflowRequest(CreateRequestDTO requestMessage, DR_Requester requester)
         {
             return bizRequest.CreateWorkflowRequest(requestMessage, requester);
 
@@ -44,9 +44,9 @@ namespace MyWorkflowService
 
 
 
-        public void SaveRequestAction(RequestActionConfirmDTO requestAction, DR_Requester requester)
+        public BaseResult SaveRequestAction(RequestActionConfirmDTO requestAction, DR_Requester requester)
         {
-            bizRequest.SaveRequestAction(requestAction, requester);
+          return  bizRequest.SaveRequestAction(requestAction, requester);
         }
 
         public List<WorkflowRequestDTO> GetUserWorkflowRequests(DR_Requester requester)
@@ -87,7 +87,7 @@ namespace MyWorkflowService
 
         public List<ProcessDTO> SearchProcess(DR_Requester requester, string singleFilterValue)
         {
-            return bizProcess.SearchProcess(requester,singleFilterValue);
+            return bizProcess.SearchProcess(requester, singleFilterValue);
         }
 
         //public List<PossibleTransitionActionDTO> GetNextPossibleTransitionActionByActionID(int actionID, int requestID)
@@ -95,14 +95,14 @@ namespace MyWorkflowService
         //    BizRequest bizRequest = new BizRequest();
         //    return bizRequest.GetNextPossibleTransitionActionByActionID(actionID, requestID);
         //}  
-        public PossibleTransitionActionResult GetNextPossibleTransitionActionByStateID(int stateID, OrganizationPostDTO organizationPost)
+        public PossibleTransitionActionResult GetNextPossibleTransitionActionByStateID(int stateID)
         {
             BizRequest bizRequest = new BizRequest();
-            return bizRequest.GetNextPossibleTransitionActionByStateID(stateID, organizationPost);
+            return bizRequest.GetNextPossibleTransitionActionByStateID(stateID);
         }
-        public PossibleTransitionActionResult GetNextPossibleTransitionActionByRequestActionID(int requestActionID, OrganizationPostDTO organizationPost)
+        public PossibleTransitionActionResult GetNextPossibleTransitionActionByRequestActionID(int requestActionID)
         {
-            return bizRequest.GetNextPossibleTransitionActionByRequestActionID(requestActionID, organizationPost);
+            return bizRequest.GetNextPossibleTransitionActionByRequestActionID(requestActionID);
         }
         //public List<TransitionActionDTO> GetRequestPossibleTransitionActions(DR_Requester dR_Requester, int requestID)
         //{
@@ -154,7 +154,7 @@ namespace MyWorkflowService
             return bizTransition.GetTransitionActionsByProcessID(requester, iD);
         }
 
-        public List<RequestActionDTO> GetRequestActions(DR_Requester requester, List<int> requestActionIDs)
+        public List<Tuple<TransitionActionDTO, List<RequestActionDTO>>> GetRequestActions(DR_Requester requester, List<int> requestActionIDs)
         {
             BizRequest bizRequest = new BizRequest();
             return bizRequest.GetRequestActions(requester, requestActionIDs);
@@ -163,7 +163,7 @@ namespace MyWorkflowService
         public List<WorkflowRequestDTO> SearchWorkflows(DR_Requester requester, int processID, DateTime? fromData, DateTime? toDate, DP_DataRepository data, WFStateDTO currentState, WFStateDTO historyState, TransitionActionDTO selectedAction, int userID)
         {
             BizRequest bizRequest = new BizRequest();
-            return bizRequest.SearchWorkflows( requester, processID, fromData, toDate, data, currentState, historyState, selectedAction, userID);
+            return bizRequest.SearchWorkflows(requester, processID, fromData, toDate, data, currentState, historyState, selectedAction, userID);
         }
 
         public bool EntityHasAnyProcess(int targetEntityID)
