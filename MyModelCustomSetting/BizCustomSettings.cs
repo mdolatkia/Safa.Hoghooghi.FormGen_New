@@ -841,7 +841,7 @@ namespace MyModelCustomSetting
                 }
 
 
-
+                var conclusionIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "ID");
                 EntityListView serviceConclusaionListView = null;
                 if (serviceConclusion != null)
                 {
@@ -859,7 +859,6 @@ namespace MyModelCustomSetting
                             projectContext.DatabaseFunction_TableDrivedEntity.Add(serviceConclusionDatabaseFunctionEntity);
                         }
 
-                        var conclusionIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "ID");
 
                         if (conclusionIDColumn != null && serviceConclusionDatabaseFunctionEntity.ID == 0)
                         {
@@ -868,6 +867,7 @@ namespace MyModelCustomSetting
                                 { ColumnID = conclusionIDColumn.ID, DatabaseFunctionParameter = sp_CalculateCustomerValue.DatabaseFunctionParameter.First(x => x.ParamName == "@serviceConclusionID") });
 
                         }
+
                         var afterSaveBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.AfterSave && x.TableDrivedEntityID == serviceConclusion.ID && x.Title == "محاسبه ارزش مشتری");
                         if (afterSaveBackenActionActivity == null)
                         {
@@ -881,317 +881,318 @@ namespace MyModelCustomSetting
                             afterSaveBackenActionActivity.DatabaseFunction_TableDrivedEntity = serviceConclusionDatabaseFunctionEntity;
                             projectContext.BackendActionActivity.Add(afterSaveBackenActionActivity);
                         }
-                        //نکته جالب
-                        //اینجا اگر از projectContext.EntityListView.FirstOrDefault(x => x.Title == "لیست پیش فرض خلاصه سرویس");
-                        //استفاده بشه مورد تکراری رو پیدا میکنه چون تشابه حرف ی در پایگاه داده اعمال میشه
-                        //اما اگر از serviceConclusion.EntityListView.FirstOrDefault(x => x.Title == "لیست پیش فرض خلاصه سرویس");
-                        //استفاده بشه اگرچه مورد موجوده اما پیدا نمیکنه چون مقایسه در کد انجام می شود و تشابه ی عربی و فارسی در نظر گرفته نمی شود
-                        serviceConclusaionListView = projectContext.EntityListView.FirstOrDefault(x => x.Title == "لیست پیش فرض خلاصه سرویس");
-                        if (serviceConclusaionListView == null)
-                        {
-                            serviceConclusaionListView = new EntityListView();
-                            serviceConclusaionListView.TableDrivedEntityID = serviceConclusion.ID;
-                            //    projectContext.EntityListView.Add(serviceConclusaionListView);
-                            serviceConclusaionListView.Title = "لیست پیش فرض خلاصه سرویس";
-                            serviceConclusion.EntityListView1 = serviceConclusaionListView;
-                            if (conclusionIDColumn != null)
-                            {
-                                var idColumn = new EntityListViewColumns() { Column = conclusionIDColumn, Alias = "شناسه", WidthUnit = 1, IsDescriptive = true, OrderID = 1 };
-                                serviceConclusaionListView.EntityListViewColumns.Add(idColumn);
-                            }
-
-
-                            var serviceRequestIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "RequestServiceID");
-
-                            if (serviceRequestIDColumn != null)
-                            {
-                                var serviceRequestIDListViewColumn = new EntityListViewColumns() { Column = serviceRequestIDColumn, Alias = "شناسه درخواست سرویس", WidthUnit = 1, IsDescriptive = true, OrderID = 2 };
-                                serviceConclusaionListView.EntityListViewColumns.Add(serviceRequestIDListViewColumn);
-                            }
-                            if (serviceRequest != null)
-                            {
-                                var serviceConclusionRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
-                                if (serviceConclusionRequestRelationship != null)
-                                {
-                                    var serviceConclusionRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, serviceConclusionRequestRelationship.ID.ToString());
-                                    if (serviceConclusionRequestRelationshipTail != null)
-                                    {
-                                        if (customer != null)
-                                        {
-                                            var serviceRequestCustomerRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == customer.ID);
-                                            if (serviceRequestCustomerRelationship != null)
-                                            {
-                                                var serviceRequestCustomerRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, customer, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString());
-                                                if (serviceRequestCustomerRelationshipTail != null)
-                                                {
-                                                    var customerCodeColumn = customer.Table.Column.FirstOrDefault(x => x.Name == "Code");
-                                                    if (customerCodeColumn != null)
-                                                    {
-                                                        var serviceResuestCustomerCode = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestCustomerRelationshipTail, Column = customerCodeColumn, Alias = "کد مشتری", WidthUnit = 1, IsDescriptive = false, OrderID = 3 };
-                                                        serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestCustomerCode);
-                                                    }
-                                                    if (genericPerson != null)
-                                                    {
-                                                        var genericPersonNameColumn = genericPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
-
-                                                        var serviceRequestCustomerGenericPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == customer.ID && x.TableDrivedEntityID2 == genericPerson.ID);
-                                                        if (serviceRequestCustomerGenericPersonRelationship != null)
-                                                        {
-                                                            var serviceRequestCustomerGenericPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, genericPerson, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString()
-                                                                + "," + serviceRequestCustomerGenericPersonRelationship.ID.ToString());
-                                                            if (serviceRequestCustomerGenericPersonRelationshipTail != null)
-                                                            {
-                                                                var serviceResuestCustomerName = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestCustomerGenericPersonRelationshipTail, Column = genericPersonNameColumn, Alias = "نام مشتری", WidthUnit = 2, IsDescriptive = false, OrderID = 4 };
-                                                                serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestCustomerName);
-
-
-                                                            }
-                                                        }
-                                                    }
-
-                                                }
-                                            }
-                                        }
-                                        if (productItem != null)
-                                        {
-                                            var serviceRequestProductItemRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == productItem.ID);
-                                            if (serviceRequestProductItemRelationship != null)
-                                            {
-                                                var serviceRequestProductItemRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, productItem, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestProductItemRelationship.ID.ToString());
-                                                if (serviceRequestProductItemRelationshipTail != null)
-                                                {
-                                                    var productItemModelColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "ProductModel");
-                                                    if (productItemModelColumn != null)
-                                                    {
-                                                        var serviceResuestProductItemModel = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemModelColumn, Alias = "مدل کالا", WidthUnit = 2, IsDescriptive = false, OrderID = 5 };
-                                                        serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestProductItemModel);
-                                                    }
-                                                    var productItemBrandColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "BrandTitle");
-                                                    if (productItemBrandColumn != null)
-                                                    {
-                                                        var serviceResuestProductItemModel = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemBrandColumn, Alias = "برند کالا", WidthUnit = 2, IsDescriptive = false, OrderID = 6 };
-                                                        serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestProductItemModel);
-                                                    }
-                                                    var productItemSerialColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "Serial");
-                                                    if (productItemSerialColumn != null)
-                                                    {
-                                                        var serviceResuestProductItemModel = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemSerialColumn, Alias = "سریال کالا", WidthUnit = 2, IsDescriptive = false, OrderID = 7 };
-                                                        serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestProductItemModel);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (office != null)
-                                        {
-                                            var serviceRequestOfficeRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == office.ID);
-                                            if (serviceRequestOfficeRelationship != null)
-                                            {
-                                                var serviceRequestOfficeRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, office, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString());
-                                                if (serviceRequestOfficeRelationshipTail != null)
-                                                {
-                                                    var officeCodeColumn = office.Table.Column.FirstOrDefault(x => x.Name == "Code");
-                                                    if (officeCodeColumn != null)
-                                                    {
-                                                        var serviceResuestOfficeCode = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestOfficeRelationshipTail, Column = officeCodeColumn, Alias = "کد دفتر", WidthUnit = 1, IsDescriptive = false, OrderID = 8 };
-                                                        serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestOfficeCode);
-                                                    }
-                                                    if (legalPerson != null)
-                                                    {
-                                                        var legalPersonNameColumn = legalPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
-
-                                                        var serviceRequestOfficelegalPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == office.ID && x.TableDrivedEntityID2 == legalPerson.ID);
-                                                        if (serviceRequestOfficelegalPersonRelationship != null)
-                                                        {
-                                                            var serviceRequestOfficelegalPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, legalPerson, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString()
-                                                                + "," + serviceRequestOfficelegalPersonRelationship.ID.ToString());
-                                                            if (serviceRequestOfficelegalPersonRelationshipTail != null)
-                                                            {
-                                                                var serviceResuestOfficeName = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestOfficelegalPersonRelationshipTail, Column = legalPersonNameColumn, Alias = "نام دفتر", WidthUnit = 2, IsDescriptive = false, OrderID = 9 };
-                                                                serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestOfficeName);
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            var finalPriceColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "FinalPrice");
-                            var finalPriceListViewColumn = new EntityListViewColumns() { Column = finalPriceColumn, Alias = "مبلغ نهایی", WidthUnit = 1, IsDescriptive = false, OrderID = 10 };
-                            serviceConclusaionListView.EntityListViewColumns.Add(finalPriceListViewColumn);
-
-                        }
-
-
-
-
-
-                        if (!serviceConclusion.EntitySearch1.Any(x => x.Title == "جستجوی پیش فرض خلاصه سرویس"))
-                        {
-                            var serviceConclusaionSearch = new EntitySearch();
-                            serviceConclusaionSearch.TableDrivedEntityID = serviceConclusion.ID;
-                            //    projectContext.EntitySearch.Add(serviceConclusaionSearch);
-                            serviceConclusaionSearch.Title = "جستجوی پیش فرض خلاصه سرویس";
-                            serviceConclusion.EntitySearch = serviceConclusaionSearch;
-                            if (conclusionIDColumn != null)
-                            {
-                                var idColumn = new EntitySearchColumns() { Column = conclusionIDColumn, Alias = "شناسه", OrderID = 1 };
-                                serviceConclusaionSearch.EntitySearchColumns.Add(idColumn);
-                            }
-                            var serviceRequestIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "RequestServiceID");
-                            if (serviceRequestIDColumn != null)
-                            {
-                                var serviceRequestIDSearchColumn = new EntitySearchColumns() { Column = serviceRequestIDColumn, Alias = "شناسه درخواست سرویس", OrderID = 2 };
-                                serviceConclusaionSearch.EntitySearchColumns.Add(serviceRequestIDSearchColumn);
-                            }
-                            if (serviceRequest != null)
-                            {
-                                var serviceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
-                                if (serviceRequestRelationship != null)
-                                {
-                                    var serviceRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, serviceRequestRelationship.ID.ToString());
-                                    if (serviceRequestRelationshipTail != null)
-                                    {
-                                        if (customer != null)
-                                        {
-                                            var serviceRequestCustomerRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == customer.ID);
-                                            if (serviceRequestCustomerRelationship != null)
-                                            {
-                                                var serviceRequestCustomerRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, customer, serviceRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString());
-                                                if (serviceRequestCustomerRelationshipTail != null)
-                                                {
-                                                    var customerCodeColumn = customer.Table.Column.FirstOrDefault(x => x.Name == "Code");
-                                                    if (customerCodeColumn != null)
-                                                    {
-                                                        var serviceResuestCustomerCode = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestCustomerRelationshipTail, Column = customerCodeColumn, Alias = "کد مشتری", OrderID = 3 };
-                                                        serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestCustomerCode);
-                                                    }
-                                                    if (genericPerson != null)
-                                                    {
-                                                        var genericPersonNameColumn = genericPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
-
-                                                        var serviceRequestCustomerGenericPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == customer.ID && x.TableDrivedEntityID2 == genericPerson.ID);
-                                                        if (serviceRequestCustomerGenericPersonRelationship != null)
-                                                        {
-                                                            var serviceRequestCustomerGenericPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, genericPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString()
-                                                                + "," + serviceRequestCustomerGenericPersonRelationship.ID.ToString());
-                                                            if (serviceRequestCustomerGenericPersonRelationshipTail != null)
-                                                            {
-                                                                var serviceResuestCustomerName = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestCustomerGenericPersonRelationshipTail, Column = genericPersonNameColumn, Alias = "نام مشتری", OrderID = 4 };
-                                                                serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestCustomerName);
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (productItem != null)
-                                        {
-                                            var serviceRequestProductItemRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == productItem.ID);
-                                            if (serviceRequestProductItemRelationship != null)
-                                            {
-                                                var serviceRequestProductItemRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, productItem, serviceRequestRelationship.ID.ToString() + "," + serviceRequestProductItemRelationship.ID.ToString());
-                                                if (serviceRequestProductItemRelationshipTail != null)
-                                                {
-                                                    var productItemModelColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "ProductModel");
-                                                    if (productItemModelColumn != null)
-                                                    {
-                                                        var serviceResuestProductItemModel = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemModelColumn, Alias = "مدل کالا", OrderID = 5 };
-                                                        serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestProductItemModel);
-                                                    }
-                                                    var productItemBrandColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "BrandTitle");
-                                                    if (productItemBrandColumn != null)
-                                                    {
-                                                        var serviceResuestProductItemModel = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemBrandColumn, Alias = "برند کالا", OrderID = 6 };
-                                                        serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestProductItemModel);
-                                                    }
-                                                    var productItemSerialColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "Serial");
-                                                    if (productItemSerialColumn != null)
-                                                    {
-                                                        var serviceResuestProductItemModel = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemSerialColumn, Alias = "سریال کالا", OrderID = 7 };
-                                                        serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestProductItemModel);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (office != null)
-                                        {
-                                            var serviceRequestOfficeRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == office.ID);
-                                            if (serviceRequestOfficeRelationship != null)
-                                            {
-                                                var serviceRequestOfficeRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, office, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString());
-                                                if (serviceRequestOfficeRelationshipTail != null)
-                                                {
-                                                    var officeCodeColumn = office.Table.Column.FirstOrDefault(x => x.Name == "Code");
-                                                    if (officeCodeColumn != null)
-                                                    {
-                                                        var serviceResuestOfficeCode = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestOfficeRelationshipTail, Column = officeCodeColumn, Alias = "کد دفتر", OrderID = 8 };
-                                                        serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestOfficeCode);
-                                                    }
-                                                    if (legalPerson != null)
-                                                    {
-                                                        var legalPersonNameColumn = legalPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
-
-                                                        var serviceRequestOfficelegalPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == office.ID && x.TableDrivedEntityID2 == legalPerson.ID);
-                                                        if (serviceRequestOfficelegalPersonRelationship != null)
-                                                        {
-                                                            var serviceRequestOfficelegalPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, legalPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString()
-                                                                + "," + serviceRequestOfficelegalPersonRelationship.ID.ToString());
-                                                            if (serviceRequestOfficelegalPersonRelationshipTail != null)
-                                                            {
-                                                                var serviceResuestOfficeName = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestOfficelegalPersonRelationshipTail, Column = legalPersonNameColumn, Alias = "نام دفتر", OrderID = 9 };
-                                                                serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestOfficeName);
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
-                    var sp_CalculateCustomerValueByServiceRequestID = projectContext.DatabaseFunction.FirstOrDefault(x => x.FunctionName == "sp_CalculateCustomerValueByServiceRequestID");
-                    if (sp_CalculateCustomerValueByServiceRequestID != null)
+                    //نکته جالب
+                    //اینجا اگر از projectContext.EntityListView.FirstOrDefault(x => x.Title == "لیست پیش فرض خلاصه سرویس");
+                    //استفاده بشه مورد تکراری رو پیدا میکنه چون تشابه حرف ی در پایگاه داده اعمال میشه
+                    //اما اگر از serviceConclusion.EntityListView.FirstOrDefault(x => x.Title == "لیست پیش فرض خلاصه سرویس");
+                    //استفاده بشه اگرچه مورد موجوده اما پیدا نمیکنه چون مقایسه در کد انجام می شود و تشابه ی عربی و فارسی در نظر گرفته نمی شود
+                    serviceConclusaionListView = projectContext.EntityListView.FirstOrDefault(x => x.Title == "لیست پیش فرض خلاصه سرویس");
+                    if (serviceConclusaionListView == null)
                     {
-                        DatabaseFunction_TableDrivedEntity serviceConclusionDatabaseFunctionEntity = projectContext.DatabaseFunction_TableDrivedEntity.FirstOrDefault(x => x.TableDrivedEntityID == serviceConclusion.ID && x.DatabaseFunctionID == sp_CalculateCustomerValueByServiceRequestID.ID);
-                        if (serviceConclusionDatabaseFunctionEntity == null)
+                        serviceConclusaionListView = new EntityListView();
+                        serviceConclusaionListView.TableDrivedEntityID = serviceConclusion.ID;
+                        //    projectContext.EntityListView.Add(serviceConclusaionListView);
+                        serviceConclusaionListView.Title = "لیست پیش فرض خلاصه سرویس";
+                        serviceConclusion.EntityListView1 = serviceConclusaionListView;
+                        if (conclusionIDColumn != null)
                         {
-                            serviceConclusionDatabaseFunctionEntity = new DatabaseFunction_TableDrivedEntity();
-                            serviceConclusionDatabaseFunctionEntity.TableDrivedEntityID = serviceConclusion.ID;
-                            serviceConclusionDatabaseFunctionEntity.DatabaseFunctionID = sp_CalculateCustomerValueByServiceRequestID.ID;
-                            serviceConclusionDatabaseFunctionEntity.Title = "محاسبه ارزش مشتری بعد از حذف";
-                            serviceConclusionDatabaseFunctionEntity.Name = "CustomerValueAfterDelete";
-                            projectContext.DatabaseFunction_TableDrivedEntity.Add(serviceConclusionDatabaseFunctionEntity);
+                            var idColumn = new EntityListViewColumns() { Column = conclusionIDColumn, Alias = "شناسه", WidthUnit = 1, IsDescriptive = true, OrderID = 1 };
+                            serviceConclusaionListView.EntityListViewColumns.Add(idColumn);
                         }
+
 
                         var serviceRequestIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "RequestServiceID");
 
-                        if (serviceRequestIDColumn != null && serviceConclusionDatabaseFunctionEntity.ID == 0)
+                        if (serviceRequestIDColumn != null)
                         {
-                            if (sp_CalculateCustomerValueByServiceRequestID.DatabaseFunctionParameter.Any(x => x.ParamName == "@serviceRequestID"))
-                                serviceConclusionDatabaseFunctionEntity.DatabaseFunction_TableDrivedEntity_Columns.Add(new DatabaseFunction_TableDrivedEntity_Columns()
-                                { ColumnID = serviceRequestIDColumn.ID, DatabaseFunctionParameter = sp_CalculateCustomerValueByServiceRequestID.DatabaseFunctionParameter.First(x => x.ParamName == "@serviceRequestID") });
-
+                            var serviceRequestIDListViewColumn = new EntityListViewColumns() { Column = serviceRequestIDColumn, Alias = "شناسه درخواست سرویس", WidthUnit = 1, IsDescriptive = true, OrderID = 2 };
+                            serviceConclusaionListView.EntityListViewColumns.Add(serviceRequestIDListViewColumn);
                         }
-
-                        var afterDeleteBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.AfterDelete && x.TableDrivedEntityID == serviceConclusion.ID && x.Title == "محاسبه ارزش مشتری بعد از حذف");
-                        if (afterDeleteBackenActionActivity == null)
+                        if (serviceRequest != null)
                         {
-                            afterDeleteBackenActionActivity = new BackendActionActivity();
-                            afterDeleteBackenActionActivity.TableDrivedEntityID = serviceConclusion.ID;
-                            afterDeleteBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.AfterDelete;
-                            afterDeleteBackenActionActivity.Title = "محاسبه ارزش مشتری بعد از حذف";
-                            afterDeleteBackenActionActivity.Type = 1;
-                            afterDeleteBackenActionActivity.ResultSensetive = false;
+                            var serviceConclusionRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
+                            if (serviceConclusionRequestRelationship != null)
+                            {
+                                var serviceConclusionRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, serviceConclusionRequestRelationship.ID.ToString());
+                                if (serviceConclusionRequestRelationshipTail != null)
+                                {
+                                    if (customer != null)
+                                    {
+                                        var serviceRequestCustomerRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == customer.ID);
+                                        if (serviceRequestCustomerRelationship != null)
+                                        {
+                                            var serviceRequestCustomerRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, customer, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString());
+                                            if (serviceRequestCustomerRelationshipTail != null)
+                                            {
+                                                var customerCodeColumn = customer.Table.Column.FirstOrDefault(x => x.Name == "Code");
+                                                if (customerCodeColumn != null)
+                                                {
+                                                    var serviceResuestCustomerCode = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestCustomerRelationshipTail, Column = customerCodeColumn, Alias = "کد مشتری", WidthUnit = 1, IsDescriptive = false, OrderID = 3 };
+                                                    serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestCustomerCode);
+                                                }
+                                                if (genericPerson != null)
+                                                {
+                                                    var genericPersonNameColumn = genericPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
 
-                            afterDeleteBackenActionActivity.DatabaseFunction_TableDrivedEntity = serviceConclusionDatabaseFunctionEntity;
-                            projectContext.BackendActionActivity.Add(afterDeleteBackenActionActivity);
+                                                    var serviceRequestCustomerGenericPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == customer.ID && x.TableDrivedEntityID2 == genericPerson.ID);
+                                                    if (serviceRequestCustomerGenericPersonRelationship != null)
+                                                    {
+                                                        var serviceRequestCustomerGenericPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, genericPerson, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString()
+                                                            + "," + serviceRequestCustomerGenericPersonRelationship.ID.ToString());
+                                                        if (serviceRequestCustomerGenericPersonRelationshipTail != null)
+                                                        {
+                                                            var serviceResuestCustomerName = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestCustomerGenericPersonRelationshipTail, Column = genericPersonNameColumn, Alias = "نام مشتری", WidthUnit = 2, IsDescriptive = false, OrderID = 4 };
+                                                            serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestCustomerName);
+
+
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                    if (productItem != null)
+                                    {
+                                        var serviceRequestProductItemRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == productItem.ID);
+                                        if (serviceRequestProductItemRelationship != null)
+                                        {
+                                            var serviceRequestProductItemRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, productItem, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestProductItemRelationship.ID.ToString());
+                                            if (serviceRequestProductItemRelationshipTail != null)
+                                            {
+                                                var productItemModelColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "ProductModel");
+                                                if (productItemModelColumn != null)
+                                                {
+                                                    var serviceResuestProductItemModel = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemModelColumn, Alias = "مدل کالا", WidthUnit = 2, IsDescriptive = false, OrderID = 5 };
+                                                    serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestProductItemModel);
+                                                }
+                                                var productItemBrandColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "BrandTitle");
+                                                if (productItemBrandColumn != null)
+                                                {
+                                                    var serviceResuestProductItemModel = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemBrandColumn, Alias = "برند کالا", WidthUnit = 2, IsDescriptive = false, OrderID = 6 };
+                                                    serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestProductItemModel);
+                                                }
+                                                var productItemSerialColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "Serial");
+                                                if (productItemSerialColumn != null)
+                                                {
+                                                    var serviceResuestProductItemModel = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemSerialColumn, Alias = "سریال کالا", WidthUnit = 2, IsDescriptive = false, OrderID = 7 };
+                                                    serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestProductItemModel);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (office != null)
+                                    {
+                                        var serviceRequestOfficeRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == office.ID);
+                                        if (serviceRequestOfficeRelationship != null)
+                                        {
+                                            var serviceRequestOfficeRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, office, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString());
+                                            if (serviceRequestOfficeRelationshipTail != null)
+                                            {
+                                                var officeCodeColumn = office.Table.Column.FirstOrDefault(x => x.Name == "Code");
+                                                if (officeCodeColumn != null)
+                                                {
+                                                    var serviceResuestOfficeCode = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestOfficeRelationshipTail, Column = officeCodeColumn, Alias = "کد دفتر", WidthUnit = 1, IsDescriptive = false, OrderID = 8 };
+                                                    serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestOfficeCode);
+                                                }
+                                                if (legalPerson != null)
+                                                {
+                                                    var legalPersonNameColumn = legalPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
+
+                                                    var serviceRequestOfficelegalPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == office.ID && x.TableDrivedEntityID2 == legalPerson.ID);
+                                                    if (serviceRequestOfficelegalPersonRelationship != null)
+                                                    {
+                                                        var serviceRequestOfficelegalPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, legalPerson, serviceConclusionRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString()
+                                                            + "," + serviceRequestOfficelegalPersonRelationship.ID.ToString());
+                                                        if (serviceRequestOfficelegalPersonRelationshipTail != null)
+                                                        {
+                                                            var serviceResuestOfficeName = new EntityListViewColumns() { EntityRelationshipTail = serviceRequestOfficelegalPersonRelationshipTail, Column = legalPersonNameColumn, Alias = "نام دفتر", WidthUnit = 2, IsDescriptive = false, OrderID = 9 };
+                                                            serviceConclusaionListView.EntityListViewColumns.Add(serviceResuestOfficeName);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        var finalPriceColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "FinalPrice");
+                        var finalPriceListViewColumn = new EntityListViewColumns() { Column = finalPriceColumn, Alias = "مبلغ نهایی", WidthUnit = 1, IsDescriptive = false, OrderID = 10 };
+                        serviceConclusaionListView.EntityListViewColumns.Add(finalPriceListViewColumn);
+
+                    }
+
+
+
+
+
+                    if (!serviceConclusion.EntitySearch1.Any(x => x.Title == "جستجوی پیش فرض خلاصه سرویس"))
+                    {
+                        var serviceConclusaionSearch = new EntitySearch();
+                        serviceConclusaionSearch.TableDrivedEntityID = serviceConclusion.ID;
+                        //    projectContext.EntitySearch.Add(serviceConclusaionSearch);
+                        serviceConclusaionSearch.Title = "جستجوی پیش فرض خلاصه سرویس";
+                        serviceConclusion.EntitySearch = serviceConclusaionSearch;
+                        if (conclusionIDColumn != null)
+                        {
+                            var idColumn = new EntitySearchColumns() { Column = conclusionIDColumn, Alias = "شناسه", OrderID = 1 };
+                            serviceConclusaionSearch.EntitySearchColumns.Add(idColumn);
+                        }
+                        var serviceRequestIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "RequestServiceID");
+                        if (serviceRequestIDColumn != null)
+                        {
+                            var serviceRequestIDSearchColumn = new EntitySearchColumns() { Column = serviceRequestIDColumn, Alias = "شناسه درخواست سرویس", OrderID = 2 };
+                            serviceConclusaionSearch.EntitySearchColumns.Add(serviceRequestIDSearchColumn);
+                        }
+                        if (serviceRequest != null)
+                        {
+                            var serviceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
+                            if (serviceRequestRelationship != null)
+                            {
+                                var serviceRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, serviceRequestRelationship.ID.ToString());
+                                if (serviceRequestRelationshipTail != null)
+                                {
+                                    if (customer != null)
+                                    {
+                                        var serviceRequestCustomerRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == customer.ID);
+                                        if (serviceRequestCustomerRelationship != null)
+                                        {
+                                            var serviceRequestCustomerRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, customer, serviceRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString());
+                                            if (serviceRequestCustomerRelationshipTail != null)
+                                            {
+                                                var customerCodeColumn = customer.Table.Column.FirstOrDefault(x => x.Name == "Code");
+                                                if (customerCodeColumn != null)
+                                                {
+                                                    var serviceResuestCustomerCode = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestCustomerRelationshipTail, Column = customerCodeColumn, Alias = "کد مشتری", OrderID = 3 };
+                                                    serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestCustomerCode);
+                                                }
+                                                if (genericPerson != null)
+                                                {
+                                                    var genericPersonNameColumn = genericPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
+
+                                                    var serviceRequestCustomerGenericPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == customer.ID && x.TableDrivedEntityID2 == genericPerson.ID);
+                                                    if (serviceRequestCustomerGenericPersonRelationship != null)
+                                                    {
+                                                        var serviceRequestCustomerGenericPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, genericPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestCustomerRelationship.ID.ToString()
+                                                            + "," + serviceRequestCustomerGenericPersonRelationship.ID.ToString());
+                                                        if (serviceRequestCustomerGenericPersonRelationshipTail != null)
+                                                        {
+                                                            var serviceResuestCustomerName = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestCustomerGenericPersonRelationshipTail, Column = genericPersonNameColumn, Alias = "نام مشتری", OrderID = 4 };
+                                                            serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestCustomerName);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (productItem != null)
+                                    {
+                                        var serviceRequestProductItemRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == productItem.ID);
+                                        if (serviceRequestProductItemRelationship != null)
+                                        {
+                                            var serviceRequestProductItemRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, productItem, serviceRequestRelationship.ID.ToString() + "," + serviceRequestProductItemRelationship.ID.ToString());
+                                            if (serviceRequestProductItemRelationshipTail != null)
+                                            {
+                                                var productItemModelColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "ProductModel");
+                                                if (productItemModelColumn != null)
+                                                {
+                                                    var serviceResuestProductItemModel = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemModelColumn, Alias = "مدل کالا", OrderID = 5 };
+                                                    serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestProductItemModel);
+                                                }
+                                                var productItemBrandColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "BrandTitle");
+                                                if (productItemBrandColumn != null)
+                                                {
+                                                    var serviceResuestProductItemModel = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemBrandColumn, Alias = "برند کالا", OrderID = 6 };
+                                                    serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestProductItemModel);
+                                                }
+                                                var productItemSerialColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "Serial");
+                                                if (productItemSerialColumn != null)
+                                                {
+                                                    var serviceResuestProductItemModel = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestProductItemRelationshipTail, Column = productItemSerialColumn, Alias = "سریال کالا", OrderID = 7 };
+                                                    serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestProductItemModel);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (office != null)
+                                    {
+                                        var serviceRequestOfficeRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == office.ID);
+                                        if (serviceRequestOfficeRelationship != null)
+                                        {
+                                            var serviceRequestOfficeRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, office, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString());
+                                            if (serviceRequestOfficeRelationshipTail != null)
+                                            {
+                                                var officeCodeColumn = office.Table.Column.FirstOrDefault(x => x.Name == "Code");
+                                                if (officeCodeColumn != null)
+                                                {
+                                                    var serviceResuestOfficeCode = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestOfficeRelationshipTail, Column = officeCodeColumn, Alias = "کد دفتر", OrderID = 8 };
+                                                    serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestOfficeCode);
+                                                }
+                                                if (legalPerson != null)
+                                                {
+                                                    var legalPersonNameColumn = legalPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
+
+                                                    var serviceRequestOfficelegalPersonRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == office.ID && x.TableDrivedEntityID2 == legalPerson.ID);
+                                                    if (serviceRequestOfficelegalPersonRelationship != null)
+                                                    {
+                                                        var serviceRequestOfficelegalPersonRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, legalPerson, serviceRequestRelationship.ID.ToString() + "," + serviceRequestOfficeRelationship.ID.ToString()
+                                                            + "," + serviceRequestOfficelegalPersonRelationship.ID.ToString());
+                                                        if (serviceRequestOfficelegalPersonRelationshipTail != null)
+                                                        {
+                                                            var serviceResuestOfficeName = new EntitySearchColumns() { EntityRelationshipTail = serviceRequestOfficelegalPersonRelationshipTail, Column = legalPersonNameColumn, Alias = "نام دفتر", OrderID = 9 };
+                                                            serviceConclusaionSearch.EntitySearchColumns.Add(serviceResuestOfficeName);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+                var sp_CalculateCustomerValueByServiceRequestID = projectContext.DatabaseFunction.FirstOrDefault(x => x.FunctionName == "sp_CalculateCustomerValueByServiceRequestID");
+                if (sp_CalculateCustomerValueByServiceRequestID != null)
+                {
+                    DatabaseFunction_TableDrivedEntity serviceConclusionDatabaseFunctionEntity = projectContext.DatabaseFunction_TableDrivedEntity.FirstOrDefault(x => x.TableDrivedEntityID == serviceConclusion.ID && x.DatabaseFunctionID == sp_CalculateCustomerValueByServiceRequestID.ID);
+                    if (serviceConclusionDatabaseFunctionEntity == null)
+                    {
+                        serviceConclusionDatabaseFunctionEntity = new DatabaseFunction_TableDrivedEntity();
+                        serviceConclusionDatabaseFunctionEntity.TableDrivedEntityID = serviceConclusion.ID;
+                        serviceConclusionDatabaseFunctionEntity.DatabaseFunctionID = sp_CalculateCustomerValueByServiceRequestID.ID;
+                        serviceConclusionDatabaseFunctionEntity.Title = "محاسبه ارزش مشتری بعد از حذف";
+                        serviceConclusionDatabaseFunctionEntity.Name = "CustomerValueAfterDelete";
+                        projectContext.DatabaseFunction_TableDrivedEntity.Add(serviceConclusionDatabaseFunctionEntity);
+                    }
+
+                    var serviceRequestIDColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "RequestServiceID");
+
+                    if (serviceRequestIDColumn != null && serviceConclusionDatabaseFunctionEntity.ID == 0)
+                    {
+                        if (sp_CalculateCustomerValueByServiceRequestID.DatabaseFunctionParameter.Any(x => x.ParamName == "@serviceRequestID"))
+                            serviceConclusionDatabaseFunctionEntity.DatabaseFunction_TableDrivedEntity_Columns.Add(new DatabaseFunction_TableDrivedEntity_Columns()
+                            { ColumnID = serviceRequestIDColumn.ID, DatabaseFunctionParameter = sp_CalculateCustomerValueByServiceRequestID.DatabaseFunctionParameter.First(x => x.ParamName == "@serviceRequestID") });
+
+                    }
+
+                    var afterDeleteBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.AfterDelete && x.TableDrivedEntityID == serviceConclusion.ID && x.Title == "محاسبه ارزش مشتری بعد از حذف");
+                    if (afterDeleteBackenActionActivity == null)
+                    {
+                        afterDeleteBackenActionActivity = new BackendActionActivity();
+                        afterDeleteBackenActionActivity.TableDrivedEntityID = serviceConclusion.ID;
+                        afterDeleteBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.AfterDelete;
+                        afterDeleteBackenActionActivity.Title = "محاسبه ارزش مشتری بعد از حذف";
+                        afterDeleteBackenActionActivity.Type = 1;
+                        afterDeleteBackenActionActivity.ResultSensetive = false;
+
+                        afterDeleteBackenActionActivity.DatabaseFunction_TableDrivedEntity = serviceConclusionDatabaseFunctionEntity;
+                        projectContext.BackendActionActivity.Add(afterDeleteBackenActionActivity);
+                    }
+                }
+
 
 
 
