@@ -354,9 +354,16 @@ namespace MyProject_WPF
         {
             if (e.Shape as StateShape != null)
             {
-                (e.Shape as StateShape).StateID = Convert.ToInt32(e.SerializationInfo["StateID"]);
-                (e.Shape as StateShape).Title = Convert.ToString(e.SerializationInfo["Title"]);
-                (e.Shape as StateShape).IsInDiagram = true;
+                try
+                {
+                    (e.Shape as StateShape).StateID = Convert.ToInt32(e.SerializationInfo["StateID"]);
+                    (e.Shape as StateShape).Title = Convert.ToString(e.SerializationInfo["Title"]);
+                    (e.Shape as StateShape).IsInDiagram = true;
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
