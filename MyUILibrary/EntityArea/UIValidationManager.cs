@@ -189,6 +189,11 @@ namespace MyUILibrary.EntityArea
                         AddDataValidationMessage(validation.Message, data);
                     }
                 }
+                else
+                {
+                    data.ISValid = false;
+                    AddDataValidationMessage(calculatedValue.Exception.Message, data);
+                }
             }
 
         }

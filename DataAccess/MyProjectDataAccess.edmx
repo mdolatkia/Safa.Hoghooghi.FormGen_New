@@ -617,7 +617,7 @@
           <Property Name="TableDrivedEntityID" Type="int" Nullable="false" />
           <Property Name="FormulaID" Type="int" />
           <Property Name="Title" Type="varchar" MaxLength="128" Nullable="false" />
-          <Property Name="Message" Type="varchar" MaxLength="2024" Nullable="false" />
+          <Property Name="Message" Type="varchar" MaxLength="2024" />
         </EntityType>
         <EntityType Name="ExplicitOneToOneRelationshipType">
           <Key>
@@ -8033,7 +8033,7 @@
           <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
           <Property Name="FormulaID" Type="Int32" />
           <Property Name="Title" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="Message" Type="String" Nullable="false" MaxLength="2024" FixedLength="false" Unicode="false" />
+          <Property Name="Message" Type="String" MaxLength="2024" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FKEntityVali365073" FromRole="EntityValidation" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="Formula" Relationship="MyProjectModel.FKEntityVali933297" FromRole="EntityValidation" ToRole="Formula" />
         </EntityType>

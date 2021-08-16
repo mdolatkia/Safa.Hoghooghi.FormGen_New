@@ -92,19 +92,19 @@ namespace MyCodeFunctionLibrary
 
         private FunctionResult GetCodeFunctionResult(CodeFunctionDTO codeFunction, List<object> parameters)
         {
-            FunctionResult result = new FunctionResult();
+            //FunctionResult result = new FunctionResult();
             try
             {
-                result.Result = ReflectionHelper.CallMethod(codeFunction.Path, codeFunction.ClassName, codeFunction.FunctionName, parameters.ToArray());
+              return (FunctionResult)ReflectionHelper.CallMethod(codeFunction.Path, codeFunction.ClassName, codeFunction.FunctionName, parameters.ToArray());
                
             }
             catch (Exception ex)
             {
-               
-                result.Exception = ex.InnerException;
-
+                FunctionResult result = new FunctionResult();
+                result.Exception = ex;
+                return result;
             }
-            return result;
+           // return result;
         }
         private LetterConvertToExternalResult GetLetterSendingCodeFunctionResult(CodeFunctionDTO codeFunction, List<object> parameters)
         {

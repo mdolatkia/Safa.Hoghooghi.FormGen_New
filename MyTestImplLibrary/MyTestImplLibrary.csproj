@@ -59,6 +59,10 @@
     <Compile Include="ValidationTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MyDataSearchManagerBusiness\MyDataSearchManagerBusiness.csproj">
+      <Project>{518BDF6D-0AD2-44DD-945D-DCF74BB4A055}</Project>
+      <Name>MyDataSearchManagerBusiness</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MyInterfaces\MyInterfaces.csproj">
       <Project>{8abc6369-3f6e-40fb-a354-5106930cb07c}</Project>
       <Name>MyInterfaces</Name>
