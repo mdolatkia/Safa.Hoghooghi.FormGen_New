@@ -231,7 +231,7 @@ namespace MyUILibrary.EntityArea
                     if (columnControl != null)
                     {
                         columnControl.UIControlPackageTreeItem = item;
-                        if (UICompositions.Count == 1 && parentUIControlPackage.Item is I_TabPageContainer)
+                        if (UICompositions.Count == 1 && parentUIControlPackage!=null&& parentUIControlPackage.Item is I_TabPageContainer)
                         {
                             (columnControl.ControlManager as I_RelationshipControlManager).TabPageContainer = parentUIControlPackage.Item as I_TabPageContainer;
                         }

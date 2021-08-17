@@ -166,6 +166,26 @@ namespace MyProject_WPF
                         tableImportItem.Entity.IndependentDataEntry = false;
                         tableImportItem.Relationships.First(x => x.Entity1 == "ServiceRequestReview").Select = true;
                     }
+                    else if (tableImportItem.Entity.Name == "ServiceRequestReviewItems")
+                    {
+                        tableImportItem.Entity.IndependentDataEntry = false;
+                        tableImportItem.Relationships.First(x => x.Entity1 == "ServiceRequestReview").Select = true;
+                    }
+                    else if (tableImportItem.Entity.Name == "ServiceItemPartImage")
+                    {
+                        tableImportItem.Entity.IndependentDataEntry = false;
+                        tableImportItem.Relationships.First(x => x.Entity1 == "ServiceItem").Select = true;
+                    }
+                    else if (tableImportItem.Entity.Name == "ServiceItemRepair")
+                    {
+                        tableImportItem.Entity.IndependentDataEntry = false;
+                        tableImportItem.Relationships.First(x => x.Entity1 == "ServiceItem").Select = true;
+                    }
+                    else if (tableImportItem.Entity.Name == "ServiceItemTest")
+                    {
+                        tableImportItem.Entity.IndependentDataEntry = false;
+                        tableImportItem.Relationships.First(x => x.Entity1 == "ServiceItem").Select = true;
+                    }
                 }
                     //if (!string.IsNullOrEmpty(tableImportItem.Tooltip))
                     //    ToolTipService.SetToolTip(e.Row, tableImportItem.Tooltip);

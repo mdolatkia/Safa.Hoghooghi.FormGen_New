@@ -886,7 +886,7 @@ namespace MyUILibrary.EntityArea
         {
             if (relationshipColumnControl.Relationship.IsOtherSideDirectlyCreatable)
             {
-                if (SimpleEntity.IndependentDataEntry == true || relationshipColumnControl.Relationship.Entity2IsIndependent)
+                if (SimpleEntity.IndependentDataEntry == true && relationshipColumnControl.Relationship.Entity2IsIndependent)
                 {
                     //منظور اینه که اگر روابط زیر نباشند اسکیپ میشوند
                     if (relationshipColumnControl.Relationship.TypeEnum != Enum_RelationshipType.OneToMany &&
@@ -930,7 +930,7 @@ namespace MyUILibrary.EntityArea
         {
             if (relationshipColumnControl.Relationship.IsOtherSideDirectlyCreatable)
             {
-                if (SimpleEntity.IndependentDataEntry == true || relationshipColumnControl.Relationship.Entity2IsIndependent)
+                if (SimpleEntity.IndependentDataEntry == true && relationshipColumnControl.Relationship.Entity2IsIndependent)
                 {
                     return true;
                 }

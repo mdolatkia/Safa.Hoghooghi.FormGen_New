@@ -475,7 +475,7 @@ namespace MyProject_WPF
                 {
                     foreach (var column in entity.Columns)
                     {
-                        if (Message.DrivedEntities.Any(x => x != entity && x.Columns.Any(y => y.ID == column.ID)))
+                        if (Message.DrivedEntities.Any(x => x != entity && x.Columns.Any(y =>!y.PrimaryKey&& y.ID == column.ID)))
                         {
                             MessageBox.Show("ستون" + " " + column.Name + " " + "در بیش از یک زیر موجودیت تعریف شده و این برای روابط ارث بری" + " " + "Overlap" + " " + "امکان پذیر نمی باشد");
                             return;
@@ -503,13 +503,16 @@ namespace MyProject_WPF
                     MessageBox.Show(message);
                     return;
                 }
-                foreach (var values in entity.EntityDeterminers)
+                if (optIsDisjoint.IsChecked == true)
                 {
-                    if (Message.DrivedEntities.Any(x => x != entity && x.EntityDeterminers.Any(y => y.Value == values.Value)))
+                    foreach (var values in entity.EntityDeterminers)
                     {
-                        var message = "مقدار تعیین کننده" + " '" + values.Value + "' " + "برای بیش از یک زیر موجودیت تعریف شده است";
-                        MessageBox.Show(message);
-                        return;
+                        if (Message.DrivedEntities.Any(x => x != entity && x.EntityDeterminers.Any(y => y.Value == values.Value)))
+                        {
+                            var message = "مقدار تعیین کننده" + " '" + values.Value + "' " + "برای بیش از یک زیر موجودیت تعریف شده است";
+                            MessageBox.Show(message);
+                            return;
+                        }
                     }
                 }
             }
