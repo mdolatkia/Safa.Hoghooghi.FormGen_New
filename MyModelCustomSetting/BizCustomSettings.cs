@@ -62,10 +62,10 @@ namespace MyModelCustomSetting
                         var relaitonship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == genericPerson.ID && x.TableDrivedEntityID2 == realPerson.ID);
                         if (typeColumn != null && relaitonship != null && relaitonship.RelationshipType != null && relaitonship.RelationshipType.SuperToSubRelationshipType != null)
                         {
-                            if (relaitonship.RelationshipType.SuperToSubRelationshipType.DeterminerColumnID == null)
+                            if (relaitonship.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID == null)
                             {
-                                relaitonship.RelationshipType.SuperToSubRelationshipType.DeterminerColumnID = typeColumn.ID;
-                                relaitonship.RelationshipType.SuperToSubRelationshipType.DeterminerColumnValue = "1";
+                                relaitonship.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID = typeColumn.ID;
+                                relaitonship.RelationshipType.SuperToSubRelationshipType.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = "1" });
                             }
                         }
                     }
@@ -74,10 +74,10 @@ namespace MyModelCustomSetting
                         var relaitonship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == genericPerson.ID && x.TableDrivedEntityID2 == legalPerson.ID);
                         if (typeColumn != null && relaitonship != null && relaitonship.RelationshipType != null && relaitonship.RelationshipType.SuperToSubRelationshipType != null)
                         {
-                            if (relaitonship.RelationshipType.SuperToSubRelationshipType.DeterminerColumnID == null)
+                            if (relaitonship.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID == null)
                             {
-                                relaitonship.RelationshipType.SuperToSubRelationshipType.DeterminerColumnID = typeColumn.ID;
-                                relaitonship.RelationshipType.SuperToSubRelationshipType.DeterminerColumnValue = "2";
+                                relaitonship.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID = typeColumn.ID;
+                                relaitonship.RelationshipType.SuperToSubRelationshipType.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = "2" });
                             }
                         }
                     }
@@ -99,9 +99,29 @@ namespace MyModelCustomSetting
 
                 }
 
+                var serviceActionType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceActionType" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+                if (serviceActionType != null)
+                {
+                    //امکان کپی کردن لیست مقادیر اضافه شود
+                    var serviceActionTypeServiceTypeEnumColumn = serviceActionType.Table.Column.FirstOrDefault(x => x.Name == "ServiceItemType");
+                    if (serviceActionTypeServiceTypeEnumColumn != null)
+                    {
+                        if (serviceActionTypeServiceTypeEnumColumn.ColumnValueRange == null)
+                        {
+                            serviceActionTypeServiceTypeEnumColumn.ColumnValueRange = new ColumnValueRange();
+                            serviceActionTypeServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "1", KeyTitle = "تعمیر" });
+                            serviceActionTypeServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "2", KeyTitle = "تست" });
+                            serviceActionTypeServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "3", KeyTitle = "تعمیر و تست" });
 
+                        }
+                    }
+                }
                 Formula serviceItemPriceFormula = null;
+                var serviceItemRepair = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceItemRepair" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+                var serviceItemTest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceItemTest" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+                var serviceItemPartImage = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceItemPartImage" && x.Table.DBSchema.DatabaseInformationID == databaseID);
                 var serviceItem = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+                Column ServiceTypeEnumColumn = null;
                 if (serviceItem != null)
                 {
                     var StartDateTimeColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "StartDateTime");
@@ -206,8 +226,18 @@ namespace MyModelCustomSetting
                     var HoursSpentColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "HoursSpent");
                     if (HoursSpentColumn != null)
                         HoursSpentColumn.Formula = serviceItemHoursSpentFormula;
-                    var ServiceTypeEnumColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "ServiceTypeEnum");
+                    ServiceTypeEnumColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "ServiceTypeEnum");
+                    if (ServiceTypeEnumColumn != null)
+                    {
+                        if (ServiceTypeEnumColumn.ColumnValueRange == null)
+                        {
+                            ServiceTypeEnumColumn.ColumnValueRange = new ColumnValueRange();
+                            ServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "1", KeyTitle = "تعمیر" });
+                            ServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "2", KeyTitle = "تست" });
+                            ServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "3", KeyTitle = "تعمیر و تست" });
 
+                        }
+                    }
                     var sp_CalculateServiceItemPrice = projectContext.DatabaseFunction.FirstOrDefault(x => x.FunctionName == "sp_CalculateServiceItemPrice");
                     if (sp_CalculateServiceItemPrice != null)
                     {
@@ -1192,9 +1222,35 @@ namespace MyModelCustomSetting
                         projectContext.BackendActionActivity.Add(afterDeleteBackenActionActivity);
                     }
                 }
+                var serviceRequestReviewItemsToRequestType = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequestReviewItems.ID && x.TableDrivedEntityID2 == serviceRequestType.ID);
+                if (serviceRequestReviewItemsToRequestType != null)
+                {
+                    var searchFilterserviceReviewItemsToserviceRequestType = projectContext.RelationshipSearchFilter.FirstOrDefault(x => x.RelationshipID == serviceRequestReviewItemsToRequestType.ID);
+                    if (searchFilterserviceReviewItemsToserviceRequestType == null)
+                    {
 
+                        var serviceReviewItemsToReviewRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequestReviewItems.ID && x.TableDrivedEntityID2 == serviceRequestReview.ID);
+                        if (serviceReviewItemsToReviewRelationship != null)
+                        {
+                            var serviceReviewToServiceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequestReview.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
+                            if (serviceReviewToServiceRequestRelationship != null)
+                            {
+                                var serviceRequestToserviceRequest_RequestType = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == serviceRequest_RequestType.ID);
+                                var serviceReviewItemsToserviceRequest_RequestTypeTail = GetRelationshipTail(projectContext, serviceRequestReviewItems, serviceRequest_RequestType, serviceReviewItemsToReviewRelationship.ID + "," +
+                                  serviceReviewToServiceRequestRelationship.ID + "," + serviceRequestToserviceRequest_RequestType.ID);
+                                var ServiceRequestTypeIDColumn = serviceRequest_RequestType.Table.Column.FirstOrDefault(x => x.Name == "ServiceRequestTypeID");
+                                var searchColumn = serviceRequestType.Table.Column.FirstOrDefault(x => x.Name == "ID");
 
-
+                                searchFilterserviceReviewItemsToserviceRequestType = new RelationshipSearchFilter();
+                                projectContext.RelationshipSearchFilter.Add(searchFilterserviceReviewItemsToserviceRequestType);
+                                searchFilterserviceReviewItemsToserviceRequestType.RelationshipID = serviceRequestReviewItemsToRequestType.ID;
+                                searchFilterserviceReviewItemsToserviceRequestType.SearchColumnID = searchColumn.ID;
+                                searchFilterserviceReviewItemsToserviceRequestType.ValueColumnID = ServiceRequestTypeIDColumn.ID;
+                                searchFilterserviceReviewItemsToserviceRequestType.EntityRelationshipTail = serviceReviewItemsToserviceRequest_RequestTypeTail;
+                            }
+                        }
+                    }
+                }
 
                 var organizationTypeTamirgah = projectContext.OrganizationType.FirstOrDefault(x => x.Name == "تعمیرگاه");
                 if (organizationTypeTamirgah == null)
@@ -2698,10 +2754,184 @@ namespace MyModelCustomSetting
                     validation.Formula = validationFormula;
                     projectContext.EntityValidation.Add(validation);
                 }
+                TableDrivedEntity serviceRepair = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRepair");
+                TableDrivedEntity serviceTest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceTest");
+                Tuple<Relationship, Relationship> serviceRepairRelationship = null;
+                Tuple<Relationship, Relationship> serviceTestRelationship = null;
+
+                if (serviceRepair == null)
+                {
+                    serviceRepair = new TableDrivedEntity();
+                    serviceRepair.Name = "ServiceRepair";
+                    serviceRepair.TableID = serviceItem.TableID;
+                    serviceRepair.Alias = "سرويس تعمير";
+                    serviceRepair.IndependentDataEntry = true;
+                    serviceRepair.SecurityObject = new SecurityObject();
+                    serviceRepair.SecurityObject.Type = (int)DatabaseObjectCategory.Entity;
+                    projectContext.TableDrivedEntity.Add(serviceRepair);
+
+                    serviceTest = new TableDrivedEntity();
+                    serviceTest.Name = "ServiceTest";
+                    serviceTest.TableID = serviceItem.TableID;
+                    serviceTest.Alias = "سرويس تست";
+                    serviceTest.IndependentDataEntry = true;
+                    serviceTest.SecurityObject = new SecurityObject();
+                    serviceTest.SecurityObject.Type = (int)DatabaseObjectCategory.Entity;
+                    projectContext.TableDrivedEntity.Add(serviceTest);
+
+                    var serviceItemToRequestPart = serviceItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == requestProductPart.ID);
+                    if (serviceItemToRequestPart != null)
+                    {
+                        serviceItemToRequestPart.TableDrivedEntity = serviceRepair;
+                        serviceItemToRequestPart.Relationship2.TableDrivedEntity1 = serviceRepair;
+                        serviceItemToRequestPart.Relationship2.Alias = serviceRepair.Name;
+
+                        serviceItemToRequestPart.Name = serviceRepair.Name + ">" + requestProductPart.Name;
+                        serviceItemToRequestPart.Relationship2.Name = requestProductPart.Name + ">" + serviceRepair.Name;
+                    }
+
+                    var serviceItemToServiceItemRepair = serviceItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceItemRepair.ID);
+                    if (serviceItemToServiceItemRepair != null)
+                    {
+                        serviceItemToServiceItemRepair.TableDrivedEntity = serviceRepair;
+                        serviceItemToServiceItemRepair.Relationship2.TableDrivedEntity1 = serviceRepair;
+                        serviceItemToServiceItemRepair.Relationship2.Alias = serviceRepair.Name;
+
+                        serviceItemToServiceItemRepair.Name = serviceRepair.Name + ">" + serviceItemRepair.Name;
+                        serviceItemToServiceItemRepair.Relationship2.Name = serviceItemRepair.Name + ">" + serviceRepair.Name;
+                    }
+
+                    var serviceItemToServiceItemPartImage = serviceItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceItemPartImage.ID);
+                    if (serviceItemToServiceItemPartImage != null)
+                    {
+                        serviceItemToServiceItemPartImage.TableDrivedEntity = serviceRepair;
+                        serviceItemToServiceItemPartImage.Relationship2.TableDrivedEntity1 = serviceRepair;
+                        serviceItemToServiceItemPartImage.Relationship2.Alias = serviceRepair.Name;
+
+                        serviceItemToServiceItemPartImage.Name = serviceRepair.Name + ">" + serviceItemPartImage.Name;
+                        serviceItemToServiceItemPartImage.Relationship2.Name = serviceItemPartImage.Name + ">" + serviceRepair.Name;
+                    }
+                    var serviceItemToServiceItemTest = serviceItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceItemTest.ID);
+                    if (serviceItemToServiceItemTest != null)
+                    {
+                        serviceItemToServiceItemTest.TableDrivedEntity = serviceTest;
+                        serviceItemToServiceItemTest.Relationship2.TableDrivedEntity1 = serviceTest;
+                        serviceItemToServiceItemTest.Relationship2.Alias = serviceTest.Name;
+
+                        serviceItemToServiceItemTest.Name = serviceTest.Name + ">" + serviceItemTest.Name;
+                        serviceItemToServiceItemTest.Relationship2.Name = serviceItemTest.Name + ">" + serviceTest.Name;
+                    }
+
+                    var serviceItemRepairPartTotalPriceColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "RepairPartTotalPrice");
+                    if (serviceItemRepairPartTotalPriceColumn != null)
+                    {
+                        serviceRepair.TableDrivedEntity_Columns.Add(new TableDrivedEntity_Columns() { ColumnID = serviceItemRepairPartTotalPriceColumn.ID });
+                    }
+                    var serviceItemID = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "ID");
+                    if (serviceItemID != null)
+                    {
+                        serviceRepair.TableDrivedEntity_Columns.Add(new TableDrivedEntity_Columns() { ColumnID = serviceItemID.ID });
+                        serviceTest.TableDrivedEntity_Columns.Add(new TableDrivedEntity_Columns() { ColumnID = serviceItemID.ID });
+                    }
+                    foreach (var column in serviceItem.Table.Column)
+                    {
+                        if (column.ID != serviceItemRepairPartTotalPriceColumn.ID)
+                            serviceItem.TableDrivedEntity_Columns.Add(new TableDrivedEntity_Columns() { ColumnID = column.ID });
+
+                    }
+
+                    var isaRelationship = new ISARelationship();
+                    isaRelationship.Name = "ISAinTable" + "_" + serviceItem.Name;
+                    isaRelationship.InternalTable = true;
+                    isaRelationship.IsTolatParticipation = true;
+                    isaRelationship.IsDisjoint = false;
+                    projectContext.ISARelationship.Add(isaRelationship);
+
+                    var relaitonship = new Relationship();
+                    relaitonship.SecurityObject = new SecurityObject();
+                    relaitonship.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
+                    relaitonship.Name = serviceItem.Name + ">" + serviceRepair.Name;
+                    relaitonship.Alias = serviceRepair.Name;
+                    relaitonship.TableDrivedEntity = serviceItem;
+                    relaitonship.TableDrivedEntity1 = serviceRepair;
+                    relaitonship.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = serviceItemID.ID, SecondSideColumnID = serviceItemID.ID });
+                    relaitonship.RelationshipType = new RelationshipType();
+                    relaitonship.RelationshipType.PKToFKDataEntryEnabled = true;
+                    relaitonship.RelationshipType.IsOtherSideCreatable = true;
+                    relaitonship.RelationshipType.IsOtherSideDirectlyCreatable = true;
+                    relaitonship.RelationshipType.SuperToSubRelationshipType = new SuperToSubRelationshipType() { ISARelationship = isaRelationship };
+                    relaitonship.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID = ServiceTypeEnumColumn.ID;
+                    relaitonship.RelationshipType.SuperToSubRelationshipType.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = "1" });
+                    relaitonship.RelationshipType.SuperToSubRelationshipType.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = "3" });
+
+                    relaitonship.TypeEnum = (int)Enum_RelationshipType.SuperToSub;
+                    relaitonship.MasterTypeEnum = (int)Enum_MasterRelationshipType.FromPrimartyToForeign;
+                    projectContext.Relationship.Add(relaitonship);
+
+                    var reverserelaitonship = new Relationship();
+                    //reverserelaitonship.Enabled = true;
+                    // reverserelaitonship.DataEntryEnabled = true;
+                    reverserelaitonship.Name = serviceRepair.Name + ">" + serviceItem.Name;
+                    reverserelaitonship.Alias = serviceItem.Alias;
+                    reverserelaitonship.SecurityObject = new SecurityObject();
+                    reverserelaitonship.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
+                    reverserelaitonship.TableDrivedEntity = serviceRepair;
+                    reverserelaitonship.TableDrivedEntity1 = serviceItem;
+                    reverserelaitonship.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = serviceItemID.ID, SecondSideColumnID = serviceItemID.ID });
+                    reverserelaitonship.RelationshipType = new RelationshipType();
+                    reverserelaitonship.RelationshipType.IsOtherSideMandatory = true;
+                    reverserelaitonship.RelationshipType.IsOtherSideCreatable = true;
+                    reverserelaitonship.RelationshipType.IsOtherSideDirectlyCreatable = true;
+                    reverserelaitonship.RelationshipType.SubToSuperRelationshipType = new SubToSuperRelationshipType() { ISARelationship = isaRelationship };
+                    reverserelaitonship.TypeEnum = (int)Enum_RelationshipType.SubToSuper;
+                    reverserelaitonship.MasterTypeEnum = (int)Enum_MasterRelationshipType.FromForeignToPrimary;
+                    projectContext.Relationship.Add(reverserelaitonship);
+
+                    serviceRepairRelationship = new Tuple<Relationship, Relationship>(relaitonship, reverserelaitonship);
 
 
+                    var relaitonshipTest = new Relationship();
+                    relaitonshipTest.SecurityObject = new SecurityObject();
+                    relaitonshipTest.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
+                    relaitonshipTest.Name = serviceItem.Name + ">" + serviceTest.Name;
+                    relaitonshipTest.Alias = serviceTest.Name;
+                    relaitonshipTest.TableDrivedEntity = serviceItem;
+                    relaitonshipTest.TableDrivedEntity1 = serviceTest;
+                    relaitonshipTest.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = serviceItemID.ID, SecondSideColumnID = serviceItemID.ID });
+                    relaitonshipTest.RelationshipType = new RelationshipType();
+                    relaitonshipTest.RelationshipType.PKToFKDataEntryEnabled = true;
+                    relaitonshipTest.RelationshipType.IsOtherSideCreatable = true;
+                    relaitonshipTest.RelationshipType.IsOtherSideDirectlyCreatable = true;
+                    relaitonshipTest.RelationshipType.SuperToSubRelationshipType = new SuperToSubRelationshipType() { ISARelationship = isaRelationship };
+                    relaitonshipTest.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID = ServiceTypeEnumColumn.ID;
+                    relaitonshipTest.RelationshipType.SuperToSubRelationshipType.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = "2" });
+                    relaitonshipTest.RelationshipType.SuperToSubRelationshipType.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = "3" });
 
+                    relaitonshipTest.TypeEnum = (int)Enum_RelationshipType.SuperToSub;
+                    relaitonshipTest.MasterTypeEnum = (int)Enum_MasterRelationshipType.FromPrimartyToForeign;
+                    projectContext.Relationship.Add(relaitonshipTest);
 
+                    var reverserelaitonshipTest = new Relationship();
+                    //reverserelaitonshipTest.Enabled = true;
+                    // reverserelaitonshipTest.DataEntryEnabled = true;
+                    reverserelaitonshipTest.Name = serviceTest.Name + ">" + serviceItem.Name;
+                    reverserelaitonshipTest.Alias = serviceItem.Alias;
+                    reverserelaitonshipTest.SecurityObject = new SecurityObject();
+                    reverserelaitonshipTest.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
+                    reverserelaitonshipTest.TableDrivedEntity = serviceTest;
+                    reverserelaitonshipTest.TableDrivedEntity1 = serviceItem;
+                    reverserelaitonshipTest.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = serviceItemID.ID, SecondSideColumnID = serviceItemID.ID });
+                    reverserelaitonshipTest.RelationshipType = new RelationshipType();
+                    reverserelaitonshipTest.RelationshipType.IsOtherSideMandatory = true;
+                    reverserelaitonshipTest.RelationshipType.IsOtherSideCreatable = true;
+                    reverserelaitonshipTest.RelationshipType.IsOtherSideDirectlyCreatable = true;
+                    reverserelaitonshipTest.RelationshipType.SubToSuperRelationshipType = new SubToSuperRelationshipType() { ISARelationship = isaRelationship };
+                    reverserelaitonshipTest.TypeEnum = (int)Enum_RelationshipType.SubToSuper;
+                    reverserelaitonshipTest.MasterTypeEnum = (int)Enum_MasterRelationshipType.FromForeignToPrimary;
+                    projectContext.Relationship.Add(reverserelaitonshipTest);
+
+                    serviceTestRelationship = new Tuple<Relationship, Relationship>(relaitonshipTest, reverserelaitonshipTest);
+                }
 
                 var process = projectContext.Process.FirstOrDefault(x => x.Name == "جریان کار درخواست سرویس" && x.TableDrivedEntityID == serviceRequest.ID);
                 State stateFirst = null;
@@ -2926,6 +3156,25 @@ namespace MyModelCustomSetting
                 try
                 {
                     projectContext.SaveChanges();
+
+
+                    if (serviceRepairRelationship != null)
+                    {
+                        serviceRepairRelationship.Item1.RelationshipID = serviceRepairRelationship.Item2.ID;
+                        serviceRepairRelationship.Item2.RelationshipID = serviceRepairRelationship.Item1.ID;
+                        serviceRepair.SuperToSubRelationshipType = serviceRepairRelationship.Item1.RelationshipType.SuperToSubRelationshipType;
+
+
+                        filter
+                    }
+                    if (serviceTestRelationship != null)
+                    {
+                        serviceTestRelationship.Item1.RelationshipID = serviceTestRelationship.Item2.ID;
+                        serviceTestRelationship.Item2.RelationshipID = serviceTestRelationship.Item1.ID;
+                        serviceTest.SuperToSubRelationshipType = serviceTestRelationship.Item1.RelationshipType.SuperToSubRelationshipType;
+                    }
+
+
 
                     if (processIsNew)
                     {

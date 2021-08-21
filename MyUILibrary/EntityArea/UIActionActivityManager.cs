@@ -98,12 +98,13 @@ namespace MyUILibrary.EntityArea
                 foreach (var item in EditArea.RelationshipColumnControls.Where(x => x.Relationship.TypeEnum == Enum_RelationshipType.SuperToSub))
                 {
                     var superToSubRel = item.Relationship as SuperToSubRelationshipDTO;
-                    if (superToSubRel.DeterminerColumnID != 0 && !string.IsNullOrEmpty(superToSubRel.DeterminerColumnValue))
+                    if (superToSubRel.SuperEntityDeterminerColumn != null && superToSubRel.DeterminerColumnValues.Any())
                     {
                         var state = new EntityStateDTO();
                         state.ID = -1 * superToSubRel.ID;
-                        state.ColumnID = superToSubRel.DeterminerColumnID;
-                        state.Values.Add(new EntityStateValueDTO() { Value = superToSubRel.DeterminerColumnValue });
+                        state.ColumnID = superToSubRel.SuperEntityDeterminerColumn.ID;
+                        foreach(var val in superToSubRel.DeterminerColumnValues)
+                        state.Values.Add(new EntityStateValueDTO() { Value = val.Value});
                         state.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
                         var actionActivity = new UIActionActivityDTO();
                         actionActivity.ID = -1 * superToSubRel.ID;
@@ -118,12 +119,14 @@ namespace MyUILibrary.EntityArea
             {
 
                 var subToSuperRel = EditArea.AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO;
-                if (subToSuperRel.DeterminerColumnID != 0 && !string.IsNullOrEmpty(subToSuperRel.DeterminerColumnValue))
+                if (subToSuperRel.SuperEntityDeterminerColumn != null && subToSuperRel.DeterminerColumnValues.Any())
                 {
+
                     var state = new EntityStateDTO();
                     state.ID = -1 * subToSuperRel.ID;
-                    state.ColumnID = subToSuperRel.DeterminerColumnID;
-                    state.Values.Add(new EntityStateValueDTO() { Value = subToSuperRel.DeterminerColumnValue });
+                    state.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
+                    foreach (var val in subToSuperRel.DeterminerColumnValues)
+                        state.Values.Add(new EntityStateValueDTO() { Value = val.Value });
                     state.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
                     var actionActivity = new UIActionActivityDTO();
                     actionActivity.ID = -1 * subToSuperRel.ID;
@@ -134,15 +137,17 @@ namespace MyUILibrary.EntityArea
 
 
                     //شرط اگر داده جدید باشد
+                    // این برای اینکه مقدار تعیین کننده با توجه به فرزند خودکار پر شود
+                    //منها در صورت چند مقداری بودن اولی انتخاب میشود. تست شود که فقط یکبار ست شود و اگر کاربر چیز دیگه ای انتخاب کرد مقدار با اولی مجددا ست نشود
                     var setDeterminerState = new EntityStateDTO();
                     setDeterminerState.ID = -2 * subToSuperRel.ID;
-                    setDeterminerState.ColumnID = subToSuperRel.DeterminerColumnID;
+                    state.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
                     setDeterminerState.Values.Add(new EntityStateValueDTO() { Value = "!@#$#" });
                     setDeterminerState.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
                     var setDeterminerActionActivity = new UIActionActivityDTO();
                     setDeterminerActionActivity.ID = -2 * subToSuperRel.ID;
                     setDeterminerActionActivity.Type = Enum_ActionActivityType.ColumnValue;
-                    setDeterminerActionActivity.UIColumnValue.Add(new UIColumnValueDTO() { ColumnID = subToSuperRel.DeterminerColumnID, ExactValue = subToSuperRel.DeterminerColumnValue, EvenHasValue = true });
+                    setDeterminerActionActivity.UIColumnValue.Add(new UIColumnValueDTO() { ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID, ExactValue = subToSuperRel.DeterminerColumnValues.First().Value });//, EvenHasValue = true });
                     setDeterminerState.ActionActivities.Add(setDeterminerActionActivity);
                     EditArea.EntityStates.Add(setDeterminerState);
 

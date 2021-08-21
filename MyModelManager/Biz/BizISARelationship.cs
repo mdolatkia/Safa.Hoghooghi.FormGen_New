@@ -158,8 +158,17 @@ namespace MyModelManager
             Mapper.Initialize(cfg => cfg.CreateMap<RelationshipDTO, SuperToSubRelationshipDTO>());
             var result = AutoMapper.Mapper.Map<RelationshipDTO, SuperToSubRelationshipDTO>(baseRelationship);
             result.ISARelationship = ToISARelationshipDTO(item.ISARelationship);
-            result.DeterminerColumnValue = item.DeterminerColumnValue;
-            result.DeterminerColumnID = item.DeterminerColumnID ?? 0;
+
+
+            foreach (var val in item.SuperToSubDeterminerValue)
+                result.DeterminerColumnValues.Add(new SuperToSubDeterminerValueDTO() { ID = val.ID, Value = val.DeterminerValue });
+            if (item.SuperEntityDeterminerColumnID != null)
+            {
+                BizColumn bizColumn = new BizColumn();
+                result.SuperEntityDeterminerColumnID = item.SuperEntityDeterminerColumnID.Value;
+                result.SuperEntityDeterminerColumn = bizColumn.GetColumn(result.SuperEntityDeterminerColumnID, true);
+            }
+
             return result;
         }
 
@@ -190,8 +199,17 @@ namespace MyModelManager
             Mapper.Initialize(cfg => cfg.CreateMap<RelationshipDTO, SubToSuperRelationshipDTO>());
             var result = AutoMapper.Mapper.Map<RelationshipDTO, SubToSuperRelationshipDTO>(baseRelationship);
             result.ISARelationship = ToISARelationshipDTO(item.ISARelationship);
-            result.DeterminerColumnValue = item.RelationshipType.Relationship.Relationship2.RelationshipType.SuperToSubRelationshipType.DeterminerColumnValue;
-            result.DeterminerColumnID = item.RelationshipType.Relationship.Relationship2.RelationshipType.SuperToSubRelationshipType.DeterminerColumnID ?? 0;
+            //  result.DeterminerColumnValue = item.RelationshipType.Relationship.Relationship2.RelationshipType.SuperToSubRelationshipType.DeterminerColumnValue;
+            //  result.DeterminerColumnID = item.RelationshipType.Relationship.Relationship2.RelationshipType.SuperToSubRelationshipType.DeterminerColumnID ?? 0;
+
+            foreach (var val in item.RelationshipType.Relationship.Relationship2.RelationshipType.SuperToSubRelationshipType.SuperToSubDeterminerValue)
+                result.DeterminerColumnValues.Add(new SuperToSubDeterminerValueDTO() { ID = val.ID, Value = val.DeterminerValue });
+            if (item.RelationshipType.Relationship.Relationship2.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID != null)
+            {
+                BizColumn bizColumn = new BizColumn();
+                result.SuperEntityDeterminerColumnID = item.RelationshipType.Relationship.Relationship2.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID.Value;
+                result.SuperEntityDeterminerColumn = bizColumn.GetColumn(result.SuperEntityDeterminerColumnID, true);
+            }
             return result;
         }
 
@@ -208,11 +226,19 @@ namespace MyModelManager
                     //dbRelationship.RelationshipType.IsOtherSideTransferable = relationship.IsOtherSideTransferable;
                     dbRelationship.RelationshipType.Relationship.Name = relationship.Name;
                     dbRelationship.RelationshipType.Relationship.Alias = relationship.Alias;
-                    dbRelationship.DeterminerColumnValue = relationship.DeterminerColumnValue;
-                    if (relationship.DeterminerColumnID != 0)
-                        dbRelationship.DeterminerColumnID = relationship.DeterminerColumnID;
+                    //    dbRelationship.DeterminerColumnValue = relationship.DeterminerColumnValue;
+
+                    while (dbRelationship.SuperToSubDeterminerValue.Any())
+                        projectContext.SuperToSubDeterminerValue.Remove(dbRelationship.SuperToSubDeterminerValue.First());
+                    foreach (var detRecord in relationship.DeterminerColumnValues)
+                    {
+                        dbRelationship.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = detRecord.Value });
+                    }
+
+                    if (relationship.SuperEntityDeterminerColumnID != 0)
+                        dbRelationship.SuperEntityDeterminerColumnID = relationship.SuperEntityDeterminerColumnID;
                     else
-                        dbRelationship.DeterminerColumnID = null;
+                        dbRelationship.SuperEntityDeterminerColumnID = null;
                 }
                 projectContext.SaveChanges();
             }

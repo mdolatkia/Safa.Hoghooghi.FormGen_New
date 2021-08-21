@@ -112,7 +112,7 @@ namespace MyDatabaseToObject
                 else if (parentCategory == DatabaseObjectCategory.Schema)
                 {
                     //var res = GetDBNameSchemaName(parentIdentity);
-                    foreach (var entity in myProjectContext.TableDrivedEntity.Where(x => x.Table.DBSchemaID == parentIdentity))
+                    foreach (var entity in myProjectContext.TableDrivedEntity.Where(x => x.IsDisabled == false && x.Table.DBSchemaID == parentIdentity))
                     {
                         if (IgnoreNotIndependentOrAlreadyInNavigationTree)
                             if (entity.IndependentDataEntry != true || myProjectContext.NavigationTree.Any(x => x.Category == "Entity" && x.ItemIdentity == entity.ID))

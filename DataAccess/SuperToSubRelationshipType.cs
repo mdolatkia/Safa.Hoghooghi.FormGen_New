@@ -14,13 +14,20 @@ namespace DataAccess
     
     public partial class SuperToSubRelationshipType
     {
+        public SuperToSubRelationshipType()
+        {
+            this.SuperToSubDeterminerValue = new HashSet<SuperToSubDeterminerValue>();
+            this.TableDrivedEntity = new HashSet<TableDrivedEntity>();
+        }
+    
         public int ID { get; set; }
         public int ISARelationshipID { get; set; }
-        public Nullable<int> DeterminerColumnID { get; set; }
-        public string DeterminerColumnValue { get; set; }
+        public Nullable<int> SuperEntityDeterminerColumnID { get; set; }
     
         public virtual Column Column { get; set; }
         public virtual ISARelationship ISARelationship { get; set; }
         public virtual RelationshipType RelationshipType { get; set; }
+        public virtual ICollection<SuperToSubDeterminerValue> SuperToSubDeterminerValue { get; set; }
+        public virtual ICollection<TableDrivedEntity> TableDrivedEntity { get; set; }
     }
 }

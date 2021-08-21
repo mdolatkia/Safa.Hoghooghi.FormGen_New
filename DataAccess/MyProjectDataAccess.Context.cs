@@ -124,6 +124,7 @@ namespace DataAccess
         public virtual DbSet<SubSystems> SubSystems { get; set; }
         public virtual DbSet<SubToSuperRelationshipType> SubToSuperRelationshipType { get; set; }
         public virtual DbSet<SubUnionToUnionRelationshipType> SubUnionToUnionRelationshipType { get; set; }
+        public virtual DbSet<SuperToSubDeterminerValue> SuperToSubDeterminerValue { get; set; }
         public virtual DbSet<SuperToSubRelationshipType> SuperToSubRelationshipType { get; set; }
         public virtual DbSet<TabGroupUISetting> TabGroupUISetting { get; set; }
         public virtual DbSet<Table> Table { get; set; }

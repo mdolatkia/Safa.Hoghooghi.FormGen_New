@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProxyLibrary;
-
+using System.Data.Entity.Infrastructure;
 
 namespace MyModelManager
 {
@@ -741,8 +741,8 @@ namespace MyModelManager
 
 
             var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Entity, item.ID.ToString(), columnInfoType.ToString(), relationshipInfoType.ToString());
-            if (cachedItem != null)
-                return (cachedItem as TableDrivedEntityDTO);
+            //     if (cachedItem != null)
+            //      return (cachedItem as TableDrivedEntityDTO);
 
 
             TableDrivedEntityDTO result = new TableDrivedEntityDTO();
@@ -761,15 +761,20 @@ namespace MyModelManager
             result.RelatedSchemaID = item.Table.DBSchemaID;
             result.RelatedSchema = item.Table.DBSchema.Name;
             result.ServerID = item.Table.DBSchema.DatabaseInformation.DBServerID;
+            if (item.SuperToSubRelationshipType != null)
+            {
+                BizISARelationship bizRelationship = new BizISARelationship();
+                result.InternalSuperToSubRelationship = bizRelationship.ToSuperToSubRelationshipDTO(item.SuperToSubRelationshipType);
+            }
             result.Alias = item.Alias;
             if (string.IsNullOrEmpty(result.Alias))
                 result.Alias = item.Name;
-            result.DeterminerColumnID = item.DeterminerColumnID ?? 0;
+            //   result.DeterminerColumnID = item.DeterminerColumnID ?? 0;
 
             BizColumn bizColumn = new BizColumn();
 
-            if (item.DeterminerColumnID != null)
-                result.DeterminerColumn = bizColumn.ToColumnDTO(item.Column, true);
+            //    if (item.DeterminerColumnID != null)
+            //            result.DeterminerColumn = bizColumn.ToColumnDTO(item.Column, true);
             //result.DeterminerColumnValue = item.DeterminerColumnValue;
             //   result.Criteria = item.Criteria;
             //result.SecurityObjectID = item.SecurityObjectID.Value;
@@ -792,10 +797,10 @@ namespace MyModelManager
             result.IsStructurReferencee = item.IsStructurReferencee;
             if (columnInfoType != EntityColumnInfoType.WithoutColumn)
             {
-                foreach (var det in item.EntityDeterminer)
-                {
-                    result.EntityDeterminers.Add(new EntityDeterminerDTO() { ID = det.ID, Value = det.Value });
-                }
+                //foreach (var det in item.EntityDeterminer)
+                //{
+                //    result.EntityDeterminers.Add(new EntityDeterminerDTO() { ID = det.ID, Value = det.Value });
+                //}
 
                 List<Column> columns = null;
                 if (tableColumns)
@@ -1259,49 +1264,68 @@ namespace MyModelManager
                         isaRelationship.IsTolatParticipation = message.ISARelationship.IsTolatParticipation;
                         isaRelationship.IsDisjoint = message.ISARelationship.IsDisjoint;
 
-                        List<TableDrivedEntity> listEntities = new List<TableDrivedEntity>();
+                        List<TableDrivedEntity> listDbDrivedEntities = new List<TableDrivedEntity>();
                         foreach (var rel in isaRelationship.SuperToSubRelationshipType)
-                            listEntities.Add(rel.RelationshipType.Relationship.TableDrivedEntity1);
-                        var listRemoveEntity = listEntities.Where(x => !message.DrivedEntities.Any(y => y.ID == x.ID)).ToList();
+                        {
+                            var dbDrivedEntity = projectContext.TableDrivedEntity.FirstOrDefault(x => x.InternalTableSuperToSubRelID == rel.ID);
+                            if (dbDrivedEntity != null)
+                                listDbDrivedEntities.Add(dbDrivedEntity);
+                        }
+                        var listRemoveEntity = listDbDrivedEntities.Where(x => !message.DrivedEntities.Any(y => y.Item3.ID == x.ID)).ToList();
                         foreach (var entity in listRemoveEntity)
                         {
                             RemoveDrivedEntity(projectContext, entity, isaRelationship);
                         }
                         List<Tuple<Relationship, Relationship>> listCreatedRelationships = new List<Tuple<Relationship, Relationship>>();
-                        List<TableDrivedEntity> createdEntities = new List<TableDrivedEntity>();
+                        List<Tuple<TableDrivedEntity, SuperToSubRelationshipType>> createdEntities = new List<Tuple<TableDrivedEntity, SuperToSubRelationshipType>>();
                         List<int> reviedRelationshipIDs = new List<int>();
+
                         foreach (var drived in message.DrivedEntities)
                         {
                             TableDrivedEntity dbDrived = null;
-                            if (drived.ID == 0)
+                            if (drived.Item3.ID == 0)
                             {
                                 dbDrived = new TableDrivedEntity();
                                 dbDrived.IndependentDataEntry = true;
                                 dbDrived.SecurityObject = new SecurityObject();
                                 dbDrived.SecurityObject.Type = (int)DatabaseObjectCategory.Entity;
                                 dbDrived = projectContext.TableDrivedEntity.Add(dbDrived);
-                                createdEntities.Add(dbDrived);
+
                             }
                             else
-                                dbDrived = projectContext.TableDrivedEntity.First(x => x.ID == drived.ID);
-                            dbDrived.DeterminerColumnID = drived.DeterminerColumnID;
+                                dbDrived = projectContext.TableDrivedEntity.First(x => x.ID == drived.Item3.ID);
+                            // dbDrived.DeterminerColumnID = drived.DeterminerColumnID;
                             //dbDrived.DeterminerColumnValue = drived.DeterminerColumnValue;
-                            dbDrived.Name = drived.Name;
-                            dbDrived.Alias = drived.Alias;
+                            dbDrived.Name = drived.Item3.Name;
+                            dbDrived.Alias = drived.Item3.Alias;
                             dbDrived.TableID = dbBaseEntity.TableID;
 
-                            while (dbDrived.EntityDeterminer.Any())
-                                projectContext.EntityDeterminer.Remove(dbDrived.EntityDeterminer.First());
-                            foreach (var detRecord in drived.EntityDeterminers)
-                            {
-                                dbDrived.EntityDeterminer.Add(new EntityDeterminer() { Value = detRecord.Value });
-                            }
 
+                            SuperToSubRelationshipType superToSubRelationshipType = null;
                             if (dbDrived.ID == 0)
                             {
-                                listCreatedRelationships.Add(AddISARelationship(projectContext, isaRelationship, dbDrived, dbBaseEntity));
+                                var tuple = AddISARelationship(projectContext, isaRelationship, drived.Item1, drived.Item2, dbBaseEntity, dbDrived);
+                                superToSubRelationshipType = tuple.Item1.RelationshipType.SuperToSubRelationshipType;
+                                listCreatedRelationships.Add(tuple);
+                                //      dbDrived.SuperToSubRelationshipType = superToSubRelationshipType;
+
+                                createdEntities.Add(new Tuple<TableDrivedEntity, SuperToSubRelationshipType>(dbDrived, superToSubRelationshipType));
                             }
-                            foreach (var item in drived.Relationships)
+                            else
+                            {
+                                superToSubRelationshipType = dbDrived.SuperToSubRelationshipType;
+                            }
+                            if (superToSubRelationshipType != null)
+                            {
+                                superToSubRelationshipType.SuperEntityDeterminerColumnID = drived.Item1.SuperEntityDeterminerColumnID;
+                                while (superToSubRelationshipType.SuperToSubDeterminerValue.Any())
+                                    projectContext.SuperToSubDeterminerValue.Remove(superToSubRelationshipType.SuperToSubDeterminerValue.First());
+                                foreach (var detRecord in drived.Item1.DeterminerColumnValues)
+                                {
+                                    superToSubRelationshipType.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = detRecord.Value });
+                                }
+                            }
+                            foreach (var item in drived.Item3.Relationships)
                             {
                                 var dbRelationship = projectContext.Relationship.First(x => x.ID == item.ID);
                                 Relationship dbReverseRelationship = dbRelationship.Relationship2;
@@ -1318,17 +1342,17 @@ namespace MyModelManager
                                 dbReverseRelationship.TableDrivedEntity1 = dbDrived;
                                 dbReverseRelationship.Alias = dbDrived.Alias;
 
-                                dbRelationship.Name = drived.Name + ">" + dbRelationship.TableDrivedEntity1.Name;
-                                dbReverseRelationship.Name = dbReverseRelationship.TableDrivedEntity.Name + ">" + drived.Name;
+                                dbRelationship.Name = drived.Item3.Name + ">" + dbRelationship.TableDrivedEntity1.Name;
+                                dbReverseRelationship.Name = dbReverseRelationship.TableDrivedEntity.Name + ">" + drived.Item3.Name;
                                 reviedRelationshipIDs.Add(item.ID);
 
                             }
-                            var listDrivedRemoveColumn = dbDrived.TableDrivedEntity_Columns.Where(x => !drived.Columns.Any(y => y.ID == x.ColumnID)).ToList();
+                            var listDrivedRemoveColumn = dbDrived.TableDrivedEntity_Columns.Where(x => !drived.Item3.Columns.Any(y => y.ID == x.ColumnID)).ToList();
                             foreach (var removeCol in listDrivedRemoveColumn)
                                 projectContext.TableDrivedEntity_Columns.Remove(removeCol);
-                            foreach (var item in drived.Columns)
+                            foreach (var item in drived.Item3.Columns)
                             {
-                                var entityColumn = dbDrived.TableDrivedEntity_Columns.FirstOrDefault(x => x.TableDrivedEntityID == drived.ID && x.ColumnID == item.ID);
+                                var entityColumn = dbDrived.TableDrivedEntity_Columns.FirstOrDefault(x => x.TableDrivedEntityID == drived.Item3.ID && x.ColumnID == item.ID);
                                 if (entityColumn == null)
                                 {
                                     entityColumn = new TableDrivedEntity_Columns();
@@ -1339,13 +1363,81 @@ namespace MyModelManager
 
                         }
 
-                        projectContext.SaveChanges();
+                        try
+                        {
+                            projectContext.SaveChanges();
+                        }
+                        catch (DbEntityValidationException e)
+                        {
+                            foreach (var eve in e.EntityValidationErrors)
+                            {
+                                Console.WriteLine(@"Entity of type ""{0}"" in state ""{1}"" 
+                   has the following validation errors:",
+                                    eve.Entry.Entity.GetType().Name,
+                                    eve.Entry.State);
+                                foreach (var ve in eve.ValidationErrors)
+                                {
+                                    Console.WriteLine(@"- Property: ""{0}"", Error: ""{1}""",
+                                        ve.PropertyName, ve.ErrorMessage);
+                                }
+                            }
+                            throw;
+                        }
+                        catch (DbUpdateException e)
+                        {
+                            //Add your code to inspect the inner exception and/or
+                            //e.Entries here.
+                            //Or just use the debugger.
+                            //Added this catch (after the comments below) to make it more obvious 
+                            //how this code might help this specific problem
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                            throw;
+                        }
                         foreach (var item in listCreatedRelationships)
                         {
                             item.Item1.RelationshipID = item.Item2.ID;
                             item.Item2.RelationshipID = item.Item1.ID;
                         }
-                        projectContext.SaveChanges();
+                        foreach (var entity in createdEntities)
+                        {
+                            entity.Item1.SuperToSubRelationshipType = entity.Item2;
+                        }
+                        try
+                        {
+                            projectContext.SaveChanges();
+                        }
+                        catch (DbEntityValidationException e)
+                        {
+                            foreach (var eve in e.EntityValidationErrors)
+                            {
+                                Console.WriteLine(@"Entity of type ""{0}"" in state ""{1}"" 
+                   has the following validation errors:",
+                                    eve.Entry.Entity.GetType().Name,
+                                    eve.Entry.State);
+                                foreach (var ve in eve.ValidationErrors)
+                                {
+                                    Console.WriteLine(@"- Property: ""{0}"", Error: ""{1}""",
+                                        ve.PropertyName, ve.ErrorMessage);
+                                }
+                            }
+                            throw;
+                        }
+                        catch (DbUpdateException e)
+                        {
+                            //Add your code to inspect the inner exception and/or
+                            //e.Entries here.
+                            //Or just use the debugger.
+                            //Added this catch (after the comments below) to make it more obvious 
+                            //how this code might help this specific problem
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                            throw;
+                        }
 
                         BizEntityUIComposition bizEntityUIComposition = new BizEntityUIComposition();
                         if (createdEntities.Any())
@@ -1353,7 +1445,7 @@ namespace MyModelManager
                             bizEntityUIComposition.UpdateUIComposition(requester, message.BaseEntity.ID);
 
                             BizEntitySettings bizEntitySettings = new MyModelManager.BizEntitySettings();
-                            bizEntitySettings.UpdateDefaultSettingsInModel(requester, createdEntities.Select(x => x.ID).ToList());
+                            bizEntitySettings.UpdateDefaultSettingsInModel(requester, createdEntities.Select(x => x.Item1.ID).ToList());
                         }
 
                     }
@@ -1398,6 +1490,11 @@ namespace MyModelManager
                 }
                 throw;
             }
+            catch (Exception ex)
+            {
+
+            }
+
             //if (!(message.ID == message.BaseEntity.ID))
             //{
             //    DataAccess.ISARelationship isaRelationship = null;
@@ -1465,17 +1562,18 @@ namespace MyModelManager
             return true;
         }
 
-        private Tuple<Relationship, Relationship> AddISARelationship(MyProjectEntities projectContext, ISARelationship isaRelationship, TableDrivedEntity dbDrived, TableDrivedEntity dbBaseEntity)
+        private Tuple<Relationship, Relationship> AddISARelationship(MyProjectEntities projectContext, ISARelationship isaRelationship
+            , SuperToSubRelationshipDTO superToSub, SubToSuperRelationshipDTO subToSuper, TableDrivedEntity dbBaseEntity, TableDrivedEntity dbDrivedEntity)
         {
             var relaitonship = new Relationship();
             //relaitonship.Enabled = true;
 
             relaitonship.SecurityObject = new SecurityObject();
             relaitonship.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
-            relaitonship.Name = dbBaseEntity.Name + ">" + dbDrived.Name;
-            relaitonship.Alias = dbDrived.Alias;
+            relaitonship.Name = superToSub.Name;
+            relaitonship.Alias = superToSub.Alias;
             relaitonship.TableDrivedEntity = dbBaseEntity;
-            relaitonship.TableDrivedEntity1 = dbDrived;
+            relaitonship.TableDrivedEntity1 = dbDrivedEntity;
             var pkColumns = dbBaseEntity.Table.Column.Where(x => x.PrimaryKey);
             foreach (var col in pkColumns)
                 relaitonship.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = col.ID, SecondSideColumnID = col.ID });
@@ -1491,12 +1589,12 @@ namespace MyModelManager
             var reverserelaitonship = new Relationship();
             //reverserelaitonship.Enabled = true;
             // reverserelaitonship.DataEntryEnabled = true;
-            reverserelaitonship.Name = dbDrived.Name + ">" + dbBaseEntity.Name;
-            reverserelaitonship.Alias = dbBaseEntity.Alias;
+            reverserelaitonship.Name = subToSuper.Name;
+            reverserelaitonship.Alias = subToSuper.Alias;
             reverserelaitonship.SecurityObject = new SecurityObject();
             reverserelaitonship.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
-            reverserelaitonship.TableDrivedEntity = relaitonship.TableDrivedEntity1;
-            reverserelaitonship.TableDrivedEntity1 = relaitonship.TableDrivedEntity;
+            reverserelaitonship.TableDrivedEntity = dbDrivedEntity;
+            reverserelaitonship.TableDrivedEntity1 = dbBaseEntity;
             foreach (var col in pkColumns)
                 reverserelaitonship.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = col.ID, SecondSideColumnID = col.ID });
             reverserelaitonship.RelationshipType = new RelationshipType();
@@ -1529,24 +1627,43 @@ namespace MyModelManager
         {
             //  projectContext.TableDrivedEntity.Remove(entity);
             entity.IsDisabled = true;
-            foreach (var rel in isaRelationship.SuperToSubRelationshipType.Where(x => x.RelationshipType.Relationship.TableDrivedEntityID2 == entity.ID).ToList())
-            {
-                //foreach (var item in rel.RelationshipType.Relationship.UIEnablityDetails.Where(X => X.UIActionActivity.EntityState_UIActionActivity.Any(y => y.TableDrivedEntityState.TableDrivedEntityID == rel.RelationshipType.Relationship.TableDrivedEntityID1)).ToList())
-                //{
-                //    projectContext.UIEnablityDetails.Remove(item);
-                //}
-                projectContext.Relationship.Remove(rel.RelationshipType.Relationship);
-                projectContext.RelationshipType.Remove(rel.RelationshipType);
-                projectContext.SuperToSubRelationshipType.Remove(rel);
-            }
-            foreach (var rel in isaRelationship.SubToSuperRelationshipType.Where(x => x.RelationshipType.Relationship.TableDrivedEntityID1 == entity.ID).ToList())
-            {
-                projectContext.Relationship.Remove(rel.RelationshipType.Relationship);
-                projectContext.RelationshipType.Remove(rel.RelationshipType);
-                projectContext.SubToSuperRelationshipType.Remove(rel);
-            }
+            var superRel = entity.SuperToSubRelationshipType;
+            var subRel = superRel.RelationshipType.Relationship.Relationship2.RelationshipType.SubToSuperRelationshipType;
+            superRel.RelationshipType.Relationship.Relationship2 = null;
+            subRel.RelationshipType.Relationship.Relationship2 = null;
+            projectContext.SaveChanges();
+            //foreach (var item in rel.RelationshipType.Relationship.UIEnablityDetails.Where(X => X.UIActionActivity.EntityState_UIActionActivity.Any(y => y.TableDrivedEntityState.TableDrivedEntityID == rel.RelationshipType.Relationship.TableDrivedEntityID1)).ToList())
+            //{
+            //    projectContext.UIEnablityDetails.Remove(item);
+            //}
+
+            while (superRel.SuperToSubDeterminerValue.Any())
+                projectContext.SuperToSubDeterminerValue.Remove(superRel.SuperToSubDeterminerValue.First());
+            entity.SuperToSubRelationshipType = null;
+
+            var relType = superRel.RelationshipType;
+            var relType1 = subRel.RelationshipType;
+
+            while (superRel.RelationshipType.Relationship.RelationshipColumns.Any())
+                projectContext.RelationshipColumns.Remove(superRel.RelationshipType.Relationship.RelationshipColumns.First());
+            projectContext.Relationship.Remove(superRel.RelationshipType.Relationship);
+            projectContext.RelationshipType.Remove(relType);
+            projectContext.SuperToSubRelationshipType.Remove(superRel);
+
+            while (subRel.RelationshipType.Relationship.RelationshipColumns.Any())
+                projectContext.RelationshipColumns.Remove(subRel.RelationshipType.Relationship.RelationshipColumns.First());
+            projectContext.Relationship.Remove(subRel.RelationshipType.Relationship);
+            projectContext.RelationshipType.Remove(relType1);
+            projectContext.SubToSuperRelationshipType.Remove(subRel);
+
+         
+           
 
         }
+
+
+
+
 
         //private string GetRelationshipName(Relationship dbRelationship)
         //{

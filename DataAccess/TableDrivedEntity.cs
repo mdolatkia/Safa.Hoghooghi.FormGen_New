@@ -77,6 +77,7 @@ namespace DataAccess
         public bool SelectAsComboBox { get; set; }
         public Nullable<int> DeterminerColumnID { get; set; }
         public Nullable<int> DataMenuSettingID { get; set; }
+        public Nullable<int> InternalTableSuperToSubRelID { get; set; }
     
         public virtual ICollection<ArchiveFolder> ArchiveFolder { get; set; }
         public virtual ICollection<ArchiveTag> ArchiveTag { get; set; }
@@ -109,6 +110,7 @@ namespace DataAccess
         public virtual ICollection<Relationship> Relationship { get; set; }
         public virtual ICollection<Relationship> Relationship1 { get; set; }
         public virtual ICollection<SearchRepository> SearchRepository { get; set; }
+        public virtual SuperToSubRelationshipType SuperToSubRelationshipType { get; set; }
         public virtual Table Table { get; set; }
         public virtual ICollection<Process> Process { get; set; }
         public virtual ICollection<TableDrivedEntity_EntityCommand> TableDrivedEntity_EntityCommand { get; set; }

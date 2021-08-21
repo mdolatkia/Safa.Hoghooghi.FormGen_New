@@ -530,6 +530,9 @@
     <Compile Include="SubUnionToUnionRelationshipType.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
+    <Compile Include="SuperToSubDeterminerValue.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
+    </Compile>
     <Compile Include="SuperToSubRelationshipType.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>

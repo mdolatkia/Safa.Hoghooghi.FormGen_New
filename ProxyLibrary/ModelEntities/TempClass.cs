@@ -47,7 +47,7 @@ namespace ModelEntites
         public string Description { set; get; }
         public bool IsNull { get; set; }
         public bool? CalculateFormulaAsDefault { get; set; }
-        
+
         public bool PrimaryKey { get; set; }
         public bool ForeignKey { get; set; }
         //public int SecurityObjectID { set; get; }
@@ -561,18 +561,33 @@ namespace ModelEntites
     }
     public class SuperToSubRelationshipDTO : RelationshipDTO
     {
+        public SuperToSubRelationshipDTO()
+        {
+            DeterminerColumnValues = new List<SuperToSubDeterminerValueDTO>();
+        }
         public ISARelationshipDTO ISARelationship { set; get; }
-        public int DeterminerColumnID { set; get; }
-        public string DeterminerColumnValue { set; get; }
+        public int SuperEntityDeterminerColumnID { set; get; }
+        public List<SuperToSubDeterminerValueDTO> DeterminerColumnValues { set; get; }
+        public ColumnDTO SuperEntityDeterminerColumn { get; set; }
     }
     public class SubToSuperRelationshipDTO : RelationshipDTO
     {
+        public SubToSuperRelationshipDTO()
+        {
+            DeterminerColumnValues = new List<SuperToSubDeterminerValueDTO>();
+        }
         public ISARelationshipDTO ISARelationship { set; get; }
-        public int DeterminerColumnID { set; get; }
-        public string DeterminerColumnValue { set; get; }
-    }
+        public int SuperEntityDeterminerColumnID { set; get; }
+        public List<SuperToSubDeterminerValueDTO> DeterminerColumnValues { set; get; }
+        public ColumnDTO SuperEntityDeterminerColumn { get; set; }
 
-    public class ManyToManyRelationshipDTO
+    }
+    public class SuperToSubDeterminerValueDTO 
+    {
+        public int ID { set; get; }
+        public string Value { set; get; }
+    }
+        public class ManyToManyRelationshipDTO
     {
         public int ID { set; get; }
         public string Name { set; get; }
@@ -683,10 +698,10 @@ namespace ModelEntites
     {
         public EditBaseEntityDTO()
         {
-            DrivedEntities = new List<TableDrivedEntityDTO>();
+            DrivedEntities = new List<Tuple<SuperToSubRelationshipDTO, SubToSuperRelationshipDTO, TableDrivedEntityDTO>>();
         }
         public TableDrivedEntityDTO BaseEntity { set; get; }
-        public List<TableDrivedEntityDTO> DrivedEntities { set; get; }
+        public List<Tuple<SuperToSubRelationshipDTO,SubToSuperRelationshipDTO, TableDrivedEntityDTO>> DrivedEntities { set; get; }
         public ISARelationshipDTO ISARelationship { set; get; }
     }
     //public class EditDrivedEntityDTO
@@ -867,7 +882,7 @@ namespace ModelEntites
         {
             Relationships = new List<RelationshipDTO>();
             DatabaseDescriptions = new List<Tuple<string, string>>();
-            EntityDeterminers = new List<ModelEntites.EntityDeterminerDTO>();
+          //  EntityDeterminers = new List<string>();
             //OneToManyRelationships = new List<OneToManyRelationshipDTO>();
             //ManyToOneRelationships = new List<ManyToOneRelationshipDTO>();
             //ImplicitOneToOneRelationships = new List<ImplicitOneToOneRelationshipDTO>();
@@ -878,6 +893,7 @@ namespace ModelEntites
             //SubUnionToSuperUnionRelationships = new List<SubUnionToSuperUnionRelationshipDTO>();
             Columns = new List<ModelEntites.ColumnDTO>();
         }
+       // public List<string> EntityDeterminers;
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -982,12 +998,14 @@ namespace ModelEntites
         public bool LoadArchiveRelatedItems { get; set; }
         public bool LoadLetterRelatedItems { get; set; }
 
-        public int DeterminerColumnID { get; set; }
-        public ColumnDTO DeterminerColumn { get; set; }
+        //فقط به هنگام ایجاد موجودیت فرزند استفاده می شود
+        //public int TmpSuperEntityDeterminerColumnID { get; set; }
+        //      public ColumnDTO DeterminerColumn { get; set; }
         //public string DeterminerColumnValue { get; set; }
-        public List<EntityDeterminerDTO> EntityDeterminers { set; get; }
+        //   public List<EntityDeterminerDTO> EntityDeterminers { set; get; }
         public bool Reviewed { get; set; }
         public bool ColumnsReviewed { get; set; }
+        public SuperToSubRelationshipDTO InternalSuperToSubRelationship { get; set; }
         //public bool ColumnsAdded { get; set; }
     }
     public class EntityDeterminerDTO
@@ -1466,7 +1484,7 @@ namespace ModelEntites
 
         }
         public int ID { set; get; }
-         public int TargetDataMenuSettingID { set; get; }
+        public int TargetDataMenuSettingID { set; get; }
         public int RelationshipTailID { set; get; }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }
         public string Group1 { set; get; }
@@ -1573,7 +1591,7 @@ namespace ModelEntites
         public int ID { get; set; }
         public int ColumnID { get; set; }
         public string ParameterName { get; set; }
-      
+
     }
     public class EntityCrosstabReportDTO : EntitySearchableReportDTO
     {
@@ -2392,7 +2410,7 @@ namespace ModelEntites
 
         public string Title { set; get; }
         public int EntityID { set; get; }
-        
+
         public Enum_EntityActionActivityStep Step { set; get; }
         public bool ResultSensetive { set; get; }
 
@@ -2696,7 +2714,7 @@ namespace ModelEntites
         Formula,
         Command,
         Report,
-    //    DirectDataReport,
+        //    DirectDataReport,
         RootMenu,
         Menu,
         Archive,

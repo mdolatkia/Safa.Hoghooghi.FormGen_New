@@ -78,7 +78,7 @@
                 <TextBlock Margin="4" Grid.Row="0" Grid.Column="0"  Text="ستون"></TextBlock>
                 <ComboBox Margin="4" Grid.Row="0"  HorizontalAlignment="Stretch" Grid.Column="1"  x:Name="cmbValue"></ComboBox>
             </Grid>
-            <telerik:RadGridView x:Name="dtgValues" Grid.Row="1">
+            <telerik:RadGridView x:Name="dtgValues" VerticalAlignment="Top" Grid.Row="1" Height="80">
                 <telerik:RadGridView.Columns>
                     <telerik:GridViewDataColumn Header="مقدار" DataMemberBinding="{Binding Value}" />
                 </telerik:RadGridView.Columns>

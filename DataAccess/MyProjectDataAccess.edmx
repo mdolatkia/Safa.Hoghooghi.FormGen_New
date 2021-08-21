@@ -952,14 +952,21 @@
           <Property Name="UnionRelationshipTypeID" Type="int" Nullable="false" />
           <Property Name="Dummy" Type="bit" />
         </EntityType>
+        <EntityType Name="SuperToSubDeterminerValue">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SuperToSubRelationshipTypeID" Type="int" Nullable="false" />
+          <Property Name="DeterminerValue" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
         <EntityType Name="SuperToSubRelationshipType">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="ISARelationshipID" Type="int" Nullable="false" />
-          <Property Name="DeterminerColumnID" Type="int" />
-          <Property Name="DeterminerColumnValue" Type="varchar" MaxLength="256" />
+          <Property Name="SuperEntityDeterminerColumnID" Type="int" />
         </EntityType>
         <EntityType Name="TabGroupUISetting">
           <Key>
@@ -1008,6 +1015,7 @@
           <Property Name="SelectAsComboBox" Type="bit" Nullable="false" />
           <Property Name="DeterminerColumnID" Type="int" />
           <Property Name="DataMenuSettingID" Type="int" />
+          <Property Name="InternalTableSuperToSubRelID" Type="int" />
         </EntityType>
         <EntityType Name="TableDrivedEntity_Columns">
           <Key>
@@ -2253,6 +2261,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SuperToSubDeterminerValue_SuperToSubRelationshipType">
+          <End Role="SuperToSubRelationshipType" Type="Self.SuperToSubRelationshipType" Multiplicity="1" />
+          <End Role="SuperToSubDeterminerValue" Type="Self.SuperToSubDeterminerValue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SuperToSubRelationshipType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SuperToSubDeterminerValue">
+              <PropertyRef Name="SuperToSubRelationshipTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SuperToSubRelationshipType_Column">
           <End Role="Column" Type="Self.Column" Multiplicity="0..1" />
           <End Role="SuperToSubRelationshipType" Type="Self.SuperToSubRelationshipType" Multiplicity="*" />
@@ -2261,7 +2281,7 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="SuperToSubRelationshipType">
-              <PropertyRef Name="DeterminerColumnID" />
+              <PropertyRef Name="SuperEntityDeterminerColumnID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2322,6 +2342,18 @@
             </Principal>
             <Dependent Role="TableDrivedEntity">
               <PropertyRef Name="EntitySearchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntity_SuperToSubRelationshipType">
+          <End Role="SuperToSubRelationshipType" Type="Self.SuperToSubRelationshipType" Multiplicity="0..1" />
+          <End Role="TableDrivedEntity" Type="Self.TableDrivedEntity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SuperToSubRelationshipType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TableDrivedEntity">
+              <PropertyRef Name="InternalTableSuperToSubRelID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4789,6 +4821,7 @@
           <EntitySet Name="SubSystems" EntityType="Self.SubSystems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubToSuperRelationshipType" EntityType="Self.SubToSuperRelationshipType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubUnionToUnionRelationshipType" EntityType="Self.SubUnionToUnionRelationshipType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SuperToSubDeterminerValue" EntityType="Self.SuperToSubDeterminerValue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SuperToSubRelationshipType" EntityType="Self.SuperToSubRelationshipType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TabGroupUISetting" EntityType="Self.TabGroupUISetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Table" EntityType="Self.Table" Schema="dbo" store:Type="Tables" />
@@ -5117,6 +5150,10 @@
             <End Role="Column" EntitySet="Column" />
             <End Role="TimeColumnType" EntitySet="TimeColumnType" />
           </AssociationSet>
+          <AssociationSet Name="FK_SuperToSubDeterminerValue_SuperToSubRelationshipType" Association="Self.FK_SuperToSubDeterminerValue_SuperToSubRelationshipType">
+            <End Role="SuperToSubRelationshipType" EntitySet="SuperToSubRelationshipType" />
+            <End Role="SuperToSubDeterminerValue" EntitySet="SuperToSubDeterminerValue" />
+          </AssociationSet>
           <AssociationSet Name="FK_SuperToSubRelationshipType_Column" Association="Self.FK_SuperToSubRelationshipType_Column">
             <End Role="Column" EntitySet="Column" />
             <End Role="SuperToSubRelationshipType" EntitySet="SuperToSubRelationshipType" />
@@ -5139,6 +5176,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntity_EntitySearch" Association="Self.FK_TableDrivedEntity_EntitySearch">
             <End Role="EntitySearch" EntitySet="EntitySearch" />
+            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntity_SuperToSubRelationshipType" Association="Self.FK_TableDrivedEntity_SuperToSubRelationshipType">
+            <End Role="SuperToSubRelationshipType" EntitySet="SuperToSubRelationshipType" />
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityState_EntityRelationshipTail" Association="Self.FK_TableDrivedEntityState_EntityRelationshipTail">
@@ -6034,6 +6075,7 @@
           <EntitySet Name="SubSystems" EntityType="MyProjectModel.SubSystems" />
           <EntitySet Name="SubToSuperRelationshipType" EntityType="MyProjectModel.SubToSuperRelationshipType" />
           <EntitySet Name="SubUnionToUnionRelationshipType" EntityType="MyProjectModel.SubUnionToUnionRelationshipType" />
+          <EntitySet Name="SuperToSubDeterminerValue" EntityType="MyProjectModel.SuperToSubDeterminerValue" />
           <EntitySet Name="SuperToSubRelationshipType" EntityType="MyProjectModel.SuperToSubRelationshipType" />
           <EntitySet Name="TabGroupUISetting" EntityType="MyProjectModel.TabGroupUISetting" />
           <EntitySet Name="Table" EntityType="MyProjectModel.Table" />
@@ -6940,6 +6982,14 @@
           <AssociationSet Name="FKSubUnionTo235113" Association="MyProjectModel.FKSubUnionTo235113">
             <End Role="UnionRelationshipType" EntitySet="UnionRelationshipType" />
             <End Role="SubUnionToUnionRelationshipType" EntitySet="SubUnionToUnionRelationshipType" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SuperToSubDeterminerValue_SuperToSubRelationshipType" Association="MyProjectModel.FK_SuperToSubDeterminerValue_SuperToSubRelationshipType">
+            <End Role="SuperToSubRelationshipType" EntitySet="SuperToSubRelationshipType" />
+            <End Role="SuperToSubDeterminerValue" EntitySet="SuperToSubDeterminerValue" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntity_SuperToSubRelationshipType" Association="MyProjectModel.FK_TableDrivedEntity_SuperToSubRelationshipType">
+            <End Role="SuperToSubRelationshipType" EntitySet="SuperToSubRelationshipType" />
+            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
           </AssociationSet>
           <AssociationSet Name="FKTableDrive311898" Association="MyProjectModel.FKTableDrive311898">
             <End Role="Table" EntitySet="Table" />
@@ -8478,17 +8528,27 @@
           <NavigationProperty Name="RelationshipType" Relationship="MyProjectModel.FKSubUnionTo818068" FromRole="SubUnionToUnionRelationshipType" ToRole="RelationshipType" />
           <NavigationProperty Name="UnionRelationshipType" Relationship="MyProjectModel.FKSubUnionTo235113" FromRole="SubUnionToUnionRelationshipType" ToRole="UnionRelationshipType" />
         </EntityType>
+        <EntityType Name="SuperToSubDeterminerValue">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SuperToSubRelationshipTypeID" Type="Int32" Nullable="false" />
+          <Property Name="DeterminerValue" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SuperToSubRelationshipType" Relationship="MyProjectModel.FK_SuperToSubDeterminerValue_SuperToSubRelationshipType" FromRole="SuperToSubDeterminerValue" ToRole="SuperToSubRelationshipType" />
+        </EntityType>
         <EntityType Name="SuperToSubRelationshipType">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="ISARelationshipID" Type="Int32" Nullable="false" />
-          <Property Name="DeterminerColumnID" Type="Int32" />
-          <Property Name="DeterminerColumnValue" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="SuperEntityDeterminerColumnID" Type="Int32" />
           <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_SuperToSubRelationshipType_Column" FromRole="SuperToSubRelationshipType" ToRole="Column" />
           <NavigationProperty Name="ISARelationship" Relationship="MyProjectModel.FKSuperToSub515953" FromRole="SuperToSubRelationshipType" ToRole="ISARelationship" />
           <NavigationProperty Name="RelationshipType" Relationship="MyProjectModel.FKSuperToSub305547" FromRole="SuperToSubRelationshipType" ToRole="RelationshipType" />
+          <NavigationProperty Name="SuperToSubDeterminerValue" Relationship="MyProjectModel.FK_SuperToSubDeterminerValue_SuperToSubRelationshipType" FromRole="SuperToSubRelationshipType" ToRole="SuperToSubDeterminerValue" />
+          <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FK_TableDrivedEntity_SuperToSubRelationshipType" FromRole="SuperToSubRelationshipType" ToRole="TableDrivedEntity" />
         </EntityType>
         <EntityType Name="TabGroupUISetting">
           <Key>
@@ -8542,6 +8602,7 @@
           <Property Name="SelectAsComboBox" Type="Boolean" Nullable="false" />
           <Property Name="DeterminerColumnID" Type="Int32" />
           <Property Name="DataMenuSettingID" Type="Int32" />
+          <Property Name="InternalTableSuperToSubRelID" Type="Int32" />
           <NavigationProperty Name="ArchiveFolder" Relationship="MyProjectModel.FKArchiveFol695820" FromRole="TableDrivedEntity" ToRole="ArchiveFolder" />
           <NavigationProperty Name="ArchiveTag" Relationship="MyProjectModel.FK_ArchiveTag_EntityArchive" FromRole="TableDrivedEntity" ToRole="ArchiveTag" />
           <NavigationProperty Name="EntityArchiveRelationshipTails" Relationship="MyProjectModel.FKEntityArch437336" FromRole="TableDrivedEntity" ToRole="EntityArchiveRelationshipTails" />
@@ -8573,6 +8634,7 @@
           <NavigationProperty Name="Relationship" Relationship="MyProjectModel.FKRelationsh250123" FromRole="TableDrivedEntity" ToRole="Relationship" />
           <NavigationProperty Name="Relationship1" Relationship="MyProjectModel.FKRelationsh250124" FromRole="TableDrivedEntity" ToRole="Relationship" />
           <NavigationProperty Name="SearchRepository" Relationship="MyProjectModel.FK_SearchRepository_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="SearchRepository" />
+          <NavigationProperty Name="SuperToSubRelationshipType" Relationship="MyProjectModel.FK_TableDrivedEntity_SuperToSubRelationshipType" FromRole="TableDrivedEntity" ToRole="SuperToSubRelationshipType" />
           <NavigationProperty Name="Table" Relationship="MyProjectModel.FKTableDrive311898" FromRole="TableDrivedEntity" ToRole="Table" />
           <NavigationProperty Name="Process" Relationship="MyProjectModel.FK_Process_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="Process" />
           <NavigationProperty Name="TableDrivedEntity_EntityCommand" Relationship="MyProjectModel.FK_TableDrivedEntity_EntityCommand_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="TableDrivedEntity_EntityCommand" />
@@ -9602,7 +9664,7 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="SuperToSubRelationshipType">
-              <PropertyRef Name="DeterminerColumnID" />
+              <PropertyRef Name="SuperEntityDeterminerColumnID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11694,6 +11756,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SuperToSubDeterminerValue_SuperToSubRelationshipType">
+          <End Type="MyProjectModel.SuperToSubRelationshipType" Role="SuperToSubRelationshipType" Multiplicity="1" />
+          <End Type="MyProjectModel.SuperToSubDeterminerValue" Role="SuperToSubDeterminerValue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SuperToSubRelationshipType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SuperToSubDeterminerValue">
+              <PropertyRef Name="SuperToSubRelationshipTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntity_SuperToSubRelationshipType">
+          <End Type="MyProjectModel.SuperToSubRelationshipType" Role="SuperToSubRelationshipType" Multiplicity="0..1" />
+          <End Type="MyProjectModel.TableDrivedEntity" Role="TableDrivedEntity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SuperToSubRelationshipType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TableDrivedEntity">
+              <PropertyRef Name="InternalTableSuperToSubRelID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKTableDrive311898">
           <End Type="MyProjectModel.Table" Role="Table" Multiplicity="1" />
           <End Type="MyProjectModel.TableDrivedEntity" Role="TableDrivedEntity" Multiplicity="*" />
@@ -13420,11 +13506,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="SuperToSubDeterminerValue">
+            <EntityTypeMapping TypeName="MyProjectModel.SuperToSubDeterminerValue">
+              <MappingFragment StoreEntitySet="SuperToSubDeterminerValue">
+                <ScalarProperty Name="DeterminerValue" ColumnName="DeterminerValue" />
+                <ScalarProperty Name="SuperToSubRelationshipTypeID" ColumnName="SuperToSubRelationshipTypeID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="SuperToSubRelationshipType">
             <EntityTypeMapping TypeName="MyProjectModel.SuperToSubRelationshipType">
               <MappingFragment StoreEntitySet="SuperToSubRelationshipType">
-                <ScalarProperty Name="DeterminerColumnValue" ColumnName="DeterminerColumnValue" />
-                <ScalarProperty Name="DeterminerColumnID" ColumnName="DeterminerColumnID" />
+                <ScalarProperty Name="SuperEntityDeterminerColumnID" ColumnName="SuperEntityDeterminerColumnID" />
                 <ScalarProperty Name="ISARelationshipID" ColumnName="ISARelationshipID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
@@ -13453,6 +13547,7 @@
           <EntitySetMapping Name="TableDrivedEntity">
             <EntityTypeMapping TypeName="MyProjectModel.TableDrivedEntity">
               <MappingFragment StoreEntitySet="TableDrivedEntity">
+                <ScalarProperty Name="InternalTableSuperToSubRelID" ColumnName="InternalTableSuperToSubRelID" />
                 <ScalarProperty Name="DataMenuSettingID" ColumnName="DataMenuSettingID" />
                 <ScalarProperty Name="DeterminerColumnID" ColumnName="DeterminerColumnID" />
                 <ScalarProperty Name="SelectAsComboBox" ColumnName="SelectAsComboBox" />

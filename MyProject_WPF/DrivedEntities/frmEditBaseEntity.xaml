@@ -64,6 +64,8 @@
                         <telerik:GridViewDataColumn Header="موجودیت طرف اول" DataMemberBinding="{Binding Entity1}" />
                         <telerik:GridViewDataColumn Header="موجودیت طرف دوم" DataMemberBinding="{Binding Entity2}" />
                         <telerik:GridViewDataColumn Header="نوع رابطه" DataMemberBinding="{Binding TypeEnum}" />
+                        <telerik:GridViewDataColumn Header="IsDisabled" DataMemberBinding="{Binding TypeEnum}" />
+
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </Grid>

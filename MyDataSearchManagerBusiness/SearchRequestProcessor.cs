@@ -108,9 +108,9 @@ namespace MyDataSearchManagerBusiness
             //try
             //{
 
-                var dataTable = GetDataTableBySearchDataItems(request.Requester, request.SearchDataItems.TargetEntityID, request.SearchDataItems, request.SecurityMode, null, request.EntityViewID, request.MaxDataItems, request.OrderByEntityViewColumnID, request.SortType);
-                result.ResultDataItems = DataTableToDP_ViewRepository(dataTable.Item1, dataTable.Item2, dataTable.Item3);
-                result.Result = Enum_DR_ResultType.SeccessfullyDone;
+            var dataTable = GetDataTableBySearchDataItems(request.Requester, request.SearchDataItems.TargetEntityID, request.SearchDataItems, request.SecurityMode, null, request.EntityViewID, request.MaxDataItems, request.OrderByEntityViewColumnID, request.SortType);
+            result.ResultDataItems = DataTableToDP_ViewRepository(dataTable.Item1, dataTable.Item2, dataTable.Item3);
+            result.Result = Enum_DR_ResultType.SeccessfullyDone;
 
 
             //}
@@ -272,12 +272,18 @@ namespace MyDataSearchManagerBusiness
                     throw new Exception(pathPermission);
                 }
             }
-            if (entity.DeterminerColumnID != 0)
+            if (entity.InternalSuperToSubRelationship != null)
             {
-                BizColumn bizColumn = new BizColumn();
-                var column = bizColumn.GetColumn(entity.DeterminerColumnID, true);
-
-                searchDataItem.Phrases.Add(new SearchProperty() { Operator = CommonOperator.InValues, ColumnID = entity.DeterminerColumnID, Name = column.Name, Value = GetDeterminerValues(entity) });
+                if (entity.InternalSuperToSubRelationship.SuperEntityDeterminerColumn != null && entity.InternalSuperToSubRelationship.DeterminerColumnValues.Any())
+                {
+                    searchDataItem.Phrases.Add(new SearchProperty()
+                    {
+                        Operator = CommonOperator.InValues,
+                        ColumnID = entity.InternalSuperToSubRelationship.SuperEntityDeterminerColumnID,
+                        Name = entity.InternalSuperToSubRelationship.SuperEntityDeterminerColumn.Name,
+                        Value = GetDeterminerValues(entity)
+                    });
+                }
             }
 
             string securityQuery = "";
@@ -392,7 +398,7 @@ namespace MyDataSearchManagerBusiness
         private string GetDeterminerValues(TableDrivedEntityDTO mainEntity)
         {
             string result = "";
-            foreach (var val in mainEntity.EntityDeterminers)
+            foreach (var val in mainEntity.InternalSuperToSubRelationship.DeterminerColumnValues)
             {
                 result += (result == "" ? "" : ",") + val.Value;
             }
@@ -1400,7 +1406,7 @@ namespace MyDataSearchManagerBusiness
         {
             //بازدارنده بودن اقدام کنترل شود
             BizBackendActionActivity bizActionActivity = new BizBackendActionActivity();
-            var actionActivities = bizActionActivity.GetActionActivities(request.SearchDataItem.TargetEntityID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.BeforeLoad },true, true);
+            var actionActivities = bizActionActivity.GetActionActivities(request.SearchDataItem.TargetEntityID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.BeforeLoad }, true, true);
             CodeFunctionHandler codeFunctionHelper = new CodeFunctionHandler();
             foreach (var entityActionActivity in actionActivities)
             {

@@ -55,8 +55,14 @@ namespace MyProject_WPF
             Message.ISARelationship = bizISARelationship.GetInternalTableISARelationships(EntityID);
             if (Message.ISARelationship != null)
             {
-                optIsTolatParticipation.IsChecked = Message.ISARelationship.IsTolatParticipation;
-                optIsDisjoint.IsChecked = Message.ISARelationship.IsDisjoint;
+                if (Message.ISARelationship.IsTolatParticipation)
+                    optIsTolatParticipation.IsChecked = true;
+                else
+                    optIsPartialParticipation.IsChecked = true;
+                if (Message.ISARelationship.IsDisjoint)
+                    optIsDisjoint.IsChecked = true;
+                else
+                    optIsOverlap.IsChecked = true;
             }
             else
             {
@@ -65,39 +71,52 @@ namespace MyProject_WPF
 
             if (Message.ISARelationship.ID != 0)
             {
+                List<SuperToSubRelationshipDTO> listSuperToSubRels = new List<SuperToSubRelationshipDTO>();
                 var drivedEntities = bizTableDrivedEntity.GetOtherDrivedEntityIDs(Message.ISARelationship);
                 foreach (var id in drivedEntities)
                 {
                     var entity = bizTableDrivedEntity.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), id, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
+                    List<RelationshipDTO> removeRelationships = new List<RelationshipDTO>();
+                    SubToSuperRelationshipDTO subToSuperRelationship = null;
+                    SuperToSubRelationshipDTO superToSubRelationship = null;
 
-                    var removeRelationships = entity.Relationships.Where(x => (x.TypeEnum == Enum_RelationshipType.SuperToSub ||
-                         x.TypeEnum == Enum_RelationshipType.SubToSuper) && x.TableID1 == x.TableID2).ToList();
-                    foreach (var item in removeRelationships)
-                        entity.Relationships.Remove(item);
+                    foreach (var item in entity.Relationships.Where(x => x.TypeEnum == Enum_RelationshipType.SubToSuper))
+                    {
+                        if (item is SubToSuperRelationshipDTO)
+                        {
+                            if ((item as SubToSuperRelationshipDTO).ISARelationship.ID == Message.ISARelationship.ID)
+                            {
+                                subToSuperRelationship = (item as SubToSuperRelationshipDTO);
+                                superToSubRelationship = Message.BaseEntity.Relationships.FirstOrDefault(x => x.ID == (item as SubToSuperRelationshipDTO).PairRelationshipID) as SuperToSubRelationshipDTO;
+                            }
+                        }
+                    }
 
+                    if (subToSuperRelationship != null && superToSubRelationship != null)
+                    {
+                        entity.Relationships.Remove(subToSuperRelationship);
+                        Message.BaseEntity.Relationships.Remove(superToSubRelationship);
 
-
-                    AddDrivedEntityTab(entity);
+                        AddDrivedEntityTab(new Tuple<SuperToSubRelationshipDTO, SubToSuperRelationshipDTO, TableDrivedEntityDTO>(superToSubRelationship, subToSuperRelationship, entity));
+                    }
                 }
 
-            }
-            var removeRelationshipsFromBase = Message.BaseEntity.Relationships.Where(x => (x.TypeEnum == Enum_RelationshipType.SuperToSub ||
-       x.TypeEnum == Enum_RelationshipType.SubToSuper) && x.TableID1 == x.TableID2).ToList();
-            foreach (var item in removeRelationshipsFromBase)
-                Message.BaseEntity.Relationships.Remove(item);
 
+             
+
+            }
             dtgRelationships.ItemsSource = Message.BaseEntity.Relationships;
             dtgColumns.ItemsSource = Message.BaseEntity.Columns;
 
         }
 
-        private void AddDrivedEntityTab(TableDrivedEntityDTO item)
+        private void AddDrivedEntityTab(Tuple<SuperToSubRelationshipDTO, SubToSuperRelationshipDTO, TableDrivedEntityDTO> tuple)
         {
-            Message.DrivedEntities.Add(item);
-            frmEditSubEntity view = new frmEditSubEntity(item, Message.BaseEntity.Columns);
+            Message.DrivedEntities.Add(tuple);
+            frmEditSubEntity view = new frmEditSubEntity(Message.BaseEntity, tuple, Message.BaseEntity.Columns);
 
             TabItem tab = new TabItem();
-            tab.Header = item.Name;
+            tab.Header = tuple.Item3.Name;
             tab.Content = view;
             tabControl.Items.Add(tab);
             tab.IsSelected = true;
@@ -109,7 +128,7 @@ namespace MyProject_WPF
             tab.Header = e;
         }
 
-  
+
 
         //private List<TableDrivedEntityDTO> Message.DrivedEntities
         //{
@@ -171,7 +190,7 @@ namespace MyProject_WPF
                 if (dtgColumns.SelectedItem != null)
                 {
                     var column = dtgColumns.SelectedItem as ColumnDTO;
-                    AddColumn(Message.BaseEntity, column, view.Message, true, dtgColumns, view.dtgColumnsDrived, true);
+                    AddColumn(Message.BaseEntity, column, view.Message.Item3, true, dtgColumns, view.dtgColumnsDrived, true);
                 }
             }
         }
@@ -182,7 +201,7 @@ namespace MyProject_WPF
             {
                 if (view.SelectedColumn != null)
                 {
-                    AddColumn(view.Message, view.SelectedColumn, Message.BaseEntity, true, view.dtgColumnsDrived, dtgColumns, true);
+                    AddColumn(view.Message.Item3, view.SelectedColumn, Message.BaseEntity, true, view.dtgColumnsDrived, dtgColumns, true);
                 }
             }
         }
@@ -208,7 +227,7 @@ namespace MyProject_WPF
         private void ViewSelect_EntitySelected(object sender, frmEditSubEntity e, frmEditSubEntity sourceView, ColumnDTO column)
         {
             MyProjectManager.GetMyProjectManager.CloseDialog(sender);
-            AddColumn(sourceView.Message, column, e.Message, false, sourceView.dtgColumnsDrived, e.dtgColumnsDrived, true);
+            AddColumn(sourceView.Message.Item3, column, e.Message.Item3, false, sourceView.dtgColumnsDrived, e.dtgColumnsDrived, true);
 
         }
 
@@ -224,18 +243,18 @@ namespace MyProject_WPF
         }
 
 
-        private frmEditSubEntity GetSubEntityForm(TableDrivedEntityDTO e)
-        {
-            foreach (var item in tabControl.Items)
-            {
-                if ((item as TabItem).Content is frmEditSubEntity)
-                {
-                    if (((item as TabItem).Content as frmEditSubEntity).Message == e)
-                        return (item as TabItem).Content as frmEditSubEntity;
-                }
-            }
-            return null;
-        }
+        //private frmEditSubEntity GetSubEntityForm(TableDrivedEntityDTO e)
+        //{
+        //    foreach (var item in tabControl.Items)
+        //    {
+        //        if ((item as TabItem).Content is frmEditSubEntity)
+        //        {
+        //            if (((item as TabItem).Content as frmEditSubEntity).Message == e)
+        //                return (item as TabItem).Content as frmEditSubEntity;
+        //        }
+        //    }
+        //    return null;
+        //}
 
         //private void MoveColumnFromBaseToDrived(frmEditSubEntity view, ColumnDTO column, bool showMessage)
         //{
@@ -295,7 +314,7 @@ namespace MyProject_WPF
                 sourceRelationshipDataGrid.ItemsSource = null;
                 sourceRelationshipDataGrid.ItemsSource = sourceEntity.Relationships;
             }
-            
+
         }
 
         private void btnMoveRelationshipFromBaseToDerived_Click(object sender, RoutedEventArgs e)
@@ -306,7 +325,7 @@ namespace MyProject_WPF
                 frmEditSubEntity view = GetCurrentSubEntityForm();
                 if (view != null)
                 {
-                    AddRelationship(Message.BaseEntity, relationship, view.Message, true, dtgRelationships, view.dtgRelationshipsDrived, dtgColumns, view.dtgColumnsDrived);
+                    AddRelationship(Message.BaseEntity, relationship, view.Message.Item3, true, dtgRelationships, view.dtgRelationshipsDrived, dtgColumns, view.dtgColumnsDrived);
                 }
             }
         }
@@ -318,7 +337,7 @@ namespace MyProject_WPF
             {
                 if (view.SelectedRelationship != null)
                 {
-                    AddRelationship(view.Message, view.SelectedRelationship, Message.BaseEntity, true, view.dtgRelationshipsDrived, dtgRelationships, view.dtgColumnsDrived, dtgColumns);
+                    AddRelationship(view.Message.Item3, view.SelectedRelationship, Message.BaseEntity, true, view.dtgRelationshipsDrived, dtgRelationships, view.dtgColumnsDrived, dtgColumns);
                 }
             }
         }
@@ -344,7 +363,7 @@ namespace MyProject_WPF
         private void ViewSelectRelationship_EntitySelected(object sender, frmEditSubEntity e, frmEditSubEntity sourceView, RelationshipDTO relationship)
         {
             MyProjectManager.GetMyProjectManager.CloseDialog(sender);
-            AddRelationship(sourceView.Message, relationship, e.Message, false, sourceView.dtgRelationshipsDrived, e.dtgRelationshipsDrived, sourceView.dtgColumnsDrived, e.dtgColumnsDrived);
+            AddRelationship(sourceView.Message.Item3, relationship, e.Message.Item3, false, sourceView.dtgRelationshipsDrived, e.dtgRelationshipsDrived, sourceView.dtgColumnsDrived, e.dtgColumnsDrived);
 
         }
 
@@ -353,7 +372,10 @@ namespace MyProject_WPF
             var newItem = new TableDrivedEntityDTO() { Name = "موجودیت جدید" };
             foreach (var item in Message.BaseEntity.Columns.Where(x => x.PrimaryKey))
                 newItem.Columns.Add(item);
-            AddDrivedEntityTab(newItem);
+
+            SuperToSubRelationshipDTO superToSub = new SuperToSubRelationshipDTO();
+            SubToSuperRelationshipDTO subToSuper = new SubToSuperRelationshipDTO();
+            AddDrivedEntityTab(new Tuple<SuperToSubRelationshipDTO, SubToSuperRelationshipDTO, TableDrivedEntityDTO>(superToSub, subToSuper, newItem));
         }
         private frmEditSubEntity GetCurrentSubEntityForm()
         {
@@ -387,12 +409,12 @@ namespace MyProject_WPF
             frmEditSubEntity view = GetCurrentSubEntityForm();
             if (view != null)
             {
-                if (view.Message.Columns.Any())
+                if (view.Message.Item3.Columns.Any(x=>!x.PrimaryKey))
                 {
                     MessageBox.Show("لطفا ابتدا وضعیت ستونها موجودیت مشتق شده را تعیین نمایید");
                     return;
                 }
-                if (view.Message.Relationships.Any())
+                if (view.Message.Item3.Relationships.Any())
                 {
                     MessageBox.Show("لطفا ابتدا وضعیت روابط موجودیت مشتق شده را تعیین نمایید");
                     return;
@@ -449,22 +471,22 @@ namespace MyProject_WPF
             }
             foreach (var entity in Message.DrivedEntities)
             {
-                foreach (var column in entity.Columns)
+                foreach (var column in entity.Item3.Columns)
                 {
                     if (!column.PrimaryKey)
                     {
                         if (Message.BaseEntity.Columns.Any(x => x.ID == column.ID))
                         {
-                            MessageBox.Show("ستون" + " " + column.Name + " " + "همزمان در موجودیت پایه و همچنین زیر موجودیت" + " " + entity.Name + " " + "تعریف شده است");
+                            MessageBox.Show("ستون" + " " + column.Name + " " + "همزمان در موجودیت پایه و همچنین زیر موجودیت" + " " + entity.Item3.Name + " " + "تعریف شده است");
                             return;
                         }
                     }
                 }
-                foreach (var rel in entity.Relationships)
+                foreach (var rel in entity.Item3.Relationships)
                 {
                     if (Message.BaseEntity.Relationships.Any(x => x.ID == rel.ID))
                     {
-                        MessageBox.Show("رابطه" + " " + rel.Name + " " + "همزمان در موجودیت پایه و همچنین زیر موجودیت" + " " + entity.Name + " " + "تعریف شده است");
+                        MessageBox.Show("رابطه" + " " + rel.Name + " " + "همزمان در موجودیت پایه و همچنین زیر موجودیت" + " " + entity.Item3.Name + " " + "تعریف شده است");
                         return;
                     }
                 }
@@ -473,9 +495,9 @@ namespace MyProject_WPF
             {
                 foreach (var entity in Message.DrivedEntities)
                 {
-                    foreach (var column in entity.Columns)
+                    foreach (var column in entity.Item3.Columns)
                     {
-                        if (Message.DrivedEntities.Any(x => x != entity && x.Columns.Any(y =>!y.PrimaryKey&& y.ID == column.ID)))
+                        if (Message.DrivedEntities.Any(x => x != entity && x.Item3.Columns.Any(y => !y.PrimaryKey && y.ID == column.ID)))
                         {
                             MessageBox.Show("ستون" + " " + column.Name + " " + "در بیش از یک زیر موجودیت تعریف شده و این برای روابط ارث بری" + " " + "Overlap" + " " + "امکان پذیر نمی باشد");
                             return;
@@ -484,9 +506,9 @@ namespace MyProject_WPF
                 }
                 foreach (var entity in Message.DrivedEntities)
                 {
-                    foreach (var relationship in entity.Relationships)
+                    foreach (var relationship in entity.Item3.Relationships)
                     {
-                        if (Message.DrivedEntities.Any(x => x != entity && x.Relationships.Any(y => y.ID == relationship.ID)))
+                        if (Message.DrivedEntities.Any(x => x != entity && x.Item3.Relationships.Any(y => y.ID == relationship.ID)))
                         {
                             MessageBox.Show("رابطه" + " " + relationship.Name + " " + "در بیش از یک زیر موجودیت تعریف شده و این برای روابط ارث بری" + " " + "Overlap" + " " + "امکان پذیر نمی باشد");
                             return;
@@ -497,7 +519,7 @@ namespace MyProject_WPF
 
             foreach (var entity in Message.DrivedEntities)
             {
-                if (!entity.EntityDeterminers.Any())
+                if (!entity.Item1.DeterminerColumnValues.Any())
                 {
                     var message = "برای یک یا چند موجودیت مشتق ستون و یا مقدار تعیین کننده مشخص نشده است";
                     MessageBox.Show(message);
@@ -505,11 +527,11 @@ namespace MyProject_WPF
                 }
                 if (optIsDisjoint.IsChecked == true)
                 {
-                    foreach (var values in entity.EntityDeterminers)
+                    foreach (var values in entity.Item1.DeterminerColumnValues)
                     {
-                        if (Message.DrivedEntities.Any(x => x != entity && x.EntityDeterminers.Any(y => y.Value == values.Value)))
+                        if (Message.DrivedEntities.Any(x => x != entity && x.Item1.DeterminerColumnValues.Any(y => y.Value == values.Value)))
                         {
-                            var message = "مقدار تعیین کننده" + " '" + values.Value + "' " + "برای بیش از یک زیر موجودیت تعریف شده است";
+                            var message = "مقدار تعیین کننده" + " '" + values + "' " + "برای بیش از یک زیر موجودیت تعریف شده است";
                             MessageBox.Show(message);
                             return;
                         }
@@ -521,32 +543,32 @@ namespace MyProject_WPF
             UpdateSubEntities();
             foreach (var DrivedEntity in Message.DrivedEntities)
             {
-                if (DrivedEntity.DeterminerColumnID == 0)
+                if (DrivedEntity.Item1.SuperEntityDeterminerColumnID == 0)
                 {
-                    MessageBox.Show("برای زیر موجودیت" + " " + DrivedEntity.Name + " " + "ستون تعیین موجودیت مشخص نشده است");
+                    MessageBox.Show("برای زیر موجودیت" + " " + DrivedEntity.Item3.Name + " " + "ستون تعیین موجودیت مشخص نشده است");
                     return;
                 }
-                if (!DrivedEntity.EntityDeterminers.Any())
+                if (!DrivedEntity.Item1.DeterminerColumnValues.Any())
                 {
-                    MessageBox.Show("برای زیر موجودیت" + " " + DrivedEntity.Name + " " + "مقادیر تعیین موجودیت مشخص نشده است");
+                    MessageBox.Show("برای زیر موجودیت" + " " + DrivedEntity.Item3.Name + " " + "مقادیر تعیین موجودیت مشخص نشده است");
                     return;
                 }
-                if (!Message.BaseEntity.Columns.Any(x => x.ID == DrivedEntity.DeterminerColumnID))
+                if (!Message.BaseEntity.Columns.Any(x => x.ID == DrivedEntity.Item1.SuperEntityDeterminerColumnID))
                 {
-                    MessageBox.Show("ستون تعیین کننده برای زیر موجودیت" + " " + DrivedEntity.Name + " " + "در موجودیت پایه موجود نمی باشد");
+                    MessageBox.Show("ستون تعیین کننده برای زیر موجودیت" + " " + DrivedEntity.Item3.Name + " " + "در موجودیت پایه موجود نمی باشد");
                     return;
                 }
             }
             foreach (var DrivedEntity in Message.DrivedEntities)
             {
-                if (DrivedEntity.Name == "")
+                if (DrivedEntity.Item3.Name == "")
                 {
                     var message = "برای یک یا چند موجودیت مشتق نام موجودیت تعریف نشده است";
                     MessageBox.Show(message);
                     return;
                 }
             }
-           
+
             Message.ISARelationship.IsDisjoint = optIsDisjoint.IsChecked == true;
             Message.ISARelationship.IsTolatParticipation = optIsTolatParticipation.IsChecked == true;
 

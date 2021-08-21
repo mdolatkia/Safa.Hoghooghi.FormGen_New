@@ -210,9 +210,8 @@ namespace MyDataEditManagerBusiness
 
         private string GetDeleteQueryQueue(DR_Requester requester, QueryItem queryItem)
         {
-            if (queryItem.TargetEntity.DeterminerColumnID == 0)
+            if (queryItem.TargetEntity.InternalSuperToSubRelationship ==null)
             {
-
                 string keyWhere = "";
                 foreach (var column in queryItem.DataItem.KeyProperties)
                 {
@@ -222,13 +221,16 @@ namespace MyDataEditManagerBusiness
             }
             else
             {
+
                 var entity = bizTableDrivedEntity.GetTableDrivedEntity(requester, queryItem.TargetEntity.ID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
                 EditQueryItemManager editQueryItemManager = new MyDataEditManagerBusiness.EditQueryItemManager();
                 var listProperties = new List<EntityInstanceProperty>();
                 foreach (var column in entity.Columns)
                     listProperties.Add(new EntityInstanceProperty(column) { Value = null });
-                listProperties.Add(new EntityInstanceProperty(entity.DeterminerColumn) { Value = null});
-
+                if (entity.InternalSuperToSubRelationship.SuperEntityDeterminerColumn != null && entity.InternalSuperToSubRelationship.DeterminerColumnValues.Any())
+                {
+                    listProperties.Add(new EntityInstanceProperty(entity.InternalSuperToSubRelationship.SuperEntityDeterminerColumn) { Value = null });
+                }
                 var newQuertItem = new QueryItem(entity, Enum_QueryItemType.Update, listProperties, queryItem.DataItem);
                 return editQueryItemManager.GetUpdateQuery(newQuertItem);
             }

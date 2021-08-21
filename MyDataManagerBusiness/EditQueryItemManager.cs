@@ -279,7 +279,7 @@ namespace MyDataEditManagerBusiness
                         //    identityProp.PropertyValueChanged += IdentityProp_PropertyValueChanged;
                         identityProp.PKIdentityColumn.PropertyValueChanged += (sender, e) => IdentityProp_PropertyValueChanged(sender, e, identityProp, queryItem);
                     }
-                    if (queryItem.DataItem.IsNewItem && queryItem.TargetEntity.DeterminerColumnID == 0)
+                    if (queryItem.DataItem.IsNewItem && queryItem.TargetEntity.InternalSuperToSubRelationship == null)
                     {
                         queryItem.Query = GetInsertQuery(queryItem);
                     }

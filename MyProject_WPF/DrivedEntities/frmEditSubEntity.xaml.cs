@@ -25,7 +25,8 @@ namespace MyProject_WPF
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         List<TableDrivedEntityDTO> DrivedEntities { set; get; }
         int EntityID { set; get; }
-        public TableDrivedEntityDTO Message { set; get; }
+        TableDrivedEntityDTO BaseEntity { set; get; }
+        public Tuple<SuperToSubRelationshipDTO, SubToSuperRelationshipDTO, TableDrivedEntityDTO> Message { set; get; }
         public ColumnDTO SelectedColumn
         {
 
@@ -43,21 +44,22 @@ namespace MyProject_WPF
             }
         }
 
-        public frmEditSubEntity(TableDrivedEntityDTO TableDrivedEntityDTO, List<ColumnDTO> columns)
+        public frmEditSubEntity(TableDrivedEntityDTO baseEntity, Tuple<SuperToSubRelationshipDTO, SubToSuperRelationshipDTO, TableDrivedEntityDTO> tuple, List<ColumnDTO> columns)
         {
             InitializeComponent();
-            Message = TableDrivedEntityDTO;
+            BaseEntity = baseEntity;
+            Message = tuple;
             cmbValue.DisplayMemberPath = "Alias";
             cmbValue.SelectedValuePath = "ID";
             cmbValue.ItemsSource = columns;
-            cmbValue.SelectedValue = TableDrivedEntityDTO.DeterminerColumnID;
-            txtName.Text = TableDrivedEntityDTO.Name;
-            txtAlias.Text = TableDrivedEntityDTO.Alias;
+            cmbValue.SelectedValue = tuple.Item1.SuperEntityDeterminerColumnID;
+            txtName.Text = tuple.Item3.Name;
+            txtAlias.Text = tuple.Item3.Alias;
             //cmbValue.SelectedValue = TableDrivedEntityDTO.DeterminerColumnID;
             //txtValue.Text = TableDrivedEntityDTO.DeterminerColumnValue;
-            dtgColumnsDrived.ItemsSource = Message.Columns;
-            dtgRelationshipsDrived.ItemsSource = Message.Relationships;
-            dtgValues.ItemsSource = Message.EntityDeterminers;
+            dtgColumnsDrived.ItemsSource = Message.Item3.Columns;
+            dtgRelationshipsDrived.ItemsSource = Message.Item3.Relationships;
+            dtgValues.ItemsSource = Message.Item1.DeterminerColumnValues;
 
             ControlHelper.GenerateContextMenu(dtgValues);
 
@@ -73,25 +75,33 @@ namespace MyProject_WPF
 
         public void UpdateDrivedEntity()
         {
-            Message.Name = txtName.Text;
-            Message.Alias = txtAlias.Text;
+            Message.Item3.Name = txtName.Text;
+            Message.Item3.Alias = txtAlias.Text;
             if (cmbValue.SelectedItem != null)
-                Message.DeterminerColumnID = (int)cmbValue.SelectedValue;
+                Message.Item1.SuperEntityDeterminerColumnID = (int)cmbValue.SelectedValue;
             else
-                Message.DeterminerColumnID = 0;
+                Message.Item1.SuperEntityDeterminerColumnID = 0;
+
+            Message.Item1.Name = BaseEntity.Name + ">" + Message.Item3.Name;
+            Message.Item1.Alias = Message.Item3.Alias;
+
+
+            Message.Item2.Name = Message.Item3.Name + ">" + BaseEntity.Name;
+            Message.Item2.Alias = BaseEntity.Alias;
+
             //Message.DeterminerColumnValue = txtValue.Text;
         }
 
         //internal void AddColumn(ColumnDTO column)
         //{
-          
+
         //}
 
         internal void RemoveColumn(ColumnDTO column)
         {
-            Message.Columns.Remove(column);
+            Message.Item3.Columns.Remove(column);
             dtgColumnsDrived.ItemsSource = null;
-            dtgColumnsDrived.ItemsSource = Message.Columns;
+            dtgColumnsDrived.ItemsSource = Message.Item3.Columns;
         }
 
         //internal void AddRelationship(RelationshipDTO relationship)
@@ -103,9 +113,9 @@ namespace MyProject_WPF
 
         internal void RemoveRelationship(RelationshipDTO relationship)
         {
-            Message.Relationships.Remove(relationship);
+            Message.Item3.Relationships.Remove(relationship);
             dtgRelationshipsDrived.ItemsSource = null;
-            dtgRelationshipsDrived.ItemsSource = Message.Relationships;
+            dtgRelationshipsDrived.ItemsSource = Message.Item3.Relationships;
         }
     }
 }

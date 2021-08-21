@@ -58,11 +58,15 @@ namespace MyCodeFunctionLibrary
                     //formulaUsageParemeters.Add(formulaUsageParemeter);
                     //stringParamList += (stringParamList == "" ? "" : ",") + column.FunctionColumnParamName;
                     //paramList.Add(column.FunctionColumnParamName);
-                    parameters.Add(Convert.ChangeType(property.Value, column.FunctionColumnDotNetType));
+                    if (property.Value != null)
+                        parameters.Add(Convert.ChangeType(property.Value, column.FunctionColumnDotNetType));
+                    else
+                        parameters.Add(null);
+
                 }
             }
             var result = GetCodeFunctionResult(resuester, codeFunctionEntity.CodeFunctionID, parameters);
-         //   result.FormulaUsageParemeters = formulaUsageParemeters;
+            //   result.FormulaUsageParemeters = formulaUsageParemeters;
             return result;
         }
         public FunctionResult GetCodeFunctionResult(DR_Requester resuester, int codeFunctionID, DP_DataRepository dataItem)
@@ -95,8 +99,8 @@ namespace MyCodeFunctionLibrary
             //FunctionResult result = new FunctionResult();
             try
             {
-              return (FunctionResult)ReflectionHelper.CallMethod(codeFunction.Path, codeFunction.ClassName, codeFunction.FunctionName, parameters.ToArray());
-               
+                return (FunctionResult)ReflectionHelper.CallMethod(codeFunction.Path, codeFunction.ClassName, codeFunction.FunctionName, parameters.ToArray());
+
             }
             catch (Exception ex)
             {
@@ -104,7 +108,7 @@ namespace MyCodeFunctionLibrary
                 result.Exception = ex;
                 return result;
             }
-           // return result;
+            // return result;
         }
         private LetterConvertToExternalResult GetLetterSendingCodeFunctionResult(CodeFunctionDTO codeFunction, List<object> parameters)
         {
