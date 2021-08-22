@@ -121,7 +121,7 @@ namespace MyModelCustomSetting
                 var serviceItemTest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceItemTest" && x.Table.DBSchema.DatabaseInformationID == databaseID);
                 var serviceItemPartImage = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceItemPartImage" && x.Table.DBSchema.DatabaseInformationID == databaseID);
                 var serviceItem = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
-                Column ServiceTypeEnumColumn = null;
+                Column ServiceItemServiceTypeEnumColumn = null;
                 if (serviceItem != null)
                 {
                     var StartDateTimeColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "StartDateTime");
@@ -226,15 +226,15 @@ namespace MyModelCustomSetting
                     var HoursSpentColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "HoursSpent");
                     if (HoursSpentColumn != null)
                         HoursSpentColumn.Formula = serviceItemHoursSpentFormula;
-                    ServiceTypeEnumColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "ServiceTypeEnum");
-                    if (ServiceTypeEnumColumn != null)
+                    ServiceItemServiceTypeEnumColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "ServiceTypeEnum");
+                    if (ServiceItemServiceTypeEnumColumn != null)
                     {
-                        if (ServiceTypeEnumColumn.ColumnValueRange == null)
+                        if (ServiceItemServiceTypeEnumColumn.ColumnValueRange == null)
                         {
-                            ServiceTypeEnumColumn.ColumnValueRange = new ColumnValueRange();
-                            ServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "1", KeyTitle = "تعمیر" });
-                            ServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "2", KeyTitle = "تست" });
-                            ServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "3", KeyTitle = "تعمیر و تست" });
+                            ServiceItemServiceTypeEnumColumn.ColumnValueRange = new ColumnValueRange();
+                            ServiceItemServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "1", KeyTitle = "تعمیر" });
+                            ServiceItemServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "2", KeyTitle = "تست" });
+                            ServiceItemServiceTypeEnumColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "3", KeyTitle = "تعمیر و تست" });
 
                         }
                     }
@@ -271,9 +271,9 @@ namespace MyModelCustomSetting
                             if (HoursSpentColumn != null && sp_CalculateServiceItemPrice.DatabaseFunctionParameter.Any(x => x.ParamName == "@hours"))
                                 serviceItemDatabaseFunctionEntity.DatabaseFunction_TableDrivedEntity_Columns.Add(new DatabaseFunction_TableDrivedEntity_Columns()
                                 { ColumnID = HoursSpentColumn.ID, DatabaseFunctionParameter = sp_CalculateServiceItemPrice.DatabaseFunctionParameter.First(x => x.ParamName == "@hours") });
-                            if (ServiceTypeEnumColumn != null && sp_CalculateServiceItemPrice.DatabaseFunctionParameter.Any(x => x.ParamName == "@type"))
+                            if (ServiceItemServiceTypeEnumColumn != null && sp_CalculateServiceItemPrice.DatabaseFunctionParameter.Any(x => x.ParamName == "@type"))
                                 serviceItemDatabaseFunctionEntity.DatabaseFunction_TableDrivedEntity_Columns.Add(new DatabaseFunction_TableDrivedEntity_Columns()
-                                { ColumnID = ServiceTypeEnumColumn.ID, DatabaseFunctionParameter = sp_CalculateServiceItemPrice.DatabaseFunctionParameter.First(x => x.ParamName == "@type") });
+                                { ColumnID = ServiceItemServiceTypeEnumColumn.ID, DatabaseFunctionParameter = sp_CalculateServiceItemPrice.DatabaseFunctionParameter.First(x => x.ParamName == "@type") });
                         }
 
                         if (serviceItemPriceFormula.ID == 0)
@@ -288,8 +288,8 @@ namespace MyModelCustomSetting
                             if (HoursSpentColumn != null)
                                 serviceItemPriceFormula.FormulaItems1.Add(new FormulaItems() { Column = HoursSpentColumn, ItemTitle = "HoursSpent" });
 
-                            if (ServiceTypeEnumColumn != null)
-                                serviceItemPriceFormula.FormulaItems1.Add(new FormulaItems() { Column = ServiceTypeEnumColumn, ItemTitle = "ServiceTypeEnum" });
+                            if (ServiceItemServiceTypeEnumColumn != null)
+                                serviceItemPriceFormula.FormulaItems1.Add(new FormulaItems() { Column = ServiceItemServiceTypeEnumColumn, ItemTitle = "ServiceTypeEnum" });
                         }
                     }
                 }
@@ -2860,7 +2860,7 @@ namespace MyModelCustomSetting
                     relaitonship.RelationshipType.IsOtherSideCreatable = true;
                     relaitonship.RelationshipType.IsOtherSideDirectlyCreatable = true;
                     relaitonship.RelationshipType.SuperToSubRelationshipType = new SuperToSubRelationshipType() { ISARelationship = isaRelationship };
-                    relaitonship.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID = ServiceTypeEnumColumn.ID;
+                    relaitonship.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID = ServiceItemServiceTypeEnumColumn.ID;
                     relaitonship.RelationshipType.SuperToSubRelationshipType.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = "1" });
                     relaitonship.RelationshipType.SuperToSubRelationshipType.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = "3" });
 
@@ -2903,7 +2903,7 @@ namespace MyModelCustomSetting
                     relaitonshipTest.RelationshipType.IsOtherSideCreatable = true;
                     relaitonshipTest.RelationshipType.IsOtherSideDirectlyCreatable = true;
                     relaitonshipTest.RelationshipType.SuperToSubRelationshipType = new SuperToSubRelationshipType() { ISARelationship = isaRelationship };
-                    relaitonshipTest.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID = ServiceTypeEnumColumn.ID;
+                    relaitonshipTest.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID = ServiceItemServiceTypeEnumColumn.ID;
                     relaitonshipTest.RelationshipType.SuperToSubRelationshipType.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = "2" });
                     relaitonshipTest.RelationshipType.SuperToSubRelationshipType.SuperToSubDeterminerValue.Add(new SuperToSubDeterminerValue() { DeterminerValue = "3" });
 
@@ -3163,9 +3163,38 @@ namespace MyModelCustomSetting
                         serviceRepairRelationship.Item1.RelationshipID = serviceRepairRelationship.Item2.ID;
                         serviceRepairRelationship.Item2.RelationshipID = serviceRepairRelationship.Item1.ID;
                         serviceRepair.SuperToSubRelationshipType = serviceRepairRelationship.Item1.RelationshipType.SuperToSubRelationshipType;
+                        if (!projectContext.RelationshipSearchFilter.Any(x => x.ValueColumnID == ServiceItemServiceTypeEnumColumn.ID))
+                        {
+                            //    var serviceRepairToServiceActionType= serviceRepair
+                            var serviceRepairItem = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceItemRepair");
+                            var serviceRepairItemToServiceRepair = serviceRepairItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceRepair.ID);
+                            var serviceRepairToServiceItem = serviceRepairRelationship.Item2;
+                            var serviceItemToServiceRequest = serviceItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceRequest.ID);
+                            var serviceRequestToProductItem = serviceRequest.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == productItem.ID);
+                            var productTypeIDColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "ProductTypeID");
+                            var productTail = GetRelationshipTail(projectContext, serviceRepairItem, productItem, serviceRepairItemToServiceRepair.ID + "," +
+                                serviceRepairToServiceItem.ID + "," + serviceItemToServiceRequest.ID + "," + serviceRequestToProductItem.ID);
+                            var searchFilter = new RelationshipSearchFilter();
+                            var serviceRepairItemToActionType = serviceRepairItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceActionType.ID);
+                            searchFilter.EntityRelationshipTail = productTail;
+                            searchFilter.ValueColumnID = productTypeIDColumn.ID;
+                            var searchColumn = serviceActionType.Table.Column.FirstOrDefault(x => x.Name == "ProductTypeID");
+                            searchFilter.SearchColumnID = searchColumn.ID;
+                            searchFilter.Relationship = serviceRepairItemToActionType;
+                            projectContext.RelationshipSearchFilter.Add(searchFilter);
 
 
-                        filter
+                            var searchFilterServiceType = new RelationshipSearchFilter();
+
+                            var serviceTypeTail = GetRelationshipTail(projectContext, serviceRepairItem, serviceItem, serviceRepairItemToServiceRepair.ID + "," + serviceRepairToServiceItem.ID);
+                            searchFilterServiceType.EntityRelationshipTail = serviceTypeTail;
+                            searchFilterServiceType.ValueColumnID = ServiceItemServiceTypeEnumColumn.ID;
+                            var searchColumnServiceType = serviceActionType.Table.Column.FirstOrDefault(x => x.Name == "ServiceItemType");
+                            searchFilterServiceType.SearchColumnID = searchColumnServiceType.ID;
+                            searchFilterServiceType.Relationship = serviceRepairItemToActionType;
+                            projectContext.RelationshipSearchFilter.Add(searchFilterServiceType);
+
+                        }
                     }
                     if (serviceTestRelationship != null)
                     {

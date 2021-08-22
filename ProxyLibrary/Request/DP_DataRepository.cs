@@ -956,7 +956,7 @@ namespace ProxyLibrary
         public CommonOperator Operator { set; get; }
         public SearchEnumerableType SearchEnumerableType { set; get; }
         public int SearchColumnID { get; set; }
-
+        public bool NotIgnoreZeroValue { set; get; }
         //public Tuple<AndORType, List<SearchProperty>> ChildProperties { set; get; }
     }
 

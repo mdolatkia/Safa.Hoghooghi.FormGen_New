@@ -872,7 +872,6 @@
           <Property Name="RelationshipID" Type="int" Nullable="false" />
           <Property Name="ValueRelationshipTailID" Type="int" />
           <Property Name="ValueColumnID" Type="int" Nullable="false" />
-          <Property Name="SearchRelationshipTailID" Type="int" />
           <Property Name="SearchColumnID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="RelationshipType">
@@ -2198,18 +2197,6 @@
             </Principal>
             <Dependent Role="RelationshipSearchFilter">
               <PropertyRef Name="SearchColumnID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_RelationshipSearchFilter_EntityRelationshipTail">
-          <End Role="EntityRelationshipTail" Type="Self.EntityRelationshipTail" Multiplicity="0..1" />
-          <End Role="RelationshipSearchFilter" Type="Self.RelationshipSearchFilter" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="RelationshipSearchFilter">
-              <PropertyRef Name="SearchRelationshipTailID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5130,10 +5117,6 @@
             <End Role="Column" EntitySet="Column" />
             <End Role="RelationshipSearchFilter" EntitySet="RelationshipSearchFilter" />
           </AssociationSet>
-          <AssociationSet Name="FK_RelationshipSearchFilter_EntityRelationshipTail" Association="Self.FK_RelationshipSearchFilter_EntityRelationshipTail">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="RelationshipSearchFilter" EntitySet="RelationshipSearchFilter" />
-          </AssociationSet>
           <AssociationSet Name="FK_SearchRepository_EntitySearch" Association="Self.FK_SearchRepository_EntitySearch">
             <End Role="EntitySearch" EntitySet="EntitySearch" />
             <End Role="SearchRepository" EntitySet="SearchRepository" />
@@ -6687,10 +6670,6 @@
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="LetterTemplateRelationshipField" EntitySet="LetterTemplateRelationshipField" />
           </AssociationSet>
-          <AssociationSet Name="FK_RelationshipSearchFilter_EntityRelationshipTail" Association="MyProjectModel.FK_RelationshipSearchFilter_EntityRelationshipTail">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="RelationshipSearchFilter" EntitySet="RelationshipSearchFilter" />
-          </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityState_EntityRelationshipTail" Association="MyProjectModel.FK_TableDrivedEntityState_EntityRelationshipTail">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
@@ -7966,14 +7945,13 @@
           <NavigationProperty Name="EntityListViewColumns" Relationship="MyProjectModel.FKEntityList705975" FromRole="EntityRelationshipTail" ToRole="EntityListViewColumns" />
           <NavigationProperty Name="EntityGroup_Relationship" Relationship="MyProjectModel.FK_EntityGroup_Relationship_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="EntityGroup_Relationship" />
           <NavigationProperty Name="LetterTemplateRelationshipField" Relationship="MyProjectModel.FK_LetterTemplateRelationshipField_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="LetterTemplateRelationshipField" />
-          <NavigationProperty Name="RelationshipSearchFilter" Relationship="MyProjectModel.FK_RelationshipSearchFilter_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="RelationshipSearchFilter" />
           <NavigationProperty Name="TableDrivedEntityState" Relationship="MyProjectModel.FK_TableDrivedEntityState_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntityState" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FKEntityRela568378" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="TableDrivedEntity1" Relationship="MyProjectModel.FKEntityRela831147" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="EntitySearchColumns" Relationship="MyProjectModel.FKEntitySear748558" FromRole="EntityRelationshipTail" ToRole="EntitySearchColumns" />
           <NavigationProperty Name="EntitySecurityInDirect" Relationship="MyProjectModel.FKEntitySecu489951" FromRole="EntityRelationshipTail" ToRole="EntitySecurityInDirect" />
           <NavigationProperty Name="EntitySecurityCondition" Relationship="MyProjectModel.FKEntitySecu518173" FromRole="EntityRelationshipTail" ToRole="EntitySecurityCondition" />
-          <NavigationProperty Name="RelationshipSearchFilter1" Relationship="MyProjectModel.FKRelationsh552099" FromRole="EntityRelationshipTail" ToRole="RelationshipSearchFilter" />
+          <NavigationProperty Name="RelationshipSearchFilter" Relationship="MyProjectModel.FKRelationsh552099" FromRole="EntityRelationshipTail" ToRole="RelationshipSearchFilter" />
         </EntityType>
         <EntityType Name="EntityReport">
           <Key>
@@ -8420,12 +8398,10 @@
           <Property Name="RelationshipID" Type="Int32" Nullable="false" />
           <Property Name="ValueRelationshipTailID" Type="Int32" />
           <Property Name="ValueColumnID" Type="Int32" Nullable="false" />
-          <Property Name="SearchRelationshipTailID" Type="Int32" />
           <Property Name="SearchColumnID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_RelationshipSearchFilter_Column" FromRole="RelationshipSearchFilter" ToRole="Column" />
           <NavigationProperty Name="Column1" Relationship="MyProjectModel.FK_RelationshipSearchFilter_Column1" FromRole="RelationshipSearchFilter" ToRole="Column" />
-          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyProjectModel.FK_RelationshipSearchFilter_EntityRelationshipTail" FromRole="RelationshipSearchFilter" ToRole="EntityRelationshipTail" />
-          <NavigationProperty Name="EntityRelationshipTail1" Relationship="MyProjectModel.FKRelationsh552099" FromRole="RelationshipSearchFilter" ToRole="EntityRelationshipTail" />
+          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyProjectModel.FKRelationsh552099" FromRole="RelationshipSearchFilter" ToRole="EntityRelationshipTail" />
           <NavigationProperty Name="Relationship" Relationship="MyProjectModel.FKRelationsh283976" FromRole="RelationshipSearchFilter" ToRole="Relationship" />
         </EntityType>
         <EntityType Name="RelationshipType">
@@ -10865,18 +10841,6 @@
             </Principal>
             <Dependent Role="LetterTemplateRelationshipField">
               <PropertyRef Name="EntityRelationshipTailID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_RelationshipSearchFilter_EntityRelationshipTail">
-          <End Type="MyProjectModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="0..1" />
-          <End Type="MyProjectModel.RelationshipSearchFilter" Role="RelationshipSearchFilter" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="RelationshipSearchFilter">
-              <PropertyRef Name="SearchRelationshipTailID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -13413,7 +13377,6 @@
             <EntityTypeMapping TypeName="MyProjectModel.RelationshipSearchFilter">
               <MappingFragment StoreEntitySet="RelationshipSearchFilter">
                 <ScalarProperty Name="SearchColumnID" ColumnName="SearchColumnID" />
-                <ScalarProperty Name="SearchRelationshipTailID" ColumnName="SearchRelationshipTailID" />
                 <ScalarProperty Name="ValueColumnID" ColumnName="ValueColumnID" />
                 <ScalarProperty Name="ValueRelationshipTailID" ColumnName="ValueRelationshipTailID" />
                 <ScalarProperty Name="RelationshipID" ColumnName="RelationshipID" />

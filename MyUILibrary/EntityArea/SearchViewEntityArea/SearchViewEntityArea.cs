@@ -107,7 +107,7 @@ namespace MyUILibrary.EntityArea
                     //var searchColumn = searchItem.Phrases.FirstOrDefault(x => x is SearchProperty && (x as SearchProperty).ColumnID == filter.SearchColumnID) as SearchProperty;
                     //if (searchColumn == null)
                     //{
-                    var searchColumn = new SearchProperty() { ColumnID = filter.SearchColumnID };
+                    var searchColumn = new SearchProperty() { ColumnID = filter.SearchColumnID, NotIgnoreZeroValue = true };
                     searchItem.Phrases.Add(searchColumn);
                     //}
                     searchColumn.Value = valueRow.Item2;
@@ -128,8 +128,8 @@ namespace MyUILibrary.EntityArea
             //try
             //{
             var result = GetSearchResult(searchItems);
-            if(result!=null)
-            UseSearchResult(result, select);
+            if (result != null)
+                UseSearchResult(result, select);
 
             //}
             //catch (Exception ex)

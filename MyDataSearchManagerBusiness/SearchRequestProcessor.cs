@@ -1131,7 +1131,7 @@ namespace MyDataSearchManagerBusiness
         }
         private bool PropertyHasValue(SearchProperty item)
         {
-            return (item.Value != null && !string.IsNullOrEmpty(item.Value.ToString()) && item.Value.ToString() != "0");
+            return (item.Value != null && !string.IsNullOrEmpty(item.Value.ToString()) && (item.NotIgnoreZeroValue || item.Value.ToString() != "0"));
         }
         private List<DP_DataRepository> DataTableToDP_DataRepository(TableDrivedEntityDTO entity, EntityListViewDTO editListView, DataTable dataTable)
         {

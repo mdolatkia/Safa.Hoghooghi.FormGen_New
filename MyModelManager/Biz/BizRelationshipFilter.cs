@@ -20,7 +20,7 @@ namespace MyModelManager
                 IQueryable<RelationshipSearchFilter> listRelationshipFilter;
                 listRelationshipFilter = projectContext.RelationshipSearchFilter.Where(x => x.RelationshipID == relationshipID);
                 foreach (var item in listRelationshipFilter)
-                    result.Add(ToRelationshipFilterDTO(  item));
+                    result.Add(ToRelationshipFilterDTO(item));
 
             }
             return result;
@@ -34,7 +34,7 @@ namespace MyModelManager
         //        return ToRelationshipFilterDTO(RelationshipFilters);
         //    }
         //}
-        public RelationshipFilterDTO ToRelationshipFilterDTO( RelationshipSearchFilter item)
+        public RelationshipFilterDTO ToRelationshipFilterDTO(RelationshipSearchFilter item)
         {
             RelationshipFilterDTO result = new RelationshipFilterDTO();
             result.ID = item.ID;
@@ -50,9 +50,9 @@ namespace MyModelManager
             result.ValueColumnID = item.ValueColumnID;
             result.ValueRelationshipTailID = item.ValueRelationshipTailID ?? 0;
             if (item.EntityRelationshipTail != null)
-                result.ValueRelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(  item.EntityRelationshipTail);
+                result.ValueRelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
 
-  //          result.SearchRelationshipTailID = item.SearchRelationshipTailID ?? 0;
+            //          result.SearchRelationshipTailID = item.SearchRelationshipTailID ?? 0;
             //if (item.EntityRelationshipTail != null)
             //    result.SearchRelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
 
