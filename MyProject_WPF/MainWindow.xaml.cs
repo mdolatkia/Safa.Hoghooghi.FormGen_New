@@ -150,7 +150,7 @@ namespace MyProject_WPF
                 dbNode.Items.Add("Loading...");
                 dbNode.Expanded += DbNode_Expanded;
 
-                if (item.Name.ToLower().StartsWith("DBProductService".ToLower()))
+                if (item.Name.ToLower().StartsWith("DBProducts".ToLower()))
                 {
                     var customSettingsContextMenu = GetMenu(dbNode, "تنظیمات اختصاصی");
                     customSettingsContextMenu.Click += (sender, e) => customSettingContextMenu_ItemClick(sender, e, item);

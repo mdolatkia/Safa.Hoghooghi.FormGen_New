@@ -325,6 +325,23 @@ namespace MyModelManager
 
                 context.DatabaseInformation.Add(db);
             }
+
+            if (!context.DatabaseInformation.Any(x => x.Name == "DBProducts"))
+            {
+                DatabaseInformation db = new DatabaseInformation();
+                db.ConnectionString = "Data Source=.;Initial Catalog=DBProducts;User ID=sa;Password=123;MultipleActiveResultSets=True;";// "Data Source=Localhost;Initial Catalog=DBProductService;Integrated Security=True;MultipleActiveResultSets=True;";
+                db.Name = "DBProducts";
+                db.Title = "محصولات";
+                db.DBType = "SQLServer";
+                db.DBServer = dbserver;
+                db.DBHasDate = false;
+
+
+                db.SecurityObject = new SecurityObject();
+                db.SecurityObject.Type = (int)DatabaseObjectCategory.Database;
+
+                context.DatabaseInformation.Add(db);
+            }
             try
             {
                 context.SaveChanges();
