@@ -48,7 +48,7 @@ namespace MyProject_WPF
             InitializeComponent();
             //FormulaIntention = formulaIntention;
             //EntityID = entityID;
-          
+
             SetTypeCombo();
             treeParameters.ContextMenuOpening += TreeParameters_ContextMenuOpening;
             RadContextMenu.SetContextMenu(treeParameters, GenerateContextMenu());
@@ -535,7 +535,7 @@ namespace MyProject_WPF
         {
             //BindableTypeDescriptor CustomType = null;
             //ParametersForFormula = formulaHelper.GetFormulaParameters(FormulaIntention.Type, FormulaIntention.TableID);
-            frmNewFormulaDefinition view = new frmNewFormulaDefinition(txtFormula.Text, (int)lokEntity.SelectedValue);
+            frmNewFormulaDefinition view = new frmNewFormulaDefinition(txtFormula.Text, lokEntity.SelectedItem != null ? (int)lokEntity.SelectedValue : 0);
             view.FormulaDefined += View_FormulaDefined;
             MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Maximized);
         }

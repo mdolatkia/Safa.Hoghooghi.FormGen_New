@@ -146,7 +146,7 @@ namespace MyFormulaFunctionStateFunctionLibrary
                 {
                     propertyInfo.Value = null;
                 }
-                propertyInfo.Tooltip = "فرمول" + " " + formulaParameter.Title + Environment.NewLine + "نوع" + ":" + " " + formulaParameter.ResultDotNetType.ToString();
+                propertyInfo.Tooltip = "فرمول" + " " + formulaParameter.Title + Environment.NewLine + "نوع" + ":" + " " + (formulaParameter.ResultDotNetType!=null?formulaParameter.ResultDotNetType.ToString():"?");
                 m_properties.Add(propertyInfo.Name, propertyInfo);
             }
 

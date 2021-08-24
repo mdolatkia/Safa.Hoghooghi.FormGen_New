@@ -246,22 +246,25 @@ namespace MyProject_WPF
 
         private void SetEditEntityArea()
         {
-            MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.SetUIManager(new UIManager());
-            var userInfo = new MyUILibrary.UserInfo();
-            userInfo.AdminSecurityInfo = new MyUILibrary.AdminSecurityInfo() { IsActive = true, ByPassSecurity = true };
-            MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.UserInfo = userInfo;
-
-
-            EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
-            editEntityAreaInitializer1.EntityID = EntityID;
-            editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
-            editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
-            var FirstSideEditEntityAreaResult = EditEntityAreaConstructor.GetEditEntityArea(editEntityAreaInitializer1);
-            if (FirstSideEditEntityAreaResult.Item1 != null && FirstSideEditEntityAreaResult.Item1 is I_EditEntityAreaOneData)
+            if (EntityID != 0)
             {
-                EditEntityArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                EditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
-                grdSelectData.Children.Add(EditEntityArea.TemporaryDisplayView as UIElement);
+                MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.SetUIManager(new UIManager());
+                var userInfo = new MyUILibrary.UserInfo();
+                userInfo.AdminSecurityInfo = new MyUILibrary.AdminSecurityInfo() { IsActive = true, ByPassSecurity = true };
+                MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.UserInfo = userInfo;
+
+
+                EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
+                editEntityAreaInitializer1.EntityID = EntityID;
+                editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
+                editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
+                var FirstSideEditEntityAreaResult = EditEntityAreaConstructor.GetEditEntityArea(editEntityAreaInitializer1);
+                if (FirstSideEditEntityAreaResult.Item1 != null && FirstSideEditEntityAreaResult.Item1 is I_EditEntityAreaOneData)
+                {
+                    EditEntityArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
+                    EditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
+                    grdSelectData.Children.Add(EditEntityArea.TemporaryDisplayView as UIElement);
+                }
             }
         }
         private void TxtFormula_KeyUp(object sender, KeyEventArgs e)
@@ -1454,10 +1457,11 @@ namespace MyProject_WPF
 
         private void btnTest_Click(object sender, RoutedEventArgs e)
         {
-            if (EditEntityArea.GetDataList().Any())
-            {
-                TestData(EditEntityArea.GetDataList().First());
-            }
+            if (EditEntityArea != null)
+                if (EditEntityArea.GetDataList().Any())
+                {
+                    TestData(EditEntityArea.GetDataList().First());
+                }
 
             //if (lastSelectedData == null)
             //{

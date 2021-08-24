@@ -26,11 +26,11 @@ namespace MyModelCustomSetting
                 var dbDatabase = projectContext.DatabaseInformation.FirstOrDefault(x => x.ID == databaseID);
                 if (dbDatabase.Name == "DBProductService")
                 {
-                    SetDbProductServiceSettings(databaseID,projectContext, requester);
+                    SetDbProductServiceSettings(databaseID, projectContext, requester);
                 }
                 else if (dbDatabase.Name == "DBProducts")
                 {
-                    SetDbProductsSettings(databaseID,projectContext, requester);
+                    SetDbProductsSettings(databaseID, projectContext, requester);
                 }
 
             }
@@ -2792,6 +2792,80 @@ namespace MyModelCustomSetting
                 validation.Formula = validationFormula;
                 projectContext.EntityValidation.Add(validation);
             }
+
+            Relationship productToProductItem = null;
+            Relationship productItemToProduct = null;
+
+            var product = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "Product");
+            if (product != null)
+            {
+                productToProductItem = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == product.ID && x.TableDrivedEntityID2 == productItem.ID);
+                productItemToProduct = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == productItem.ID && x.TableDrivedEntityID2 == product.ID);
+                if (productToProductItem == null)
+                {
+                    productToProductItem = new Relationship();
+                    productToProductItem.Created = true;
+                    productToProductItem.TableDrivedEntityID1 = product.ID;
+                    productToProductItem.TableDrivedEntityID2 = productItem.ID;
+                    productToProductItem.MasterTypeEnum = (byte)Enum_MasterRelationshipType.FromPrimartyToForeign;
+                    productToProductItem.TypeEnum = Convert.ToByte(Enum_RelationshipType.OneToMany);
+                    productToProductItem.SecurityObject = new SecurityObject();
+                    productToProductItem.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
+                    productToProductItem.Name = "محصول و کالا";
+                    productToProductItem.Name = productItem.Name;
+
+                    var pBrandTitle = product.Table.Column.First(x => x.Name == "BrandTitle");
+                    var pProductTypeID = product.Table.Column.First(x => x.Name == "ProductTypeID");
+                    var pModel = product.Table.Column.First(x => x.Name == "Model");
+
+                    var fBrandTitle = productItem.Table.Column.First(x => x.Name == "BrandTitle");
+                    var fProductTypeID = productItem.Table.Column.First(x => x.Name == "ProductTypeID");
+                    var fModel = productItem.Table.Column.First(x => x.Name == "ProductModel");
+
+                    productToProductItem.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = pBrandTitle.ID, SecondSideColumnID = fBrandTitle.ID });
+                    productToProductItem.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = pProductTypeID.ID, SecondSideColumnID = fProductTypeID.ID });
+                    productToProductItem.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = pModel.ID, SecondSideColumnID = fModel.ID });
+
+                    productToProductItem.RelationshipType = new RelationshipType();
+                    productToProductItem.RelationshipType.OneToManyRelationshipType = new OneToManyRelationshipType();
+                    productToProductItem.RelationshipType.PKToFKDataEntryEnabled = false;
+                    productToProductItem.RelationshipType.IsOtherSideMandatory = false;
+                    productToProductItem.RelationshipType.IsOtherSideCreatable = true;
+                    productToProductItem.RelationshipType.IsOtherSideDirectlyCreatable = true;
+
+                    projectContext.Relationship.Add(productToProductItem);
+
+
+                    productItemToProduct = new Relationship();
+                    productItemToProduct.Created = true;
+                    productItemToProduct.TableDrivedEntityID1 = productItem.ID;
+                    productItemToProduct.TableDrivedEntityID2 = product.ID;
+                    productItemToProduct.MasterTypeEnum = (byte)Enum_MasterRelationshipType.FromForeignToPrimary;
+                    productItemToProduct.TypeEnum = Convert.ToByte(Enum_RelationshipType.ManyToOne);
+                    productItemToProduct.SecurityObject = new SecurityObject();
+                    productItemToProduct.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
+                    productItemToProduct.Name = "inverse_" + "محصول و کالا";
+                    productItemToProduct.Name = product.Name;
+
+
+                    productItemToProduct.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = fBrandTitle.ID, SecondSideColumnID = pBrandTitle.ID });
+                    productItemToProduct.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = fProductTypeID.ID, SecondSideColumnID = pProductTypeID.ID });
+                    productItemToProduct.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = fModel.ID, SecondSideColumnID = pModel.ID });
+
+                    productItemToProduct.RelationshipType = new RelationshipType();
+                    productItemToProduct.TypeEnum = Convert.ToByte(Enum_RelationshipType.ManyToOne);
+                    productItemToProduct.RelationshipType = new RelationshipType();
+                    productItemToProduct.RelationshipType.ManyToOneRelationshipType = new ManyToOneRelationshipType();
+                    productItemToProduct.RelationshipType.IsOtherSideMandatory = false;
+                    productItemToProduct.RelationshipType.IsOtherSideCreatable = true;
+                    productItemToProduct.RelationshipType.IsOtherSideDirectlyCreatable = false;
+
+                    projectContext.Relationship.Add(productItemToProduct);
+                }
+
+
+            }
+          
             TableDrivedEntity serviceRepair = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRepair");
             TableDrivedEntity serviceTest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceTest");
             Tuple<Relationship, Relationship> serviceRepairRelationship = null;
@@ -3241,6 +3315,34 @@ namespace MyModelCustomSetting
                     serviceTest.SuperToSubRelationshipType = serviceTestRelationship.Item1.RelationshipType.SuperToSubRelationshipType;
                 }
 
+                if (productItemToProduct != null)
+                {
+                    productItemToProduct.RelationshipID = productToProductItem.ID;
+                    productToProductItem.RelationshipID = productItemToProduct.ID;
+                }
+                    var brandProductType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "BrandProductType");
+                if (brandProductType != null)
+                {
+                    var dataLink = projectContext.DataLinkDefinition.FirstOrDefault(x => x.FirstSideEntityID == region.ID && x.SecondSideEntityID == brandProductType.ID);
+                    if (dataLink == null)
+                    {
+                        dataLink = new DataLinkDefinition();
+                        dataLink.FirstSideEntityID = region.ID;
+                        dataLink.SecondSideEntityID = brandProductType.ID;
+                        projectContext.DataLinkDefinition.Add(dataLink);
+                        dataLink.Name = "ارتباط شهر و برند/محصول";
+                        var regionToGenericPersonAddress = region.Relationship.First(x => x.TableDrivedEntityID2 == genericPersonAddress.ID);
+                        var genericPersonAddressToGenericPeron = genericPersonAddress.Relationship.First(x => x.TableDrivedEntityID2 == genericPerson.ID);
+                        var genericPersonToCustomer = genericPerson.Relationship.First(x => x.TableDrivedEntityID2 == customer.ID);
+                        var customerToSrviceRequest = customer.Relationship.First(x => x.TableDrivedEntityID2 == serviceRequest.ID);
+                        var serviceRequestToProductItem = serviceRequest.Relationship.First(x => x.TableDrivedEntityID2 == productItem.ID);
+                        var productToBrandProductType = product.Relationship.First(x => x.TableDrivedEntityID2 == brandProductType.ID);
+
+                        var relatinshipTail = GetRelationshipTail(projectContext, region, brandProductType, regionToGenericPersonAddress.ID + "," + genericPersonAddressToGenericPeron.ID + "," +
+                             genericPersonToCustomer.ID + "," + customerToSrviceRequest.ID + "," + serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID);
+                        dataLink.DataLinkDefinition_EntityRelationshipTail.Add(new DataLinkDefinition_EntityRelationshipTail() { EntityRelationshipTail = relatinshipTail });
+                    }
+                }
 
 
                 if (processIsNew)

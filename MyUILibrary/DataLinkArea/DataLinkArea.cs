@@ -41,6 +41,11 @@ namespace MyUILibrary.DataLinkArea
         public DataLinkDTO SelectedDataLink { get; set; }
         DP_DataView FirstData;
         // چون جایی نداریم فعلا که دوتا داده انتخاب کنیم و ارتباطشون رو بخوایم, DP_DataView otherData)
+
+
+        /// <summary>
+        /// /////////////////////////////////////////////////////// داده های تکراری را می توان یکسان سازی کرد در نمودار
+        /// </summary>
         DP_DataView OtherData;
         MySearchLookup dataLinkSearchLookup;
         public DataLinkArea(DataLinkAreaInitializer initParam)

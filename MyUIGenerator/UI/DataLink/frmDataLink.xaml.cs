@@ -264,8 +264,6 @@ namespace MyUIGenerator.View
         private void Timer_Tick(object sender, EventArgs e)
         {
             (sender as DispatcherTimer).Stop();
-
-
             TreeLayoutSettings settings = new TreeLayoutSettings()
             {
                 TreeLayoutType = TreeLayoutType.TreeRight,

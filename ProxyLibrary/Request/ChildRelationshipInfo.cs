@@ -231,7 +231,7 @@ namespace ProxyLibrary
         {
             get
             {
-                return OriginalRelatedData.Where(x => !x.KeyProperties.All(y => RelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))).ToList();
+                return OriginalRelatedData.Where(x => !x.KeyProperties.All(y => RelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value .Equals( y.Value))))).ToList();
             }
         }
         public List<string> ReadonlyStateFromTails { set; get; }

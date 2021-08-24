@@ -569,8 +569,11 @@ namespace MyUILibrary.EntityArea
 
                 if (DataEntryEntity.Relationships.Any(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID)))
                 {
-                    var relationship = DataEntryEntity.Relationships.First(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID));
-                    AddRelationshipControl(relationship, sortedListOfColumnControls);
+                     if (!RelationshipColumnControls.Any(x => x.Columns.Any(z => z.ID == column.ID)))
+                    {
+                        var relationship = DataEntryEntity.Relationships.First(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID));
+                        AddRelationshipControl(relationship, sortedListOfColumnControls);
+                    }
                 }
                 else
                 {
@@ -2998,9 +3001,9 @@ namespace MyUILibrary.EntityArea
              AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
             var dataList = GetDataList();
             var saveCommand = GetCommand(typeof(SaveCommand));
-            if (saveCommand!=null && AreaInitializer.SourceRelation == null && DataEntryEntity.IsReadonly)
+            if (saveCommand != null && AreaInitializer.SourceRelation == null && DataEntryEntity.IsReadonly)
             {
-              
+
                 bool saveEnable = true;
                 if (!dataList.Any())
                     saveEnable = false;

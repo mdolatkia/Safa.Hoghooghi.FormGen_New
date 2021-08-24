@@ -203,7 +203,8 @@ namespace MyDataEditManagerBusiness
                 //parentQueryItem همون طرف pk هست
                 //var relationship = bizRelationship.GetRelationship(parentChildRelationshipInfo.Relationship.PairRelationshipID);
                 //queryItem.FKSources.Add(new FKToPK(relationship, parentQueryItem, pkIdentityColumnID, isSelfTable));
-                if (parentChildRelationshipInfo.RelationshipIsChangedForUpdate)
+
+                if (parentChildRelationshipInfo.RelationshipIsChangedForUpdate && item.IsEdited) //اینجا edited اضافه شد چون ممکنه یک به چند باشه و فقط یک داده فرزند اضافه شده باشد 
                 {
                     foreach (var relCol in parentChildRelationshipInfo.Relationship.RelationshipColumns)
                     {
