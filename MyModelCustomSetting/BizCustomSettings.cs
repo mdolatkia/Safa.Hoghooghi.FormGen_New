@@ -3502,8 +3502,6 @@ namespace MyModelCustomSetting
                     projectContext.NavigationTree.Add(mnuCustomerDirectReport);
                 }
 
-
-
                 projectContext.SaveChanges();
             }
             catch (DbUpdateException e)
