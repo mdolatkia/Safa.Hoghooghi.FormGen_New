@@ -320,12 +320,12 @@ namespace MyModelManager
             return entity;
         }
 
-        public List<TableDrivedEntityDTO> GetOrginalEntitiesWithoutUIComposition(int databaseID, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType, bool? isView)
+        public List<TableDrivedEntityDTO> GetOrginalEntitiesWithoutUIComposition(int databaseID, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType)
         {
             List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var entities = GetEntities(projectContext, columnInfoType, relationshipInfoType, isView)
+                var entities = GetEntities(projectContext, columnInfoType, relationshipInfoType, false)
                     .Where(x => !x.EntityUIComposition.Any(e => e.TableDrivedEntityID == x.ID) && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true);
                 foreach (var entity in entities)
                     result.Add(ToTableDrivedEntityDTO(entity, columnInfoType, relationshipInfoType, false, true));
@@ -356,12 +356,12 @@ namespace MyModelManager
             }
             return result;
         }
-        public List<int> GetEntityIDs(int databaseID, bool? isView)
+        public List<int> GetEntityIDs(int databaseID)
         {
             List<int> result = new List<int>();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var entities = GetEntities(projectContext, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships, isView)
+                var entities = GetEntities(projectContext, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships,null)
                     .Where(x => x.Table.DBSchema.DatabaseInformationID == databaseID).ToList();
                 foreach (var entity in entities)
                 {

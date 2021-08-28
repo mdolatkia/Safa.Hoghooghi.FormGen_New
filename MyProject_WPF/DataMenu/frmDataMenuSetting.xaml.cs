@@ -32,7 +32,7 @@ namespace MyProject_WPF
         BizDataMenuSetting bizDataMenuSetting = new BizDataMenuSetting();
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
-
+        TableDrivedEntityDTO Entity { set; get; }
         public event EventHandler<int> DataUpdated;
         int EntityID { set; get; }
 
@@ -50,7 +50,9 @@ namespace MyProject_WPF
             }
             else
                 GetDataMenuSetting(dataMenuSettingID);
-
+            Entity = bizTableDrivedEntity.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
+            SetTabVisiblities();
+            SetBaseTables();
 
             ControlHelper.GenerateContextMenu(dtgDataGridRelationships);
             ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
@@ -77,12 +79,85 @@ namespace MyProject_WPF
             colDataViewRelTargetDataMenuSetting.EditItemEnabled = true;
             colDataViewRelTargetDataMenuSetting.EditItemClicked += ColDataGridRelTargetDataMenuSetting_EditItemClicked;
             colDataGridRelTargetDataMenuSetting.EditItemClicked += ColDataGridRelTargetDataMenuSetting_EditItemClicked;
+
+            lokRelationship.SelectionChanged += LokRelationship_SelectionChanged;
+            lokDataMenuSetting.EditItemClicked += LokDataMenuSetting_EditItemClicked;
+            lokDataMenuSetting.EditItemEnabled = true;
+            lokDataMenuSetting.NewItemEnabled = true;
+        }
+
+        private void LokDataMenuSetting_EditItemClicked(object sender, EditItemClickEventArg e)
+        {
+            var context = e.DataConext as DataMenuSettingDTO;
+            if (lokRelationship.SelectedItem != null)
+            {
+                var relationship = lokRelationship.SelectedItem as RelationshipDTO;
+
+                frmDataMenuSetting frm = new frmDataMenuSetting(relationship.EntityID2, lokDataMenuSetting.SelectedItem == null ? 0 : (int)lokDataMenuSetting.SelectedValue);
+                MyProjectManager.GetMyProjectManager.ShowDialog(frm, "تنظیمات منو");
+                frm.DataUpdated += (sender1, e1) => Frm_TailSelected(sender1, e1, sender as MyStaticLookup);
+            }
+        }
+        private void Frm_TailSelected(object sender1, int e1, MyStaticLookup myStaticLookup)
+        {
+            var relationship = lokRelationship.SelectedItem as RelationshipDTO;
+            lokDataMenuSetting.ItemsSource = null;
+            SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), relationship.EntityID2);
+            myStaticLookup.SelectedValue = e1;
+        }
+
+        private void SetTabVisiblities()
+        {
+            if (Entity.IsView)
+            {
+                tabDataGridRelationships.Visibility = Visibility.Collapsed;
+                tabDataViewRelationships.Visibility = Visibility.Collapsed;
+                tabDirectReport.Visibility = Visibility.Collapsed;
+                tabReportRelationships.Visibility = Visibility.Collapsed;
+                tabView.IsSelected = true;
+            }
+            else
+            {
+                tabView.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void LokRelationship_SelectionChanged(object sender, SelectionChangedArg e)
+        {
+            if (e.SelectedItem != null)
+            {
+                var relationship = e.SelectedItem as RelationshipDTO;
+                SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), relationship.EntityID2);
+            }
+            else
+            {
+                lokDataMenuSetting.ItemsSource = null;
+            }
+        }
+
+        private void SetRelationshipDataMenus(DR_Requester dR_Requester, int entityID2)
+        {
+            var list = bizDataMenuSetting.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), entityID2);
+            lokDataMenuSetting.DisplayMember = "Name";
+            lokDataMenuSetting.SelectedValueMember = "ID";
+            lokDataMenuSetting.ItemsSource = list;
+            //if(Message.ID!=0)
+            //{
+            //    lokDataMenuSetting.SelectedValue = Message.TargetDataMenuSettingID;
+            //}
+        }
+
+        private void SetBaseTables()
+        {
+            lokRelationship.SelectedValueMember = "ID";
+            lokRelationship.DisplayMember = "Name";
+            lokRelationship.ItemsSource = Entity.Relationships;
         }
 
         private void SetDirectReports()
         {
             BizEntityDirectReport bizEntityDirectReport = new BizEntityDirectReport();
-        var reports=    bizEntityDirectReport.GetEntityDirectReports(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+            var reports = bizEntityDirectReport.GetEntityDirectReports(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
             colDirectReport.SelectedValueMemberPath = "ID";
             colDirectReport.DisplayMemberPath = "ReportTitle";
             colDirectReport.ItemsSource = reports;
@@ -257,6 +332,8 @@ namespace MyProject_WPF
             dtgDataGridRelationships.ItemsSource = Message.GridViewRelationships;
             dtgDirectReport.ItemsSource = Message.DirectReports;
             txtName.Text = Message.Name;
+            lokRelationship.SelectedValue = Message.RelationshipID;
+            lokDataMenuSetting.SelectedValue = Message.TargetDataMenuSettingID;
             foreach (var item in Message.ReportRelationships)
             {
                 SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), item);
@@ -357,6 +434,18 @@ namespace MyProject_WPF
                     return;
                 }
             }
+            if (Entity.IsView)
+            {
+                if (lokRelationship.SelectedItem != null)
+                {
+                    if (lokDataMenuSetting.SelectedItem == null)
+                    {
+                        MessageBox.Show("تنظیمات منوی رابطه مشخص نشده است");
+                        return;
+                    }
+                }
+
+            }
             if (Message.ReportRelationships.Any(x => x.RelationshipTailID == 0))
             {
                 MessageBox.Show("انتخاب رابطه و گزارش برای لیست گزارشات اجباری می باشد");
@@ -372,6 +461,13 @@ namespace MyProject_WPF
                 Message.EntityListViewID = 0;
             Message.EntityID = EntityID;
             Message.Name = txtName.Text;
+
+            if (lokRelationship.SelectedItem != null)
+                Message.RelationshipID = (int)lokRelationship.SelectedValue;
+            if (lokDataMenuSetting.SelectedItem != null)
+                Message.TargetDataMenuSettingID = (int)lokDataMenuSetting.SelectedValue;
+
+
             bizDataMenuSetting.UpdateEntityReportDataMenuSettings(Message);
             MessageBox.Show("اطلاعات ثبت شد");
         }

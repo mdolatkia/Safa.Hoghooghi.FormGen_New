@@ -610,22 +610,26 @@ namespace MyProject_WPF
                     letterRelationshipTail.Click += (sender1, EventArgs) => customMenuItem_ClickLetterRelationshipTail(sender, e, source.DataContext as TableDrivedEntityDTO);
 
 
-                    var searchEntityGMenu = AddMenu(contextMenu.Items, "جستجوی داده ها", "", "../Images/search.png");
-                    var searchEntityMenu = AddMenu(searchEntityGMenu.Items, "فیلدهای جستجوی سریع", "", "../Images/listView.png");
-                    searchEntityMenu.Click += (sender1, EventArgs) => customMenuItem_ClickEntitySearch(sender, e, source.DataContext as TableDrivedEntityDTO);
+                  //  var searchEntityGMenu = AddMenu(contextMenu.Items, "جستجوی داده ها", "", "../Images/search.png");
+                //    var searchEntityMenu = AddMenu(searchEntityGMenu.Items, "فیلدهای جستجوی سریع", "", "../Images/listView.png");
+                  //  searchEntityMenu.Click += (sender1, EventArgs) => customMenuItem_ClickEntitySearch(sender, e, source.DataContext as TableDrivedEntityDTO);
 
                     var dataLinkMenu = AddMenu(contextMenu.Items, "لینک داده", "", "../Images/datalink.png");
                     dataLinkMenu.Click += (sender1, EventArgs) => customMenuItem_EntityDataLink(sender, e, source.DataContext as TableDrivedEntityDTO);
 
-                    var listReportSetting = AddMenu(contextMenu.Items, "تنیمات منوی داده", "", "../Images/listView.png");
-                    listReportSetting.Click += (sender1, EventArgs) => customMenuItem_ClickMenuSetting(sender, e, source.DataContext as TableDrivedEntityDTO);
-
-
+             
                 }
 
+                var listReportSetting = AddMenu(contextMenu.Items, "تنیمات منوی داده", "", "../Images/listView.png");
+                listReportSetting.Click += (sender1, EventArgs) => customMenuItem_ClickMenuSetting(sender, e, source.DataContext as TableDrivedEntityDTO);
 
 
-         //       var dataViewGMenu = AddMenu(contextMenu.Items, "نمایش داده ها", "", "../Images/view.png");
+
+                //       var dataViewGMenu = AddMenu(contextMenu.Items, "نمایش داده ها", "", "../Images/view.png");
+
+                var searchEntityMenu = AddMenu(contextMenu.Items, "فیلدهای جستجوی سریع", "", "../Images/listView.png");
+                searchEntityMenu.Click += (sender1, EventArgs) => customMenuItem_ClickEntitySearch(sender, e, source.DataContext as TableDrivedEntityDTO);
+
 
                 var listViewMenu = AddMenu(contextMenu.Items, "لیست نمایش", "", "../Images/listView.png");
                 listViewMenu.Click += (sender1, EventArgs) => customMenuItem_ClickListView(sender, e, source.DataContext as TableDrivedEntityDTO);

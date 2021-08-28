@@ -45,17 +45,15 @@ namespace MyModelManager
             bizTableDrivedEntity.ItemImportingStarted += BizTableDrivedEntity_ItemImportingStarted;
 
             List<TableDrivedEntityDTO> allEntities = new List<TableDrivedEntityDTO>();
-            var listEntityIds = bizTableDrivedEntity.GetEntityIDs(databaseID, false);
+            var listEntityIds = bizTableDrivedEntity.GetEntityIDs(databaseID);
             foreach (var id in listEntityIds)
             {
                 allEntities.Add(bizTableDrivedEntity.GetTableDrivedEntity(requester, id, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships));
             }
 
-            var uiCompositionEntities = bizTableDrivedEntity.GetOrginalEntitiesWithoutUIComposition(databaseID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships, false);
+            var uiCompositionEntities = bizTableDrivedEntity.GetOrginalEntitiesWithoutUIComposition(databaseID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships);
             var listViewEntities = allEntities.Where(x => x.EntityListViewID == 0).ToList();
-
             var searchEntities = allEntities.Where(x => x.EntitySearchID == 0).ToList();
-
             var initialSearchEntities = allEntities.Where(x => x.SearchInitially == null).ToList();
 
             UpdateDefaultSettingsInModel(uiCompositionEntities, listViewEntities, searchEntities, initialSearchEntities, allEntities);
@@ -2195,7 +2193,7 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 return projectContext.TableDrivedEntity.Any(x =>
-                x.IsOrginal == true && x.IsView == false && x.IsDisabled == false && x.Table.DBSchema.DatabaseInformationID == databaseID
+                x.IsOrginal == true &&  x.IsDisabled == false && x.Table.DBSchema.DatabaseInformationID == databaseID
                 && (x.EntitySearchID == null || x.EntityListViewID == null || !x.EntityUIComposition.Any() || x.SearchInitially == null));
             }
         }

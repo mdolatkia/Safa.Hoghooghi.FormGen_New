@@ -17,6 +17,7 @@ namespace DataAccess
         public Relationship()
         {
             this.ArcRelationshipGroup_Relationship = new HashSet<ArcRelationshipGroup_Relationship>();
+            this.DataMenuForViewEntity = new HashSet<DataMenuForViewEntity>();
             this.FormulaItems = new HashSet<FormulaItems>();
             this.Relationship1 = new HashSet<Relationship>();
             this.SearchRepository = new HashSet<SearchRepository>();
@@ -43,6 +44,7 @@ namespace DataAccess
         public bool SearchInitially { get; set; }
     
         public virtual ICollection<ArcRelationshipGroup_Relationship> ArcRelationshipGroup_Relationship { get; set; }
+        public virtual ICollection<DataMenuForViewEntity> DataMenuForViewEntity { get; set; }
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
         public virtual ICollection<Relationship> Relationship1 { get; set; }
         public virtual Relationship Relationship2 { get; set; }

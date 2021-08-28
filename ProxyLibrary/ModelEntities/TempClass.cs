@@ -1472,6 +1472,10 @@ namespace ModelEntites
         public List<DataMenuReportRelationshipDTO> ReportRelationships { set; get; }
         public List<DataMenuGridViewRelationshipDTO> GridViewRelationships { set; get; }
         public List<DataMenuDirectReportRelationshipDTO> DirectReports { set; get; }
+        public int RelationshipID { set; get; }
+        public RelationshipDTO Relationship { set; get; }
+        public int TargetDataMenuSettingID { set; get; }
+        public DataMenuSettingDTO DataMenuSetting { set; get; }
         public byte[] IconContent { set; get; }
         public int EntityListViewID { set; get; }
 
@@ -1541,7 +1545,7 @@ namespace ModelEntites
         {
             SubMenus = new List<DataMenu>();
         }
-
+        public DP_DataView DataItem { set; get; }
         //public void OnMenuClicked()
         //{
         //    if (MenuClicked != null)
@@ -1551,7 +1555,7 @@ namespace ModelEntites
         public string Title { set; get; }
         public List<DataMenu> SubMenus { set; get; }
         public DataMenuType Type { set; get; }
-        public DP_DataView ViewRelTargetDataItem { get; set; }
+     //   public DP_DataView ViewRelTargetDataItem { get; set; }
         public DataLinkDTO Datalink { get; set; }
         public DataMenuReportRelationshipDTO ReportRelationshipTail { get; set; }
         public EntityRelationshipTailDTO DataviewRelationshipTail { get; set; }
@@ -1571,8 +1575,9 @@ namespace ModelEntites
         Folder,
         DirectReport,
         Letter,
-        Workflow,
-        ViewRel
+        Workflow
+            //,
+     //   ViewRel
 
     }
 

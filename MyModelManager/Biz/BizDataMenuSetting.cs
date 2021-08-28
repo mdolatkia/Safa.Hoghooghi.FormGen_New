@@ -21,6 +21,7 @@ namespace MyModelManager
         SecurityHelper securityHelper = new SecurityHelper();
         BizEntitySearchableReport bizEntitySearchableReport = new BizEntitySearchableReport();
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+        BizRelationship bizRelationship = new BizRelationship();
         public List<DataMenuSettingDTO> GetDataMenuSettings(DR_Requester requester, int entityID)
         {
             List<DataMenuSettingDTO> result = new List<DataMenuSettingDTO>();
@@ -37,8 +38,6 @@ namespace MyModelManager
         }
         public DataMenuSettingDTO GetDataMenuSetting(DR_Requester requester, int ID, bool withDetails)
         {
-
-
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var entity = projectContext.DataMenuSetting.FirstOrDefault(x => x.ID == ID);
@@ -66,45 +65,61 @@ namespace MyModelManager
         private DataMenuSettingDTO ToDataMenuSettingDTO(DR_Requester requester, DataMenuSetting entity, bool withDetails)
         {
             var result = new DataMenuSettingDTO();
-            foreach (var item in entity.DataMenuReportRelationship)
+            if (withDetails)
             {
-                //دسترسی به خود گزارش هم کنترل شود
-                if (bizEntityRelationshipTail.DataIsAccessable(requester, item.EntityRelationshipTail))
+                foreach (var item in entity.DataMenuReportRelationship)
                 {
-                    if (bizEntityReport.DataIsAccessable(requester, item.EntitySearchableReport.EntityReport))
+                    //دسترسی به خود گزارش هم کنترل شود
+                    if (bizEntityRelationshipTail.DataIsAccessable(requester, item.EntityRelationshipTail))
                     {
-                        var tail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
-                        var entityReportDTO = new EntitySearchableReportDTO();
-                        bizEntitySearchableReport.ToEntitySearchableReportDTO(item.EntitySearchableReport, entityReportDTO, withDetails);
-                        result.ReportRelationships.Add(ToDataMenuReportRelationshipDTO(item, tail, entityReportDTO));
+                        if (bizEntityReport.DataIsAccessable(requester, item.EntitySearchableReport.EntityReport))
+                        {
+                            var tail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
+                            var entityReportDTO = new EntitySearchableReportDTO();
+                            bizEntitySearchableReport.ToEntitySearchableReportDTO(item.EntitySearchableReport, entityReportDTO, withDetails);
+                            result.ReportRelationships.Add(ToDataMenuReportRelationshipDTO(item, tail, entityReportDTO));
+                        }
                     }
                 }
-            }
 
-            foreach (var item in entity.DataMenuDataViewRelationship)
-            {
-                if (bizEntityRelationshipTail.DataIsAccessable(requester, item.EntityRelationshipTail))
+                foreach (var item in entity.DataMenuDataViewRelationship)
                 {
-                    var tail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
-                    result.DataViewRelationships.Add(ToDataMenuDataViewRelationshipDTO(item, tail));
+                    if (bizEntityRelationshipTail.DataIsAccessable(requester, item.EntityRelationshipTail))
+                    {
+                        var tail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
+                        result.DataViewRelationships.Add(ToDataMenuDataViewRelationshipDTO(item, tail));
+                    }
+                }
+
+                foreach (var item in entity.DataMenuGridViewRelationship)
+                {
+                    if (bizEntityRelationshipTail.DataIsAccessable(requester, item.EntityRelationshipTail))
+                    {
+                        var tail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
+                        result.GridViewRelationships.Add(ToDataMenuGridViewRelationshipDTO(item, tail));
+                    }
+                }
+                foreach (var item in entity.DataMenuDirectReportRelationship)
+                {
+                    if (bizEntityReport.DataIsAccessable(requester, item.EntityDirectReportID))
+                        result.DirectReports.Add(ToDataMenuDirectReportRelationshipDTO(requester, item));
                 }
             }
-
-            foreach (var item in entity.DataMenuGridViewRelationship)
-            {
-                if (bizEntityRelationshipTail.DataIsAccessable(requester, item.EntityRelationshipTail))
-                {
-                    var tail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
-                    result.GridViewRelationships.Add(ToDataMenuGridViewRelationshipDTO(item, tail));
-                }
-            }
-            foreach (var item in entity.DataMenuDirectReportRelationship)
-            {
-                if (bizEntityReport.DataIsAccessable(requester, item.EntityDirectReportID))
-                    result.DirectReports.Add(ToDataMenuDirectReportRelationshipDTO(requester, item));
-            }
+            result.EntityID = entity.TableDrivedEntityID;
             result.EntityListViewID = entity.EntityListViewID;
             result.Name = entity.Name;
+            if (entity.DataMenuForViewEntity.Any())
+            {
+                result.RelationshipID = entity.DataMenuForViewEntity.First().RelationshipID;
+                if (withDetails)
+                {
+                    if (bizRelationship.DataIsAccessable(requester, entity.DataMenuForViewEntity.First().Relationship, false, true))
+                        result.Relationship = bizRelationship.ToRelationshipDTO(entity.DataMenuForViewEntity.First().Relationship);
+                }
+                result.TargetDataMenuSettingID = entity.DataMenuForViewEntity.First().TargetDataMenuSettingID;
+                if (withDetails)
+                    result.DataMenuSetting = ToDataMenuSettingDTO(requester, entity.DataMenuForViewEntity.First().DataMenuSetting1, false);
+            }
             result.ID = entity.ID;
             if (withDetails)
                 result.IconContent = entity.IconContent;
@@ -163,27 +178,44 @@ namespace MyModelManager
             var simpleEntity = bizTableDrivedEntity.GetSimpleEntity(requester, entityID);
             if (simpleEntity == null)
                 return null;
+            DataMenuSettingDTO dataMenuSetting = null;
+            if (dataMenuSettingID != 0)
+                dataMenuSetting = GetDataMenuSetting(requester, dataMenuSettingID, true);
+            else
+                dataMenuSetting = GetDefaultDataMenuSetting(requester, entityID, true);
+
+           
+
             if (simpleEntity.IsView)
             {
-                var fullEntity = bizTableDrivedEntity.GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
-                if (fullEntity.Relationships.Any())
+                if (dataMenuSetting != null)
                 {
-                    foreach (var relationsip in fullEntity.Relationships)
+                    if (dataMenuSetting.RelationshipID != 0 && dataMenuSetting.TargetDataMenuSettingID != 0)
                     {
-                        var dataView = CreateDataView(dataItem, relationsip);
-                        var menu = AddMenu(result, relationsip.Alias, "", DataMenuType.ViewRel);
-                        menu.ViewRelTargetDataItem = dataView;
+                        var relationship = bizRelationship.GetRelationship(dataMenuSetting.RelationshipID);
+                        var dataView = CreateDataView(requester,dataItem, relationship);
+                        return GetDataMenu(requester, dataView, dataMenuSetting.TargetDataMenuSettingID);
                     }
                 }
+                //var fullEntity = bizTableDrivedEntity.GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
+                //if (fullEntity.Relationships.Any())
+                //{
+                //    foreach (var relationsip in fullEntity.Relationships)
+                //    {
+                //        var dataView = CreateDataView(dataItem, relationsip);
+                //        var menu = AddMenu(result, relationsip.Alias, "", DataMenuType.ViewRel);
+                //        menu.ViewRelTargetDataItem = dataView;
+                //    }
+                //}
             }
             else
             {
-                var dataEntryRootMenu = AddMenu(result, "نمایش/اصلاح داده", "", DataMenuType.Form);
+                var dataEntryRootMenu = AddMenu(result, "نمایش/اصلاح داده", "", DataMenuType.Form, dataItem);
                 //آرشیو داده
                 // BizArchive bizArchive = new BizArchive();
                 if (bizTableDrivedEntity.DataIsAccessable(requester, entityID, new List<SecurityAction>() { SecurityAction.ArchiveView, SecurityAction.ArchiveEdit }))
                 {
-                    var archiveRootMenu = AddMenu(result, "آرشیو", "", DataMenuType.Archive);
+                    var archiveRootMenu = AddMenu(result, "آرشیو", "", DataMenuType.Archive, dataItem);
                 }
 
 
@@ -191,12 +223,12 @@ namespace MyModelManager
                 //  BizLetterTemplate bizLetterTemplate = new BizLetterTemplate();
                 if (bizTableDrivedEntity.DataIsAccessable(requester, entityID, new List<SecurityAction>() { SecurityAction.LetterView, SecurityAction.LetterEdit }))
                 {
-                    var letterRootMenu = AddMenu(result, "نامه ها", "", DataMenuType.Letter);
+                    var letterRootMenu = AddMenu(result, "نامه ها", "", DataMenuType.Letter, dataItem);
                 }
                 //جریان کارهای مرتبط
                 if (bizProcess.EntityHasAnyProcess(entityID))
                 {
-                    var workflowRootMenu = AddMenu(result, "جریان کار", "", DataMenuType.Workflow);
+                    var workflowRootMenu = AddMenu(result, "جریان کار", "", DataMenuType.Workflow, dataItem);
                 }
 
 
@@ -207,30 +239,27 @@ namespace MyModelManager
                 var datalinks = bizDataLink.GetDataLinkByEntitiyID(requester, entityID);
                 if (datalinks.Any())
                 {
-                    var dataViewRootMenu = AddMenu(result, "لینک داده", "", DataMenuType.Folder);
+                    var dataViewRootMenu = AddMenu(result, "لینک داده", "", DataMenuType.Folder,null);
                     foreach (var datalink in datalinks)
                     {
-                        var datalinkMenu = AddMenu(dataViewRootMenu.SubMenus, datalink.Name, "", DataMenuType.DataLink);
+                        var datalinkMenu = AddMenu(dataViewRootMenu.SubMenus, datalink.Name, "", DataMenuType.DataLink, dataItem);
                         datalinkMenu.Datalink = datalink;
                     }
                 }
-                DataMenuSettingDTO dataMenuSetting = null;
+
                 //گزارشهای داده های مرتبط
-                if (dataMenuSettingID != 0)
-                    dataMenuSetting = GetDataMenuSetting(requester, dataMenuSettingID, true);
-                else
-                    dataMenuSetting = GetDefaultDataMenuSetting(requester, entityID, true);
+
                 if (dataMenuSetting != null)
                 {
                     if (dataMenuSetting.ReportRelationships.Any())
                     {
-                        var relationshipReportRootMenu = AddMenu(result, "گزارش داده های مرتبط", "", DataMenuType.Folder);
+                        var relationshipReportRootMenu = AddMenu(result, "گزارش داده های مرتبط", "", DataMenuType.Folder,null);
                         foreach (var group in dataMenuSetting.ReportRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(relationshipReportRootMenu, group.Key);
                             foreach (var rel in group)
                             {
-                                var menu = AddMenu(parentGroupMenu.SubMenus, rel.EntityReport.ReportTitle, "", DataMenuType.RelationshipTailSearchableReport);
+                                var menu = AddMenu(parentGroupMenu.SubMenus, rel.EntityReport.ReportTitle, "", DataMenuType.RelationshipTailSearchableReport, dataItem);
                                 menu.ReportRelationshipTail = rel;
                             }
                         }
@@ -238,13 +267,13 @@ namespace MyModelManager
                     //نمای داده های مرتبط
                     if (dataMenuSetting.DataViewRelationships.Any())
                     {
-                        var dataViewRootMenu = AddMenu(result, "نمایش داده های مرتبط", "", DataMenuType.Folder);
+                        var dataViewRootMenu = AddMenu(result, "نمایش داده های مرتبط", "", DataMenuType.Folder,null);
                         foreach (var group in dataMenuSetting.DataViewRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(dataViewRootMenu, group.Key);
                             foreach (var rel in group)
                             {
-                                var dataViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.RelationshipTail.TargetEntityAlias, rel.RelationshipTail.EntityPath, DataMenuType.RelationshipTailDataView);
+                                var dataViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.RelationshipTail.TargetEntityAlias, rel.RelationshipTail.EntityPath, DataMenuType.RelationshipTailDataView, dataItem);
                                 dataViewRelMenu.DataviewRelationshipTail = rel.RelationshipTail;
                                 dataViewRelMenu.TargetDataMenuSettingID = rel.TargetDataMenuSettingID;
                             }
@@ -252,13 +281,13 @@ namespace MyModelManager
                     }
                     if (dataMenuSetting.GridViewRelationships.Any())
                     {
-                        var gridViewRootMenu = AddMenu(result, "گرید داده های مرتبط", "", DataMenuType.Folder);
+                        var gridViewRootMenu = AddMenu(result, "گرید داده های مرتبط", "", DataMenuType.Folder,null);
                         foreach (var group in dataMenuSetting.GridViewRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(gridViewRootMenu, group.Key);
                             foreach (var rel in group)
                             {
-                                var gridViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.RelationshipTail.TargetEntityAlias, rel.RelationshipTail.EntityPath, DataMenuType.RelationshipTailDataGrid);
+                                var gridViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.RelationshipTail.TargetEntityAlias, rel.RelationshipTail.EntityPath, DataMenuType.RelationshipTailDataGrid, dataItem);
                                 gridViewRelMenu.GridviewRelationshipTail = rel.RelationshipTail;
                                 gridViewRelMenu.TargetDataMenuSettingID = rel.TargetDataMenuSettingID;
                             }
@@ -266,13 +295,13 @@ namespace MyModelManager
                     }
                     if (dataMenuSetting.DirectReports.Any())
                     {
-                        var gridViewRootMenu = AddMenu(result, "گزارشات مستقیم", "", DataMenuType.Folder);
+                        var gridViewRootMenu = AddMenu(result, "گزارشات مستقیم", "", DataMenuType.Folder,null);
                         foreach (var group in dataMenuSetting.DirectReports.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(gridViewRootMenu, group.Key);
                             foreach (var rel in group)
                             {
-                                var gridViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.EntityDirectReport.ReportTitle, "", DataMenuType.DirectReport);
+                                var gridViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.EntityDirectReport.ReportTitle, "", DataMenuType.DirectReport, dataItem);
                                 gridViewRelMenu.DirectReport = rel.EntityDirectReport;
                             }
                         }
@@ -293,6 +322,17 @@ namespace MyModelManager
             }
 
         }
+        //public List<DataMenuSettingDTO> GetDataMenusOfRelationship(DR_Requester requester, int relationshipID)
+        //{
+        //    List<EntitySearchableReportDTO> result = new List<EntitySearchableReportDTO>();
+        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    {
+        //        BizRelationship bizRelationship = new BizRelationship();
+        //        var relationship = bizRelationship.GetRelationship(requester, relationshipTailID);
+        //        return GetDataMenuSettings(requester, relationshipTail.TargetEntityID);
+        //    }
+
+        //}
 
         private DataMenu GetGroupMenu(DataMenu parentMenu, string key)
         {
@@ -304,13 +344,14 @@ namespace MyModelManager
                     return parentMenu.SubMenus.First(x => x.Title == key);
                 else
                 {
-                    var subMenu = AddMenu(parentMenu.SubMenus, key, "", DataMenuType.Folder);
+                    var subMenu = AddMenu(parentMenu.SubMenus, key, "", DataMenuType.Folder,null);
                     return subMenu;
                 }
             }
         }
-        DP_DataView CreateDataView(DP_DataView sourceDataItem, RelationshipDTO relationsip)
+        DP_DataView CreateDataView(DR_Requester requester, DP_DataView sourceDataItem, RelationshipDTO relationsip)
         {
+            var entity = bizTableDrivedEntity.GetTableDrivedEntity(requester, relationsip.EntityID2, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
             var dataView = new DP_DataView(relationsip.EntityID2, relationsip.Entity2);
             foreach (var relCol in relationsip.RelationshipColumns)
             {
@@ -333,12 +374,13 @@ namespace MyModelManager
             return true;
         }
 
-        private DataMenu AddMenu(List<DataMenu> result, string title, string tooltip, DataMenuType type)
+        private DataMenu AddMenu(List<DataMenu> result, string title, string tooltip, DataMenuType type,DP_DataView dataItem)
         {
             var dataMenu = new DataMenu();
             dataMenu.Title = title;
             dataMenu.Tooltip = tooltip;
             dataMenu.Type = type;
+            dataMenu.DataItem = dataItem;
             result.Add(dataMenu);
             return dataMenu;
         }
@@ -430,6 +472,20 @@ namespace MyModelManager
                     dbRel.Group1 = item.Group1;
                     dbEntity.DataMenuDirectReportRelationship.Add(dbRel);
                 }
+
+
+                while (dbEntity.DataMenuForViewEntity.Any())
+                    projectContext.DataMenuForViewEntity.Remove(dbEntity.DataMenuForViewEntity.First());
+                if (message.RelationshipID != 0 && message.TargetDataMenuSettingID != 0)
+                {
+                    DataMenuForViewEntity dbRel = new DataMenuForViewEntity();
+                    dbRel.RelationshipID = message.RelationshipID;
+                    dbRel.TargetDataMenuSettingID = message.TargetDataMenuSettingID;
+                    dbEntity.DataMenuForViewEntity.Add(dbRel);
+                }
+
+
+
 
                 dbEntity.TableDrivedEntityID = message.EntityID;
                 dbEntity.Name = message.Name;

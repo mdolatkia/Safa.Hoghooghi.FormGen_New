@@ -205,6 +205,9 @@
     <Compile Include="DataMenuDirectReportRelationship.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataMenuForViewEntity.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataMenuGridViewRelationship.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>

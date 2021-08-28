@@ -276,17 +276,27 @@ namespace MyModelManager
         {
             if (list == null)
                 list = new List<EntityListViewColumnsDTO>();
-            foreach (var column in entity.Columns.Where(x => x.PrimaryKey))
-            {
-                AddListViewColumn(list, column);
-            }
-            var simplecollumns = GetSimpleListViewColumns(entity);
-            foreach (var column in simplecollumns)
-            {
-                AddListViewColumn(list, column);
-            }
-            AddRelationshipDefaultColumns(entity, allEntities, list);
 
+            if (!entity.IsView)
+            {
+                foreach (var column in entity.Columns.Where(x => x.PrimaryKey))
+                {
+                    AddListViewColumn(list, column);
+                }
+                var simplecollumns = GetSimpleListViewColumns(entity);
+                foreach (var column in simplecollumns)
+                {
+                    AddListViewColumn(list, column);
+                }
+                AddRelationshipDefaultColumns(entity, allEntities, list);
+            }
+            else
+            {
+                foreach (var column in entity.Columns)
+                {
+                    AddListViewColumn(list, column);
+                }
+            }
             if (entity != null)
             {
                 short index = 0;
@@ -295,6 +305,8 @@ namespace MyModelManager
                     item.OrderID = index;
                     index++;
                 }
+
+                //اگر ویو باشه اصلا این بکار میاد؟
                 CheckDescriptiveColumns(list);
             }
             return list;
@@ -650,8 +662,18 @@ namespace MyModelManager
 
             //تیلهای گزارش را از روی تیلهای ستونها میسازد
             //هر دفعه پاک نشن بهتره..اصلاح بشن
-            while (dbEntityListView.EntityListViewColumns.Any())
-                projectContext.EntityListViewColumns.Remove(dbEntityListView.EntityListViewColumns.First());
+
+            List<EntityListViewColumns> listRemove = new List<EntityListViewColumns>();
+            foreach (var dbColumn in dbEntityListView.EntityListViewColumns)
+            {
+                if (!message.EntityListViewAllColumns.Any(x => x.RelationshipTailID == (dbColumn.EntityRelationshipTailID ?? 0) && x.ColumnID == dbColumn.ColumnID))
+                    listRemove.Add(dbColumn);
+
+            }
+            foreach (var item in listRemove)
+            {
+                projectContext.EntityListViewColumns.Remove(item);
+            }
             //while (dbEntityListView.EntityListViewRelationshipTails.Any())
             //    projectContext.EntityListViewRelationshipTails.Remove(dbEntityListView.EntityListViewRelationshipTails.First());
             if (createdRelationshipTails == null)
@@ -660,7 +682,12 @@ namespace MyModelManager
             BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
             foreach (var column in message.EntityListViewAllColumns)
             {
-                EntityListViewColumns rColumn = new EntityListViewColumns();
+                EntityListViewColumns rColumn = null;
+                if (column.ID == 0)
+                    rColumn = new EntityListViewColumns();
+                else
+                    rColumn = projectContext.EntityListViewColumns.First(x => x.ID == column.ID);
+
                 rColumn.ColumnID = column.ColumnID;
                 rColumn.Alias = column.Alias;
                 rColumn.OrderID = column.OrderID;
@@ -768,7 +795,14 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var dbEntityListView = SaveItem(projectContext, message);
-                projectContext.SaveChanges();
+                try
+                {
+                    projectContext.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+
+                }
                 return dbEntityListView.ID;
             }
         }

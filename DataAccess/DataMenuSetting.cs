@@ -19,6 +19,8 @@ namespace DataAccess
             this.DataMenuDataViewRelationship = new HashSet<DataMenuDataViewRelationship>();
             this.DataMenuDataViewRelationship1 = new HashSet<DataMenuDataViewRelationship>();
             this.DataMenuDirectReportRelationship = new HashSet<DataMenuDirectReportRelationship>();
+            this.DataMenuForViewEntity = new HashSet<DataMenuForViewEntity>();
+            this.DataMenuForViewEntity1 = new HashSet<DataMenuForViewEntity>();
             this.DataMenuGridViewRelationship = new HashSet<DataMenuGridViewRelationship>();
             this.DataMenuGridViewRelationship1 = new HashSet<DataMenuGridViewRelationship>();
             this.DataMenuReportRelationship = new HashSet<DataMenuReportRelationship>();
@@ -36,6 +38,8 @@ namespace DataAccess
         public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship { get; set; }
         public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship1 { get; set; }
         public virtual ICollection<DataMenuDirectReportRelationship> DataMenuDirectReportRelationship { get; set; }
+        public virtual ICollection<DataMenuForViewEntity> DataMenuForViewEntity { get; set; }
+        public virtual ICollection<DataMenuForViewEntity> DataMenuForViewEntity1 { get; set; }
         public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }
         public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship1 { get; set; }
         public virtual ICollection<DataMenuReportRelationship> DataMenuReportRelationship { get; set; }

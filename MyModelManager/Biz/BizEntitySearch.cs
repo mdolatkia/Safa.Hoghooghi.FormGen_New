@@ -248,16 +248,26 @@ namespace MyModelManager
         {
             if (list == null)
                 list = new List<EntitySearchColumnsDTO>();
-            foreach (var column in entity.Columns.Where(x => x.PrimaryKey))
+            if (entity.IsView == false)
             {
-                AddSearchColumn(list, column);
+                foreach (var column in entity.Columns.Where(x => x.PrimaryKey))
+                {
+                    AddSearchColumn(list, column);
+                }
+                var simplecollumns = GetSimpleSearchColumns(entity);
+                foreach (var column in simplecollumns)
+                {
+                    AddSearchColumn(list, column);
+                }
+                AddRelationshipDefaultColumns(entity, allEntities, list);
             }
-            var simplecollumns = GetSimpleSearchColumns(entity);
-            foreach (var column in simplecollumns)
+            else
             {
-                AddSearchColumn(list, column);
+                foreach (var column in entity.Columns)
+                {
+                    AddSearchColumn(list, column);
+                }
             }
-            AddRelationshipDefaultColumns(entity, allEntities, list);
             if (entity != null)
             {
                 short index = 0;

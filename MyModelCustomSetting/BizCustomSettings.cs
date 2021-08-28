@@ -2644,6 +2644,36 @@ namespace MyModelCustomSetting
                 projectContext.EntityReport.Add(conclusionChartRadar);
             }
 
+            var viewServiceRequest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "view_ServieRequests");
+            EntityReport viewServiceRequestChartRadar = null;
+            if (viewServiceRequest != null && viewServiceRequest.EntityListView1 != null)
+            {
+                var brandTitle = viewServiceRequest.EntityListView1.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "BrandTitle");
+                var hoursSpentColumn = viewServiceRequest.EntityListView1.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "HoursSpent");
+                viewServiceRequestChartRadar = projectContext.EntityReport.FirstOrDefault(x => x.Title == "نمای درخواست سرویس مجموع ساعات کار بر حسب برند" && x.TableDrivedEntityID == viewServiceRequest.ID);
+                if (viewServiceRequestChartRadar == null)
+                {
+                    viewServiceRequestChartRadar = new EntityReport();
+                    viewServiceRequestChartRadar.Title = "نمای درخواست سرویس مجموع ساعات کار بر حسب برند";
+                    viewServiceRequestChartRadar.ReportType = (short)ReportType.SearchableReport;
+                    viewServiceRequestChartRadar.SecurityObject = new SecurityObject();
+                    viewServiceRequestChartRadar.SecurityObject.Type = (short)DatabaseObjectCategory.Report;
+                    viewServiceRequestChartRadar.TableDrivedEntityID = viewServiceRequest.ID;
+                    viewServiceRequestChartRadar.EntitySearchableReport = new EntitySearchableReport();
+                    viewServiceRequestChartRadar.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.ChartReport;
+                    viewServiceRequestChartRadar.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+
+                    viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport = new EntityChartReport();
+                    viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Pie;
+                    viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.EntityListView = viewServiceRequest.EntityListView1;
+
+                    //   viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.CharetReportCategories.Add(new CharetReportCategories() { EntityListViewColumns = brandTitle });
+                    viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.CharetReportSeries.Add(new CharetReportSeries() { EntityListViewColumns = brandTitle });
+                    viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.CharetReportValues.Add(new CharetReportValues() { FunctoinType = (short)ChartReportValueFunction.Sum, EntityListViewColumns = hoursSpentColumn });
+
+                    projectContext.EntityReport.Add(viewServiceRequestChartRadar);
+                }
+            }
             var conclusionCrossTab = projectContext.EntityReport.FirstOrDefault(x => x.Title == "گزارش کراس تب صورتحساب" && x.TableDrivedEntityID == serviceConclusion.ID);
             if (conclusionCrossTab == null)
             {
@@ -2811,7 +2841,7 @@ namespace MyModelCustomSetting
                     productToProductItem.TypeEnum = Convert.ToByte(Enum_RelationshipType.OneToMany);
                     productToProductItem.SecurityObject = new SecurityObject();
                     productToProductItem.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
-                    productToProductItem.Name = "محصول و کالا";
+                    productToProductItem.Alias = "محصول و کالا";
                     productToProductItem.Name = productItem.Name;
 
                     var pBrandTitle = product.Table.Column.First(x => x.Name == "BrandTitle");
@@ -2844,7 +2874,7 @@ namespace MyModelCustomSetting
                     productItemToProduct.TypeEnum = Convert.ToByte(Enum_RelationshipType.ManyToOne);
                     productItemToProduct.SecurityObject = new SecurityObject();
                     productItemToProduct.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
-                    productItemToProduct.Name = "inverse_" + "محصول و کالا";
+                    productItemToProduct.Alias = "inverse_" + "محصول و کالا";
                     productItemToProduct.Name = product.Name;
 
 
@@ -2865,7 +2895,91 @@ namespace MyModelCustomSetting
 
 
             }
-          
+
+
+
+
+            Relationship serviceRequestToViewServiceRequest = null;
+            Relationship viewServiceRequestToServiceRequest = null;
+
+            if (viewServiceRequest != null)
+            {
+                serviceRequestToViewServiceRequest = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == viewServiceRequest.ID);
+                viewServiceRequestToServiceRequest = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == viewServiceRequest.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
+                if (serviceRequestToViewServiceRequest == null)
+                {
+                    serviceRequestToViewServiceRequest = new Relationship();
+                    serviceRequestToViewServiceRequest.Created = true;
+                    serviceRequestToViewServiceRequest.TableDrivedEntityID1 = serviceRequest.ID;
+                    serviceRequestToViewServiceRequest.TableDrivedEntityID2 = viewServiceRequest.ID;
+                    serviceRequestToViewServiceRequest.MasterTypeEnum = (byte)Enum_MasterRelationshipType.NotImportant;
+                    serviceRequestToViewServiceRequest.TypeEnum = Convert.ToByte(Enum_RelationshipType.TableToView);
+                    serviceRequestToViewServiceRequest.SecurityObject = new SecurityObject();
+                    serviceRequestToViewServiceRequest.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
+                    serviceRequestToViewServiceRequest.Alias = "نمای درخواست سرویس";
+                    serviceRequestToViewServiceRequest.Name = viewServiceRequest.Name;
+
+                    var pIDColumn = serviceRequest.Table.Column.First(x => x.Name == "ID");
+
+                    var fIDColumn = viewServiceRequest.Table.Column.First(x => x.Name == "ID");
+
+
+                    serviceRequestToViewServiceRequest.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = pIDColumn.ID, SecondSideColumnID = fIDColumn.ID });
+
+                    serviceRequestToViewServiceRequest.RelationshipType = new RelationshipType();
+
+                    projectContext.Relationship.Add(serviceRequestToViewServiceRequest);
+
+
+                    viewServiceRequestToServiceRequest = new Relationship();
+                    viewServiceRequestToServiceRequest.Created = true;
+                    viewServiceRequestToServiceRequest.TableDrivedEntityID1 = viewServiceRequest.ID;
+                    viewServiceRequestToServiceRequest.TableDrivedEntityID2 = serviceRequest.ID;
+                    viewServiceRequestToServiceRequest.MasterTypeEnum = (byte)Enum_MasterRelationshipType.NotImportant;
+                    viewServiceRequestToServiceRequest.TypeEnum = Convert.ToByte(Enum_RelationshipType.ViewToTable);
+                    viewServiceRequestToServiceRequest.SecurityObject = new SecurityObject();
+                    viewServiceRequestToServiceRequest.SecurityObject.Type = (int)DatabaseObjectCategory.Relationship;
+                    viewServiceRequestToServiceRequest.Alias = "inverse_" + "نمای درخواست سرویس";
+                    viewServiceRequestToServiceRequest.Name = serviceRequest.Name;
+
+
+                    viewServiceRequestToServiceRequest.RelationshipColumns.Add(new RelationshipColumns() { FirstSideColumnID = fIDColumn.ID, SecondSideColumnID = pIDColumn.ID });
+
+                    viewServiceRequestToServiceRequest.RelationshipType = new RelationshipType();
+
+                    projectContext.Relationship.Add(viewServiceRequestToServiceRequest);
+                }
+
+                if (viewServiceRequest.DataMenuSetting1 == null)
+                {
+                    if (viewServiceRequest.EntityListViewID != null && serviceRequest.EntityListViewID != null)
+                    {
+
+                        if (serviceRequest.DataMenuSetting1 == null)
+                        {
+                            var serviceRequestDataMenuSetting = new DataMenuSetting();
+                            serviceRequest.DataMenuSetting1 = serviceRequestDataMenuSetting;
+                            serviceRequestDataMenuSetting.Name = "تنظیمات منوی درخواست سرویس";
+                            serviceRequestDataMenuSetting.TableDrivedEntityID = serviceRequest.ID;
+                            serviceRequestDataMenuSetting.EntityListViewID = serviceRequest.EntityListViewID.Value;
+
+                            var viewServiceRequestDataMenuSetting = new DataMenuSetting();
+                            viewServiceRequest.DataMenuSetting1 = viewServiceRequestDataMenuSetting;
+                            viewServiceRequestDataMenuSetting.Name = "تنظیمات منوی نمای درخواست سرویس";
+                            viewServiceRequestDataMenuSetting.TableDrivedEntityID = viewServiceRequest.ID;
+                            viewServiceRequestDataMenuSetting.EntityListViewID = viewServiceRequest.EntityListViewID.Value;
+                            var viewMenuSetting = new DataMenuForViewEntity();
+                            viewMenuSetting.Relationship = viewServiceRequestToServiceRequest;
+                            viewMenuSetting.DataMenuSetting1 = serviceRequestDataMenuSetting;
+                            viewServiceRequestDataMenuSetting.DataMenuForViewEntity.Add(viewMenuSetting);
+                        }
+                    }
+                }
+            }
+
+
+
+
             TableDrivedEntity serviceRepair = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRepair");
             TableDrivedEntity serviceTest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceTest");
             Tuple<Relationship, Relationship> serviceRepairRelationship = null;
@@ -3320,7 +3434,24 @@ namespace MyModelCustomSetting
                     productItemToProduct.RelationshipID = productToProductItem.ID;
                     productToProductItem.RelationshipID = productItemToProduct.ID;
                 }
-                    var brandProductType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "BrandProductType");
+                if (serviceRequestToViewServiceRequest != null)
+                {
+                    serviceRequestToViewServiceRequest.RelationshipID = viewServiceRequestToServiceRequest.ID;
+                    viewServiceRequestToServiceRequest.RelationshipID = serviceRequestToViewServiceRequest.ID;
+
+
+                    var hoursSpentListColumn = serviceRequest.EntityListView1.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "HoursSpent");
+                    if (hoursSpentListColumn == null)
+                    {
+                        var hoursSpentColumn = viewServiceRequest.Table.Column.First(x => x.Name == "HoursSpent");
+
+                        hoursSpentListColumn = new EntityListViewColumns();
+                        hoursSpentListColumn.Column = hoursSpentColumn;
+                        hoursSpentListColumn.EntityRelationshipTail = GetRelationshipTail(projectContext, serviceRequest, viewServiceRequest, serviceRequestToViewServiceRequest.ID.ToString());
+                        serviceRequest.EntityListView1.EntityListViewColumns.Add(hoursSpentListColumn);
+                    }
+                }
+                var brandProductType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "BrandProductType");
                 if (brandProductType != null)
                 {
                     var dataLink = projectContext.DataLinkDefinition.FirstOrDefault(x => x.FirstSideEntityID == region.ID && x.SecondSideEntityID == brandProductType.ID);
@@ -3466,6 +3597,18 @@ namespace MyModelCustomSetting
                     mnuConclustionChartRadar.TableDrivedEntityID = serviceConclusion.ID;
                     projectContext.NavigationTree.Add(mnuConclustionChartRadar);
                 }
+                var mnuViewServiceRequestChartRadar = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش مجموع ساعات کار بر حسب برند" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == viewServiceRequestChartRadar.ID);
+                if (mnuViewServiceRequestChartRadar == null)
+                {
+                    mnuViewServiceRequestChartRadar = new NavigationTree();
+                    mnuViewServiceRequestChartRadar.ItemTitle = "گزارش مجموع ساعات کار بر حسب برند";
+                    mnuViewServiceRequestChartRadar.NavigationTree2 = mnuReportFolder;
+                    mnuViewServiceRequestChartRadar.Category = DatabaseObjectCategory.Report.ToString();
+                    mnuViewServiceRequestChartRadar.ItemIdentity = viewServiceRequestChartRadar.ID;
+                    mnuViewServiceRequestChartRadar.TableDrivedEntityID = viewServiceRequest.ID;
+                    projectContext.NavigationTree.Add(mnuViewServiceRequestChartRadar);
+                }
+
 
                 var mnuConclustionCrossTab = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش کراس تب صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionCrossTab.ID);
                 if (mnuConclustionCrossTab == null)
