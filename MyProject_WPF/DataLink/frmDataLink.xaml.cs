@@ -27,15 +27,22 @@ namespace MyProject_WPF
     /// </summary>
     public partial class frmDataLink : UserControl
     {
+        BizDataMenuSetting bizEntityDataMenu = new BizDataMenuSetting();
+
         DataLinkDTO Message { set; get; }
         BizDataLink bizDataLink = new BizDataLink();
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
+        BizEntityRelationshipTailDataMenu bizEntityRelationshipTailDataMenu = new BizEntityRelationshipTailDataMenu();
+
         int FirstEntityID { set; get; }
         public event EventHandler<UpdatedEventArg> Updated;
         public frmDataLink(int entityID, int dataLinkID)
         {
             InitializeComponent();
+            lokFirstSideEntity.SelectionChanged += LokFirstSideEntity_SelectionChanged;
+            lokSecondSideEntity.SelectionChanged += LokSecondSideEntity_SelectionChanged;
+
             FirstEntityID = entityID;
             //   var entity = bizTableDrivedEntity.GetTableDrivedEntity(EntityID, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships);
             SetEntities();
@@ -55,8 +62,108 @@ namespace MyProject_WPF
             colRelationshipTail.EditItemEnabled = true;
             colRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
 
+            colRelationshipTailDataMenu.SelectedValueMemberPath = "ID";
+            colRelationshipTailDataMenu.DisplayMemberPath = "Name";
+            colRelationshipTailDataMenu.NewItemEnabled = true;
+            colRelationshipTailDataMenu.EditItemEnabled = true;
+            colRelationshipTailDataMenu.EditItemClicked += colRelationshipTailDataMenu_EditItemClicked;
+
+            dtgRelationships.RowLoaded += DtgRelationships_RowLoaded;
+            dtgRelationships.CellEditEnded += DtgRelationships_CellEditEnded;
             ControlHelper.GenerateContextMenu(dtgRelationships);
+
+       
         }
+
+        private void LokSecondSideEntity_SelectionChanged(object sender, SelectionChangedArg e)
+        {
+            if (e.SelectedItem != null)
+            {
+                var entity = e.SelectedItem as TableDrivedEntityDTO;
+                var listSecond = bizEntityDataMenu.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), entity.ID);
+                lokSecondDataMenu.ItemsSource = listSecond;
+                lokSecondDataMenu.SelectedValueMember = "ID";
+                lokSecondDataMenu.DisplayMember = "Name";
+
+                if (Message.ID != 0)
+                    lokSecondDataMenu.SelectedValue = Message.SecondSideDataMenuID;
+            }
+            else
+            {
+                lokSecondDataMenu.ItemsSource = null;
+            }
+        }
+
+        private void LokFirstSideEntity_SelectionChanged(object sender, SelectionChangedArg e)
+        {
+            if (e.SelectedItem != null)
+            {
+                var entity = e.SelectedItem as TableDrivedEntityDTO;
+                var listFirst = bizEntityDataMenu.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), entity.ID);
+                lokFirstDataMenu.ItemsSource = listFirst;
+                lokFirstDataMenu.SelectedValueMember = "ID";
+                lokFirstDataMenu.DisplayMember = "Name";
+
+                if (Message.ID != 0)
+                    lokFirstDataMenu.SelectedValue = Message.FirstSideDataMenuID;
+            }
+            else
+            {
+                lokFirstDataMenu.ItemsSource = null;
+            }
+        }
+
+        private void colRelationshipTailDataMenu_EditItemClicked(object sender, EditItemClickEventArg e)
+        {
+            if (e.DataConext is DataLinkRelationshipTailDTO)
+            {
+                var item = (e.DataConext as DataLinkRelationshipTailDTO);
+                if (item.RelationshipTailID != 0)
+                {
+                    ftmEntityRelationshipTailDataMenu view = new ftmEntityRelationshipTailDataMenu(item.EntityRelationshipTailDataMenuID, item.RelationshipTailID);
+                    MyProjectManager.GetMyProjectManager.ShowDialog(view, "لیست نمایش رابطه");
+                    view.EntityDataMenuUpdated += (sender1, e1) => View_ItemSelected1(sender1, e1, item, (sender as MyStaticLookup));
+                }
+            }
+        }
+        private void View_ItemSelected1(object sender, EntityDataMenuUpdatedArg e, DataLinkRelationshipTailDTO item, MyStaticLookup lookup)
+        {
+            SetRelationshipTailDataMenuList(item);
+            lookup.SelectedValue = e.ID;
+        }
+        private void DtgRelationships_CellEditEnded(object sender, Telerik.Windows.Controls.GridViewCellEditEndedEventArgs e)
+        {
+            if (e.Cell.Column == colRelationshipTail)
+            {
+                if (e.Cell.DataContext is DataLinkRelationshipTailDTO)
+                {
+                    var condition = (e.Cell.DataContext as DataLinkRelationshipTailDTO);
+                    SetRelationshipTailDataMenuList(condition);
+                }
+            }
+        }
+
+        private void DtgRelationships_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
+        {
+            if (e.DataElement is DataLinkRelationshipTailDTO)
+            {
+                SetRelationshipTailDataMenuList(e.DataElement as DataLinkRelationshipTailDTO);
+            }
+        }
+
+        private void SetRelationshipTailDataMenuList(DataLinkRelationshipTailDTO dataLinkRelationshipTailDTO)
+        {
+            if (dataLinkRelationshipTailDTO.RelationshipTailID != 0)
+            {
+                var list = bizEntityRelationshipTailDataMenu.GetEntityRelationshipTailDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), dataLinkRelationshipTailDTO.RelationshipTailID);
+                dataLinkRelationshipTailDTO.tmpEntityRelationshipTailDataMenus = list;
+            }
+            else
+            {
+                dataLinkRelationshipTailDTO.tmpEntityRelationshipTailDataMenus = null;
+            }
+        }
+
         private void ColRelationshipTail_EditItemClicked(object sender, EditItemClickEventArg e)
         {
             if (lokFirstSideEntity.SelectedItem != null)
@@ -120,7 +227,7 @@ namespace MyProject_WPF
                     if (id > 0)
                     {
                         //lokSecondSideEntity.ItemsSource = bizTableDrivedEntity.GetAllEntities();
-                        var entity = bizTableDrivedEntity.GetSimpleEntity(MyProjectManager.GetMyProjectManager.GetRequester(),id); 
+                        var entity = bizTableDrivedEntity.GetSimpleEntity(MyProjectManager.GetMyProjectManager.GetRequester(), id);
                         e.ResultItemsSource = new List<TableDrivedEntityDTO> { entity };
                     }
                     else
@@ -147,9 +254,8 @@ namespace MyProject_WPF
         }
         private void ShowMessage()
         {
-
             //  var entity = bizTableDrivedEntity.GetTableDrivedEntity(EntityID, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships);
-            lokFirstSideEntity.SelectedValue = Message.FirstSideEntityID;
+            lokFirstSideEntity.SelectedValue = Message.TableDrivedEntityID;
             lokSecondSideEntity.SelectedValue = Message.SecondSideEntityID;
             if (Message.ID == 0)
             {
@@ -160,6 +266,11 @@ namespace MyProject_WPF
                 lokFirstSideEntity.IsEnabled = false;
                 lokSecondSideEntity.IsEnabled = false;
             }
+            chkNotJoint.IsChecked = Message.NotJointEntities;
+
+            lokFirstDataMenu.SelectedValue = Message.FirstSideDataMenuID;
+            lokSecondDataMenu.SelectedValue = Message.SecondSideDataMenuID;
+
             //}
             //else
             //{
@@ -169,7 +280,7 @@ namespace MyProject_WPF
             //}
             SetRelationshipTails();
             dtgRelationships.ItemsSource = Message.RelationshipsTails;
-            txtName.Text = Message.Name;
+            txtName.Text = Message.ReportTitle;
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -192,7 +303,10 @@ namespace MyProject_WPF
                 return;
             }
 
-
+            if (lokFirstDataMenu.SelectedItem != null)
+                Message.FirstSideDataMenuID = (int)lokFirstDataMenu.SelectedValue;
+            if (lokSecondDataMenu.SelectedItem != null)
+                Message.SecondSideDataMenuID = (int)lokSecondDataMenu.SelectedValue;
 
             foreach (var item in Message.RelationshipsTails)
             {
@@ -217,7 +331,7 @@ namespace MyProject_WPF
                 {
                     var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), item.RelationshipTailID);
                     BizTableDrivedEntity bizTableDrivedEntity = new MyModelManager.BizTableDrivedEntity();
-                    var entity = bizTableDrivedEntity.GetSimpleEntity(MyProjectManager.GetMyProjectManager.GetRequester(), relationshipTail.TargetEntityID); 
+                    var entity = bizTableDrivedEntity.GetSimpleEntity(MyProjectManager.GetMyProjectManager.GetRequester(), relationshipTail.TargetEntityID);
                     var viewMessage = bizEntityRelationshipTail.CheckTailHasRelationshipWithView(relationshipTail);
                     if (viewMessage != "")
                     {
@@ -256,11 +370,11 @@ namespace MyProject_WPF
                     }
                 }
             }
-
-            Message.Name = txtName.Text;
+            Message.NotJointEntities = chkNotJoint.IsChecked == true;
+            Message.ReportTitle = txtName.Text;
             if (Message.ID == 0)
             {
-                Message.FirstSideEntityID = (int)lokFirstSideEntity.SelectedValue;
+                Message.TableDrivedEntityID = (int)lokFirstSideEntity.SelectedValue;
                 Message.SecondSideEntityID = (int)lokSecondSideEntity.SelectedValue;
             }
 
@@ -284,7 +398,7 @@ namespace MyProject_WPF
         private void NewItem()
         {
             Message = new DataLinkDTO();
-            Message.FirstSideEntityID = FirstEntityID;
+            Message.TableDrivedEntityID = FirstEntityID;
             ShowMessage();
         }
 

@@ -16,16 +16,20 @@ namespace DataAccess
     {
         public DataMenuSetting()
         {
+            this.DataLinkDefinition = new HashSet<DataLinkDefinition>();
+            this.DataLinkDefinition1 = new HashSet<DataLinkDefinition>();
+            this.DataMenuDataItemReportRelationship = new HashSet<DataMenuDataItemReportRelationship>();
             this.DataMenuDataViewRelationship = new HashSet<DataMenuDataViewRelationship>();
             this.DataMenuDataViewRelationship1 = new HashSet<DataMenuDataViewRelationship>();
-            this.DataMenuDirectReportRelationship = new HashSet<DataMenuDirectReportRelationship>();
             this.DataMenuForViewEntity = new HashSet<DataMenuForViewEntity>();
             this.DataMenuForViewEntity1 = new HashSet<DataMenuForViewEntity>();
             this.DataMenuGridViewRelationship = new HashSet<DataMenuGridViewRelationship>();
             this.DataMenuGridViewRelationship1 = new HashSet<DataMenuGridViewRelationship>();
-            this.DataMenuReportRelationship = new HashSet<DataMenuReportRelationship>();
+            this.DataMenuSearchableReportRelationship = new HashSet<DataMenuSearchableReportRelationship>();
             this.EntityDataViewReport = new HashSet<EntityDataViewReport>();
             this.EntityGridViewReport = new HashSet<EntityGridViewReport>();
+            this.EntityRelationshipTailDataMenuItems = new HashSet<EntityRelationshipTailDataMenuItems>();
+            this.GraphDefinition = new HashSet<GraphDefinition>();
             this.TableDrivedEntity1 = new HashSet<TableDrivedEntity>();
         }
     
@@ -35,18 +39,22 @@ namespace DataAccess
         public string Name { get; set; }
         public byte[] IconContent { get; set; }
     
+        public virtual ICollection<DataLinkDefinition> DataLinkDefinition { get; set; }
+        public virtual ICollection<DataLinkDefinition> DataLinkDefinition1 { get; set; }
+        public virtual ICollection<DataMenuDataItemReportRelationship> DataMenuDataItemReportRelationship { get; set; }
         public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship { get; set; }
         public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship1 { get; set; }
-        public virtual ICollection<DataMenuDirectReportRelationship> DataMenuDirectReportRelationship { get; set; }
         public virtual ICollection<DataMenuForViewEntity> DataMenuForViewEntity { get; set; }
         public virtual ICollection<DataMenuForViewEntity> DataMenuForViewEntity1 { get; set; }
         public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }
         public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship1 { get; set; }
-        public virtual ICollection<DataMenuReportRelationship> DataMenuReportRelationship { get; set; }
+        public virtual ICollection<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
         public virtual EntityListView EntityListView { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         public virtual ICollection<EntityDataViewReport> EntityDataViewReport { get; set; }
         public virtual ICollection<EntityGridViewReport> EntityGridViewReport { get; set; }
+        public virtual ICollection<EntityRelationshipTailDataMenuItems> EntityRelationshipTailDataMenuItems { get; set; }
+        public virtual ICollection<GraphDefinition> GraphDefinition { get; set; }
         public virtual ICollection<TableDrivedEntity> TableDrivedEntity1 { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace MyUILibraryInterfaces.DataViewArea
         //I_SearchEntityArea SearchEntityArea { set; get; }
         //DP_SearchRepository SearchRepository { set; get; }
         I_GeneralEntitySearchArea GeneralEntitySearchArea { set; get; }
-        void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepository searchRepository, I_DataViewItem defaultDataViewItem,bool dataViewOrGridView, int dataMenuSettingID);
+        void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepository searchRepository, I_DataViewItem defaultDataViewItem, bool dataViewOrGridView, int dataMenuSettingID);
     }
     public interface I_DataArea
     {
@@ -47,7 +47,7 @@ namespace MyUILibraryInterfaces.DataViewArea
     }
     public interface I_GridViewArea : I_DataArea
     {
-      //  GridViewSettingDTO GridViewSetting { set; get; }
+        //  GridViewSettingDTO GridViewSetting { set; get; }
         new I_View_GridViewArea View { set; get; }
 
         void SetItems(List<DP_DataView> resultDataItems);
@@ -108,6 +108,7 @@ namespace MyUILibraryInterfaces.DataViewArea
         //   void AddTitleRow(string title, string value);
         string Title { set; get; }
         string Body { set; get; }
+        bool IsRoot { set; get; }
         // void ShowDataViewItemMenus(List<DataViewMenu> menus);
         void OnSelected();
     }

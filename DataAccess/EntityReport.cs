@@ -20,7 +20,7 @@ namespace DataAccess
         public string Description { get; set; }
         public Nullable<short> ReportType { get; set; }
     
-        public virtual EntityDirectlReport EntityDirectlReport { get; set; }
+        public virtual EntityDataItemReport EntityDataItemReport { get; set; }
         public virtual EntitySearchableReport EntitySearchableReport { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         public virtual SecurityObject SecurityObject { get; set; }

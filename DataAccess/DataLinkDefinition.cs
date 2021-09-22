@@ -17,17 +17,18 @@ namespace DataAccess
         public DataLinkDefinition()
         {
             this.DataLinkDefinition_EntityRelationshipTail = new HashSet<DataLinkDefinition_EntityRelationshipTail>();
-            this.EntityDataLinkReport = new HashSet<EntityDataLinkReport>();
         }
     
         public int ID { get; set; }
-        public string Name { get; set; }
-        public int FirstSideEntityID { get; set; }
         public int SecondSideEntityID { get; set; }
+        public Nullable<bool> NotJointEntities { get; set; }
+        public Nullable<int> FirstSideDataMenuID { get; set; }
+        public Nullable<int> SecondSideDataMenuID { get; set; }
     
+        public virtual DataMenuSetting DataMenuSetting { get; set; }
+        public virtual DataMenuSetting DataMenuSetting1 { get; set; }
+        public virtual EntityDataItemReport EntityDataItemReport { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        public virtual TableDrivedEntity TableDrivedEntity1 { get; set; }
         public virtual ICollection<DataLinkDefinition_EntityRelationshipTail> DataLinkDefinition_EntityRelationshipTail { get; set; }
-        public virtual ICollection<EntityDataLinkReport> EntityDataLinkReport { get; set; }
     }
 }

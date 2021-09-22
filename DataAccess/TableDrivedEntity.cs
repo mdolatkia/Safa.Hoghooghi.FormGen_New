@@ -25,12 +25,12 @@ namespace DataAccess
             this.CodeFunction_TableDrivedEntity = new HashSet<CodeFunction_TableDrivedEntity>();
             this.DatabaseFunction_TableDrivedEntity = new HashSet<DatabaseFunction_TableDrivedEntity>();
             this.DataLinkDefinition = new HashSet<DataLinkDefinition>();
-            this.DataLinkDefinition1 = new HashSet<DataLinkDefinition>();
             this.DataMenuSetting = new HashSet<DataMenuSetting>();
             this.EntityDeterminer = new HashSet<EntityDeterminer>();
             this.EntityListView = new HashSet<EntityListView>();
             this.EntityRelationshipTail = new HashSet<EntityRelationshipTail>();
             this.EntityRelationshipTail1 = new HashSet<EntityRelationshipTail>();
+            this.EntityRelationshipTailDataMenuItems = new HashSet<EntityRelationshipTailDataMenuItems>();
             this.EntityReport = new HashSet<EntityReport>();
             this.EntitySearch1 = new HashSet<EntitySearch>();
             this.EntityUIComposition = new HashSet<EntityUIComposition>();
@@ -89,7 +89,6 @@ namespace DataAccess
         public virtual Column Column { get; set; }
         public virtual ICollection<DatabaseFunction_TableDrivedEntity> DatabaseFunction_TableDrivedEntity { get; set; }
         public virtual ICollection<DataLinkDefinition> DataLinkDefinition { get; set; }
-        public virtual ICollection<DataLinkDefinition> DataLinkDefinition1 { get; set; }
         public virtual ICollection<DataMenuSetting> DataMenuSetting { get; set; }
         public virtual DataMenuSetting DataMenuSetting1 { get; set; }
         public virtual ICollection<EntityDeterminer> EntityDeterminer { get; set; }
@@ -97,6 +96,7 @@ namespace DataAccess
         public virtual EntityListView EntityListView1 { get; set; }
         public virtual ICollection<EntityRelationshipTail> EntityRelationshipTail { get; set; }
         public virtual ICollection<EntityRelationshipTail> EntityRelationshipTail1 { get; set; }
+        public virtual ICollection<EntityRelationshipTailDataMenuItems> EntityRelationshipTailDataMenuItems { get; set; }
         public virtual ICollection<EntityReport> EntityReport { get; set; }
         public virtual EntitySearch EntitySearch { get; set; }
         public virtual ICollection<EntitySearch> EntitySearch1 { get; set; }

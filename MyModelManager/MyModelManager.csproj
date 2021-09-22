@@ -92,6 +92,9 @@
     <Compile Include="Biz\BizArchive.cs" />
     <Compile Include="Biz\BizArcRelationship.cs" />
     <Compile Include="Biz\BizColumnValueRange.cs" />
+    <Compile Include="Biz\BizEntityDataItemReport.cs" />
+    <Compile Include="Biz\BizEntityRelationshipTailListView.cs" />
+    <Compile Include="Biz\BizGraph.cs" />
     <Compile Include="Biz\BizEntityDirectReport.cs" />
     <Compile Include="Biz\BizDataMenuSetting.cs" />
     <Compile Include="Biz\BizEntityGridViewReport.cs" />

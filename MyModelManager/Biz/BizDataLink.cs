@@ -6,6 +6,8 @@ using MyGeneralLibrary;
 using ProxyLibrary;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +16,7 @@ namespace MyModelManager
 {
     public class BizDataLink
     {
+        BizEntityReport bizEntityReport = new MyModelManager.BizEntityReport();
         SecurityHelper securityHelper = new SecurityHelper();
         BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
 
@@ -25,7 +28,7 @@ namespace MyModelManager
                 if (!DataIsAccessable(requester, dbItem))
                     return null;
                 else
-                    return ToDataLinkDTO(  dbItem, true);
+                    return ToDataLinkDTO(dbItem, true);
             }
         }
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
@@ -33,10 +36,10 @@ namespace MyModelManager
         {
             if (requester.SkipSecurity)
                 return true;
+
             if (!bizTableDrivedEntity.DataIsAccessable(requester, dataLink.TableDrivedEntity))
                 return false;
-
-            if (!bizTableDrivedEntity.DataIsAccessable(requester, dataLink.TableDrivedEntity1))
+            if (!bizEntityReport.DataIsAccessable(requester, dataLink.EntityDataItemReport.EntityReport))
                 return false;
 
             //اینجا تیل چک نمیشه
@@ -53,12 +56,12 @@ namespace MyModelManager
             List<DataLinkDTO> result = new List<DataLinkDTO>();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var items = projectContext.DataLinkDefinition.Where(x => x.FirstSideEntityID == entitiyID
+                var items = projectContext.DataLinkDefinition.Where(x => x.EntityDataItemReport.EntityReport.TableDrivedEntityID == entitiyID
                 || x.SecondSideEntityID == entitiyID);
                 foreach (var dbItem in items)
                 {
                     if (DataIsAccessable(requester, dbItem))
-                        result.Add(ToDataLinkDTO( dbItem, false));
+                        result.Add(ToDataLinkDTO(dbItem, false));
                 }
             }
 
@@ -70,12 +73,12 @@ namespace MyModelManager
             List<DataLinkDTO> result = new List<DataLinkDTO>();
             using (var projectContext = new MyProjectEntities())
             {
-                var items = projectContext.DataLinkDefinition.Where(x => x.Name.Contains(singleFilterValue) || x.TableDrivedEntity.Alias.Contains(singleFilterValue)
-                || x.TableDrivedEntity.Name.Contains(singleFilterValue) || x.TableDrivedEntity1.Alias.Contains(singleFilterValue) || x.TableDrivedEntity1.Name.Contains(singleFilterValue));
+                var items = projectContext.DataLinkDefinition.Where(x => x.EntityDataItemReport.EntityReport.Title.Contains(singleFilterValue) || x.EntityDataItemReport.EntityReport.TableDrivedEntity.Alias.Contains(singleFilterValue)
+                || x.EntityDataItemReport.EntityReport.TableDrivedEntity.Name.Contains(singleFilterValue) || x.TableDrivedEntity.Alias.Contains(singleFilterValue) || x.TableDrivedEntity.Name.Contains(singleFilterValue));
                 foreach (var dbItem in items)
                 {
                     if (DataIsAccessable(requester, dbItem))
-                        result.Add(ToDataLinkDTO(  dbItem, false));
+                        result.Add(ToDataLinkDTO(dbItem, false));
                 }
             }
             return result;
@@ -83,23 +86,29 @@ namespace MyModelManager
 
 
 
-        private DataLinkDTO ToDataLinkDTO( DataLinkDefinition item, bool withDetails)
+        private DataLinkDTO ToDataLinkDTO(DataLinkDefinition item, bool withDetails)
         {
             DataLinkDTO result = new DataLinkDTO();
-            result.ID = item.ID;
-            result.Name = item.Name;
-            result.FirstSideEntityID = item.FirstSideEntityID;
+            bizEntityReport.ToEntityReportDTO(item.EntityDataItemReport.EntityReport, result, withDetails);
             result.SecondSideEntityID = item.SecondSideEntityID;
+            result.NotJointEntities = item.NotJointEntities == true;
+            result.FirstSideDataMenuID = item.FirstSideDataMenuID ?? 0;
+            result.SecondSideDataMenuID = item.SecondSideDataMenuID ?? 0;
             if (withDetails)
             {
                 BizEntityRelationshipTail bizEntityRelationshipTail = new MyModelManager.BizEntityRelationshipTail();
+                BizEntityRelationshipTailDataMenu bizEntityRelationshipTailListView = new MyModelManager.BizEntityRelationshipTailDataMenu();
+
                 foreach (var dbRel in item.DataLinkDefinition_EntityRelationshipTail)
                 {
                     var rel = new DataLinkRelationshipTailDTO();
                     rel.RelationshipTailID = dbRel.EntityRelationshipTailID;
+                    rel.EntityRelationshipTailDataMenuID = dbRel.EntityRelationshipTailDataMenuID ?? 0;
+                    if (rel.EntityRelationshipTailDataMenuID != 0)
+                        rel.EntityRelationshipTailDataMenu = bizEntityRelationshipTailListView.ToEntityRelationshipTailDataMenuDTO(dbRel.EntityRelationshipTailDataMenu,true);
                     //   rel.FromFirstSideToSecondSide = dbRel.FromFirstSideToSecondSide;
                     rel.ID = dbRel.ID;
-                    rel.RelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO( dbRel.EntityRelationshipTail);
+                    rel.RelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(dbRel.EntityRelationshipTail);
                     result.RelationshipsTails.Add(rel);
                 }
             }
@@ -112,27 +121,73 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                DataLinkDefinition dbEntity;
-                if (message.ID == 0)
+                BizEntityDataItemReport bizEntityDataItemReport = new BizEntityDataItemReport();
+
+                var dbEntity = projectContext.DataLinkDefinition.FirstOrDefault(x => x.ID == message.ID);
+                if (dbEntity == null)
+                {
+                    message.ReportType = ReportType.DataItemReport;
                     dbEntity = new DataLinkDefinition();
+                    dbEntity.EntityDataItemReport = bizEntityDataItemReport.ToNewEntityDataItemReport(message);
+                    dbEntity.EntityDataItemReport.DataItemReportType = (short)DataItemReportType.DataLinkReport;
+                }
                 else
-                    dbEntity = projectContext.DataLinkDefinition.FirstOrDefault(x => x.ID == message.ID);
-                dbEntity.Name = message.Name;
-                dbEntity.FirstSideEntityID = message.FirstSideEntityID;
+                    bizEntityDataItemReport.ToUpdateEntityDataItemReport(dbEntity.EntityDataItemReport, message);
+
                 dbEntity.SecondSideEntityID = message.SecondSideEntityID;
+                dbEntity.NotJointEntities = message.NotJointEntities;
+
+                if (message.FirstSideDataMenuID != 0)
+                    dbEntity.FirstSideDataMenuID = message.FirstSideDataMenuID;
+                else
+                    dbEntity.FirstSideDataMenuID = null;
+                if (message.SecondSideDataMenuID != 0)
+                    dbEntity.SecondSideDataMenuID = message.SecondSideDataMenuID;
+                else
+                    dbEntity.SecondSideDataMenuID = null;
+
                 while (dbEntity.DataLinkDefinition_EntityRelationshipTail.Any())
                     projectContext.DataLinkDefinition_EntityRelationshipTail.Remove(dbEntity.DataLinkDefinition_EntityRelationshipTail.First());
                 foreach (var item in message.RelationshipsTails)
                 {
                     var dbRel = new DataLinkDefinition_EntityRelationshipTail();
                     dbRel.EntityRelationshipTailID = item.RelationshipTailID;
+                    if (item.EntityRelationshipTailDataMenuID != 0)
+                        dbRel.EntityRelationshipTailDataMenuID = item.EntityRelationshipTailDataMenuID;
                     //   dbRel.FromFirstSideToSecondSide = item.FromFirstSideToSecondSide;
                     dbEntity.DataLinkDefinition_EntityRelationshipTail.Add(dbRel);
                 }
 
                 if (dbEntity.ID == 0)
                     projectContext.DataLinkDefinition.Add(dbEntity);
-                projectContext.SaveChanges();
+
+                try
+                {
+                    projectContext.SaveChanges();
+                }
+                catch (DbUpdateException e)
+                {
+                    throw e;
+                }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                            eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                                ve.PropertyName, ve.ErrorMessage);
+                        }
+                    }
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    //result.Result = Enum_DR_ResultType.ExceptionThrown;
+                    //result.Message = "خطا در ثبت" + Environment.NewLine + ex.Message;
+                }
                 return dbEntity.ID;
             }
         }

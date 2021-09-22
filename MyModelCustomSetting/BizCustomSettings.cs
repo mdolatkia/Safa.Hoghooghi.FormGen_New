@@ -2704,13 +2704,15 @@ namespace MyModelCustomSetting
             {
                 customerDirectReport = new EntityReport();
                 customerDirectReport.Title = "گزارش خارجی مستقیم مشتری";
-                customerDirectReport.ReportType = (short)ReportType.DirectReport;
+                customerDirectReport.ReportType = (short)ReportType.DataItemReport;
                 customerDirectReport.SecurityObject = new SecurityObject();
                 customerDirectReport.SecurityObject.Type = (short)DatabaseObjectCategory.Report;
                 customerDirectReport.TableDrivedEntityID = customer.ID;
-                customerDirectReport.EntityDirectlReport = new EntityDirectlReport();
-                customerDirectReport.EntityDirectlReport.URL = "http://dolatkiam/ReportServer/Pages/ReportViewer.aspx?%2fRequestConclusionsByCustomerID";
-                customerDirectReport.EntityDirectlReport.EntityDirectlReportParameters.Add(
+                customerDirectReport.EntityDataItemReport = new EntityDataItemReport();
+                customerDirectReport.EntityDataItemReport.DataItemReportType = (short)DataItemReportType.DirectReport;
+                customerDirectReport.EntityDataItemReport.EntityDirectlReport = new EntityDirectlReport();
+                customerDirectReport.EntityDataItemReport.EntityDirectlReport.URL = "http://dolatkiam/ReportServer/Pages/ReportViewer.aspx?%2fRequestConclusionsByCustomerID";
+                customerDirectReport.EntityDataItemReport.EntityDirectlReport.EntityDirectlReportParameters.Add(
                     new EntityDirectlReportParameters()
                     {
                         ColumnID = customer.Table.Column.FirstOrDefault(x => x.PrimaryKey).ID,
@@ -2767,25 +2769,25 @@ namespace MyModelCustomSetting
                     dataGridRel.DataMenuSetting1 = conclusionDataMenuSetting;
                     customerDataMenuSetting.DataMenuGridViewRelationship.Add(dataGridRel);
 
-                    var conclusionDataViewReportRel = new DataMenuReportRelationship();
+                    var conclusionDataViewReportRel = new DataMenuSearchableReportRelationship();
                     conclusionDataViewReportRel.EntityRelationshipTail = tailCustomerToConclusion;
                     conclusionDataViewReportRel.EntitySearchableReport = dataViewReport.EntitySearchableReport;
-                    customerDataMenuSetting.DataMenuReportRelationship.Add(conclusionDataViewReportRel);
+                    customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionDataViewReportRel);
 
-                    var conclusionListReportRel = new DataMenuReportRelationship();
+                    var conclusionListReportRel = new DataMenuSearchableReportRelationship();
                     conclusionListReportRel.EntityRelationshipTail = tailCustomerToConclusion;
                     conclusionListReportRel.EntitySearchableReport = conclusionListReport.EntitySearchableReport;
-                    customerDataMenuSetting.DataMenuReportRelationship.Add(conclusionListReportRel);
+                    customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionListReportRel);
 
-                    var conclusionChartReportRel = new DataMenuReportRelationship();
+                    var conclusionChartReportRel = new DataMenuSearchableReportRelationship();
                     conclusionChartReportRel.EntityRelationshipTail = tailCustomerToConclusion;
                     conclusionChartReportRel.EntitySearchableReport = conclusionChartPie.EntitySearchableReport;
-                    customerDataMenuSetting.DataMenuReportRelationship.Add(conclusionChartReportRel);
+                    customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionChartReportRel);
 
 
-                    var directReportSetting = new DataMenuDirectReportRelationship();
-                    directReportSetting.EntityDirectlReport = customerDirectReport.EntityDirectlReport;
-                    customerDataMenuSetting.DataMenuDirectReportRelationship.Add(directReportSetting);
+                    var directReportSetting = new DataMenuDataItemReportRelationship();
+                    directReportSetting.EntityDataItemReport = customerDirectReport.EntityDataItemReport;
+                    customerDataMenuSetting.DataMenuDataItemReportRelationship.Add(directReportSetting);
                 }
 
 
@@ -2891,6 +2893,28 @@ namespace MyModelCustomSetting
                     productItemToProduct.RelationshipType.IsOtherSideDirectlyCreatable = false;
 
                     projectContext.Relationship.Add(productItemToProduct);
+
+
+                    var linkedServerFromProductToProductItem = projectContext.LinkedServer.FirstOrDefault(x => x.SourceDBServerID == product.Table.DBSchema.DatabaseInformation.DBServerID
+                     && x.TargetDBServerID == productItem.Table.DBSchema.DatabaseInformation.DBServerID);
+                    if (linkedServerFromProductToProductItem == null)
+                    {
+                        linkedServerFromProductToProductItem = new LinkedServer();
+                        linkedServerFromProductToProductItem.SourceDBServerID = product.Table.DBSchema.DatabaseInformation.DBServerID;
+                        linkedServerFromProductToProductItem.TargetDBServerID = productItem.Table.DBSchema.DatabaseInformation.DBServerID;
+                        linkedServerFromProductToProductItem.Name = productItem.Table.DBSchema.DatabaseInformation.DBServer.Name;
+                        projectContext.LinkedServer.Add(linkedServerFromProductToProductItem);
+                    }
+                    var linkedServerFromProductItemToProduct = projectContext.LinkedServer.FirstOrDefault(x => x.SourceDBServerID == productItem.Table.DBSchema.DatabaseInformation.DBServerID
+                     && x.TargetDBServerID == product.Table.DBSchema.DatabaseInformation.DBServerID);
+                    if (linkedServerFromProductItemToProduct == null)
+                    {
+                        linkedServerFromProductItemToProduct = new LinkedServer();
+                        linkedServerFromProductItemToProduct.SourceDBServerID = productItem.Table.DBSchema.DatabaseInformation.DBServerID;
+                        linkedServerFromProductItemToProduct.TargetDBServerID = product.Table.DBSchema.DatabaseInformation.DBServerID;
+                        linkedServerFromProductItemToProduct.Name = product.Table.DBSchema.DatabaseInformation.DBServer.Name;
+                        projectContext.LinkedServer.Add(linkedServerFromProductItemToProduct);
+                    }
                 }
 
 
@@ -3452,30 +3476,26 @@ namespace MyModelCustomSetting
                     }
                 }
                 var brandProductType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "BrandProductType");
-                if (brandProductType != null)
-                {
-                    var dataLink = projectContext.DataLinkDefinition.FirstOrDefault(x => x.FirstSideEntityID == region.ID && x.SecondSideEntityID == brandProductType.ID);
-                    if (dataLink == null)
-                    {
-                        dataLink = new DataLinkDefinition();
-                        dataLink.FirstSideEntityID = region.ID;
-                        dataLink.SecondSideEntityID = brandProductType.ID;
-                        projectContext.DataLinkDefinition.Add(dataLink);
-                        dataLink.Name = "ارتباط شهر و برند/محصول";
-                        var regionToGenericPersonAddress = region.Relationship.First(x => x.TableDrivedEntityID2 == genericPersonAddress.ID);
-                        var genericPersonAddressToGenericPeron = genericPersonAddress.Relationship.First(x => x.TableDrivedEntityID2 == genericPerson.ID);
-                        var genericPersonToCustomer = genericPerson.Relationship.First(x => x.TableDrivedEntityID2 == customer.ID);
-                        var customerToSrviceRequest = customer.Relationship.First(x => x.TableDrivedEntityID2 == serviceRequest.ID);
-                        var serviceRequestToProductItem = serviceRequest.Relationship.First(x => x.TableDrivedEntityID2 == productItem.ID);
-                        var productToBrandProductType = product.Relationship.First(x => x.TableDrivedEntityID2 == brandProductType.ID);
 
-                        var relatinshipTail = GetRelationshipTail(projectContext, region, brandProductType, regionToGenericPersonAddress.ID + "," + genericPersonAddressToGenericPeron.ID + "," +
-                             genericPersonToCustomer.ID + "," + customerToSrviceRequest.ID + "," + serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID);
-                        dataLink.DataLinkDefinition_EntityRelationshipTail.Add(new DataLinkDefinition_EntityRelationshipTail() { EntityRelationshipTail = relatinshipTail });
+                var productType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ProductType");
+                if (productType != null)
+                {
+                    if (productItem.EntityListView1 != null)
+                    {
+                        if (!productItem.EntityListView1.EntityListViewColumns.Any(x => x.Alias == "نوع محصول"))
+                        {
+                            var listViewColumn = new EntityListViewColumns();
+                            var productTypeTitle = productType.Table.Column.First(x => x.Name == "Title");
+                            var productToBrandProductType = product.Relationship.First(x => x.TableDrivedEntityID2 == brandProductType.ID);
+                            var brandProductTypeToProductType = brandProductType.Relationship.First(x => x.TableDrivedEntityID2 == productType.ID);
+                            listViewColumn.Column = productTypeTitle;
+                            listViewColumn.Alias = "نوع محصول";
+                            listViewColumn.EntityRelationshipTail = GetRelationshipTail(projectContext, productItem, productType, productItemToProduct.ID + "," +
+                            productToBrandProductType.ID + "," + brandProductTypeToProductType.ID);
+                            productItem.EntityListView1.EntityListViewColumns.Add(listViewColumn);
+                        }
                     }
                 }
-
-
                 if (processIsNew)
                 {
 
@@ -3645,7 +3665,54 @@ namespace MyModelCustomSetting
                     projectContext.NavigationTree.Add(mnuCustomerDirectReport);
                 }
 
+                var regionDataLinkReport = projectContext.EntityReport.FirstOrDefault(x => x.Title == "گزارش لینک ریپورت" && x.TableDrivedEntityID == region.ID);
+                if (regionDataLinkReport == null)
+                {
+                    if (brandProductType != null)
+                    {
+                        inja menu ezafe beshe bad graph
+                        //اینجا اومد چون productItemToProduct ثبت شده باشد
+                        regionDataLinkReport = new EntityReport();
+                        regionDataLinkReport.Title = "گزارش لینک ریپورت";
+                        regionDataLinkReport.ReportType = (short)ReportType.DataItemReport;
+                        regionDataLinkReport.SecurityObject = new SecurityObject();
+                        regionDataLinkReport.SecurityObject.Type = (short)DatabaseObjectCategory.Report;
+                        regionDataLinkReport.TableDrivedEntityID = region.ID;
+                        regionDataLinkReport.EntityDataItemReport = new EntityDataItemReport();
+                        regionDataLinkReport.EntityDataItemReport.DataItemReportType = (short)DataItemReportType.DataLinkReport;
+                        regionDataLinkReport.EntityDataItemReport.DataLinkDefinition = new DataLinkDefinition();
+                        regionDataLinkReport.EntityDataItemReport.DataLinkDefinition.SecondSideEntityID = brandProductType.ID;
+                        //projectContext.DataLinkDefinition.Add(regionDataLinkReport.EntityDataItemReport.DataLinkDefinition);
+                        var regionToGenericPersonAddress = region.Relationship.First(x => x.TableDrivedEntityID2 == genericPersonAddress.ID);
+                        var genericPersonAddressToGenericPeron = genericPersonAddress.Relationship.First(x => x.TableDrivedEntityID2 == genericPerson.ID);
+                        var genericPersonToCustomer = genericPerson.Relationship.First(x => x.TableDrivedEntityID2 == customer.ID);
+                        var customerToSrviceRequest = customer.Relationship.First(x => x.TableDrivedEntityID2 == serviceRequest.ID);
+                        var serviceRequestToProductItem = serviceRequest.Relationship.First(x => x.TableDrivedEntityID2 == productItem.ID);
+                        var productToBrandProductType = product.Relationship.First(x => x.TableDrivedEntityID2 == brandProductType.ID);
+
+                        var relatinshipTail = GetRelationshipTail(projectContext, region, brandProductType, regionToGenericPersonAddress.ID + "," + genericPersonAddressToGenericPeron.ID + "," +
+                             genericPersonToCustomer.ID + "," + customerToSrviceRequest.ID + "," + serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID);
+                        regionDataLinkReport.EntityDataItemReport.DataLinkDefinition.DataLinkDefinition_EntityRelationshipTail.Add(new DataLinkDefinition_EntityRelationshipTail() { EntityRelationshipTail = relatinshipTail });
+                        projectContext.EntityReport.Add(regionDataLinkReport);
+                    }
+                }
+             
+
                 projectContext.SaveChanges();
+
+                var mnuRegionDataLinkReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش لینک ریپورت" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == regionDataLinkReport.ID);
+                if (mnuRegionDataLinkReport == null && regionDataLinkReport != null)
+                {
+                    mnuRegionDataLinkReport = new NavigationTree();
+                    mnuRegionDataLinkReport.ItemTitle = "گزارش لینک ریپورت";
+                    mnuRegionDataLinkReport.NavigationTree2 = mnuReportFolder;
+                    mnuRegionDataLinkReport.Category = DatabaseObjectCategory.Report.ToString();
+                    mnuRegionDataLinkReport.ItemIdentity = regionDataLinkReport.ID;
+                    mnuRegionDataLinkReport.TableDrivedEntityID = region.ID;
+                    projectContext.NavigationTree.Add(mnuRegionDataLinkReport);
+                }
+                projectContext.SaveChanges();
+
             }
             catch (DbUpdateException e)
             {

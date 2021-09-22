@@ -25,6 +25,7 @@ using MyUILibrary.WorkflowArea;
 using MyDataManager;
 using MyUILibraryInterfaces.LogReportArea;
 using MyUILibraryInterfaces.DataViewArea;
+using MyUILibraryInterfaces.DataLinkArea;
 
 namespace MyUILibrary
 {
@@ -60,6 +61,8 @@ namespace MyUILibrary
         public DataSearchManagerService DataSearchManager = new DataSearchManagerService();
         //  public GridViewManagerService GridViewManager = new GridViewManagerService();
         public DataLinkManagerService DataLinkManager = new DataLinkManagerService();
+        public GraphManagerService GraphManager = new GraphManagerService();
+
         public ReportManagerService ReportManager = new ReportManagerService();
         public DataMenuManagerService DataMenuManager = new DataMenuManagerService();
         public ArchiveManagerService ArchiveManager = new ArchiveManagerService();
@@ -171,6 +174,8 @@ namespace MyUILibrary
             gridViewMenu.Clicked += GridViewMenu_Clicked;
             I_MainFormMenu dataLinkMenu = UIManager.AddMainFormMenu("لینک داده ها", "images\\folder.png");
             dataLinkMenu.Clicked += DataLinkMenu_Clicked;
+            I_MainFormMenu graphMenu = UIManager.AddMainFormMenu("گراف داده ها", "images\\folder.png");
+            graphMenu.Clicked += GraphMenu_Clicked;
 
             I_MainFormMenu exitMenu = UIManager.AddMainFormMenu("خروج", "images\\close.png");
             exitMenu.Clicked += ExitMenu_Clicked;
@@ -186,7 +191,7 @@ namespace MyUILibrary
 
         private void ReLoginChangeUserMenu_Clicked(object sender, EventArgs e)
         {
-           // throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         private void ReLoginMenu_Clicked(object sender, EventArgs e)
@@ -220,6 +225,10 @@ namespace MyUILibrary
         private void DataLinkMenu_Clicked(object sender, EventArgs e)
         {
             ShowDataLinkArea(0, 0, false, "لینک داده ها", null);
+        }
+        private void GraphMenu_Clicked(object sender, EventArgs e)
+        {
+            ShowGraphArea(0, 0, false, "گراف داده ها", null);
         }
 
         private void GridViewMenu_Clicked(object sender, EventArgs e)
@@ -633,7 +642,7 @@ namespace MyUILibrary
         //    }
 
         //}
-        public void ShowReportArea(int reportID, bool dialog, DP_SearchRepository initializeSearchRepository = null, bool userCanChangeSearch = true, bool showInitializeSearchRepository = false, I_DataArea hostDataViewArea = null, I_DataViewItem defaultDataViewItem = null)
+        public void ShowReportArea(int reportID, bool dialog)
         {
             var report = ReportManager.GetReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), reportID);
             if (report == null)
@@ -642,20 +651,45 @@ namespace MyUILibrary
                 return;
             }
             //ShowSearchableReportArea(report, dialog, userCanChange, null, report.PreDefinedSearch);
-            if (report.ReportType == ReportType.DirectReport)
+            if (report.ReportType == ReportType.DataItemReport)
             {
-                ShowDirectReport(reportID, dialog, null);
+                ShowDataItemReport(report, dialog, null);
             }
             else if (report.ReportType == ReportType.SearchableReport)
             {
-                ShowSearchableReportArea(report, dialog, initializeSearchRepository, userCanChangeSearch, showInitializeSearchRepository, hostDataViewArea, defaultDataViewItem);
+                ShowSearchableReportArea(report, dialog, null, true, false, null, null);
             }
 
         }
-        public void ShowDirectReport(int reportID, bool dialog, DP_DataView dataItem)
+        public void ShowDataItemReport(int reportID, bool dialog, DP_DataView dataItem)
+        {
+            var report = ReportManager.GetReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), reportID);
+            if (report == null)
+            {
+                UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + reportID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
+                return;
+            }
+            ShowDataItemReport(report, dialog, dataItem);
+        }
+        private void ShowDataItemReport(EntityReportDTO report, bool dialog, DP_DataView dataItem)
+        {
+            if (report.DataItemReportType == DataItemReportType.DirectReport)
+            {
+                ShowDirectReport(report, dialog, dataItem);
+            }
+            else if (report.DataItemReportType == DataItemReportType.GraphReport)
+            {
+                ShowGraphArea(report.TableDrivedEntityID, report.ID, dialog, report.ReportTitle, dataItem);
+            }
+            if (report.DataItemReportType == DataItemReportType.DataLinkReport)
+            {
+                ShowDataLinkArea(report.TableDrivedEntityID, report.ID, dialog, report.ReportTitle, dataItem);
+            }
+        }
+        private void ShowDirectReport(EntityReportDTO report, bool dialog, DP_DataView dataItem)
         {
             DirectReportAreaInitializer areaInitializer = new DirectReportAreaInitializer();
-            areaInitializer.ReportID = reportID;
+            areaInitializer.ReportID = report.ID;
             areaInitializer.DataInstance = dataItem;
 
             var area = new DirectReportArea(areaInitializer);
@@ -666,6 +700,16 @@ namespace MyUILibrary
                 else
                     UIManager.GetDialogWindow().ShowDialog(area.MainView, "گزارش", Enum_WindowSize.Maximized);
             }
+        }
+        public void ShowSearchableReportArea(int reportID, bool dialog, DP_SearchRepository initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
+        {
+            var report = ReportManager.GetReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), reportID);
+            if (report == null)
+            {
+                UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + reportID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
+                return;
+            }
+            ShowSearchableReportArea(report, dialog, initializeSearchRepository, userCanChangeSearch, showInitializeSearchRepository, hostDataViewArea, defaultDataViewItem);
         }
         private void ShowSearchableReportArea(EntityReportDTO report, bool dialog, DP_SearchRepository initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
         {
@@ -814,6 +858,24 @@ namespace MyUILibrary
             }
 
 
+        }
+
+        public void ShowGraphArea(int entityId, int GraphID, bool dialog, string title, DP_DataView firstData)
+        {
+            var initializer = new GraphAreaInitializer();
+            initializer.GraphID = GraphID;
+            initializer.EntityID = entityId;
+            // initializer.UserCanChange = userCanChangeSearch;
+            initializer.FirstDataItem = firstData;
+            //   initializer.OtherDataItem = otherData;
+            GraphArea.GraphArea linkArea = new GraphArea.GraphArea(initializer);
+            if (linkArea.View != null)
+            {
+                if (!dialog)
+                    UIManager.ShowPane(linkArea.View, title);
+                else
+                    UIManager.GetDialogWindow().ShowDialog(linkArea.View, title, Enum_WindowSize.Maximized);
+            }
         }
 
         //public void ShowGridViewArea(int entityId, string title, bool dialog, bool userCanChangeSearch, DP_SearchRepository initializeSearchRepository = null, EntityPreDefinedSearchDTO preDefinedSearch = null, int entityListViewID = 0)

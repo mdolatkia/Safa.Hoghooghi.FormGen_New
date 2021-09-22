@@ -242,6 +242,18 @@
     <Compile Include="Formula\frmNewFormulaDefinition.xaml.cs">
       <DependentUpon>frmNewFormulaDefinition.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Graph\frmGraph.xaml.cs">
+      <DependentUpon>frmGraph.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\frmGraphSelect.xaml.cs">
+      <DependentUpon>frmGraphSelect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RelationshipTail\ftmEntityRelationshipTailDataMenuSelect.xaml.cs">
+      <DependentUpon>ftmEntityRelationshipTailDataMenuSelect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RelationshipTail\ftmEntityRelationshipTailDataMenu.xaml.cs">
+      <DependentUpon>ftmEntityRelationshipTailDataMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RelationshipTail\frmEntityRelationshipTail.xaml.cs">
       <DependentUpon>frmEntityRelationshipTail.xaml</DependentUpon>
     </Compile>
@@ -607,6 +619,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Formula\frmNewFormulaDefinition.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\frmGraph.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Graph\frmGraphSelect.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="RelationshipTail\ftmEntityRelationshipTailDataMenuSelect.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="RelationshipTail\ftmEntityRelationshipTailDataMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

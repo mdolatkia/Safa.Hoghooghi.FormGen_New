@@ -42,7 +42,7 @@ namespace MyProject_WPF
             EntityID = entityID;
             SetRelationshipTails();
             SetDataViewList();
-            SetDirectReports();
+            SetDataItemReports();
             if (dataMenuSettingID == 0)
             {
                 Message = new DataMenuSettingDTO();
@@ -57,7 +57,7 @@ namespace MyProject_WPF
             ControlHelper.GenerateContextMenu(dtgDataGridRelationships);
             ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
             ControlHelper.GenerateContextMenu(dtgReportRelationships);
-            ControlHelper.GenerateContextMenu(dtgDirectReport);
+            ControlHelper.GenerateContextMenu(dtgDataItemReport);
 
             //ControlHelper.GenerateContextMenu(dtgExternalReports);
             dtgReportRelationships.RowLoaded += DtgColumns_RowLoaded;
@@ -112,7 +112,7 @@ namespace MyProject_WPF
             {
                 tabDataGridRelationships.Visibility = Visibility.Collapsed;
                 tabDataViewRelationships.Visibility = Visibility.Collapsed;
-                tabDirectReport.Visibility = Visibility.Collapsed;
+                tabDataItemReport.Visibility = Visibility.Collapsed;
                 tabReportRelationships.Visibility = Visibility.Collapsed;
                 tabView.IsSelected = true;
             }
@@ -154,13 +154,13 @@ namespace MyProject_WPF
             lokRelationship.ItemsSource = Entity.Relationships;
         }
 
-        private void SetDirectReports()
+        private void SetDataItemReports()
         {
-            BizEntityDirectReport bizEntityDirectReport = new BizEntityDirectReport();
-            var reports = bizEntityDirectReport.GetEntityDirectReports(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
-            colDirectReport.SelectedValueMemberPath = "ID";
-            colDirectReport.DisplayMemberPath = "ReportTitle";
-            colDirectReport.ItemsSource = reports;
+            BizEntityDataItemReport bizEntityDataItemReport = new BizEntityDataItemReport();
+            var reports = bizEntityDataItemReport.GetEntityDataItemReports(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+            colDataItemReport.SelectedValueMemberPath = "ID";
+            colDataItemReport.DisplayMemberPath = "ReportTitle";
+            colDataItemReport.ItemsSource = reports;
         }
 
         private void ColDataGridRelTargetDataMenuSetting_EditItemClicked(object sender, EditItemClickEventArg e)
@@ -224,9 +224,9 @@ namespace MyProject_WPF
         }
         private void DtgColumns_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
         {
-            if (e.DataElement is DataMenuReportRelationshipDTO)
+            if (e.DataElement is DataMenuSearchableReportRelationshipDTO)
             {
-                var data = (e.DataElement as DataMenuReportRelationshipDTO);
+                var data = (e.DataElement as DataMenuSearchableReportRelationshipDTO);
                 if (data.vwReports == null || data.vwReports.Count == 0)
                     SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), data);
             }
@@ -248,9 +248,9 @@ namespace MyProject_WPF
         {
             if (e.Cell.Column == colReportRelationshipTail)
             {
-                if (e.Cell.DataContext is DataMenuReportRelationshipDTO)
+                if (e.Cell.DataContext is DataMenuSearchableReportRelationshipDTO)
                 {
-                    var condition = (e.Cell.DataContext as DataMenuReportRelationshipDTO);
+                    var condition = (e.Cell.DataContext as DataMenuSearchableReportRelationshipDTO);
                     SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), condition);
                 }
             }
@@ -272,7 +272,7 @@ namespace MyProject_WPF
             }
         }
 
-        private void SetRelationshipReports(DR_Requester requester, DataMenuReportRelationshipDTO condition)
+        private void SetRelationshipReports(DR_Requester requester, DataMenuSearchableReportRelationshipDTO condition)
         {
             if (condition.RelationshipTailID == 0)
                 return;
@@ -327,14 +327,14 @@ namespace MyProject_WPF
                 btnSetDataMenuSetting.IsEnabled = false;
             else
                 btnSetDataMenuSetting.IsEnabled = true;
-            dtgReportRelationships.ItemsSource = Message.ReportRelationships;
+            dtgReportRelationships.ItemsSource = Message.SearchableReportRelationships;
             dtgDataViewRelationships.ItemsSource = Message.DataViewRelationships;
             dtgDataGridRelationships.ItemsSource = Message.GridViewRelationships;
-            dtgDirectReport.ItemsSource = Message.DirectReports;
+            dtgDataItemReport.ItemsSource = Message.DataItemReports;
             txtName.Text = Message.Name;
             lokRelationship.SelectedValue = Message.RelationshipID;
             lokDataMenuSetting.SelectedValue = Message.TargetDataMenuSettingID;
-            foreach (var item in Message.ReportRelationships)
+            foreach (var item in Message.SearchableReportRelationships)
             {
                 SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), item);
             }
@@ -410,7 +410,7 @@ namespace MyProject_WPF
                     }
                 }
             }
-            foreach (var item in Message.ReportRelationships)
+            foreach (var item in Message.SearchableReportRelationships)
             {
                 if (item.RelationshipTailID != 0)
                 {
@@ -446,7 +446,7 @@ namespace MyProject_WPF
                 }
 
             }
-            if (Message.ReportRelationships.Any(x => x.RelationshipTailID == 0))
+            if (Message.SearchableReportRelationships.Any(x => x.RelationshipTailID == 0))
             {
                 MessageBox.Show("انتخاب رابطه و گزارش برای لیست گزارشات اجباری می باشد");
                 return;

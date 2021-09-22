@@ -741,8 +741,8 @@ namespace MyModelManager
 
 
             var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Entity, item.ID.ToString(), columnInfoType.ToString(), relationshipInfoType.ToString());
-            //     if (cachedItem != null)
-            //      return (cachedItem as TableDrivedEntityDTO);
+            if (cachedItem != null)
+                return (cachedItem as TableDrivedEntityDTO);
 
 
             TableDrivedEntityDTO result = new TableDrivedEntityDTO();

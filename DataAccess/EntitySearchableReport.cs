@@ -16,14 +16,14 @@ namespace DataAccess
     {
         public EntitySearchableReport()
         {
-            this.DataMenuReportRelationship = new HashSet<DataMenuReportRelationship>();
+            this.DataMenuSearchableReportRelationship = new HashSet<DataMenuSearchableReportRelationship>();
         }
     
         public int ID { get; set; }
         public Nullable<short> SearchableReportType { get; set; }
         public Nullable<int> SearchRepositoryID { get; set; }
     
-        public virtual ICollection<DataMenuReportRelationship> DataMenuReportRelationship { get; set; }
+        public virtual ICollection<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
         public virtual EntityChartReport EntityChartReport { get; set; }
         public virtual EntityCrosstabReport EntityCrosstabReport { get; set; }
         public virtual EntityDataViewReport EntityDataViewReport { get; set; }

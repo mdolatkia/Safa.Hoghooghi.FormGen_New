@@ -9,12 +9,20 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
+            <RowDefinition  Height="auto"></RowDefinition>
             <RowDefinition  Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         <telerik:RadTreeView IsLineEnabled="True"  x:Name="treeItems">
 
         </telerik:RadTreeView>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
+        <!--<Grid Grid.Row="1" x:Name="grdListView">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="لیست نمایش"></TextBlock>
+        </Grid>-->
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button Margin="2" Width="110" Content="بازگشت" x:Name="btnClose" Click="btnClose_Click"></Button>
             <Button Margin="2" Width="110" Content="ثبت" Click="btnSave_Click" x:Name="btnSave"></Button>
         </StackPanel>

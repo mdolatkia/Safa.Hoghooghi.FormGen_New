@@ -288,6 +288,9 @@
     <Compile Include="UI\DataView\UC_DataViewItem.xaml.cs">
       <DependentUpon>UC_DataViewItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Diagram\frmDiagram.xaml.cs">
+      <DependentUpon>frmDiagram.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\EntitySelector\frmEntitySelector.xaml.cs">
       <DependentUpon>frmEntitySelector.xaml</DependentUpon>
     </Compile>
@@ -302,6 +305,9 @@
     </Compile>
     <Compile Include="UI\DataView\frmGridView.xaml.cs">
       <DependentUpon>frmGridView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Graph\frmGraph.xaml.cs">
+      <DependentUpon>frmGraph.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Letter\frmLettersList.xaml.cs">
       <DependentUpon>frmLettersList.xaml</DependentUpon>
@@ -528,6 +534,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Diagram\frmDiagram.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\EntitySelector\frmEntitySelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -545,6 +555,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\DataView\frmGridView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Graph\frmGraph.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

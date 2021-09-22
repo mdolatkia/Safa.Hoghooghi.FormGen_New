@@ -22,13 +22,15 @@ namespace MyUILibrary.DataMenuArea
             AreaInitializer = initializer;
         }
         List<DataMenuUI> Menus = null;
+
+        DataMenuResult DataMenuResult { set; get; }
         private List<DataMenuUI> GetDataMenus()
         {
             if (Menus == null)
             {
                 var Menus = new List<DataMenuUI>();
-                var dataMenus = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDataMenu(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.DataItem, AreaInitializer.DataMenuSettingID);
-                AddUIMenu(Menus, dataMenus);
+                DataMenuResult = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDataMenu(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.DataItem, AreaInitializer.DataMenuSettingID);
+                AddUIMenu(Menus, DataMenuResult.DataMenus);
                 return Menus;
             }
             else
@@ -51,7 +53,7 @@ namespace MyUILibrary.DataMenuArea
         {
             if (AreaInitializer.DataItem == null)
                 return;
-            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowDataViewItemMenus(GetDataMenus(), AreaInitializer.SourceView);
+            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowDataViewItemMenus(GetDataMenus(), DataMenuResult.DataMenuSettingName, AreaInitializer.SourceView);
         }
         private void MenuUI_MenuClicked(object sender, EventArgs e)
         {
@@ -66,18 +68,22 @@ namespace MyUILibrary.DataMenuArea
                     var searchDataTuple = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipTailDataManager.GetTargetSearchItemFromRelationshipTail(dataMenu.DataItem, dataMenu.GridviewRelationshipTail);
                     AgentUICoreMediator.GetAgentUICoreMediator.ShowDataViewGridViewArea(dataMenu.GridviewRelationshipTail.TargetEntityID, dataMenu.GridviewRelationshipTail.TargetEntityAlias, true, false, false, searchDataTuple, true, dataMenu.TargetDataMenuSettingID, AreaInitializer.HostDataViewArea, AreaInitializer.HostDataViewItem);
                 }
-                else if (dataMenu.Type == DataMenuType.DataLink)
-                {
-                    AgentUICoreMediator.GetAgentUICoreMediator.ShowDataLinkArea(dataMenu.DataItem.TargetEntityID, dataMenu.Datalink.ID, true, dataMenu.Datalink.Name, dataMenu.DataItem);
-                }
+                //else if (dataMenu.Type == DataMenuType.DataLink)
+                //{
+                //    AgentUICoreMediator.GetAgentUICoreMediator.ShowDataLinkArea(dataMenu.DataItem.TargetEntityID, dataMenu.Datalink.ID, true, dataMenu.Datalink.ReportTitle, dataMenu.DataItem);
+                //}
+                //else if (dataMenu.Type == DataMenuType.Graph)
+                //{
+                //    AgentUICoreMediator.GetAgentUICoreMediator.ShowGraphArea(dataMenu.DataItem.TargetEntityID, dataMenu.Datalink.ID, true, dataMenu.Datalink.ReportTitle, dataMenu.DataItem);
+                //}
                 else if (dataMenu.Type == DataMenuType.RelationshipTailDataView)
                 {
                     var searchDataTuple = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipTailDataManager.GetTargetSearchItemFromRelationshipTail(dataMenu.DataItem, dataMenu.DataviewRelationshipTail);
                     AgentUICoreMediator.GetAgentUICoreMediator.ShowDataViewGridViewArea(dataMenu.DataviewRelationshipTail.TargetEntityID, dataMenu.DataviewRelationshipTail.TargetEntityAlias, true, false, true, searchDataTuple, true, dataMenu.TargetDataMenuSettingID, AreaInitializer.HostDataViewArea, AreaInitializer.HostDataViewItem);
                 }
-                else if (dataMenu.Type == DataMenuType.DirectReport)
+                else if (dataMenu.Type == DataMenuType.DataItemReport)
                 {
-                    AgentUICoreMediator.GetAgentUICoreMediator.ShowDirectReport(dataMenu.DirectReport.ID, true, dataMenu.DataItem);
+                    AgentUICoreMediator.GetAgentUICoreMediator.ShowDataItemReport(dataMenu.DataItemReport.ID, true, dataMenu.DataItem);
                 }
                 //else if (dataMenu.Type == DataMenuType.ViewRel)
                 //{
@@ -98,8 +104,8 @@ namespace MyUILibrary.DataMenuArea
                 }
                 else if (dataMenu.Type == DataMenuType.RelationshipTailSearchableReport)
                 {
-                    var searchItem = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipTailDataManager.GetTargetSearchItemFromRelationshipTail(dataMenu.DataItem, dataMenu.ReportRelationshipTail.RelationshipTail);
-                    AgentUICoreMediator.GetAgentUICoreMediator.ShowReportArea(dataMenu.ReportRelationshipTail.EntityReport.ID, true, searchItem, false, true, AreaInitializer.HostDataViewArea, AreaInitializer.HostDataViewItem);
+                    var searchItem = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipTailDataManager.GetTargetSearchItemFromRelationshipTail(dataMenu.DataItem, dataMenu.SearchableReportRelationshipTail.RelationshipTail);
+                    AgentUICoreMediator.GetAgentUICoreMediator.ShowSearchableReportArea(dataMenu.SearchableReportRelationshipTail.EntitySearchableReportID, true, searchItem, false, true, AreaInitializer.HostDataViewArea, AreaInitializer.HostDataViewItem);
                 }
                 else if (dataMenu.Type == DataMenuType.Workflow)
                 {

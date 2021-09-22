@@ -16,15 +16,13 @@ namespace DataAccess
     {
         public EntityDirectlReport()
         {
-            this.DataMenuDirectReportRelationship = new HashSet<DataMenuDirectReportRelationship>();
             this.EntityDirectlReportParameters = new HashSet<EntityDirectlReportParameters>();
         }
     
         public int ID { get; set; }
         public string URL { get; set; }
     
-        public virtual ICollection<DataMenuDirectReportRelationship> DataMenuDirectReportRelationship { get; set; }
-        public virtual EntityReport EntityReport { get; set; }
+        public virtual EntityDataItemReport EntityDataItemReport { get; set; }
         public virtual ICollection<EntityDirectlReportParameters> EntityDirectlReportParameters { get; set; }
     }
 }

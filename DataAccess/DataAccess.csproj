@@ -199,10 +199,10 @@
     <Compile Include="DataLog.cs">
       <DependentUpon>MyIdeaDataDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataMenuDataViewRelationship.cs">
+    <Compile Include="DataMenuDataItemReportRelationship.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataMenuDirectReportRelationship.cs">
+    <Compile Include="DataMenuDataViewRelationship.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="DataMenuForViewEntity.cs">
@@ -211,7 +211,7 @@
     <Compile Include="DataMenuGridViewRelationship.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataMenuReportRelationship.cs">
+    <Compile Include="DataMenuSearchableReportRelationship.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="DataMenuSetting.cs">
@@ -250,7 +250,7 @@
     <Compile Include="EntityCrosstabReport.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="EntityDataLinkReport.cs">
+    <Compile Include="EntityDataItemReport.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="EntityDataViewReport.cs">
@@ -296,6 +296,12 @@
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="EntityRelationshipTail.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntityRelationshipTailDataMenu.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntityRelationshipTailDataMenuItems.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="EntityReport.cs">
@@ -348,6 +354,12 @@
     </Compile>
     <Compile Include="FormulaUsageParemeters.cs">
       <DependentUpon>MyIdeaDataDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GraphDefinition.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GraphDefinition_EntityRelationshipTail.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="GroupUISetting.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>

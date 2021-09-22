@@ -158,6 +158,7 @@ namespace MyModelManager
 
             EntityRelationshipTailDTO result = new EntityRelationshipTailDTO();
             result.InitialEntityID = initialiEntityID;
+            result.InitialiEntityAlias = initialiEntityAlias;
             result.TargetEntityID = targetEntityID;
             result.TargetEntityAlias = targetEntityAlias;
             //var targetEntity = bizTableDrivedEntity.GetSimpleEntity(requester, result.TargetEntityID);

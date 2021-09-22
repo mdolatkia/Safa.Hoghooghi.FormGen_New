@@ -16,6 +16,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
 
             </Grid.RowDefinitions>
@@ -29,6 +30,9 @@
             <TextBlock Grid.Row="0" Text="نام"></TextBlock>
             <TextBox x:Name="txtName"  Grid.Row="0" Grid.Column="1"></TextBox>
 
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="نمایش غیر اشتراکی"></TextBlock>
+            <CheckBox  Grid.Row="0"  x:Name="chkNotJoint" HorizontalAlignment="Stretch" Grid.Column="3"></CheckBox>
+            
             <TextBlock Grid.Row="1" Text="موجودیت سمت اول"></TextBlock>
             <!--<TextBox IsReadOnly="True"  Grid.Row="1"  x:Name="txtFirstSideEntity" HorizontalAlignment="Stretch" Grid.Column="1"></TextBox>-->
             <MyCommonWPFControls:MySearchLookup  Grid.Row="1" Grid.Column="1"  x:Name="lokFirstSideEntity" HorizontalAlignment="Stretch" ></MyCommonWPFControls:MySearchLookup>
@@ -36,12 +40,19 @@
             <TextBlock Grid.Row="1" Grid.Column="2" Text="موجودیت سمت دوم"></TextBlock>
             <MyCommonWPFControls:MySearchLookup  Grid.Row="1"  x:Name="lokSecondSideEntity" HorizontalAlignment="Stretch" Grid.Column="3"></MyCommonWPFControls:MySearchLookup>
 
+            <TextBlock Text="تنظیمات منوی اول" Grid.Row="2"/>
+            <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="2" x:Name="lokFirstDataMenu" Grid.Column="1" />
+            <TextBlock Grid.Column="2" Grid.Row="2" Text="تنظیمات منوی دوم"/>
+            <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="3" x:Name="lokSecondDataMenu" />
+            
 
-            <TextBlock Grid.Row="2" VerticalAlignment="Top" Text="رشته روابط"></TextBlock>
+            <TextBlock Grid.Row="3" VerticalAlignment="Top" Text="رشته روابط"></TextBlock>
 
-            <telerik:RadGridView x:Name="dtgRelationships" Grid.Row="2" Grid.ColumnSpan="3" Grid.Column="1" AutoGenerateColumns="False">
+            <telerik:RadGridView x:Name="dtgRelationships" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="1" AutoGenerateColumns="False">
                 <telerik:RadGridView.Columns>
                     <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}"  x:Name="colRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
+                    <MyCommonWPFControls:MyStaticLookupColumn ItemsSourceBinding="{Binding tmpEntityRelationshipTailDataMenus}" DataMemberBinding="{Binding EntityRelationshipTailDataMenuID}"  x:Name="colRelationshipTailDataMenu" Header="تنظیمات منو"></MyCommonWPFControls:MyStaticLookupColumn>
+
                 </telerik:RadGridView.Columns>
             </telerik:RadGridView>
 

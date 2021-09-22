@@ -617,6 +617,11 @@ namespace MyModelManager
                         dbColumn.DataEntryEnabled = column.DataEntryEnabled;
                         dbColumn.IsNotTransferable = column.IsNotTransferable;
                     }
+
+                    //if(dbEntity.IsView)
+                    //{
+                    //    dbColumn.PrimaryKey = column.PrimaryKey;
+                    //}
                     if (column.CustomFormulaID != 0)
                         dbColumn.CustomCalculateFormulaID = column.CustomFormulaID;
                     else

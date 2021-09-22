@@ -34,7 +34,7 @@ namespace MyUILibrary
         I_View_EntitySelectArea GenerateViewOfEntityselectArea();
         I_View_LetterArea GenerateViewOfLetterArea();
         I_View_ArchiveArea GenerateViewOfArchiveArea();
-    //    void SetMenuItems(object contextMenu, List<ContextMenuItem> items);
+        //    void SetMenuItems(object contextMenu, List<ContextMenuItem> items);
         I_DialogWindow GetDialogWindow();
         void StartApp();
         UserDialogResult ShowPromptDialog(I_ViewDialog view, string title, Enum_WindowSize windowSize = Enum_WindowSize.None);
@@ -48,7 +48,7 @@ namespace MyUILibrary
         //event EventHandler SecuritySettingRequested;
         // event EventHandler WorkflowRequestCreate;
         //event EventHandler WorkflowRequestCreationForm;
-         event EventHandler<string> SearchTextChanged;
+        event EventHandler<string> SearchTextChanged;
 
         I_View_DataViewAreaContainer GetViewOfDataViewAreaContainer();
         I_View_DataViewArea GetViewOfDataViewArea();
@@ -60,7 +60,7 @@ namespace MyUILibrary
         I_View_EditLogReportDetails GenereateViewOfEditLogReportDetails();
         I_View_ArchiveLogReportDetails GenereateViewOfArchiveLogReportDetails();
         I_SimpleControlManager GenerateSimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues, List<SimpleSearchOperator> operators, bool labelControlManager, string labelText);
-        I_SimpleControlManager GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues,  bool labelControlManager, string labelText);
+        I_SimpleControlManager GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues, bool labelControlManager, string labelText);
 
         I_UICompositionContainer GenerateGroup(GroupUISettingDTO groupUISettingDTO);
 
@@ -79,7 +79,7 @@ namespace MyUILibrary
         I_View_ExternalReportArea GenerateViewOfExternalReportArea();
         //event EventHandler DatabaseListRequested;
 
-  //      event EventHandler<Arg_NavigationItemRequest> NavigationItemSelected;
+        //      event EventHandler<Arg_NavigationItemRequest> NavigationItemSelected;
 
         I_ViewDeleteInquiry GetDeleteInquiryView();
 
@@ -101,10 +101,14 @@ namespace MyUILibrary
         I_View_ViewEntityArea GenerateViewOfViewEntityArea();
         I_View_AdvancedSearchEntityArea GenerateViewOfAdvancedSearch();
         I_View_DataLinkArea GenerateViewOfDataLinkArea();
+        I_View_GraphArea GenerateViewOfGraphArea();
+
         I_DataViewItem GetDataViewItem();
         I_DataTree GetDataTreeForm();
 
-        void ShowDataViewItemMenus(List<DataMenuUI> menus, object sourceObject);
+        I_View_Diagram GenerateViewOfDiagram();
+
+        void ShowDataViewItemMenus(List<DataMenuUI> menus, string title, object sourceObject);
 
         //UIControlPackageMultipleData GenerateMultipleDataDependentControl(ColumnDTO column, ColumnUISettingDTO ColumnSetting);
         //void ShowDataViewItemMenus(I_View_DataViewArea dataViewArea, I_DataViewItem item, List<DataViewMenu> menus);
@@ -208,7 +212,7 @@ namespace MyUILibrary
         void ClearNavigationTree();
         void ClearSearchNavigationTree();
         bool ControlIsVisible(object control);
-        void SetContaierVisiblity(object control,bool visible);
+        void SetContaierVisiblity(object control, bool visible);
         //void ShowDatabaseList(DP_ResultDatabaseList result);
     }
     public interface I_MainFormMenu
@@ -236,5 +240,5 @@ namespace MyUILibrary
         Big,
         Maximized
     }
-  
+
 }

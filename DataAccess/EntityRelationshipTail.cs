@@ -21,10 +21,11 @@ namespace DataAccess
             this.DataLinkDefinition_EntityRelationshipTail = new HashSet<DataLinkDefinition_EntityRelationshipTail>();
             this.DataMenuDataViewRelationship = new HashSet<DataMenuDataViewRelationship>();
             this.DataMenuGridViewRelationship = new HashSet<DataMenuGridViewRelationship>();
-            this.DataMenuReportRelationship = new HashSet<DataMenuReportRelationship>();
+            this.DataMenuSearchableReportRelationship = new HashSet<DataMenuSearchableReportRelationship>();
             this.EntityListReportSubs = new HashSet<EntityListReportSubs>();
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
             this.EntityGroup_Relationship = new HashSet<EntityGroup_Relationship>();
+            this.GraphDefinition_EntityRelationshipTail = new HashSet<GraphDefinition_EntityRelationshipTail>();
             this.LetterTemplateRelationshipField = new HashSet<LetterTemplateRelationshipField>();
             this.TableDrivedEntityState = new HashSet<TableDrivedEntityState>();
             this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
@@ -43,10 +44,11 @@ namespace DataAccess
         public virtual ICollection<DataLinkDefinition_EntityRelationshipTail> DataLinkDefinition_EntityRelationshipTail { get; set; }
         public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship { get; set; }
         public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }
-        public virtual ICollection<DataMenuReportRelationship> DataMenuReportRelationship { get; set; }
+        public virtual ICollection<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
         public virtual ICollection<EntityListReportSubs> EntityListReportSubs { get; set; }
         public virtual ICollection<EntityListViewColumns> EntityListViewColumns { get; set; }
         public virtual ICollection<EntityGroup_Relationship> EntityGroup_Relationship { get; set; }
+        public virtual ICollection<GraphDefinition_EntityRelationshipTail> GraphDefinition_EntityRelationshipTail { get; set; }
         public virtual ICollection<LetterTemplateRelationshipField> LetterTemplateRelationshipField { get; set; }
         public virtual ICollection<TableDrivedEntityState> TableDrivedEntityState { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }

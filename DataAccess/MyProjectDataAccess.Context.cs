@@ -56,11 +56,11 @@ namespace DataAccess
         public virtual DbSet<DatabaseUISetting> DatabaseUISetting { get; set; }
         public virtual DbSet<DataLinkDefinition> DataLinkDefinition { get; set; }
         public virtual DbSet<DataLinkDefinition_EntityRelationshipTail> DataLinkDefinition_EntityRelationshipTail { get; set; }
+        public virtual DbSet<DataMenuDataItemReportRelationship> DataMenuDataItemReportRelationship { get; set; }
         public virtual DbSet<DataMenuDataViewRelationship> DataMenuDataViewRelationship { get; set; }
-        public virtual DbSet<DataMenuDirectReportRelationship> DataMenuDirectReportRelationship { get; set; }
         public virtual DbSet<DataMenuForViewEntity> DataMenuForViewEntity { get; set; }
         public virtual DbSet<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }
-        public virtual DbSet<DataMenuReportRelationship> DataMenuReportRelationship { get; set; }
+        public virtual DbSet<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
         public virtual DbSet<DataMenuSetting> DataMenuSetting { get; set; }
         public virtual DbSet<DateColumnType> DateColumnType { get; set; }
         public virtual DbSet<DateTimeColumnType> DateTimeColumnType { get; set; }
@@ -70,7 +70,7 @@ namespace DataAccess
         public virtual DbSet<EntityChartReport> EntityChartReport { get; set; }
         public virtual DbSet<EntityCommand> EntityCommand { get; set; }
         public virtual DbSet<EntityCrosstabReport> EntityCrosstabReport { get; set; }
-        public virtual DbSet<EntityDataLinkReport> EntityDataLinkReport { get; set; }
+        public virtual DbSet<EntityDataItemReport> EntityDataItemReport { get; set; }
         public virtual DbSet<EntityDataViewReport> EntityDataViewReport { get; set; }
         public virtual DbSet<EntityDeterminer> EntityDeterminer { get; set; }
         public virtual DbSet<EntityDirectlReport> EntityDirectlReport { get; set; }
@@ -83,6 +83,8 @@ namespace DataAccess
         public virtual DbSet<EntityListView> EntityListView { get; set; }
         public virtual DbSet<EntityListViewColumns> EntityListViewColumns { get; set; }
         public virtual DbSet<EntityRelationshipTail> EntityRelationshipTail { get; set; }
+        public virtual DbSet<EntityRelationshipTailDataMenu> EntityRelationshipTailDataMenu { get; set; }
+        public virtual DbSet<EntityRelationshipTailDataMenuItems> EntityRelationshipTailDataMenuItems { get; set; }
         public virtual DbSet<EntityReport> EntityReport { get; set; }
         public virtual DbSet<EntitySearch> EntitySearch { get; set; }
         public virtual DbSet<EntitySearchableReport> EntitySearchableReport { get; set; }
@@ -94,6 +96,8 @@ namespace DataAccess
         public virtual DbSet<ExplicitOneToOneRelationshipType> ExplicitOneToOneRelationshipType { get; set; }
         public virtual DbSet<Formula> Formula { get; set; }
         public virtual DbSet<FormulaItems> FormulaItems { get; set; }
+        public virtual DbSet<GraphDefinition> GraphDefinition { get; set; }
+        public virtual DbSet<GraphDefinition_EntityRelationshipTail> GraphDefinition_EntityRelationshipTail { get; set; }
         public virtual DbSet<GroupUISetting> GroupUISetting { get; set; }
         public virtual DbSet<ImplicitOneToOneRelationshipType> ImplicitOneToOneRelationshipType { get; set; }
         public virtual DbSet<ISARelationship> ISARelationship { get; set; }

@@ -300,19 +300,19 @@ namespace MyModelManager
         public void CheckDatabaseInfoExists()
         {
             var context = new MyProjectEntities();
-            DBServer dbserver = context.DBServer.FirstOrDefault(x => x.Name == "Localhost");
+            DBServer dbserver = context.DBServer.FirstOrDefault(x => x.Name == "LOCALHOST");
             if (dbserver == null)
             {
                 dbserver = new DBServer();
-                dbserver.Name = "Localhost";
-                dbserver.Title = "Localhost";
+                dbserver.Name = "LOCALHOST";
+                dbserver.Title = "LOCALHOST";
                 context.DBServer.Add(dbserver);
             }
 
             if (!context.DatabaseInformation.Any(x => x.Name == "DBProductService"))
             {
                 DatabaseInformation db = new DatabaseInformation();
-                db.ConnectionString = "Data Source=.;Initial Catalog=DBProductService;User ID=sa;Password=123;MultipleActiveResultSets=True;";// "Data Source=Localhost;Initial Catalog=DBProductService;Integrated Security=True;MultipleActiveResultSets=True;";
+                db.ConnectionString = "Data Source=LOCALHOST;Initial Catalog=DBProductService;User ID=sa;Password=123;MultipleActiveResultSets=True;";// "Data Source=Localhost;Initial Catalog=DBProductService;Integrated Security=True;MultipleActiveResultSets=True;";
                 db.Name = "DBProductService";
                 db.Title = "خدمات و سرويس";
                 db.DBType = "SQLServer";
@@ -326,14 +326,23 @@ namespace MyModelManager
                 context.DatabaseInformation.Add(db);
             }
 
+            DBServer dbserver2 = context.DBServer.FirstOrDefault(x => x.Name == "LOCALHOST\\SQL_EXP_SALARY");
+            if (dbserver2 == null)
+            {
+                dbserver2 = new DBServer();
+                dbserver2.Name = "LOCALHOST\\SQL_EXP_SALARY";
+                dbserver2.Title = "LOCALHOST\\SQL_EXP_SALARY";
+                context.DBServer.Add(dbserver2);
+            }
+
             if (!context.DatabaseInformation.Any(x => x.Name == "DBProducts"))
             {
                 DatabaseInformation db = new DatabaseInformation();
-                db.ConnectionString = "Data Source=.;Initial Catalog=DBProducts;User ID=sa;Password=123;MultipleActiveResultSets=True;";// "Data Source=Localhost;Initial Catalog=DBProductService;Integrated Security=True;MultipleActiveResultSets=True;";
+                db.ConnectionString = "Data Source=LOCALHOST\\SQL_EXP_SALARY;Initial Catalog=DBProducts;Integrated Security=True;MultipleActiveResultSets=True;"; //"Data Source=.\\SQL_EXP_SALARY;Initial Catalog=DBProducts;User ID=sa;Password=123;MultipleActiveResultSets=True;";
                 db.Name = "DBProducts";
                 db.Title = "محصولات";
                 db.DBType = "SQLServer";
-                db.DBServer = dbserver;
+                db.DBServer = dbserver2;
                 db.DBHasDate = false;
 
 

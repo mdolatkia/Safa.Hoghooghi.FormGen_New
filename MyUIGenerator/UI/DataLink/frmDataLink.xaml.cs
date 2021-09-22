@@ -32,14 +32,15 @@ namespace MyUIGenerator.View
         public event EventHandler DataLinkConfirmed;
         public event EventHandler DataLinkChanged;
 
-        DispatcherTimer timer = new DispatcherTimer();
+        //DispatcherTimer timer = new DispatcherTimer();
         public frmDataLink()
         {
             InitializeComponent();
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
-            timer.Tick += Timer_Tick;
-          //  cmbDataLinks.SelectionChanged += CmbDataLinks_SelectionChanged;
+            //timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+            //timer.Tick += Timer_Tick;
+            //  cmbDataLinks.SelectionChanged += CmbDataLinks_SelectionChanged;
         }
+        // public I_View_Diagram Diagram { set; get; }
 
         //private void CmbDataLinks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         //{
@@ -47,7 +48,10 @@ namespace MyUIGenerator.View
         //        DataLinkChanged(this, null);
         //}
 
-
+        public void AddDiagramView(object diagram)
+        {
+            grdDiagram.Children.Add(diagram as UIElement);
+        }
         //public object SelectedDataLink
         //{
         //    get
@@ -117,7 +121,7 @@ namespace MyUIGenerator.View
         }
         UIElement FirstEntity;
         UIElement SecondEntity;
-        public void SetFirstSideEntityView(I_View_TemporaryView view,string title)
+        public void SetFirstSideEntityView(I_View_TemporaryView view, string title)
         {
             FirstEntity = view as UIElement;
             lblFirstSide.Text = title;
@@ -206,84 +210,85 @@ namespace MyUIGenerator.View
         {
             //    diagram.Items.Clear();
         }
-        RadDiagramShape shapeF;
-        RadDiagramShape shapeS;
-        List<DataLinkItemViewGroups> ViewGroups;
-
-    
-
-        public void ShowDiagram(List<DataLinkItemViewGroups> viewGroups, I_DataViewItem firstSideView, I_DataViewItem secondSideView)
-        {
-            diagram.Items.Clear();
-            ViewGroups = viewGroups;
-            foreach (var viewGroup in viewGroups)
-            {
-                foreach (var view in viewGroup.Views)
-                {
-                    diagram.Items.Add(view);
-                    var shape = (diagram.Items[diagram.Items.Count - 1] as UserControl).Parent as RadDiagramShape;
-                    shape.IsConnectorsManipulationEnabled = false;
-                    shape.IsRotationEnabled = false;
-                    shape.IsResizingEnabled = false;
-                }
-                foreach (var relation in viewGroup.ViewRelations)
-                {
-                    var shape2 = (relation.Item1 as UserControl).Parent as RadDiagramShape;
-                    var shape1 = (relation.Item2 as UserControl).Parent as RadDiagramShape;
-                    diagram.AddConnection(shape1, shape2);
-                }
-
-            }
-
-            diagram.Items.Add(firstSideView);
-            shapeF = (diagram.Items[diagram.Items.Count - 1] as UserControl).Parent as RadDiagramShape;
-            shapeF.IsConnectorsManipulationEnabled = false;
-            shapeF.IsRotationEnabled = false;
-            shapeF.IsResizingEnabled = false;
-
-            diagram.Items.Add(secondSideView);
-            shapeS = (diagram.Items[diagram.Items.Count - 1] as UserControl).Parent as RadDiagramShape;
-            shapeS.IsConnectorsManipulationEnabled = false;
-            shapeS.IsRotationEnabled = false;
-            shapeS.IsResizingEnabled = false;
+        //RadDiagramShape shapeF;
+        //RadDiagramShape shapeS;
+        //List<DataLinkItemViewGroups> ViewGroups;
 
 
-            foreach (var viewGroup in viewGroups)
-            {
-                foreach (var view in viewGroup.Views.Where(x => !viewGroup.ViewRelations.Any(y => y.Item2 == x)))
-                {
-                    var shape = (view as UserControl).Parent as RadDiagramShape;
-                    diagram.AddConnection(shapeF, shape);
-                }
-            }
+        //public void ShowDiagram(List<DataLinkItemViewGroups> viewGroups, I_DataViewItem firstSideView, I_DataViewItem secondSideView)
+        //{
+        //    diagram.Items.Clear();
+        //    ViewGroups = viewGroups;
+        //    foreach (var viewGroup in viewGroups)
+        //    {
+        //        foreach (var view in viewGroup.Views)
+        //        {
+        //            diagram.Items.Add(view);
+        //            var shape = (diagram.Items[diagram.Items.Count - 1] as UserControl).Parent as RadDiagramShape;
+        //            shape.IsConnectorsManipulationEnabled = false;
+        //            shape.IsRotationEnabled = false;
+        //            shape.IsResizingEnabled = false;
+        //        }
+        //        foreach (var relation in viewGroup.ViewRelations)
+        //        {
+        //            var shape2 = (relation.Item1 as UserControl).Parent as RadDiagramShape;
+        //            var shape1 = (relation.Item2 as UserControl).Parent as RadDiagramShape;
+        //            diagram.AddConnection(shape1, shape2);
+        //        }
 
-            timer.Start();
+        //    }
 
-        }
+        //    diagram.Items.Add(firstSideView);
+        //    shapeF = (diagram.Items[diagram.Items.Count - 1] as UserControl).Parent as RadDiagramShape;
+        //    shapeF.IsConnectorsManipulationEnabled = false;
+        //    shapeF.IsRotationEnabled = false;
+        //    shapeF.IsResizingEnabled = false;
 
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            (sender as DispatcherTimer).Stop();
-            TreeLayoutSettings settings = new TreeLayoutSettings()
-            {
-                TreeLayoutType = TreeLayoutType.TreeRight,
-                HorizontalSeparation = 20,
-            };
-            settings.Roots.Add(shapeF);
-            diagram.Layout(LayoutType.Tree, settings);
-            diagram.AutoFit();
-            shapeS.Position = new Point(shapeS.Position.X, shapeF.Position.Y);
+        //    diagram.Items.Add(secondSideView);
+        //    shapeS = (diagram.Items[diagram.Items.Count - 1] as UserControl).Parent as RadDiagramShape;
+        //    shapeS.IsConnectorsManipulationEnabled = false;
+        //    shapeS.IsRotationEnabled = false;
+        //    shapeS.IsResizingEnabled = false;
 
-            foreach (var viewGroup in ViewGroups)
-            {
-                foreach (var view in viewGroup.Views.Where(x => !viewGroup.ViewRelations.Any(y => y.Item1 == x)))
-                {
-                    var shape = (view as UserControl).Parent as RadDiagramShape;
-                    diagram.AddConnection(shape, shapeS);
-                }
-            }
 
-        }
+        //    foreach (var viewGroup in viewGroups)
+        //    {
+        //        foreach (var view in viewGroup.Views.Where(x => !viewGroup.ViewRelations.Any(y => y.Item2 == x)))
+        //        {
+        //            var shape = (view as UserControl).Parent as RadDiagramShape;
+        //            diagram.AddConnection(shapeF, shape);
+        //        }
+        //    }
+
+        //    foreach (var viewGroup in ViewGroups)
+        //    {
+        //        foreach (var view in viewGroup.Views.Where(x => !viewGroup.ViewRelations.Any(y => y.Item1 == x)))
+        //        {
+        //            var shape = (view as UserControl).Parent as RadDiagramShape;
+        //            diagram.AddConnection(shape, shapeS);
+        //        }
+        //    }
+
+        //      timer.Start();
+
+        //}
+
+        //private void Timer_Tick(object sender, EventArgs e)
+        //{
+        //    (sender as DispatcherTimer).Stop();
+        //    TreeLayoutSettings settings = new TreeLayoutSettings()
+        //    {
+        //        TreeLayoutType = TreeLayoutType.TreeRight,
+        //        HorizontalSeparation = 20,
+        //    };
+        //    settings.Roots.Add(shapeF);
+        //    diagram.Layout(LayoutType.Tree, settings);
+        //    diagram.AutoFit();
+        //    shapeS.Position = new Point(shapeS.Position.X, shapeF.Position.Y);
+
+
+
+        //}
 
         //public void SetDataLinks(List<DataLinkDTO> dataLinks, int dataLinkID)
         //{
@@ -293,7 +298,7 @@ namespace MyUIGenerator.View
         //    cmbDataLinks.SelectedValue = dataLinkID;
         //}
 
-      
+
 
         public void AddDataLinkSelector(MySearchLookup dataLinkSearchLookup)
         {

@@ -23,7 +23,7 @@ namespace MyDataManagerService
         {
             return bizDataMenuSetting.GetDefaultDataMenuSetting(requester, entityID, true);
         }
-        public List<DataMenu> GetDataMenu(DR_Requester requester, DP_DataView dataItem, int dataMenuSettingID)
+        public DataMenuResult GetDataMenu(DR_Requester requester, DP_DataView dataItem, int dataMenuSettingID)
         {
             return bizDataMenuSetting.GetDataMenu(requester, dataItem, dataMenuSettingID);
         }

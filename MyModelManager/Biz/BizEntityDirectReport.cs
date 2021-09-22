@@ -19,11 +19,11 @@ namespace MyModelManager
             List<EntityDirectReportDTO> result = new List<EntityDirectReportDTO>();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var list = projectContext.EntityDirectlReport.Where(x => x.EntityReport.TableDrivedEntityID == entityID);
+                var list = projectContext.EntityDirectlReport.Where(x => x.EntityDataItemReport.EntityReport.TableDrivedEntityID == entityID);
                 foreach (var item in list)
                 {
-                    if (bizEntityReport.DataIsAccessable(requester, item.EntityReport))
-                        result.Add(ToEntityDirectReportDTO(requester,item));
+                    if (bizEntityReport.DataIsAccessable(requester, item.EntityDataItemReport.EntityReport))
+                        result.Add(ToEntityDirectReportDTO(requester, item, false));
                 }
             }
             return result;
@@ -34,9 +34,9 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var item = projectContext.EntityDirectlReport.First(x => x.ID == iD);
-                if (bizEntityReport.DataIsAccessable(requester, item.EntityReport))
+                if (bizEntityReport.DataIsAccessable(requester, item.EntityDataItemReport.EntityReport))
                 {
-                    var rItem = ToEntityDirectReportDTO(requester, item);
+                    var rItem = ToEntityDirectReportDTO(requester, item, true);
                     return rItem;
                 }
                 else
@@ -47,10 +47,10 @@ namespace MyModelManager
 
 
 
-        public EntityDirectReportDTO ToEntityDirectReportDTO(DR_Requester requester, EntityDirectlReport dbRel)
+        public EntityDirectReportDTO ToEntityDirectReportDTO(DR_Requester requester, EntityDirectlReport dbRel, bool withDetails)
         {
             var result = new EntityDirectReportDTO();
-            bizEntityReport.ToEntityReportDTO(dbRel.EntityReport, result, false);
+            bizEntityReport.ToEntityReportDTO(dbRel.EntityDataItemReport.EntityReport, result, withDetails);
             result.URL = dbRel.URL;
             foreach (var item in dbRel.EntityDirectlReportParameters)
             {
@@ -68,17 +68,18 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                BizEntityReport bizEntityReport = new MyModelManager.BizEntityReport();
-
+                //BizEntityReport bizEntityReport = new MyModelManager.BizEntityReport();
+                BizEntityDataItemReport bizEntityDataItemReport = new BizEntityDataItemReport();
                 var dbEntitySpecifiedReport = projectContext.EntityDirectlReport.FirstOrDefault(x => x.ID == message.ID);
                 if (dbEntitySpecifiedReport == null)
                 {
-                    message.ReportType = ReportType.DirectReport;
+                    message.ReportType = ReportType.DataItemReport;
                     dbEntitySpecifiedReport = new EntityDirectlReport();
-                    dbEntitySpecifiedReport.EntityReport = bizEntityReport.ToNewEntityReport(message);
+                    dbEntitySpecifiedReport.EntityDataItemReport = bizEntityDataItemReport.ToNewEntityDataItemReport(message);
+                    dbEntitySpecifiedReport.EntityDataItemReport.DataItemReportType = (short)DataItemReportType.DirectReport;
                 }
                 else
-                    bizEntityReport.ToUpdateEntityReport(dbEntitySpecifiedReport.EntityReport, message);
+                    bizEntityDataItemReport.ToUpdateEntityDataItemReport(dbEntitySpecifiedReport.EntityDataItemReport, message);
 
                 dbEntitySpecifiedReport.URL = message.URL;
                 while (dbEntitySpecifiedReport.EntityDirectlReportParameters.Any())

@@ -59,6 +59,9 @@ namespace MyUIGenerator.View
                 lblBody.Text = value;
             }
         }
+
+        public bool IsRoot { set; get; }
+
         public event EventHandler InfoClicked;
         public event EventHandler Selected;
 
@@ -83,7 +86,7 @@ namespace MyUIGenerator.View
             if (InfoClicked != null)
                 InfoClicked(this, null);
         }
-       
+
 
         public void OnSelected()
         {

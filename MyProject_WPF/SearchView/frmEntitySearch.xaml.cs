@@ -36,6 +36,10 @@ namespace MyProject_WPF
         {
             InitializeComponent();
             EntityID = entityID;
+            BizTableDrivedEntity biz = new BizTableDrivedEntity();
+            var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
+            if (entity.IsView)
+                colRelationshipTail.IsVisible = false;
             EntitySearchID = entitySearchID;
             SetRelationshipTails();
             if (EntitySearchID == 0)

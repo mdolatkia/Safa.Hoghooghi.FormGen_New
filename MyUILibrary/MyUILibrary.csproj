@@ -90,9 +90,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\GraphCommand.cs" />
     <Compile Include="Core\AG_InternalTaskResult.cs" />
     <Compile Include="Core\AG_RequestManager.cs" />
     <Compile Include="Core\BaseCommand.cs" />
+    <Compile Include="Graph\GraphArea.cs" />
     <Compile Include="DataLinkArea\DataLinkArea.cs" />
     <Compile Include="DataMenu\DataMenuArea.cs" />
     <Compile Include="DataTreeArea\DataTreeArea.cs" />

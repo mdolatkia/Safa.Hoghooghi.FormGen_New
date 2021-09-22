@@ -15,7 +15,7 @@ namespace MyModelManager
     public class BizDataMenuSetting
     {
         BizProcess bizProcess = new BizProcess();
-        BizEntityDirectReport bizEntityDirectReport = new BizEntityDirectReport();
+        BizEntityDataItemReport bizEntityDataItemReport = new BizEntityDataItemReport();
         BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
         BizEntityReport bizEntityReport = new BizEntityReport();
         SecurityHelper securityHelper = new SecurityHelper();
@@ -67,7 +67,7 @@ namespace MyModelManager
             var result = new DataMenuSettingDTO();
             if (withDetails)
             {
-                foreach (var item in entity.DataMenuReportRelationship)
+                foreach (var item in entity.DataMenuSearchableReportRelationship)
                 {
                     //دسترسی به خود گزارش هم کنترل شود
                     if (bizEntityRelationshipTail.DataIsAccessable(requester, item.EntityRelationshipTail))
@@ -76,12 +76,11 @@ namespace MyModelManager
                         {
                             var tail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
                             var entityReportDTO = new EntitySearchableReportDTO();
-                            bizEntitySearchableReport.ToEntitySearchableReportDTO(item.EntitySearchableReport, entityReportDTO, withDetails);
-                            result.ReportRelationships.Add(ToDataMenuReportRelationshipDTO(item, tail, entityReportDTO));
+                            bizEntitySearchableReport.ToEntitySearchableReportDTO(item.EntitySearchableReport, entityReportDTO,  withDetails);
+                            result.SearchableReportRelationships.Add(ToDataMenuSearchableReportRelationshipDTO(item, tail, entityReportDTO));
                         }
                     }
                 }
-
                 foreach (var item in entity.DataMenuDataViewRelationship)
                 {
                     if (bizEntityRelationshipTail.DataIsAccessable(requester, item.EntityRelationshipTail))
@@ -90,7 +89,6 @@ namespace MyModelManager
                         result.DataViewRelationships.Add(ToDataMenuDataViewRelationshipDTO(item, tail));
                     }
                 }
-
                 foreach (var item in entity.DataMenuGridViewRelationship)
                 {
                     if (bizEntityRelationshipTail.DataIsAccessable(requester, item.EntityRelationshipTail))
@@ -99,10 +97,14 @@ namespace MyModelManager
                         result.GridViewRelationships.Add(ToDataMenuGridViewRelationshipDTO(item, tail));
                     }
                 }
-                foreach (var item in entity.DataMenuDirectReportRelationship)
+                foreach (var item in entity.DataMenuDataItemReportRelationship)
                 {
-                    if (bizEntityReport.DataIsAccessable(requester, item.EntityDirectReportID))
-                        result.DirectReports.Add(ToDataMenuDirectReportRelationshipDTO(requester, item));
+                    if (bizEntityReport.DataIsAccessable(requester, item.EntityDataItemReportID))
+                    {
+                        var entityReportDTO = new EntityDataItemReportDTO();
+                        bizEntityDataItemReport.ToEntityDataItemReportDTO(item.EntityDataItemReport, entityReportDTO,false);
+                        result.DataItemReports.Add(ToDataMenuDataItemReportRelationshipDTO(item, entityReportDTO));
+                    }
                 }
             }
             result.EntityID = entity.TableDrivedEntityID;
@@ -126,12 +128,12 @@ namespace MyModelManager
             return result;
         }
 
-        private DataMenuDirectReportRelationshipDTO ToDataMenuDirectReportRelationshipDTO(DR_Requester requester, DataMenuDirectReportRelationship item)
+        private DataMenuDataItemReportDTO ToDataMenuDataItemReportRelationshipDTO(DataMenuDataItemReportRelationship dbRel, EntityDataItemReportDTO entityReport)
         {
-            var rel = new DataMenuDirectReportRelationshipDTO();
-            rel.EntityDirectReportID = item.EntityDirectReportID;
-            rel.EntityDirectReport = bizEntityDirectReport.ToEntityDirectReportDTO(requester, item.EntityDirectlReport);
-            rel.Group1 = item.Group1;
+            var rel = new DataMenuDataItemReportDTO();
+            rel.EntityDataItemReportID = dbRel.EntityDataItemReportID;
+            rel.EntityDataItemReport = entityReport;
+            rel.Group1 = dbRel.Group1;
 
             return rel;
         }
@@ -158,22 +160,24 @@ namespace MyModelManager
             return rel;
         }
 
-        private DataMenuReportRelationshipDTO ToDataMenuReportRelationshipDTO(DataMenuReportRelationship dbRel, EntityRelationshipTailDTO tail, EntitySearchableReportDTO entityReport)
+        private DataMenuSearchableReportRelationshipDTO ToDataMenuSearchableReportRelationshipDTO(DataMenuSearchableReportRelationship dbRel, EntityRelationshipTailDTO tail, EntitySearchableReportDTO entityReport)
         {
-            var result = new DataMenuReportRelationshipDTO();
+            var result = new DataMenuSearchableReportRelationshipDTO();
             result.ID = dbRel.ID;
             result.RelationshipTailID = dbRel.EntityRelationshipTailID;
             result.RelationshipTail = tail;
             BizEntityReport bizEntityReport = new BizEntityReport();
             result.EntitySearchableReportID = dbRel.EntitySearchableReportID;
-            result.EntityReport = entityReport;
+            result.SearchableReportReport = entityReport;
             result.Group1 = dbRel.Group1;
             return result;
         }
 
-        public List<DataMenu> GetDataMenu(DR_Requester requester, DP_DataView dataItem, int dataMenuSettingID)
+        public DataMenuResult GetDataMenu(DR_Requester requester, DP_DataView dataItem, int dataMenuSettingID)
         {
-            List<DataMenu> result = new List<DataMenu>();
+            DataMenuResult result = new DataMenuResult();
+            List<DataMenu> resultMenus = new List<DataMenu>();
+            result.DataMenus = resultMenus;
             var entityID = dataItem.TargetEntityID;
             var simpleEntity = bizTableDrivedEntity.GetSimpleEntity(requester, entityID);
             if (simpleEntity == null)
@@ -184,7 +188,8 @@ namespace MyModelManager
             else
                 dataMenuSetting = GetDefaultDataMenuSetting(requester, entityID, true);
 
-           
+            if (dataMenuSetting != null)
+                result.DataMenuSettingName = dataMenuSetting.Name;
 
             if (simpleEntity.IsView)
             {
@@ -210,12 +215,12 @@ namespace MyModelManager
             }
             else
             {
-                var dataEntryRootMenu = AddMenu(result, "نمایش/اصلاح داده", "", DataMenuType.Form, dataItem);
+                var dataEntryRootMenu = AddMenu(resultMenus, "نمایش/اصلاح داده", "", DataMenuType.Form, dataItem);
                 //آرشیو داده
                 // BizArchive bizArchive = new BizArchive();
                 if (bizTableDrivedEntity.DataIsAccessable(requester, entityID, new List<SecurityAction>() { SecurityAction.ArchiveView, SecurityAction.ArchiveEdit }))
                 {
-                    var archiveRootMenu = AddMenu(result, "آرشیو", "", DataMenuType.Archive, dataItem);
+                    var archiveRootMenu = AddMenu(resultMenus, "آرشیو", "", DataMenuType.Archive, dataItem);
                 }
 
 
@@ -223,51 +228,51 @@ namespace MyModelManager
                 //  BizLetterTemplate bizLetterTemplate = new BizLetterTemplate();
                 if (bizTableDrivedEntity.DataIsAccessable(requester, entityID, new List<SecurityAction>() { SecurityAction.LetterView, SecurityAction.LetterEdit }))
                 {
-                    var letterRootMenu = AddMenu(result, "نامه ها", "", DataMenuType.Letter, dataItem);
+                    var letterRootMenu = AddMenu(resultMenus, "نامه ها", "", DataMenuType.Letter, dataItem);
                 }
                 //جریان کارهای مرتبط
                 if (bizProcess.EntityHasAnyProcess(entityID))
                 {
-                    var workflowRootMenu = AddMenu(result, "جریان کار", "", DataMenuType.Workflow, dataItem);
+                    var workflowRootMenu = AddMenu(resultMenus, "جریان کار", "", DataMenuType.Workflow, dataItem);
                 }
 
 
 
 
-                //لینک های داده
-                BizDataLink bizDataLink = new MyModelManager.BizDataLink();
-                var datalinks = bizDataLink.GetDataLinkByEntitiyID(requester, entityID);
-                if (datalinks.Any())
-                {
-                    var dataViewRootMenu = AddMenu(result, "لینک داده", "", DataMenuType.Folder,null);
-                    foreach (var datalink in datalinks)
-                    {
-                        var datalinkMenu = AddMenu(dataViewRootMenu.SubMenus, datalink.Name, "", DataMenuType.DataLink, dataItem);
-                        datalinkMenu.Datalink = datalink;
-                    }
-                }
+                ////لینک های داده
+                //BizDataLink bizDataLink = new MyModelManager.BizDataLink();
+                //var datalinks = bizDataLink.GetDataLinkByEntitiyID(requester, entityID);
+                //if (datalinks.Any())
+                //{
+                //    var dataViewRootMenu = AddMenu(resultMenus, "لینک داده", "", DataMenuType.Folder,null);
+                //    foreach (var datalink in datalinks)
+                //    {
+                //        var datalinkMenu = AddMenu(dataViewRootMenu.SubMenus, datalink.ReportTitle, "", DataMenuType.DataLink, dataItem);
+                //        datalinkMenu.Datalink = datalink;
+                //    }
+                //}
 
                 //گزارشهای داده های مرتبط
 
                 if (dataMenuSetting != null)
                 {
-                    if (dataMenuSetting.ReportRelationships.Any())
+                    if (dataMenuSetting.SearchableReportRelationships.Any())
                     {
-                        var relationshipReportRootMenu = AddMenu(result, "گزارش داده های مرتبط", "", DataMenuType.Folder,null);
-                        foreach (var group in dataMenuSetting.ReportRelationships.GroupBy(x => x.Group1 ?? ""))
+                        var relationshipReportRootMenu = AddMenu(resultMenus, "گزارش داده های مرتبط", "", DataMenuType.Folder,null);
+                        foreach (var group in dataMenuSetting.SearchableReportRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(relationshipReportRootMenu, group.Key);
                             foreach (var rel in group)
                             {
-                                var menu = AddMenu(parentGroupMenu.SubMenus, rel.EntityReport.ReportTitle, "", DataMenuType.RelationshipTailSearchableReport, dataItem);
-                                menu.ReportRelationshipTail = rel;
+                                var menu = AddMenu(parentGroupMenu.SubMenus, rel.SearchableReportReport.ReportTitle, "", DataMenuType.RelationshipTailSearchableReport, dataItem);
+                                menu.SearchableReportRelationshipTail = rel;
                             }
                         }
                     }
                     //نمای داده های مرتبط
                     if (dataMenuSetting.DataViewRelationships.Any())
                     {
-                        var dataViewRootMenu = AddMenu(result, "نمایش داده های مرتبط", "", DataMenuType.Folder,null);
+                        var dataViewRootMenu = AddMenu(resultMenus, "نمایش داده های مرتبط", "", DataMenuType.Folder,null);
                         foreach (var group in dataMenuSetting.DataViewRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(dataViewRootMenu, group.Key);
@@ -281,7 +286,7 @@ namespace MyModelManager
                     }
                     if (dataMenuSetting.GridViewRelationships.Any())
                     {
-                        var gridViewRootMenu = AddMenu(result, "گرید داده های مرتبط", "", DataMenuType.Folder,null);
+                        var gridViewRootMenu = AddMenu(resultMenus, "گرید داده های مرتبط", "", DataMenuType.Folder,null);
                         foreach (var group in dataMenuSetting.GridViewRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(gridViewRootMenu, group.Key);
@@ -293,16 +298,16 @@ namespace MyModelManager
                             }
                         }
                     }
-                    if (dataMenuSetting.DirectReports.Any())
+                    if (dataMenuSetting.DataItemReports.Any())
                     {
-                        var gridViewRootMenu = AddMenu(result, "گزارشات مستقیم", "", DataMenuType.Folder,null);
-                        foreach (var group in dataMenuSetting.DirectReports.GroupBy(x => x.Group1 ?? ""))
+                        var gridViewRootMenu = AddMenu(resultMenus, "گزارشات مورد داده", "", DataMenuType.Folder,null);
+                        foreach (var group in dataMenuSetting.DataItemReports.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(gridViewRootMenu, group.Key);
                             foreach (var rel in group)
                             {
-                                var gridViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.EntityDirectReport.ReportTitle, "", DataMenuType.DirectReport, dataItem);
-                                gridViewRelMenu.DirectReport = rel.EntityDirectReport;
+                                var gridViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.EntityDataItemReport.ReportTitle, "", DataMenuType.DataItemReport, dataItem);
+                                gridViewRelMenu.DataItemReport = rel.EntityDataItemReport;
                             }
                         }
                     }
@@ -422,16 +427,16 @@ namespace MyModelManager
                     projectContext.DataMenuSetting.Add(dbEntity);
                 }
 
-                while (dbEntity.DataMenuReportRelationship.Any())
-                    projectContext.DataMenuReportRelationship.Remove(dbEntity.DataMenuReportRelationship.First());
-                foreach (var item in message.ReportRelationships)
+                while (dbEntity.DataMenuSearchableReportRelationship.Any())
+                    projectContext.DataMenuSearchableReportRelationship.Remove(dbEntity.DataMenuSearchableReportRelationship.First());
+                foreach (var item in message.SearchableReportRelationships)
                 {
-                    DataMenuReportRelationship dbRel = new DataMenuReportRelationship();
+                    DataMenuSearchableReportRelationship dbRel = new DataMenuSearchableReportRelationship();
                     //  dbRel.RelationshipID = (item.RelationshipID == 0 ? (int?)null : item.RelationshipID);
                     dbRel.EntityRelationshipTailID = item.RelationshipTailID;
                     dbRel.EntitySearchableReportID = item.EntitySearchableReportID;
                     dbRel.Group1 = item.Group1;
-                    dbEntity.DataMenuReportRelationship.Add(dbRel);
+                    dbEntity.DataMenuSearchableReportRelationship.Add(dbRel);
                 }
 
                 while (dbEntity.DataMenuDataViewRelationship.Any())
@@ -463,14 +468,14 @@ namespace MyModelManager
                     dbEntity.DataMenuGridViewRelationship.Add(dbRel);
                 }
 
-                while (dbEntity.DataMenuDirectReportRelationship.Any())
-                    projectContext.DataMenuDirectReportRelationship.Remove(dbEntity.DataMenuDirectReportRelationship.First());
-                foreach (var item in message.DirectReports)
+                while (dbEntity.DataMenuDataItemReportRelationship.Any())
+                    projectContext.DataMenuDataItemReportRelationship.Remove(dbEntity.DataMenuDataItemReportRelationship.First());
+                foreach (var item in message.DataItemReports)
                 {
-                    DataMenuDirectReportRelationship dbRel = new DataMenuDirectReportRelationship();
-                    dbRel.EntityDirectReportID = item.EntityDirectReportID;
+                    DataMenuDataItemReportRelationship dbRel = new DataMenuDataItemReportRelationship();
+                    dbRel.EntityDataItemReportID = item.EntityDataItemReportID;
                     dbRel.Group1 = item.Group1;
-                    dbEntity.DataMenuDirectReportRelationship.Add(dbRel);
+                    dbEntity.DataMenuDataItemReportRelationship.Add(dbRel);
                 }
 
 

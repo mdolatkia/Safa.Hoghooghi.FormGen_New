@@ -19,6 +19,12 @@ namespace MyUILibraryInterfaces.DataLinkArea
         DataLinkAreaInitializer AreaInitializer { set; get; }
         I_View_DataLinkArea View { set; get; }
     }
+    public interface I_GraphArea
+    {
+        GraphDTO SelectedGraph { set; get; }
+        GraphAreaInitializer AreaInitializer { set; get; }
+        I_View_GraphArea View { set; get; }
+    }
 
     public interface I_View_DataLinkArea
     {
@@ -35,13 +41,17 @@ namespace MyUILibraryInterfaces.DataLinkArea
         //void AddDataLinkItems(List<I_DataViewItem> views);
         //void AddLink(I_DataViewItem view1, I_DataViewItem view2);
         //void SetItemsPositions();
-        void ClearItems();
-        void ShowDiagram(List<DataLinkItemViewGroups> viewGroups, I_DataViewItem view1, I_DataViewItem view2);
 
-    //    void SetDataLinks(List<DataLinkDTO> dataLinks, int dataLinkID);
-    //    void EnableDisableDataLinks(bool userCanChange);
+        void AddDiagramView(object diagram);
+        //void ClearItems();
+        //void ShowDiagram(List<DataLinkItemViewGroups> viewGroups, I_DataViewItem view1, I_DataViewItem view2);
+
+        //    void SetDataLinks(List<DataLinkDTO> dataLinks, int dataLinkID);
+        //    void EnableDisableDataLinks(bool userCanChange);
         void AddDataLinkSelector(MySearchLookup dataLinkSearchLookup);
         void EnabaleDisabeViewSection(bool enable);
+
+
     }
     public class DataLinkItemViewGroups
     {
@@ -52,6 +62,53 @@ namespace MyUILibraryInterfaces.DataLinkArea
         }
         public List<I_DataViewItem> Views { set; get; }
         public List<Tuple<I_DataViewItem, I_DataViewItem>> ViewRelations { set; get; }
+
+    }
+
+
+
+    public interface I_View_GraphArea
+    {
+        //event EventHandler<DataLinkChangedArg> DataLinkChanged;
+        //void SetDataLink(string text);
+        //event EventHandler DiagramLoaded;
+        event EventHandler GraphConfirmed;
+        //     event EventHandler DataLinkChanged;
+        //   object SelectedDataLink { get; set; }
+        void ClearEntityViews();
+        void SetFirstSideEntityView(I_View_TemporaryView view, string title);
+       
+        void AddDiagramView(object diagram);
+      
+        void AddGraphSelector(MySearchLookup dataLinkSearchLookup);
+        void EnabaleDisabeViewSection(bool enable);
+
+    }
+
+
+    public interface I_View_Diagram
+    {
+        void ClearItems();
+        void AddView( I_DataViewItem view1);
+        void AddRelation(object view1, object view2);
+        void SetDiagramTypes(List<DiagramTypes> diagramTypes);
+        void RefreshDiagram();
+    }
+    public class DiagramTypes
+    {
+        public string Title { set; get; }
+        public EnumDiagramTypes DiagramType { set; get; }
+    }
+    public enum EnumDiagramTypes
+    {
+        Sugiyama,
+        TreeUndefined,
+        TreeHorizontal,
+        TreeVertical,
+        TreeRadial,
+        TreeTipOver,
+        MindmapHorizontal,
+        MindmapVertical
 
     }
     //public interface I_DataLinkItem
@@ -73,6 +130,19 @@ namespace MyUILibraryInterfaces.DataLinkArea
         }
      //   public bool UserCanChange { set; get; }
         public int DataLinkID { set; get; }
+        public int EntityID { set; get; }
+        public DP_DataView FirstDataItem { set; get; }
+        // چون جایی نداریم فعلا که دوتا داده انتخاب کنیم و ارتباطشون رو بخوایم, DP_DataView otherData)
+        // public DP_DataView OtherDataItem { set; get; }
+    }
+    public class GraphAreaInitializer
+    {
+        public GraphAreaInitializer()
+        {
+
+        }
+        //   public bool UserCanChange { set; get; }
+        public int GraphID { set; get; }
         public int EntityID { set; get; }
         public DP_DataView FirstDataItem { set; get; }
         // چون جایی نداریم فعلا که دوتا داده انتخاب کنیم و ارتباطشون رو بخوایم, DP_DataView otherData)

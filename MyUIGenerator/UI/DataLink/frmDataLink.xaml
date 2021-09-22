@@ -47,21 +47,9 @@
             <TextBlock Name="lblFirstSide" Text="موجودیت سمت اول" Grid.Column="0"></TextBlock>
             <TextBlock  Name="lblSecondSide" Text="موجودیت سمت دوم" Grid.Column="2"></TextBlock>
             <Button x:Name="btnConfirm" Content="تایید" Width="80" Grid.Column="6" Click="btnConfirm_Click"></Button>
-            <Button x:Name="btnRefresh" Content="مرتب" Width="80" Grid.Column="7" Click="btnRefresh_Click"></Button>
         </Grid>
       
         <Grid Grid.Row="2" x:Name="grdDiagram">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="191*"/>
-                <ColumnDefinition Width="34*"/>
-            </Grid.ColumnDefinitions>
-            <!--<Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="200"></ColumnDefinition>
-            </Grid.ColumnDefinitions>-->
-
-            <telerik:RadDiagram primitives:BackgroundGrid.IsGridVisible="False" primitives:BackgroundPageGrid.IsGridVisible="False" FlowDirection="LeftToRight" x:Name="diagram"
-								BorderThickness="1" Grid.ColumnSpan="2" />
 
         </Grid>
     </Grid>

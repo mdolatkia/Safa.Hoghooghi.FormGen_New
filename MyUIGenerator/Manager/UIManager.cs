@@ -585,7 +585,7 @@ namespace MyUIGenerator
         //{
         //    return TabHelper.GetTabKey(mainName, itemName);
         //}
-        public void ShowDataViewItemMenus(List<DataMenuUI> menus, object sourceObject)
+        public void ShowDataViewItemMenus(List<DataMenuUI> menus, string title, object sourceObject)
         {
             if (menus.Any())
             {
@@ -594,6 +594,8 @@ namespace MyUIGenerator
                 {
                     AddMenu(menu.Items, item);
                 }
+                if (!string.IsNullOrEmpty(title))
+                    ToolTipService.SetToolTip(menu, title);
                 menu.HideEventName = "LostFocus";
                 menu.PopupPlacement = System.Windows.Controls.Primitives.PlacementMode.Center;
                 RadRadialMenu.SetRadialContextMenu(sourceObject as UIElement, menu);
@@ -1057,6 +1059,14 @@ namespace MyUIGenerator
         {
             return new frmDataLink();
         }
+        public I_View_GraphArea GenerateViewOfGraphArea()
+        {
+            return new frmGraph();
+        }
+        public I_View_Diagram GenerateViewOfDiagram()
+        {
+            return new frmDiagram();
+        }
 
         public I_View_InternalReportArea GenerateViewOfInternalReportArea()
         {
@@ -1246,7 +1256,7 @@ namespace MyUIGenerator
                 if ((control as TabItem).IsSelected)
                 {
                     var tabControl = (control as TabItem).Parent as TabControl;
-                  //  TabItem otherTab = null;
+                    //  TabItem otherTab = null;
                     foreach (var item in tabControl.Items)
                     {
                         if (item is TabItem && item != control)
@@ -1260,8 +1270,8 @@ namespace MyUIGenerator
 
                         }
                     }
-                  
-                     
+
+
                 }
             }
             (control as UIElement).Visibility = visible ? Visibility.Visible : Visibility.Collapsed;

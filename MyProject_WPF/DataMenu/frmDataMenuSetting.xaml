@@ -75,7 +75,7 @@
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </TabItem>
-                <TabItem Name="tabReportRelationships" Header="روابط گزارشات">
+                <TabItem Name="tabReportRelationships" Header="روابط گزارشات جستجویی">
                     <telerik:RadGridView x:Name="dtgReportRelationships" AutoGenerateColumns="False">
                         <telerik:RadGridView.Columns>
                             <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True" NewItemEnabled="True" x:Name="colReportRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
@@ -85,10 +85,10 @@
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </TabItem>
-                <TabItem Name="tabDirectReport" Header="گزارشات خارجی مستقیم">
-                    <telerik:RadGridView x:Name="dtgDirectReport" AutoGenerateColumns="False">
+                <TabItem Name="tabDataItemReport" Header="گزارشات مورد داده">
+                    <telerik:RadGridView x:Name="dtgDataItemReport" AutoGenerateColumns="False">
                         <telerik:RadGridView.Columns>
-                            <MyCommonWPFControls:MyStaticLookupColumn  x:Name="colDirectReport" Header="ستون" DataMemberBinding="{Binding EntityDirectReportID}" />
+                            <MyCommonWPFControls:MyStaticLookupColumn  x:Name="colDataItemReport" Header="ستون" DataMemberBinding="{Binding EntityDataItemReportID}" />
                             <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>
                             <!--<telerik:GridViewDataColumn DataMemberBinding="{Binding Group2}"></telerik:GridViewDataColumn>-->
                         </telerik:RadGridView.Columns>

@@ -1387,7 +1387,11 @@ namespace MyUILibrary.EntityArea
                 var dataLinkCommand = new DataLinkCommand(this);
                 Commands.Add(dataLinkCommand);
                 DataView.AddCommand(dataLinkCommand.CommandManager, true);
-
+               
+                
+                var graphCommand = new GraphCommand(this);
+                Commands.Add(graphCommand);
+                DataView.AddCommand(graphCommand.CommandManager, true);
                 //var dataListReportCommand = new DataListReportCommand(this);
                 //Commands.Add(dataListReportCommand);
                 //DataView.AddCommand(dataListReportCommand.CommandManager, true);

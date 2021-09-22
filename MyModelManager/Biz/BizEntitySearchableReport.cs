@@ -63,13 +63,13 @@ namespace MyModelManager
 
         //    return result;
         //}
-        internal void ToEntitySearchableReportDTO(EntitySearchableReport entitySearchableReport, EntitySearchableReportDTO entitySearchableReportDTO, bool withDetails)
+        internal void ToEntitySearchableReportDTO(EntitySearchableReport entitySearchableReport, EntitySearchableReportDTO entitySearchableReportDTO,bool withDetails)
         {
-            bizEntityReport.ToEntityReportDTO(entitySearchableReport.EntityReport, entitySearchableReportDTO,false);
-            entitySearchableReportDTO.SearchRepositoryID = entitySearchableReport.SearchRepositoryID ?? 0;
-            if (entitySearchableReport.SearchRepository != null)
-                entitySearchableReportDTO.SearchRepository = bizSearchRepository.ToSearchRepositoryDTO(entitySearchableReport.SearchRepository);
-            entitySearchableReportDTO.SearchableReportType = (SearchableReportType)entitySearchableReport.SearchableReportType;
+            bizEntityReport.ToEntityReportDTO(entitySearchableReport.EntityReport, entitySearchableReportDTO,  withDetails);
+            //entitySearchableReportDTO.SearchRepositoryID = entitySearchableReport.SearchRepositoryID ?? 0;
+            //if (entitySearchableReport.SearchRepository != null)
+            //    entitySearchableReportDTO.SearchRepository = bizSearchRepository.ToSearchRepositoryDTO(entitySearchableReport.SearchRepository);
+            //entitySearchableReportDTO.SearchableReportType = (SearchableReportType)entitySearchableReport.SearchableReportType;
         }
 
         internal EntitySearchableReport ToNewEntitySearchableReport(EntitySearchableReportDTO message)

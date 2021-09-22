@@ -48,15 +48,30 @@ namespace MyUILibrary.DataLinkArea
         /// </summary>
         DP_DataView OtherData;
         MySearchLookup dataLinkSearchLookup;
+        I_View_Diagram Diagram;
         public DataLinkArea(DataLinkAreaInitializer initParam)
         {
             AreaInitializer = initParam;
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfDataLinkArea();
+            Diagram = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfDiagram();
+
+            List<DiagramTypes> diagramTypes = new List<DiagramTypes>();
+
+            diagramTypes.Add(new DiagramTypes() { Title = "سلسله مراتبی", DiagramType = EnumDiagramTypes.Sugiyama });
+            diagramTypes.Add(new DiagramTypes() { Title = "درخت", DiagramType = EnumDiagramTypes.TreeUndefined });
+            diagramTypes.Add(new DiagramTypes() { Title = "درخت افقی", DiagramType = EnumDiagramTypes.TreeHorizontal });
+            diagramTypes.Add(new DiagramTypes() { Title = "درخت عمودی", DiagramType = EnumDiagramTypes.TreeVertical });
+            diagramTypes.Add(new DiagramTypes() { Title = "درخت گردشی", DiagramType = EnumDiagramTypes.TreeRadial });
+            diagramTypes.Add(new DiagramTypes() { Title = "درخت Tip Over", DiagramType = EnumDiagramTypes.TreeTipOver });
+            diagramTypes.Add(new DiagramTypes() { Title = "درخت MindmapHorizontal", DiagramType = EnumDiagramTypes.MindmapHorizontal });
+            diagramTypes.Add(new DiagramTypes() { Title = "درخت MindmapVertical", DiagramType = EnumDiagramTypes.MindmapVertical });
+            Diagram.SetDiagramTypes(diagramTypes);
+            View.AddDiagramView(Diagram);
             View.DataLinkConfirmed += View_DataLinkConfirmed;
             //     View.DataLinkChanged += View_DataLinkChanged;
 
             dataLinkSearchLookup = new MySearchLookup();
-            dataLinkSearchLookup.DisplayMember = "Name";
+            dataLinkSearchLookup.DisplayMember = "ReportTitle";
             dataLinkSearchLookup.SelectedValueMember = "ID";
             dataLinkSearchLookup.SearchFilterChanged += dataLinkSearchLookup_SearchFilterChanged;
             dataLinkSearchLookup.SelectionChanged += dataLinkSearchLookup_SelectionChanged;
@@ -70,7 +85,7 @@ namespace MyUILibrary.DataLinkArea
             }
             else if (AreaInitializer.EntityID != 0)
             {
-                DataLinks = AgentUICoreMediator.GetAgentUICoreMediator.DataLinkManager.GetDataLinks(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(),AreaInitializer.EntityID);
+                DataLinks = AgentUICoreMediator.GetAgentUICoreMediator.DataLinkManager.GetDataLinks(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
                 dataLinkSearchLookup.ItemsSource = DataLinks;
                 dataLinkSearchLookup.SearchIsEnabled = false;
                 if (DataLinks.Count == 1)
@@ -99,6 +114,7 @@ namespace MyUILibrary.DataLinkArea
         }
         private void dataLinkSearchLookup_SelectionChanged(object sender, SelectionChangedArg e)
         {
+            Diagram.ClearItems();
             if (e.SelectedItem != null)
             {
                 var dataLink = e.SelectedItem as DataLinkDTO;
@@ -172,7 +188,7 @@ namespace MyUILibrary.DataLinkArea
             if (SelectedDataLink != null)
             {
                 EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
-                editEntityAreaInitializer1.EntityID = SelectedDataLink.FirstSideEntityID;
+                editEntityAreaInitializer1.EntityID = SelectedDataLink.TableDrivedEntityID;
                 editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
                 editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
                 var FirstSideEditEntityAreaResult = EditEntityAreaConstructor.GetEditEntityArea(editEntityAreaInitializer1);
@@ -206,7 +222,7 @@ namespace MyUILibrary.DataLinkArea
                 bool firstDataSetToSecond = false;
                 if (FirstData != null)
                 {
-                    if (SelectedDataLink.FirstSideEntityID == FirstData.TargetEntityID)
+                    if (SelectedDataLink.TableDrivedEntityID == FirstData.TargetEntityID)
                     {
                         FirstSideEditEntityArea.ClearData(false);
                         FirstSideEditEntityArea.ShowDataFromExternalSource(FirstData);
@@ -221,7 +237,7 @@ namespace MyUILibrary.DataLinkArea
                 }
                 if (OtherData != null)
                 {
-                    if (!firstDataSetToFirst && SelectedDataLink.FirstSideEntityID == OtherData.TargetEntityID)
+                    if (!firstDataSetToFirst && SelectedDataLink.TableDrivedEntityID == OtherData.TargetEntityID)
                     {
                         FirstSideEditEntityArea.ClearData(false);
                         FirstSideEditEntityArea.ShowDataFromExternalSource(OtherData);
@@ -245,12 +261,14 @@ namespace MyUILibrary.DataLinkArea
             OtherData = SecondSideEditEntityArea.AreaInitializer.Datas[0].DataView;
             List<DataLinkItem> dataLinkItems = new List<DataLinkItem>();
 
-            var fItems = new List<DataLinkItemGroups>();
+            var fItems = new List<DataLinkItemGroup>();
             //البته از هر دو طرف میشه به طرف دیگر رسید
             //بهتره همین طور باشه چون برای لینک سرورها کافیه سرورهای طرف اول به طرف دوم لینک داشته باشد
             //اینطوری مفهوم تر است
             foreach (var tail in SelectedDataLink.RelationshipsTails)
             {
+                //     tail.EntityRelationshipTailDataMenu
+
                 var searchDataTuple = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipTailDataManager.GetTargetSearchItemFromRelationshipTail(OtherData, tail.RelationshipTail.ReverseRelationshipTail);
                 foreach (var item in FirstData.KeyProperties)
                 {
@@ -269,7 +287,7 @@ namespace MyUILibrary.DataLinkArea
                         //البته از هر دو طرف میشه به طرف دیگر رسید
                         //بهتره همین طور باشه چون برای لینک سرورها کافیه  در تیل سرورهای طرف اول هر رابطه به طرف دوم رابطه لینک داشته باشد
                         //اینطوری مفهوم تر است
-                        fItems.Add(GetIncludedDataLinkItems(tail.RelationshipTail, FirstData, OtherData, 0));
+                        fItems.Add(GetIncludedDataLinkItems(tail.RelationshipTail, SelectedDataLink, FirstData, OtherData, 0, tail.EntityRelationshipTailDataMenu));
                     }
                 }
                 else
@@ -278,24 +296,93 @@ namespace MyUILibrary.DataLinkArea
                 }
             }
 
+            var tail1 = SelectedDataLink.RelationshipsTails.First();
+            //    tail1.EntityRelationshipTailListView.FirstSideListViewID
             var firstSidelinkItem = new MyUILibrary.DataLinkArea.DataLinkItem();
             firstSidelinkItem.DataItem = FirstData;
-            firstSidelinkItem.View = GetDataViewItem(firstSidelinkItem.DataItem);
+            firstSidelinkItem.View = GetDataViewItem(firstSidelinkItem.DataItem, SelectedDataLink.FirstSideDataMenuID);
+            firstSidelinkItem.View.IsRoot = true;
+            firstSidelinkItem.IsFixed = true;
+
 
             var secondSidelinkItem = new MyUILibrary.DataLinkArea.DataLinkItem();
             secondSidelinkItem.DataItem = OtherData;
-            secondSidelinkItem.View = GetDataViewItem(secondSidelinkItem.DataItem);
+            secondSidelinkItem.View = GetDataViewItem(secondSidelinkItem.DataItem, SelectedDataLink.SecondSideDataMenuID);
+            secondSidelinkItem.View.IsRoot = true;
+            secondSidelinkItem.IsFixed = true;
 
             foreach (var pitem in fItems)
                 foreach (var item in pitem.Items)
-                    item.View = GetDataViewItem(item.DataItem);
+                {
+                    item.View = GetDataViewItem(item.DataItem, item.DataMenuID);
+                }
 
+            //////List<DataLinkRelation> allRelations = new List<DataLinkRelation>();
+            //////List<DataLinkItem> allItems = new List<DataLinkItem>();
+            //////allItems.Add(firstSidelinkItem);
+            //////allItems.Add(secondSidelinkItem);
+            //////foreach (var pitem in fItems)
+            //////{
+            //////    allRelations.AddRange(pitem.Relations);
+            //////    allItems.AddRange(pitem.Items);
+            //////}
+            //////foreach (var item in allItems.Where(x => x.IsFixed == false && x.Level == 0))
+            //////{
+            //////    allRelations.Add(new DataLinkRelation(firstSidelinkItem, item));
+            //////}
+            //////var maxLevel = allItems.Where(x => x.IsFixed == false).Max(x => x.Level);
+            //////foreach (var item in allItems.Where(x => x.IsFixed == false && x.Level == maxLevel))
+            //////{
+            //////    allRelations.Add(new DataLinkRelation(item, secondSidelinkItem));
+            //////}
+            /////////
+            //////var result = RemoveRepeatedItems(allItems, allRelations);
             //بعدا تست شود ظاهر فرم
+            Diagram.ClearItems();
+            //////foreach (var item in result.Item1)
+            //////{
+            //////    Diagram.AddView(item.View);
+            //////}
+
+            //////foreach (var item in result.Item2)
+            //////{
+            //////    if (!result.Item1.Any(x => x == item.Item1))
+            //////    {
+
+            //////    }
+            //////    if (!result.Item1.Any(x => x == item.Item2))
+            //////    {
+
+            //////    }
+            //////    Diagram.AddRelation(item.Item1.View, item.Item2.View);
+            //////}
 
 
+            Diagram.AddView(firstSidelinkItem.View);
+            Diagram.AddView(secondSidelinkItem.View);
+            foreach (var pitem in fItems)
+            {
+                foreach (var item in pitem.Items)
+                {
+                    Diagram.AddView(item.View);
+                }
+                foreach (var item in pitem.Relations)
+                {
+                    Diagram.AddRelation(item.Item1.View, item.Item2.View);
+                }
 
+                foreach (var item in pitem.Items.Where(x => x.Level == 0))
+                {
+                    Diagram.AddRelation(firstSidelinkItem.View, item.View);
+                }
+                var maxLevel = pitem.Items.Max(x => x.Level);
+                foreach (var item in pitem.Items.Where(x => x.Level == maxLevel))
+                {
+                    Diagram.AddRelation(item.View, secondSidelinkItem.View);
+                }
+            }
 
-
+            Diagram.RefreshDiagram();
 
 
 
@@ -314,20 +401,65 @@ namespace MyUILibrary.DataLinkArea
             //        CheckDependentItems(tail, item);
             //    }
             //}
-            List<DataLinkItemViewGroups> viewGroups = new List<DataLinkItemViewGroups>();
-            //var listViewGroups = fItems.Select(x => x.Items.Select(y => y.View).ToList()).ToList();
-            //var listViewRelations = fItems.Select(x => x.Relations.Select(y => new Tuple<I_DataViewItem, I_DataViewItem>(y.Item1.View, y.Item2.View)).ToList()).ToList();
-            foreach (var pitem in fItems)
-            {
-                DataLinkItemViewGroups viewGroup = new DataLinkItemViewGroups();
-                viewGroup.Views.AddRange(pitem.Items.Select(x => x.View).ToList());
-                viewGroup.ViewRelations.AddRange(pitem.Relations.Select(x => new Tuple<I_DataViewItem, I_DataViewItem>(x.Item1.View, x.Item2.View)).ToList());
-                viewGroups.Add(viewGroup);
-            }
+            //List<DataLinkItemViewGroups> viewGroups = new List<DataLinkItemViewGroups>();
+            ////var listViewGroups = fItems.Select(x => x.Items.Select(y => y.View).ToList()).ToList();
+            ////var listViewRelations = fItems.Select(x => x.Relations.Select(y => new Tuple<I_DataViewItem, I_DataViewItem>(y.Item1.View, y.Item2.View)).ToList()).ToList();
+            //foreach (var pitem in fItems)
+            //{
+            //    DataLinkItemViewGroups viewGroup = new DataLinkItemViewGroups();
+            //    viewGroup.Views.AddRange(pitem.Items.Select(x => x.View).ToList());
+            //    viewGroup.ViewRelations.AddRange(pitem.Relations.Select(x => new Tuple<I_DataViewItem, I_DataViewItem>(x.Item1.View, x.Item2.View)).ToList());
+            //    viewGroups.Add(viewGroup);
+            //}
 
-            View.ShowDiagram(viewGroups, firstSidelinkItem.View, secondSidelinkItem.View);
+            //   View.ShowDiagram(viewGroups, firstSidelinkItem.View, secondSidelinkItem.View);
         }
 
+        //private Tuple<List<DataLinkItem>, List<DataLinkRelation>> RemoveRepeatedItems(List<DataLinkItem> items, List<DataLinkRelation> relations)
+        //{
+        //    List<DataLinkItem> allItems = new List<DataLinkItem>();
+        //    foreach (var item in items.Where(x => x.IsFixed == true))
+        //    {
+        //        allItems.Add(item);
+        //    }
+
+        //    List<DataLinkItem> bodyItems = new List<DataLinkItem>();
+        //    foreach (var item in items.Where(x => x.IsFixed == false))
+        //    {
+        //        bodyItems.Add(item);
+        //    }
+        //    List<Tuple<DataLinkItem, List<DataLinkItem>>> groupItems = new List<Tuple<DataLinkItem, List<DataLinkItem>>>();
+        //    foreach (var item in bodyItems)
+        //    {
+        //        if (!groupItems.Any(x => x.Item2.Contains(item)))
+        //        {
+
+        //            var sameOtherItems = bodyItems.Where(x => x != item && AgentHelper.DataItemsAreEqual(item.DataItem, x.DataItem));
+        //            List<DataLinkItem> removes = new List<DataLinkItem>();
+        //            foreach (var otheritem in sameOtherItems)
+        //            {
+        //                removes.Add(otheritem);
+        //            }
+        //            if (removes.Any())
+        //                groupItems.Add(new Tuple<DataLinkItem, List<DataLinkItem>>(item, removes));
+        //        }
+        //    }
+        //    foreach (var item in groupItems)
+        //    {
+        //        allItems.Add(item.Item1);
+        //        foreach (var removes in item.Item2)
+        //        {
+        //            foreach (var relation in relations)
+        //            {
+        //                if (relation.Item1 == item.Item1)
+        //                    relation.Item1 = item.Item1;
+        //                if (relation.Item2 == item.Item1)
+        //                    relation.Item2 = item.Item1;
+        //            }
+        //        }
+        //    }
+        //    return new Tuple<List<DataLinkItem>, List<DataLinkRelation>>(allItems, relations);
+        //}
         //private void CheckDependentItems(List<DataLinkItem> tail, DataLinkItem parentItem)
         //{
         //    //   return;
@@ -338,12 +470,12 @@ namespace MyUILibrary.DataLinkArea
         //    }
         //}
 
-        private I_DataViewItem GetDataViewItem(DP_DataView item)
+        private I_DataViewItem GetDataViewItem(DP_DataView item, int dataMenuID)
         {
             I_DataViewItem dataViewItem = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDataViewItem();
             //     درست شود
             dataViewItem.DataView = item;
-            dataViewItem.InfoClicked += DataViewItem_InfoClicked;
+            dataViewItem.InfoClicked += (sender, e) => DataViewItem_InfoClicked(sender, e, dataMenuID);
             //dataViewItem.Selected += DataViewItem_Selected;
             //foreach (var column in item.Properties.Take(3))
             //{
@@ -360,7 +492,7 @@ namespace MyUILibrary.DataLinkArea
         //    throw new NotImplementedException();
         //}
 
-        private void DataViewItem_InfoClicked(object sender, EventArgs e)
+        private void DataViewItem_InfoClicked(object sender, EventArgs e, int dataMenuID)
         {
             //فانکشن شود در دیتا ویو هم هست
             var dataViewItem = (sender as I_DataViewItem);
@@ -368,7 +500,7 @@ namespace MyUILibrary.DataLinkArea
             {
                 //var menus = GetDataViewItemMenus(dataViewItem);
                 //dataViewItem.ShowDataViewItemMenus(menus);
-                var menuInitializer = new DataMenuAreaInitializer(0);
+                var menuInitializer = new DataMenuAreaInitializer(dataMenuID);
                 //menuInitializer.HostDataViewArea = this;
                 //menuInitializer.HostDataViewItem = dataViewItem;
                 menuInitializer.SourceView = sender;
@@ -388,10 +520,12 @@ namespace MyUILibrary.DataLinkArea
             }
         }
 
-        private DataLinkItemGroups GetIncludedDataLinkItems(EntityRelationshipTailDTO relationshipTail, DP_DataView relationshipFirstData, DP_DataView targetData, int level, DataLinkItem parentDataLinkItem = null, DataLinkItemGroups result = null)
+        private DataLinkItemGroup GetIncludedDataLinkItems(EntityRelationshipTailDTO relationshipTail, DataLinkDTO selectedDataLink, DP_DataView relationshipFirstData, DP_DataView targetData, int level
+            , EntityRelationshipTailDataMenuDTO relationshipTailDataMenuDTO, DataLinkItem parentDataLinkItem = null, DataLinkItemGroup result = null, List<DataLinkItem> allItems = null)
         {
+
             if (result == null)
-                result = new DataLinkItemGroups();
+                result = new DataLinkItemGroup();
             if (relationshipTail != null && relationshipTail.ChildTail != null)
             {
                 RelationshipTailDataManager relationshipTailDataManager = new RelationshipTailDataManager();
@@ -412,20 +546,48 @@ namespace MyUILibrary.DataLinkArea
                 //searchRequest.EntityID = parentTail.RelationshipTargetEntityID;
                 var searchResult = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(searchRequest);
 
+                if(parentDataLinkItem!=null)
+                {
+                    parentDataLinkItem.TailPath = relationshipTail.RelationshipIDPath;
+                    if (relationshipTailDataMenuDTO != null)
+                    {
+                        if (relationshipTailDataMenuDTO.Items.Any(x => x.Path == parentDataLinkItem.TailPath))
+                        {
+                            parentDataLinkItem.DataMenuID = relationshipTailDataMenuDTO.Items.First(x => x.Path == parentDataLinkItem.TailPath).DataMenuSettingID;
+                        }
+                    }
+                }
                 if (searchResult.Result == Enum_DR_ResultType.SeccessfullyDone)
                 {
                     foreach (var item in searchResult.ResultDataItems)
                     {
-                        //درست شود
-                        DataLinkItem linkItem = new MyUILibrary.DataLinkArea.DataLinkItem();
-                        linkItem.DataItem = item;
-                        // linkItem.Level = level;
-                        //linkItem.ParentDataLinkItem = parentDataLinkItem;
-                        //  linkItem.RelationshipTail = mainTail;
-                        result.Items.Add(linkItem);
+                        DataLinkItem found = null;
+                        if (allItems == null)
+                            allItems = new List<DataLinkItem>();
+                        else
+                        {
+                            if (selectedDataLink.NotJointEntities == true)
+                            {
+                                if (allItems.Any(x => AgentHelper.DataItemsAreEqual(item, x.DataItem)))
+                                {
+                                    var fItem = allItems.First(x => AgentHelper.DataItemsAreEqual(item, x.DataItem));
+                                    found = fItem;
+                                }
+                            }
+                        }
+                        if (found == null)
+                        {
+                            found = new DataLinkItem();
+                            found.DataItem = item;
+                            found.Level = level;
+                          
+                            result.Items.Add(found);
+                            allItems.Add(found);
+                        }
                         if (parentDataLinkItem != null)
-                            result.Relations.Add(new Tuple<DataLinkItem, DataLinkItem>(parentDataLinkItem, linkItem));
-                        GetIncludedDataLinkItems(relationshipTail.ChildTail, item, targetData, level + 1, linkItem, result);
+                            result.Relations.Add(new DataLinkRelation(parentDataLinkItem, found));
+
+                        GetIncludedDataLinkItems(relationshipTail.ChildTail, selectedDataLink, item, targetData, level + 1, relationshipTailDataMenuDTO, found, result);
                     }
                 }
                 else
@@ -437,18 +599,27 @@ namespace MyUILibrary.DataLinkArea
             return result;
         }
     }
-    public class DataLinkItemGroups
+    public class DataLinkItemGroup
     {
-        public DataLinkItemGroups()
+        public DataLinkItemGroup()
         {
-            Items = new List<MyUILibrary.DataLinkArea.DataLinkItem>();
-            Relations = new List<Tuple<DataLinkItem, DataLinkItem>>();
+            Items = new List<DataLinkItem>();
+            Relations = new List<DataLinkRelation>();
         }
         public List<DataLinkItem> Items { set; get; }
-        public List<Tuple<DataLinkItem, DataLinkItem>> Relations { set; get; }
+        public List<DataLinkRelation> Relations { set; get; }
 
     }
-
+    public class DataLinkRelation
+    {
+        public DataLinkRelation(DataLinkItem item1, DataLinkItem item2)
+        {
+            Item1 = item1;
+            Item2 = item2;
+        }
+        public DataLinkItem Item1 { set; get; }
+        public DataLinkItem Item2 { set; get; }
+    }
     public class DataLinkItem
     {
         //    public EntityRelationshipTailDTO RelationshipTail { set; get; }
@@ -457,5 +628,10 @@ namespace MyUILibrary.DataLinkArea
         public DP_DataView DataItem { set; get; }
         //      public bool IsLastLevel { set; get; }
         public I_DataViewItem View { set; get; }
+        public int Level { get; internal set; }
+
+        public bool IsFixed { set; get; }
+        public string TailPath { get; internal set; }
+        public int DataMenuID { get; internal set; }
     }
 }

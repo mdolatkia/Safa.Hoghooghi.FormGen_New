@@ -17,9 +17,10 @@ namespace DataAccess
         public int ID { get; set; }
         public int DataLinkDefinitionID { get; set; }
         public int EntityRelationshipTailID { get; set; }
-        public bool FromFirstSideToSecondSide { get; set; }
+        public Nullable<int> EntityRelationshipTailDataMenuID { get; set; }
     
         public virtual DataLinkDefinition DataLinkDefinition { get; set; }
+        public virtual EntityRelationshipTailDataMenu EntityRelationshipTailDataMenu { get; set; }
         public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
     }
 }
