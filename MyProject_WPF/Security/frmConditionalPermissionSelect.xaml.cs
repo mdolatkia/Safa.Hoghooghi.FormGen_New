@@ -31,7 +31,6 @@ namespace MyProject_WPF
 
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 ShowConditionalPermissions();
-
         }
 
 
