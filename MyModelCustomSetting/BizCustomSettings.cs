@@ -2925,7 +2925,15 @@ namespace MyModelCustomSetting
 
             Relationship serviceRequestToViewServiceRequest = null;
             Relationship viewServiceRequestToServiceRequest = null;
-
+            var serviceRequestDataMenuSetting = projectContext.DataMenuSetting.FirstOrDefault(x => x.Name == "تنظیمات منوی درخواست سرویس");
+            if (serviceRequestDataMenuSetting == null)
+            {
+                serviceRequestDataMenuSetting = new DataMenuSetting();
+                serviceRequestDataMenuSetting.Name = "تنظیمات منوی درخواست سرویس";
+                serviceRequestDataMenuSetting.TableDrivedEntityID = serviceRequest.ID;
+                serviceRequestDataMenuSetting.EntityListViewID = serviceRequest.EntityListViewID.Value;
+                projectContext.DataMenuSetting.Add(serviceRequestDataMenuSetting);
+            }
             if (viewServiceRequest != null)
             {
                 serviceRequestToViewServiceRequest = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceRequest.ID && x.TableDrivedEntityID2 == viewServiceRequest.ID);
@@ -2973,7 +2981,6 @@ namespace MyModelCustomSetting
 
                     projectContext.Relationship.Add(viewServiceRequestToServiceRequest);
                 }
-
                 if (viewServiceRequest.DataMenuSetting1 == null)
                 {
                     if (viewServiceRequest.EntityListViewID != null && serviceRequest.EntityListViewID != null)
@@ -2981,11 +2988,8 @@ namespace MyModelCustomSetting
 
                         if (serviceRequest.DataMenuSetting1 == null)
                         {
-                            var serviceRequestDataMenuSetting = new DataMenuSetting();
                             serviceRequest.DataMenuSetting1 = serviceRequestDataMenuSetting;
-                            serviceRequestDataMenuSetting.Name = "تنظیمات منوی درخواست سرویس";
-                            serviceRequestDataMenuSetting.TableDrivedEntityID = serviceRequest.ID;
-                            serviceRequestDataMenuSetting.EntityListViewID = serviceRequest.EntityListViewID.Value;
+
 
                             var viewServiceRequestDataMenuSetting = new DataMenuSetting();
                             viewServiceRequest.DataMenuSetting1 = viewServiceRequestDataMenuSetting;
@@ -3401,7 +3405,46 @@ namespace MyModelCustomSetting
 
             }
 
+            var customerGraphReport = projectContext.EntityReport.FirstOrDefault(x => x.Title == "گزارش گراف مشتری" && x.TableDrivedEntityID == customer.ID);
+            if (customerGraphReport == null)
+            {
 
+                //اینجا اومد چون productItemToProduct ثبت شده باشد
+                customerGraphReport = new EntityReport();
+                customerGraphReport.Title = "گزارش گراف مشتری";
+                customerGraphReport.ReportType = (short)ReportType.DataItemReport;
+                customerGraphReport.SecurityObject = new SecurityObject();
+                customerGraphReport.SecurityObject.Type = (short)DatabaseObjectCategory.Report;
+                customerGraphReport.TableDrivedEntityID = customer.ID;
+                customerGraphReport.EntityDataItemReport = new EntityDataItemReport();
+                customerGraphReport.EntityDataItemReport.DataItemReportType = (short)DataItemReportType.GraphReport;
+                customerGraphReport.EntityDataItemReport.GraphDefinition = new GraphDefinition();
+                customerGraphReport.EntityDataItemReport.GraphDefinition.DataMenuSetting = customerDataMenuSetting;
+                var customerToSrviceRequest = customer.Relationship.First(x => x.TableDrivedEntityID2 == serviceRequest.ID);
+                var serviceRequestToConclusion = serviceRequest.Relationship.First(x => x.TableDrivedEntityID2 == serviceConclusion.ID);
+
+                var relatinshipTail = GetRelationshipTail(projectContext, customer, serviceConclusion, customerToSrviceRequest.ID + "," + serviceRequestToConclusion.ID);
+                var reportTail = new GraphDefinition_EntityRelationshipTail();
+                reportTail.EntityRelationshipTail = relatinshipTail;
+                var tailDataMenu = projectContext.EntityRelationshipTailDataMenu.FirstOrDefault(x => x.Name == "منوی گراف مشتری" && x.EntityRelationshipTailID == relatinshipTail.ID);
+                if (tailDataMenu == null)
+                {
+                    tailDataMenu = new EntityRelationshipTailDataMenu();
+                    tailDataMenu.Name = "منوی گراف مشتری";
+                    tailDataMenu.EntityRelationshipTail = relatinshipTail;
+                    if (serviceRequestDataMenuSetting != null)
+                    {
+                        EntityRelationshipTailDataMenuItems customerTailMenu = new EntityRelationshipTailDataMenuItems();
+                        customerTailMenu.Path = serviceRequestToConclusion.ID.ToString();
+                        customerTailMenu.TableDrivedEntityID = serviceRequest.ID;
+                        customerTailMenu.DataMenuSetting = serviceRequestDataMenuSetting;
+                        tailDataMenu.EntityRelationshipTailDataMenuItems.Add(customerTailMenu);
+                    }
+                }
+                reportTail.EntityRelationshipTailDataMenu = tailDataMenu;
+                customerGraphReport.EntityDataItemReport.GraphDefinition.GraphDefinition_EntityRelationshipTail.Add(reportTail);
+                projectContext.EntityReport.Add(customerGraphReport);
+            }
 
             try
             {
@@ -3664,13 +3707,22 @@ namespace MyModelCustomSetting
                     mnuCustomerDirectReport.TableDrivedEntityID = customer.ID;
                     projectContext.NavigationTree.Add(mnuCustomerDirectReport);
                 }
-
+                var mnuCustomerGraphReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش گراف مشتری" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == customerGraphReport.ID);
+                if (mnuCustomerGraphReport == null)
+                {
+                    mnuCustomerGraphReport = new NavigationTree();
+                    mnuCustomerGraphReport.ItemTitle = "گزارش گراف مشتری";
+                    mnuCustomerGraphReport.NavigationTree2 = mnuReportFolder;
+                    mnuCustomerGraphReport.Category = DatabaseObjectCategory.Report.ToString();
+                    mnuCustomerGraphReport.ItemIdentity = customerGraphReport.ID;
+                    mnuCustomerGraphReport.TableDrivedEntityID = customer.ID;
+                    projectContext.NavigationTree.Add(mnuCustomerGraphReport);
+                }
                 var regionDataLinkReport = projectContext.EntityReport.FirstOrDefault(x => x.Title == "گزارش لینک ریپورت" && x.TableDrivedEntityID == region.ID);
                 if (regionDataLinkReport == null)
                 {
                     if (brandProductType != null)
                     {
-                        inja menu ezafe beshe bad graph
                         //اینجا اومد چون productItemToProduct ثبت شده باشد
                         regionDataLinkReport = new EntityReport();
                         regionDataLinkReport.Title = "گزارش لینک ریپورت";
@@ -3692,11 +3744,42 @@ namespace MyModelCustomSetting
 
                         var relatinshipTail = GetRelationshipTail(projectContext, region, brandProductType, regionToGenericPersonAddress.ID + "," + genericPersonAddressToGenericPeron.ID + "," +
                              genericPersonToCustomer.ID + "," + customerToSrviceRequest.ID + "," + serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID);
-                        regionDataLinkReport.EntityDataItemReport.DataLinkDefinition.DataLinkDefinition_EntityRelationshipTail.Add(new DataLinkDefinition_EntityRelationshipTail() { EntityRelationshipTail = relatinshipTail });
+                        var reportTail = new DataLinkDefinition_EntityRelationshipTail();
+                        reportTail.EntityRelationshipTail = relatinshipTail;
+
+
+                        var tailDataMenu = projectContext.EntityRelationshipTailDataMenu.FirstOrDefault(x => x.Name == "منوی لینک شهر به نوع محصول/برند" && x.EntityRelationshipTailID == relatinshipTail.ID);
+                        if (tailDataMenu == null)
+                        {
+
+                            tailDataMenu = new EntityRelationshipTailDataMenu();
+                            tailDataMenu.Name = "منوی لینک شهر به نوع محصول/برند";
+                            tailDataMenu.EntityRelationshipTail = relatinshipTail;
+                            if (customerDataMenuSetting != null)
+                            {
+                                EntityRelationshipTailDataMenuItems customerTailMenu = new EntityRelationshipTailDataMenuItems();
+                                customerTailMenu.Path = customerToSrviceRequest.ID + "," + serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID;
+                                customerTailMenu.TableDrivedEntityID = customer.ID;
+                                customerTailMenu.DataMenuSetting = customerDataMenuSetting;
+                                tailDataMenu.EntityRelationshipTailDataMenuItems.Add(customerTailMenu);
+                            }
+                            if (serviceRequestDataMenuSetting != null)
+                            {
+                                EntityRelationshipTailDataMenuItems serviceRequestTailMenu = new EntityRelationshipTailDataMenuItems();
+                                serviceRequestTailMenu.Path = serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID;
+                                serviceRequestTailMenu.TableDrivedEntityID = serviceRequest.ID;
+                                serviceRequestTailMenu.DataMenuSetting = serviceRequestDataMenuSetting;
+                                tailDataMenu.EntityRelationshipTailDataMenuItems.Add(serviceRequestTailMenu);
+                            }
+                            //   tailDataMenu.EntityRelationshipTailDataMenuItems.Add();
+                        }
+                        reportTail.EntityRelationshipTailDataMenu = tailDataMenu;
+                        regionDataLinkReport.EntityDataItemReport.DataLinkDefinition.DataLinkDefinition_EntityRelationshipTail.Add(reportTail);
                         projectContext.EntityReport.Add(regionDataLinkReport);
+
                     }
                 }
-             
+
 
                 projectContext.SaveChanges();
 
@@ -3769,29 +3852,35 @@ namespace MyModelCustomSetting
                 }
                 if (serviceRequest != null && serviceRequestDataItemID != 0 && letterTypeService != null && simpleLetterTemplate != null)
                 {
-
-                    BizDataItem biz = new BizDataItem();
-                    var dataItem = biz.GetDataItem(requester, serviceRequestDataItemID, false);
-
-                    var letter = dataContext.Letter.FirstOrDefault(x => x.MyDataItemID == serviceRequestDataItemID && x.Title == "نامه تولید شده نمونه");
-                    if (letter == null)
+                    try
                     {
-                        letter = new Letter() { MyDataItemID = serviceRequestDataItemID, Title = "نامه تولید شده نمونه" };
-                        letter.CreationDate = DateTime.Now;
-                        letter.FromExternalSource = false;
-                        letter.UserID = requester.Identity;
-                        letter.LetterNumber = "099222";
-                        letter.IsGeneratedOrSelected = true;
-                        letter.LetterTypeID = letterTypeService.ID;
-                        letter.LetterDate = DateTime.Now;
-                        letter.FileRepository = new FileRepository()
-                        {
-                            Content = new LetterGenerator().GenerateLetter(simpleLetterTemplate.ID, dataItem.KeyProperties, requester),
-                            FileName = Path.GetFileName(simpleLetterTemplate.LetterTemplate.Name),
-                            FileExtention = Path.GetExtension(simpleLetterTemplate.FileExtension)
-                        };
+                        BizDataItem biz = new BizDataItem();
+                        var dataItem = biz.GetDataItem(requester, serviceRequestDataItemID, false);
 
-                        dataContext.Letter.Add(letter);
+                        var letter = dataContext.Letter.FirstOrDefault(x => x.MyDataItemID == serviceRequestDataItemID && x.Title == "نامه تولید شده نمونه");
+                        if (letter == null)
+                        {
+                            letter = new Letter() { MyDataItemID = serviceRequestDataItemID, Title = "نامه تولید شده نمونه" };
+                            letter.CreationDate = DateTime.Now;
+                            letter.FromExternalSource = false;
+                            letter.UserID = requester.Identity;
+                            letter.LetterNumber = "099222";
+                            letter.IsGeneratedOrSelected = true;
+                            letter.LetterTypeID = letterTypeService.ID;
+                            letter.LetterDate = DateTime.Now;
+                            letter.FileRepository = new FileRepository()
+                            {
+                                Content = new LetterGenerator().GenerateLetter(simpleLetterTemplate.ID, dataItem.KeyProperties, requester),
+                                FileName = Path.GetFileName(simpleLetterTemplate.LetterTemplate.Name),
+                                FileExtention = Path.GetExtension(simpleLetterTemplate.FileExtension)
+                            };
+
+                            dataContext.Letter.Add(letter);
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
 
                     }
                 }
@@ -3800,29 +3889,35 @@ namespace MyModelCustomSetting
 
                 if (serviceRequestReview != null && serviceRequestReviewDataItemID != 0 && letterTypeService != null && complexLetterTemplate != null)
                 {
-
-                    BizDataItem biz = new BizDataItem();
-                    var dataItem = biz.GetDataItem(requester, serviceRequestReviewDataItemID, false);
-
-                    var letter = dataContext.Letter.FirstOrDefault(x => x.MyDataItemID == serviceRequestReviewDataItemID && x.Title == "نامه تولید شده پیچیده");
-                    if (letter == null)
+                    try
                     {
-                        letter = new Letter() { MyDataItemID = serviceRequestReviewDataItemID, Title = "نامه تولید شده پیچیده" };
-                        letter.CreationDate = DateTime.Now;
-                        letter.FromExternalSource = false;
-                        letter.UserID = requester.Identity;
-                        letter.LetterNumber = "099282";
-                        letter.IsGeneratedOrSelected = true;
-                        letter.LetterTypeID = letterTypeService.ID;
-                        letter.LetterDate = DateTime.Now;
-                        letter.FileRepository = new FileRepository()
-                        {
-                            Content = new LetterGenerator().GenerateLetter(complexLetterTemplate.ID, dataItem.KeyProperties, requester),
-                            FileName = Path.GetFileName(complexLetterTemplate.LetterTemplate.Name),
-                            FileExtention = Path.GetExtension(complexLetterTemplate.FileExtension)
-                        };
+                        BizDataItem biz = new BizDataItem();
+                        var dataItem = biz.GetDataItem(requester, serviceRequestReviewDataItemID, false);
 
-                        dataContext.Letter.Add(letter);
+                        var letter = dataContext.Letter.FirstOrDefault(x => x.MyDataItemID == serviceRequestReviewDataItemID && x.Title == "نامه تولید شده پیچیده");
+                        if (letter == null)
+                        {
+                            letter = new Letter() { MyDataItemID = serviceRequestReviewDataItemID, Title = "نامه تولید شده پیچیده" };
+                            letter.CreationDate = DateTime.Now;
+                            letter.FromExternalSource = false;
+                            letter.UserID = requester.Identity;
+                            letter.LetterNumber = "099282";
+                            letter.IsGeneratedOrSelected = true;
+                            letter.LetterTypeID = letterTypeService.ID;
+                            letter.LetterDate = DateTime.Now;
+                            letter.FileRepository = new FileRepository()
+                            {
+                                Content = new LetterGenerator().GenerateLetter(complexLetterTemplate.ID, dataItem.KeyProperties, requester),
+                                FileName = Path.GetFileName(complexLetterTemplate.LetterTemplate.Name),
+                                FileExtention = Path.GetExtension(complexLetterTemplate.FileExtension)
+                            };
+
+                            dataContext.Letter.Add(letter);
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
 
                     }
                 }

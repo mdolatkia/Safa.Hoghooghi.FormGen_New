@@ -26,6 +26,7 @@ namespace DataAccess
         public string Name { get; set; }
     
         public virtual ICollection<DataLinkDefinition_EntityRelationshipTail> DataLinkDefinition_EntityRelationshipTail { get; set; }
+        public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
         public virtual ICollection<EntityRelationshipTailDataMenuItems> EntityRelationshipTailDataMenuItems { get; set; }
         public virtual ICollection<GraphDefinition_EntityRelationshipTail> GraphDefinition_EntityRelationshipTail { get; set; }
     }
