@@ -388,9 +388,6 @@
     <Compile Include="Report\frmSearchRepository.xaml.cs">
       <DependentUpon>frmSearchRepository.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Security\frmConditionalPermissionSelect.xaml.cs">
-      <DependentUpon>frmConditionalPermissionSelect.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Security\frmEntitySecurityDirect.xaml.cs">
       <DependentUpon>frmEntitySecurityDirect.xaml</DependentUpon>
     </Compile>
@@ -983,10 +980,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Report\frmExternalReport.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Security\frmConditionalPermissionSelect.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
