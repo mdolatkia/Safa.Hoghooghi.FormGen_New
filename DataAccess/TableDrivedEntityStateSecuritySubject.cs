@@ -12,12 +12,14 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class ConditionalPermission_Action
+    public partial class TableDrivedEntityStateSecuritySubject
     {
         public int ID { get; set; }
-        public int ConditionalPermissionID { get; set; }
-        public string Action { get; set; }
+        public int TableDrivedEntityStateID { get; set; }
+        public int SecuritySubjectID { get; set; }
+        public short SecuritySubjectOperator { get; set; }
     
-        public virtual ConditionalPermission ConditionalPermission { get; set; }
+        public virtual TableDrivedEntityState TableDrivedEntityState { get; set; }
+        public virtual SecuritySubject SecuritySubject { get; set; }
     }
 }

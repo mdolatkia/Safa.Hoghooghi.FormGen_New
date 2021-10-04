@@ -51,7 +51,7 @@ namespace MyUILibrary.EntityArea
             if (searchDataItem != null)
             {
                 // DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem, targetEditEntityArea.AreaInitializer.SecurityReadOnly, true);
-                DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem, true, true);
+                DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem);
                 var childFullData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(request).ResultDataItems;
                 var countRequest = new DR_SearchCountRequest(requester);
                 countRequest.SearchDataItems = searchDataItem;
@@ -182,7 +182,7 @@ namespace MyUILibrary.EntityArea
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
 
             // var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem, editEntityArea.AreaInitializer.SecurityReadOnly, false);
-            var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem, true, false);
+            var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem);
             var foundItem = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
             if (foundItem.Any())
             {
@@ -220,7 +220,7 @@ namespace MyUILibrary.EntityArea
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
 
             //   var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem, editEntityArea.AreaInitializer.SecurityReadOnly, true);
-            var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem, true, true);
+            var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem);
             var foundItem = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
             if (foundItem.Any())
             {
@@ -304,7 +304,7 @@ namespace MyUILibrary.EntityArea
             }
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
             // var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem, editEntityArea.AreaInitializer.SecurityReadOnly, false);
-            var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem, true, false);
+            var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem);
             var res = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
             if (res.Any())
             {

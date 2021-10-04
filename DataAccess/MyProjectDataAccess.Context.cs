@@ -137,6 +137,7 @@ namespace DataAccess
         public virtual DbSet<TableDrivedEntity_Columns> TableDrivedEntity_Columns { get; set; }
         public virtual DbSet<TableDrivedEntity_EntityCommand> TableDrivedEntity_EntityCommand { get; set; }
         public virtual DbSet<TableDrivedEntityState> TableDrivedEntityState { get; set; }
+        public virtual DbSet<TableDrivedEntityStateSecuritySubject> TableDrivedEntityStateSecuritySubject { get; set; }
         public virtual DbSet<TableDrivedEntityStateValues> TableDrivedEntityStateValues { get; set; }
         public virtual DbSet<TabPageUISetting> TabPageUISetting { get; set; }
         public virtual DbSet<TimeColumnType> TimeColumnType { get; set; }
@@ -147,10 +148,9 @@ namespace DataAccess
         public virtual DbSet<UnionRelationshipType> UnionRelationshipType { get; set; }
         public virtual DbSet<UnionToSubUnionRelationshipType> UnionToSubUnionRelationshipType { get; set; }
         public virtual DbSet<UniqueConstraint> UniqueConstraint { get; set; }
-        public virtual DbSet<ConditionalPermission> ConditionalPermission { get; set; }
-        public virtual DbSet<ConditionalPermission_Action> ConditionalPermission_Action { get; set; }
-        public virtual DbSet<EntitySecurityCondition> EntitySecurityCondition { get; set; }
+        public virtual DbSet<EntitySecurityCondition_Old> EntitySecurityCondition_Old { get; set; }
         public virtual DbSet<EntitySecurityDirect> EntitySecurityDirect { get; set; }
+        public virtual DbSet<EntitySecurityDirectStates> EntitySecurityDirectStates { get; set; }
         public virtual DbSet<EntitySecurityInDirect> EntitySecurityInDirect { get; set; }
         public virtual DbSet<Organization> Organization { get; set; }
         public virtual DbSet<OrganizationPost> OrganizationPost { get; set; }

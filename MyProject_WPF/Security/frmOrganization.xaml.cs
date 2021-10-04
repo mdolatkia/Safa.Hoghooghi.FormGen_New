@@ -145,6 +145,7 @@ namespace MyProject_WPF
             BizOrganization bizOrganization = new BizOrganization();
             if (Organization == null) Organization = new OrganizationDTO();
             Organization.Name = txtOrganizationName.Text;
+            Organization.ExternalKey = txtExternalKey.Text;
             Organization.OrganizationTypeID = (int)lokOrganizationType.SelectedValue;
             bizOrganization.SaveOrganization(Organization);
             MessageBox.Show("اطلاعات ثبت شد");
@@ -157,6 +158,7 @@ namespace MyProject_WPF
             txtOrganizationName.Text = Organization.Name;
             lokOrganizationType.SelectedValue = Organization.OrganizationTypeID;
             dtgPosts.ItemsSource = Organization.OrganizationPosts;
+            txtExternalKey.Text = Organization.ExternalKey;
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)

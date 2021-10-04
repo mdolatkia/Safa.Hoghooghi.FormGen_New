@@ -30,6 +30,8 @@
                 <telerik:RadGridView.Columns>
                     <telerik:GridViewDataColumn Header="نوع نقش" DataMemberBinding="{Binding Path=Name}"></telerik:GridViewDataColumn>
                     <telerik:GridViewDataColumn Header="سوپر ادمین" DataMemberBinding="{Binding Path=IsSuperAdmin}"></telerik:GridViewDataColumn>
+                    <telerik:GridViewDataColumn Header="کلید خارجی" DataMemberBinding="{Binding Path=ExternalKey}"></telerik:GridViewDataColumn>
+
                 </telerik:RadGridView.Columns>
             </telerik:RadGridView>
         </Grid>

@@ -45,7 +45,6 @@ namespace DataAccess
             this.Process = new HashSet<Process>();
             this.TableDrivedEntity_EntityCommand = new HashSet<TableDrivedEntity_EntityCommand>();
             this.UIActionActivity = new HashSet<UIActionActivity>();
-            this.ConditionalPermission = new HashSet<ConditionalPermission>();
             this.EntitySecurityInDirect = new HashSet<EntitySecurityInDirect>();
             this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
             this.TableDrivedEntity_Columns = new HashSet<TableDrivedEntity_Columns>();
@@ -115,7 +114,6 @@ namespace DataAccess
         public virtual ICollection<Process> Process { get; set; }
         public virtual ICollection<TableDrivedEntity_EntityCommand> TableDrivedEntity_EntityCommand { get; set; }
         public virtual ICollection<UIActionActivity> UIActionActivity { get; set; }
-        public virtual ICollection<ConditionalPermission> ConditionalPermission { get; set; }
         public virtual ICollection<EntitySecurityInDirect> EntitySecurityInDirect { get; set; }
         public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
         public virtual SecurityObject SecurityObject { get; set; }

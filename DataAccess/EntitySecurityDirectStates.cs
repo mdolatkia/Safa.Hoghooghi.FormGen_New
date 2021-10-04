@@ -12,20 +12,13 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class Organization
+    public partial class EntitySecurityDirectStates
     {
-        public Organization()
-        {
-            this.OrganizationPost = new HashSet<OrganizationPost>();
-        }
-    
         public int ID { get; set; }
-        public string Name { get; set; }
-        public int OrganizationTypeID { get; set; }
-        public string ExternalKey { get; set; }
+        public int EntitySecurityDirectID { get; set; }
+        public int TableDrivedEntityStateID { get; set; }
     
-        public virtual OrganizationType OrganizationType { get; set; }
-        public virtual ICollection<OrganizationPost> OrganizationPost { get; set; }
-        public virtual SecuritySubject SecuritySubject { get; set; }
+        public virtual TableDrivedEntityState TableDrivedEntityState { get; set; }
+        public virtual EntitySecurityDirect EntitySecurityDirect { get; set; }
     }
 }

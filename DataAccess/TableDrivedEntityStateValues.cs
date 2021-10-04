@@ -17,6 +17,7 @@ namespace DataAccess
         public int ID { get; set; }
         public string Value { get; set; }
         public int TableDrivedEntityStateID { get; set; }
+        public Nullable<short> ReservedValue { get; set; }
     
         public virtual TableDrivedEntityState TableDrivedEntityState { get; set; }
     }

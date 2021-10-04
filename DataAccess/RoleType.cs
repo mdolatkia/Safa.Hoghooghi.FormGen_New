@@ -24,6 +24,7 @@ namespace DataAccess
         public int ID { get; set; }
         public string Name { get; set; }
         public Nullable<bool> IsSuperAdmin { get; set; }
+        public string ExternalKey { get; set; }
     
         public virtual ICollection<OrganizationType_RoleType> OrganizationType_RoleType { get; set; }
         public virtual ICollection<TransitionActionTarget> TransitionActionTarget { get; set; }

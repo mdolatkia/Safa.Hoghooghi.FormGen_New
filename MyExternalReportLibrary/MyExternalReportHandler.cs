@@ -18,7 +18,7 @@ namespace MyExternalReportLibrary
             BizEntityExternalReport bizEntityExternalReport = new BizEntityExternalReport();
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
             SearchRequestManager searchRequestManager = new SearchRequestManager();
-            var query = searchRequestManager.GetSelectFromExternal(requester, entityID, searchItem, true, ModelEntites.SecurityMode.View);
+            var query = searchRequestManager.GetSelectFromExternal(requester, entityID, searchItem, true);
             var entity = bizTableDrivedEntity.GetSimpleEntity(requester, entityID);
 
             if (query != null)

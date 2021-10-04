@@ -103,8 +103,8 @@ namespace MyUILibrary.EntityArea
                         var state = new EntityStateDTO();
                         state.ID = -1 * superToSubRel.ID;
                         state.ColumnID = superToSubRel.SuperEntityDeterminerColumn.ID;
-                        foreach(var val in superToSubRel.DeterminerColumnValues)
-                        state.Values.Add(new EntityStateValueDTO() { Value = val.Value});
+                        foreach (var val in superToSubRel.DeterminerColumnValues)
+                            state.Values.Add(new EntityStateValueDTO() { Value = val.Value });
                         state.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
                         var actionActivity = new UIActionActivityDTO();
                         actionActivity.ID = -1 * superToSubRel.ID;
@@ -604,7 +604,12 @@ namespace MyUILibrary.EntityArea
 
                                                 }
                                                 else
-                                                    dataItem.IsReadonlyBecauseOfCreatorRelationshipOnShow = true;
+                                                {
+                                                    //اینجا اگر ID صفر باشد یعنی بصورت موقت و برای ارث بری مثلا وضعیت ایجاد شده
+                                                    //بهتر شود یعنی یک خصوصیت مخصوص ایجاد شود. کلا این قسمت باید مستند شود
+                                                    if (detail.ID != 0)
+                                                        dataItem.IsReadonlyBecauseOfCreatorRelationshipOnShow = true;
+                                                }
                                             }
                                             EditArea.ChangeDataItemVisiblityFromState(dataItem, "غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck);
                                         }
@@ -637,7 +642,10 @@ namespace MyUILibrary.EntityArea
 
                                                 }
                                                 else
-                                                    dataItem.IsReadonlyBecauseOfCreatorRelationshipOnShow = true;
+                                                {
+                                                    if (detail.ID != 0)
+                                                        dataItem.IsReadonlyBecauseOfCreatorRelationshipOnShow = true;
+                                                }
                                             }
                                             EditArea.ChangeDataItemReadonlyFromState(dataItem, "فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck);
                                         }

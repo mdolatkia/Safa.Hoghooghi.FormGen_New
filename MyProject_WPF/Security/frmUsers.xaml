@@ -17,7 +17,7 @@
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
-
+                <RowDefinition Height="auto"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
@@ -35,6 +35,8 @@
             <TextBox x:Name="txtLastName" Grid.Row="1"   Grid.Column="3" ></TextBox>
             <TextBlock Grid.Column="0" Grid.Row="2"   Text="پست الکترونیک"></TextBlock>
             <TextBox FlowDirection="LeftToRight" x:Name="txtEmail" Grid.Row="2" Grid.ColumnSpan="3"  Grid.Column="1" ></TextBox>
+            <TextBlock Grid.Column="0" Grid.Row="3" Text="کلید خارجی"></TextBlock>
+            <TextBox x:Name="txtExternalKey" Grid.Row="3"   Grid.Column="1" ></TextBox>
         </Grid>
 
         <StackPanel  Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">

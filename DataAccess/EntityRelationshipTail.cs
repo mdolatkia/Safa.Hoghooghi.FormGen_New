@@ -31,7 +31,6 @@ namespace DataAccess
             this.TableDrivedEntityState = new HashSet<TableDrivedEntityState>();
             this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
             this.EntitySecurityInDirect = new HashSet<EntitySecurityInDirect>();
-            this.EntitySecurityCondition = new HashSet<EntitySecurityCondition>();
             this.RelationshipSearchFilter = new HashSet<RelationshipSearchFilter>();
         }
     
@@ -57,7 +56,6 @@ namespace DataAccess
         public virtual TableDrivedEntity TableDrivedEntity1 { get; set; }
         public virtual ICollection<EntitySearchColumns> EntitySearchColumns { get; set; }
         public virtual ICollection<EntitySecurityInDirect> EntitySecurityInDirect { get; set; }
-        public virtual ICollection<EntitySecurityCondition> EntitySecurityCondition { get; set; }
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter { get; set; }
     }
 }

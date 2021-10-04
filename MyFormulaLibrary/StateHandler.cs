@@ -50,7 +50,7 @@ namespace MyFormulaFunctionStateFunctionLibrary
             {
                 DataitemRelatedColumnValueHandler dataitemRelatedColumnValueHandler = new MyFormulaFunctionStateFunctionLibrary.DataitemRelatedColumnValueHandler();
                 var value = dataitemRelatedColumnValueHandler.GetValueSomeHow(requester, mainDataItem, state.RelationshipTail, state.ColumnID);
-                if(value ==null)
+                if (value == null)
                 {
                     value = "<Null>";
                 }
@@ -71,6 +71,31 @@ namespace MyFormulaFunctionStateFunctionLibrary
                     result.Result = state.Values.Any(x => x.Value.ToLower().Equals(value.Result.ToString().ToLower()));
                 else
                     result.Result = !state.Values.Any(x => x.Value.ToLower().Equals(value.Result.ToString().ToLower()));
+            }
+            if (result.Result)
+            {
+                if (state.SecuritySubjects.Any())
+                {
+                    bool hasNotAllSubject = true;
+                    foreach (var subject in state.SecuritySubjects)
+                    {
+                        bool hasSubject = false;
+                        foreach (var post in requester.Posts)
+                        {
+                            if (post.CurrentUserID == subject.SecuritySubjectID
+                                || post.ID == subject.SecuritySubjectID
+                                 || post.OrganizationID == subject.SecuritySubjectID
+                                  || post.OrganizationTypeID == subject.SecuritySubjectID
+                                   || post.OrganizationTypeRoleTypeID == subject.SecuritySubjectID
+                                    || post.RoleTypeID == subject.SecuritySubjectID
+                                    )
+                                hasSubject = true;
+                        }
+                        if (hasSubject)
+                            hasNotAllSubject = false;
+                    }
+                    result.Result = hasNotAllSubject;
+                }
             }
             return result;
 

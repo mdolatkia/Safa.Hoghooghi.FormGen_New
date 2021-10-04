@@ -22,6 +22,7 @@ namespace DataAccess
     
         public int ID { get; set; }
         public string Name { get; set; }
+        public string ExternalKey { get; set; }
     
         public virtual ICollection<Organization> Organization { get; set; }
         public virtual ICollection<OrganizationType_RoleType> OrganizationType_RoleType { get; set; }

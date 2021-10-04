@@ -16,17 +16,18 @@ namespace DataAccess
     {
         public EntitySecurityDirect()
         {
-            this.EntitySecurityCondition = new HashSet<EntitySecurityCondition>();
+            this.EntitySecurityCondition_Old = new HashSet<EntitySecurityCondition_Old>();
+            this.EntitySecurityDirectStates = new HashSet<EntitySecurityDirectStates>();
         }
     
         public int ID { get; set; }
         public int TableDrivedEntityID { get; set; }
         public Nullable<int> SecuritySubjectID { get; set; }
-        public short Mode { get; set; }
         public bool IgnoreSecurity { get; set; }
     
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        public virtual ICollection<EntitySecurityCondition> EntitySecurityCondition { get; set; }
+        public virtual ICollection<EntitySecurityCondition_Old> EntitySecurityCondition_Old { get; set; }
+        public virtual ICollection<EntitySecurityDirectStates> EntitySecurityDirectStates { get; set; }
         public virtual SecuritySubject SecuritySubject { get; set; }
     }
 }

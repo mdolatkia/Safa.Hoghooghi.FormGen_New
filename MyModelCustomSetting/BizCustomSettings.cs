@@ -4016,7 +4016,7 @@ namespace MyModelCustomSetting
                 DR_SearchViewRequest item = new DR_SearchViewRequest(requester,
                      new DP_SearchRepository() { TargetEntityID = entity.ID });
                 item.MaxDataItems = 1;
-                item.SecurityMode = SecurityMode.View;
+               // item.SecurityMode = SecurityMode.View;
 
                 var res = searchRequestManager.Process(item);
                 if (res != null && res.ResultDataItems.Any())

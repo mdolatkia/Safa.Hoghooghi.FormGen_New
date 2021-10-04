@@ -18,7 +18,7 @@ namespace DataAccess
         {
             this.DatabaseFunctionParameter = new HashSet<DatabaseFunctionParameter>();
             this.DatabaseFunction_TableDrivedEntity = new HashSet<DatabaseFunction_TableDrivedEntity>();
-            this.EntitySecurityCondition = new HashSet<EntitySecurityCondition>();
+            this.EntitySecurityCondition_Old = new HashSet<EntitySecurityCondition_Old>();
         }
     
         public int ID { get; set; }
@@ -31,6 +31,6 @@ namespace DataAccess
         public virtual ICollection<DatabaseFunctionParameter> DatabaseFunctionParameter { get; set; }
         public virtual ICollection<DatabaseFunction_TableDrivedEntity> DatabaseFunction_TableDrivedEntity { get; set; }
         public virtual DBSchema DBSchema { get; set; }
-        public virtual ICollection<EntitySecurityCondition> EntitySecurityCondition { get; set; }
+        public virtual ICollection<EntitySecurityCondition_Old> EntitySecurityCondition_Old { get; set; }
     }
 }

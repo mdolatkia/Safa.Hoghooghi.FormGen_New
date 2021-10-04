@@ -757,11 +757,11 @@ namespace MyModelManager
 
         //}
 
-        public bool EntityHasSecurity(int entityID, SecurityMode securityMode)
+        public bool EntityHasSecurity(int entityID)
         {
             using (var context = new MyProjectEntities())
             {
-                var disrectSecurities = context.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID && x.Mode == (short)securityMode);
+                var disrectSecurities = context.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID);//&& x.Mode == (short)securityMode);
                 if (disrectSecurities.Any())
                 {
                     return true;
@@ -774,7 +774,7 @@ namespace MyModelManager
                     else
                     {
                         var targetEntity = indisrectSecurity.EntityRelationshipTail.TableDrivedEntity;
-                        return targetEntity.EntitySecurityDirect.Any(x => x.Mode == (short)securityMode);
+                        return targetEntity.EntitySecurityDirect.Any();// x => x.Mode == (short)securityMode);
                     }
                 }
             }

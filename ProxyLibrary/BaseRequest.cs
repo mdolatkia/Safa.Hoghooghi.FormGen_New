@@ -16,7 +16,7 @@ namespace ProxyLibrary
             //RequestExecutionTime = new List<DR_RequestExecutionTime>();
         }
 
-        public SecurityMode SecurityMode { set; get; }
+    //    public SecurityMode SecurityMode { set; get; }
         public Guid Identity;
 
 

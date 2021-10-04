@@ -28,7 +28,7 @@ namespace MyProject_WPF
         BizColumn bizColumn = new BizColumn();
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         BizDatabaseFunction bizDatabaseFunction = new BizDatabaseFunction();
-        BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
+        BizEntityState bizEntityState = new BizEntityState();
         EntitySecurityDirectDTO Message;
         BizSecuritySubject bizSecuritySubject = new BizSecuritySubject();
         BizRoleSecurity bizRoleSecurity = new BizRoleSecurity();
@@ -44,14 +44,14 @@ namespace MyProject_WPF
             SetEntites();
             SetSecuritySubjects();
             //  SetAndOrType();
-            SetDatabaseFunctions();
-            SetOperators();
-            SetReservedValues();
+            //     SetDatabaseFunctions();
+            //  SetOperators();
+            //  SetReservedValues();
             SetMode();
-            dtgConditions.RowLoaded += DtgConditions_RowLoaded;
-            dtgConditions.CellEditEnded += DtgConditions_CellEditEnded;
-            colRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
-            ControlHelper.GenerateContextMenu(dtgConditions);
+            //   dtgConditions.RowLoaded += DtgConditions_RowLoaded;
+            //   dtgConditions.CellEditEnded += DtgConditions_CellEditEnded;
+            colEntityState.EditItemClicked += colEntityState_EditItemClicked;
+            ControlHelper.GenerateContextMenu(dtgStates);
             ShowMessage();
         }
 
@@ -60,21 +60,25 @@ namespace MyProject_WPF
             cmbMode.ItemsSource = Enum.GetValues(typeof(SecurityMode));
         }
 
-        private void ColRelationshipTail_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
+        private void colEntityState_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
         {
+            int id = 0;
+            if ((sender as MyStaticLookup).SelectedItem != null)
+            {
+                var item = (sender as MyStaticLookup).SelectedItem as EntityStateDTO;
+                id = item.ID;
+            }
 
-            frmEntityRelationshipTail frm = null;
+            frmEntityStates frm = new frmEntityStates((int)lokEntities.SelectedValue, id);
+            frm.ItemSaved += (sender1, e1) => Frm_TailSelected(sender1, e1, (sender as MyStaticLookup));
+            MyProjectManager.GetMyProjectManager.ShowDialog(frm, "وضعیتها");
 
-            frm = new frmEntityRelationshipTail((int)lokEntities.SelectedValue);
-
-            MyProjectManager.GetMyProjectManager.ShowDialog(frm, "رابطه های مرتبط");
-            frm.ItemSelected += (sender1, e1) => Frm_TailSelected(sender1, e1, (sender as MyStaticLookup));
         }
 
-        private void Frm_TailSelected(object sender1, EntityRelationshipTailSelectedArg e1, MyStaticLookup myStaticLookup)
+        private void Frm_TailSelected(object sender1, SavedItemArg e1, MyStaticLookup myStaticLookup)
         {
-            SetRelationshipTails();
-            myStaticLookup.SelectedValue = e1.EntityRelationshipTailID;
+            SetEnityStates();
+            myStaticLookup.SelectedValue = e1.ID;
         }
 
         private void SetEntites()
@@ -87,7 +91,7 @@ namespace MyProject_WPF
 
         private void LokEntities_SelectionChanged(object sender, MyCommonWPFControls.SelectionChangedArg e)
         {
-            SetRelationshipTails();
+            SetEnityStates();
         }
 
         private void LokEntities_SearchFilterChanged(object sender, MyCommonWPFControls.SearchFilterArg e)
@@ -114,69 +118,69 @@ namespace MyProject_WPF
             }
         }
 
-        private void SetReservedValues()
-        {
-            colReservedValue.ItemsSource = Enum.GetValues(typeof(SecurityReservedValue));
-        }
+        //private void SetReservedValues()
+        //{
+        //    colReservedValue.ItemsSource = Enum.GetValues(typeof(SecurityReservedValue));
+        //}
 
-        private void DtgConditions_CellEditEnded(object sender, Telerik.Windows.Controls.GridViewCellEditEndedEventArgs e)
-        {
-            if (e.Cell.Column == colRelationshipTail)
-            {
-                if (e.Cell.DataContext is EntitySecurityConditionDTO)
-                {
-                    var condition = (e.Cell.DataContext as EntitySecurityConditionDTO);
-                    SetConditionColumns(condition);
-                }
-            }
-        }
+        //private void DtgConditions_CellEditEnded(object sender, Telerik.Windows.Controls.GridViewCellEditEndedEventArgs e)
+        //{
+        //    if (e.Cell.Column == colRelationshipTail)
+        //    {
+        //        if (e.Cell.DataContext is EntitySecurityConditionDTO)
+        //        {
+        //            var condition = (e.Cell.DataContext as EntitySecurityConditionDTO);
+        //            SetConditionColumns(condition);
+        //        }
+        //    }
+        //}
 
-        private void DtgConditions_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
-        {
-            if (e.DataElement is EntitySecurityConditionDTO)
-            {
-                var condition = (e.DataElement as EntitySecurityConditionDTO);
-                SetConditionColumns(condition);
-            }
-        }
+        //private void DtgConditions_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
+        //{
+        //    if (e.DataElement is EntitySecurityConditionDTO)
+        //    {
+        //        var condition = (e.DataElement as EntitySecurityConditionDTO);
+        //        SetConditionColumns(condition);
+        //    }
+        //}
 
-        private void SetConditionColumns(EntitySecurityConditionDTO condition)
-        {
-            colColumns.DisplayMemberPath = "Name";
-            colColumns.SelectedValueMemberPath = "ID";
-            BizTableDrivedEntity biz = new BizTableDrivedEntity();
+        //private void SetConditionColumns(EntitySecurityConditionDTO condition)
+        //{
+        //    colColumns.DisplayMemberPath = "Name";
+        //    colColumns.SelectedValueMemberPath = "ID";
+        //    BizTableDrivedEntity biz = new BizTableDrivedEntity();
 
-            if (condition.RelationshipTailID == 0)
-            {
-                if (lokEntities.SelectedItem != null)
-                {
-                    var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
-                    condition.Columns = entity.Columns; ;
-                }
-                else
-                    condition.Columns = new List<ColumnDTO>();
-            }
-            else
-            {
-                var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), condition.RelationshipTailID);
-                var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), relationshipTail.TargetEntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
-                condition.Columns = entity.Columns;
-            }
-        }
+        //    if (condition.RelationshipTailID == 0)
+        //    {
+        //        if (lokEntities.SelectedItem != null)
+        //        {
+        //            var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
+        //            condition.Columns = entity.Columns; ;
+        //        }
+        //        else
+        //            condition.Columns = new List<ColumnDTO>();
+        //    }
+        //    else
+        //    {
+        //        var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), condition.RelationshipTailID);
+        //        var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), relationshipTail.TargetEntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
+        //        condition.Columns = entity.Columns;
+        //    }
+        //}
 
-        private void SetRelationshipTails()
+        private void SetEnityStates()
         {
             if (lokEntities.SelectedItem != null)
             {
-                var tails = bizEntityRelationshipTail.GetEntityRelationshipTails(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue);
-                colRelationshipTail.DisplayMemberPath = "EntityPath";
-                colRelationshipTail.SelectedValueMemberPath = "ID";
-                colRelationshipTail.ItemsSource = tails;
+                var entityStates = bizEntityState.GetEntityStates(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue, false);
 
+                colEntityState.DisplayMemberPath = "Title";
+                colEntityState.SelectedValueMemberPath = "ID";
+                colEntityState.ItemsSource = entityStates.Where(x => x.ColumnID != 0).ToList();
             }
             else
             {
-                colRelationshipTail.ItemsSource = null;
+                colEntityState.ItemsSource = null;
             }
         }
 
@@ -187,21 +191,21 @@ namespace MyProject_WPF
 
         private void GetEntitySecurityDirect(DR_Requester requester, int id)
         {
-            Message = bizRoleSecurity.GetEntitySecurityDirect( requester, id, true);
+            Message = bizRoleSecurity.GetEntitySecurityDirect(requester, id, true);
             ShowMessage();
         }
-        private void SetOperators()
-        {
-            colOperator.ItemsSource = Enum.GetValues(typeof(EntitySecurityOperator));
-        }
+        //private void SetOperators()
+        //{
+        //    colOperator.ItemsSource = Enum.GetValues(typeof(EntitySecurityOperator));
+        //}
 
 
-        private void SetDatabaseFunctions()
-        {
-            colDatabaseFunction.DisplayMemberPath = "Name";
-            colDatabaseFunction.SelectedValueMemberPath = "ID";
-            colDatabaseFunction.ItemsSource = bizDatabaseFunction.GetDatabaseFunctions(MyProjectManager.GetMyProjectManager.GetRequester(), Enum_DatabaseFunctionType.None);
-        }
+        //private void SetDatabaseFunctions()
+        //{
+        //    colDatabaseFunction.DisplayMemberPath = "Name";
+        //    colDatabaseFunction.SelectedValueMemberPath = "ID";
+        //    colDatabaseFunction.ItemsSource = bizDatabaseFunction.GetDatabaseFunctions(MyProjectManager.GetMyProjectManager.GetRequester(), Enum_DatabaseFunctionType.None);
+        //}
 
 
         private void SetSecuritySubjects()
@@ -271,7 +275,7 @@ namespace MyProject_WPF
         {
             lokSubject.SelectedValue = Message.SecuritySubjectID;
             //cmbAndOR.SelectedItem = Message.ConditionAndORType;
-            dtgConditions.ItemsSource = Message.Conditions;
+            dtgStates.ItemsSource = Message.EntityStates;
             lokEntities.SelectedValue = Message.TableDrivedEntityID;
             cmbMode.SelectedItem = Message.Mode;
             chkIgnoreSecurity.IsChecked = Message.IgnoreSecurity;

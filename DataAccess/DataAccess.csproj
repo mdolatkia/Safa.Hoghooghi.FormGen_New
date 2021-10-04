@@ -157,12 +157,6 @@
     <Compile Include="ColumnValue_ValidValues.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="ConditionalPermission.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ConditionalPermission_Action.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Include="CrosstabReportColumns.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
@@ -316,10 +310,13 @@
     <Compile Include="EntitySearchColumns.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="EntitySecurityCondition.cs">
+    <Compile Include="EntitySecurityCondition_Old.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="EntitySecurityDirect.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntitySecurityDirectStates.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="EntitySecurityInDirect.cs">
@@ -564,6 +561,9 @@
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="TableDrivedEntityState.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TableDrivedEntityStateSecuritySubject.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="TableDrivedEntityStateValues.cs">

@@ -136,6 +136,7 @@ namespace MyModelManager
             result.LastName = item.LastName;
             result.Password = item.Password;
             result.Email = item.Email;
+            result.ExternalKey = item.ExternalKey;
             return result;
         }
 
@@ -183,7 +184,7 @@ namespace MyModelManager
             dbUser.UserName = userDto.UserName;
             dbUser.Password = userDto.Password;
             dbUser.Email = userDto.Email;
-
+            dbUser.ExternalKey = userDto.ExternalKey;
             return dbUser;
         }
 

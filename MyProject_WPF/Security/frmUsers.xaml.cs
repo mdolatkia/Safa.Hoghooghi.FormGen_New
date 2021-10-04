@@ -51,6 +51,7 @@ namespace MyProject_WPF
             User.FirstName = txtFirstName.Text;
             User.LastName = txtLastName.Text;
             User.Email = txtEmail.Text;
+            User.ExternalKey = txtExternalKey.Text;
             var id = bizUser.SaveUser(User);
             User.ID = id;
             MessageBox.Show("کاربر ثبت شد");
@@ -65,6 +66,8 @@ namespace MyProject_WPF
             txtFirstName.Text = User.FirstName;
             txtLastName.Text = User.LastName;
             txtEmail.Text = User.Email;
+            txtExternalKey.Text = User.ExternalKey;
+
         }
         frmUserSelect frmUserSelect;
         private void btnSearch_Click(object sender, RoutedEventArgs e)

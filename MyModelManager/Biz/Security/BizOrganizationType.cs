@@ -33,6 +33,7 @@ namespace MyModelManager
             OrganizationTypeDTO result = new OrganizationTypeDTO();
             result.ID = item.ID;
             result.Name = item.Name;
+            result.ExternalKey = item.ExternalKey;
             if (withDetails)
             {
                 foreach (var child in item.OrganizationType_RoleType)
@@ -42,6 +43,7 @@ namespace MyModelManager
                     cItem.Name = child.OrganizationType.Name + "-" + child.RoleType.Name;
                     cItem.IsAdmin = child.IsAdmin == true;
                     cItem.RoleTypeID = child.RoleTypeID;
+                    cItem.ExternalKey = child.ExternalKey;
                     cItem.OrganizationTypeID = child.OrganizationTypeID;
                     result.OrganizationTypeRoleTypes.Add(cItem);
                 }
@@ -65,6 +67,7 @@ namespace MyModelManager
                     dbOrganizationType = context.OrganizationType.First(x => x.ID == OrganizationTypeDto.ID);
 
                 dbOrganizationType.Name = OrganizationTypeDto.Name;
+                dbOrganizationType.ExternalKey = OrganizationTypeDto.ExternalKey;
                 //چیزی حذف نمیشود
                 foreach (var orgTypeRoleType in OrganizationTypeDto.OrganizationTypeRoleTypes)
                 {
@@ -77,6 +80,7 @@ namespace MyModelManager
                         dborgTypeRoleType.SecuritySubject.Type = (int)SecuritySubjectType.OrganizationTypeRoleType;
                     }
                     dborgTypeRoleType.IsAdmin = orgTypeRoleType.IsAdmin;
+                    dborgTypeRoleType.ExternalKey = orgTypeRoleType.ExternalKey;
                     dborgTypeRoleType.RoleTypeID = orgTypeRoleType.RoleTypeID;
                    
                 }

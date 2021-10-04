@@ -16,7 +16,6 @@ namespace DataAccess
     {
         public SecurityObject()
         {
-            this.ConditionalPermission = new HashSet<ConditionalPermission>();
             this.Permission = new HashSet<Permission>();
         }
     
@@ -31,7 +30,6 @@ namespace DataAccess
         public virtual Relationship Relationship { get; set; }
         public virtual SubSystems SubSystems { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        public virtual ICollection<ConditionalPermission> ConditionalPermission { get; set; }
         public virtual ICollection<Permission> Permission { get; set; }
     }
 }

@@ -50,6 +50,7 @@ namespace MyModelManager
             RoleTypeDTO result = new RoleTypeDTO();
             result.ID = item.ID;
             result.Name = item.Name;
+            result.ExternalKey = item.ExternalKey;
             result.IsSuperAdmin = item.IsSuperAdmin == true;
             return result;
         }
@@ -76,6 +77,7 @@ namespace MyModelManager
                         dbRoleType = context.RoleType.First(x => x.ID == roleTypeDto.ID);
 
                     dbRoleType.Name = roleTypeDto.Name;
+                    dbRoleType.ExternalKey = roleTypeDto.ExternalKey;
                     dbRoleType.IsSuperAdmin = roleTypeDto.IsSuperAdmin;
 
                     if (dbRoleType.ID == 0)

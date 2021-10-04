@@ -105,7 +105,7 @@ namespace MyModelManager
         //    return null;
         //}
 
-        private EntityStateDTO ToEntityStateDTO(DR_Requester requester, TableDrivedEntityState item, bool withDetails)
+        public EntityStateDTO ToEntityStateDTO(DR_Requester requester, TableDrivedEntityState item, bool withDetails)
         {
             EntityStateDTO result = new EntityStateDTO();
             result.FormulaID = item.FormulaID ?? 0;
@@ -115,6 +115,12 @@ namespace MyModelManager
                 result.Formula = bizFormula.GetFormula(requester, item.FormulaID.Value, withDetails);
             }
             result.ColumnID = item.ColumnID ?? 0;
+            if (item.Column != null)
+            {
+                BizColumn bizColumn = new BizColumn();
+                result.Column = bizColumn.ToColumnDTO(item.Column, true);
+
+            }
             result.RelationshipTailID = item.EntityRelationshipTailID ?? 0;
             if (item.EntityRelationshipTail != null)
             {
@@ -140,7 +146,11 @@ namespace MyModelManager
                 result.EntityStateOperator = (Enum_EntityStateOperator)item.EntityStateOperator;
             foreach (var valItem in item.TableDrivedEntityStateValues)
             {
-                result.Values.Add(new ModelEntites.EntityStateValueDTO() { Value = valItem.Value });
+                result.Values.Add(new ModelEntites.EntityStateValueDTO() { Value = valItem.Value, SecurityReservedValue = valItem.ReservedValue == null ? SecurityReservedValue.None : (SecurityReservedValue)valItem.ReservedValue });
+            }
+            foreach (var valItem in item.TableDrivedEntityStateSecuritySubject)
+            {
+                result.SecuritySubjects.Add(new EntityStateSecuritySubjectDTO { SecuritySubjectID = valItem.SecuritySubjectID, SecuritySubjectOperator = (Enum_SecuritySubjectOperator)valItem.SecuritySubjectOperator });
             }
             return result;
         }
@@ -166,7 +176,7 @@ namespace MyModelManager
         //    }
         //}
 
-        public void UpdateEntityStates(EntityStateDTO EntityState)
+        public int UpdateEntityStates(EntityStateDTO EntityState)
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
@@ -246,7 +256,15 @@ namespace MyModelManager
                     projectContext.TableDrivedEntityStateValues.Remove(dbEntityState.TableDrivedEntityStateValues.First());
                 foreach (var nItem in EntityState.Values)
                 {
-                    dbEntityState.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = nItem.Value });
+                    dbEntityState.TableDrivedEntityStateValues.Add(new TableDrivedEntityStateValues() { Value = nItem.Value, ReservedValue = (short)nItem.SecurityReservedValue });
+                }
+
+
+                while (dbEntityState.TableDrivedEntityStateSecuritySubject.Any())
+                    projectContext.TableDrivedEntityStateSecuritySubject.Remove(dbEntityState.TableDrivedEntityStateSecuritySubject.First());
+                foreach (var nItem in EntityState.SecuritySubjects)
+                {
+                    dbEntityState.TableDrivedEntityStateSecuritySubject.Add(new TableDrivedEntityStateSecuritySubject() { SecuritySubjectID = nItem.SecuritySubjectID, SecuritySubjectOperator = (short)nItem.SecuritySubjectOperator });
                 }
 
                 while (dbEntityState.EntityState_UIActionActivity.Any())
@@ -262,6 +280,7 @@ namespace MyModelManager
                 if (dbEntityState.ID == 0)
                     projectContext.TableDrivedEntityState.Add(dbEntityState);
                 projectContext.SaveChanges();
+                return dbEntityState.ID;
             }
         }
     }

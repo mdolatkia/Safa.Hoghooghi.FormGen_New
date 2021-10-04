@@ -27,6 +27,15 @@
             </Grid.ColumnDefinitions>
             <TextBlock Text="عنوان"></TextBlock>
             <TextBox x:Name="txtTitle" Grid.Column="1"></TextBox>
+            <TextBlock Grid.Row="1"  Text="نقش/گروه"></TextBlock>
+            <telerik:RadGridView x:Name="dtgSecuritySubjects" MinHeight="80" AutoGenerateColumns="False" Grid.Row="1" Grid.Column="1" >
+                <telerik:RadGridView.Columns>
+                    <MyCommonWPFControls:MySearchLookupColumn  x:Name="colSecuritySubject" Header="نقش/گروه" Width="200"  DataMemberBinding="{Binding Path=SecuritySubjectID}"></MyCommonWPFControls:MySearchLookupColumn>
+                    <telerik:GridViewComboBoxColumn x:Name="colHasOrHasNot" Header="دارد/ندارد" DataMemberBinding="{Binding Path=SecuritySubjectOperator}"></telerik:GridViewComboBoxColumn>
+                </telerik:RadGridView.Columns>
+            </telerik:RadGridView>
+            
+            <!--<MyCommonWPFControls:MySearchLookup x:Name="lokSubject" Grid.Row="1" HorizontalAlignment="Stretch"  Grid.Column="1"/>-->
             <!--<TextBlock Text="نوع" Grid.Row="1"></TextBlock>-->
 
             <!--<StackPanel Orientation="Vertical"   Grid.Column="1" Grid.Row="1">
@@ -90,9 +99,10 @@
                         <TextBlock Grid.Row="1" Text="ستون"></TextBlock>
                         <ComboBox Grid.Row="1" x:Name="cmbColumns" Width="230" Grid.Column="1"></ComboBox>
                         <TextBlock Grid.Row="2" Text="مقدار مورد انتظار"></TextBlock>
-                        <telerik:RadGridView x:Name="dtgColumnValue"  Grid.Row="2" Grid.Column="1" >
+                        <telerik:RadGridView x:Name="dtgColumnValue" MinHeight="80" AutoGenerateColumns="False" Grid.Row="2" Grid.Column="1" >
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewDataColumn Header="مقدار" DataMemberBinding="{Binding Value}" />
+                                <telerik:GridViewComboBoxColumn x:Name="colReservedValue" Header="مقدار رزرو" DataMemberBinding="{Binding Path=SecurityReservedValue}"></telerik:GridViewComboBoxColumn>
                             </telerik:RadGridView.Columns>
                         </telerik:RadGridView>
                         <TextBlock Grid.Row="3" Text="عملگر"></TextBlock>

@@ -20,6 +20,7 @@ namespace DataAccess
         public Nullable<int> UserID { get; set; }
         public int OrganizationID { get; set; }
         public int OrganizationType_RoleTypeID { get; set; }
+        public string ExternalKey { get; set; }
     
         public virtual Organization Organization { get; set; }
         public virtual OrganizationType_RoleType OrganizationType_RoleType { get; set; }

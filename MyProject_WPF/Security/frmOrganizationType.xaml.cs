@@ -88,6 +88,7 @@ namespace MyProject_WPF
         internal void ShowOrganizationType()
         {
             txtName.Text = OrganizationType.Name;
+            txtExternalKey.Text = OrganizationType.ExternalKey;
             dtgRoleTypes.ItemsSource = OrganizationType.OrganizationTypeRoleTypes;
         }
         private void GetOrganizationType(int organizationTypeID)
@@ -112,6 +113,7 @@ namespace MyProject_WPF
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             OrganizationType.Name = txtName.Text;
+            OrganizationType.ExternalKey = txtExternalKey.Text;
             var id = bizOrganizationType.SaveOrganizationType(OrganizationType);
             MessageBox.Show("اطلاعات ثبت شد");
             if (OrganizationTypeSaved != null)

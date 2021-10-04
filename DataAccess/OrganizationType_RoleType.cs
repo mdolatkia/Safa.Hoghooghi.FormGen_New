@@ -23,6 +23,7 @@ namespace DataAccess
         public int RoleTypeID { get; set; }
         public Nullable<bool> IsAdmin { get; set; }
         public int OrganizationTypeID { get; set; }
+        public string ExternalKey { get; set; }
     
         public virtual ICollection<OrganizationPost> OrganizationPost { get; set; }
         public virtual OrganizationType OrganizationType { get; set; }

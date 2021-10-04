@@ -3,6 +3,7 @@ using MyCommonWPFControls;
 using MyFormulaFunctionStateFunctionLibrary;
 
 using MyModelManager;
+using ProxyLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +27,14 @@ namespace MyProject_WPF
     /// </summary>
     public partial class frmEntityStates : UserControl
     {
+        public event EventHandler<SavedItemArg> ItemSaved;
         EntityStateDTO StateDTO { set; get; }
         BizEntityState bizEntityState = new BizEntityState();
         BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
         int EntityID { set; get; }
         int EntityStateID { set; get; }
+        BizSecuritySubject bizSecuritySubject = new BizSecuritySubject();
+
         public frmEntityStates(int entityID, int entityStateID)
         {
             InitializeComponent();
@@ -40,6 +44,7 @@ namespace MyProject_WPF
             SetRelationshipTails();
             SetFromulas();
             SetActionActivities();
+            SetSecuritySubjects();
             if (EntityStateID == 0)
             {
                 StateDTO = new EntityStateDTO();
@@ -49,9 +54,12 @@ namespace MyProject_WPF
                 GetEntityState(EntityStateID);
             ControlHelper.GenerateContextMenu(dtgColumnValue);
             ControlHelper.GenerateContextMenu(dtgFormulaValue);
+            ControlHelper.GenerateContextMenu(dtgSecuritySubjects);
             lokRelationshipTail.SelectionChanged += LokRelationshipTail_SelectionChanged;
             lokRelationshipTail.EditItemClicked += LokRelationshipTail_EditItemClicked;
             cmbOperator.ItemsSource = Enum.GetValues(typeof(Enum_EntityStateOperator)).Cast<Enum_EntityStateOperator>();
+            colReservedValue.ItemsSource = Enum.GetValues(typeof(SecurityReservedValue));
+            colHasOrHasNot.ItemsSource = Enum.GetValues(typeof(Enum_SecuritySubjectOperator));
         }
 
         private void LokRelationshipTail_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
@@ -79,7 +87,34 @@ namespace MyProject_WPF
             lokRelationshipTail.SelectedValueMember = "ID";
             lokRelationshipTail.ItemsSource = tails;
         }
-
+        private void SetSecuritySubjects()
+        {
+            colSecuritySubject.DisplayMemberPath = "Name";
+            colSecuritySubject.SelectedValueMemberPath = "ID";
+            colSecuritySubject.SearchFilterChanged += LokSubject_SearchFilterChanged;
+        }
+        private void LokSubject_SearchFilterChanged(object sender, MyCommonWPFControls.SearchFilterArg e)
+        {
+            if (e.SingleFilterValue != null)
+            {
+                if (!e.FilterBySelectedValue)
+                {
+                    var subjects = bizSecuritySubject.GetSecuritySubjects(e.SingleFilterValue);
+                    e.ResultItemsSource = subjects;
+                }
+                else
+                {
+                    var id = Convert.ToInt32(e.SingleFilterValue);
+                    if (id > 0)
+                    {
+                        var subject = bizSecuritySubject.GetSecuritySubject(id);
+                        e.ResultItemsSource = new List<SecuritySubjectDTO> { subject };
+                    }
+                    else
+                        e.ResultItemsSource = null;
+                }
+            }
+        }
         private void SetActionActivities()
         {
             //if (optPersist.IsChecked == true || optNotPersist.IsChecked == true)
@@ -111,7 +146,9 @@ namespace MyProject_WPF
                 entityID = item.TargetEntityID;
             }
             var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
-            var columns = entity.Columns.Where(x => x.ForeignKey == false).ToList();
+            var columns = entity.Columns;  //  .Where(x => x.ForeignKey == false).ToList();
+            //  برای وضعیتهایی که به دسترسی داده وصل میشن همه ستونها لازمند چون مثلا برای درخواست سرویس شناسه دفتر با شناسه خاری سازمان کاربر چک میشود. اما برای وضعیتهای فرم کلید خارجی ها کنترل نمی شوند که باعث فعال شدن اقدامات بشوند. چون داینامیک تغییر نمی کنند. البته بعهتر است برنامه تغییر کند که کلید خارجی ها با تغییر رابطه تغییر کنند.
+
             cmbColumns.DisplayMemberPath = "Alias";
             cmbColumns.SelectedValuePath = "ID";
             cmbColumns.ItemsSource = columns;
@@ -120,7 +157,6 @@ namespace MyProject_WPF
                 if (StateDTO.ColumnID != 0)
                     cmbColumns.SelectedValue = StateDTO.ColumnID;
             }
-
         }
 
         private void GetEntityState(int entityStateID)
@@ -134,6 +170,7 @@ namespace MyProject_WPF
             txtTitle.Text = StateDTO.Title;
             dtgActionActivities.ItemsSource = StateDTO.ActionActivities;
             lokRelationshipTail.SelectedValue = StateDTO.RelationshipTailID;
+            dtgSecuritySubjects.ItemsSource = StateDTO.SecuritySubjects;
             //if (StateDTO.Preserve)
             //    optPersist.IsChecked = true;
             //else
@@ -176,7 +213,7 @@ namespace MyProject_WPF
         {
             frmFormula view = new frmFormula(0, EntityID);
             view.FormulaUpdated += View_FormulaSelected;
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form",Enum_WindowSize.Maximized);
+            MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Maximized);
         }
 
         private void View_FormulaSelected(object sender, FormulaSelectedArg e)
@@ -244,7 +281,9 @@ namespace MyProject_WPF
             }
             try
             {
-                bizEntityState.UpdateEntityStates(StateDTO);
+                StateDTO.ID = bizEntityState.UpdateEntityStates(StateDTO);
+                if (ItemSaved != null)
+                    ItemSaved(this, new SavedItemArg() { ID = StateDTO.ID });
                 MessageBox.Show("اطلاعات ثبت شد");
             }
             catch (Exception ex)

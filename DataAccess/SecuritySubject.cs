@@ -16,7 +16,7 @@ namespace DataAccess
     {
         public SecuritySubject()
         {
-            this.ConditionalPermission = new HashSet<ConditionalPermission>();
+            this.TableDrivedEntityStateSecuritySubject = new HashSet<TableDrivedEntityStateSecuritySubject>();
             this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
             this.Permission = new HashSet<Permission>();
         }
@@ -24,7 +24,7 @@ namespace DataAccess
         public int ID { get; set; }
         public short Type { get; set; }
     
-        public virtual ICollection<ConditionalPermission> ConditionalPermission { get; set; }
+        public virtual ICollection<TableDrivedEntityStateSecuritySubject> TableDrivedEntityStateSecuritySubject { get; set; }
         public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
         public virtual Organization Organization { get; set; }
         public virtual OrganizationPost OrganizationPost { get; set; }

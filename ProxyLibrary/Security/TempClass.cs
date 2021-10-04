@@ -34,7 +34,7 @@ namespace ProxyLibrary
         public bool Selected { set; get; }
         //public bool IsAdmin { set; get; }
         public bool IsSuperAdmin { set; get; }
-
+        public string ExternalKey { get; set; }
     }
 
     public enum SecuritySubjectType
@@ -55,6 +55,7 @@ namespace ProxyLibrary
         public string Name { set; get; }
 
         public List<OrganizationTypeRoleTypeDTO> OrganizationTypeRoleTypes { set; get; }
+        public string ExternalKey { get; set; }
     }
     public class OrganizationTypeRoleTypeDTO
     {
@@ -63,6 +64,7 @@ namespace ProxyLibrary
         public bool IsAdmin { set; get; }
         public int RoleTypeID { set; get; }
         public int OrganizationTypeID { set; get; }
+        public string ExternalKey { get; set; }
     }
     public class OrganizationDTO
     {
@@ -75,12 +77,15 @@ namespace ProxyLibrary
 
         public int OrganizationTypeID { set; get; }
         OrganizationTypeDTO OrganizationTypeDTO { set; get; }
+        public string ExternalKey { get; set; }
+
         public List<OrganizationPostDTO> OrganizationPosts;
 
     }
     public class OrganizationPostDTO
     {
         public int ID { set; get; }
+        public string ExternalKey { set; get; }
         public string Name { set; get; }
         public bool Selected { set; get; }
 
@@ -88,15 +93,19 @@ namespace ProxyLibrary
         public bool IsSuperAdmin { set; get; }
 
         public int CurrentUserID { set; get; }
+        public string CurrentUserExternalKey { set; get; }
         public UserDTO CurrentUser { set; get; }
         public int OrganizationTypeRoleTypeID { set; get; }
-
+        public string OrganizationTypeRoleTypeExternalKey { set; get; }
         public int RoleTypeID { set; get; }
         public RoleTypeDTO RoleType { set; get; }
         public int OrganizationID { set; get; }
 
         public string OrganizationName { set; get; }
         public int OrganizationTypeID { set; get; }
+        public string RoleTypeExternalKey { get; set; }
+        public string OrganizationTypeExternalKey { get; set; }
+        public string OrganizationExternalKey { get; set; }
     }
     public class SecActionDTO
     {
@@ -154,8 +163,7 @@ namespace ProxyLibrary
         public string LastName { set; get; }
         public string Email { set; get; }
         public bool Selected { set; get; }
-
-
+        public string ExternalKey { get; set; }
     }
     public class OrganizationUserDTO
     {

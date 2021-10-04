@@ -34,14 +34,14 @@
             <TextBlock Grid.Row="3"  Text="صرف نظر امنیتی"></TextBlock>
             <CheckBox x:Name="chkIgnoreSecurity" Grid.Row="3" HorizontalAlignment="Stretch"  Grid.Column="1"/>
             <TextBlock Grid.Row="4"  Text="شرایط"></TextBlock>
-            <telerik:RadGridView x:Name="dtgConditions" Margin="0,2,0,2" AutoGenerateColumns="False" Height="300" ShowGroupPanel="False" Grid.Row="4" Grid.ColumnSpan="3" Grid.Column="1">
+            <telerik:RadGridView x:Name="dtgStates" Margin="0,2,0,2" AutoGenerateColumns="False" Height="300" ShowGroupPanel="False" Grid.Row="4" Grid.ColumnSpan="3" Grid.Column="1">
                 <telerik:RadGridView.Columns>
-                    <MyCommonWPFControls:MyStaticLookupColumn EditItemEnabled="True" NewItemEnabled="True" x:Name="colRelationshipTail" Header="رابطه" DataMemberBinding="{Binding Path=RelationshipTailID}"></MyCommonWPFControls:MyStaticLookupColumn>
-                    <telerik:GridViewComboBoxColumn Header="ستون" x:Name="colColumns" ItemsSourceBinding="{Binding Columns}" DataMemberBinding="{Binding Path=ColumnID}"></telerik:GridViewComboBoxColumn>
+                    <MyCommonWPFControls:MyStaticLookupColumn EditItemEnabled="True" NewItemEnabled="True" x:Name="colEntityState" Header="وضعیت" Width="200"  DataMemberBinding="{Binding Path=EntityStateID}"></MyCommonWPFControls:MyStaticLookupColumn>
+                    <!--<telerik:GridViewComboBoxColumn Header="ستون" x:Name="colColumns" ItemsSourceBinding="{Binding Columns}" DataMemberBinding="{Binding Path=ColumnID}"></telerik:GridViewComboBoxColumn>
                     <telerik:GridViewComboBoxColumn x:Name="colOperator" Header="عملگر" DataMemberBinding="{Binding Path=Operator}"></telerik:GridViewComboBoxColumn>
                     <telerik:GridViewDataColumn Header="مقدار دستی" DataMemberBinding="{Binding Path=Value}"></telerik:GridViewDataColumn>
                     <telerik:GridViewComboBoxColumn x:Name="colReservedValue" Header="مقدار رزرو" DataMemberBinding="{Binding Path=ReservedValue}"></telerik:GridViewComboBoxColumn>
-                    <MyCommonWPFControls:MyStaticLookupColumn x:Name="colDatabaseFunction" Header="تابع" DataMemberBinding="{Binding Path=DatabaseFunctionID}"></MyCommonWPFControls:MyStaticLookupColumn>
+                    <MyCommonWPFControls:MyStaticLookupColumn x:Name="colDatabaseFunction" Header="تابع" DataMemberBinding="{Binding Path=DatabaseFunctionID}"></MyCommonWPFControls:MyStaticLookupColumn>-->
                 </telerik:RadGridView.Columns>
             </telerik:RadGridView>
 

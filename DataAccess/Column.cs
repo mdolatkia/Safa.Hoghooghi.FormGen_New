@@ -25,11 +25,9 @@ namespace DataAccess
             this.UnionToSubUnionRelationshipType = new HashSet<UnionToSubUnionRelationshipType>();
             this.ColumnPhrase = new HashSet<ColumnPhrase>();
             this.UIColumnValue = new HashSet<UIColumnValue>();
-            this.ConditionalPermission = new HashSet<ConditionalPermission>();
             this.DatabaseFunction_TableDrivedEntity_Columns = new HashSet<DatabaseFunction_TableDrivedEntity_Columns>();
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
             this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
-            this.EntitySecurityCondition = new HashSet<EntitySecurityCondition>();
             this.FormulaItems = new HashSet<FormulaItems>();
             this.TableDrivedEntity_Columns = new HashSet<TableDrivedEntity_Columns>();
             this.TableDrivedEntityState = new HashSet<TableDrivedEntityState>();
@@ -78,12 +76,10 @@ namespace DataAccess
         public virtual SecurityObject SecurityObject { get; set; }
         public virtual ICollection<ColumnPhrase> ColumnPhrase { get; set; }
         public virtual ICollection<UIColumnValue> UIColumnValue { get; set; }
-        public virtual ICollection<ConditionalPermission> ConditionalPermission { get; set; }
         public virtual ICollection<DatabaseFunction_TableDrivedEntity_Columns> DatabaseFunction_TableDrivedEntity_Columns { get; set; }
         public virtual DateColumnType DateColumnType { get; set; }
         public virtual ICollection<EntityListViewColumns> EntityListViewColumns { get; set; }
         public virtual ICollection<EntitySearchColumns> EntitySearchColumns { get; set; }
-        public virtual ICollection<EntitySecurityCondition> EntitySecurityCondition { get; set; }
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
         public virtual NumericColumnType NumericColumnType { get; set; }
         public virtual StringColumnType StringColumnType { get; set; }

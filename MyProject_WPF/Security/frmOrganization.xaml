@@ -31,13 +31,15 @@
             <TextBox x:Name="txtOrganizationName" Grid.Column="1" ></TextBox>
             <TextBlock  Text="نوع سازمان" Grid.Column="2"></TextBlock>
             <MyCommonWPFControls:MyStaticLookup x:Name="lokOrganizationType" HorizontalAlignment="Stretch" EditItemClicked="MyStaticLookup_EditItemClicked" EditItemEnabled="True" NewItemEnabled="True" Grid.Column="3"/>
-
-            <TextBlock  Text="پستها" Grid.Column="0" Grid.Row="1"></TextBlock>
-            <telerik:RadGridView x:Name="dtgPosts" Height="350" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" AutoGenerateColumns="False">
+            <TextBlock Grid.Column="0" Grid.Row="1" Text="کلید خارجی"></TextBlock>
+            <TextBox x:Name="txtExternalKey" Grid.Row="1" Grid.Column="1" ></TextBox>
+            <TextBlock  Text="پستها" Grid.Column="0" Grid.Row="2"></TextBlock>
+            <telerik:RadGridView x:Name="dtgPosts" Height="350" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" AutoGenerateColumns="False">
                 <telerik:RadGridView.Columns>
                     <telerik:GridViewDataColumn Header="نام پست" DataMemberBinding="{Binding Name}"></telerik:GridViewDataColumn>
                     <MyCommonWPFControls:MySearchLookupColumn DataMemberBinding="{Binding CurrentUserID}"  x:Name="colUser" Header="کاربر"></MyCommonWPFControls:MySearchLookupColumn>
                     <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding OrganizationTypeRoleTypeID}"  x:Name="colOrganizationRoleTypes" Header="نوع نقش"></MyCommonWPFControls:MyStaticLookupColumn>
+                    <telerik:GridViewDataColumn Header="کلید خارجی" DataMemberBinding="{Binding ExternalKey}"></telerik:GridViewDataColumn>
                 </telerik:RadGridView.Columns>
             </telerik:RadGridView>
 

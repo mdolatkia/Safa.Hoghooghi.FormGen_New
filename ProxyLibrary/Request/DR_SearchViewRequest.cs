@@ -8,7 +8,7 @@ namespace ProxyLibrary
         public DR_SearchViewRequest(DR_Requester Requester, DP_SearchRepository searchDataItems) : base(Requester)
         {
             SearchDataItems = searchDataItems;
-            SecurityMode = SecurityMode.View;
+          //  
         }
         public DP_SearchRepository SearchDataItems;
         //public int EntityID;
@@ -23,7 +23,7 @@ namespace ProxyLibrary
     //{
     //    public DR_SearchViewByRelationshipTailRequest(DR_Requester Requester) : base(Requester)
     //    {
-    //        SecurityMode = SecurityMode.View;
+    //        
     //    }
     //    public int EntityViewID { set; get; }
     //    public EntityRelationshipTailDTO RelationshipTail { set; get; }
@@ -34,7 +34,7 @@ namespace ProxyLibrary
     {
         public DR_SearchExistsRequest(DR_Requester Requester) : base(Requester)
         {
-            SecurityMode = SecurityMode.View;
+            //
         }
         public DP_SearchRepository SearchDataItems;
         public int EntityID;
@@ -43,7 +43,7 @@ namespace ProxyLibrary
     {
         public DR_SearchCountRequest(DR_Requester Requester) : base(Requester)
         {
-            SecurityMode = SecurityMode.View;
+            
         }
         public DP_SearchRepository SearchDataItems;
         public int EntityID;
@@ -60,14 +60,14 @@ namespace ProxyLibrary
 
     public class DR_SearchEditRequest : BaseRequest
     {
-        public DR_SearchEditRequest(DR_Requester Requester, DP_SearchRepository searchDataItem, bool viewMode,bool withDataView) : base(Requester)
+        public DR_SearchEditRequest(DR_Requester Requester, DP_SearchRepository searchDataItem) : base(Requester)
         {
             SearchDataItem = searchDataItem;
-            if (viewMode)
-                SecurityMode = SecurityMode.View;
-            else
-                SecurityMode = SecurityMode.Edit;
-            WithDataView = withDataView;
+            //if (viewMode)
+            //    
+            //else
+            //    SecurityMode = SecurityMode.Edit;
+       //     WithDataView = withDataView;
         }
         public bool WithDataView { set; get; }
         //public DR_SearchEditRequest()
@@ -82,7 +82,7 @@ namespace ProxyLibrary
     {
         public DR_SearchFullDataRequest(DR_Requester Requester, DP_SearchRepository searchDataItem) : base(Requester)
         {
-            SecurityMode = SecurityMode.View;
+            
             SearchDataItem = searchDataItem;
         }
         //public DR_SearchEditRequest()
@@ -97,7 +97,7 @@ namespace ProxyLibrary
     {
         public DR_SearchKeysOnlyRequest(DR_Requester Requester, DP_SearchRepository searchDataItem) : base(Requester)
         {
-            SecurityMode = SecurityMode.View;
+            
             SearchDataItem = searchDataItem;
         }
         public DP_SearchRepository SearchDataItem;
@@ -107,7 +107,7 @@ namespace ProxyLibrary
     //{
     //    public DR_SearchByRelationshipTailRequest(DR_Requester Requester) : base(Requester)
     //    {
-    //        SecurityMode = SecurityMode.View;
+    //        
     //    }
     //    public EntityRelationshipTailDTO RelationshipTail { set; get; }
     //    public DP_BaseData FirstDataItem { set; get; }
@@ -117,7 +117,7 @@ namespace ProxyLibrary
     //{
     //    public DR_SearchViewByRelationshipTailRequest(DR_Requester Requester) : base(Requester)
     //    {
-    //        SecurityMode = SecurityMode.View;
+    //        
     //    }
     //    public int EntityViewID { set; get; }
 

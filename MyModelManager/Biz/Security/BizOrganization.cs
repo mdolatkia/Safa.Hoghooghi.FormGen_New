@@ -35,6 +35,7 @@ namespace MyModelManager
             OrganizationDTO result = new OrganizationDTO();
             result.ID = item.ID;
             result.Name = item.Name;
+            result.ExternalKey = item.ExternalKey;
             result.OrganizationTypeID = item.OrganizationTypeID;
             if (withDetails)
             {
@@ -44,6 +45,7 @@ namespace MyModelManager
                     post.CurrentUserID = dbpost.UserID ?? 0;
                     post.OrganizationTypeRoleTypeID = dbpost.OrganizationType_RoleTypeID;
                     post.Name = dbpost.Name;
+                    post.ExternalKey = dbpost.ExternalKey;
                     result.OrganizationPosts.Add(post);
                 }
             }
@@ -65,6 +67,7 @@ namespace MyModelManager
                     dbOrganization = context.Organization.First(x => x.ID == organizationDto.ID);
 
                 dbOrganization.Name = organizationDto.Name;
+                dbOrganization.ExternalKey = organizationDto.ExternalKey;
                 dbOrganization.OrganizationTypeID = organizationDto.OrganizationTypeID;
 
                 List<OrganizationPost> removedItems = new List<OrganizationPost>();
@@ -88,6 +91,7 @@ namespace MyModelManager
                         dbPost.SecuritySubject.Type = (int)SecuritySubjectType.OrganizationPost;
                     }
                     dbPost.Name = post.Name;
+                    dbPost.ExternalKey = post.ExternalKey;
                     dbPost.UserID = post.CurrentUserID;
                     dbPost.OrganizationType_RoleTypeID = post.OrganizationTypeRoleTypeID;
                 }
@@ -193,6 +197,7 @@ namespace MyModelManager
         {
             OrganizationPostDTO result = new OrganizationPostDTO();
             result.ID = item.ID;
+            result.ExternalKey = item.ExternalKey;
             result.Name = item.Name;
             result.CurrentUserID = item.UserID ?? 0;
             if (result.CurrentUserID != 0)
@@ -200,12 +205,17 @@ namespace MyModelManager
                 BizUser bizUser = new MyModelManager.BizUser();
                 result.CurrentUser = bizUser.GetUser(result.CurrentUserID);
                 result.Name += " / " + result.CurrentUser.FullName;
+                result.CurrentUserExternalKey = result.CurrentUser.ExternalKey;
             }
             result.OrganizationID = item.OrganizationID;
             result.OrganizationName = item.Organization.Name;
+            result.OrganizationExternalKey = item.Organization.ExternalKey;
             result.OrganizationTypeID = item.Organization.OrganizationTypeID;
+            result.OrganizationTypeExternalKey = item.Organization.OrganizationType.ExternalKey;
             result.OrganizationTypeRoleTypeID = item.OrganizationType_RoleTypeID;
+            result.OrganizationTypeRoleTypeExternalKey = item.OrganizationType_RoleType.ExternalKey;
             result.RoleTypeID = item.OrganizationType_RoleType.RoleTypeID;
+            result.RoleTypeExternalKey = item.OrganizationType_RoleType.RoleType.ExternalKey;
             result.IsAdmin = item.OrganizationType_RoleType.IsAdmin == true;
             result.IsSuperAdmin = item.OrganizationType_RoleType.RoleType.IsSuperAdmin == true;
             return result;

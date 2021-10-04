@@ -111,7 +111,7 @@ namespace MyUILibrary.EntityArea.Commands
                         searchDataItem.Phrases.Add(logicPhrase);
                     }
                     ///   var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem, EditArea.AreaInitializer.SecurityReadOnly, true);
-                    var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem, true, true);
+                    var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem);
                     var results = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit);
                     if (results.ResultDataItems.Count > 0)
                     {
@@ -136,6 +136,11 @@ namespace MyUILibrary.EntityArea.Commands
                                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", results.ResultDataItems[0].ViewInfo, Temp.InfoColor.Red);
                             }
                         }
+                    }
+                    else
+                    {
+                        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", "", Temp.InfoColor.Red);
+                        (EditArea as BaseEditEntityArea).ClearData(true);
                     }
                 }
             }

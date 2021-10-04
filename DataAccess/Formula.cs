@@ -18,7 +18,6 @@ namespace DataAccess
         {
             this.Column = new HashSet<Column>();
             this.EntityValidation = new HashSet<EntityValidation>();
-            this.ConditionalPermission = new HashSet<ConditionalPermission>();
             this.FormulaItems = new HashSet<FormulaItems>();
             this.FormulaItems1 = new HashSet<FormulaItems>();
             this.LetterTemplatePlainField = new HashSet<LetterTemplatePlainField>();
@@ -43,7 +42,6 @@ namespace DataAccess
         public virtual DatabaseFunction_TableDrivedEntity DatabaseFunction_TableDrivedEntity { get; set; }
         public virtual ICollection<EntityValidation> EntityValidation { get; set; }
         public virtual LinearFormula LinearFormula { get; set; }
-        public virtual ICollection<ConditionalPermission> ConditionalPermission { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
         public virtual ICollection<FormulaItems> FormulaItems1 { get; set; }

@@ -25,11 +25,15 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"  Text="نوع سازمان"></TextBlock>
             <TextBox x:Name="txtName"  Grid.Column="1" ></TextBox>
+            <TextBlock Grid.Column="2"  Text="کلید خارجی"></TextBlock>
+            <TextBox x:Name="txtExternalKey"  Grid.Column="3" ></TextBox>
             <TextBlock HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Text="انواع نقش"></TextBlock>
             <telerik:RadGridView Height="350" x:Name="dtgRoleTypes" Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="1" AutoGenerateColumns="False"  >
                 <telerik:RadGridView.Columns>
                     <MyCommonWPFControls:MyStaticLookupColumn  DataMemberBinding="{Binding RoleTypeID}" x:Name="colRoleTypes" Header="نوع نقش"></MyCommonWPFControls:MyStaticLookupColumn>
-                    <telerik:GridViewCheckBoxColumn DataMemberBinding="{Binding IsAdmin}"></telerik:GridViewCheckBoxColumn>
+                    <telerik:GridViewCheckBoxColumn  Header="IsAdmin" DataMemberBinding="{Binding IsAdmin}"></telerik:GridViewCheckBoxColumn>
+                    <telerik:GridViewDataColumn Header="کلید خارجی" DataMemberBinding="{Binding Path=ExternalKey}"></telerik:GridViewDataColumn>
+
                 </telerik:RadGridView.Columns>
             </telerik:RadGridView>
         </Grid>

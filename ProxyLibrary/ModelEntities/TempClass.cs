@@ -1584,17 +1584,17 @@ namespace ModelEntites
 
     public enum DataMenuType
     {
-     //   DataLink,
+        //   DataLink,
         RelationshipTailDataGrid,
         RelationshipTailDataView,
         RelationshipTailSearchableReport,
         Archive,
         Form,
         Folder,
-      //  DirectReport,
+        //  DirectReport,
         Letter,
         Workflow,
-      //  Graph,
+        //  Graph,
         DataItemReport
         //,
         //   ViewRel
@@ -1931,9 +1931,9 @@ namespace ModelEntites
         {
             RelationshipsTails = new List<ModelEntites.GraphRelationshipTailDTO>();
         }
-     //   public int ID { set; get; }
+        //   public int ID { set; get; }
         //public string Name { set; get; }
-       // public int EntityID { set; get; }
+        // public int EntityID { set; get; }
         public List<GraphRelationshipTailDTO> RelationshipsTails { set; get; }
         public bool NotJointEntities { get; set; }
         public int FirstSideDataMenuID { set; get; }
@@ -2301,7 +2301,7 @@ namespace ModelEntites
     {
         public EntitySecurityDirectDTO()
         {
-            Conditions = new List<ModelEntites.EntitySecurityConditionDTO>();
+            EntityStates = new List<EntitySecurityDirectStatesDTO>();
 
         }
         public int ID { set; get; }
@@ -2309,34 +2309,40 @@ namespace ModelEntites
         public int SecuritySubjectID { set; get; }
         //   public AndORType ConditionAndORType { set; get; }
         public SecuritySubjectDTO SecuritySubject { set; get; }
-        public List<EntitySecurityConditionDTO> Conditions { set; get; }
+        public List<EntitySecurityDirectStatesDTO> EntityStates { set; get; }
         public bool IgnoreSecurity { set; get; }
         public SecurityMode Mode { set; get; }
 
     }
     public enum SecurityMode
     {
-        View,
-        Edit
+        ViewOnly
+        //    ,
+        //EditAndView
     }
-    public class EntitySecurityConditionDTO
+    public class EntitySecurityDirectStatesDTO
     {
-        public EntitySecurityConditionDTO()
-        {
-            Columns = new List<ColumnDTO>();
-        }
-        public int ID { set; get; }
-        public int RelationshipTailID { set; get; }
-        public EntityRelationshipTailDTO RelationshipTail { set; get; }
-        public int ColumnID { set; get; }
-        public ColumnDTO Column { set; get; }
-        public SecurityReservedValue ReservedValue { set; get; }
-        public int DBFunctionID { set; get; }
-        public string Value { set; get; }
-
-        public EntitySecurityOperator Operator { set; get; }
-        public List<ColumnDTO> Columns { set; get; }
+        public int EntityStateID { set; get; }
+        public EntityStateDTO EntityState { set; get; }
     }
+    //public class EntitySecurityConditionDTO
+    //{
+    //    public EntitySecurityConditionDTO()
+    //    {
+    //        Columns = new List<ColumnDTO>();
+    //    }
+    //    public int ID { set; get; }
+    //    public int RelationshipTailID { set; get; }
+    //    public EntityRelationshipTailDTO RelationshipTail { set; get; }
+    //    public int ColumnID { set; get; }
+    //    public ColumnDTO Column { set; get; }
+    //    public SecurityReservedValue ReservedValue { set; get; }
+    //    public int DBFunctionID { set; get; }
+    //    public string Value { set; get; }
+
+    //    public EntitySecurityOperator Operator { set; get; }
+    //    public List<ColumnDTO> Columns { set; get; }
+    //}
     public enum SecurityReservedValue
     {
         None,
@@ -2344,7 +2350,14 @@ namespace ModelEntites
         OrganizationTypeID,
         RoleTypeID,
         OrganizationTypeRoleTypeID,
-        OrganizationPostID
+        OrganizationPostID,
+        UserID,
+        OrganizationExternalKey,
+        OrganizationTypeExternalKey,
+        RoleTypeExternalKey,
+        OrganizationTypeRoleTypeExternalKey,
+        OrganizationPostExternalKey,
+        UserExternalKey
     }
     public class EntitySecurityInDirectDTO
     {
@@ -2731,6 +2744,7 @@ namespace ModelEntites
         {
             ActionActivities = new ObservableCollection<ModelEntites.UIActionActivityDTO>();
             Values = new List<ModelEntites.EntityStateValueDTO>();
+            SecuritySubjects = new ObservableCollection<EntityStateSecuritySubjectDTO>();
         }
         public int ID { set; get; }
         //public bool Preserve { set; get; }
@@ -2740,20 +2754,40 @@ namespace ModelEntites
         public int RelationshipTailID { set; get; }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }
         public int ColumnID { set; get; }
+        public ColumnDTO Column { set; get; }
         public Enum_EntityStateOperator EntityStateOperator { set; get; }
         public string Title { set; get; }
         public List<EntityStateValueDTO> Values { set; get; }
         //public int ActionActivityID { set; get; }
         public ObservableCollection<UIActionActivityDTO> ActionActivities { set; get; }
+
+        public ObservableCollection<EntityStateSecuritySubjectDTO> SecuritySubjects { set; get; }
+
+    }
+    public class EntityStateSecuritySubjectDTO
+    {
+        public int SecuritySubjectID { set; get; }
+        public Enum_SecuritySubjectOperator SecuritySubjectOperator { set; get; }
+
+        دارد یا ندارد جدا شود؟
+            اند و اور
+
     }
     public class EntityStateValueDTO
     {
         public string Value { set; get; }
+        public SecurityReservedValue SecurityReservedValue { set; get; }
+        
     }
     public enum Enum_EntityStateOperator
     {
         Equals,
         NotEquals
+    }
+    public enum Enum_SecuritySubjectOperator
+    {
+        Has,
+        HasNot
     }
     public class ObjectDTO
     {
@@ -3126,7 +3160,9 @@ namespace ModelEntites
         EndsWith,
         BiggerThan,
         SmallerThan,
-        InValues
+        InValues,
+        NotInValues,
+        NotEquals
     }
 
 

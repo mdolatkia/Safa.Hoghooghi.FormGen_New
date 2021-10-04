@@ -62,7 +62,7 @@ namespace MyModelManager
             {
                 var item = projectContext.EntitySecurityDirect.FirstOrDefault(x => x.ID == id);
                 if (item != null)
-                    return ToEntitySecurityDirectDTO(item, withDetails);
+                    return ToEntitySecurityDirectDTO(requester,item, withDetails);
                 else
                     return null;
 
@@ -75,8 +75,8 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var item = projectContext.EntitySecurityDirect.FirstOrDefault(x => x.ID == id);
-                foreach (var child in item.EntitySecurityCondition.ToList())
-                    projectContext.EntitySecurityCondition.Remove(child);
+                foreach (var child in item.EntitySecurityDirectStates.ToList())
+                    projectContext.EntitySecurityDirectStates.Remove(child);
                 projectContext.EntitySecurityDirect.Remove(item);
                 projectContext.SaveChanges();
                 return true;
@@ -90,7 +90,7 @@ namespace MyModelManager
                 var list = projectContext.EntitySecurityDirect;
                 foreach (var item in list)
                 {
-                    result.Add(ToEntitySecurityDirectDTO( item, false));
+                    result.Add(ToEntitySecurityDirectDTO(requester, item, false));
                 }
             }
             return result;
@@ -104,13 +104,13 @@ namespace MyModelManager
                 var list = projectContext.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID);
                 foreach (var item in list)
                 {
-                    result.Add(ToEntitySecurityDirectDTO( item, withDetails));
+                    result.Add(ToEntitySecurityDirectDTO(requester, item, withDetails));
                 }
             }
             return result;
         }
 
-        public EntitySecurityDirectDTO ToEntitySecurityDirectDTO(EntitySecurityDirect item, bool withDetails)
+        public EntitySecurityDirectDTO ToEntitySecurityDirectDTO(DR_Requester requester, EntitySecurityDirect item, bool withDetails)
         {
             EntitySecurityDirectDTO result = new EntitySecurityDirectDTO();
             result.ID = item.ID;
@@ -119,45 +119,50 @@ namespace MyModelManager
             else
                 result.SecuritySubjectID = 0;
 
-            result.Mode = (SecurityMode)item.Mode;
+            // result.Mode = (SecurityMode)item.Mode;
             result.IgnoreSecurity = item.IgnoreSecurity;
             result.TableDrivedEntityID = item.TableDrivedEntityID;
-            if (withDetails)
+
+            foreach (var state in item.EntitySecurityDirectStates)
             {
-                foreach (var condition in item.EntitySecurityCondition)
+                EntitySecurityDirectStatesDTO securityState = new EntitySecurityDirectStatesDTO();
+                securityState.EntityStateID = state.TableDrivedEntityStateID;
+                if (withDetails)
                 {
-                    result.Conditions.Add(ToEntitySecurityConditionDTO(condition, withDetails));
+                    BizEntityState bizEntityState = new BizEntityState();
+                    securityState.EntityState = bizEntityState.ToEntityStateDTO(requester, state.TableDrivedEntityState, withDetails);
                 }
+                result.EntityStates.Add(securityState);
             }
             return result;
         }
 
-        private EntitySecurityConditionDTO ToEntitySecurityConditionDTO(EntitySecurityCondition item, bool withDetails)
-        {
-            var result = new EntitySecurityConditionDTO();
-            result.ColumnID = item.ColumnID;
-            result.Value = item.Value;
-            if (item.DatabaseFunctionID != null)
-                result.DBFunctionID = item.DatabaseFunctionID.Value;
+        //private EntitySecurityConditionDTO ToEntitySecurityConditionDTO(EntitySecurityCondition item, bool withDetails)
+        //{
+        //    var result = new EntitySecurityConditionDTO();
+        //    result.ColumnID = item.ColumnID;
+        //    result.Value = item.Value;
+        //    if (item.DatabaseFunctionID != null)
+        //        result.DBFunctionID = item.DatabaseFunctionID.Value;
 
-            if (item.EntityRelationshipTailID != null)
-            {
+        //    if (item.EntityRelationshipTailID != null)
+        //    {
 
-                result.RelationshipTailID = item.EntityRelationshipTailID.Value;
+        //        result.RelationshipTailID = item.EntityRelationshipTailID.Value;
 
-            }
-            if (withDetails)
-            {
-                BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
-                if (item.EntityRelationshipTailID != null)
-                    result.RelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
-                BizColumn bizColumn = new BizColumn();
-                result.Column = bizColumn.ToColumnDTO(item.Column, true);
-            }
-            result.ReservedValue = (SecurityReservedValue)item.ReservedValue;
-            result.Operator = (EntitySecurityOperator)item.Operator;
-            return result;
-        }
+        //    }
+        //    if (withDetails)
+        //    {
+        //        BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
+        //        if (item.EntityRelationshipTailID != null)
+        //            result.RelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
+        //        BizColumn bizColumn = new BizColumn();
+        //        result.Column = bizColumn.ToColumnDTO(item.Column, true);
+        //    }
+        //    result.ReservedValue = (SecurityReservedValue)item.ReservedValue;
+        //    result.Operator = (EntitySecurityOperator)item.Operator;
+        //    return result;
+        //}
 
         public EntitySecurityInDirectDTO GetEntitySecurityInDirect(DR_Requester requester, int entityID, bool withDetails)
         {
@@ -166,14 +171,14 @@ namespace MyModelManager
             {
                 var item = projectContext.EntitySecurityInDirect.FirstOrDefault(x => x.TableDrivedEntityID == entityID);
                 if (item != null)
-                    return ToEntitySecurityInDirectDTO( item, withDetails);
+                    return ToEntitySecurityInDirectDTO(item, withDetails);
                 else
                     return null;
 
             }
         }
 
-        public EntitySecurityInDirectDTO ToEntitySecurityInDirectDTO( EntitySecurityInDirect item, bool withDetails)
+        public EntitySecurityInDirectDTO ToEntitySecurityInDirectDTO(EntitySecurityInDirect item, bool withDetails)
         {
             EntitySecurityInDirectDTO result = new EntitySecurityInDirectDTO();
             result.ID = item.ID;
@@ -183,7 +188,7 @@ namespace MyModelManager
             if (withDetails)
             {
                 BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
-                result.RelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO( item.EntityRelationshipTail);
+                result.RelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
                 //result.DirectRoleSecurity = ToEntitySecurityDirectDTO(item.EntitySecurityDirect, withDetails);
             }
 
@@ -205,28 +210,38 @@ namespace MyModelManager
                     dbItem.SecuritySubjectID = message.SecuritySubjectID;
                 else
                     dbItem.SecuritySubjectID = null;
-                dbItem.Mode = (short)message.Mode;
+                //dbItem.Mode = (short)message.Mode;
                 dbItem.IgnoreSecurity = message.IgnoreSecurity;
                 //dbItem.ConditionsAndOrType = (short)message.ConditionAndORType;
-                while (dbItem.EntitySecurityCondition.Any())
-                    projectContext.EntitySecurityCondition.Remove(dbItem.EntitySecurityCondition.First());
-                foreach (var conditoin in message.Conditions)
+
+                while (dbItem.EntitySecurityDirectStates.Any())
+                    projectContext.EntitySecurityDirectStates.Remove(dbItem.EntitySecurityDirectStates.First());
+                foreach (var securityState in message.EntityStates)
                 {
-                    var dbCondition = new EntitySecurityCondition();
-                    dbCondition.ColumnID = conditoin.ColumnID;
-                    dbCondition.Value = conditoin.Value;
-                    if (conditoin.DBFunctionID != 0)
-                        dbCondition.DatabaseFunctionID = conditoin.DBFunctionID;
-                    else
-                        dbCondition.DatabaseFunctionID = null;
-                    if (conditoin.RelationshipTailID != 0)
-                        dbCondition.EntityRelationshipTailID = conditoin.RelationshipTailID;
-                    else
-                        dbCondition.EntityRelationshipTailID = null;
-                    dbCondition.ReservedValue = (short)conditoin.ReservedValue;
-                    dbCondition.Operator = (short)conditoin.Operator;
-                    dbItem.EntitySecurityCondition.Add(dbCondition);
+                    var dbCondition = new EntitySecurityDirectStates();
+                    dbCondition.TableDrivedEntityStateID = securityState.EntityStateID;
+                    dbItem.EntitySecurityDirectStates.Add(dbCondition);
                 }
+
+                //while (dbItem.EntitySecurityCondition.Any())
+                //    projectContext.EntitySecurityCondition.Remove(dbItem.EntitySecurityCondition.First());
+                //foreach (var conditoin in message.Conditions)
+                //{
+                //    var dbCondition = new EntitySecurityCondition();
+                //    dbCondition.ColumnID = conditoin.ColumnID;
+                //    dbCondition.Value = conditoin.Value;
+                //    if (conditoin.DBFunctionID != 0)
+                //        dbCondition.DatabaseFunctionID = conditoin.DBFunctionID;
+                //    else
+                //        dbCondition.DatabaseFunctionID = null;
+                //    if (conditoin.RelationshipTailID != 0)
+                //        dbCondition.EntityRelationshipTailID = conditoin.RelationshipTailID;
+                //    else
+                //        dbCondition.EntityRelationshipTailID = null;
+                //    dbCondition.ReservedValue = (short)conditoin.ReservedValue;
+                //    dbCondition.Operator = (short)conditoin.Operator;
+                //    dbItem.EntitySecurityCondition.Add(dbCondition);
+                //}
 
                 projectContext.SaveChanges();
                 return dbItem.ID;
@@ -247,7 +262,7 @@ namespace MyModelManager
                 projectContext.SaveChanges();
             }
         }
-        public Tuple<EntitySecurityInDirectDTO, List<Tuple<OrganizationPostDTO, List<EntitySecurityDirectDTO>>>> GetPostEntitySecurityItems(DR_Requester requester, int entityID, SecurityMode securityMode)
+        public EntityDataSecurityItems GetPostEntitySecurityItems(DR_Requester requester, int entityID)
         {
             //var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.ConditionalPermission, securitySubjectID.ToString(), entityID.ToString());
             //if (cachedItem != null)
@@ -259,12 +274,12 @@ namespace MyModelManager
             //Tuple<EntitySecurityInDirectDTO, List<EntitySecurityDirectDTO>> result;= new Tuple<EntitySecurityInDirectDTO, List<EntitySecurityDirectDTO>>();
 
             BizRoleSecurity bizRoleSecurity = new BizRoleSecurity();
-            List<Tuple<OrganizationPostDTO, List<EntitySecurityDirectDTO>>> directSecurities = new List<Tuple<OrganizationPostDTO, List<EntitySecurityDirectDTO>>>();
+            List<PostEntityDataSecurityItems> allPostsDirectSecurities = new List<PostEntityDataSecurityItems>();
             EntitySecurityInDirectDTO indisrectSecurityDTO = null;
             using (var context = new MyProjectEntities())
             {
                 var directSecurityEntityID = entityID;
-                var disrectSecurities = context.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID && x.Mode == (short)securityMode);
+                var disrectSecurities = context.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID);// && x.Mode == (short)securityMode);
                 if (!disrectSecurities.Any())
                 {
                     var indisrectSecurity = context.EntitySecurityInDirect.FirstOrDefault(x => x.TableDrivedEntityID == entityID);
@@ -272,7 +287,7 @@ namespace MyModelManager
                         return null;
                     else
                     {
-                        indisrectSecurityDTO = bizRoleSecurity.ToEntitySecurityInDirectDTO( indisrectSecurity, true);
+                        indisrectSecurityDTO = bizRoleSecurity.ToEntitySecurityInDirectDTO(indisrectSecurity, true);
                         var targetEntity = indisrectSecurity.EntityRelationshipTail.TableDrivedEntity;
                         directSecurityEntityID = targetEntity.ID;
                         disrectSecurities = targetEntity.EntitySecurityDirect.AsQueryable();
@@ -282,57 +297,71 @@ namespace MyModelManager
                 BizOrganization bizOrganization = new BizOrganization();
                 foreach (var post in organizationPosts)
                 {
-                    List<EntitySecurityDirectDTO> listDirectSecuritiesForPost = new List<EntitySecurityDirectDTO>();
+                    //  List<EntitySecurityDirectDTO> listDirectSecuritiesForPost = new List<EntitySecurityDirectDTO>();
                     var postDto = requester.Posts.FirstOrDefault(x => x.ID == post.ID);
                     if (postDto == null)
                         postDto = bizOrganization.GetOrganizationPost(post.ID);
-                    var postDisrectSecurities = GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.SecuritySubject.ID, securityMode);
-                    if (postDisrectSecurities.Any())
-                        listDirectSecuritiesForPost.AddRange(postDisrectSecurities);
-                    else
-                    {
-                        var orgTypeRoleTypeDisrectSecurities = GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.OrganizationType_RoleType.SecuritySubject.ID, securityMode);
-                        var organizationDisrectSecurities = GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.Organization.SecuritySubject.ID, securityMode);
-                        if (orgTypeRoleTypeDisrectSecurities.Any())
-                        {
-                            //اینجا دسترسی های موازی با هم جمع میشوند زیرا معلوم نیست بروی کدام آبجکت دارند اعمال میشوند و تصمیم گیری در مورد تداخل دسترسی بروی یک آبجکت به کلاینت واگذار میشود
-                            listDirectSecuritiesForPost.AddRange(orgTypeRoleTypeDisrectSecurities);
-                            listDirectSecuritiesForPost.AddRange(organizationDisrectSecurities);
-                        }
-                        else
-                        {
-                            var roleTypeDisrectSecurities = GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.OrganizationType_RoleType.RoleType.SecuritySubject.ID, securityMode);
-                            if (organizationDisrectSecurities.Any())
-                            {
-                                listDirectSecuritiesForPost.AddRange(organizationDisrectSecurities);
-                                listDirectSecuritiesForPost.AddRange(roleTypeDisrectSecurities);
-                            }
-                            else
-                            {
-                                var organizationTypeDisrectSecurities = GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.OrganizationType_RoleType.OrganizationType.SecuritySubject.ID, securityMode);
-                                listDirectSecuritiesForPost.AddRange(organizationTypeDisrectSecurities);
-                                listDirectSecuritiesForPost.AddRange(roleTypeDisrectSecurities);
-                            }
-                        }
-                    }
-                    if (listDirectSecuritiesForPost.Any())
-                    {
-                        //اونهای که سابجکت نال دارند و عمومی هستند
-                        var generalSecurityItems = GetGeneralEntitySecurityItems(requester, directSecurityEntityID, securityMode);
-                        foreach (var generalSecurityItem in generalSecurityItems)
-                        {
-                            foreach (var directSecurityItem in listDirectSecuritiesForPost)
-                            {
-                                directSecurityItem.Conditions.AddRange(generalSecurityItem.Conditions);
-                            }
-                        }
-                    }
+                    var postDisrectSecurities = GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.SecuritySubject.ID);
+                    postDisrectSecurities.AddRange(GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.Organization.SecuritySubject.ID));
+                    postDisrectSecurities.AddRange(GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.OrganizationType_RoleType.SecuritySubject.ID));
+                    postDisrectSecurities.AddRange(GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.OrganizationType_RoleType.OrganizationType.SecuritySubject.ID));
+                    postDisrectSecurities.AddRange(GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.OrganizationType_RoleType.RoleType.SecuritySubject.ID));
+
+
+                    //منطق اینجا رو نفهمیدم غیر فعال شد. بجاش بالا همه دسترسی ها تجمیع می شوند
+                    //////if (postDisrectSecurities.Any())
+                    //////    listDirectSecuritiesForPost.AddRange(postDisrectSecurities);
+                    //////else
+                    //////{
+                    //////    var orgTypeRoleTypeDisrectSecurities = GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.OrganizationType_RoleType.SecuritySubject.ID);
+                    //////    var organizationDisrectSecurities = GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.Organization.SecuritySubject.ID);
+                    //////    if (orgTypeRoleTypeDisrectSecurities.Any())
+                    //////    {
+                    //////        //اینجا دسترسی های موازی با هم جمع میشوند زیرا معلوم نیست بروی کدام آبجکت دارند اعمال میشوند و تصمیم گیری در مورد تداخل دسترسی بروی یک آبجکت به کلاینت واگذار میشود
+                    //////        listDirectSecuritiesForPost.AddRange(orgTypeRoleTypeDisrectSecurities);
+                    //////        listDirectSecuritiesForPost.AddRange(organizationDisrectSecurities);
+                    //////    }
+                    //////    else
+                    //////    {
+                    //////        var roleTypeDisrectSecurities = GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.OrganizationType_RoleType.RoleType.SecuritySubject.ID);
+                    //////        if (organizationDisrectSecurities.Any())
+                    //////        {
+                    //////            listDirectSecuritiesForPost.AddRange(organizationDisrectSecurities);
+                    //////            listDirectSecuritiesForPost.AddRange(roleTypeDisrectSecurities);
+                    //////        }
+                    //////        else
+                    //////        {
+                    //////            var organizationTypeDisrectSecurities = GetDirectSecurities(requester, disrectSecurities, directSecurityEntityID, post.OrganizationType_RoleType.OrganizationType.SecuritySubject.ID);
+                    //////            listDirectSecuritiesForPost.AddRange(organizationTypeDisrectSecurities);
+                    //////            listDirectSecuritiesForPost.AddRange(roleTypeDisrectSecurities);
+                    //////        }
+                    //////    }
+                    //////}
+
+
+
+
+
+                    //if (listDirectSecuritiesForPost.Any())
+                    //{
+                    //اونهای که سابجکت نال دارند و عمومی هستند
+                    var generalSecurityItems = GetGeneralEntitySecurityItems(requester, directSecurityEntityID);
+                    if (generalSecurityItems.Any())
+                        postDisrectSecurities.AddRange(generalSecurityItems);
+                    //foreach (var generalSecurityItem in generalSecurityItems)
+                    //{
+                    //    foreach (var directSecurityItem in listDirectSecuritiesForPost)
+                    //    {
+                    //        directSecurityItem.Conditions.AddRange(generalSecurityItem.Conditions);
+                    //    }
+                    //}
+                    //}
                     //listDirectSecuritiesForPost.AddRange(generalSecurityItems);
-                    directSecurities.Add(new Tuple<OrganizationPostDTO, List<EntitySecurityDirectDTO>>(postDto, listDirectSecuritiesForPost));
+                    allPostsDirectSecurities.Add(new PostEntityDataSecurityItems(postDto, postDisrectSecurities));
                 }
             }
             //CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.ConditionalPermission, securitySubjectID.ToString(), entityID.ToString());
-            return new Tuple<EntitySecurityInDirectDTO, List<Tuple<OrganizationPostDTO, List<EntitySecurityDirectDTO>>>>(indisrectSecurityDTO, directSecurities);
+            return new EntityDataSecurityItems(indisrectSecurityDTO, allPostsDirectSecurities);
         }
         public IQueryable<OrganizationPost> GetDBOrganizationPosts(MyProjectEntities context, DR_Requester requester)
         {
@@ -347,25 +376,25 @@ namespace MyModelManager
             }
         }
 
-        private List<EntitySecurityDirectDTO> GetDirectSecurities(DR_Requester requester, IQueryable<EntitySecurityDirect> directSecurities, int entityID, int subjectID, SecurityMode securityMode)
+        private List<EntitySecurityDirectDTO> GetDirectSecurities(DR_Requester requester, IQueryable<EntitySecurityDirect> directSecurities, int entityID, int subjectID)
         {
-            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.EntityDirectSecurity, subjectID.ToString(), entityID.ToString(), securityMode.ToString());
-            if (cachedItem != null)
-                return (cachedItem as List<EntitySecurityDirectDTO>);
+            //var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.EntityDirectSecurity, subjectID.ToString(), entityID.ToString());
+            //if (cachedItem != null)
+            //    return (cachedItem as List<EntitySecurityDirectDTO>);
 
-            var subjectDisrectSecurities = directSecurities.Where(x => x.SecuritySubjectID == subjectID && x.Mode == (short)securityMode);
+            var subjectDisrectSecurities = directSecurities.Where(x => x.SecuritySubjectID == subjectID);// && x.Mode == (short)securityMode);
             List<EntitySecurityDirectDTO> result = new List<EntitySecurityDirectDTO>();
             BizRoleSecurity bizRoleSecurity = new BizRoleSecurity();
             foreach (var item in subjectDisrectSecurities)
             {
-                result.Add(bizRoleSecurity.ToEntitySecurityDirectDTO( item, true));
+                result.Add(bizRoleSecurity.ToEntitySecurityDirectDTO(requester,item, true));
             }
             CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.EntityDirectSecurity, subjectID.ToString(), entityID.ToString());
             return result;
 
         }
 
-        public List<EntitySecurityDirectDTO> GetGeneralEntitySecurityItems(DR_Requester requester, int entityID, SecurityMode securityMode)
+        public List<EntitySecurityDirectDTO> GetGeneralEntitySecurityItems(DR_Requester requester, int entityID)
         {
             var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.EntityGeneralDirectSecurity, entityID.ToString());
             if (cachedItem != null)
@@ -374,16 +403,38 @@ namespace MyModelManager
             List<EntitySecurityDirectDTO> result = new List<EntitySecurityDirectDTO>();
             using (var context = new MyProjectEntities())
             {
-                var disrectSecurities = context.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID && x.Mode == (short)securityMode);
+                var disrectSecurities = context.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID);// && x.Mode == (short)securityMode);
 
                 var subjectDisrectSecurities = disrectSecurities.Where(x => x.SecuritySubjectID == null);
                 foreach (var item in subjectDisrectSecurities)
                 {
-                    result.Add(bizRoleSecurity.ToEntitySecurityDirectDTO( item, true));
+                    result.Add(bizRoleSecurity.ToEntitySecurityDirectDTO(requester,item, true));
                 }
             }
             CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.EntityGeneralDirectSecurity, entityID.ToString());
             return result;
         }
+    }
+    public class EntityDataSecurityItems
+    {
+        public EntityDataSecurityItems(EntitySecurityInDirectDTO indisrectSecurityDTO, List<PostEntityDataSecurityItems> allPostsDirectSecurities)
+        {
+            InDirectDataSecurity = indisrectSecurityDTO;
+            PostEntityDataSecurityItems = allPostsDirectSecurities;
+        }
+
+        public EntitySecurityInDirectDTO InDirectDataSecurity { set; get; }
+        public List<PostEntityDataSecurityItems> PostEntityDataSecurityItems { set; get; }
+    }
+    public class PostEntityDataSecurityItems
+    {
+        public PostEntityDataSecurityItems(OrganizationPostDTO postDto, List<EntitySecurityDirectDTO> postDisrectSecurities)
+        {
+            OrganizationPost = postDto;
+            DirectSecurities = postDisrectSecurities;
+        }
+
+        public OrganizationPostDTO OrganizationPost { set; get; }
+        public List<EntitySecurityDirectDTO> DirectSecurities { set; get; }
     }
 }
