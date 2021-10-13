@@ -57,7 +57,7 @@ namespace MyProject_WPF
             SetColumnTabs();
             tabColumns.Visibility = Visibility.Collapsed;
             tabRelationships.Visibility = Visibility.Collapsed;
-            SetFormulas();
+            //SetFormulas();
 
             //dtgNumericColumnType.CellEditEnded += DtgNumericColumnType_CellEditEnded;
             //dtgNumericColumnType.CellValidating += DtgNumericColumnType_CellValidating;
@@ -167,14 +167,16 @@ namespace MyProject_WPF
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsReadonly", "فقط خواندنی", false, null, GridViewColumnType.CheckBox));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsNotTransferable", "غیر قابل انتقال", false, null, GridViewColumnType.CheckBox));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBFormula", "فرمول پایگاه داده", true, null, GridViewColumnType.Text));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("CustomFormulaName", "نام فرمول اختصاصی", true, null, GridViewColumnType.Text));
 
-                formulaColumn = new MySearchLookupColumn();
-                formulaColumn.DataMemberBinding = new Binding("CustomFormulaID");
-                formulaColumn.Header = "فرمول";
-                formulaColumn.NewItemEnabled = true;
-                formulaColumn.EditItemEnabled = true;
-                formulaColumn.EditItemClicked += formulaColumn_EditItemClicked;
-                dataGrid.Columns.Add(formulaColumn);
+
+                //formulaColumn = new MySearchLookupColumn();
+                //formulaColumn.DataMemberBinding = new Binding("CustomFormulaID");
+                //formulaColumn.Header = "فرمول";
+                //formulaColumn.NewItemEnabled = true;
+                //formulaColumn.EditItemEnabled = true;
+                //formulaColumn.EditItemClicked += formulaColumn_EditItemClicked;
+                //dataGrid.Columns.Add(formulaColumn);
 
 
 
@@ -234,49 +236,36 @@ namespace MyProject_WPF
 
 
 
-        private void formulaColumn_EditItemClicked(object sender, EditItemClickEventArg e)
-        {
-            int formulaID = 0;
-            if (e.DataConext is ColumnDTO)
-            {
-                formulaID = (e.DataConext as ColumnDTO).CustomFormulaID;
-            }
-            var entity = dtgRuleEntity.SelectedItem as TableDrivedEntityDTO;
-            frmFormula view = new frmFormula(formulaID, entity.ID);
-            view.FormulaUpdated += (sender1, e1) => View_ItemSelected(sender1, e1, (sender as MyStaticLookup), entity.ID);
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "فرمول", Enum_WindowSize.Maximized);
-
-        }
-        private void SetFormulas()
-        {
-            //var entity = dtgRuleEntity.SelectedItem as TableDrivedEntityDTO;
-            //var formulas = bizFormula.GetFormulas(entityID);
-            formulaColumn.DisplayMemberPath = "Name";
-            formulaColumn.SelectedValueMemberPath = "ID";
-            formulaColumn.SearchFilterChanged += FormulaColumn_SearchFilterChanged;
-        }
-        BizFormula bizFormula = new BizFormula();
-        private void FormulaColumn_SearchFilterChanged(object sender, SearchFilterArg e)
-        {
-            if (!string.IsNullOrEmpty(e.SingleFilterValue))
-            {
-                if (e.FilterBySelectedValue)
-                {
-                    var id = Convert.ToInt32(e.SingleFilterValue);
-                    if (id > 0)
-                    {
-                        var formula = bizFormula.GetFormula(MyProjectManager.GetMyProjectManager.GetRequester(), id, false);
-                        e.ResultItemsSource = new List<FormulaDTO> { formula };
-                    }
-                    else
-                        e.ResultItemsSource = null;
-                }
-                else
-                {
-                    e.ResultItemsSource = bizFormula.GetAllFormulas(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue);
-                }
-            }
-        }
+        //private void SetFormulas()
+        //{
+        //    //var entity = dtgRuleEntity.SelectedItem as TableDrivedEntityDTO;
+        //    //var formulas = bizFormula.GetFormulas(entityID);
+        //    formulaColumn.DisplayMemberPath = "Name";
+        //    formulaColumn.SelectedValueMemberPath = "ID";
+        //    formulaColumn.SearchFilterChanged += FormulaColumn_SearchFilterChanged;
+        //}
+        //BizFormula bizFormula = new BizFormula();
+        //private void FormulaColumn_SearchFilterChanged(object sender, SearchFilterArg e)
+        //{
+        //    if (!string.IsNullOrEmpty(e.SingleFilterValue))
+        //    {
+        //        if (e.FilterBySelectedValue)
+        //        {
+        //            var id = Convert.ToInt32(e.SingleFilterValue);
+        //            if (id > 0)
+        //            {
+        //                var formula = bizFormula.GetFormula(MyProjectManager.GetMyProjectManager.GetRequester(), id, false);
+        //                e.ResultItemsSource = new List<FormulaDTO> { formula };
+        //            }
+        //            else
+        //                e.ResultItemsSource = null;
+        //        }
+        //        else
+        //        {
+        //            e.ResultItemsSource = bizFormula.GetAllFormulas(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue);
+        //        }
+        //    }
+        //}
 
         private void View_ItemSelected(object sender, FormulaSelectedArg e, MyStaticLookup lookup, int entityID)
         {
@@ -344,8 +333,8 @@ namespace MyProject_WPF
                 //var relationships = bizRelationship.GetAllRelationships(entity.ID);
                 //dtgRelationships.ItemsSource = columns;
                 //btnUpdateColumns.IsEnabled = true;
-             
-                
+
+
                 //var column = GetColumn(dtgColumns, "PrimaryKey");
                 //if (column != null)
                 //{
@@ -938,6 +927,9 @@ namespace MyProject_WPF
                 var columnValueRangeMenu = AddMenu(contextMenu.Items, "تعریف لیست مقادیر", "", "../Images/columnrule.png");
                 columnValueRangeMenu.Click += (sender1, EventArgs) => DefineColumnValueForColumn(sender, e, column);
 
+                var columnCustomFormulaMenu = AddMenu(contextMenu.Items, "تعریف فرمول اختصاصی", "", "../Images/columnrule.png");
+                columnCustomFormulaMenu.Click += (sender1, EventArgs) => DefineColumnCustomFormula(sender, e, column);
+
                 if (column.ColumnType == Enum_ColumnType.String)
                 {
                     var convertToDateColumnMenu = AddMenu(contextMenu.Items, "تبدیل به تاریخ", "", "../Images/date.png");
@@ -1005,6 +997,20 @@ namespace MyProject_WPF
         {
             bizColumn.ConvertStringColumnToDateTimeColumnType(columnID);
         }
+
+        void DefineColumnCustomFormula(object sender, RoutedEventArgs e, ColumnDTO column)
+        {
+            var entity = dtgRuleEntity.SelectedItem as TableDrivedEntityDTO;
+            frmColumnCustomFormula view = new frmColumnCustomFormula(entity.ID, column.ID);
+            view.ItemUpdated += (sender1, e1) => View_ItemUpdated(sender1, e1, column);
+            MyProjectManager.GetMyProjectManager.ShowDialog(view, "فرمول", Enum_WindowSize.None);
+        }
+
+        private void View_ItemUpdated(object sender, string e, ColumnDTO column)
+        {
+            column.CustomFormulaName = e;
+        }
+
         void DefineColumnValueForColumn(object sender, RoutedEventArgs e, ColumnDTO column)
         {
             frmColumnValueRange view = new frmColumnValueRange(column.ID);

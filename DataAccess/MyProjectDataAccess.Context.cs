@@ -40,6 +40,7 @@ namespace DataAccess
         public virtual DbSet<CodeFunction_TableDrivedEntity_Parameters> CodeFunction_TableDrivedEntity_Parameters { get; set; }
         public virtual DbSet<CodeFunctionParameter> CodeFunctionParameter { get; set; }
         public virtual DbSet<Column> Column { get; set; }
+        public virtual DbSet<ColumnCustomFormula> ColumnCustomFormula { get; set; }
         public virtual DbSet<ColumnPhrase> ColumnPhrase { get; set; }
         public virtual DbSet<ColumnUISetting> ColumnUISetting { get; set; }
         public virtual DbSet<ColumnValue_ValidValues> ColumnValue_ValidValues { get; set; }
@@ -148,9 +149,9 @@ namespace DataAccess
         public virtual DbSet<UnionRelationshipType> UnionRelationshipType { get; set; }
         public virtual DbSet<UnionToSubUnionRelationshipType> UnionToSubUnionRelationshipType { get; set; }
         public virtual DbSet<UniqueConstraint> UniqueConstraint { get; set; }
-        public virtual DbSet<EntitySecurityCondition_Old> EntitySecurityCondition_Old { get; set; }
         public virtual DbSet<EntitySecurityDirect> EntitySecurityDirect { get; set; }
-        public virtual DbSet<EntitySecurityDirectStates> EntitySecurityDirectStates { get; set; }
+        public virtual DbSet<EntitySecurityDirectSecuritySubject> EntitySecurityDirectSecuritySubject { get; set; }
+        public virtual DbSet<EntitySecurityDirectValues> EntitySecurityDirectValues { get; set; }
         public virtual DbSet<EntitySecurityInDirect> EntitySecurityInDirect { get; set; }
         public virtual DbSet<Organization> Organization { get; set; }
         public virtual DbSet<OrganizationPost> OrganizationPost { get; set; }

@@ -138,7 +138,8 @@ namespace MyModelManager
                 result.FormulaType = FormulaType.CodeFunction;
                 result.CodeFunctionID = item.CodeFunctionID.Value;
             }
-
+            if (item.LinearFormula != null)
+                result.Tooltip = item.LinearFormula.FormulaText;
             result.Title = item.Title;
             //result.ValueCustomType = (ValueCustomType)item.ValueCustomType;
             result.ResultDotNetType = GetFormulaDotNetType(item.ResultType);
@@ -153,13 +154,19 @@ namespace MyModelManager
                 }
             }
         }
-        public List<FormulaDTO> GetFormulas(int entityID)
+        public List<FormulaDTO> GetFormulas(int entityID, bool generalFormulas)
         {
             List<FormulaDTO> result = new List<FormulaDTO>();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var Formulas = projectContext.Formula.Where(x => x.TableDrivedEntityID == entityID);
-                foreach (var item in Formulas)
+                IQueryable<Formula> formulas = null;
+                if (generalFormulas)
+                    formulas = projectContext.Formula.Where(x => x.TableDrivedEntityID == null || x.TableDrivedEntityID == entityID);
+                else
+                {
+                    formulas = projectContext.Formula.Where(x => x.TableDrivedEntityID == entityID);
+                }
+                foreach (var item in formulas)
                 {
                     FormulaDTO rItem = new FormulaDTO();
                     ToFormulaDTO(item, rItem, false);
@@ -336,7 +343,7 @@ namespace MyModelManager
                 if (formula.EntityID != 0)
                     dbFormula.TableDrivedEntityID = formula.EntityID;
                 else
-                    dbFormula.TableDrivedEntityID = 0;
+                    dbFormula.TableDrivedEntityID = null;
                 dbFormula.ResultType = formula.ResultType;
 
                 //dbFormula.ValueCustomType = (Int16)Formula.ValueCustomType;

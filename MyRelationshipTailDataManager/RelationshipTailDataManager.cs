@@ -77,7 +77,10 @@ namespace MyRelationshipDataManager
                 return items;
         }
 
-
+        public EntityRelationshipTailDTO JoinRelationshipTail(EntityRelationshipTailDTO relationshipTail1, EntityRelationshipTailDTO relationshipTail2)
+        {
+            return bizRelationshipTail.JoinRelationshipTail(relationshipTail1, relationshipTail2);
+        }
     }
     public enum RelationshipTailSreachType
     {

@@ -140,7 +140,7 @@ namespace MyProject_WPF
 
             BizFormula bizFormula = new BizFormula();
 
-            var listAllFormula = bizFormula.GetFormulas(Process.EntityID);
+            var listAllFormula = bizFormula.GetFormulas(Process.EntityID,false);
             List<FormulaDTO> listValidFormula = new List<FormulaDTO>();
             foreach (var formula in listAllFormula)
             {

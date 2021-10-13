@@ -200,7 +200,6 @@ namespace MyCommonWPFControls
                 var foundItems = FindItemInItemsSource(lookupItemsSource, e.SingleFilterValue);
                 if (foundItems.Count == 0)
                 {
-
                     //قاعدتا اینجا نباید هیچوقت بیاد
                     //چون در موقع نمایش ایتم سورس با تمام مقادیر ساخته شده
                     var filterArg = new MyCommonWPFControls.SearchFilterArg();

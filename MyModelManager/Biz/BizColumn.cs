@@ -109,6 +109,54 @@ namespace MyModelManager
             //    return typeof(bool);
             //return null;
         }
+
+        public ModelEntites.ColumnCustomFormulaDTO GetCustomFormula(int columnID)
+        {
+            using (var projectContext = new DataAccess.MyProjectEntities())
+            {
+                var dbColumn = projectContext.Column.First(x => x.ID == columnID);
+                if (dbColumn.ColumnCustomFormula == null)
+                    return null;
+                else
+                    return ToColumnCustomFormulaDTO(dbColumn.ColumnCustomFormula);
+            }
+        }
+
+        public void DeleteColumnCustomFormula(int columnID)
+        {
+            using (var projectContext = new DataAccess.MyProjectEntities())
+            {
+                var dbColumn = projectContext.Column.First(x => x.ID == columnID);
+
+
+                if (dbColumn.ColumnCustomFormula == null)
+                    projectContext.ColumnCustomFormula.Remove(dbColumn.ColumnCustomFormula);
+                projectContext.SaveChanges();
+            }
+        }
+
+        public void SaveColumnCustomFormula(int columnID, ModelEntites.ColumnCustomFormulaDTO message)
+        {
+            using (var projectContext = new DataAccess.MyProjectEntities())
+            {
+                var dbColumn = projectContext.Column.First(x => x.ID == columnID);
+
+
+                if (dbColumn.ColumnCustomFormula == null)
+                    dbColumn.ColumnCustomFormula = new DataAccess.ColumnCustomFormula();
+
+                dbColumn.ColumnCustomFormula.FormulaID = message.FormulaID;
+                dbColumn.ColumnCustomFormula.CalculateFormulaAsDefault = message.CalculateFormulaAsDefault;
+                dbColumn.ColumnCustomFormula.OnlyOnEmptyValue = message.OnlyOnEmptyValue;
+                dbColumn.ColumnCustomFormula.OnlyOnNewData = message.OnlyOnNewData;
+                projectContext.SaveChanges();
+            }
+
+
+
+        }
+
+
         //public Type GetColumnDotNetType(string type)
         //{
 
@@ -549,8 +597,10 @@ namespace MyModelManager
             result.IsReadonly = item.IsReadonly;
             result.DotNetType = GetColumnDotNetType(item.DataType, item.IsNull);
 
-            result.CustomFormulaID = item.CustomCalculateFormulaID ?? 0;
-            result.CalculateFormulaAsDefault = item.CalculateFormulaAsDefault;
+            if (item.ColumnCustomFormula != null)
+            {
+                result.CustomFormulaName = item.ColumnCustomFormula.Formula.Name;
+            }
             if (!simple)
             {
                 if (item.StringColumnType != null)
@@ -567,14 +617,27 @@ namespace MyModelManager
                 if (item.ColumnValueRange != null)
                     result.ColumnValueRange = bizColumnValueRange.ToColumnValueRangeDTO(item.ColumnValueRange, true);
 
-                if (item.CustomCalculateFormulaID != null)
+                if (item.ColumnCustomFormula != null)
                 {
-                    result.CustomFormula = new BizFormula().ToFormulaDTO(item.Formula, false);
+                    result.ColumnCustomFormula = ToColumnCustomFormulaDTO(item.ColumnCustomFormula);
                 }
+
             }
             CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.Column, item.ID.ToString(), simple.ToString());
             return result;
         }
+
+        private ModelEntites.ColumnCustomFormulaDTO ToColumnCustomFormulaDTO(ColumnCustomFormula item)
+        {
+            var result = new ModelEntites.ColumnCustomFormulaDTO();
+            result.FormulaID = item.FormulaID ?? 0;
+            result.CalculateFormulaAsDefault = item.CalculateFormulaAsDefault;
+            result.OnlyOnEmptyValue = item.OnlyOnEmptyValue;
+            result.OnlyOnNewData = item.OnlyOnNewData;
+            result.Formula = new BizFormula().ToFormulaDTO(item.Formula, false);
+            return result;
+        }
+
         private bool IsStringType(string datatype)
         {
             return (datatype.Contains("char") || datatype.Contains("text"));
@@ -622,12 +685,8 @@ namespace MyModelManager
                     //{
                     //    dbColumn.PrimaryKey = column.PrimaryKey;
                     //}
-                    if (column.CustomFormulaID != 0)
-                        dbColumn.CustomCalculateFormulaID = column.CustomFormulaID;
-                    else
-                        dbColumn.CustomCalculateFormulaID = null;
 
-                    dbColumn.CalculateFormulaAsDefault = column.CalculateFormulaAsDefault;
+
 
 
                     // if (column.CustomFormulaID != 0)

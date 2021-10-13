@@ -84,7 +84,7 @@ namespace MyProject_WPF
             }
             else
             {
-                var listFomula = bizFormula.GetFormulas(EntityID);
+                var listFomula = bizFormula.GetFormulas(EntityID, false);
                 dtgFormulas.ItemsSource = listFomula;
             }
         }

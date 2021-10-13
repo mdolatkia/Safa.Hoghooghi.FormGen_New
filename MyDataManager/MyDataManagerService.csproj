@@ -76,6 +76,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSecurityManager.cs" />
     <Compile Include="GraphManagerService.cs" />
     <Compile Include="EntityListViewManagerService.cs" />
     <Compile Include="SecurityManagerService.cs" />

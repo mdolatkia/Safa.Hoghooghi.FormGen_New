@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        
        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
         mc:Ignorable="d"
        >
@@ -27,14 +26,15 @@
             </Grid.ColumnDefinitions>
             <TextBlock Text="عنوان"></TextBlock>
             <TextBox x:Name="txtTitle" Grid.Column="1"></TextBox>
-            <TextBlock Grid.Row="1"  Text="نقش/گروه"></TextBlock>
+            <TextBlock Grid.Row="1" x:Name="lblSecuritySubjects" Text="نقش/گروه"></TextBlock>
             <telerik:RadGridView x:Name="dtgSecuritySubjects" MinHeight="80" AutoGenerateColumns="False" Grid.Row="1" Grid.Column="1" >
                 <telerik:RadGridView.Columns>
                     <MyCommonWPFControls:MySearchLookupColumn  x:Name="colSecuritySubject" Header="نقش/گروه" Width="200"  DataMemberBinding="{Binding Path=SecuritySubjectID}"></MyCommonWPFControls:MySearchLookupColumn>
-                    <telerik:GridViewComboBoxColumn x:Name="colHasOrHasNot" Header="دارد/ندارد" DataMemberBinding="{Binding Path=SecuritySubjectOperator}"></telerik:GridViewComboBoxColumn>
+                    <!--<telerik:GridViewComboBoxColumn x:Name="colHasOrHasNot" Header="دارد/ندارد" DataMemberBinding="{Binding Path=SecuritySubjectOperator}"></telerik:GridViewComboBoxColumn>-->
                 </telerik:RadGridView.Columns>
             </telerik:RadGridView>
-            
+            <TextBlock Text="عملگر"  x:Name="lblInOrNotIn"  Grid.Row="1" Grid.Column="2" VerticalAlignment="Top"  ></TextBlock>
+            <ComboBox x:Name="cmbInOrNotIn" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top" Width="120" ></ComboBox>
             <!--<MyCommonWPFControls:MySearchLookup x:Name="lokSubject" Grid.Row="1" HorizontalAlignment="Stretch"  Grid.Column="1"/>-->
             <!--<TextBlock Text="نوع" Grid.Row="1"></TextBlock>-->
 
@@ -70,10 +70,10 @@
 
                         </Grid.ColumnDefinitions>
                         <TextBlock  Text="فرمول مرتبط"></TextBlock>
-                        <ComboBox x:Name="cmbFormula" Width="260" Grid.Column="1"></ComboBox>
-                        <Button x:Name="btnAddFormula" Width="90" Height="20" Content="تعریف فرمول" Grid.Column="2" Click="btnAddFormula_Click"></Button>
+                        <MyCommonWPFControls:MyStaticLookup x:Name="lokFormula" Width="260" Grid.Column="1"></MyCommonWPFControls:MyStaticLookup>
+                        <!--<Button x:Name="btnAddFormula" Width="90" Height="20" Content="تعریف فرمول" Grid.Column="2" Click="btnAddFormula_Click"></Button>-->
                         <TextBlock Grid.Row="1" Text="مقدار مورد انتظار"></TextBlock>
-                        <telerik:RadGridView x:Name="dtgFormulaValue"  Grid.Row="1" Grid.Column="1" >
+                        <telerik:RadGridView x:Name="dtgFormulaValue"  AutoGenerateColumns="False"  MinHeight="80" Grid.Row="1" Grid.Column="1" >
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewDataColumn Header="مقدار" DataMemberBinding="{Binding Value}" />
                             </telerik:RadGridView.Columns>
@@ -120,8 +120,8 @@
                 <RowDefinition Height="*"></RowDefinition>
 
             </Grid.RowDefinitions>
-            <TextBlock HorizontalAlignment="Left" Text="اقدامات مرتبط"></TextBlock>
-            <telerik:RadGridView Grid.Row="1" AutoGenerateColumns="False"  x:Name="dtgActionActivities" >
+            <TextBlock x:Name="lblActionActivities" HorizontalAlignment="Left" Text="اقدامات مرتبط"></TextBlock>
+            <telerik:RadGridView Grid.Row="1" AutoGenerateColumns="False" MinHeight="80" x:Name="dtgActionActivities" >
                 <telerik:RadGridView.Columns>
                     <telerik:GridViewComboBoxColumn Header="اقدام مرتبط" DataMemberBinding="{Binding ID}" />
                 </telerik:RadGridView.Columns>
@@ -131,7 +131,6 @@
                         <telerik:RadMenuItem x:Name="mnuRemoveItem" Header="حذف مورد" Click="mnuRemoveItem_Click"></telerik:RadMenuItem>
                         <telerik:RadMenuItem x:Name="mnuAddNewActionActivity" Header="تعریف اقدام جدید" Click="mnuAddNewActionActivity_Click"></telerik:RadMenuItem>
                         <telerik:RadMenuItem x:Name="mnuEditActionActivity" Header="اصلاح اقدام مرتبط" Click="mnuEditActionActivity_Click"></telerik:RadMenuItem>
-
                     </telerik:RadContextMenu>
                 </telerik:RadContextMenu.ContextMenu  >
             </telerik:RadGridView>

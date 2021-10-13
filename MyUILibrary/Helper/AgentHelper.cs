@@ -63,7 +63,7 @@ namespace MyUILibrary
             string shdate = date;
             var t = shdate.Split('/');
             string year = t[0];
-            int Y =Convert.ToInt32( year);
+            int Y = Convert.ToInt32(year);
             int M = Convert.ToInt32(t[1]);
             int D = (t[2].Length > 2) ? Convert.ToInt32(t[2].Substring(0, 2)) : Convert.ToInt32(t[2]);
             DateTime MDate = P.ToDateTime(Y, M, D, 0, 0, 0, 0);
@@ -83,6 +83,16 @@ namespace MyUILibrary
             if (day.Length == 1)
                 day = "0" + day;
             return year + "/" + month + "/" + day;
+        }
+
+
+
+        private static EntityRelationshipTailDTO GetLastTail(EntityRelationshipTailDTO relationshipTail1)
+        {
+            if (relationshipTail1.ChildTail == null)
+                return relationshipTail1;
+            else
+                return GetLastTail(relationshipTail1.ChildTail);
         }
 
         //public static void SetPropertyTitleOneData(RelationshipColumnControlOneData propertyControl)
@@ -543,9 +553,9 @@ namespace MyUILibrary
             foreach (var column in columns)
             {
                 object value = null;
-                if (column.CustomFormulaID != 0 && column.CalculateFormulaAsDefault == true)
+                if (column.ColumnCustomFormula != null && column.ColumnCustomFormula.CalculateFormulaAsDefault == true)
                 {
-                   
+
                 }
                 else if (!string.IsNullOrEmpty(column.DefaultValue))
                 {
@@ -565,18 +575,20 @@ namespace MyUILibrary
             //برای اینکه دیتاآیتم را با بیشترین مقادیر داشته باشیم
             foreach (var column in columns)
             {
-                object value = null;
-                if (column.CustomFormulaID != 0 && column.CalculateFormulaAsDefault == true)
+                //object value = null;
+                if (column.ColumnCustomFormula != null && column.ColumnCustomFormula.CalculateFormulaAsDefault == true)
                 {
-                    var res = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.CalculateFormula(column.CustomFormulaID, result, AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
-                    if (res.Exception == null)
-                        value = res.Result;
-                    else
-                        value = MyGeneralLibrary.ReflectionHelper.GetDefaultValue(column.DotNetType);
-                    result.GetProperty(column.ID).Value = value;
-                    result.GetOriginalProperty(column.ID).Value = value;
+                    var property = result.GetProperty(column.ID);
+                    editEntityArea.AreaInitializer.UIFomulaManager.CalculateProperty(property, column.ColumnCustomFormula, result,true);
+                    //    var res = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.CalculateFormula(column.ColumnCustomFormula.FormulaID, result, AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
+                    //if (res.Exception == null)
+                    //    value = res.Result;
+                    //else
+                    //    value = MyGeneralLibrary.ReflectionHelper.GetDefaultValue(column.DotNetType);
+                    //result.GetProperty(column.ID).Value = value;
+                    result.GetOriginalProperty(column.ID).Value = property.Value;
                 }
-              
+
             }
             return result;
         }

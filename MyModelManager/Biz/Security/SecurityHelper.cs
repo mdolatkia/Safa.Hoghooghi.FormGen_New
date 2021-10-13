@@ -73,7 +73,7 @@ namespace MyModelManager
             return new List<SecurityAction>() {SecurityAction.Access,SecurityAction.Any,
             SecurityAction.ArchiveEdit,
             SecurityAction.EditAndDelete,SecurityAction.LetterEdit
-            
+
         };
         }
 
@@ -309,7 +309,7 @@ namespace MyModelManager
             SecurityActionTreeItem noaccess = new SecurityActionTreeItem();
             noaccess.Action = SecurityAction.NoAccess;
             result.Add(noaccess);
-    
+
 
             SecurityActionTreeItem access = new SecurityActionTreeItem();
             access.Action = SecurityAction.Access;
@@ -757,28 +757,28 @@ namespace MyModelManager
 
         //}
 
-        public bool EntityHasSecurity(int entityID)
-        {
-            using (var context = new MyProjectEntities())
-            {
-                var disrectSecurities = context.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID);//&& x.Mode == (short)securityMode);
-                if (disrectSecurities.Any())
-                {
-                    return true;
-                }
-                else
-                {
-                    var indisrectSecurity = context.EntitySecurityInDirect.FirstOrDefault(x => x.TableDrivedEntityID == entityID);
-                    if (indisrectSecurity == null)
-                        return false;
-                    else
-                    {
-                        var targetEntity = indisrectSecurity.EntityRelationshipTail.TableDrivedEntity;
-                        return targetEntity.EntitySecurityDirect.Any();// x => x.Mode == (short)securityMode);
-                    }
-                }
-            }
-        }
+        //public bool EntityHasSecurity(int entityID)
+        //{
+        //    using (var context = new MyProjectEntities())
+        //    {
+        //        var disrectSecurities = context.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID && x.Mode == (short)DataDirectSecurityMode.FetchData);
+        //        if (disrectSecurities.Any())
+        //        {
+        //            return true;
+        //        }
+        //        else
+        //        {
+        //            var indisrectSecurity = context.EntitySecurityInDirect.FirstOrDefault(x => x.TableDrivedEntityID == entityID && (x.Mode== (short)DataInDirectSecurityMode.FetchData || x.Mode == (short)DataInDirectSecurityMode.FetchDataAndMakeReadonly));
+        //            if (indisrectSecurity == null)
+        //                return false;
+        //            else
+        //            {
+        //                var targetEntity = indisrectSecurity.EntityRelationshipTail.TableDrivedEntity;
+        //                return targetEntity.EntitySecurityDirect.Any(x => x.Mode == (short)DataDirectSecurityMode.FetchData);
+        //            }
+        //        }
+        //    }
+        //}
 
 
 

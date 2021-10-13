@@ -142,7 +142,7 @@ namespace MyProject_WPF
                 else if (windowSize == Enum_WindowSize.Big)
                 {
                     window.Width = 900;
-                    window.Height = 600;
+                    window.Height = 700;
                 }
                 else if (windowSize == Enum_WindowSize.Vertical)
                 {
@@ -150,7 +150,7 @@ namespace MyProject_WPF
                     window.Height = 500;
                 }
                 window.Header = title;
-                 window.ShowDialog();
+                window.ShowDialog();
                 return window;
             }
             return null;
@@ -159,8 +159,15 @@ namespace MyProject_WPF
 
         public DR_Requester GetRequester()
         {
-            DR_Requester requester = new DR_Requester(2);
+            DR_Requester requester = new DR_Requester();
             requester.SkipSecurity = true;
+            requester.Identity = UserInfo.ID;
+
+            requester.Posts = UserInfo.OrganizationPosts;
+            //requester.SkipSecurity = false;
+
+            if (requester.Posts != null)
+                requester.PostIds = requester.Posts.Select(x => x.ID).ToList();
             //DR_Requester requester = new DR_Requester(2);
             //requester.Identity = 2;// MyProjectManager.GetMyProjectManager.UserInfo.ID;
             return requester;

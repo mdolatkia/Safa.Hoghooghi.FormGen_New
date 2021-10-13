@@ -152,10 +152,10 @@ namespace MyDataItemManager
 
         }
 
-        private DR_Requester GetRequester()
-        {
-            return new DR_Requester();// { SkipSecurity = true };
-        }
+        //private DR_Requester GetRequester()
+        //{
+        //    return new DR_Requester();// { SkipSecurity = true };
+        //}
 
         //public DP_DataView ToDataViewDTO(MyDataItem dbDataItem)
         //{

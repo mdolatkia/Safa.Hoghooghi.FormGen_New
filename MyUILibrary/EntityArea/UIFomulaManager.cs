@@ -26,7 +26,7 @@ namespace MyUILibrary.EntityArea
         {
             foreach (var columnControl in EditArea.SimpleColumnControls)
             {
-                if (columnControl.Column.CustomFormula != null)
+                if (columnControl.Column.ColumnCustomFormula != null)
                 {
                     FormulaColumns.Add(columnControl);
                 }
@@ -49,7 +49,7 @@ namespace MyUILibrary.EntityArea
                     string usageKey = columnControl.Column.ID.ToString();
                     if (e.DataItem.ChangeMonitorExists(generalKey, usageKey))
                         return;
-                    var fullFormula = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetFormula(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(),columnControl.Column.CustomFormula.ID);
+                    var fullFormula = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetFormula(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), columnControl.Column.ColumnCustomFormula.FormulaID);
                     if (fullFormula.FormulaItems.Any(x => x.ItemType == FormuaItemType.Column || !string.IsNullOrEmpty(x.RelationshipIDTail)))
                     {
                         e.DataItem.RelatedDataTailOrColumnChanged += DataItem_RelatedDataTailOrColumnChanged;
@@ -99,11 +99,11 @@ namespace MyUILibrary.EntityArea
                 {
                     foreach (var columnControl in FormulaColumns.Where(x => x.Column.ID.ToString() == e.UsageKey))
                     {
-                        var formulaColumn = FormulaColumns.First(x => x.Column.ID == columnControl.Column.ID).Column.CustomFormula;
+                        var formulaColumn = FormulaColumns.First(x => x.Column.ID == columnControl.Column.ID).Column.ColumnCustomFormula;
                         var dataProperty = e.DataToCall.GetProperty(columnControl.Column.ID);
                         if (dataProperty != null)
                         {
-                            CalculateProperty(dataProperty, formulaColumn, e.DataToCall);
+                            CalculateProperty(dataProperty, formulaColumn, e.DataToCall, false);
                         }
                     }
                 }
@@ -119,30 +119,73 @@ namespace MyUILibrary.EntityArea
         //}
 
 
-        public void CalculateProperty(EntityInstanceProperty dataProperty, FormulaDTO formula, DP_DataRepository dataItem)
+        public void CalculateProperty(EntityInstanceProperty dataProperty, ColumnCustomFormulaDTO columnCustomFormula, DP_DataRepository dataItem, bool asDefault)
         {
-            var result = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.CalculateFormula(formula.ID, dataItem, AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
-            dataProperty.FormulaID = formula.ID;
+
+
+            var key = "formulaCalculated" + "_" + dataProperty.ColumnID;
+            EditArea.RemoveDataItemMessage(dataItem, key);
+
+            if (columnCustomFormula.OnlyOnNewData)
+            {
+                if (!dataItem.IsNewItem)
+                {
+                    AddDataMessageItem(dataItem, key, ControlItemPriority.Normal, "فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی داده موجود اعمال نمی شود");
+                    return;
+                }
+            }
+            if (columnCustomFormula.OnlyOnEmptyValue)
+            {
+                if (dataProperty.Value != null && !string.IsNullOrEmpty(dataProperty.Value.ToString()))
+                {
+                    AddDataMessageItem(dataItem, key, ControlItemPriority.Normal, "فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی خصوصیت دارای مقدار اعمال نمی شود");
+                    return;
+                }
+            }
+
+
+            var result = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.CalculateFormula(columnCustomFormula.Formula.ID, dataItem, AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
+            dataProperty.FormulaID = columnCustomFormula.Formula.ID;
             dataProperty.FormulaException = null;
             dataProperty.FormulaUsageParemeters = result.FormulaUsageParemeters;
-            EditArea.RemoveDataItemMessage(dataItem, "formulaCalculated");
-            DataMessageItem baseMessageItem = new DataMessageItem();
-            baseMessageItem.CausingDataItem = dataItem;
-            baseMessageItem.Key = "formulaCalculated";
 
-            baseMessageItem.Priority = ControlItemPriority.Normal;
 
-            if (result.Exception==null)
+            if (result.Exception == null)
             {
-                dataProperty.Value = result.Result;
-                baseMessageItem.Message = "محاسبه شده توسط فرمول" + " " + formula.Title;
+                //dataProperty.Value = result.Result;
+
+                //    AddDataMessageItem(dataItem, key, ControlItemPriority.Normal, "محاسبه شده توسط فرمول" + " " + columnCustomFormula.Formula.Title);
+
+
             }
             else
             {
                 dataProperty.FormulaException = result.Exception.Message;
-                dataProperty.Value = "";
-                baseMessageItem.Message = "خطا در محاسبه فرمول" + " " + formula.Title + ":" + " " + dataProperty.FormulaException;
+                //  dataProperty.Value = "";
+
+                //اینجا خطا روی ستون یا رابطه بدهد
+                AddDataMessageItem(dataItem, key, ControlItemPriority.Normal, "خطا در محاسبه فرمول" + " " + columnCustomFormula.Formula.Title + ":" + " " + dataProperty.FormulaException);
             }
+
+
+            var uiColumnValue = new UIColumnValueDTO();
+            uiColumnValue.ColumnID = columnCustomFormula.ID;
+            //ابجکت نشه؟ExactValue
+            uiColumnValue.ExactValue = result.Result.ToString();
+            uiColumnValue.EvenHasValue = !columnCustomFormula.OnlyOnEmptyValue;
+            uiColumnValue.EvenIsNotNew = !columnCustomFormula.OnlyOnNewData;
+            List<UIColumnValueDTO> uIColumnValues = new List<UIColumnValueDTO>() { uiColumnValue };
+            EditArea.SetColumnValueFromState(dataItem, uIColumnValues, null, columnCustomFormula.Formula);
+
+        }
+
+        private void AddDataMessageItem(DP_DataRepository dataItem, string key, ControlItemPriority priority, string message)
+        {
+            DataMessageItem baseMessageItem = new DataMessageItem();
+            baseMessageItem.CausingDataItem = dataItem;
+            baseMessageItem.Key = key;
+            baseMessageItem.Priority = priority;
+            baseMessageItem.Message = message;
             EditArea.AddDataItemMessage(baseMessageItem);
         }
 
@@ -166,7 +209,7 @@ namespace MyUILibrary.EntityArea
                 var cpMenuFormulaCalculation = new ConrolPackageMenu();
                 cpMenuFormulaCalculation.Name = "mnuFormulaCalculation";
                 cpMenuFormulaCalculation.Title = "محاسبه فرمول";
-                cpMenuFormulaCalculation.Tooltip = columnControl.Column.CustomFormula.Tooltip;
+                cpMenuFormulaCalculation.Tooltip = columnControl.Column.ColumnCustomFormula.Formula.Tooltip;
                 columnControl.SimpleControlManager.AddButtonMenu(cpMenuFormulaCalculation);
                 cpMenuFormulaCalculation.MenuClicked += (sender1, e1) => CpMenuFormulaCalculation_MenuClicked(sender1, e1, columnControl as SimpleColumnControl);
             }
@@ -182,7 +225,7 @@ namespace MyUILibrary.EntityArea
             FormulaCalculationAreaInitializer initializer = new FormulaCalculationAreaInitializer();
             initializer.DataItem = dataItem;
             initializer.FomulaManager = this;
-            initializer.Formula = columnControl.Column.CustomFormula;
+            initializer.ColumnCustomFormula = columnControl.Column.ColumnCustomFormula;
             initializer.ColumnControl = columnControl;
             var formulaCalculationArea = new FormulaCalculationArea(initializer);
             if (formulaCalculationArea.View != null)
@@ -275,6 +318,8 @@ namespace MyUILibrary.EntityArea
         //}
         public void UpdateFromulas(List<CalculatedPropertyTree> result, RelationshipDTO relationship = null)
         {
+
+
             var datalist = EditArea.GetDataList().Where(x => x.ShoudBeCounted).ToList();
             foreach (var data in datalist)
             {
@@ -285,13 +330,13 @@ namespace MyUILibrary.EntityArea
                 if (relationship != null)
                     calculatedPropertyTree.RelationshipInfo = relationship.Alias;
                 result.Add(calculatedPropertyTree);
-                foreach (var columnControl in EditArea.SimpleColumnControls.Where(x => x.Column.CustomFormula != null))
+                foreach (var columnControl in EditArea.SimpleColumnControls.Where(x => x.Column.ColumnCustomFormula.Formula != null))
                 {
                     var dataProperty = data.GetProperty(columnControl.Column.ID);
                     if (dataProperty != null)
                     {
                         calculatedPropertyTree.Properties.Add(dataProperty);
-                        CalculateProperty(dataProperty, columnControl.Column.CustomFormula, data);
+                        CalculateProperty(dataProperty, columnControl.Column.ColumnCustomFormula, data, false);
                     }
                     else
                     {

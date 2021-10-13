@@ -194,9 +194,17 @@ namespace MyModelCustomSetting
                     projectContext.Formula.Add(serviceItemGetNowFormula);
 
                     if (updateDateColumn != null)
-                        updateDateColumn.Formula = serviceItemGetNowFormula;
+                    {
+                        if (updateDateColumn.ColumnCustomFormula == null)
+                            updateDateColumn.ColumnCustomFormula = new ColumnCustomFormula();
+                        updateDateColumn.ColumnCustomFormula.Formula = serviceItemGetNowFormula;
+                    }
                     if (updateTimeColumn != null)
-                        updateTimeColumn.Formula = serviceItemGetNowFormula;
+                    {
+                        if (updateTimeColumn.ColumnCustomFormula == null)
+                            updateTimeColumn.ColumnCustomFormula = new ColumnCustomFormula();
+                        updateTimeColumn.ColumnCustomFormula.Formula = serviceItemGetNowFormula;
+                    }
                 }
 
                 CodeFunction_TableDrivedEntity serviceItemCodeFunctionEntity = null;
@@ -263,8 +271,12 @@ namespace MyModelCustomSetting
                 }
                 var HoursSpentColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "HoursSpent");
                 if (HoursSpentColumn != null)
-                    HoursSpentColumn.Formula = serviceItemHoursSpentFormula;
-                ServiceItemServiceTypeEnumColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "ServiceTypeEnum");
+                {
+                    if (HoursSpentColumn.ColumnCustomFormula == null)
+                        HoursSpentColumn.ColumnCustomFormula = new ColumnCustomFormula();
+                    HoursSpentColumn.ColumnCustomFormula.Formula = serviceItemHoursSpentFormula;
+                    ServiceItemServiceTypeEnumColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "ServiceTypeEnum");
+                }
                 if (ServiceItemServiceTypeEnumColumn != null)
                 {
                     if (ServiceItemServiceTypeEnumColumn.ColumnValueRange == null)
@@ -399,7 +411,11 @@ namespace MyModelCustomSetting
                 }
                 ConclusionItemPriceColumn = serviceConclusionItem.Table.Column.FirstOrDefault(x => x.Name == "Price");
                 if (ConclusionItemPriceColumn != null)
-                    ConclusionItemPriceColumn.Formula = ConclusionItemPriceFormula;
+                {
+                    if (ConclusionItemPriceColumn.ColumnCustomFormula == null)
+                        ConclusionItemPriceColumn.ColumnCustomFormula = new ColumnCustomFormula();
+                    ConclusionItemPriceColumn.ColumnCustomFormula.Formula = ConclusionItemPriceFormula;
+                }
 
 
 
@@ -499,7 +515,11 @@ namespace MyModelCustomSetting
                     }
                     ConclusionTotalPriceColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "TotalPrice");
                     if (ConclusionTotalPriceColumn != null)
-                        ConclusionTotalPriceColumn.Formula = serviceConclusionPriceFormula;
+                    {
+                        if (ConclusionTotalPriceColumn.ColumnCustomFormula == null)
+                            ConclusionTotalPriceColumn.ColumnCustomFormula = new ColumnCustomFormula();
+                            ConclusionTotalPriceColumn.ColumnCustomFormula.Formula = serviceConclusionPriceFormula;
+                    }
                 }
 
             }
@@ -547,8 +567,10 @@ namespace MyModelCustomSetting
 
                 if (persianDateColumn != null)
                 {
-                    persianDateColumn.Formula = todayFormula;
-                    persianDateColumn.CalculateFormulaAsDefault = true;
+                    if (persianDateColumn.ColumnCustomFormula == null)
+                        persianDateColumn.ColumnCustomFormula = new ColumnCustomFormula();
+                    persianDateColumn.ColumnCustomFormula.Formula = todayFormula;
+                    persianDateColumn.ColumnCustomFormula.CalculateFormulaAsDefault = true;
                 }
 
             }
@@ -3445,7 +3467,45 @@ namespace MyModelCustomSetting
                 customerGraphReport.EntityDataItemReport.GraphDefinition.GraphDefinition_EntityRelationshipTail.Add(reportTail);
                 projectContext.EntityReport.Add(customerGraphReport);
             }
-
+            var OfficeIDColumn = serviceRequest.Table.Column.First(x => x.Name == "OfficeID");
+            var directSecurityFetchData = projectContext.EntitySecurityDirect.FirstOrDefault(x => x.TableDrivedEntityID == serviceRequest.ID && x.ColumnID == OfficeIDColumn.ID);
+            if (directSecurityFetchData == null)
+            {
+                directSecurityFetchData = new EntitySecurityDirect();
+                directSecurityFetchData.TableDrivedEntityID = serviceRequest.ID;
+                directSecurityFetchData.ColumnID = OfficeIDColumn.ID;
+                directSecurityFetchData.Mode = (short)DataDirectSecurityMode.FetchData;
+                directSecurityFetchData.EntitySecurityDirectValues.Add(new EntitySecurityDirectValues() { ReservedValue = (short)SecurityReservedValue.OrganizationExternalKey });
+                directSecurityFetchData.SecuritySubjectOperator = (short)InORNotIn.In;
+                directSecurityFetchData.ValueOperator = (short)Enum_EntityStateOperator.Equals;
+                projectContext.EntitySecurityDirect.Add(directSecurityFetchData);
+            }
+            var organizationPostIDColumn = serviceRequest.Table.Column.First(x => x.Name == "OrganizationPostID");
+            var directSecurityReadonly = projectContext.EntitySecurityDirect.FirstOrDefault(x => x.TableDrivedEntityID == serviceRequest.ID && x.ColumnID == organizationPostIDColumn.ID);
+            if (directSecurityReadonly == null)
+            {
+                directSecurityReadonly = new EntitySecurityDirect();
+                directSecurityReadonly.TableDrivedEntityID = serviceRequest.ID;
+                directSecurityReadonly.ColumnID = OfficeIDColumn.ID;
+                directSecurityReadonly.Mode = (short)DataDirectSecurityMode.ReadonlyData;
+                directSecurityReadonly.ValueOperator = (short)Enum_EntityStateOperator.NotEquals;
+                directSecurityReadonly.EntitySecurityDirectValues.Add(new EntitySecurityDirectValues() { ReservedValue = (short)SecurityReservedValue.OrganizationPostID });
+                directSecurityReadonly.SecuritySubjectOperator = (short)InORNotIn.In;
+                projectContext.EntitySecurityDirect.Add(directSecurityReadonly);
+            }
+            var indirectSecurity = projectContext.EntitySecurityInDirect.FirstOrDefault(x => x.TableDrivedEntityID == serviceConclusion.ID);
+            if (indirectSecurity == null)
+            {
+                var serviceConclusionRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
+                if (serviceConclusionRequestRelationship != null)
+                {
+                    var serviceConclusionRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, serviceConclusionRequestRelationship.ID.ToString());
+                    indirectSecurity = new EntitySecurityInDirect();
+                    indirectSecurity.TableDrivedEntityID = serviceConclusion.ID;
+                    indirectSecurity.EntityRelationshipTail = serviceConclusionRequestRelationshipTail;
+                    projectContext.EntitySecurityInDirect.Add(indirectSecurity);
+                }
+            }
             try
             {
                 projectContext.SaveChanges();
@@ -4016,7 +4076,7 @@ namespace MyModelCustomSetting
                 DR_SearchViewRequest item = new DR_SearchViewRequest(requester,
                      new DP_SearchRepository() { TargetEntityID = entity.ID });
                 item.MaxDataItems = 1;
-               // item.SecurityMode = SecurityMode.View;
+                // item.SecurityMode = SecurityMode.View;
 
                 var res = searchRequestManager.Process(item);
                 if (res != null && res.ResultDataItems.Any())

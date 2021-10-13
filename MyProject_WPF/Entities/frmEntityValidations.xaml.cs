@@ -52,7 +52,7 @@ namespace MyProject_WPF
             cmbFormula.DisplayMemberPath = "Name";
             cmbFormula.SelectedValuePath = "ID";
             BizFormula bizFormula = new BizFormula();
-            cmbFormula.ItemsSource = bizFormula.GetFormulas(EntityID);
+            cmbFormula.ItemsSource = bizFormula.GetFormulas(EntityID, false);
         }
 
         //private void SetCodeFunctions()
@@ -110,7 +110,7 @@ namespace MyProject_WPF
         private void btnAddFormula_Click(object sender, RoutedEventArgs e)
         {
 
-            frmFormula view = new frmFormula(cmbFormula.SelectedItem==null?0: (int)cmbFormula.SelectedValue, EntityID);
+            frmFormula view = new frmFormula(cmbFormula.SelectedItem == null ? 0 : (int)cmbFormula.SelectedValue, EntityID);
             view.FormulaUpdated += View_FormulaSelected;
             MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form");
         }
@@ -177,7 +177,7 @@ namespace MyProject_WPF
             if (cmbFormula.SelectedItem != null)
             {
                 var formula = cmbFormula.SelectedItem as FormulaDTO;
-                if (formula.ResultDotNetType!=typeof(bool)
+                if (formula.ResultDotNetType != typeof(bool)
                     && formula.ResultDotNetType != typeof(Boolean))
                 {
                     MessageBox.Show("مقدار نتیجه فرمول باید Boolean باشد");

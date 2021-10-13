@@ -47,7 +47,7 @@ namespace MyProject_WPF
      
         private void GetItems()
         {
-            var listEntityValidations = bizRoleSecurity.GetEntitySecurityDirects(MyProjectManager.GetMyProjectManager.GetRequester(), "");
+            var listEntityValidations = bizRoleSecurity.GetEntitySecurityDirects(MyProjectManager.GetMyProjectManager.GetRequester(),false, "");
             dtgItems.ItemsSource = listEntityValidations;
         }
         private void btnClose_Click(object sender, RoutedEventArgs e)

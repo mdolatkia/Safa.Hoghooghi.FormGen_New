@@ -408,11 +408,11 @@ namespace MyDataSearchManagerBusiness
         private string GetSecurityQuery(DR_Requester requester, TableDrivedEntityDTO mainEntity)
         {
 
-            SecurityHelper securityHelper = new SecurityHelper();
+            //   SecurityHelper securityHelper = new SecurityHelper();
             EntityDataSecurityItems securityItems = null;
             //if (securityMode == SecurityMode.ViewOnly)
             //{
-            bool entityHasViewSecurity = securityHelper.EntityHasSecurity(mainEntity.ID);
+            bool entityHasViewSecurity = bizRoleSecurity.EntityHasDirectOrIndirectSecurities(requester, mainEntity.ID, DataDirectSecurityMode.FetchData);
             if (entityHasViewSecurity)
             {
                 var viewSecurityItems = bizRoleSecurity.GetPostEntitySecurityItems(requester, mainEntity.ID);
@@ -471,21 +471,21 @@ namespace MyDataSearchManagerBusiness
                     mainSearchDataItem.AndOrType = AndORType.Or;
                     foreach (var post in securityItems.PostEntityDataSecurityItems)
                     {
-                        foreach (var item in post.DirectSecurities.Where(x => x.EntityStates.Any()))
+                        foreach (var item in post.DirectSecurities)
                         {
                             LogicPhraseDTO logicPhrase = new LogicPhraseDTO();
-                            foreach (var condition in item.EntityStates)
+                            //foreach (var condition in item.EntityStates)
+                            //{
+                            if (item.RelationshipTailID == 0)
                             {
-                                if (condition.EntityState.RelationshipTailID == 0)
-                                {
-                                    AddConditionPhrase(requester, post, logicPhrase, condition.EntityState);
-                                }
-                                else
-                                {
-                                    var currentSearchRepository = CreateChildSearchRepository(logicPhrase, condition.EntityState.RelationshipTail);
-                                    AddConditionPhrase(requester, post, currentSearchRepository, condition.EntityState);
-                                }
+                                AddConditionPhrase(requester, post, logicPhrase, item);
                             }
+                            else
+                            {
+                                var currentSearchRepository = CreateChildSearchRepository(logicPhrase, item.RelationshipTail);
+                                AddConditionPhrase(requester, post, currentSearchRepository, item);
+                            }
+                            //}
                             mainSearchDataItem.Phrases.Add(logicPhrase);
                         }
                     }
@@ -502,38 +502,36 @@ namespace MyDataSearchManagerBusiness
 
         }
 
-        private void AddConditionPhrase(DR_Requester requester, PostEntityDataSecurityItems post, LogicPhraseDTO logicPhrase, EntityStateDTO securityState)
+        private void AddConditionPhrase(DR_Requester requester, PostEntityDataSecurityItems post, LogicPhraseDTO logicPhrase, EntitySecurityDirectDTO item)
         {
-
             var searchProperty = new SearchProperty();
-            searchProperty.ColumnID = securityState.ColumnID;
-            searchProperty.IsKey = securityState.Column.PrimaryKey;
-            searchProperty.Name = securityState.Column.Name;
+            searchProperty.ColumnID = item.ColumnID;
+            searchProperty.IsKey = item.Column.PrimaryKey;
+            searchProperty.Name = item.Column.Name;
             string value = "";
-            if (securityState.Values.Count > 1)
+            if (item.Values.Count > 1)
             {
-                if (securityState.EntityStateOperator == Enum_EntityStateOperator.Equals)
+                if (item.ValueOperator == Enum_EntityStateOperator.Equals)
                     searchProperty.Operator = CommonOperator.InValues;
-                else if (securityState.EntityStateOperator == Enum_EntityStateOperator.NotEquals)
+                else if (item.ValueOperator == Enum_EntityStateOperator.NotEquals)
                     searchProperty.Operator = CommonOperator.NotInValues;
 
-                foreach (var val in securityState.Values)
+                foreach (var val in item.Values)
                 {
                     if (!string.IsNullOrEmpty(val.Value))
                         value += (value == "" ? "" : ",") + val.Value;
                     else if (val.SecurityReservedValue != SecurityReservedValue.None)
                         value += (value == "" ? "" : ",") + GerReserveValueFromPost(post, val.SecurityReservedValue);
                 }
-
             }
             else
             {
-                if (securityState.EntityStateOperator == Enum_EntityStateOperator.Equals)
+                if (item.ValueOperator == Enum_EntityStateOperator.Equals)
                     searchProperty.Operator = CommonOperator.Equals;
-                else if (securityState.EntityStateOperator == Enum_EntityStateOperator.NotEquals)
+                else if (item.ValueOperator == Enum_EntityStateOperator.NotEquals)
                     searchProperty.Operator = CommonOperator.Equals;
 
-                foreach (var val in securityState.Values)
+                foreach (var val in item.Values)
                 {
                     if (!string.IsNullOrEmpty(val.Value))
                         value = val.Value;
@@ -541,9 +539,7 @@ namespace MyDataSearchManagerBusiness
                         value = GerReserveValueFromPost(post, val.SecurityReservedValue);
                 }
             }
-            //درست شود
 
-            //حالت فانکشن
 
             if (!string.IsNullOrEmpty(value))
             {
@@ -554,7 +550,7 @@ namespace MyDataSearchManagerBusiness
                 //    value = dbFunctionResult.Result.ToString();
                 //}
                 searchProperty.Value = value;
-                searchProperty.Name = securityState.Column.Name;
+                searchProperty.Name = item.Column.Name;
                 logicPhrase.Phrases.Add(searchProperty);
             }
 

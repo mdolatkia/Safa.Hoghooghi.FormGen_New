@@ -596,7 +596,10 @@ namespace MyProject_WPF
                 return;
             }
             Formula.Name = txtName.Text;
-            Formula.EntityID = (int)lokEntity.SelectedValue;
+            if (lokEntity.SelectedItem != null)
+                Formula.EntityID = (int)lokEntity.SelectedValue;
+            else
+                Formula.EntityID = 0;
             Formula.Title = txtTitle.Text;
             Formula.ResultType = (cmbTypes.SelectedItem as Type).ToString();
             Formula.FormulaItems = GetFormulaItemsFromTree(treeParameters.Items);

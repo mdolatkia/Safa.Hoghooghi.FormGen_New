@@ -118,7 +118,7 @@ namespace MyFormulaFunctionStateFunctionLibrary
             }
 
 
-            var formulaParameters = bizFormula.GetFormulas(entity.ID);
+            var formulaParameters = bizFormula.GetFormulas(entity.ID, false);
             foreach (var formulaParameter in formulaParameters)
             {
                 var name = "p_" + formulaParameter.Name;
@@ -146,7 +146,7 @@ namespace MyFormulaFunctionStateFunctionLibrary
                 {
                     propertyInfo.Value = null;
                 }
-                propertyInfo.Tooltip = "فرمول" + " " + formulaParameter.Title + Environment.NewLine + "نوع" + ":" + " " + (formulaParameter.ResultDotNetType!=null?formulaParameter.ResultDotNetType.ToString():"?");
+                propertyInfo.Tooltip = "فرمول" + " " + formulaParameter.Title + Environment.NewLine + "نوع" + ":" + " " + (formulaParameter.ResultDotNetType != null ? formulaParameter.ResultDotNetType.ToString() : "?");
                 m_properties.Add(propertyInfo.Name, propertyInfo);
             }
 

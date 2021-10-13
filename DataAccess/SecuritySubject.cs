@@ -17,7 +17,7 @@ namespace DataAccess
         public SecuritySubject()
         {
             this.TableDrivedEntityStateSecuritySubject = new HashSet<TableDrivedEntityStateSecuritySubject>();
-            this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
+            this.EntitySecurityDirectSecuritySubject = new HashSet<EntitySecurityDirectSecuritySubject>();
             this.Permission = new HashSet<Permission>();
         }
     
@@ -25,7 +25,7 @@ namespace DataAccess
         public short Type { get; set; }
     
         public virtual ICollection<TableDrivedEntityStateSecuritySubject> TableDrivedEntityStateSecuritySubject { get; set; }
-        public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
+        public virtual ICollection<EntitySecurityDirectSecuritySubject> EntitySecurityDirectSecuritySubject { get; set; }
         public virtual Organization Organization { get; set; }
         public virtual OrganizationPost OrganizationPost { get; set; }
         public virtual OrganizationType OrganizationType { get; set; }

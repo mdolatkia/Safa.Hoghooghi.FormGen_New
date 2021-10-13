@@ -169,7 +169,7 @@ namespace MyUILibrary.EntityArea
         }
 
         List<EntityStateDTO> _EntityStates;
-        public List<EntityStateDTO> EntityStates
+        public List<EntityStateDTO> EntityStates1
         {
             get
             {
@@ -192,6 +192,7 @@ namespace MyUILibrary.EntityArea
                 return _SearchViewEntityArea;
             }
         }
+
         List<RelationshipColumnControl> _RelationshipColumnControls;
         public List<RelationshipColumnControl> RelationshipColumnControls
         {
@@ -569,7 +570,7 @@ namespace MyUILibrary.EntityArea
 
                 if (DataEntryEntity.Relationships.Any(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID)))
                 {
-                     if (!RelationshipColumnControls.Any(x => x.Columns.Any(z => z.ID == column.ID)))
+                    if (!RelationshipColumnControls.Any(x => x.Columns.Any(z => z.ID == column.ID)))
                     {
                         var relationship = DataEntryEntity.Relationships.First(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID));
                         AddRelationshipControl(relationship, sortedListOfColumnControls);
@@ -1387,8 +1388,8 @@ namespace MyUILibrary.EntityArea
                 var dataLinkCommand = new DataLinkCommand(this);
                 Commands.Add(dataLinkCommand);
                 DataView.AddCommand(dataLinkCommand.CommandManager, true);
-               
-                
+
+
                 var graphCommand = new GraphCommand(this);
                 Commands.Add(graphCommand);
                 DataView.AddCommand(graphCommand.CommandManager, true);
@@ -2480,6 +2481,8 @@ namespace MyUILibrary.EntityArea
             set; get;
         }
 
+        public List<EntityStateGroupDTO> EntityStateGroups { set; get; }
+
         public void SelectFromParent(DP_DataRepository parentDataItem, Dictionary<int, string> colAndValues)
         {
             bool fromDataview = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
@@ -3107,8 +3110,9 @@ namespace MyUILibrary.EntityArea
         //    }
         //    return false;
         //}
-        public void SetColumnValueFromState(DP_DataRepository dataItem, List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state)
+        public void SetColumnValueFromState(DP_DataRepository dataItem, List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula)
         {
+
             if (DataItemIsInEditMode(dataItem))
             {
                 List<Tuple<DP_DataRepository, SimpleColumnControl, string>> simpleColumnValues = new List<Tuple<DP_DataRepository, SimpleColumnControl, string>>();
@@ -3122,7 +3126,7 @@ namespace MyUILibrary.EntityArea
                     var column = dataItem.GetProperty(columnValue.ColumnID);
                     if (column != null)
                     {
-                        if (!columnValue.EvenHasValue && !AgentHelper.ValueIsEmpty(column))
+                        if (!columnValue.EvenHasValue && !AgentHelper.ValueIsEmptyOrDefaultValue(column))
                             continue;
 
                         //اینجا باید بیزینسی ریدونلی شدن داده هم تست شود
@@ -3151,17 +3155,47 @@ namespace MyUILibrary.EntityArea
                     }
                 }
 
-
+                string title = "";
+                string key = "";
+                if (state != null)
+                {
+                    key = "state" + "_" + state.ID;
+                    title = "بر اساس وضعیت" + " " + state.Title;
+                }
+                else if (formula != null)
+                {
+                    key = "formula" + "_" + formula.ID;
+                    title = "بر اساس فرمول" + " " + formula.Title;
+                }
                 foreach (var item in simpleColumnValues)
                 {
-                    if (dataItem.IsNewItem && AgentHelper.ValueIsEmptyOrDefaultValue(item.Item1.GetProperty(item.Item2.Column.ID)))
-                        SetDataItemSimplePropertyValue(item, "بر اساس وضعیت" + " " + state.Title);
+                    //if (dataItem.IsNewItem && AgentHelper.ValueIsEmptyOrDefaultValue(item.Item1.GetProperty(item.Item2.Column.ID)))
+                    SetDataItemSimplePropertyValue(item.Item1, item.Item2, item.Item3, key, title);
                 }
                 foreach (var item in relationshipColumnValues)
                 {
-                    if (dataItem.IsNewItem && item.Item3.All(x => AgentHelper.ValueIsEmptyOrDefaultValue(item.Item1.GetProperty(x.Key))))
-                        SetDataItemRelationshipColumnValue(item, "بر اساس وضعیت" + " " + state.Title);
+                    //if (dataItem.IsNewItem && item.Item3.All(x => AgentHelper.ValueIsEmptyOrDefaultValue(item.Item1.GetProperty(x.Key))))
+                    SetDataItemRelationshipColumnValue(item.Item1, item.Item2, item.Item3, key, title);
                 }
+            }
+        }
+        private void SetDataItemRelationshipColumnValue(DP_DataRepository dataItem, RelationshipColumnControl relationshipColumnControl, Dictionary<int, string> values
+            , string key, string title)
+        {
+            var childInfo = dataItem.ChildRelationshipInfos.First(x => x.Relationship.ID == relationshipColumnControl.Relationship.ID);
+            if (!childInfo.Relationship.IsReadonly && !childInfo.IsReadonly && !childInfo.IsHidden)
+            {
+                relationshipColumnControl.EditNdTypeArea.SetChildRelationshipInfo(childInfo);
+                relationshipColumnControl.EditNdTypeArea.SelectFromParent(dataItem, values);
+            }
+        }
+
+        private void SetDataItemSimplePropertyValue(DP_DataRepository dataItem, SimpleColumnControl simpleColumnControl, string value, string key, string title)
+        {
+            var property = dataItem.GetProperty(simpleColumnControl.Column.ID);
+            if (!property.IsReadonly && !property.IsReadonly && !property.IsHidden)
+            {      //اینجا باید بررسی بشه که نوع مقدار و پراپرتی مناسب هستند
+                property.Value = value;
             }
         }
 
@@ -3485,23 +3519,6 @@ namespace MyUILibrary.EntityArea
             //}
         }
 
-        private void SetDataItemRelationshipColumnValue(Tuple<DP_DataRepository, RelationshipColumnControl, Dictionary<int, string>> item, string titlev)
-        {
-            var childInfo = item.Item1.ChildRelationshipInfos.First(x => x.Relationship.ID == item.Item2.Relationship.ID);
-            if (!childInfo.Relationship.IsReadonly && !childInfo.IsReadonly && !childInfo.IsHidden)
-            {
-                item.Item2.EditNdTypeArea.SetChildRelationshipInfo(childInfo);
-                item.Item2.EditNdTypeArea.SelectFromParent(item.Item1, item.Item3);
-            }
-        }
-
-        private void SetDataItemSimplePropertyValue(Tuple<DP_DataRepository, SimpleColumnControl, string> item, string title)
-        {
-            var property = item.Item1.GetProperty(item.Item2.Column.ID);
-            if (!property.IsReadonly && !property.IsReadonly && !property.IsHidden)
-                //اینجا باید بررسی بشه که نوع مقدار و پراپرتی مناسب هستند
-                property.Value = item.Item3;
-        }
 
 
     }

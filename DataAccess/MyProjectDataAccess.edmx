@@ -157,9 +157,17 @@
           <Property Name="Position" Type="int" />
           <Property Name="Description" Type="varchar(max)" />
           <Property Name="DBCalculateFormula" Type="varchar" MaxLength="512" />
-          <Property Name="CustomCalculateFormulaID" Type="int" />
           <Property Name="IsNotTransferable" Type="bit" Nullable="false" />
-          <Property Name="CalculateFormulaAsDefault" Type="bit" />
+        </EntityType>
+        <EntityType Name="ColumnCustomFormula">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="FormulaID" Type="int" />
+          <Property Name="CalculateFormulaAsDefault" Type="bit" Nullable="false" />
+          <Property Name="OnlyOnNewData" Type="bit" Nullable="false" />
+          <Property Name="OnlyOnEmptyValue" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="ColumnPhrase">
           <Key>
@@ -1088,8 +1096,7 @@
           <Property Name="Title" Type="varchar" MaxLength="128" Nullable="false" />
           <Property Name="EntityStateOperator" Type="smallint" />
           <Property Name="EntityRelationshipTailID" Type="int" />
-          <Property Name="SecuritySubjectID" Type="int" />
-          <Property Name="SecuritySubjectOperator" Type="smallint" />
+          <Property Name="SecuritySubjectInOrNotIn" Type="bit" />
         </EntityType>
         <EntityType Name="TableDrivedEntityStateSecuritySubject">
           <Key>
@@ -1098,7 +1105,6 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TableDrivedEntityStateID" Type="int" Nullable="false" />
           <Property Name="SecuritySubjectID" Type="int" Nullable="false" />
-          <Property Name="SecuritySubjectOperator" Type="smallint" Nullable="false" />
         </EntityType>
         <EntityType Name="TableDrivedEntityStateValues">
           <Key>
@@ -1201,35 +1207,37 @@
           <Property Name="UniqueConstraintID" Type="int" Nullable="false" />
           <Property Name="ColumnID" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="EntitySecurityCondition_Old">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="EntitySecurityDirectID" Type="int" Nullable="false" />
-          <Property Name="EntityRelationshipTailID" Type="int" />
-          <Property Name="ColumnID" Type="int" Nullable="false" />
-          <Property Name="Operator" Type="smallint" Nullable="false" />
-          <Property Name="Value" Type="varchar" MaxLength="128" />
-          <Property Name="DatabaseFunctionID" Type="int" />
-          <Property Name="ReservedValue" Type="smallint" Nullable="false" />
-        </EntityType>
         <EntityType Name="EntitySecurityDirect">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="1028" />
           <Property Name="TableDrivedEntityID" Type="int" Nullable="false" />
-          <Property Name="SecuritySubjectID" Type="int" />
           <Property Name="IgnoreSecurity" Type="bit" Nullable="false" />
+          <Property Name="SecuritySubjectOperator" Type="smallint" />
+          <Property Name="Mode" Type="smallint" />
+          <Property Name="FormulaID" Type="int" />
+          <Property Name="ColumnID" Type="int" />
+          <Property Name="EntityRelationshipTailID" Type="int" />
+          <Property Name="ValueOperator" Type="smallint" />
         </EntityType>
-        <EntityType Name="EntitySecurityDirectStates">
+        <EntityType Name="EntitySecurityDirectSecuritySubject">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SecuritySubjectID" Type="int" Nullable="false" />
           <Property Name="EntitySecurityDirectID" Type="int" Nullable="false" />
-          <Property Name="TableDrivedEntityStateID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EntitySecurityDirectValues">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Value" Type="varchar(max)" />
+          <Property Name="EntitySecurityDirectID" Type="int" Nullable="false" />
+          <Property Name="ReservedValue" Type="smallint" />
         </EntityType>
         <EntityType Name="EntitySecurityInDirect">
           <Key>
@@ -1551,15 +1559,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Column_Formula">
+        <Association Name="FK_ColumnCustomFormula_Column">
+          <End Role="Column" Type="Self.Column" Multiplicity="1" />
+          <End Role="ColumnCustomFormula" Type="Self.ColumnCustomFormula" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Column">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ColumnCustomFormula">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ColumnCustomFormula_Formula">
           <End Role="Formula" Type="Self.Formula" Multiplicity="0..1" />
-          <End Role="Column" Type="Self.Column" Multiplicity="*" />
+          <End Role="ColumnCustomFormula" Type="Self.ColumnCustomFormula" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Formula">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="Column">
-              <PropertyRef Name="CustomCalculateFormulaID" />
+            <Dependent Role="ColumnCustomFormula">
+              <PropertyRef Name="FormulaID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2175,27 +2195,75 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntitySecurityDirectStates_EntitySecurityDirect">
+        <Association Name="FK_EntitySecurityDirect_Column">
+          <End Role="Column" Type="Self.Column" Multiplicity="0..1" />
+          <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Column">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySecurityDirect">
+              <PropertyRef Name="ColumnID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntitySecurityDirect_EntityRelationshipTail">
+          <End Role="EntityRelationshipTail" Type="Self.EntityRelationshipTail" Multiplicity="0..1" />
+          <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityRelationshipTail">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySecurityDirect">
+              <PropertyRef Name="EntityRelationshipTailID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntitySecurityDirect_Formula">
+          <End Role="Formula" Type="Self.Formula" Multiplicity="0..1" />
+          <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Formula">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySecurityDirect">
+              <PropertyRef Name="FormulaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect">
           <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="1" />
-          <End Role="EntitySecurityDirectStates" Type="Self.EntitySecurityDirectStates" Multiplicity="*" />
+          <End Role="EntitySecurityDirectSecuritySubject" Type="Self.EntitySecurityDirectSecuritySubject" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="EntitySecurityDirect">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="EntitySecurityDirectStates">
+            <Dependent Role="EntitySecurityDirectSecuritySubject">
               <PropertyRef Name="EntitySecurityDirectID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntitySecurityDirectStates_TableDrivedEntityState">
-          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="1" />
-          <End Role="EntitySecurityDirectStates" Type="Self.EntitySecurityDirectStates" Multiplicity="*" />
+        <Association Name="FK_EntitySecurityDirectSecuritySubject_SecuritySubject">
+          <End Role="SecuritySubject" Type="Self.SecuritySubject" Multiplicity="1" />
+          <End Role="EntitySecurityDirectSecuritySubject" Type="Self.EntitySecurityDirectSecuritySubject" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
+            <Principal Role="SecuritySubject">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="EntitySecurityDirectStates">
-              <PropertyRef Name="TableDrivedEntityStateID" />
+            <Dependent Role="EntitySecurityDirectSecuritySubject">
+              <PropertyRef Name="SecuritySubjectID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntitySecurityDirectValues_EntitySecurityDirect">
+          <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="1" />
+          <End Role="EntitySecurityDirectValues" Type="Self.EntitySecurityDirectValues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntitySecurityDirect">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySecurityDirectValues">
+              <PropertyRef Name="EntitySecurityDirectID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3579,18 +3647,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKEntitySecu456553">
-          <End Role="SecuritySubject" Type="Self.SecuritySubject" Multiplicity="0..1" />
-          <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SecuritySubject">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirect">
-              <PropertyRef Name="SecuritySubjectID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKEntitySecu489951">
           <End Role="EntityRelationshipTail" Type="Self.EntityRelationshipTail" Multiplicity="1" />
           <End Role="EntitySecurityInDirect" Type="Self.EntitySecurityInDirect" Multiplicity="*" />
@@ -3612,30 +3668,6 @@
             </Principal>
             <Dependent Role="EntitySecurityDirect">
               <PropertyRef Name="TableDrivedEntityID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKEntitySecu917435">
-          <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="1" />
-          <End Role="EntitySecurityCondition_Old" Type="Self.EntitySecurityCondition_Old" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySecurityDirect">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityCondition_Old">
-              <PropertyRef Name="EntitySecurityDirectID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKEntitySecu936972">
-          <End Role="DatabaseFunction" Type="Self.DatabaseFunction" Multiplicity="0..1" />
-          <End Role="EntitySecurityCondition_Old" Type="Self.EntitySecurityCondition_Old" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DatabaseFunction">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityCondition_Old">
-              <PropertyRef Name="DatabaseFunctionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4903,6 +4935,7 @@
           <EntitySet Name="CodeFunction_TableDrivedEntity_Parameters" EntityType="Self.CodeFunction_TableDrivedEntity_Parameters" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CodeFunctionParameter" EntityType="Self.CodeFunctionParameter" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Column" EntityType="Self.Column" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ColumnCustomFormula" EntityType="Self.ColumnCustomFormula" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ColumnPhrase" EntityType="Self.ColumnPhrase" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ColumnUISetting" EntityType="Self.ColumnUISetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ColumnValue_ValidValues" EntityType="Self.ColumnValue_ValidValues" Schema="dbo" store:Type="Tables" />
@@ -5012,9 +5045,9 @@
           <EntitySet Name="UnionToSubUnionRelationshipType" EntityType="Self.UnionToSubUnionRelationshipType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UniqueConstraint" EntityType="Self.UniqueConstraint" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UniqueConstraint_Column" EntityType="Self.UniqueConstraint_Column" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EntitySecurityCondition_Old" EntityType="Self.EntitySecurityCondition_Old" Schema="Sec" store:Type="Tables" />
           <EntitySet Name="EntitySecurityDirect" EntityType="Self.EntitySecurityDirect" Schema="Sec" store:Type="Tables" />
-          <EntitySet Name="EntitySecurityDirectStates" EntityType="Self.EntitySecurityDirectStates" Schema="Sec" store:Type="Tables" />
+          <EntitySet Name="EntitySecurityDirectSecuritySubject" EntityType="Self.EntitySecurityDirectSecuritySubject" Schema="Sec" store:Type="Tables" />
+          <EntitySet Name="EntitySecurityDirectValues" EntityType="Self.EntitySecurityDirectValues" Schema="Sec" store:Type="Tables" />
           <EntitySet Name="EntitySecurityInDirect" EntityType="Self.EntitySecurityInDirect" Schema="Sec" store:Type="Tables" />
           <EntitySet Name="Organization" EntityType="Self.Organization" Schema="Sec" store:Type="Tables" />
           <EntitySet Name="OrganizationPost" EntityType="Self.OrganizationPost" Schema="Sec" store:Type="Tables" />
@@ -5069,9 +5102,13 @@
             <End Role="EntityListViewColumns" EntitySet="EntityListViewColumns" />
             <End Role="CharetReportValues" EntitySet="CharetReportValues" />
           </AssociationSet>
-          <AssociationSet Name="FK_Column_Formula" Association="Self.FK_Column_Formula">
-            <End Role="Formula" EntitySet="Formula" />
+          <AssociationSet Name="FK_ColumnCustomFormula_Column" Association="Self.FK_ColumnCustomFormula_Column">
             <End Role="Column" EntitySet="Column" />
+            <End Role="ColumnCustomFormula" EntitySet="ColumnCustomFormula" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ColumnCustomFormula_Formula" Association="Self.FK_ColumnCustomFormula_Formula">
+            <End Role="Formula" EntitySet="Formula" />
+            <End Role="ColumnCustomFormula" EntitySet="ColumnCustomFormula" />
           </AssociationSet>
           <AssociationSet Name="FK_ColumnPhrase_EntitySearchColumns" Association="Self.FK_ColumnPhrase_EntitySearchColumns">
             <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
@@ -5277,13 +5314,29 @@
             <End Role="SearchRepository" EntitySet="SearchRepository" />
             <End Role="EntitySearchableReport" EntitySet="EntitySearchableReport" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirectStates_EntitySecurityDirect" Association="Self.FK_EntitySecurityDirectStates_EntitySecurityDirect">
+          <AssociationSet Name="FK_EntitySecurityDirect_Column" Association="Self.FK_EntitySecurityDirect_Column">
+            <End Role="Column" EntitySet="Column" />
             <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-            <End Role="EntitySecurityDirectStates" EntitySet="EntitySecurityDirectStates" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirectStates_TableDrivedEntityState" Association="Self.FK_EntitySecurityDirectStates_TableDrivedEntityState">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-            <End Role="EntitySecurityDirectStates" EntitySet="EntitySecurityDirectStates" />
+          <AssociationSet Name="FK_EntitySecurityDirect_EntityRelationshipTail" Association="Self.FK_EntitySecurityDirect_EntityRelationshipTail">
+            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
+            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntitySecurityDirect_Formula" Association="Self.FK_EntitySecurityDirect_Formula">
+            <End Role="Formula" EntitySet="Formula" />
+            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect" Association="Self.FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect">
+            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
+            <End Role="EntitySecurityDirectSecuritySubject" EntitySet="EntitySecurityDirectSecuritySubject" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntitySecurityDirectSecuritySubject_SecuritySubject" Association="Self.FK_EntitySecurityDirectSecuritySubject_SecuritySubject">
+            <End Role="SecuritySubject" EntitySet="SecuritySubject" />
+            <End Role="EntitySecurityDirectSecuritySubject" EntitySet="EntitySecurityDirectSecuritySubject" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntitySecurityDirectValues_EntitySecurityDirect" Association="Self.FK_EntitySecurityDirectValues_EntitySecurityDirect">
+            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
+            <End Role="EntitySecurityDirectValues" EntitySet="EntitySecurityDirectValues" />
           </AssociationSet>
           <AssociationSet Name="FK_Formula_CodeFunction" Association="Self.FK_Formula_CodeFunction">
             <End Role="CodeFunction" EntitySet="CodeFunction" />
@@ -5745,10 +5798,6 @@
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="EntitySecurityInDirect" EntitySet="EntitySecurityInDirect" />
           </AssociationSet>
-          <AssociationSet Name="FKEntitySecu456553" Association="Self.FKEntitySecu456553">
-            <End Role="SecuritySubject" EntitySet="SecuritySubject" />
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-          </AssociationSet>
           <AssociationSet Name="FKEntitySecu489951" Association="Self.FKEntitySecu489951">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="EntitySecurityInDirect" EntitySet="EntitySecurityInDirect" />
@@ -5756,14 +5805,6 @@
           <AssociationSet Name="FKEntitySecu556643" Association="Self.FKEntitySecu556643">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-          </AssociationSet>
-          <AssociationSet Name="FKEntitySecu917435" Association="Self.FKEntitySecu917435">
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-            <End Role="EntitySecurityCondition_Old" EntitySet="EntitySecurityCondition_Old" />
-          </AssociationSet>
-          <AssociationSet Name="FKEntitySecu936972" Association="Self.FKEntitySecu936972">
-            <End Role="DatabaseFunction" EntitySet="DatabaseFunction" />
-            <End Role="EntitySecurityCondition_Old" EntitySet="EntitySecurityCondition_Old" />
           </AssociationSet>
           <AssociationSet Name="FKEntityStat608686" Association="Self.FKEntityStat608686">
             <End Role="UIActionActivity" EntitySet="UIActionActivity" />
@@ -6202,6 +6243,7 @@
           <EntitySet Name="CodeFunction_TableDrivedEntity_Parameters" EntityType="MyProjectModel.CodeFunction_TableDrivedEntity_Parameters" />
           <EntitySet Name="CodeFunctionParameter" EntityType="MyProjectModel.CodeFunctionParameter" />
           <EntitySet Name="Column" EntityType="MyProjectModel.Column" />
+          <EntitySet Name="ColumnCustomFormula" EntityType="MyProjectModel.ColumnCustomFormula" />
           <EntitySet Name="ColumnPhrase" EntityType="MyProjectModel.ColumnPhrase" />
           <EntitySet Name="ColumnUISetting" EntityType="MyProjectModel.ColumnUISetting" />
           <EntitySet Name="ColumnValue_ValidValues" EntityType="MyProjectModel.ColumnValue_ValidValues" />
@@ -6310,9 +6352,9 @@
           <EntitySet Name="UnionRelationshipType" EntityType="MyProjectModel.UnionRelationshipType" />
           <EntitySet Name="UnionToSubUnionRelationshipType" EntityType="MyProjectModel.UnionToSubUnionRelationshipType" />
           <EntitySet Name="UniqueConstraint" EntityType="MyProjectModel.UniqueConstraint" />
-          <EntitySet Name="EntitySecurityCondition_Old" EntityType="MyProjectModel.EntitySecurityCondition_Old" />
           <EntitySet Name="EntitySecurityDirect" EntityType="MyProjectModel.EntitySecurityDirect" />
-          <EntitySet Name="EntitySecurityDirectStates" EntityType="MyProjectModel.EntitySecurityDirectStates" />
+          <EntitySet Name="EntitySecurityDirectSecuritySubject" EntityType="MyProjectModel.EntitySecurityDirectSecuritySubject" />
+          <EntitySet Name="EntitySecurityDirectValues" EntityType="MyProjectModel.EntitySecurityDirectValues" />
           <EntitySet Name="EntitySecurityInDirect" EntityType="MyProjectModel.EntitySecurityInDirect" />
           <EntitySet Name="Organization" EntityType="MyProjectModel.Organization" />
           <EntitySet Name="OrganizationPost" EntityType="MyProjectModel.OrganizationPost" />
@@ -6471,9 +6513,9 @@
             <End Role="CodeFunctionParameter" EntitySet="CodeFunctionParameter" />
             <End Role="CodeFunction_TableDrivedEntity_Parameters" EntitySet="CodeFunction_TableDrivedEntity_Parameters" />
           </AssociationSet>
-          <AssociationSet Name="FK_Column_Formula" Association="MyProjectModel.FK_Column_Formula">
-            <End Role="Formula" EntitySet="Formula" />
+          <AssociationSet Name="FK_ColumnCustomFormula_Column" Association="MyProjectModel.FK_ColumnCustomFormula_Column">
             <End Role="Column" EntitySet="Column" />
+            <End Role="ColumnCustomFormula" EntitySet="ColumnCustomFormula" />
           </AssociationSet>
           <AssociationSet Name="FK_ColumnValueRange_Column" Association="MyProjectModel.FK_ColumnValueRange_Column">
             <End Role="Column" EntitySet="Column" />
@@ -6486,6 +6528,10 @@
           <AssociationSet Name="FK_EntityDirectlReportParameters_Column" Association="MyProjectModel.FK_EntityDirectlReportParameters_Column">
             <End Role="Column" EntitySet="Column" />
             <End Role="EntityDirectlReportParameters" EntitySet="EntityDirectlReportParameters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntitySecurityDirect_Column" Association="MyProjectModel.FK_EntitySecurityDirect_Column">
+            <End Role="Column" EntitySet="Column" />
+            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
           </AssociationSet>
           <AssociationSet Name="FK_RelationshipSearchFilter_Column" Association="MyProjectModel.FK_RelationshipSearchFilter_Column">
             <End Role="Column" EntitySet="Column" />
@@ -6575,6 +6621,10 @@
             <End Role="Column" EntitySet="Column" />
             <End Role="RelationshipColumns" EntitySet="RelationshipColumns" />
           </AssociationSet>
+          <AssociationSet Name="FK_ColumnCustomFormula_Formula" Association="MyProjectModel.FK_ColumnCustomFormula_Formula">
+            <End Role="Formula" EntitySet="Formula" />
+            <End Role="ColumnCustomFormula" EntitySet="ColumnCustomFormula" />
+          </AssociationSet>
           <AssociationSet Name="FK_ColumnPhrase_EntitySearchColumns" Association="MyProjectModel.FK_ColumnPhrase_EntitySearchColumns">
             <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
             <End Role="ColumnPhrase" EntitySet="ColumnPhrase" />
@@ -6630,10 +6680,6 @@
           <AssociationSet Name="FKDatabaseFu761103" Association="MyProjectModel.FKDatabaseFu761103">
             <End Role="DBSchema" EntitySet="DBSchema" />
             <End Role="DatabaseFunction" EntitySet="DatabaseFunction" />
-          </AssociationSet>
-          <AssociationSet Name="FKEntitySecu936972" Association="MyProjectModel.FKEntitySecu936972">
-            <End Role="DatabaseFunction" EntitySet="DatabaseFunction" />
-            <End Role="EntitySecurityCondition_Old" EntitySet="EntitySecurityCondition_Old" />
           </AssociationSet>
           <AssociationSet Name="FK_Formula_DatabaseFunction_TableDrivedEntity" Association="MyProjectModel.FK_Formula_DatabaseFunction_TableDrivedEntity">
             <End Role="DatabaseFunction_TableDrivedEntity" EntitySet="DatabaseFunction_TableDrivedEntity" />
@@ -6931,6 +6977,10 @@
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="EntityRelationshipTailDataMenu" EntitySet="EntityRelationshipTailDataMenu" />
           </AssociationSet>
+          <AssociationSet Name="FK_EntitySecurityDirect_EntityRelationshipTail" Association="MyProjectModel.FK_EntitySecurityDirect_EntityRelationshipTail">
+            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
+            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
+          </AssociationSet>
           <AssociationSet Name="FK_GraphDefinition_EntityRelationshipTail_EntityRelationshipTail" Association="MyProjectModel.FK_GraphDefinition_EntityRelationshipTail_EntityRelationshipTail">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="GraphDefinition_EntityRelationshipTail" EntitySet="GraphDefinition_EntityRelationshipTail" />
@@ -7054,6 +7104,10 @@
           <AssociationSet Name="FKExplicitOn408720" Association="MyProjectModel.FKExplicitOn408720">
             <End Role="RelationshipType" EntitySet="RelationshipType" />
             <End Role="ExplicitOneToOneRelationshipType" EntitySet="ExplicitOneToOneRelationshipType" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntitySecurityDirect_Formula" Association="MyProjectModel.FK_EntitySecurityDirect_Formula">
+            <End Role="Formula" EntitySet="Formula" />
+            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
           </AssociationSet>
           <AssociationSet Name="FK_Formula_LinearFormula" Association="MyProjectModel.FK_Formula_LinearFormula">
             <End Role="LinearFormula" EntitySet="LinearFormula" />
@@ -7287,10 +7341,6 @@
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirectStates_TableDrivedEntityState" Association="MyProjectModel.FK_EntitySecurityDirectStates_TableDrivedEntityState">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-            <End Role="EntitySecurityDirectStates" EntitySet="EntitySecurityDirectStates" />
-          </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" Association="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
             <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
             <End Role="TableDrivedEntityStateSecuritySubject" EntitySet="TableDrivedEntityStateSecuritySubject" />
@@ -7319,17 +7369,17 @@
             <End Role="UnionRelationshipType" EntitySet="UnionRelationshipType" />
             <End Role="UnionToSubUnionRelationshipType" EntitySet="UnionToSubUnionRelationshipType" />
           </AssociationSet>
-          <AssociationSet Name="FKEntitySecu917435" Association="MyProjectModel.FKEntitySecu917435">
+          <AssociationSet Name="FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect" Association="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect">
             <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-            <End Role="EntitySecurityCondition_Old" EntitySet="EntitySecurityCondition_Old" />
+            <End Role="EntitySecurityDirectSecuritySubject" EntitySet="EntitySecurityDirectSecuritySubject" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirectStates_EntitySecurityDirect" Association="MyProjectModel.FK_EntitySecurityDirectStates_EntitySecurityDirect">
+          <AssociationSet Name="FK_EntitySecurityDirectValues_EntitySecurityDirect" Association="MyProjectModel.FK_EntitySecurityDirectValues_EntitySecurityDirect">
             <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-            <End Role="EntitySecurityDirectStates" EntitySet="EntitySecurityDirectStates" />
+            <End Role="EntitySecurityDirectValues" EntitySet="EntitySecurityDirectValues" />
           </AssociationSet>
-          <AssociationSet Name="FKEntitySecu456553" Association="MyProjectModel.FKEntitySecu456553">
+          <AssociationSet Name="FK_EntitySecurityDirectSecuritySubject_SecuritySubject" Association="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_SecuritySubject">
             <End Role="SecuritySubject" EntitySet="SecuritySubject" />
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
+            <End Role="EntitySecurityDirectSecuritySubject" EntitySet="EntitySecurityDirectSecuritySubject" />
           </AssociationSet>
           <AssociationSet Name="FKOrganizati165700" Association="MyProjectModel.FKOrganizati165700">
             <End Role="OrganizationType" EntitySet="OrganizationType" />
@@ -7667,14 +7717,13 @@
           <Property Name="Position" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="DBCalculateFormula" Type="String" MaxLength="512" FixedLength="false" Unicode="false" />
-          <Property Name="CustomCalculateFormulaID" Type="Int32" />
           <Property Name="IsNotTransferable" Type="Boolean" Nullable="false" />
-          <Property Name="CalculateFormulaAsDefault" Type="Boolean" />
           <NavigationProperty Name="CodeFunction_TableDrivedEntity_Parameters" Relationship="MyProjectModel.FKCodeFuncti70133" FromRole="Column" ToRole="CodeFunction_TableDrivedEntity_Parameters" />
-          <NavigationProperty Name="Formula" Relationship="MyProjectModel.FK_Column_Formula" FromRole="Column" ToRole="Formula" />
+          <NavigationProperty Name="ColumnCustomFormula" Relationship="MyProjectModel.FK_ColumnCustomFormula_Column" FromRole="Column" ToRole="ColumnCustomFormula" />
           <NavigationProperty Name="ColumnValueRange" Relationship="MyProjectModel.FK_ColumnValueRange_Column" FromRole="Column" ToRole="ColumnValueRange" />
           <NavigationProperty Name="DateTimeColumnType" Relationship="MyProjectModel.FK_DateTimeColumnType_Column" FromRole="Column" ToRole="DateTimeColumnType" />
           <NavigationProperty Name="EntityDirectlReportParameters" Relationship="MyProjectModel.FK_EntityDirectlReportParameters_Column" FromRole="Column" ToRole="EntityDirectlReportParameters" />
+          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirect_Column" FromRole="Column" ToRole="EntitySecurityDirect" />
           <NavigationProperty Name="RelationshipSearchFilter" Relationship="MyProjectModel.FK_RelationshipSearchFilter_Column" FromRole="Column" ToRole="RelationshipSearchFilter" />
           <NavigationProperty Name="RelationshipSearchFilter1" Relationship="MyProjectModel.FK_RelationshipSearchFilter_Column1" FromRole="Column" ToRole="RelationshipSearchFilter" />
           <NavigationProperty Name="TimeColumnType" Relationship="MyProjectModel.FK_StringTimeColumnType_Column" FromRole="Column" ToRole="TimeColumnType" />
@@ -7698,6 +7747,18 @@
           <NavigationProperty Name="RelationshipColumns" Relationship="MyProjectModel.Relationship_FirstEntityColumns" FromRole="Column" ToRole="RelationshipColumns" />
           <NavigationProperty Name="RelationshipColumns1" Relationship="MyProjectModel.Relationship_SecondEntityColumns" FromRole="Column" ToRole="RelationshipColumns" />
           <NavigationProperty Name="UniqueConstraint" Relationship="MyProjectModel.UniqueConstraint_Column" FromRole="Column" ToRole="UniqueConstraint" />
+        </EntityType>
+        <EntityType Name="ColumnCustomFormula">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="FormulaID" Type="Int32" />
+          <Property Name="CalculateFormulaAsDefault" Type="Boolean" Nullable="false" />
+          <Property Name="OnlyOnNewData" Type="Boolean" Nullable="false" />
+          <Property Name="OnlyOnEmptyValue" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_ColumnCustomFormula_Column" FromRole="ColumnCustomFormula" ToRole="Column" />
+          <NavigationProperty Name="Formula" Relationship="MyProjectModel.FK_ColumnCustomFormula_Formula" FromRole="ColumnCustomFormula" ToRole="Formula" />
         </EntityType>
         <EntityType Name="ColumnPhrase">
           <Key>
@@ -7795,7 +7856,6 @@
           <NavigationProperty Name="DatabaseFunctionParameter" Relationship="MyProjectModel.FKDatabaseFu370493" FromRole="DatabaseFunction" ToRole="DatabaseFunctionParameter" />
           <NavigationProperty Name="DatabaseFunction_TableDrivedEntity" Relationship="MyProjectModel.FKDatabaseFu753906" FromRole="DatabaseFunction" ToRole="DatabaseFunction_TableDrivedEntity" />
           <NavigationProperty Name="DBSchema" Relationship="MyProjectModel.FKDatabaseFu761103" FromRole="DatabaseFunction" ToRole="DBSchema" />
-          <NavigationProperty Name="EntitySecurityCondition_Old" Relationship="MyProjectModel.FKEntitySecu936972" FromRole="DatabaseFunction" ToRole="EntitySecurityCondition_Old" />
         </EntityType>
         <EntityType Name="DatabaseFunction_TableDrivedEntity">
           <Key>
@@ -8243,6 +8303,7 @@
           <NavigationProperty Name="EntityListViewColumns" Relationship="MyProjectModel.FKEntityList705975" FromRole="EntityRelationshipTail" ToRole="EntityListViewColumns" />
           <NavigationProperty Name="EntityGroup_Relationship" Relationship="MyProjectModel.FK_EntityGroup_Relationship_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="EntityGroup_Relationship" />
           <NavigationProperty Name="EntityRelationshipTailDataMenu" Relationship="MyProjectModel.FK_EntityRelationshipTailDataMenu_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="EntityRelationshipTailDataMenu" />
+          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirect_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="EntitySecurityDirect" />
           <NavigationProperty Name="GraphDefinition_EntityRelationshipTail" Relationship="MyProjectModel.FK_GraphDefinition_EntityRelationshipTail_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="GraphDefinition_EntityRelationshipTail" />
           <NavigationProperty Name="LetterTemplateRelationshipField" Relationship="MyProjectModel.FK_LetterTemplateRelationshipField_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="LetterTemplateRelationshipField" />
           <NavigationProperty Name="TableDrivedEntityState" Relationship="MyProjectModel.FK_TableDrivedEntityState_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntityState" />
@@ -8411,9 +8472,10 @@
           <Property Name="CodeFunctionID" Type="Int32" />
           <NavigationProperty Name="CodeFunction" Relationship="MyProjectModel.FK_Formula_CodeFunction" FromRole="Formula" ToRole="CodeFunction" />
           <NavigationProperty Name="CodeFunction_TableDrivedEntity" Relationship="MyProjectModel.FK_Formula_CodeFunction_TableDrivedEntity" FromRole="Formula" ToRole="CodeFunction_TableDrivedEntity" />
-          <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_Column_Formula" FromRole="Formula" ToRole="Column" />
+          <NavigationProperty Name="ColumnCustomFormula" Relationship="MyProjectModel.FK_ColumnCustomFormula_Formula" FromRole="Formula" ToRole="ColumnCustomFormula" />
           <NavigationProperty Name="DatabaseFunction_TableDrivedEntity" Relationship="MyProjectModel.FK_Formula_DatabaseFunction_TableDrivedEntity" FromRole="Formula" ToRole="DatabaseFunction_TableDrivedEntity" />
           <NavigationProperty Name="EntityValidation" Relationship="MyProjectModel.FKEntityVali933297" FromRole="Formula" ToRole="EntityValidation" />
+          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirect_Formula" FromRole="Formula" ToRole="EntitySecurityDirect" />
           <NavigationProperty Name="LinearFormula" Relationship="MyProjectModel.FK_Formula_LinearFormula" FromRole="Formula" ToRole="LinearFormula" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FKFormula967405" FromRole="Formula" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="FormulaItems" Relationship="MyProjectModel.FKFormulaIte505844" FromRole="Formula" ToRole="FormulaItems" />
@@ -9000,15 +9062,13 @@
           <Property Name="Title" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
           <Property Name="EntityStateOperator" Type="Int16" />
           <Property Name="EntityRelationshipTailID" Type="Int32" />
-          <Property Name="SecuritySubjectID" Type="Int32" />
-          <Property Name="SecuritySubjectOperator" Type="Int16" />
+          <Property Name="SecuritySubjectInOrNotIn" Type="Boolean" />
           <NavigationProperty Name="Column" Relationship="MyProjectModel.FKTableDrive277199" FromRole="TableDrivedEntityState" ToRole="Column" />
           <NavigationProperty Name="EntityRelationshipTail" Relationship="MyProjectModel.FK_TableDrivedEntityState_EntityRelationshipTail" FromRole="TableDrivedEntityState" ToRole="EntityRelationshipTail" />
           <NavigationProperty Name="EntityState_UIActionActivity" Relationship="MyProjectModel.FKEntityStat936255" FromRole="TableDrivedEntityState" ToRole="EntityState_UIActionActivity" />
           <NavigationProperty Name="Formula" Relationship="MyProjectModel.FKTableDrive466458" FromRole="TableDrivedEntityState" ToRole="Formula" />
           <NavigationProperty Name="FormulaItems" Relationship="MyProjectModel.FK_FormulaItems_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="FormulaItems" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FKTableDrive764829" FromRole="TableDrivedEntityState" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="EntitySecurityDirectStates" Relationship="MyProjectModel.FK_EntitySecurityDirectStates_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="EntitySecurityDirectStates" />
           <NavigationProperty Name="TableDrivedEntityStateSecuritySubject" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="TableDrivedEntityStateSecuritySubject" />
           <NavigationProperty Name="TableDrivedEntityStateValues" Relationship="MyProjectModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="TableDrivedEntityStateValues" />
         </EntityType>
@@ -9019,7 +9079,6 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TableDrivedEntityStateID" Type="Int32" Nullable="false" />
           <Property Name="SecuritySubjectID" Type="Int32" Nullable="false" />
-          <Property Name="SecuritySubjectOperator" Type="Int16" Nullable="false" />
           <NavigationProperty Name="TableDrivedEntityState" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" FromRole="TableDrivedEntityStateSecuritySubject" ToRole="TableDrivedEntityState" />
           <NavigationProperty Name="SecuritySubject" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" FromRole="TableDrivedEntityStateSecuritySubject" ToRole="SecuritySubject" />
         </EntityType>
@@ -9138,43 +9197,46 @@
           <NavigationProperty Name="Table" Relationship="MyProjectModel.FKUniqueCons110156" FromRole="UniqueConstraint" ToRole="Table" />
           <NavigationProperty Name="Column" Relationship="MyProjectModel.UniqueConstraint_Column" FromRole="UniqueConstraint" ToRole="Column" />
         </EntityType>
-        <EntityType Name="EntitySecurityCondition_Old">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EntitySecurityDirectID" Type="Int32" Nullable="false" />
-          <Property Name="EntityRelationshipTailID" Type="Int32" />
-          <Property Name="ColumnID" Type="Int32" Nullable="false" />
-          <Property Name="Operator" Type="Int16" Nullable="false" />
-          <Property Name="Value" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="DatabaseFunctionID" Type="Int32" />
-          <Property Name="ReservedValue" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="DatabaseFunction" Relationship="MyProjectModel.FKEntitySecu936972" FromRole="EntitySecurityCondition_Old" ToRole="DatabaseFunction" />
-          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FKEntitySecu917435" FromRole="EntitySecurityCondition_Old" ToRole="EntitySecurityDirect" />
-        </EntityType>
         <EntityType Name="EntitySecurityDirect">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="1028" FixedLength="false" Unicode="true" />
           <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
-          <Property Name="SecuritySubjectID" Type="Int32" />
           <Property Name="IgnoreSecurity" Type="Boolean" Nullable="false" />
+          <Property Name="SecuritySubjectOperator" Type="Int16" />
+          <Property Name="Mode" Type="Int16" />
+          <Property Name="FormulaID" Type="Int32" />
+          <Property Name="ColumnID" Type="Int32" />
+          <Property Name="EntityRelationshipTailID" Type="Int32" />
+          <Property Name="ValueOperator" Type="Int16" />
+          <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_EntitySecurityDirect_Column" FromRole="EntitySecurityDirect" ToRole="Column" />
+          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyProjectModel.FK_EntitySecurityDirect_EntityRelationshipTail" FromRole="EntitySecurityDirect" ToRole="EntityRelationshipTail" />
+          <NavigationProperty Name="Formula" Relationship="MyProjectModel.FK_EntitySecurityDirect_Formula" FromRole="EntitySecurityDirect" ToRole="Formula" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FKEntitySecu556643" FromRole="EntitySecurityDirect" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="EntitySecurityCondition_Old" Relationship="MyProjectModel.FKEntitySecu917435" FromRole="EntitySecurityDirect" ToRole="EntitySecurityCondition_Old" />
-          <NavigationProperty Name="EntitySecurityDirectStates" Relationship="MyProjectModel.FK_EntitySecurityDirectStates_EntitySecurityDirect" FromRole="EntitySecurityDirect" ToRole="EntitySecurityDirectStates" />
-          <NavigationProperty Name="SecuritySubject" Relationship="MyProjectModel.FKEntitySecu456553" FromRole="EntitySecurityDirect" ToRole="SecuritySubject" />
+          <NavigationProperty Name="EntitySecurityDirectSecuritySubject" Relationship="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect" FromRole="EntitySecurityDirect" ToRole="EntitySecurityDirectSecuritySubject" />
+          <NavigationProperty Name="EntitySecurityDirectValues" Relationship="MyProjectModel.FK_EntitySecurityDirectValues_EntitySecurityDirect" FromRole="EntitySecurityDirect" ToRole="EntitySecurityDirectValues" />
         </EntityType>
-        <EntityType Name="EntitySecurityDirectStates">
+        <EntityType Name="EntitySecurityDirectSecuritySubject">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SecuritySubjectID" Type="Int32" Nullable="false" />
           <Property Name="EntitySecurityDirectID" Type="Int32" Nullable="false" />
-          <Property Name="TableDrivedEntityStateID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyProjectModel.FK_EntitySecurityDirectStates_TableDrivedEntityState" FromRole="EntitySecurityDirectStates" ToRole="TableDrivedEntityState" />
-          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirectStates_EntitySecurityDirect" FromRole="EntitySecurityDirectStates" ToRole="EntitySecurityDirect" />
+          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect" FromRole="EntitySecurityDirectSecuritySubject" ToRole="EntitySecurityDirect" />
+          <NavigationProperty Name="SecuritySubject" Relationship="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_SecuritySubject" FromRole="EntitySecurityDirectSecuritySubject" ToRole="SecuritySubject" />
+        </EntityType>
+        <EntityType Name="EntitySecurityDirectValues">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EntitySecurityDirectID" Type="Int32" Nullable="false" />
+          <Property Name="ReservedValue" Type="Int16" />
+          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirectValues_EntitySecurityDirect" FromRole="EntitySecurityDirectValues" ToRole="EntitySecurityDirect" />
         </EntityType>
         <EntityType Name="EntitySecurityInDirect">
           <Key>
@@ -9295,7 +9357,7 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Type" Type="Int16" Nullable="false" />
           <NavigationProperty Name="TableDrivedEntityStateSecuritySubject" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" FromRole="SecuritySubject" ToRole="TableDrivedEntityStateSecuritySubject" />
-          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FKEntitySecu456553" FromRole="SecuritySubject" ToRole="EntitySecurityDirect" />
+          <NavigationProperty Name="EntitySecurityDirectSecuritySubject" Relationship="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_SecuritySubject" FromRole="SecuritySubject" ToRole="EntitySecurityDirectSecuritySubject" />
           <NavigationProperty Name="Organization" Relationship="MyProjectModel.FKOrganizati892027" FromRole="SecuritySubject" ToRole="Organization" />
           <NavigationProperty Name="OrganizationPost" Relationship="MyProjectModel.FKOrganizati807635" FromRole="SecuritySubject" ToRole="OrganizationPost" />
           <NavigationProperty Name="OrganizationType" Relationship="MyProjectModel.FKOrganizati936301" FromRole="SecuritySubject" ToRole="OrganizationType" />
@@ -9894,15 +9956,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Column_Formula">
-          <End Type="MyProjectModel.Formula" Role="Formula" Multiplicity="0..1" />
-          <End Type="MyProjectModel.Column" Role="Column" Multiplicity="*" />
+        <Association Name="FK_ColumnCustomFormula_Column">
+          <End Type="MyProjectModel.Column" Role="Column" Multiplicity="1" />
+          <End Type="MyProjectModel.ColumnCustomFormula" Role="ColumnCustomFormula" Multiplicity="0..1" />
           <ReferentialConstraint>
-            <Principal Role="Formula">
+            <Principal Role="Column">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="Column">
-              <PropertyRef Name="CustomCalculateFormulaID" />
+            <Dependent Role="ColumnCustomFormula">
+              <PropertyRef Name="ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -9938,6 +10000,18 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EntityDirectlReportParameters">
+              <PropertyRef Name="ColumnID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntitySecurityDirect_Column">
+          <End Type="MyProjectModel.Column" Role="Column" Multiplicity="0..1" />
+          <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Column">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySecurityDirect">
               <PropertyRef Name="ColumnID" />
             </Dependent>
           </ReferentialConstraint>
@@ -10206,6 +10280,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ColumnCustomFormula_Formula">
+          <End Type="MyProjectModel.Formula" Role="Formula" Multiplicity="0..1" />
+          <End Type="MyProjectModel.ColumnCustomFormula" Role="ColumnCustomFormula" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Formula">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ColumnCustomFormula">
+              <PropertyRef Name="FormulaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ColumnPhrase_EntitySearchColumns">
           <End Type="MyProjectModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="0..1" />
           <End Type="MyProjectModel.ColumnPhrase" Role="ColumnPhrase" Multiplicity="*" />
@@ -10371,18 +10457,6 @@
             </Principal>
             <Dependent Role="DatabaseFunction">
               <PropertyRef Name="DBSchemaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKEntitySecu936972">
-          <End Type="MyProjectModel.DatabaseFunction" Role="DatabaseFunction" Multiplicity="0..1" />
-          <End Type="MyProjectModel.EntitySecurityCondition_Old" Role="EntitySecurityCondition_Old" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DatabaseFunction">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityCondition_Old">
-              <PropertyRef Name="DatabaseFunctionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11274,6 +11348,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EntitySecurityDirect_EntityRelationshipTail">
+          <End Type="MyProjectModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="0..1" />
+          <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityRelationshipTail">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySecurityDirect">
+              <PropertyRef Name="EntityRelationshipTailID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GraphDefinition_EntityRelationshipTail_EntityRelationshipTail">
           <End Type="MyProjectModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="1" />
           <End Type="MyProjectModel.GraphDefinition_EntityRelationshipTail" Role="GraphDefinition_EntityRelationshipTail" Multiplicity="*" />
@@ -11643,6 +11729,18 @@
             </Principal>
             <Dependent Role="ExplicitOneToOneRelationshipType">
               <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntitySecurityDirect_Formula">
+          <End Type="MyProjectModel.Formula" Role="Formula" Multiplicity="0..1" />
+          <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Formula">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySecurityDirect">
+              <PropertyRef Name="FormulaID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -12342,18 +12440,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntitySecurityDirectStates_TableDrivedEntityState">
-          <End Type="MyProjectModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="1" />
-          <End Type="MyProjectModel.EntitySecurityDirectStates" Role="EntitySecurityDirectStates" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirectStates">
-              <PropertyRef Name="TableDrivedEntityStateID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
           <End Type="MyProjectModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="1" />
           <End Type="MyProjectModel.TableDrivedEntityStateSecuritySubject" Role="TableDrivedEntityStateSecuritySubject" Multiplicity="*" />
@@ -12438,38 +12524,38 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKEntitySecu917435">
+        <Association Name="FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect">
           <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="1" />
-          <End Type="MyProjectModel.EntitySecurityCondition_Old" Role="EntitySecurityCondition_Old" Multiplicity="*" />
+          <End Type="MyProjectModel.EntitySecurityDirectSecuritySubject" Role="EntitySecurityDirectSecuritySubject" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="EntitySecurityDirect">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="EntitySecurityCondition_Old">
+            <Dependent Role="EntitySecurityDirectSecuritySubject">
               <PropertyRef Name="EntitySecurityDirectID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntitySecurityDirectStates_EntitySecurityDirect">
+        <Association Name="FK_EntitySecurityDirectValues_EntitySecurityDirect">
           <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="1" />
-          <End Type="MyProjectModel.EntitySecurityDirectStates" Role="EntitySecurityDirectStates" Multiplicity="*" />
+          <End Type="MyProjectModel.EntitySecurityDirectValues" Role="EntitySecurityDirectValues" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="EntitySecurityDirect">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="EntitySecurityDirectStates">
+            <Dependent Role="EntitySecurityDirectValues">
               <PropertyRef Name="EntitySecurityDirectID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKEntitySecu456553">
-          <End Type="MyProjectModel.SecuritySubject" Role="SecuritySubject" Multiplicity="0..1" />
-          <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="*" />
+        <Association Name="FK_EntitySecurityDirectSecuritySubject_SecuritySubject">
+          <End Type="MyProjectModel.SecuritySubject" Role="SecuritySubject" Multiplicity="1" />
+          <End Type="MyProjectModel.EntitySecurityDirectSecuritySubject" Role="EntitySecurityDirectSecuritySubject" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SecuritySubject">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="EntitySecurityDirect">
+            <Dependent Role="EntitySecurityDirectSecuritySubject">
               <PropertyRef Name="SecuritySubjectID" />
             </Dependent>
           </ReferentialConstraint>
@@ -13048,9 +13134,7 @@
           <EntitySetMapping Name="Column">
             <EntityTypeMapping TypeName="MyProjectModel.Column">
               <MappingFragment StoreEntitySet="Column">
-                <ScalarProperty Name="CalculateFormulaAsDefault" ColumnName="CalculateFormulaAsDefault" />
                 <ScalarProperty Name="IsNotTransferable" ColumnName="IsNotTransferable" />
-                <ScalarProperty Name="CustomCalculateFormulaID" ColumnName="CustomCalculateFormulaID" />
                 <ScalarProperty Name="DBCalculateFormula" ColumnName="DBCalculateFormula" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Position" ColumnName="Position" />
@@ -13071,6 +13155,17 @@
                 <ScalarProperty Name="TypeEnum" ColumnName="TypeEnum" />
                 <ScalarProperty Name="IsMandatory" ColumnName="IsMandatory" />
                 <ScalarProperty Name="Value" ColumnName="Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ColumnCustomFormula">
+            <EntityTypeMapping TypeName="MyProjectModel.ColumnCustomFormula">
+              <MappingFragment StoreEntitySet="ColumnCustomFormula">
+                <ScalarProperty Name="OnlyOnEmptyValue" ColumnName="OnlyOnEmptyValue" />
+                <ScalarProperty Name="OnlyOnNewData" ColumnName="OnlyOnNewData" />
+                <ScalarProperty Name="CalculateFormulaAsDefault" ColumnName="CalculateFormulaAsDefault" />
+                <ScalarProperty Name="FormulaID" ColumnName="FormulaID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -14087,8 +14182,7 @@
           <EntitySetMapping Name="TableDrivedEntityState">
             <EntityTypeMapping TypeName="MyProjectModel.TableDrivedEntityState">
               <MappingFragment StoreEntitySet="TableDrivedEntityState">
-                <ScalarProperty Name="SecuritySubjectOperator" ColumnName="SecuritySubjectOperator" />
-                <ScalarProperty Name="SecuritySubjectID" ColumnName="SecuritySubjectID" />
+                <ScalarProperty Name="SecuritySubjectInOrNotIn" ColumnName="SecuritySubjectInOrNotIn" />
                 <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
                 <ScalarProperty Name="EntityStateOperator" ColumnName="EntityStateOperator" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
@@ -14102,7 +14196,6 @@
           <EntitySetMapping Name="TableDrivedEntityStateSecuritySubject">
             <EntityTypeMapping TypeName="MyProjectModel.TableDrivedEntityStateSecuritySubject">
               <MappingFragment StoreEntitySet="TableDrivedEntityStateSecuritySubject">
-                <ScalarProperty Name="SecuritySubjectOperator" ColumnName="SecuritySubjectOperator" />
                 <ScalarProperty Name="SecuritySubjectID" ColumnName="SecuritySubjectID" />
                 <ScalarProperty Name="TableDrivedEntityStateID" ColumnName="TableDrivedEntityStateID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -14212,35 +14305,37 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="EntitySecurityCondition_Old">
-            <EntityTypeMapping TypeName="MyProjectModel.EntitySecurityCondition_Old">
-              <MappingFragment StoreEntitySet="EntitySecurityCondition_Old">
-                <ScalarProperty Name="ReservedValue" ColumnName="ReservedValue" />
-                <ScalarProperty Name="DatabaseFunctionID" ColumnName="DatabaseFunctionID" />
-                <ScalarProperty Name="Value" ColumnName="Value" />
-                <ScalarProperty Name="Operator" ColumnName="Operator" />
-                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
-                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
-                <ScalarProperty Name="EntitySecurityDirectID" ColumnName="EntitySecurityDirectID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="EntitySecurityDirect">
             <EntityTypeMapping TypeName="MyProjectModel.EntitySecurityDirect">
               <MappingFragment StoreEntitySet="EntitySecurityDirect">
+                <ScalarProperty Name="ValueOperator" ColumnName="ValueOperator" />
+                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
+                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
+                <ScalarProperty Name="FormulaID" ColumnName="FormulaID" />
+                <ScalarProperty Name="Mode" ColumnName="Mode" />
+                <ScalarProperty Name="SecuritySubjectOperator" ColumnName="SecuritySubjectOperator" />
                 <ScalarProperty Name="IgnoreSecurity" ColumnName="IgnoreSecurity" />
-                <ScalarProperty Name="SecuritySubjectID" ColumnName="SecuritySubjectID" />
                 <ScalarProperty Name="TableDrivedEntityID" ColumnName="TableDrivedEntityID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="EntitySecurityDirectStates">
-            <EntityTypeMapping TypeName="MyProjectModel.EntitySecurityDirectStates">
-              <MappingFragment StoreEntitySet="EntitySecurityDirectStates">
-                <ScalarProperty Name="TableDrivedEntityStateID" ColumnName="TableDrivedEntityStateID" />
+          <EntitySetMapping Name="EntitySecurityDirectSecuritySubject">
+            <EntityTypeMapping TypeName="MyProjectModel.EntitySecurityDirectSecuritySubject">
+              <MappingFragment StoreEntitySet="EntitySecurityDirectSecuritySubject">
                 <ScalarProperty Name="EntitySecurityDirectID" ColumnName="EntitySecurityDirectID" />
+                <ScalarProperty Name="SecuritySubjectID" ColumnName="SecuritySubjectID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntitySecurityDirectValues">
+            <EntityTypeMapping TypeName="MyProjectModel.EntitySecurityDirectValues">
+              <MappingFragment StoreEntitySet="EntitySecurityDirectValues">
+                <ScalarProperty Name="ReservedValue" ColumnName="ReservedValue" />
+                <ScalarProperty Name="EntitySecurityDirectID" ColumnName="EntitySecurityDirectID" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

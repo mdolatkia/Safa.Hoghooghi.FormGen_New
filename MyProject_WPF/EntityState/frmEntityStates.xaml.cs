@@ -45,6 +45,21 @@ namespace MyProject_WPF
             SetFromulas();
             SetActionActivities();
             SetSecuritySubjects();
+
+            ControlHelper.GenerateContextMenu(dtgColumnValue);
+            ControlHelper.GenerateContextMenu(dtgFormulaValue);
+            ControlHelper.GenerateContextMenu(dtgSecuritySubjects);
+            lokRelationshipTail.SelectionChanged += LokRelationshipTail_SelectionChanged;
+            lokRelationshipTail.EditItemClicked += LokRelationshipTail_EditItemClicked;
+            cmbOperator.ItemsSource = Enum.GetValues(typeof(Enum_EntityStateOperator)).Cast<Enum_EntityStateOperator>();
+            cmbInOrNotIn.ItemsSource = Enum.GetValues(typeof(InORNotIn)).Cast<InORNotIn>();
+            colReservedValue.ItemsSource = Enum.GetValues(typeof(SecurityReservedValue));
+            //colHasOrHasNot.ItemsSource = Enum.GetValues(typeof(Enum_SecuritySubjectOperator));
+
+            lokFormula.EditItemEnabled = true;
+            lokFormula.NewItemEnabled = true;
+            lokFormula.EditItemClicked += LokFormula_EditItemClicked;
+
             if (EntityStateID == 0)
             {
                 StateDTO = new EntityStateDTO();
@@ -52,15 +67,8 @@ namespace MyProject_WPF
             }
             else
                 GetEntityState(EntityStateID);
-            ControlHelper.GenerateContextMenu(dtgColumnValue);
-            ControlHelper.GenerateContextMenu(dtgFormulaValue);
-            ControlHelper.GenerateContextMenu(dtgSecuritySubjects);
-            lokRelationshipTail.SelectionChanged += LokRelationshipTail_SelectionChanged;
-            lokRelationshipTail.EditItemClicked += LokRelationshipTail_EditItemClicked;
-            cmbOperator.ItemsSource = Enum.GetValues(typeof(Enum_EntityStateOperator)).Cast<Enum_EntityStateOperator>();
-            colReservedValue.ItemsSource = Enum.GetValues(typeof(SecurityReservedValue));
-            colHasOrHasNot.ItemsSource = Enum.GetValues(typeof(Enum_SecuritySubjectOperator));
         }
+
 
         private void LokRelationshipTail_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
         {
@@ -126,12 +134,28 @@ namespace MyProject_WPF
             cmbActionActivity.ItemsSource = bizActionActivity.GetActionActivities(EntityID, false);
             //}
         }
+        private void LokFormula_EditItemClicked(object sender, EditItemClickEventArg e)
+        {
+            int formulaID = 0;
+            if (lokFormula.SelectedItem != null)
+                formulaID = (int)lokFormula.SelectedValue;
+            frmFormula view = new frmFormula(formulaID, EntityID);
+            view.FormulaUpdated += View_FormulaSelected;
+            MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Maximized);
+        }
+
+        private void View_FormulaSelected(object sender, FormulaSelectedArg e)
+        {
+            SetFromulas();
+            lokFormula.SelectedValue = e.FormulaID;
+        }
+
         private void SetFromulas()
         {
-            cmbFormula.DisplayMemberPath = "Name";
-            cmbFormula.SelectedValuePath = "ID";
+            lokFormula.DisplayMember = "Name";
+            lokFormula.SelectedValueMember = "ID";
             BizFormula bizFormula = new BizFormula();
-            cmbFormula.ItemsSource = bizFormula.GetFormulas(EntityID);
+            lokFormula.ItemsSource = bizFormula.GetFormulas(EntityID, false);
         }
         private void SetColumns()
         {
@@ -169,15 +193,16 @@ namespace MyProject_WPF
         {
             txtTitle.Text = StateDTO.Title;
             dtgActionActivities.ItemsSource = StateDTO.ActionActivities;
-            lokRelationshipTail.SelectedValue = StateDTO.RelationshipTailID;
+
             dtgSecuritySubjects.ItemsSource = StateDTO.SecuritySubjects;
             //if (StateDTO.Preserve)
             //    optPersist.IsChecked = true;
             //else
             //    optNotPersist.IsChecked = true;
+            lokRelationshipTail.SelectedValue = StateDTO.RelationshipTailID;
             if (StateDTO.FormulaID != 0)
             {
-                cmbFormula.SelectedValue = StateDTO.FormulaID;
+                lokFormula.SelectedValue = StateDTO.FormulaID;
                 dtgFormulaValue.ItemsSource = StateDTO.Values;
                 optFormula.IsChecked = true;
             }
@@ -193,6 +218,7 @@ namespace MyProject_WPF
                 dtgFormulaValue.ItemsSource = StateDTO.Values;
                 dtgColumnValue.ItemsSource = StateDTO.Values;
             }
+            cmbInOrNotIn.SelectedItem = StateDTO.SecuritySubjectInORNotIn;
         }
         private void optFormula_Checked(object sender, RoutedEventArgs e)
         {
@@ -207,20 +233,6 @@ namespace MyProject_WPF
             tabFormula.Visibility = Visibility.Collapsed;
             tabColumn.Visibility = Visibility.Visible;
             tabColumn.IsSelected = true;
-        }
-
-        private void btnAddFormula_Click(object sender, RoutedEventArgs e)
-        {
-            frmFormula view = new frmFormula(0, EntityID);
-            view.FormulaUpdated += View_FormulaSelected;
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Maximized);
-        }
-
-        private void View_FormulaSelected(object sender, FormulaSelectedArg e)
-        {
-            SetFromulas();
-            cmbFormula.SelectedValue = e.FormulaID;
-
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -242,7 +254,7 @@ namespace MyProject_WPF
             }
             if (optFormula.IsChecked == true)
             {
-                if (cmbFormula.SelectedItem == null)
+                if (lokFormula.SelectedItem == null)
                 {
                     MessageBox.Show("فرمول مشخص نشده است");
                     return;
@@ -268,10 +280,11 @@ namespace MyProject_WPF
             //    StateDTO.ActionActivityID = 0;
             StateDTO.Title = txtTitle.Text;
             StateDTO.EntityStateOperator = (Enum_EntityStateOperator)cmbOperator.SelectedItem;
+            StateDTO.SecuritySubjectInORNotIn = (InORNotIn)cmbInOrNotIn.SelectedItem;
             //StateDTO.Preserve = optPersist.IsChecked == true;
             if (optFormula.IsChecked == true)
             {
-                StateDTO.FormulaID = (int)cmbFormula.SelectedValue;
+                StateDTO.FormulaID = (int)lokFormula.SelectedValue;
                 StateDTO.ColumnID = 0;
             }
             else if (optColumn.IsChecked == true)

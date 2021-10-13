@@ -59,7 +59,7 @@ namespace MyUILibrary
         //  public DataViewManagerService DataViewManager = new DataViewManagerService();
         public EntityListViewManagerService EntityListViewManager = new EntityListViewManagerService();
         public DataSearchManagerService DataSearchManager = new DataSearchManagerService();
-        //  public GridViewManagerService GridViewManager = new GridViewManagerService();
+        public DataSecurityManager DataSecurityManager = new DataSecurityManager();
         public DataLinkManagerService DataLinkManager = new DataLinkManagerService();
         public GraphManagerService GraphManager = new GraphManagerService();
 
@@ -448,7 +448,7 @@ namespace MyUILibrary
         }
         public DR_Requester GetRequester()
         {
-            DR_Requester requester = new DR_Requester(2);
+            DR_Requester requester = new DR_Requester();
             requester.Identity = UserInfo.ID;
             if (UserInfo.AdminSecurityInfo != null && UserInfo.AdminSecurityInfo.IsActive)
             {

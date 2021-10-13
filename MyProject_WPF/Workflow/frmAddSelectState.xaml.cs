@@ -26,7 +26,7 @@ namespace MyProject_WPF
     /// </summary>
     public partial class frmAddSelectState : UserControl
     {
-   //     int ProcessID { set; get; }
+        //     int ProcessID { set; get; }
         BizActivity bizActivity = new BizActivity();
         WFStateDTO Message = new WFStateDTO();
         BizState bizState = new BizState();
@@ -53,7 +53,7 @@ namespace MyProject_WPF
         private void SetFormulas()
         {
 
-            var listAllFormula = bizFormula.GetFormulas(Process.EntityID);
+            var listAllFormula = bizFormula.GetFormulas(Process.EntityID, false);
             List<FormulaDTO> listValidFormula = new List<FormulaDTO>();
             foreach (var formula in listAllFormula)
             {
@@ -104,7 +104,7 @@ namespace MyProject_WPF
             GetActivities();
 
             BizProcess bizProcess = new BizProcess();
-       //     var process = bizProcess.GetProcess(MyProjectManager.GetMyProjectManager.GetRequester(), ProcessID, false);
+            //     var process = bizProcess.GetProcess(MyProjectManager.GetMyProjectManager.GetRequester(), ProcessID, false);
 
             //var col8 = dtgStateTargets.Columns[1] as GridViewComboBoxColumn;
             //col8.ItemsSource = WorkflowHelper.GetGroups(Message.ProcessID);

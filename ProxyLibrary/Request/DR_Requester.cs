@@ -9,10 +9,10 @@ namespace ProxyLibrary
         {
 
         }
-        public DR_Requester(int a)
-        {
-            Successors = new List<DR_Requester>();
-        }
+        //public DR_Requester(int a)
+        //{
+        //    Successors = new List<DR_Requester>();
+        //}
 
 
         public int Identity;

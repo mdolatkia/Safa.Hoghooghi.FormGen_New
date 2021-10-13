@@ -62,7 +62,8 @@ namespace MyUILibrary.EntityArea
         TemporaryLinkState TemporaryLinkState { get; }
         I_View_TemporaryView TemporaryDisplayView { set; get; }
         void SetTempText(ObservableCollection<DP_DataRepository> relatedData);
-        List<EntityStateDTO> EntityStates { get; }
+        List<EntityStateDTO> EntityStates1 { get; }
+        List<EntityStateGroupDTO> EntityStateGroups { get; }
         //I_View_SearchEntityArea SearchView { set; get; }
 
         //I_View_ViewEntityArea ViewView { set; get; }
@@ -164,7 +165,7 @@ namespace MyUILibrary.EntityArea
 
         void SelectFromParent(DP_DataRepository parentDataItem, Dictionary<int, string> colAndValues);
         void CheckEmptyOneDirectData(I_EditEntityArea editEntityArea);
-        void SetColumnValueFromState(DP_DataRepository dataItem, List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state);
+        void SetColumnValueFromState(DP_DataRepository dataItem, List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula);
         void SetColumnValueRangeFromState(SimpleColumnControl propertyControl, List<ColumnValueRangeDetailsDTO> details, DP_DataRepository data, EntityStateDTO state);
         void ResetColumnValueRangeFromState(SimpleColumnControl simpleColumn, DP_DataRepository dataItem, EntityStateDTO state);
         void ChangeSimpleColumnVisiblityFromState(DP_DataRepository dataItem, SimpleColumnControl simpleColumn, bool hidden, string message, string key);//, ImposeControlState hiddenControlState);
@@ -224,7 +225,7 @@ namespace MyUILibrary.EntityArea
     public interface I_UIFomulaManager
     {
         void UpdateFromulas();
-        void CalculateProperty(EntityInstanceProperty dataProperty, FormulaDTO formula, DP_DataRepository dataItem);
+        void CalculateProperty(EntityInstanceProperty dataProperty, ColumnCustomFormulaDTO columnCustomFormula, DP_DataRepository dataItem,bool asDefault);
         void UpdateFromulas(List<CalculatedPropertyTree> result, RelationshipDTO relationship = null);
     }
     public interface I_UIValidationManager

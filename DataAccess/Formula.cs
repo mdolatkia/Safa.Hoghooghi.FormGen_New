@@ -16,8 +16,9 @@ namespace DataAccess
     {
         public Formula()
         {
-            this.Column = new HashSet<Column>();
+            this.ColumnCustomFormula = new HashSet<ColumnCustomFormula>();
             this.EntityValidation = new HashSet<EntityValidation>();
+            this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
             this.FormulaItems = new HashSet<FormulaItems>();
             this.FormulaItems1 = new HashSet<FormulaItems>();
             this.LetterTemplatePlainField = new HashSet<LetterTemplatePlainField>();
@@ -38,9 +39,10 @@ namespace DataAccess
     
         public virtual CodeFunction CodeFunction { get; set; }
         public virtual CodeFunction_TableDrivedEntity CodeFunction_TableDrivedEntity { get; set; }
-        public virtual ICollection<Column> Column { get; set; }
+        public virtual ICollection<ColumnCustomFormula> ColumnCustomFormula { get; set; }
         public virtual DatabaseFunction_TableDrivedEntity DatabaseFunction_TableDrivedEntity { get; set; }
         public virtual ICollection<EntityValidation> EntityValidation { get; set; }
+        public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
         public virtual LinearFormula LinearFormula { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }

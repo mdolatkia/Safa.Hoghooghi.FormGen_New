@@ -18,11 +18,11 @@ namespace MyFormulaManagerService
     public class StateManagerService
     {
 
-        public StateResult CalculateState(int stateID, DP_DataRepository mainDataItem, DR_Requester requester)
-        {
-            StateHandler handler = new StateHandler();
-            return handler.GetStateResult(stateID, mainDataItem,requester);
-        }
+        //public StateResult CalculateState(int stateID, DP_DataRepository mainDataItem, DR_Requester requester)
+        //{
+        //    StateHandler handler = new StateHandler();
+        //    return handler.GetStateResult(stateID, mainDataItem,requester);
+        //}
         public StateResult CalculateState(EntityStateDTO state, DP_DataRepository mainDataItem, DR_Requester requester)
         {
             StateHandler handler = new StateHandler();

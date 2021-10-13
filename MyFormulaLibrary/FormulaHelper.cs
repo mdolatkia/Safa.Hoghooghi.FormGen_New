@@ -74,27 +74,29 @@ namespace MyFormulaFunctionStateFunctionLibrary
         {
             Resuester = resuester;
         }
-        public int UserID
+        //public int UserID
+        //{
+        //    get
+        //    {
+        //        return Resuester.Identity;
+        //    }
+        //}
+        //public int FirstOrganizationID
+        //{
+        //    get
+        //    {
+        //        return Resuester.Posts.First().OrganizationID;
+        //    }
+        //}
+        public OrganizationPostDTO FirstOrganizationPost
         {
             get
             {
-                return Resuester.Identity;
+                return Resuester.Posts.First();
             }
         }
-        public int FirstOrganizationID
-        {
-            get
-            {
-                return Resuester.Posts.First().OrganizationID;
-            }
-        }
-        public string FirstOrganizationName
-        {
-            get
-            {
-                return Resuester.Posts.First().Name;
-            }
-        }
+
+
         public bool IsGenerallyAdmin
         {
             get

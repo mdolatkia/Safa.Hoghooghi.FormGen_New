@@ -170,7 +170,7 @@ namespace MyProject_WPF
                             {
                                 var columnName = field.FieldName.Split('_')[1];
                                 //برای الیاس ها هم فکری شود
-                                var column = SelectedEntityListView.EntityListViewAllColumns.FirstOrDefault(x => x.Alias!=null && x.Alias.ToLower() == columnName.ToLower());
+                                var column = SelectedEntityListView.EntityListViewAllColumns.FirstOrDefault(x => x.Alias != null && x.Alias.ToLower() == columnName.ToLower());
                                 if (column != null)
                                     field.EntityListViewColumnsID = column.ID;
                             }
@@ -220,7 +220,7 @@ namespace MyProject_WPF
             if (lokEntityListView.SelectedItem == null)
                 return 0;
             else
-                return (int)lokEntityListView.SelectedValue    ;
+                return (int)lokEntityListView.SelectedValue;
         }
 
         private void SetLetterRelationshipTemplates(LetterTemplateRelationshipFieldDTO field)
@@ -267,7 +267,7 @@ namespace MyProject_WPF
         {
             colParameters.DisplayMemberPath = "Name";
             colParameters.SelectedValueMemberPath = "ID";
-            FormulaParameters = bizFormula.GetFormulas(EntityID);
+            FormulaParameters = bizFormula.GetFormulas(EntityID, true);
             FormulaParameters.Add(new FormulaDTO() { ID = 0, Name = " " });
             colParameters.ItemsSource = FormulaParameters;
         }

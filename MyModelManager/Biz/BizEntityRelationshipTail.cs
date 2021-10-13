@@ -138,15 +138,22 @@ namespace MyModelManager
             {
                 var ittem = ToEntityRelationshipTailDTO(projectContext, tail.RelationshipPath, tail.TableDrivedEntityID, tail.TableDrivedEntity1.Alias, tail.TargetEntityID, tail.TableDrivedEntity.Alias, null, false);
                 ittem.Item1.ID = tail.ID;
-
                 return ittem.Item1;
+            }
+        }
+        public EntityRelationshipTailDTO JoinRelationshipTail(EntityRelationshipTailDTO firstTail, EntityRelationshipTailDTO secondTail)
+        {
+            using (var projectContext = new DataAccess.MyProjectEntities())
+            {
+                var RelationshipIDPath = firstTail.RelationshipIDPath + "," + secondTail.RelationshipIDPath;
+                return ToEntityRelationshipTailDTO(projectContext, RelationshipIDPath, firstTail.InitialEntityID, firstTail.InitialiEntityAlias, secondTail.TargetEntityID, secondTail.TargetEntityAlias, null, false).Item1;
             }
         }
         BizRelationship bizRelationship = new BizRelationship();
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-
         private Tuple<EntityRelationshipTailDTO, List<TableDrivedEntity>, List<Relationship>> ToEntityRelationshipTailDTO
-            (MyProjectEntities projectContext, string relationshipPath, int initialiEntityID, string initialiEntityAlias, int targetEntityID, string targetEntityAlias, EntityRelationshipTailDTO reverseRelationshipTail, bool withEntitiesAndRelationships, List<TableDrivedEntity> entities = null, List<Relationship> relationships = null)
+            (MyProjectEntities projectContext, string relationshipPath, int initialiEntityID, string initialiEntityAlias, int targetEntityID, string targetEntityAlias
+            , EntityRelationshipTailDTO reverseRelationshipTail, bool withEntitiesAndRelationships, List<TableDrivedEntity> entities = null, List<Relationship> relationships = null)
         {
             if (entities == null)
             {

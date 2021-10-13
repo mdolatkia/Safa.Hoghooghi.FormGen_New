@@ -12,13 +12,15 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class EntitySecurityDirectStates
+    public partial class ColumnCustomFormula
     {
         public int ID { get; set; }
-        public int EntitySecurityDirectID { get; set; }
-        public int TableDrivedEntityStateID { get; set; }
+        public Nullable<int> FormulaID { get; set; }
+        public bool CalculateFormulaAsDefault { get; set; }
+        public bool OnlyOnNewData { get; set; }
+        public bool OnlyOnEmptyValue { get; set; }
     
-        public virtual TableDrivedEntityState TableDrivedEntityState { get; set; }
-        public virtual EntitySecurityDirect EntitySecurityDirect { get; set; }
+        public virtual Column Column { get; set; }
+        public virtual Formula Formula { get; set; }
     }
 }

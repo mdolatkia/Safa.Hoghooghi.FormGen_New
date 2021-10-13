@@ -18,6 +18,7 @@ namespace DataAccess
         {
             this.CodeFunction_TableDrivedEntity_Parameters = new HashSet<CodeFunction_TableDrivedEntity_Parameters>();
             this.EntityDirectlReportParameters = new HashSet<EntityDirectlReportParameters>();
+            this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
             this.RelationshipSearchFilter = new HashSet<RelationshipSearchFilter>();
             this.RelationshipSearchFilter1 = new HashSet<RelationshipSearchFilter>();
             this.SuperToSubRelationshipType = new HashSet<SuperToSubRelationshipType>();
@@ -57,15 +58,14 @@ namespace DataAccess
         public Nullable<int> Position { get; set; }
         public string Description { get; set; }
         public string DBCalculateFormula { get; set; }
-        public Nullable<int> CustomCalculateFormulaID { get; set; }
         public bool IsNotTransferable { get; set; }
-        public Nullable<bool> CalculateFormulaAsDefault { get; set; }
     
         public virtual ICollection<CodeFunction_TableDrivedEntity_Parameters> CodeFunction_TableDrivedEntity_Parameters { get; set; }
-        public virtual Formula Formula { get; set; }
+        public virtual ColumnCustomFormula ColumnCustomFormula { get; set; }
         public virtual ColumnValueRange ColumnValueRange { get; set; }
         public virtual DateTimeColumnType DateTimeColumnType { get; set; }
         public virtual ICollection<EntityDirectlReportParameters> EntityDirectlReportParameters { get; set; }
+        public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter { get; set; }
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter1 { get; set; }
         public virtual TimeColumnType TimeColumnType { get; set; }

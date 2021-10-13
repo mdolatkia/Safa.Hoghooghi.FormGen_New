@@ -189,6 +189,9 @@
     <Compile Include="CodeFunction\frmCodeFunction_Entity.xaml.cs">
       <DependentUpon>frmCodeFunction_Entity.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Column\frmColumnCustomFormula.xaml.cs">
+      <DependentUpon>frmColumnCustomFormula.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Column\frmColumnValueRange.xaml.cs">
       <DependentUpon>frmColumnValueRange.xaml</DependentUpon>
     </Compile>
@@ -259,9 +262,6 @@
     </Compile>
     <Compile Include="Formula\frmFormula.xaml.cs">
       <DependentUpon>frmFormula.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Formula\frmFormulaParameterSelect.xaml.cs">
-      <DependentUpon>frmFormulaParameterSelect.xaml</DependentUpon>
     </Compile>
     <Compile Include="Formula\frmFormulaSelect.xaml.cs">
       <DependentUpon>frmFormulaSelect.xaml</DependentUpon>
@@ -551,6 +551,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Column\frmColumnCustomFormula.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Column\frmColumnValueRange.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -640,10 +644,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Formula\frmFormula.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Formula\frmFormulaParameterSelect.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

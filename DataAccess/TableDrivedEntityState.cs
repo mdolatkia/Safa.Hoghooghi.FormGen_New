@@ -18,7 +18,6 @@ namespace DataAccess
         {
             this.EntityState_UIActionActivity = new HashSet<EntityState_UIActionActivity>();
             this.FormulaItems = new HashSet<FormulaItems>();
-            this.EntitySecurityDirectStates = new HashSet<EntitySecurityDirectStates>();
             this.TableDrivedEntityStateSecuritySubject = new HashSet<TableDrivedEntityStateSecuritySubject>();
             this.TableDrivedEntityStateValues = new HashSet<TableDrivedEntityStateValues>();
         }
@@ -30,8 +29,7 @@ namespace DataAccess
         public string Title { get; set; }
         public Nullable<short> EntityStateOperator { get; set; }
         public Nullable<int> EntityRelationshipTailID { get; set; }
-        public Nullable<int> SecuritySubjectID { get; set; }
-        public Nullable<short> SecuritySubjectOperator { get; set; }
+        public Nullable<bool> SecuritySubjectInOrNotIn { get; set; }
     
         public virtual Column Column { get; set; }
         public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
@@ -39,7 +37,6 @@ namespace DataAccess
         public virtual Formula Formula { get; set; }
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        public virtual ICollection<EntitySecurityDirectStates> EntitySecurityDirectStates { get; set; }
         public virtual ICollection<TableDrivedEntityStateSecuritySubject> TableDrivedEntityStateSecuritySubject { get; set; }
         public virtual ICollection<TableDrivedEntityStateValues> TableDrivedEntityStateValues { get; set; }
     }

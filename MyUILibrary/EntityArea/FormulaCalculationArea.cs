@@ -32,11 +32,11 @@ namespace MyUILibrary.FormulaArea
             AreaInitializer = initializer;
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetViewOfFormulaCalculationArea();
             View.CloseRequested += View_CloseRequested;
-            View.FromulaExpression = initializer.Formula.Tooltip;
+            View.FromulaExpression = initializer.ColumnCustomFormula.Formula.Tooltip;
             var dataProperty = initializer.DataItem.GetProperty(initializer.ColumnControl.Column.ID);
             if (dataProperty != null)
             {
-                AreaInitializer.FomulaManager.CalculateProperty(dataProperty, AreaInitializer.Formula, AreaInitializer.DataItem);
+                AreaInitializer.FomulaManager.CalculateProperty(dataProperty, AreaInitializer.ColumnCustomFormula, AreaInitializer.DataItem,false);
                 if (string.IsNullOrEmpty(dataProperty.FormulaException))
                 {
                     View.ResultString = dataProperty.Value;

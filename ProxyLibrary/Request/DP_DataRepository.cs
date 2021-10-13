@@ -965,7 +965,18 @@ namespace ProxyLibrary
         And,
         Or
     }
-
+    public enum AndOREqualType
+    {
+        AndTrue,
+        OrTrue,
+        AndNotTrue,
+        OrNotTrue
+    }
+    public enum InORNotIn
+    {
+        In,
+        NotIn
+    }
     public class PropertyValueChangedArg : EventArgs
     {
         public int ColumnID { set; get; }

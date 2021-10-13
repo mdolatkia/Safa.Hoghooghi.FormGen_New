@@ -16,18 +16,26 @@ namespace DataAccess
     {
         public EntitySecurityDirect()
         {
-            this.EntitySecurityCondition_Old = new HashSet<EntitySecurityCondition_Old>();
-            this.EntitySecurityDirectStates = new HashSet<EntitySecurityDirectStates>();
+            this.EntitySecurityDirectSecuritySubject = new HashSet<EntitySecurityDirectSecuritySubject>();
+            this.EntitySecurityDirectValues = new HashSet<EntitySecurityDirectValues>();
         }
     
         public int ID { get; set; }
+        public string Description { get; set; }
         public int TableDrivedEntityID { get; set; }
-        public Nullable<int> SecuritySubjectID { get; set; }
         public bool IgnoreSecurity { get; set; }
+        public Nullable<short> SecuritySubjectOperator { get; set; }
+        public Nullable<short> Mode { get; set; }
+        public Nullable<int> FormulaID { get; set; }
+        public Nullable<int> ColumnID { get; set; }
+        public Nullable<int> EntityRelationshipTailID { get; set; }
+        public Nullable<short> ValueOperator { get; set; }
     
+        public virtual Column Column { get; set; }
+        public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
+        public virtual Formula Formula { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        public virtual ICollection<EntitySecurityCondition_Old> EntitySecurityCondition_Old { get; set; }
-        public virtual ICollection<EntitySecurityDirectStates> EntitySecurityDirectStates { get; set; }
-        public virtual SecuritySubject SecuritySubject { get; set; }
+        public virtual ICollection<EntitySecurityDirectSecuritySubject> EntitySecurityDirectSecuritySubject { get; set; }
+        public virtual ICollection<EntitySecurityDirectValues> EntitySecurityDirectValues { get; set; }
     }
 }

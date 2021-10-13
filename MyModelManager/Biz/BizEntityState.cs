@@ -127,6 +127,9 @@ namespace MyModelManager
                 BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
                 result.RelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
             }
+            if (item.EntityStateOperator != null)
+                result.EntityStateOperator = (Enum_EntityStateOperator)item.EntityStateOperator;
+
             result.TableDrivedEntityID = item.TableDrivedEntityID;
             //result.Preserve = item.Preserve;
             //result.ActionActivityID = item.ActionActivityID ?? 0;
@@ -142,16 +145,20 @@ namespace MyModelManager
             }
             result.ID = item.ID;
             result.Title = item.Title;
-            if (item.EntityStateOperator != null)
-                result.EntityStateOperator = (Enum_EntityStateOperator)item.EntityStateOperator;
+          
             foreach (var valItem in item.TableDrivedEntityStateValues)
             {
                 result.Values.Add(new ModelEntites.EntityStateValueDTO() { Value = valItem.Value, SecurityReservedValue = valItem.ReservedValue == null ? SecurityReservedValue.None : (SecurityReservedValue)valItem.ReservedValue });
             }
+
             foreach (var valItem in item.TableDrivedEntityStateSecuritySubject)
             {
-                result.SecuritySubjects.Add(new EntityStateSecuritySubjectDTO { SecuritySubjectID = valItem.SecuritySubjectID, SecuritySubjectOperator = (Enum_SecuritySubjectOperator)valItem.SecuritySubjectOperator });
+                result.SecuritySubjects.Add(new  ChildSecuritySubjectDTO { SecuritySubjectID = valItem.SecuritySubjectID });//, SecuritySubjectOperator = (Enum_SecuritySubjectOperator)valItem.SecuritySubjectOperator });
             }
+            if (item.SecuritySubjectInOrNotIn == null || item.SecuritySubjectInOrNotIn == true)
+                result.SecuritySubjectInORNotIn = InORNotIn.In;
+            else
+                result.SecuritySubjectInORNotIn = InORNotIn.NotIn;
             return result;
         }
 
@@ -244,6 +251,11 @@ namespace MyModelManager
                     dbEntityState.EntityRelationshipTailID = null;
                 }
                 dbEntityState.EntityStateOperator = (short)EntityState.EntityStateOperator;
+                if (EntityState.SecuritySubjectInORNotIn == InORNotIn.In)
+                    dbEntityState.SecuritySubjectInOrNotIn = true;
+                else
+                    dbEntityState.SecuritySubjectInOrNotIn = false;
+
                 //if (EntityState.ActionActivityID != 0)
                 //    dbEntityState.ActionActivityID = EntityState.ActionActivityID;
                 //else
@@ -264,7 +276,7 @@ namespace MyModelManager
                     projectContext.TableDrivedEntityStateSecuritySubject.Remove(dbEntityState.TableDrivedEntityStateSecuritySubject.First());
                 foreach (var nItem in EntityState.SecuritySubjects)
                 {
-                    dbEntityState.TableDrivedEntityStateSecuritySubject.Add(new TableDrivedEntityStateSecuritySubject() { SecuritySubjectID = nItem.SecuritySubjectID, SecuritySubjectOperator = (short)nItem.SecuritySubjectOperator });
+                    dbEntityState.TableDrivedEntityStateSecuritySubject.Add(new TableDrivedEntityStateSecuritySubject() { SecuritySubjectID = nItem.SecuritySubjectID });//, SecuritySubjectOperator = (short)nItem.SecuritySubjectOperator });
                 }
 
                 while (dbEntityState.EntityState_UIActionActivity.Any())

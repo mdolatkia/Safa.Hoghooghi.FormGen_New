@@ -12,18 +12,13 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class EntitySecurityCondition_Old
+    public partial class EntitySecurityDirectValues
     {
         public int ID { get; set; }
-        public int EntitySecurityDirectID { get; set; }
-        public Nullable<int> EntityRelationshipTailID { get; set; }
-        public int ColumnID { get; set; }
-        public short Operator { get; set; }
         public string Value { get; set; }
-        public Nullable<int> DatabaseFunctionID { get; set; }
-        public short ReservedValue { get; set; }
+        public int EntitySecurityDirectID { get; set; }
+        public Nullable<short> ReservedValue { get; set; }
     
-        public virtual DatabaseFunction DatabaseFunction { get; set; }
         public virtual EntitySecurityDirect EntitySecurityDirect { get; set; }
     }
 }

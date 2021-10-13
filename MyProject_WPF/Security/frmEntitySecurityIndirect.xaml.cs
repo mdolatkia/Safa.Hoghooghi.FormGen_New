@@ -30,7 +30,7 @@ namespace MyProject_WPF
         {
             InitializeComponent();
             SetEntites();
-
+          //  cmbMode.ItemsSource = Enum.GetValues(typeof(DataInDirectSecurityMode));
         }
 
         private void SetEntites()
@@ -92,6 +92,7 @@ namespace MyProject_WPF
             }
             else
                 cmbRelationshipTail.SelectedItem = null;
+      //      cmbMode.SelectedItem = Message.Mode;
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -108,6 +109,7 @@ namespace MyProject_WPF
             }
             if (Message == null)
                 Message = new EntitySecurityInDirectDTO();
+       //     Message.Mode = (DataInDirectSecurityMode)cmbMode.SelectedItem;
             Message.TableDrivedEntityID = (int)lokEntities.SelectedValue;
             //Message.DirectRoleSecurityID = (int)cmbDirectRoleSecurity.SelectedValue;
             Message.RelationshipTailID = (int)cmbRelationshipTail.SelectedValue;

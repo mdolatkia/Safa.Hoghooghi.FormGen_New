@@ -142,6 +142,9 @@
     <Compile Include="Column.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
+    <Compile Include="ColumnCustomFormula.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
+    </Compile>
     <Compile Include="ColumnPhrase.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
@@ -310,13 +313,13 @@
     <Compile Include="EntitySearchColumns.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="EntitySecurityCondition_Old.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Include="EntitySecurityDirect.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="EntitySecurityDirectStates.cs">
+    <Compile Include="EntitySecurityDirectSecuritySubject.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntitySecurityDirectValues.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="EntitySecurityInDirect.cs">
