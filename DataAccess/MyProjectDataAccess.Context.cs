@@ -138,8 +138,9 @@ namespace DataAccess
         public virtual DbSet<TableDrivedEntity_Columns> TableDrivedEntity_Columns { get; set; }
         public virtual DbSet<TableDrivedEntity_EntityCommand> TableDrivedEntity_EntityCommand { get; set; }
         public virtual DbSet<TableDrivedEntityState> TableDrivedEntityState { get; set; }
-        public virtual DbSet<TableDrivedEntityStateSecuritySubject> TableDrivedEntityStateSecuritySubject { get; set; }
-        public virtual DbSet<TableDrivedEntityStateValues> TableDrivedEntityStateValues { get; set; }
+        public virtual DbSet<TableDrivedEntityStateCondition> TableDrivedEntityStateCondition { get; set; }
+        public virtual DbSet<TableDrivedEntityStateConditionSecuritySubject> TableDrivedEntityStateConditionSecuritySubject { get; set; }
+        public virtual DbSet<TableDrivedEntityStateConditionValues> TableDrivedEntityStateConditionValues { get; set; }
         public virtual DbSet<TabPageUISetting> TabPageUISetting { get; set; }
         public virtual DbSet<TimeColumnType> TimeColumnType { get; set; }
         public virtual DbSet<UIActionActivity> UIActionActivity { get; set; }
@@ -150,9 +151,6 @@ namespace DataAccess
         public virtual DbSet<UnionToSubUnionRelationshipType> UnionToSubUnionRelationshipType { get; set; }
         public virtual DbSet<UniqueConstraint> UniqueConstraint { get; set; }
         public virtual DbSet<EntitySecurityDirect> EntitySecurityDirect { get; set; }
-        public virtual DbSet<EntitySecurityDirectSecuritySubject> EntitySecurityDirectSecuritySubject { get; set; }
-        public virtual DbSet<EntitySecurityDirectValues> EntitySecurityDirectValues { get; set; }
-        public virtual DbSet<EntitySecurityInDirect> EntitySecurityInDirect { get; set; }
         public virtual DbSet<Organization> Organization { get; set; }
         public virtual DbSet<OrganizationPost> OrganizationPost { get; set; }
         public virtual DbSet<OrganizationType> OrganizationType { get; set; }

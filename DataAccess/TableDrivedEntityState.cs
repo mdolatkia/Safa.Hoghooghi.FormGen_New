@@ -18,26 +18,19 @@ namespace DataAccess
         {
             this.EntityState_UIActionActivity = new HashSet<EntityState_UIActionActivity>();
             this.FormulaItems = new HashSet<FormulaItems>();
-            this.TableDrivedEntityStateSecuritySubject = new HashSet<TableDrivedEntityStateSecuritySubject>();
-            this.TableDrivedEntityStateValues = new HashSet<TableDrivedEntityStateValues>();
+            this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
+            this.TableDrivedEntityStateCondition = new HashSet<TableDrivedEntityStateCondition>();
         }
     
         public int ID { get; set; }
         public int TableDrivedEntityID { get; set; }
-        public Nullable<int> FormulaID { get; set; }
-        public Nullable<int> ColumnID { get; set; }
         public string Title { get; set; }
-        public Nullable<short> EntityStateOperator { get; set; }
-        public Nullable<int> EntityRelationshipTailID { get; set; }
-        public Nullable<bool> SecuritySubjectInOrNotIn { get; set; }
+        public Nullable<short> ConditionOperator { get; set; }
     
-        public virtual Column Column { get; set; }
-        public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
         public virtual ICollection<EntityState_UIActionActivity> EntityState_UIActionActivity { get; set; }
-        public virtual Formula Formula { get; set; }
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        public virtual ICollection<TableDrivedEntityStateSecuritySubject> TableDrivedEntityStateSecuritySubject { get; set; }
-        public virtual ICollection<TableDrivedEntityStateValues> TableDrivedEntityStateValues { get; set; }
+        public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
+        public virtual ICollection<TableDrivedEntityStateCondition> TableDrivedEntityStateCondition { get; set; }
     }
 }

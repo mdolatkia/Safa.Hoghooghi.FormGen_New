@@ -14,28 +14,13 @@ namespace DataAccess
     
     public partial class EntitySecurityDirect
     {
-        public EntitySecurityDirect()
-        {
-            this.EntitySecurityDirectSecuritySubject = new HashSet<EntitySecurityDirectSecuritySubject>();
-            this.EntitySecurityDirectValues = new HashSet<EntitySecurityDirectValues>();
-        }
-    
         public int ID { get; set; }
         public string Description { get; set; }
         public int TableDrivedEntityID { get; set; }
-        public bool IgnoreSecurity { get; set; }
-        public Nullable<short> SecuritySubjectOperator { get; set; }
         public Nullable<short> Mode { get; set; }
-        public Nullable<int> FormulaID { get; set; }
-        public Nullable<int> ColumnID { get; set; }
-        public Nullable<int> EntityRelationshipTailID { get; set; }
-        public Nullable<short> ValueOperator { get; set; }
+        public int TableDrivedEntityStateID { get; set; }
     
-        public virtual Column Column { get; set; }
-        public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
-        public virtual Formula Formula { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        public virtual ICollection<EntitySecurityDirectSecuritySubject> EntitySecurityDirectSecuritySubject { get; set; }
-        public virtual ICollection<EntitySecurityDirectValues> EntitySecurityDirectValues { get; set; }
+        public virtual TableDrivedEntityState TableDrivedEntityState { get; set; }
     }
 }

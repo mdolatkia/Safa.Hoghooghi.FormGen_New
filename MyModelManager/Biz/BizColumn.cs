@@ -630,6 +630,7 @@ namespace MyModelManager
         private ModelEntites.ColumnCustomFormulaDTO ToColumnCustomFormulaDTO(ColumnCustomFormula item)
         {
             var result = new ModelEntites.ColumnCustomFormulaDTO();
+            result.ID = item.ID;
             result.FormulaID = item.FormulaID ?? 0;
             result.CalculateFormulaAsDefault = item.CalculateFormulaAsDefault;
             result.OnlyOnEmptyValue = item.OnlyOnEmptyValue;

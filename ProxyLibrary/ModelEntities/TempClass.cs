@@ -426,6 +426,7 @@ namespace ModelEntites
         public string ServerName1 { set; get; }
         public string ServerName2 { set; get; }
         public bool Removed { get; set; }
+
         public bool IsReadonly { get; set; }
         public bool IsDisabled { get; set; }
         public bool IsNotTransferable { get; set; }
@@ -2308,34 +2309,42 @@ namespace ModelEntites
     {
         public EntitySecurityDirectDTO()
         {
-            Values = new List<EntityStateValueDTO>();
+            //    Values = new List<EntityStateValueDTO>();
             //   EntityStates = new List<EntitySecurityDirectStatesDTO>();
-            SecuritySubjects = new ObservableCollection<ChildSecuritySubjectDTO>();
+            //  SecuritySubjects = new ObservableCollection<ChildSecuritySubjectDTO>();
         }
         public int ID { set; get; }
         public int TableDrivedEntityID { set; get; }
+        public int EntityStateID { set; get; }
         //  public int SecuritySubjectID { set; get; }
         //   public AndORType ConditionAndORType { set; get; }
         //  public SecuritySubjectDTO SecuritySubject { set; get; }
 
-        //public int EntityStateID { set; get; }
-        //public EntityStateDTO EntityState { set; get; }
 
-        public List<EntityStateValueDTO> Values { set; get; }
-        public int RelationshipTailID { set; get; }
-        public EntityRelationshipTailDTO RelationshipTail { set; get; }
-        public int FormulaID { set; get; }
-        public FormulaDTO Formula { set; get; }
-        public int ColumnID { set; get; }
-        public ColumnDTO Column { set; get; }
-        public Enum_EntityStateOperator ValueOperator { set; get; }
+        public EntityStateDTO EntityState { set; get; }
 
-        public bool IgnoreSecurity { set; get; }
+        //  public List<EntityStateValueDTO> Values { set; get; }
+        //    public int RelationshipTailID { set; get; }
+        //   public EntityRelationshipTailDTO RelationshipTail { set; get; }
+        //   public int FormulaID { set; get; }
+        //  public FormulaDTO Formula { set; get; }
+        //    public int ColumnID { set; get; }
+        //    public ColumnDTO Column { set; get; }
+        //   public Enum_EntityStateOperator ValueOperator { set; get; }
+
+        //    public bool IgnoreSecurity { set; get; }
         public DataDirectSecurityMode Mode { set; get; }
 
-        public InORNotIn SecuritySubjectInORNotIn { set; get; }
-        public ObservableCollection<ChildSecuritySubjectDTO> SecuritySubjects { set; get; }
+        //    public InORNotIn SecuritySubjectInORNotIn { set; get; }
+        //    public ObservableCollection<ChildSecuritySubjectDTO> SecuritySubjects { set; get; }
         public string Description { get; set; }
+    }
+
+    public class FinalEntitySecurityDirects
+    {
+        public EntityRelationshipTailDTO RelationshipTail { set; get; }
+        public EntitySecurityDirectDTO FetchDirectSecurity { set; get; }
+        public EntitySecurityDirectDTO ReadonlyDirectSecurity { set; get; }
     }
     //public class EntitySecurityDirectSecuritySubjectDTO
     //{
@@ -2347,8 +2356,15 @@ namespace ModelEntites
     public enum DataDirectSecurityMode
     {
         FetchData
-            ,
+        ,
         ReadonlyData
+    }
+    public enum DataDirectSecurityFinalMode
+    {
+        FetchData
+         ,
+        ReadonlyData
+            , Both
     }
     //public enum DataInDirectSecurityMode
     //{
@@ -2395,21 +2411,28 @@ namespace ModelEntites
         OrganizationPostExternalKey,
         UserExternalKey
     }
-    public class EntitySecurityInDirectDTO
+    //public class EntitySecurityInDirectDTO
+    //{
+    //    public EntitySecurityInDirectDTO()
+    //    {
+
+    //    }
+    //    public int ID { set; get; }
+    //    public int TableDrivedEntityID { set; get; }
+    //    public int DirectRoleSecurityID { set; get; }
+    //    //  public DataInDirectSecurityMode Mode { set; get; }
+    //    public int RelationshipTailID { set; get; }
+    //    public EntityRelationshipTailDTO RelationshipTail { set; get; }
+
+    //    public DataInDirectSecurityMode Mode { set; get; }
+
+    //}
+    public enum DataInDirectSecurityMode
     {
-        public EntitySecurityInDirectDTO()
-        {
-
-        }
-        public int ID { set; get; }
-        public int TableDrivedEntityID { set; get; }
-        public int DirectRoleSecurityID { set; get; }
-        //  public DataInDirectSecurityMode Mode { set; get; }
-        public int RelationshipTailID { set; get; }
-        public EntityRelationshipTailDTO RelationshipTail { set; get; }
-
+        Full
+          ,
+        OnlyFetchData
     }
-
     public enum EntitySecurityOperator
     {
         Equals,
@@ -2779,12 +2802,32 @@ namespace ModelEntites
         public EntityStateDTO()
         {
             ActionActivities = new ObservableCollection<ModelEntites.UIActionActivityDTO>();
+            StateConditions = new ObservableCollection<EntityStateConditionDTO>();
+        }
+        public int ID { set; get; }
+        //public bool Preserve { set; get; }
+        public int TableDrivedEntityID { set; get; }
+
+
+
+        public AndOREqualType ConditionOperator { set; get; }
+        public string Title { set; get; }
+
+        public ObservableCollection<UIActionActivityDTO> ActionActivities { set; get; }
+        public ObservableCollection<EntityStateConditionDTO> StateConditions { set; get; }
+
+
+    }
+    public class EntityStateConditionDTO
+    {
+        public EntityStateConditionDTO()
+        {
             Values = new List<ModelEntites.EntityStateValueDTO>();
             SecuritySubjects = new ObservableCollection<ChildSecuritySubjectDTO>();
         }
         public int ID { set; get; }
         //public bool Preserve { set; get; }
-        public int TableDrivedEntityID { set; get; }
+        public int EntityStateID { set; get; }
 
         public int RelationshipTailID { set; get; }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }
@@ -2796,24 +2839,23 @@ namespace ModelEntites
         public string Title { set; get; }
         public List<EntityStateValueDTO> Values { set; get; }
         //public int ActionActivityID { set; get; }
-        public ObservableCollection<UIActionActivityDTO> ActionActivities { set; get; }
         public InORNotIn SecuritySubjectInORNotIn { set; get; }
         public ObservableCollection<ChildSecuritySubjectDTO> SecuritySubjects { set; get; }
 
     }
-    public class EntityStateGroupDTO 
-    {
-        public EntityStateGroupDTO()
-        {
-            EntityStates = new List<EntityStateDTO>();
-        }
-        public string Title { set; get; }
-        public List<EntityStateDTO> EntityStates { set; get; }
-        public AndOREqualType AndORType { set; get; }
-        public ObservableCollection<UIActionActivityDTO> ActionActivities { set; get; }
+    //public class EntityStateGroupDTO 
+    //{
+    //    public EntityStateGroupDTO()
+    //    {
+    //        EntityStates = new List<EntityStateDTO>();
+    //    }
+    //    public string Title { set; get; }
+    //    public List<EntityStateDTO> EntityStates { set; get; }
+    //    public AndOREqualType AndORType { set; get; }
+    //    public ObservableCollection<UIActionActivityDTO> ActionActivities { set; get; }
 
 
-    }
+    //}
     public class ChildSecuritySubjectDTO
     {
         public int SecuritySubjectID { set; get; }

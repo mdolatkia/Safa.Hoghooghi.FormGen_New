@@ -1038,7 +1038,6 @@ namespace MyUILibrary
                 }
             }
             EditEntityAreaInitializer editEntityAreaInitializer = new EditEntityAreaInitializer();
-            //editEntityAreaInitializer.TemplateEntity = new TableDrivedEntityDTO();
             editEntityAreaInitializer.EntityID = entityId;
             editEntityAreaInitializer.DataMode = dataMode;
             editEntityAreaInitializer.TailDataValidation = tailDataValidation;

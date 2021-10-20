@@ -167,16 +167,21 @@ namespace MyUILibrary.EntityArea
                 AddDataMessageItem(dataItem, key, ControlItemPriority.Normal, "خطا در محاسبه فرمول" + " " + columnCustomFormula.Formula.Title + ":" + " " + dataProperty.FormulaException);
             }
 
-
-            var uiColumnValue = new UIColumnValueDTO();
-            uiColumnValue.ColumnID = columnCustomFormula.ID;
-            //ابجکت نشه؟ExactValue
-            uiColumnValue.ExactValue = result.Result.ToString();
-            uiColumnValue.EvenHasValue = !columnCustomFormula.OnlyOnEmptyValue;
-            uiColumnValue.EvenIsNotNew = !columnCustomFormula.OnlyOnNewData;
-            List<UIColumnValueDTO> uIColumnValues = new List<UIColumnValueDTO>() { uiColumnValue };
-            EditArea.SetColumnValueFromState(dataItem, uIColumnValues, null, columnCustomFormula.Formula);
-
+            if (asDefault )
+            {
+                dataProperty.Value = result.Result;
+            }
+            else
+            {
+                var uiColumnValue = new UIColumnValueDTO();
+                uiColumnValue.ColumnID = columnCustomFormula.ID;
+                //ابجکت نشه؟ExactValue
+                uiColumnValue.ExactValue = result.Result.ToString();
+                uiColumnValue.EvenHasValue = !columnCustomFormula.OnlyOnEmptyValue;
+                uiColumnValue.EvenIsNotNew = !columnCustomFormula.OnlyOnNewData;
+                List<UIColumnValueDTO> uIColumnValues = new List<UIColumnValueDTO>() { uiColumnValue };
+                EditArea.SetColumnValueFromState(dataItem, uIColumnValues, null, columnCustomFormula.Formula);
+            }
         }
 
         private void AddDataMessageItem(DP_DataRepository dataItem, string key, ControlItemPriority priority, string message)
@@ -330,7 +335,7 @@ namespace MyUILibrary.EntityArea
                 if (relationship != null)
                     calculatedPropertyTree.RelationshipInfo = relationship.Alias;
                 result.Add(calculatedPropertyTree);
-                foreach (var columnControl in EditArea.SimpleColumnControls.Where(x => x.Column.ColumnCustomFormula.Formula != null))
+                foreach (var columnControl in EditArea.SimpleColumnControls.Where(x => x.Column.ColumnCustomFormula != null && x.Column.ColumnCustomFormula.Formula != null))
                 {
                     var dataProperty = data.GetProperty(columnControl.Column.ID);
                     if (dataProperty != null)

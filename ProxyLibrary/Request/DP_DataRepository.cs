@@ -556,7 +556,7 @@ namespace ProxyLibrary
         //}
         //public bool RelationshipIsAdded { get;  }
         public bool IsEdited { get; set; }
-
+        public bool IsReadonlyBecauseOfState { get; set; }
         public bool IsReadonlyBecauseOfCreatorRelationshipOnState { get; set; }
         public bool IsReadonlyBecauseOfCreatorRelationshipOnShow { set; get; }
 
@@ -564,7 +564,7 @@ namespace ProxyLibrary
         {
             get
             {
-                return IsReadonlyBecauseOfCreatorRelationshipOnState || IsReadonlyBecauseOfCreatorRelationshipOnShow;
+                return IsReadonlyBecauseOfCreatorRelationshipOnState || IsReadonlyBecauseOfCreatorRelationshipOnShow || IsReadonlyBecauseOfState;
             }
         }
 
@@ -579,7 +579,7 @@ namespace ProxyLibrary
                     return false;
                 else if (ParantChildRelationshipInfo != null && ParantChildRelationshipInfo.IsReadonly && ParantChildRelationshipInfo.DataItemIsAdded(this))
                     return false;
-                else if (IsReadonlyBecauseOfCreatorRelationship && ParantChildRelationshipInfo.DataItemIsAdded(this))
+                else if (IsReadonlyBecauseOfCreatorRelationship && ParantChildRelationshipInfo != null && ParantChildRelationshipInfo.DataItemIsAdded(this))
                     return false;
                 return true;
             }
@@ -940,7 +940,7 @@ namespace ProxyLibrary
             Phrases = new List<ProxyLibrary.Phrase>();
         }
         public int ID { set; get; }
-        public AndORType AndOrType { set; get; }
+        public AndOREqualType AndOrType { set; get; }
         public List<Phrase> Phrases { set; get; }
     }
     public class SearchProperty : Phrase
@@ -967,10 +967,10 @@ namespace ProxyLibrary
     }
     public enum AndOREqualType
     {
-        AndTrue,
-        OrTrue,
-        AndNotTrue,
-        OrNotTrue
+        And,
+        Or,
+        NotAnd,
+        NotOr
     }
     public enum InORNotIn
     {

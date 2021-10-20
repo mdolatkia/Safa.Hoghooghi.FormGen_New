@@ -409,17 +409,28 @@ namespace MyDataSearchManagerBusiness
         {
 
             //   SecurityHelper securityHelper = new SecurityHelper();
-            EntityDataSecurityItems securityItems = null;
+            //  EntityDataSecurityItems securityItem = null;
             //if (securityMode == SecurityMode.ViewOnly)
             //{
-            bool entityHasViewSecurity = bizRoleSecurity.EntityHasDirectOrIndirectSecurities(requester, mainEntity.ID, DataDirectSecurityMode.FetchData);
-            if (entityHasViewSecurity)
+            //bool entityHasViewSecurity = bizRoleSecurity.EntityHasDirectSecurityForDirectOrIndirect(requester, mainEntity.ID, DataDirectSecurityMode.FetchData);
+            //if (entityHasViewSecurity)
+            //{
+            var securityEntityState = bizRoleSecurity.GetAppliableConditionsBySecuritySubject(requester, mainEntity.ID, DataDirectSecurityMode.FetchData);
+            if (securityEntityState != null)
             {
-                var viewSecurityItems = bizRoleSecurity.GetPostEntitySecurityItems(requester, mainEntity.ID);
+                if (securityEntityState.StateConditions.Count == 0)
+                {//چون یعنی دایرکت سکوریتی دارد اما هیچکدام سکوریتی سابجکتشان صدق نمی کند
+                    return GetNowRowSearchQuery(requester, mainEntity);
+                }
+                else if (securityEntityState.StateConditions.Any(x => !x.Values.Any()))
+                {
+                    //چون یا هست و حداقل یکی فقط سکوریتی سابجکت دارد که صدق میکند
+                    return "";
+                }
                 //   var editSecurityItems = bizRoleSecurity.GetPostEntitySecurityItems(requester, mainEntity.ID, SecurityMode.EditAndView);
                 //if (editSecurityItems != null)
                 //       viewSecurityItems.PostEntityDataSecurityItems.AddRange(editSecurityItems.PostEntityDataSecurityItems);
-                securityItems = viewSecurityItems;
+                //securityItem = viewSecurityItems;
             }
             else
                 return "";
@@ -440,103 +451,97 @@ namespace MyDataSearchManagerBusiness
             //    //        return "";
             //    //}
             //}
-            if (securityItems.PostEntityDataSecurityItems.Any(x => x.DirectSecurities.Any(y => y.IgnoreSecurity)))
-                return "";
+
+
+
+            //////if (securityItems.PostEntityDataSecurityItems.Any(x => x.DirectSecurities.Any(y => y.IgnoreSecurity)))
+            //////    return "";
 
 
             //mainDataItem.TargetEntityID = ;
 
-            DP_SearchRepository mainSearchDataItem = null;
-            if (securityItems != null)
-            {
-                if (securityItems.InDirectDataSecurity != null)
-                {
-                    //چرا همین که فرستاده میشود در فانکشن پر نمیشود؟   mainDataItem.Phrase
-                    DP_SearchRepository mainDataItem = new DP_SearchRepository(mainEntity.ID);
-                    //mainDataItem.Phrase = new LogicPhrase();
-                    mainSearchDataItem = CreateChildSearchRepository(mainDataItem, securityItems.InDirectDataSecurity.RelationshipTail);
 
-                    //اینجا تازه کامنت شد
-                    //////if (!mainDataItem.Phrases.Contains(currentSearchRepository.Item1))
-                    //////    mainDataItem.Phrases.Add(currentSearchRepository.Item1);
-                    //////mainSearchDataItem = currentSearchRepository.Item2;
+
+            DP_SearchRepository mainSearchDataItem = null;
+            //if (securityItem.InDirectDataSecurity != null)
+            //{
+            //    //چرا همین که فرستاده میشود در فانکشن پر نمیشود؟   mainDataItem.Phrase
+            //    DP_SearchRepository mainDataItem = new DP_SearchRepository(mainEntity.ID);
+            //    //mainDataItem.Phrase = new LogicPhrase();
+            //    mainSearchDataItem = CreateChildSearchRepository(mainDataItem, securityItem.InDirectDataSecurity.RelationshipTail);
+
+            //    //اینجا تازه کامنت شد
+            //    //////if (!mainDataItem.Phrases.Contains(currentSearchRepository.Item1))
+            //    //////    mainDataItem.Phrases.Add(currentSearchRepository.Item1);
+            //    //////mainSearchDataItem = currentSearchRepository.Item2;
+            //}
+            //else
+            //{
+            mainSearchDataItem = new DP_SearchRepository(mainEntity.ID);
+            //}
+
+
+            mainSearchDataItem.AndOrType = securityEntityState.ConditionOperator;
+
+            LogicPhraseDTO logicPhrase = new LogicPhraseDTO();
+            foreach (var condition in securityEntityState.StateConditions)
+            {
+                if (condition.RelationshipTailID == 0)
+                {
+                    AddConditionPhrase(requester, condition, logicPhrase);
                 }
                 else
                 {
-                    mainSearchDataItem = new DP_SearchRepository(mainEntity.ID);
-                }
-
-                if (securityItems.PostEntityDataSecurityItems.Any())
-                {
-                    mainSearchDataItem.AndOrType = AndORType.Or;
-                    foreach (var post in securityItems.PostEntityDataSecurityItems)
-                    {
-                        foreach (var item in post.DirectSecurities)
-                        {
-                            LogicPhraseDTO logicPhrase = new LogicPhraseDTO();
-                            //foreach (var condition in item.EntityStates)
-                            //{
-                            if (item.RelationshipTailID == 0)
-                            {
-                                AddConditionPhrase(requester, post, logicPhrase, item);
-                            }
-                            else
-                            {
-                                var currentSearchRepository = CreateChildSearchRepository(logicPhrase, item.RelationshipTail);
-                                AddConditionPhrase(requester, post, currentSearchRepository, item);
-                            }
-                            //}
-                            mainSearchDataItem.Phrases.Add(logicPhrase);
-                        }
-                    }
-                    if (!mainSearchDataItem.Phrases.Any())
-                    {
-                        return GetNowRowSearchQuery(requester, mainEntity);
-                    }
-                    else
-                        return GetSearchQuery(requester, mainEntity, mainSearchDataItem).Item1;
+                    var currentSearchRepository = CreateChildSearchRepository(logicPhrase, condition.RelationshipTail);
+                    AddConditionPhrase(requester, condition, currentSearchRepository);
                 }
             }
-            return "";
+            mainSearchDataItem.Phrases.Add(logicPhrase);
+
+            if (!mainSearchDataItem.Phrases.Any())
+            {
+                return GetNowRowSearchQuery(requester, mainEntity);
+            }
+            else
+                return GetSearchQuery(requester, mainEntity, mainSearchDataItem).Item1;
+
+
 
 
         }
 
-        private void AddConditionPhrase(DR_Requester requester, PostEntityDataSecurityItems post, LogicPhraseDTO logicPhrase, EntitySecurityDirectDTO item)
+        private void AddConditionPhrase(DR_Requester requester, EntityStateConditionDTO conditionDTO, LogicPhraseDTO logicPhrase)
         {
             var searchProperty = new SearchProperty();
-            searchProperty.ColumnID = item.ColumnID;
-            searchProperty.IsKey = item.Column.PrimaryKey;
-            searchProperty.Name = item.Column.Name;
+            searchProperty.ColumnID = conditionDTO.ColumnID;
+            searchProperty.IsKey = conditionDTO.Column.PrimaryKey;
+            searchProperty.Name = conditionDTO.Column.Name;
             string value = "";
-            if (item.Values.Count > 1)
+            //بهینه بشه میشه اصلا اینکه این یا مساوی باشه رو به ساختن کوئری منتقل کرد و اونجا خودش تصمیم بگیره
+            if (conditionDTO.Values.Count > 1)
             {
-                if (item.ValueOperator == Enum_EntityStateOperator.Equals)
+                if (conditionDTO.EntityStateOperator == Enum_EntityStateOperator.Equals)
                     searchProperty.Operator = CommonOperator.InValues;
-                else if (item.ValueOperator == Enum_EntityStateOperator.NotEquals)
+                else if (conditionDTO.EntityStateOperator == Enum_EntityStateOperator.NotEquals)
                     searchProperty.Operator = CommonOperator.NotInValues;
 
-                foreach (var val in item.Values)
+                foreach (var val in conditionDTO.Values)
                 {
                     if (!string.IsNullOrEmpty(val.Value))
                         value += (value == "" ? "" : ",") + val.Value;
-                    else if (val.SecurityReservedValue != SecurityReservedValue.None)
-                        value += (value == "" ? "" : ",") + GerReserveValueFromPost(post, val.SecurityReservedValue);
                 }
             }
             else
             {
-                if (item.ValueOperator == Enum_EntityStateOperator.Equals)
+                if (conditionDTO.EntityStateOperator == Enum_EntityStateOperator.Equals)
                     searchProperty.Operator = CommonOperator.Equals;
-                else if (item.ValueOperator == Enum_EntityStateOperator.NotEquals)
+                else if (conditionDTO.EntityStateOperator == Enum_EntityStateOperator.NotEquals)
                     searchProperty.Operator = CommonOperator.Equals;
 
-                foreach (var val in item.Values)
+                foreach (var val in conditionDTO.Values)
                 {
                     if (!string.IsNullOrEmpty(val.Value))
                         value = val.Value;
-                    else if (val.SecurityReservedValue != SecurityReservedValue.None)
-                        value = GerReserveValueFromPost(post, val.SecurityReservedValue);
                 }
             }
 
@@ -550,7 +555,7 @@ namespace MyDataSearchManagerBusiness
                 //    value = dbFunctionResult.Result.ToString();
                 //}
                 searchProperty.Value = value;
-                searchProperty.Name = item.Column.Name;
+                searchProperty.Name = conditionDTO.Column.Name;
                 logicPhrase.Phrases.Add(searchProperty);
             }
 
@@ -617,35 +622,7 @@ namespace MyDataSearchManagerBusiness
         }
 
 
-        private string GerReserveValueFromPost(PostEntityDataSecurityItems post, SecurityReservedValue reservedValue)
-        {
-            if (reservedValue == SecurityReservedValue.OrganizationID)
-                return post.OrganizationPost.OrganizationID.ToString();
-            else if (reservedValue == SecurityReservedValue.OrganizationPostID)
-                return post.OrganizationPost.ID.ToString();
-            else if (reservedValue == SecurityReservedValue.OrganizationTypeID)
-                return post.OrganizationPost.OrganizationTypeID.ToString();
-            else if (reservedValue == SecurityReservedValue.OrganizationTypeRoleTypeID)
-                return post.OrganizationPost.OrganizationTypeRoleTypeID.ToString();
-            else if (reservedValue == SecurityReservedValue.RoleTypeID)
-                return post.OrganizationPost.RoleTypeID.ToString();
-            else if (reservedValue == SecurityReservedValue.UserID)
-                return post.OrganizationPost.CurrentUserID.ToString();
 
-            else if (reservedValue == SecurityReservedValue.OrganizationExternalKey)
-                return post.OrganizationPost.OrganizationExternalKey.ToString();
-            else if (reservedValue == SecurityReservedValue.OrganizationPostExternalKey)
-                return post.OrganizationPost.ExternalKey.ToString();
-            else if (reservedValue == SecurityReservedValue.OrganizationTypeExternalKey)
-                return post.OrganizationPost.OrganizationTypeExternalKey.ToString();
-            else if (reservedValue == SecurityReservedValue.OrganizationTypeRoleTypeExternalKey)
-                return post.OrganizationPost.OrganizationTypeRoleTypeExternalKey.ToString();
-            else if (reservedValue == SecurityReservedValue.RoleTypeExternalKey)
-                return post.OrganizationPost.RoleTypeExternalKey.ToString();
-            else if (reservedValue == SecurityReservedValue.UserExternalKey)
-                return post.OrganizationPost.CurrentUserExternalKey.ToString();
-            return "";
-        }
 
 
 
@@ -861,14 +838,20 @@ namespace MyDataSearchManagerBusiness
                 {
                     var where = GetWhereClause(requester, entity, connectionEntity, internalPhrase, tableAlias, tableIndex);
                     if (where != "")
-                        result += (result == "" ? "" : (logicPhrase.AndOrType == AndORType.And ? " and " : " or ")) + where;
+                    {
+                        result += (result == "" ? "" : (logicPhrase.AndOrType == AndOREqualType.And || logicPhrase.AndOrType == AndOREqualType.NotAnd) ? " and " : " or ") + where;
+                    }
                 }
                 if (result != "")
                 {
                     if (logicPhrase.Phrases.Count > 1)
-                        return "(" + result + ")";
-                    else
-                        return result;
+                        result = "(" + result + ")";
+
+                    if (logicPhrase.AndOrType == AndOREqualType.NotAnd ||
+                        logicPhrase.AndOrType == AndOREqualType.NotOr)
+                        result = "not" + " " + result;
+
+                    return result;
                 }
             }
             return "";
@@ -1002,10 +985,16 @@ namespace MyDataSearchManagerBusiness
             {
                 var phraseWhere = GetWhereClause(requester, entity, connectionEntity, childPhrase, currentTableAlias, currentTableIndex);
                 if (phraseWhere != "")
-                    childPhrasesResult += (childPhrasesResult == "" ? "" : (dataItem.AndOrType == AndORType.And ? " and " : " or ")) + phraseWhere;
+                    childPhrasesResult += (childPhrasesResult == "" ? "" : ((dataItem.AndOrType == AndOREqualType.And || dataItem.AndOrType == AndOREqualType.NotAnd) ? " and " : " or ")) + phraseWhere;
             }
             if (childPhrasesResult != "")
+            {
+                if (dataItem.AndOrType == AndOREqualType.NotAnd ||
+                     dataItem.AndOrType == AndOREqualType.NotOr)
+                    childPhrasesResult = "not" + " (" + childPhrasesResult + ")";
+
                 finalInnerWhereCluase += (finalInnerWhereCluase == "" ? "" : " and ") + "(" + childPhrasesResult + ")";
+            }
 
 
             var selectfull = "(" + selectfromClause + (finalInnerWhereCluase == "" ? "" : " where ") + finalInnerWhereCluase + ")";

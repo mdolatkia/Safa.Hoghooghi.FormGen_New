@@ -107,7 +107,7 @@ namespace MyUILibrary.EntityArea.Commands
                         LogicPhraseDTO logicPhrase = new LogicPhraseDTO();
                         foreach (var keyProperty in item.KeyProperties)
                             logicPhrase.Phrases.Add(new SearchProperty() { ColumnID = keyProperty.ColumnID, Value = keyProperty.Value });
-                        searchDataItem.AndOrType = AndORType.Or;
+                        searchDataItem.AndOrType = AndOREqualType.Or;
                         searchDataItem.Phrases.Add(logicPhrase);
                     }
                     ///   var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem, EditArea.AreaInitializer.SecurityReadOnly, true);
@@ -217,6 +217,7 @@ namespace MyUILibrary.EntityArea.Commands
             newItem.IsHiddenBecauseOfCreatorRelationshipOnState = item.IsHiddenBecauseOfCreatorRelationshipOnState;
             newItem.IsReadonlyBecauseOfCreatorRelationshipOnShow = item.IsReadonlyBecauseOfCreatorRelationshipOnShow;
             newItem.IsReadonlyBecauseOfCreatorRelationshipOnState = item.IsReadonlyBecauseOfCreatorRelationshipOnState;
+            newItem.IsReadonlyBecauseOfState = item.IsReadonlyBecauseOfState;
             newItem.EntityListView = item.EntityListView;
             newItem.IsNewItem = item.IsNewItem;
             // newItem.ParantChildRelationshipInfo = newParentChildRelationshipInfo;
@@ -249,7 +250,9 @@ namespace MyUILibrary.EntityArea.Commands
                         //bool skipOriginalData = false;
                        
                             //برای وقتی که شرط داده اجازه حذف میداده و داده حذف شده اما قبل از آپد یت دیگه شرط اجازه حذف را به علت هیدن یا ریدونلی بودن نمیده
-                            if (orginalData.IsHiddenBecauseOfCreatorRelationshipOnState || childItem.IsReadonly || orginalData.IsReadonlyBecauseOfCreatorRelationship)
+                            if (orginalData.IsHiddenBecauseOfCreatorRelationshipOnState || childItem.IsReadonly || orginalData.IsReadonlyBecauseOfCreatorRelationship
+                          
+                            )
                             {
                             }
                             else

@@ -108,9 +108,8 @@ namespace MyUILibrary.EntityArea
         }
         public override void GenerateUIComposition(List<EntityUICompositionDTO> UICompositions)
         {
-            List<UIControlPackageTree> parentList = UIControlPackageTree;
             I_View_GridContainer container = SpecializedDataView;
-            GenerateUIComposition(UICompositions, container, null, parentList);
+            GenerateUIComposition(UICompositions, container, null, UIControlPackageTree);
         }
         public void GenerateUIComposition(List<EntityUICompositionDTO> UICompositions, object container, UIControlPackageTree parentUIControlPackage, List<UIControlPackageTree> parentList)
         {

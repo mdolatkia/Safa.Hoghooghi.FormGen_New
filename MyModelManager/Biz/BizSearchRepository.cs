@@ -107,7 +107,7 @@ namespace MyModelManager
 
         private void SetLogicPhrase(MyProjectEntities projectContext, DataAccess.LogicPhrase dbLogicPhrase, ProxyLibrary.LogicPhraseDTO logicPhrase)
         {
-            dbLogicPhrase.AndOrType = logicPhrase.AndOrType == AndORType.And ? true : false;
+            dbLogicPhrase.AndOrType = (short)logicPhrase.AndOrType;
             foreach (var phrase in logicPhrase.Phrases)
             {
                 DataAccess.Phrase dbPhrase = null;
@@ -269,7 +269,7 @@ namespace MyModelManager
 
         private void SetLogicPhraseDTO(DataAccess.LogicPhrase logicPhrase, ProxyLibrary.LogicPhraseDTO logicPhraseDTO)
         {
-            logicPhraseDTO.AndOrType = logicPhrase.AndOrType ? AndORType.And : AndORType.Or;
+            logicPhraseDTO.AndOrType = (AndOREqualType)logicPhrase.AndOrType;
 
             foreach (var dbPhrase in logicPhrase.Phrase1)
             {

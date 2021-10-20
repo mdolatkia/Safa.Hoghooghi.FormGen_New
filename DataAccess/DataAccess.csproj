@@ -316,15 +316,6 @@
     <Compile Include="EntitySecurityDirect.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="EntitySecurityDirectSecuritySubject.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EntitySecurityDirectValues.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EntitySecurityInDirect.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Include="EntityState_UIActionActivity.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
@@ -566,10 +557,13 @@
     <Compile Include="TableDrivedEntityState.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="TableDrivedEntityStateSecuritySubject.cs">
+    <Compile Include="TableDrivedEntityStateCondition.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="TableDrivedEntityStateValues.cs">
+    <Compile Include="TableDrivedEntityStateConditionSecuritySubject.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TableDrivedEntityStateConditionValues.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="TableDrivedEntity_Columns.cs">

@@ -34,100 +34,136 @@ namespace MyUILibrary.EntityArea
 
         private void CheckDirectDataSecurityStates()
         {
-            if (AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.EntityHasDirectSecurities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID, DataDirectSecurityMode.ReadonlyData))
-            {
-                //همه اینها میتوانند یک فانکشن شوند
 
+            if (AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.EntityHasDirectSecurities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID))
+            {
                 var dataDirectSecurity = AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.GetEntitySecurityDirects(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID);
-                if (dataDirectSecurity.Any(x => x.Mode == DataDirectSecurityMode.FetchData))
+                foreach (var item in dataDirectSecurity)
                 {
-                    EntityStateGroupDTO group = new EntityStateGroupDTO();
-                    group.AndORType = AndOREqualType.OrNotTrue;
-                    foreach (var item in dataDirectSecurity.Where(x => x.Mode == DataDirectSecurityMode.FetchData))
-                    {
-                        group.EntityStates.Add(AddDirectSecurityState(item, null));
-                    }
-                    group.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
+                    item.EntityState.ConditionOperator = AgentHelper.GetNotOperator(item.EntityState.ConditionOperator);
+                    item.EntityState.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
 
-                    EditArea.EntityStateGroups.Add(group);
-                }
-                if (dataDirectSecurity.Any(x => x.Mode == DataDirectSecurityMode.ReadonlyData))
-                {
-                    EntityStateGroupDTO group = new EntityStateGroupDTO();
-                    group.AndORType = AndOREqualType.OrNotTrue;
-                    foreach (var item in dataDirectSecurity.Where(x => x.Mode == DataDirectSecurityMode.ReadonlyData))
-                    {
-                        group.EntityStates.Add(AddDirectSecurityState(item, null));
-                    }
-                    group.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
-
-                    EditArea.EntityStateGroups.Add(group);
-                }
-
-
-            }
-            else if (AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.EntityHasInDirectSecurities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID, DataDirectSecurityMode.ReadonlyData))
-            {
-                var dataInDirectSecurity = AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.GetEntitySecurityInDirect(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID);
-                if (dataInDirectSecurity != null)
-                {
-                    var dataDirectSecurity = AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.GetEntitySecurityDirects(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), dataInDirectSecurity.RelationshipTail.TargetEntityID);
-                    if (dataDirectSecurity.Any(x => x.Mode == DataDirectSecurityMode.FetchData))
-                    {
-                        EntityStateGroupDTO group = new EntityStateGroupDTO();
-                        group.AndORType = AndOREqualType.OrNotTrue;
-                        foreach (var item in dataDirectSecurity.Where(x => x.Mode == DataDirectSecurityMode.FetchData))
-                        {
-                            group.EntityStates.Add(AddDirectSecurityState(item, dataInDirectSecurity.RelationshipTail));
-                        }
-                        group.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
-
-                        EditArea.EntityStateGroups.Add(group);
-                    }
-                    if (dataDirectSecurity.Any(x => x.Mode == DataDirectSecurityMode.ReadonlyData))
-                    {
-                        EntityStateGroupDTO group = new EntityStateGroupDTO();
-                        group.AndORType = AndOREqualType.OrNotTrue;
-                        foreach (var item in dataDirectSecurity.Where(x => x.Mode == DataDirectSecurityMode.ReadonlyData))
-                        {
-                            group.EntityStates.Add(AddDirectSecurityState(item, dataInDirectSecurity.RelationshipTail));
-                        }
-                        group.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
-
-                        EditArea.EntityStateGroups.Add(group);
-                    }
+                    EditArea.EntityStates1.Add(item.EntityState);
                 }
             }
+            //else if (AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.EntityHasInDirectSecurities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID))
+            //{
+            //    var dataInDirectSecurity = AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.GetEntitySecurityInDirect(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID);
+            //    var dataDirectSecurity = AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.GetEntitySecurityDirects(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), dataInDirectSecurity.RelationshipTail.TargetEntityID);
+
+            //    foreach (var item in dataDirectSecurity)
+            //    {
+            //        item.EntityState.ConditionOperator = AgentHelper.GetNotOperator(item.EntityState.ConditionOperator);
+            //        SetEntityStateForIndirectSecurity(dataInDirectSecurity, item);
+            //        item.EntityState.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
+            //        EditArea.EntityStates1.Add(item.EntityState);
+            //    }
+
+            //}
+
+            //if (AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.EntityHasDirectSecurities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID, DataDirectSecurityMode.ReadonlyData))
+            //{
+            //    //همه اینها میتوانند یک فانکشن شوند
+
+            //    var dataDirectSecurity = AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.GetEntitySecurityDirects(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID);
+            //    if (dataDirectSecurity.Any(x => x.Mode == DataDirectSecurityMode.FetchData))
+            //    {
+            //        EntityStateGroupDTO group = new EntityStateGroupDTO();
+            //        group.AndORType = AndOREqualType.OrNotTrue;
+            //        foreach (var item in dataDirectSecurity.Where(x => x.Mode == DataDirectSecurityMode.FetchData))
+            //        {
+            //            group.EntityStates.Add(AddDirectSecurityState(item, null));
+            //        }
+            //        group.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
+
+            //        EditArea.EntityStateGroups.Add(group);
+            //    }
+            //    if (dataDirectSecurity.Any(x => x.Mode == DataDirectSecurityMode.ReadonlyData))
+            //    {
+            //        EntityStateGroupDTO group = new EntityStateGroupDTO();
+            //        group.AndORType = AndOREqualType.OrNotTrue;
+            //        foreach (var item in dataDirectSecurity.Where(x => x.Mode == DataDirectSecurityMode.ReadonlyData))
+            //        {
+            //            group.EntityStates.Add(AddDirectSecurityState(item, null));
+            //        }
+            //        group.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
+
+            //        EditArea.EntityStateGroups.Add(group);
+            //    }
+
+
+            //}
+            //else if (AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.EntityHasInDirectSecurities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID, DataDirectSecurityMode.ReadonlyData))
+            //{
+            //    var dataInDirectSecurity = AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.GetEntitySecurityInDirect(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID);
+            //    if (dataInDirectSecurity != null)
+            //    {
+            //        var dataDirectSecurity = AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.GetEntitySecurityDirects(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), dataInDirectSecurity.RelationshipTail.TargetEntityID);
+            //        if (dataDirectSecurity.Any(x => x.Mode == DataDirectSecurityMode.FetchData))
+            //        {
+            //            EntityStateGroupDTO group = new EntityStateGroupDTO();
+            //            group.AndORType = AndOREqualType.OrNotTrue;
+            //            foreach (var item in dataDirectSecurity.Where(x => x.Mode == DataDirectSecurityMode.FetchData))
+            //            {
+            //                group.EntityStates.Add(AddDirectSecurityState(item, dataInDirectSecurity.RelationshipTail));
+            //            }
+            //            group.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
+
+            //            EditArea.EntityStateGroups.Add(group);
+            //        }
+            //        if (dataDirectSecurity.Any(x => x.Mode == DataDirectSecurityMode.ReadonlyData))
+            //        {
+            //            EntityStateGroupDTO group = new EntityStateGroupDTO();
+            //            group.AndORType = AndOREqualType.OrNotTrue;
+            //            foreach (var item in dataDirectSecurity.Where(x => x.Mode == DataDirectSecurityMode.ReadonlyData))
+            //            {
+            //                group.EntityStates.Add(AddDirectSecurityState(item, dataInDirectSecurity.RelationshipTail));
+            //            }
+            //            group.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
+
+            //            EditArea.EntityStateGroups.Add(group);
+            //        }
+            //    }
+            //}
         }
 
-        private EntityStateDTO AddDirectSecurityState(EntitySecurityDirectDTO item, EntityRelationshipTailDTO relationshipTail)
-        {
-            var state = new EntityStateDTO();
-            state.ID = -1 * item.ID;
-            state.Title = "فقط خواندنی سازی" + (!string.IsNullOrEmpty(item.Description) ? Environment.NewLine + item.Description : "");
-            state.ColumnID = item.ColumnID;
-            state.Column = item.Column;
-            state.FormulaID = item.FormulaID;
-            state.Formula = item.Formula;
-            state.RelationshipTailID = item.RelationshipTailID;
-            state.RelationshipTail = item.RelationshipTail;
-            if (relationshipTail != null)
-            {
-                if (state.RelationshipTail == null)
-                    state.RelationshipTail = relationshipTail;
-                else
-                {
-                    state.RelationshipTail = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipTailDataManager.JoinRelationshipTail(relationshipTail, state.RelationshipTail);
-                }
-            }
-            foreach (var value in item.Values)
-                state.Values.Add(value);
-            state.EntityStateOperator = item.ValueOperator;
-            foreach (var subject in item.SecuritySubjects)
-                state.SecuritySubjects.Add(subject);
-            state.SecuritySubjectInORNotIn = item.SecuritySubjectInORNotIn;
-            return state;
-        }
+        //private void SetEntityStateForIndirectSecurity(EntitySecurityInDirectDTO dataInDirectSecurity, EntitySecurityDirectDTO item)
+        //{
+        //    foreach (var codition in item.EntityState.StateConditions)
+        //    {
+        //        codition.RelationshipTailID = dataInDirectSecurity.RelationshipTailID;
+        //        codition.RelationshipTail = dataInDirectSecurity.RelationshipTail;
+        //    }
+        //}
+
+        //private EntityStateDTO AddDirectSecurityState(EntitySecurityDirectDTO item, EntityRelationshipTailDTO relationshipTail)
+        //{
+        //    var state = new EntityStateDTO();
+        //    state.ID = -1 * item.ID;
+        //    state.Title = "فقط خواندنی سازی" + (!string.IsNullOrEmpty(item.Description) ? Environment.NewLine + item.Description : "");
+        //    state.ColumnID = item.ColumnID;
+        //    state.Column = item.Column;
+        //    state.FormulaID = item.FormulaID;
+        //    state.Formula = item.Formula;
+        //    state.RelationshipTailID = item.RelationshipTailID;
+        //    state.RelationshipTail = item.RelationshipTail;
+        //    if (relationshipTail != null)
+        //    {
+        //        if (state.RelationshipTail == null)
+        //            state.RelationshipTail = relationshipTail;
+        //        else
+        //        {
+        //            state.RelationshipTail = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipTailDataManager.JoinRelationshipTail(relationshipTail, state.RelationshipTail);
+        //        }
+        //    }
+        //    foreach (var value in item.Values)
+        //        state.Values.Add(value);
+        //    state.EntityStateOperator = item.ValueOperator;
+        //    foreach (var subject in item.SecuritySubjects)
+        //        state.SecuritySubjects.Add(subject);
+        //    state.SecuritySubjectInORNotIn = item.SecuritySubjectInORNotIn;
+        //    return state;
+        //}
 
         private void CheckUnionDeterminerStates()
         {
@@ -140,9 +176,11 @@ namespace MyUILibrary.EntityArea
                     {
                         var state = new EntityStateDTO();
                         state.ID = -1 * superToSubRel.ID;
-                        state.ColumnID = superToSubRel.DeterminerColumnID;
-                        state.Values.Add(new EntityStateValueDTO() { Value = superToSubRel.DeterminerColumnValue });
-                        state.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                        EntityStateConditionDTO condition = new EntityStateConditionDTO();
+                        state.StateConditions.Add(condition);
+                        condition.ColumnID = superToSubRel.DeterminerColumnID;
+                        condition.Values.Add(new EntityStateValueDTO() { Value = superToSubRel.DeterminerColumnValue });
+                        condition.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
                         var actionActivity = new UIActionActivityDTO();
                         actionActivity.ID = -1 * superToSubRel.ID;
                         actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -160,9 +198,11 @@ namespace MyUILibrary.EntityArea
                 {
                     var state = new EntityStateDTO();
                     state.ID = -1 * subToSuperRel.ID;
-                    state.ColumnID = subToSuperRel.DeterminerColumnID;
-                    state.Values.Add(new EntityStateValueDTO() { Value = subToSuperRel.DeterminerColumnValue });
-                    state.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                    EntityStateConditionDTO condition = new EntityStateConditionDTO();
+                    state.StateConditions.Add(condition);
+                    condition.ColumnID = subToSuperRel.DeterminerColumnID;
+                    condition.Values.Add(new EntityStateValueDTO() { Value = subToSuperRel.DeterminerColumnValue });
+                    condition.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
                     var actionActivity = new UIActionActivityDTO();
                     actionActivity.ID = -1 * subToSuperRel.ID;
                     actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -174,9 +214,11 @@ namespace MyUILibrary.EntityArea
                     //شرط اگر داده جدید باشد
                     var setDeterminerState = new EntityStateDTO();
                     setDeterminerState.ID = -2 * subToSuperRel.ID;
-                    setDeterminerState.ColumnID = subToSuperRel.DeterminerColumnID;
-                    setDeterminerState.Values.Add(new EntityStateValueDTO() { Value = "!@#$#" });
-                    setDeterminerState.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                    EntityStateConditionDTO condition1 = new EntityStateConditionDTO();
+                    setDeterminerState.StateConditions.Add(condition1);
+                    condition1.ColumnID = subToSuperRel.DeterminerColumnID;
+                    condition1.Values.Add(new EntityStateValueDTO() { Value = "!@#$#" });
+                    condition1.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
                     var setDeterminerActionActivity = new UIActionActivityDTO();
                     setDeterminerActionActivity.ID = -2 * subToSuperRel.ID;
                     setDeterminerActionActivity.Type = Enum_ActionActivityType.ColumnValue;
@@ -200,10 +242,12 @@ namespace MyUILibrary.EntityArea
                     {
                         var state = new EntityStateDTO();
                         state.ID = -1 * superToSubRel.ID;
-                        state.ColumnID = superToSubRel.SuperEntityDeterminerColumn.ID;
+                        EntityStateConditionDTO condition = new EntityStateConditionDTO();
+                        state.StateConditions.Add(condition);
+                        condition.ColumnID = superToSubRel.SuperEntityDeterminerColumn.ID;
                         foreach (var val in superToSubRel.DeterminerColumnValues)
-                            state.Values.Add(new EntityStateValueDTO() { Value = val.Value });
-                        state.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                            condition.Values.Add(new EntityStateValueDTO() { Value = val.Value });
+                        condition.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
                         var actionActivity = new UIActionActivityDTO();
                         actionActivity.ID = -1 * superToSubRel.ID;
                         actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -222,10 +266,12 @@ namespace MyUILibrary.EntityArea
 
                     var state = new EntityStateDTO();
                     state.ID = -1 * subToSuperRel.ID;
-                    state.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
+                    EntityStateConditionDTO condition = new EntityStateConditionDTO();
+                    state.StateConditions.Add(condition);
+                    condition.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
                     foreach (var val in subToSuperRel.DeterminerColumnValues)
-                        state.Values.Add(new EntityStateValueDTO() { Value = val.Value });
-                    state.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                        condition.Values.Add(new EntityStateValueDTO() { Value = val.Value });
+                    condition.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
                     var actionActivity = new UIActionActivityDTO();
                     actionActivity.ID = -1 * subToSuperRel.ID;
                     actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -239,9 +285,11 @@ namespace MyUILibrary.EntityArea
                     //منها در صورت چند مقداری بودن اولی انتخاب میشود. تست شود که فقط یکبار ست شود و اگر کاربر چیز دیگه ای انتخاب کرد مقدار با اولی مجددا ست نشود
                     var setDeterminerState = new EntityStateDTO();
                     setDeterminerState.ID = -2 * subToSuperRel.ID;
-                    state.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
-                    setDeterminerState.Values.Add(new EntityStateValueDTO() { Value = "!@#$#" });
-                    setDeterminerState.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                    EntityStateConditionDTO condition1 = new EntityStateConditionDTO();
+                    setDeterminerState.StateConditions.Add(condition1);
+                    condition1.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
+                    condition1.Values.Add(new EntityStateValueDTO() { Value = "!@#$#" });
+                    condition1.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
                     var setDeterminerActionActivity = new UIActionActivityDTO();
                     setDeterminerActionActivity.ID = -2 * subToSuperRel.ID;
                     setDeterminerActionActivity.Type = Enum_ActionActivityType.ColumnValue;
@@ -263,81 +311,84 @@ namespace MyUILibrary.EntityArea
             statesSet = true;
 
             //افزودن تمام کنترلها و روابط برای حالت ریدونلی کردن داده
-            if (EditArea.EntityStates1.Any(x => x.ActionActivities.Any(y => y.Type == Enum_ActionActivityType.EntityReadonly)))
-            {
-                foreach (var item in EditArea.EntityStates1.Where(x => x.ActionActivities.Any(y => y.Type == Enum_ActionActivityType.EntityReadonly)))
-                {
-                    var newActionActivity = GetReadonlyActionActivity();
-                    newActionActivity.Type = Enum_ActionActivityType.UIEnablity;
-                    item.ActionActivities.Add(newActionActivity);
-                }
-            }
-            if (EditArea.EntityStateGroups.Any(x => x.ActionActivities.Any(y => y.Type == Enum_ActionActivityType.EntityReadonly)))
-            {
-                foreach (var item in EditArea.EntityStateGroups.Where(x => x.ActionActivities.Any(y => y.Type == Enum_ActionActivityType.EntityReadonly)))
-                {
-                    var newActionActivity = GetReadonlyActionActivity();
-                    newActionActivity.Type = Enum_ActionActivityType.UIEnablity;
-                    item.ActionActivities.Add(newActionActivity);
-                }
-            }
+            //بیخیال شدم چون غیر فعال میکرد حتی کنترلی که منشا وضعیت بود رو و فرم قفل میشد
+            //if (EditArea.EntityStates1.Any(x => x.ActionActivities.Any(y => y.Type == Enum_ActionActivityType.EntityReadonly)))
+            //{
+            //    foreach (var item in EditArea.EntityStates1.Where(x => x.ActionActivities.Any(y => y.Type == Enum_ActionActivityType.EntityReadonly)))
+            //    {
+            //        var newActionActivity = GetReadonlyActionActivity();
+            //        newActionActivity.Type = Enum_ActionActivityType.UIEnablity;
+            //        item.ActionActivities.Add(newActionActivity);
+            //    }
+            //}
+
+
+            //if (EditArea.EntityStateGroups.Any(x => x.ActionActivities.Any(y => y.Type == Enum_ActionActivityType.EntityReadonly)))
+            //{
+            //    foreach (var item in EditArea.EntityStateGroups.Where(x => x.ActionActivities.Any(y => y.Type == Enum_ActionActivityType.EntityReadonly)))
+            //    {
+            //        var newActionActivity = GetReadonlyActionActivity();
+            //        newActionActivity.Type = Enum_ActionActivityType.UIEnablity;
+            //        item.ActionActivities.Add(newActionActivity);
+            //    }
+            //}
         }
 
-        private UIActionActivityDTO GetReadonlyActionActivity()
-        {
-            var newActionActivity = new UIActionActivityDTO();
-            foreach (var column in EditArea.DataEntryEntity.Columns)
-            {
-                if (!column.PrimaryKey)
-                {
-                    //اگر با فرمول غیر فعال شود چی خود ستونی که باعث ریدونلی شدن می شود
-                    if (!EditArea.DataEntryEntity.Relationships.Any(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.SecondSideColumnID == column.ID)))
-                    {
-                        //bool skip = false;
-                        //foreach (var item in states)
-                        //{
-                        //    if (item.RelationshipTailID == 0 && item.ColumnID != 0)
-                        //    {
-                        //        if (item.ColumnID == column.ID)
-                        //            skip = true;
-                        //    }
-                        //}
-                        //if (!skip)
-                        //{
-                        var detail = new UIEnablityDetailsDTO();
-                        detail.ColumnID = column.ID;
-                        detail.Readonly = true;
-                        detail.ID = column.ID;
-                        newActionActivity.UIEnablityDetails.Add(detail);
-                        //}
-                    }
-                }
-            }
-            foreach (var relationship in EditArea.DataEntryEntity.Relationships.Where(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
-            {
-                //////if (item.RelationshipTail != null)
-                //////{
-                //همون قضیه که خود رابطه ک=ه با وضعیت مشترکه نمیتونه اعمال بشه
-                //if (item.RelationshipTail.Relationship.ID == relationship.ID)
-                //    continue;
-                //////}
-                var detail = new UIEnablityDetailsDTO();
-                detail.RelationshipID = relationship.ID;
-                detail.Readonly = true;
-                detail.ID = relationship.ID;
-                newActionActivity.UIEnablityDetails.Add(detail);
-            }
-            return newActionActivity;
-        }
+        //private UIActionActivityDTO GetReadonlyActionActivity()
+        //{
+        //    var newActionActivity = new UIActionActivityDTO();
+        //    foreach (var column in EditArea.DataEntryEntity.Columns)
+        //    {
+        //        if (!column.PrimaryKey)
+        //        {
+        //            //اگر با فرمول غیر فعال شود چی خود ستونی که باعث ریدونلی شدن می شود
+        //            if (!EditArea.DataEntryEntity.Relationships.Any(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.SecondSideColumnID == column.ID)))
+        //            {
+        //                //bool skip = false;
+        //                //foreach (var item in states)
+        //                //{
+        //                //    if (item.RelationshipTailID == 0 && item.ColumnID != 0)
+        //                //    {
+        //                //        if (item.ColumnID == column.ID)
+        //                //            skip = true;
+        //                //    }
+        //                //}
+        //                //if (!skip)
+        //                //{
+        //                var detail = new UIEnablityDetailsDTO();
+        //                detail.ColumnID = column.ID;
+        //                detail.Readonly = true;
+        //                detail.ID = column.ID;
+        //                newActionActivity.UIEnablityDetails.Add(detail);
+        //                //}
+        //            }
+        //        }
+        //    }
+        //    foreach (var relationship in EditArea.DataEntryEntity.Relationships.Where(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
+        //    {
+        //        //////if (item.RelationshipTail != null)
+        //        //////{
+        //        //همون قضیه که خود رابطه ک=ه با وضعیت مشترکه نمیتونه اعمال بشه
+        //        //if (item.RelationshipTail.Relationship.ID == relationship.ID)
+        //        //    continue;
+        //        //////}
+        //        var detail = new UIEnablityDetailsDTO();
+        //        detail.RelationshipID = relationship.ID;
+        //        detail.Readonly = true;
+        //        detail.ID = relationship.ID;
+        //        newActionActivity.UIEnablityDetails.Add(detail);
+        //    }
+        //    return newActionActivity;
+        //}
 
         private void EditArea_DataItemShown(object sender, EditAreaDataItemLoadedArg e)
         {
             //////if (EditArea.AreaInitializer.SourceRelation != null && e.InEditMode)
             //////    CheckParentReadonlyTail(e.DataItem);
             //حتمکا اینجا چک شود مخصوصا برای تمپ ویو ها که تک داده ای نیز باشند
-            if ((EditArea.EntityStates1 == null || EditArea.EntityStates1.Count == 0)
-                &&
-                (EditArea.EntityStateGroups == null || EditArea.EntityStateGroups.Count == 0))
+            if ((EditArea.EntityStates1 == null || EditArea.EntityStates1.Count == 0))
+                //&&
+                //(EditArea.EntityStateGroups == null || EditArea.EntityStateGroups.Count == 0))
                 return;
             SetEntityStates();
 
@@ -356,16 +407,16 @@ namespace MyUILibrary.EntityArea
             {
                 result.Add(state);
             }
-            if (EditArea.EntityStateGroups != null)
-            {
-                foreach (var stateGroup in EditArea.EntityStateGroups)
-                {
-                    foreach (var state in stateGroup.EntityStates)
-                    {
-                        result.Add(state);
-                    }
-                }
-            }
+            //if (EditArea.EntityStateGroups != null)
+            //{
+            //    foreach (var stateGroup in EditArea.EntityStateGroups)
+            //    {
+            //        foreach (var state in stateGroup.EntityStates)
+            //        {
+            //            result.Add(state);
+            //        }
+            //    }
+            //}
             return result;
         }
 
@@ -438,23 +489,23 @@ namespace MyUILibrary.EntityArea
             item.EntityStates1.Clear();
             //List<EntityStateDTO> trueStates = new List<EntityStateDTO>();
             var appliableStates = GetAppliableStates(dataItem, skipUICheck);
-            foreach (var state in appliableStates.Item1)
+            foreach (var state in appliableStates)
             {
                 if (CheckEntityState(dataItem, state))
                     item.EntityStates1.Add(state);
             }
-            item.EntityStateGroups.Clear();
-            foreach (var group in appliableStates.Item2)
-            {
-                if (CheckEntityState(dataItem, group))
-                    item.EntityStateGroups.Add(group);
-            }
-            if (item.EntityStates1.Any()|| item.EntityStateGroups.Any())
-                DoStateActionActivity(item, item.EntityStates, skipUICheck, actionActivitySource);
+            //item.EntityStateGroups.Clear();
+            //foreach (var group in appliableStates.Item2)
+            //{
+            //    if (CheckEntityState(dataItem, group))
+            //        item.EntityStateGroups.Add(group);
+            //}
+            if (item.EntityStates1.Any())
+                DoStateActionActivity(item, skipUICheck, actionActivitySource);
         }
         //private void EditArea_DataItemLoaded(object sender, EditAreaDataItemLoadedArg e)
         //{
-        private Tuple<List<EntityStateDTO>, List<EntityStateGroupDTO>> GetAppliableStates(DP_DataRepository dataItem, bool skipUICheck)
+        private List<EntityStateDTO> GetAppliableStates(DP_DataRepository dataItem, bool skipUICheck)
         {
             List<EntityStateDTO> result = new List<EntityStateDTO>();
             foreach (var state in EditArea.EntityStates1.Where(x => x.ActionActivities.Any()))
@@ -478,30 +529,30 @@ namespace MyUILibrary.EntityArea
                     }
                 }
             }
-            List<EntityStateGroupDTO> resultGroup = new List<EntityStateGroupDTO>();
-            foreach (var group in EditArea.EntityStateGroups.Where(x => x.ActionActivities.Any()))
-            {
+            //List<EntityStateGroupDTO> resultGroup = new List<EntityStateGroupDTO>();
+            //foreach (var group in EditArea.EntityStateGroups.Where(x => x.ActionActivities.Any()))
+            //{
 
-                if (skipUICheck)
-                    resultGroup.Add(group);
-                else
-                {
-                    if (group.EntityStates.Any(z => z.ActionActivities.Any(x => x.UIEnablityDetails.Any(y => EditArea.AreaInitializer.SourceRelation != null && y.RelationshipID == EditArea.AreaInitializer.SourceRelation.Relationship.PairRelationshipID))))
-                    {
-                        //bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || (EditArea is I_EditEntityAreaOneData && EditArea.DataItemIsInTempViewMode(dataItem));
-                        bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || EditArea.DataItemIsInTempViewMode(dataItem);
-                        if (dataIsInValidMode)
-                            resultGroup.Add(group);
-                    }
-                    else
-                    {
-                        if (EditArea.DataItemIsInEditMode(dataItem))
-                            resultGroup.Add(group);
-                    }
-                }
+            //    if (skipUICheck)
+            //        resultGroup.Add(group);
+            //    else
+            //    {
+            //        if (group.EntityStates.Any(z => z.ActionActivities.Any(x => x.UIEnablityDetails.Any(y => EditArea.AreaInitializer.SourceRelation != null && y.RelationshipID == EditArea.AreaInitializer.SourceRelation.Relationship.PairRelationshipID))))
+            //        {
+            //            //bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || (EditArea is I_EditEntityAreaOneData && EditArea.DataItemIsInTempViewMode(dataItem));
+            //            bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || EditArea.DataItemIsInTempViewMode(dataItem);
+            //            if (dataIsInValidMode)
+            //                resultGroup.Add(group);
+            //        }
+            //        else
+            //        {
+            //            if (EditArea.DataItemIsInEditMode(dataItem))
+            //                resultGroup.Add(group);
+            //        }
+            //    }
 
-            }
-            return new Tuple<List<EntityStateDTO>, List<EntityStateGroupDTO>>(result, resultGroup);
+            //}
+            return result;
         }
 
 
@@ -521,19 +572,22 @@ namespace MyUILibrary.EntityArea
 
             List<Tuple<string, int>> columns = new List<Tuple<string, int>>();
             List<Tuple<string, int>> rels = new List<Tuple<string, int>>();
-            if (entityState.Formula != null)
+            foreach (var condition in entityState.StateConditions)
             {
-                foreach (var fItem in entityState.Formula.FormulaItems)
+                if (condition.Formula != null)
                 {
-                    if (fItem.ItemType == FormuaItemType.Column)
-                        columns.Add(new Tuple<string, int>(fItem.RelationshipIDTail, fItem.ItemID));
-                    else if (!string.IsNullOrEmpty(fItem.RelationshipIDTail))
-                        rels.Add(new Tuple<string, int>(fItem.RelationshipIDTail, 0));
+                    foreach (var fItem in condition.Formula.FormulaItems)
+                    {
+                        if (fItem.ItemType == FormuaItemType.Column)
+                            columns.Add(new Tuple<string, int>(fItem.RelationshipIDTail, fItem.ItemID));
+                        else if (!string.IsNullOrEmpty(fItem.RelationshipIDTail))
+                            rels.Add(new Tuple<string, int>(fItem.RelationshipIDTail, 0));
+                    }
                 }
-            }
-            else if (entityState.ColumnID != 0)
-            {
-                columns.Add(new Tuple<string, int>(entityState.RelationshipTail?.RelationshipIDPath, entityState.ColumnID));
+                else if (condition.ColumnID != 0)
+                {
+                    columns.Add(new Tuple<string, int>(condition.RelationshipTail?.RelationshipIDPath, condition.ColumnID));
+                }
             }
             if (columns.Any() || rels.Any())
             {
@@ -577,17 +631,17 @@ namespace MyUILibrary.EntityArea
                             bool entityStateValue = CheckEntityState(e.DataToCall, entityState);
                             if (entityStateValue)
                             {
-                                if (!listItem.EntityStates.Any(x => x.ID == entityState.ID))
+                                if (!listItem.EntityStates1.Any(x => x.ID == entityState.ID))
                                 {
-                                    listItem.EntityStates.Add(entityState);
+                                    listItem.EntityStates1.Add(entityState);
                                     changed = true;
                                 }
                             }
                             else
                             {
-                                if (listItem.EntityStates.Any(x => x.ID == entityState.ID))
+                                if (listItem.EntityStates1.Any(x => x.ID == entityState.ID))
                                 {
-                                    listItem.EntityStates.Remove(listItem.EntityStates.First(x => x.ID == entityState.ID));
+                                    listItem.EntityStates1.Remove(listItem.EntityStates1.First(x => x.ID == entityState.ID));
                                     changed = true;
                                 }
                             }
@@ -719,6 +773,13 @@ namespace MyUILibrary.EntityArea
                             }
                         }
                     }
+                    if (actionActivity.Type == Enum_ActionActivityType.EntityReadonly)
+                    {
+                        //موقتی گذاشته شد
+                        //بهتره از ClearDataItemReadonlyFromState استفاده بشه
+                        EditArea.RemoveDataBusinessMessage(dataItem, "DataReadonlyByState");
+                        dataItem.IsReadonlyBecauseOfState = false;
+                    }
                 }
             }
             if (EditArea is I_EditEntityAreaOneData && hiddenControls.Any())
@@ -742,8 +803,7 @@ namespace MyUILibrary.EntityArea
 
         public void DoStateActionActivity(DataAndStates dataAndState, bool skipUICheck, ActionActivitySource actionActivitySource)
         {
-            گروپ اضافه بشه و فانکشن بشه
-            اینجا
+
             var dataItem = dataAndState.DataItem;
             List<BaseColumnControl> hiddenControls = new List<BaseColumnControl>();
             foreach (var state in dataAndState.EntityStates1.ToList())
@@ -776,9 +836,9 @@ namespace MyUILibrary.EntityArea
                                         {
                                             if (actionActivitySource == ActionActivitySource.OnShowData)
                                             {
-                                                if (state.RelationshipTail != null &&
-                                                    (state.RelationshipTail.RelationshipIDPath == dataItem.ParantChildRelationshipInfo.Relationship.PairRelationshipID.ToString() ||
-                                                    state.RelationshipTail.RelationshipIDPath.StartsWith(dataItem.ParantChildRelationshipInfo.Relationship.PairRelationshipID.ToString() + ",")))
+                                                if (state.StateConditions.Any(x => x.RelationshipTail != null &&
+                                                    (x.RelationshipTail.RelationshipIDPath == dataItem.ParantChildRelationshipInfo.Relationship.PairRelationshipID.ToString() ||
+                                                    x.RelationshipTail.RelationshipIDPath.StartsWith(dataItem.ParantChildRelationshipInfo.Relationship.PairRelationshipID.ToString() + ","))))
                                                 {
 
                                                 }
@@ -814,9 +874,9 @@ namespace MyUILibrary.EntityArea
                                             // var childRelationshipInfo = dataItem.ParantChildRelationshipInfo;
                                             if (actionActivitySource == ActionActivitySource.OnShowData)
                                             {
-                                                if (state.RelationshipTail != null &&
-                                                      (state.RelationshipTail.RelationshipIDPath == dataItem.ParantChildRelationshipInfo.Relationship.PairRelationshipID.ToString() ||
-                                                      state.RelationshipTail.RelationshipIDPath.StartsWith(dataItem.ParantChildRelationshipInfo.Relationship.PairRelationshipID.ToString() + ",")))
+                                                if (state.StateConditions.Any(x => x.RelationshipTail != null &&
+                                                      (x.RelationshipTail.RelationshipIDPath == dataItem.ParantChildRelationshipInfo.Relationship.PairRelationshipID.ToString() ||
+                                                      x.RelationshipTail.RelationshipIDPath.StartsWith(dataItem.ParantChildRelationshipInfo.Relationship.PairRelationshipID.ToString() + ","))))
                                                 {
 
                                                 }
@@ -891,6 +951,13 @@ namespace MyUILibrary.EntityArea
                         //در واقع مقادیر پیش فرض را ست میکند
                         EditArea.SetColumnValueFromState(dataItem, item.UIColumnValue, state, null);
                     }
+
+                    if (item.Type == Enum_ActionActivityType.EntityReadonly)
+                    {  //موقتی گذاشته شد
+                        //بهتره از ChangeDataItemReadonlyFromState استفاده بشه
+                        EditArea.AddDataBusinessMessage("داده به علت وضعیت"+" "+ state.Title+" "+"فقط خواندنی شد",Temp.InfoColor.Red,"DataReadonlyByState",dataItem,ControlItemPriority.High); 
+                        dataItem.IsReadonlyBecauseOfState = true;
+                    }
                     EditArea.RunningActionActivities.Remove(item);
                 }
             }
@@ -920,9 +987,9 @@ namespace MyUILibrary.EntityArea
         //}
         private ImposeControlState GetRelationshipReadonlyControlState(ChildRelationshipInfo childRelationshipInfo, EntityStateDTO state, int relationshipID, ActionActivitySource actionActivitySource)
         {
-            if (state.RelationshipTailID != 0)
+            if (state.StateConditions.Any(x => x.RelationshipTailID != 0))
             {
-                if (state.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || state.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ","))
+                if (state.StateConditions.Any(x => x.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || x.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ",")))
                 {
                     if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
                         return ImposeControlState.AddMessageColor;
@@ -932,6 +999,10 @@ namespace MyUILibrary.EntityArea
                         {
                             return ImposeControlState.AddMessageColor;
                         }
+                    }
+                    else if (actionActivitySource == ActionActivitySource.OnShowData)
+                    {
+                        return ImposeControlState.AddMessageColor;
                     }
                 }
             }
@@ -939,9 +1010,9 @@ namespace MyUILibrary.EntityArea
         }
         private ImposeControlState GetRelationshipHiddenControlState(ChildRelationshipInfo childRelationshipInfo, EntityStateDTO state, int relationshipID, ActionActivitySource actionActivitySource)
         {
-            if (state.RelationshipTailID != 0)
+            if (state.StateConditions.Any(x => x.RelationshipTailID != 0))
             {
-                if (state.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || state.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ","))
+                if (state.StateConditions.Any(x => x.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || x.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ",")))
                 {
                     if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
                         return ImposeControlState.AddMessageColor;
@@ -952,68 +1023,72 @@ namespace MyUILibrary.EntityArea
                             return ImposeControlState.AddMessageColor;
                         }
                     }
-                }
-            }
-            return ImposeControlState.Impose;
-        }
-        private ImposeControlState GetColumnReadonlyControlState(EntityStateDTO state, DP_DataRepository dataItem, int columnID, ActionActivitySource actionActivitySource)
-        {
-            if (state.RelationshipTailID == 0 && state.ColumnID != 0)
-            {
-                if (state.ColumnID == columnID)
-                {
-                    if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
+                    else if (actionActivitySource == ActionActivitySource.OnShowData)
                     {
-                        //چون همونیه که تغییر کرده
                         return ImposeControlState.AddMessageColor;
                     }
-                    else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
-                    {
-                        if (dataItem.PropertyValueIsChanged(dataItem.GetProperty(columnID)))
-                            return ImposeControlState.AddMessageColor;
-                    }
-                }
-            }
-
-            return ImposeControlState.Impose;
-        }
-
-        private ImposeControlState GetColumnHiddenControlState(EntityStateDTO state, DP_DataRepository dataItem, int columnID, ActionActivitySource actionActivitySource)
-        {
-            if (state.RelationshipTailID == 0 && state.ColumnID != 0)
-            {
-                if (state.ColumnID == columnID)
-                {
-                    if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
-                    {
-                        //چون همونیه که تغییر کرده
-                        return ImposeControlState.AddMessageColor;
-                    }
-                    else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
-                    {
-                        if (dataItem.PropertyValueIsChanged(dataItem.GetProperty(columnID)))
-                            return ImposeControlState.AddMessageColor;
-                    }
                 }
             }
             return ImposeControlState.Impose;
         }
-        private bool ShouldImposeRelationshipControlInUI(EntityStateDTO state, int relationshipID)
-        {
-            if (state.FormulaID != 0)
-                return false;
-            else if (state.RelationshipTailID != 0)
-            {
-                if (state.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || state.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ","))
-                    return false;
-                else
-                    return true;
-            }
-            else
-            {
-                return true;
-            }
-        }
+        //private ImposeControlState GetColumnReadonlyControlState(EntityStateDTO state, DP_DataRepository dataItem, int columnID, ActionActivitySource actionActivitySource)
+        //{
+        //    if (state.RelationshipTailID == 0 && state.ColumnID != 0)
+        //    {
+        //        if (state.ColumnID == columnID)
+        //        {
+        //            if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
+        //            {
+        //                //چون همونیه که تغییر کرده
+        //                return ImposeControlState.AddMessageColor;
+        //            }
+        //            else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
+        //            {
+        //                if (dataItem.PropertyValueIsChanged(dataItem.GetProperty(columnID)))
+        //                    return ImposeControlState.AddMessageColor;
+        //            }
+        //        }
+        //    }
+
+        //    return ImposeControlState.Impose;
+        //}
+
+        //private ImposeControlState GetColumnHiddenControlState(EntityStateDTO state, DP_DataRepository dataItem, int columnID, ActionActivitySource actionActivitySource)
+        //{
+        //    if (state.RelationshipTailID == 0 && state.ColumnID != 0)
+        //    {
+        //        if (state.ColumnID == columnID)
+        //        {
+        //            if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
+        //            {
+        //                //چون همونیه که تغییر کرده
+        //                return ImposeControlState.AddMessageColor;
+        //            }
+        //            else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
+        //            {
+        //                if (dataItem.PropertyValueIsChanged(dataItem.GetProperty(columnID)))
+        //                    return ImposeControlState.AddMessageColor;
+        //            }
+        //        }
+        //    }
+        //    return ImposeControlState.Impose;
+        //}
+        //private bool ShouldImposeRelationshipControlInUI(EntityStateDTO state, int relationshipID)
+        //{
+        //    if (state.FormulaID != 0)
+        //        return false;
+        //    else if (state.RelationshipTailID != 0)
+        //    {
+        //        if (state.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || state.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ","))
+        //            return false;
+        //        else
+        //            return true;
+        //    }
+        //    else
+        //    {
+        //        return true;
+        //    }
+        //}
         private List<ColumnValueRangeDetailsDTO> GetFilteredRange(SimpleColumnControl simpleColumn, IGrouping<int, UIColumnValueRangeDTO> columnValueRange)
         {
             var result = new List<ColumnValueRangeDetailsDTO>();
@@ -1129,7 +1204,7 @@ namespace MyUILibrary.EntityArea
         {
             DataItem = dataItem;
             EntityStates1 = new ObservableCollection<EntityStateDTO>();
-            EntityStateGroups = new ObservableCollection<EntityStateGroupDTO>();
+            //EntityStateGroups = new ObservableCollection<EntityStateGroupDTO>();
         }
 
 
@@ -1138,7 +1213,7 @@ namespace MyUILibrary.EntityArea
         public DP_DataRepository DataItem { set; get; }
         // public UIActionActivityDTO ActionActivity { set; get; }
         public ObservableCollection<EntityStateDTO> EntityStates1 { set; get; }
-        public ObservableCollection<EntityStateGroupDTO> EntityStateGroups { set; get; }
+        //public ObservableCollection<EntityStateGroupDTO> EntityStateGroups { set; get; }
         public bool OnShow { get; internal set; }
         //public bool InAction { set; get; }
         //public void RegisterEvent()

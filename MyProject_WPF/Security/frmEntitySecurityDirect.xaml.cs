@@ -48,123 +48,124 @@ namespace MyProject_WPF
             }
         }
 
-        public frmEntitySecurityDirect(int EntitySecurityDirectId)
+        public frmEntitySecurityDirect(int entityID)
         {
             InitializeComponent();
-            EntitySecurityDirectID = EntitySecurityDirectId;
-            cmbInOrNotIn.ItemsSource = Enum.GetValues(typeof(InORNotIn)).Cast<InORNotIn>();
+            //   cmbInOrNotIn.ItemsSource = Enum.GetValues(typeof(InORNotIn)).Cast<InORNotIn>();
 
             SetEntites();
-            SetSecuritySubjects();
+            //  SetSecuritySubjects();
             //  SetAndOrType();
             //     SetDatabaseFunctions();
             //  SetOperators();
             //  SetReservedValues();
             SetMode();
             cmbMode.SelectionChanged += CmbMode_SelectionChanged;
-            lokFormula.EditItemEnabled = true;
-            lokFormula.NewItemEnabled = true;
-            lokFormula.EditItemClicked += LokFormula_EditItemClicked;
+            //lokFormula.EditItemEnabled = true;
+            //lokFormula.NewItemEnabled = true;
+            //lokFormula.EditItemClicked += LokFormula_EditItemClicked;
 
             //   dtgConditions.RowLoaded += DtgConditions_RowLoaded;
             //   dtgConditions.CellEditEnded += DtgConditions_CellEditEnded;
-            //lokState.EditItemClicked += colEntityState_EditItemClicked;
-            //lokState.EditItemEnabled = true;
-            //lokState.NewItemEnabled = true;
+            lokState.EditItemClicked += colEntityState_EditItemClicked;
+            lokState.EditItemEnabled = true;
+            lokState.NewItemEnabled = true;
             //   ControlHelper.GenerateContextMenu(dtgStates);
-            ControlHelper.GenerateContextMenu(dtgSecuritySubjects);
-            if (EntitySecurityDirectId != 0)
-                GetEntitySecurityDirect(MyProjectManager.GetMyProjectManager.GetRequester(), EntitySecurityDirectID);
-            else
+            //  ControlHelper.GenerateContextMenu(dtgSecuritySubjects);
+            if (entityID != 0)
             {
                 Message = new EntitySecurityDirectDTO();
+                Message.TableDrivedEntityID = entityID;
                 ShowMessage();
+
             }
 
 
 
-            ControlHelper.GenerateContextMenu(dtgColumnValue);
-            ControlHelper.GenerateContextMenu(dtgFormulaValue);
-            lokRelationshipTail.SelectionChanged += LokRelationshipTail_SelectionChanged;
-            lokRelationshipTail.EditItemClicked += LokRelationshipTail_EditItemClicked;
-            cmbOperator.ItemsSource = Enum.GetValues(typeof(Enum_EntityStateOperator)).Cast<Enum_EntityStateOperator>();
-            colReservedValue.ItemsSource = Enum.GetValues(typeof(SecurityReservedValue));
+
+            //ControlHelper.GenerateContextMenu(dtgColumnValue);
+            //ControlHelper.GenerateContextMenu(dtgFormulaValue);
+            //lokRelationshipTail.SelectionChanged += LokRelationshipTail_SelectionChanged;
+            //lokRelationshipTail.EditItemClicked += LokRelationshipTail_EditItemClicked;
+            //cmbOperator.ItemsSource = Enum.GetValues(typeof(Enum_EntityStateOperator)).Cast<Enum_EntityStateOperator>();
+            //colReservedValue.ItemsSource = Enum.GetValues(typeof(SecurityReservedValue));
 
 
         }
-        private void LokRelationshipTail_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
-        {
-            if (EntityID != 0)
-            {
-                frmEntityRelationshipTail frm = null;
-                frm = new frmEntityRelationshipTail(EntityID);
-                MyProjectManager.GetMyProjectManager.ShowDialog(frm, "رابطه های مرتبط");
-                frm.ItemSelected += (sender1, e1) => Frm_TailSelected(sender1, e1, (sender as MyStaticLookup));
-            }
-        }
-        private void Frm_TailSelected(object sender1, EntityRelationshipTailSelectedArg e1, MyStaticLookup myStaticLookup)
-        {
-            SetRelationshipTails();
-            myStaticLookup.SelectedValue = e1.EntityRelationshipTailID;
-        }
-        private void LokRelationshipTail_SelectionChanged(object sender, MyCommonWPFControls.SelectionChangedArg e)
-        {
-            SetColumns();
-        }
-        private void SetColumns()
-        {
-            BizColumn bizColumn = new BizColumn();
-            BizTableDrivedEntity biz = new BizTableDrivedEntity();
-            var entityID = 0;
-            if (lokRelationshipTail.SelectedItem == null)
-                entityID = EntityID;
-            else
-            {
-                EntityRelationshipTailDTO item = lokRelationshipTail.SelectedItem as EntityRelationshipTailDTO;
-                entityID = item.TargetEntityID;
-            }
-            var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
-            var columns = entity.Columns;  //  .Where(x => x.ForeignKey == false).ToList();
-            //  برای وضعیتهایی که به دسترسی داده وصل میشن همه ستونها لازمند چون مثلا برای درخواست سرویس شناسه دفتر با شناسه خاری سازمان کاربر چک میشود. اما برای وضعیتهای فرم کلید خارجی ها کنترل نمی شوند که باعث فعال شدن اقدامات بشوند. چون داینامیک تغییر نمی کنند. البته بعهتر است برنامه تغییر کند که کلید خارجی ها با تغییر رابطه تغییر کنند.
+        //private void LokRelationshipTail_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
+        //{
+        //    if (EntityID != 0)
+        //    {
+        //        frmEntityRelationshipTail frm = null;
+        //        frm = new frmEntityRelationshipTail(EntityID);
+        //        MyProjectManager.GetMyProjectManager.ShowDialog(frm, "رابطه های مرتبط");
+        //        frm.ItemSelected += (sender1, e1) => Frm_TailSelected(sender1, e1, (sender as MyStaticLookup));
+        //    }
+        //}
+        //private void Frm_TailSelected(object sender1, EntityRelationshipTailSelectedArg e1, MyStaticLookup myStaticLookup)
+        //{
+        //    SetRelationshipTails();
+        //    myStaticLookup.SelectedValue = e1.EntityRelationshipTailID;
+        //}
+        //private void LokRelationshipTail_SelectionChanged(object sender, MyCommonWPFControls.SelectionChangedArg e)
+        //{
+        //    SetColumns();
+        //}
+        //private void SetColumns()
+        //{
+        //    BizColumn bizColumn = new BizColumn();
+        //    BizTableDrivedEntity biz = new BizTableDrivedEntity();
+        //    var entityID = 0;
+        //    //if (lokRelationshipTail.SelectedItem == null)
+        //    //    entityID = EntityID;
+        //    //else
+        //    //{
+        //    //    EntityRelationshipTailDTO item = lokRelationshipTail.SelectedItem as EntityRelationshipTailDTO;
+        //    //    entityID = item.TargetEntityID;
+        //    //}
+        //    var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
+        //    var columns = entity.Columns;  //  .Where(x => x.ForeignKey == false).ToList();
+        //    //  برای وضعیتهایی که به دسترسی داده وصل میشن همه ستونها لازمند چون مثلا برای درخواست سرویس شناسه دفتر با شناسه خاری سازمان کاربر چک میشود. اما برای وضعیتهای فرم کلید خارجی ها کنترل نمی شوند که باعث فعال شدن اقدامات بشوند. چون داینامیک تغییر نمی کنند. البته بعهتر است برنامه تغییر کند که کلید خارجی ها با تغییر رابطه تغییر کنند.
 
-            cmbColumns.DisplayMemberPath = "Alias";
-            cmbColumns.SelectedValuePath = "ID";
-            cmbColumns.ItemsSource = columns;
-            if (Message != null && Message.ID != 0)
-            {
-                if (Message.ColumnID != 0)
-                    cmbColumns.SelectedValue = Message.ColumnID;
-            }
-        }
-        private void SetRelationshipTails()
-        {
-            var list = bizEntityRelationshipTail.GetEntityRelationshipTails(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
-            var tails = list.Where(x => x.IsOneToManyTail == false).ToList();
-            lokRelationshipTail.DisplayMember = "EntityPath";
-            lokRelationshipTail.SelectedValueMember = "ID";
-            lokRelationshipTail.ItemsSource = tails;
-        }
+        //    cmbColumns.DisplayMemberPath = "Alias";
+        //    cmbColumns.SelectedValuePath = "ID";
+        //    cmbColumns.ItemsSource = columns;
+        //    if (Message != null && Message.ID != 0)
+        //    {
+        //        if (Message.ColumnID != 0)
+        //            cmbColumns.SelectedValue = Message.ColumnID;
+        //    }
+        //}
+        //private void SetRelationshipTails()
+        //{
+        //    var list = bizEntityRelationshipTail.GetEntityRelationshipTails(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+        //    var tails = list.Where(x => x.IsOneToManyTail == false).ToList();
+        //    lokRelationshipTail.DisplayMember = "EntityPath";
+        //    lokRelationshipTail.SelectedValueMember = "ID";
+        //    lokRelationshipTail.ItemsSource = tails;
+        //}
         private void CmbMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cmbMode.SelectedItem != null)
             {
+                GetDirectSecurity();
                 if ((DataDirectSecurityMode)cmbMode.SelectedItem == DataDirectSecurityMode.FetchData)
                 {
-                    lblIgnoreSecurity.Visibility = Visibility.Visible;
-                    chkIgnoreSecurity.Visibility = Visibility.Visible;
+                    //lblIgnoreSecurity.Visibility = Visibility.Visible;
+                    //chkIgnoreSecurity.Visibility = Visibility.Visible;
 
-                    optFormula.Visibility = Visibility.Collapsed;
-                    tabFormula.Visibility = Visibility.Collapsed;
-                    optColumn.IsChecked = true;
-                    tabColumn.IsSelected = true;
+                    //optFormula.Visibility = Visibility.Collapsed;
+                    //tabFormula.Visibility = Visibility.Collapsed;
+                    //optColumn.IsChecked = true;
+                    //tabColumn.IsSelected = true;
 
                 }
                 else
                 {
-                    lblIgnoreSecurity.Visibility = Visibility.Collapsed;
-                    chkIgnoreSecurity.Visibility = Visibility.Collapsed;
-                    optFormula.Visibility = Visibility.Visible;
-                    tabFormula.Visibility = Visibility.Visible;
+                    //lblIgnoreSecurity.Visibility = Visibility.Collapsed;
+                    //chkIgnoreSecurity.Visibility = Visibility.Collapsed;
+                    //optFormula.Visibility = Visibility.Visible;
+                    //tabFormula.Visibility = Visibility.Visible;
                 }
                 //SetEnityStates();
             }
@@ -175,55 +176,55 @@ namespace MyProject_WPF
             cmbMode.ItemsSource = Enum.GetValues(typeof(DataDirectSecurityMode));
         }
 
-        //private void colEntityState_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
+        private void colEntityState_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
+        {
+            if (lokEntities.SelectedItem != null && cmbMode.SelectedItem != null)
+            {
+                int id = 0;
+                if ((sender as MyStaticLookup).SelectedItem != null)
+                {
+                    var item = (sender as MyStaticLookup).SelectedItem as EntityStateDTO;
+                    id = item.ID;
+                }
+
+                var mode = (DataDirectSecurityMode)cmbMode.SelectedItem;
+
+
+                frmEntityStates frm = new frmEntityStates((int)lokEntities.SelectedValue, id);
+                frm.ItemSaved += (sender1, e1) => Frm_EntityStateSelected(sender1, e1, (sender as MyStaticLookup));
+                MyProjectManager.GetMyProjectManager.ShowDialog(frm, "وضعیتها", Enum_WindowSize.Maximized);
+            }
+
+        }
+
+        //private void LokFormula_EditItemClicked(object sender, EditItemClickEventArg e)
         //{
-        //    if (lokEntities.SelectedItem != null && cmbMode.SelectedItem != null)
-        //    {
-        //        int id = 0;
-        //        if ((sender as MyStaticLookup).SelectedItem != null)
-        //        {
-        //            var item = (sender as MyStaticLookup).SelectedItem as EntityMessage;
-        //            id = item.ID;
-        //        }
-
-        //        var mode = (DataDirectSecurityMode)cmbMode.SelectedItem;
-
-
-        //        frmEntityStates frm = new frmEntityStates((int)lokEntities.SelectedValue, id, mode);
-        //        frm.ItemSaved += (sender1, e1) => Frm_EntityStateSelected(sender1, e1, (sender as MyStaticLookup));
-        //        MyProjectManager.GetMyProjectManager.ShowDialog(frm, "وضعیتها");
-        //    }
-
+        //    int formulaID = 0;
+        //    if (lokFormula.SelectedItem != null)
+        //        formulaID = (int)lokFormula.SelectedValue;
+        //    frmFormula view = new frmFormula(formulaID, EntityID);
+        //    view.FormulaUpdated += View_FormulaSelected;
+        //    MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Maximized);
         //}
 
-        private void LokFormula_EditItemClicked(object sender, EditItemClickEventArg e)
-        {
-            int formulaID = 0;
-            if (lokFormula.SelectedItem != null)
-                formulaID = (int)lokFormula.SelectedValue;
-            frmFormula view = new frmFormula(formulaID, EntityID);
-            view.FormulaUpdated += View_FormulaSelected;
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Maximized);
-        }
-
-        private void View_FormulaSelected(object sender, FormulaSelectedArg e)
-        {
-            SetFromulas();
-            lokFormula.SelectedValue = e.FormulaID;
-        }
-        private void SetFromulas()
-        {
-            lokFormula.DisplayMember = "Name";
-            lokFormula.SelectedValueMember = "ID";
-            BizFormula bizFormula = new BizFormula();
-            lokFormula.ItemsSource = bizFormula.GetFormulas(EntityID,false);
-        }
-
-        //private void Frm_EntityStateSelected(object sender1, SavedItemArg e1, MyStaticLookup myStaticLookup)
+        //private void View_FormulaSelected(object sender, FormulaSelectedArg e)
         //{
-        // //   SetEnityStates();
-        //    myStaticLookup.SelectedValue = e1.ID;
+        //    SetFromulas();
+        //    lokFormula.SelectedValue = e.FormulaID;
         //}
+        //private void SetFromulas()
+        //{
+        //    lokFormula.DisplayMember = "Name";
+        //    lokFormula.SelectedValueMember = "ID";
+        //    BizFormula bizFormula = new BizFormula();
+        //    lokFormula.ItemsSource = bizFormula.GetFormulas(EntityID,false);
+        //}
+
+        private void Frm_EntityStateSelected(object sender1, SavedItemArg e1, MyStaticLookup myStaticLookup)
+        {
+            SetEnityStates();
+            myStaticLookup.SelectedValue = e1.ID;
+        }
 
         private void SetEntites()
         {
@@ -235,18 +236,39 @@ namespace MyProject_WPF
 
         private void LokEntities_SelectionChanged(object sender, MyCommonWPFControls.SelectionChangedArg e)
         {
-            //SetEnityStates();
+            SetEnityStates();
             if (lokEntities.SelectedItem != null)
             {
-                SetRelationshipTails();
-                SetColumns();
-                SetFromulas();
+                //SetRelationshipTails();
+                //SetColumns();
+                //SetFromulas();
+
+                GetDirectSecurity();
             }
             else
             {
-                cmbColumns.ItemsSource = null;
-                lokRelationshipTail.ItemsSource = null;
-                lokFormula.ItemsSource = null;
+                lokState.ItemsSource = null;
+                txtDescription.Text = "";
+                //cmbColumns.ItemsSource = null;
+                //lokRelationshipTail.ItemsSource = null;
+                //lokFormula.ItemsSource = null;
+            }
+        }
+
+        private void GetDirectSecurity()
+        {
+            if (lokEntities.SelectedItem != null && cmbMode.SelectedItem != null)
+            {
+
+                Message = bizRoleSecurity.GetEntitySecurityDirectByEntityID(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue,
+                    (DataDirectSecurityMode)cmbMode.SelectedItem, false);
+                if (Message == null)
+                {
+                    Message = new EntitySecurityDirectDTO();
+                    Message.TableDrivedEntityID = (int)lokEntities.SelectedValue;
+                    Message.Mode = (DataDirectSecurityMode)cmbMode.SelectedItem;
+                }
+                ShowMessage();
             }
         }
 
@@ -324,43 +346,43 @@ namespace MyProject_WPF
         //    }
         //}
 
-        //private void SetEnityStates()
-        //{
-        //    if (lokEntities.SelectedItem != null && cmbMode.SelectedItem != null)
-        //    {
-        //        var mode = (DataDirectSecurityMode)cmbMode.SelectedItem;
+        private void SetEnityStates()
+        {
+            if (lokEntities.SelectedItem != null)
+            {
 
+                List<EntityStateDTO> entityStates = null;
 
-        //        List<EntityMessage> entityStates = null;
-
-        //        if (mode == DataDirectSecurityMode.FetchData)
-        //        {
-        //            entityStates = bizEntityState.GetEntityStates(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue, false).Where(x => x.ColumnID != 0).ToList();
-        //        }
-        //        else
-        //        {
-        //            entityStates = bizEntityState.GetEntityStates(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue, false);
-        //        }
-        //        lokState.DisplayMember = "Title";
-        //        lokState.SelectedValueMember = "ID";
-        //        lokState.ItemsSource = entityStates;
-        //    }
-        //    else
-        //    {
-        //        lokState.ItemsSource = null;
-        //    }
-        //}
+                //////if (mode == DataDirectSecurityMode.FetchData)
+                //////{
+                //////    entityStates = bizEntityState.GetEntityStates(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue, false).Where(x => x.ColumnID != 0).ToList();
+                //////}
+                //////else
+                //////{
+                //////    entityStates = bizEntityState.GetEntityStates(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue, false);
+                //////}
+                ///
+                entityStates = bizEntityState.GetEntityStates(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue, false).Where(x => !x.StateConditions.Any(y => y.FormulaID != 0)).ToList();
+                lokState.DisplayMember = "Title";
+                lokState.SelectedValueMember = "ID";
+                lokState.ItemsSource = entityStates;
+            }
+            else
+            {
+                lokState.ItemsSource = null;
+            }
+        }
 
         //private void SetAndOrType()
         //{
         //    cmbAndOR.ItemsSource = Enum.GetValues(typeof(AndORType));
         //}
 
-        private void GetEntitySecurityDirect(DR_Requester requester, int id)
-        {
-            Message = bizRoleSecurity.GetEntitySecurityDirect(requester, id, true);
-            ShowMessage();
-        }
+        //private void GetEntitySecurityDirect(DR_Requester requester, int id)
+        //{
+        //    Message = bizRoleSecurity.GetEntitySecurityDirect(requester, id, true);
+        //    ShowMessage();
+        //}
         //private void SetOperators()
         //{
         //    colOperator.ItemsSource = Enum.GetValues(typeof(EntitySecurityOperator));
@@ -375,39 +397,39 @@ namespace MyProject_WPF
         //}
 
 
-        private void SetSecuritySubjects()
-        {
-            //lokSubject.DisplayMember = "Name";
-            //lokSubject.SelectedValueMember = "ID";
-            //lokSubject.SearchFilterChanged += LokSubject_SearchFilterChanged;
-            colSecuritySubject.DisplayMemberPath = "Name";
-            colSecuritySubject.SelectedValueMemberPath = "ID";
-            colSecuritySubject.SearchFilterChanged += LokSubject_SearchFilterChanged;
-        }
-        private void LokSubject_SearchFilterChanged(object sender, MyCommonWPFControls.SearchFilterArg e)
-        {
-            if (e.SingleFilterValue != null)
-            {
-                if (!e.FilterBySelectedValue)
-                {
-                    var subjects = bizSecuritySubject.GetSecuritySubjects(e.SingleFilterValue);
-                    e.ResultItemsSource = subjects;
-                }
-                else
-                {
-                    var id = Convert.ToInt32(e.SingleFilterValue);
-                    if (id > 0)
-                    {
-                        var subject = bizSecuritySubject.GetSecuritySubject(id);
-                        e.ResultItemsSource = new List<SecuritySubjectDTO> { subject };
-                    }
-                    else
-                        e.ResultItemsSource = null;
-                }
-            }
-        }
+        //private void SetSecuritySubjects()
+        //{
+        //    //lokSubject.DisplayMember = "Name";
+        //    //lokSubject.SelectedValueMember = "ID";
+        //    //lokSubject.SearchFilterChanged += LokSubject_SearchFilterChanged;
+        //    colSecuritySubject.DisplayMemberPath = "Name";
+        //    colSecuritySubject.SelectedValueMemberPath = "ID";
+        //    colSecuritySubject.SearchFilterChanged += LokSubject_SearchFilterChanged;
+        //}
+        //private void LokSubject_SearchFilterChanged(object sender, MyCommonWPFControls.SearchFilterArg e)
+        //{
+        //    if (e.SingleFilterValue != null)
+        //    {
+        //        if (!e.FilterBySelectedValue)
+        //        {
+        //            var subjects = bizSecuritySubject.GetSecuritySubjects(e.SingleFilterValue);
+        //            e.ResultItemsSource = subjects;
+        //        }
+        //        else
+        //        {
+        //            var id = Convert.ToInt32(e.SingleFilterValue);
+        //            if (id > 0)
+        //            {
+        //                var subject = bizSecuritySubject.GetSecuritySubject(id);
+        //                e.ResultItemsSource = new List<SecuritySubjectDTO> { subject };
+        //            }
+        //            else
+        //                e.ResultItemsSource = null;
+        //        }
+        //    }
+        //}
 
-        //private void btnAddRoleGroup_Click(object sender, RoutedEventArgs e)
+        ////private void btnAddRoleGroup_Click(object sender, RoutedEventArgs e)
         //{
         //    frmRoleGroup view = new frmRoleGroup(0);
         //    view.GroupSaved += View_GroupSaved;
@@ -443,34 +465,34 @@ namespace MyProject_WPF
         //}
         private void ShowMessage()
         {
-            dtgSecuritySubjects.ItemsSource = Message.SecuritySubjects;
+            //  dtgSecuritySubjects.ItemsSource = Message.SecuritySubjects;
             //cmbAndOR.SelectedItem = Message.ConditionAndORType;
             lokEntities.SelectedValue = Message.TableDrivedEntityID;
             cmbMode.SelectedItem = Message.Mode;
-            //lokState.SelectedValue = Message.EntityStateID;
+            lokState.SelectedValue = Message.EntityStateID;
             txtDescription.Text = Message.Description;
-            lokRelationshipTail.SelectedValue = Message.RelationshipTailID;
-            if (Message.FormulaID != 0)
-            {
-                lokFormula.SelectedValue = Message.FormulaID;
-                dtgFormulaValue.ItemsSource = Message.Values;
-                optFormula.IsChecked = true;
-            }
-            else if (Message.ColumnID != 0)
-            {
-                cmbOperator.SelectedItem = Message.ValueOperator;
-                cmbColumns.SelectedValue = Message.ColumnID;
-                dtgColumnValue.ItemsSource = Message.Values;
-                optColumn.IsChecked = true;
-            }
-            else
-            {
-                dtgFormulaValue.ItemsSource = Message.Values;
-                dtgColumnValue.ItemsSource = Message.Values;
-            }
+            //lokRelationshipTail.SelectedValue = Message.RelationshipTailID;
+            //if (Message.FormulaID != 0)
+            //{
+            //    lokFormula.SelectedValue = Message.FormulaID;
+            //    dtgFormulaValue.ItemsSource = Message.Values;
+            //    optFormula.IsChecked = true;
+            //}
+            //else if (Message.ColumnID != 0)
+            //{
+            //    cmbOperator.SelectedItem = Message.ValueOperator;
+            //    cmbColumns.SelectedValue = Message.ColumnID;
+            //    dtgColumnValue.ItemsSource = Message.Values;
+            //    optColumn.IsChecked = true;
+            //}
+            //else
+            //{
+            //    dtgFormulaValue.ItemsSource = Message.Values;
+            //    dtgColumnValue.ItemsSource = Message.Values;
+            //}
 
-            chkIgnoreSecurity.IsChecked = Message.IgnoreSecurity;
-            cmbInOrNotIn.SelectedItem = Message.SecuritySubjectInORNotIn;
+            //chkIgnoreSecurity.IsChecked = Message.IgnoreSecurity;
+            //cmbInOrNotIn.SelectedItem = Message.SecuritySubjectInORNotIn;
             //cmbColumns.SelectedValue = Message.ColumnID;
             //if (Message.RoleID != 0)
             //    cmbRole.SelectedValue = Message.RoleID;
@@ -514,48 +536,48 @@ namespace MyProject_WPF
             //    return;
             //}
 
-            if (optFormula.IsChecked == false && optColumn.IsChecked == false)
-            {
-                MessageBox.Show("یکی از حالات فرمول و یا ستون را انتخاب نمایید");
-                return;
-            }
-            if (optFormula.IsChecked == true)
-            {
-                if (lokFormula.SelectedItem == null)
-                {
-                    MessageBox.Show("فرمول مشخص نشده است");
-                    return;
-                }
-            }
-            else if (optColumn.IsChecked == true)
-            {
-                if (cmbColumns.SelectedItem == null)
-                {
-                    MessageBox.Show("ستون مشخص نشده است");
-                    return;
-                }
-            }
-            if (lokRelationshipTail.SelectedItem == null)
-                Message.RelationshipTailID = 0;
-            else
-                Message.RelationshipTailID = (int)lokRelationshipTail.SelectedValue;
-            if (optFormula.IsChecked == true)
-            {
-                Message.FormulaID = (int)lokFormula.SelectedValue;
-                Message.ColumnID = 0;
-            }
-            else if (optColumn.IsChecked == true)
-            {
-                Message.FormulaID = 0;
-                Message.ColumnID = (int)cmbColumns.SelectedValue;
-            }
-            Message.ValueOperator = (Enum_EntityStateOperator)cmbOperator.SelectedItem;
+            //if (optFormula.IsChecked == false && optColumn.IsChecked == false)
+            //{
+            //    MessageBox.Show("یکی از حالات فرمول و یا ستون را انتخاب نمایید");
+            //    return;
+            //}
+            //if (optFormula.IsChecked == true)
+            //{
+            //    if (lokFormula.SelectedItem == null)
+            //    {
+            //        MessageBox.Show("فرمول مشخص نشده است");
+            //        return;
+            //    }
+            //}
+            //else if (optColumn.IsChecked == true)
+            //{
+            //    if (cmbColumns.SelectedItem == null)
+            //    {
+            //        MessageBox.Show("ستون مشخص نشده است");
+            //        return;
+            //    }
+            //}
+            //if (lokRelationshipTail.SelectedItem == null)
+            //    Message.RelationshipTailID = 0;
+            //else
+            //    Message.RelationshipTailID = (int)lokRelationshipTail.SelectedValue;
+            //if (optFormula.IsChecked == true)
+            //{
+            //    Message.FormulaID = (int)lokFormula.SelectedValue;
+            //    Message.ColumnID = 0;
+            //}
+            //else if (optColumn.IsChecked == true)
+            //{
+            //    Message.FormulaID = 0;
+            //    Message.ColumnID = (int)cmbColumns.SelectedValue;
+            //}
+            // Message.ValueOperator = (Enum_EntityStateOperator)cmbOperator.SelectedItem;
             Message.Description = txtDescription.Text;
-            Message.IgnoreSecurity = chkIgnoreSecurity.IsChecked == true;
+            //   Message.IgnoreSecurity = chkIgnoreSecurity.IsChecked == true;
             Message.Mode = (DataDirectSecurityMode)cmbMode.SelectedItem;
             Message.TableDrivedEntityID = (int)lokEntities.SelectedValue;
-            //Message.EntityStateID = (int)lokState.SelectedValue;
-            Message.SecuritySubjectInORNotIn = (InORNotIn)cmbInOrNotIn.SelectedItem;
+            Message.EntityStateID = (int)lokState.SelectedValue;
+            //    Message.SecuritySubjectInORNotIn = (InORNotIn)cmbInOrNotIn.SelectedItem;
             //Message.ConditionAndORType = (AndORType)cmbAndOR.SelectedItem;
             //if (lokSubject.SelectedItem == null)
             //    Message.SecuritySubjectID = 0;
@@ -587,20 +609,20 @@ namespace MyProject_WPF
             Message.ID = bizRoleSecurity.UpdateEntitySecurityDirect(Message);
             MessageBox.Show("اطلاعات ثبت شد");
         }
-        private void optFormula_Checked(object sender, RoutedEventArgs e)
-        {
-            tabColumn.Visibility = Visibility.Collapsed;
-            tabFormula.Visibility = Visibility.Visible;
-            tabFormula.IsSelected = true;
-        }
+        //private void optFormula_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    tabColumn.Visibility = Visibility.Collapsed;
+        //    tabFormula.Visibility = Visibility.Visible;
+        //    tabFormula.IsSelected = true;
+        //}
 
 
-        private void optColumn_Checked(object sender, RoutedEventArgs e)
-        {
-            tabFormula.Visibility = Visibility.Collapsed;
-            tabColumn.Visibility = Visibility.Visible;
-            tabColumn.IsSelected = true;
-        }
+        //private void optColumn_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    tabFormula.Visibility = Visibility.Collapsed;
+        //    tabColumn.Visibility = Visibility.Visible;
+        //    tabColumn.IsSelected = true;
+        //}
         //private void btnReturn_Click(object sender, RoutedEventArgs e)
         //{
         //    MyProjectManager.GetMyProjectManager.CloseDialog(this);
@@ -618,26 +640,26 @@ namespace MyProject_WPF
         //    cmbDatabaseFunction.IsEnabled = true;
 
         //}
-        frmEntitySecurityDirectSelect searchView = null;
+        //frmEntitySecurityDirectSelect searchView = null;
 
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
-        {
-            if (searchView == null)
-            {
-                searchView = new frmEntitySecurityDirectSelect();
-                searchView.EntitySecurityDirectSelected += View_EntitySecurityDirectSelected;
-            }
-            MyProjectManager.GetMyProjectManager.ShowDialog(searchView, "جستجوی دسترسی داده");
-        }
+        //private void btnSearch_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (searchView == null)
+        //    {
+        //        searchView = new frmEntitySecurityDirectSelect();
+        //        searchView.EntitySecurityDirectSelected += View_EntitySecurityDirectSelected;
+        //    }
+        //    MyProjectManager.GetMyProjectManager.ShowDialog(searchView, "جستجوی دسترسی داده");
+        //}
 
-        private void View_EntitySecurityDirectSelected(object sender, EntitySecurityDirectSelectArg e)
-        {
-            if (e.ID != 0)
-            {
-                MyProjectManager.GetMyProjectManager.CloseDialog(sender);
-                GetEntitySecurityDirect(MyProjectManager.GetMyProjectManager.GetRequester(), e.ID);
-            }
-        }
+        //private void View_EntitySecurityDirectSelected(object sender, EntitySecurityDirectSelectArg e)
+        //{
+        //    if (e.ID != 0)
+        //    {
+        //        MyProjectManager.GetMyProjectManager.CloseDialog(sender);
+        //        GetEntitySecurityDirect(MyProjectManager.GetMyProjectManager.GetRequester(), e.ID);
+        //    }
+        //}
 
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {

@@ -12,13 +12,13 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class TableDrivedEntityStateSecuritySubject
+    public partial class TableDrivedEntityStateConditionValues
     {
         public int ID { get; set; }
-        public int TableDrivedEntityStateID { get; set; }
-        public int SecuritySubjectID { get; set; }
+        public string Value { get; set; }
+        public int TableDrivedEntityStateConditionID { get; set; }
+        public Nullable<short> ReservedValue { get; set; }
     
-        public virtual TableDrivedEntityState TableDrivedEntityState { get; set; }
-        public virtual SecuritySubject SecuritySubject { get; set; }
+        public virtual TableDrivedEntityStateCondition TableDrivedEntityStateCondition { get; set; }
     }
 }

@@ -813,7 +813,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="AndOrType" Type="bit" Nullable="false" />
+          <Property Name="AndOrType" Type="smallint" Nullable="false" />
         </EntityType>
         <EntityType Name="MainLetterTemplate">
           <Key>
@@ -1091,28 +1091,37 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TableDrivedEntityID" Type="int" Nullable="false" />
-          <Property Name="FormulaID" Type="int" />
-          <Property Name="ColumnID" Type="int" />
           <Property Name="Title" Type="varchar" MaxLength="128" Nullable="false" />
-          <Property Name="EntityStateOperator" Type="smallint" />
-          <Property Name="EntityRelationshipTailID" Type="int" />
-          <Property Name="SecuritySubjectInOrNotIn" Type="bit" />
+          <Property Name="ConditionOperator" Type="smallint" />
         </EntityType>
-        <EntityType Name="TableDrivedEntityStateSecuritySubject">
+        <EntityType Name="TableDrivedEntityStateCondition">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="128" />
           <Property Name="TableDrivedEntityStateID" Type="int" Nullable="false" />
+          <Property Name="FormulaID" Type="int" />
+          <Property Name="ColumnID" Type="int" />
+          <Property Name="EntityRelationshipTailID" Type="int" />
+          <Property Name="ValueOpoerator" Type="smallint" />
+          <Property Name="SecuritySubjectInOrNotIn" Type="smallint" />
+        </EntityType>
+        <EntityType Name="TableDrivedEntityStateConditionSecuritySubject">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TableDrivedEntityStateConditionID" Type="int" Nullable="false" />
           <Property Name="SecuritySubjectID" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="TableDrivedEntityStateValues">
+        <EntityType Name="TableDrivedEntityStateConditionValues">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Value" Type="varchar(max)" />
-          <Property Name="TableDrivedEntityStateID" Type="int" Nullable="false" />
+          <Property Name="TableDrivedEntityStateConditionID" Type="int" Nullable="false" />
           <Property Name="ReservedValue" Type="smallint" />
         </EntityType>
         <EntityType Name="TabPageUISetting">
@@ -1214,38 +1223,8 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="1028" />
           <Property Name="TableDrivedEntityID" Type="int" Nullable="false" />
-          <Property Name="IgnoreSecurity" Type="bit" Nullable="false" />
-          <Property Name="SecuritySubjectOperator" Type="smallint" />
           <Property Name="Mode" Type="smallint" />
-          <Property Name="FormulaID" Type="int" />
-          <Property Name="ColumnID" Type="int" />
-          <Property Name="EntityRelationshipTailID" Type="int" />
-          <Property Name="ValueOperator" Type="smallint" />
-        </EntityType>
-        <EntityType Name="EntitySecurityDirectSecuritySubject">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="SecuritySubjectID" Type="int" Nullable="false" />
-          <Property Name="EntitySecurityDirectID" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="EntitySecurityDirectValues">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Value" Type="varchar(max)" />
-          <Property Name="EntitySecurityDirectID" Type="int" Nullable="false" />
-          <Property Name="ReservedValue" Type="smallint" />
-        </EntityType>
-        <EntityType Name="EntitySecurityInDirect">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TableDrivedEntityID" Type="int" Nullable="false" />
-          <Property Name="EntityRelationshipTailID" Type="int" Nullable="false" />
+          <Property Name="TableDrivedEntityStateID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Organization">
           <Key>
@@ -2195,75 +2174,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntitySecurityDirect_Column">
-          <End Role="Column" Type="Self.Column" Multiplicity="0..1" />
+        <Association Name="FK_EntitySecurityDirect_TableDrivedEntityState">
+          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="1" />
           <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Column">
+            <Principal Role="TableDrivedEntityState">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EntitySecurityDirect">
-              <PropertyRef Name="ColumnID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntitySecurityDirect_EntityRelationshipTail">
-          <End Role="EntityRelationshipTail" Type="Self.EntityRelationshipTail" Multiplicity="0..1" />
-          <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirect">
-              <PropertyRef Name="EntityRelationshipTailID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntitySecurityDirect_Formula">
-          <End Role="Formula" Type="Self.Formula" Multiplicity="0..1" />
-          <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Formula">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirect">
-              <PropertyRef Name="FormulaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect">
-          <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="1" />
-          <End Role="EntitySecurityDirectSecuritySubject" Type="Self.EntitySecurityDirectSecuritySubject" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySecurityDirect">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirectSecuritySubject">
-              <PropertyRef Name="EntitySecurityDirectID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntitySecurityDirectSecuritySubject_SecuritySubject">
-          <End Role="SecuritySubject" Type="Self.SecuritySubject" Multiplicity="1" />
-          <End Role="EntitySecurityDirectSecuritySubject" Type="Self.EntitySecurityDirectSecuritySubject" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SecuritySubject">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirectSecuritySubject">
-              <PropertyRef Name="SecuritySubjectID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntitySecurityDirectValues_EntitySecurityDirect">
-          <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="1" />
-          <End Role="EntitySecurityDirectValues" Type="Self.EntitySecurityDirectValues" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySecurityDirect">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirectValues">
-              <PropertyRef Name="EntitySecurityDirectID" />
+              <PropertyRef Name="TableDrivedEntityStateID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2687,51 +2606,87 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TableDrivedEntityState_EntityRelationshipTail">
+        <Association Name="FK_TableDrivedEntityStateCondition_Column">
+          <End Role="Column" Type="Self.Column" Multiplicity="0..1" />
+          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Column">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TableDrivedEntityStateCondition">
+              <PropertyRef Name="ColumnID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateCondition_EntityRelationshipTail">
           <End Role="EntityRelationshipTail" Type="Self.EntityRelationshipTail" Multiplicity="0..1" />
-          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="*" />
+          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="EntityRelationshipTail">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityState">
+            <Dependent Role="TableDrivedEntityStateCondition">
               <PropertyRef Name="EntityRelationshipTailID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateCondition_Formula">
+          <End Role="Formula" Type="Self.Formula" Multiplicity="0..1" />
+          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Formula">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TableDrivedEntityStateCondition">
+              <PropertyRef Name="FormulaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateCondition_TableDrivedEntityState">
+          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="1" />
+          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableDrivedEntityState">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TableDrivedEntityStateCondition">
+              <PropertyRef Name="TableDrivedEntityStateID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TableDrivedEntityStateSecuritySubject_SecuritySubject">
           <End Role="SecuritySubject" Type="Self.SecuritySubject" Multiplicity="1" />
-          <End Role="TableDrivedEntityStateSecuritySubject" Type="Self.TableDrivedEntityStateSecuritySubject" Multiplicity="*" />
+          <End Role="TableDrivedEntityStateConditionSecuritySubject" Type="Self.TableDrivedEntityStateConditionSecuritySubject" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SecuritySubject">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateSecuritySubject">
+            <Dependent Role="TableDrivedEntityStateConditionSecuritySubject">
               <PropertyRef Name="SecuritySubjectID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
-          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="1" />
-          <End Role="TableDrivedEntityStateSecuritySubject" Type="Self.TableDrivedEntityStateSecuritySubject" Multiplicity="*" />
+          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="1" />
+          <End Role="TableDrivedEntityStateConditionSecuritySubject" Type="Self.TableDrivedEntityStateConditionSecuritySubject" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
+            <Principal Role="TableDrivedEntityStateCondition">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateSecuritySubject">
-              <PropertyRef Name="TableDrivedEntityStateID" />
+            <Dependent Role="TableDrivedEntityStateConditionSecuritySubject">
+              <PropertyRef Name="TableDrivedEntityStateConditionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState">
-          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="1" />
-          <End Role="TableDrivedEntityStateValues" Type="Self.TableDrivedEntityStateValues" Multiplicity="*" />
+          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="1" />
+          <End Role="TableDrivedEntityStateConditionValues" Type="Self.TableDrivedEntityStateConditionValues" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
+            <Principal Role="TableDrivedEntityStateCondition">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateValues">
-              <PropertyRef Name="TableDrivedEntityStateID" />
+            <Dependent Role="TableDrivedEntityStateConditionValues">
+              <PropertyRef Name="TableDrivedEntityStateConditionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3631,30 +3586,6 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EntitySearchColumns">
-              <PropertyRef Name="EntityRelationshipTailID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKEntitySecu295394">
-          <End Role="TableDrivedEntity" Type="Self.TableDrivedEntity" Multiplicity="1" />
-          <End Role="EntitySecurityInDirect" Type="Self.EntitySecurityInDirect" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntity">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityInDirect">
-              <PropertyRef Name="TableDrivedEntityID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKEntitySecu489951">
-          <End Role="EntityRelationshipTail" Type="Self.EntityRelationshipTail" Multiplicity="1" />
-          <End Role="EntitySecurityInDirect" Type="Self.EntitySecurityInDirect" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityInDirect">
               <PropertyRef Name="EntityRelationshipTailID" />
             </Dependent>
           </ReferentialConstraint>
@@ -4595,18 +4526,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKTableDrive277199">
-          <End Role="Column" Type="Self.Column" Multiplicity="0..1" />
-          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Column">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TableDrivedEntityState">
-              <PropertyRef Name="ColumnID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKTableDrive311898">
           <End Role="Table" Type="Self.Table" Multiplicity="1" />
           <End Role="TableDrivedEntity" Type="Self.TableDrivedEntity" Multiplicity="*" />
@@ -4640,18 +4559,6 @@
             </Principal>
             <Dependent Role="TableDrivedEntity_Columns">
               <PropertyRef Name="TableDrivedEntityID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKTableDrive466458">
-          <End Role="Formula" Type="Self.Formula" Multiplicity="0..1" />
-          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Formula">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TableDrivedEntityState">
-              <PropertyRef Name="FormulaID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5033,8 +4940,9 @@
           <EntitySet Name="TableDrivedEntity_Columns" EntityType="Self.TableDrivedEntity_Columns" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TableDrivedEntity_EntityCommand" EntityType="Self.TableDrivedEntity_EntityCommand" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TableDrivedEntityState" EntityType="Self.TableDrivedEntityState" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TableDrivedEntityStateSecuritySubject" EntityType="Self.TableDrivedEntityStateSecuritySubject" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TableDrivedEntityStateValues" EntityType="Self.TableDrivedEntityStateValues" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableDrivedEntityStateCondition" EntityType="Self.TableDrivedEntityStateCondition" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableDrivedEntityStateConditionSecuritySubject" EntityType="Self.TableDrivedEntityStateConditionSecuritySubject" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableDrivedEntityStateConditionValues" EntityType="Self.TableDrivedEntityStateConditionValues" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TabPageUISetting" EntityType="Self.TabPageUISetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TimeColumnType" EntityType="Self.TimeColumnType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UIActionActivity" EntityType="Self.UIActionActivity" Schema="dbo" store:Type="Tables" />
@@ -5046,9 +4954,6 @@
           <EntitySet Name="UniqueConstraint" EntityType="Self.UniqueConstraint" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UniqueConstraint_Column" EntityType="Self.UniqueConstraint_Column" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntitySecurityDirect" EntityType="Self.EntitySecurityDirect" Schema="Sec" store:Type="Tables" />
-          <EntitySet Name="EntitySecurityDirectSecuritySubject" EntityType="Self.EntitySecurityDirectSecuritySubject" Schema="Sec" store:Type="Tables" />
-          <EntitySet Name="EntitySecurityDirectValues" EntityType="Self.EntitySecurityDirectValues" Schema="Sec" store:Type="Tables" />
-          <EntitySet Name="EntitySecurityInDirect" EntityType="Self.EntitySecurityInDirect" Schema="Sec" store:Type="Tables" />
           <EntitySet Name="Organization" EntityType="Self.Organization" Schema="Sec" store:Type="Tables" />
           <EntitySet Name="OrganizationPost" EntityType="Self.OrganizationPost" Schema="Sec" store:Type="Tables" />
           <EntitySet Name="OrganizationType" EntityType="Self.OrganizationType" Schema="Sec" store:Type="Tables" />
@@ -5314,29 +5219,9 @@
             <End Role="SearchRepository" EntitySet="SearchRepository" />
             <End Role="EntitySearchableReport" EntitySet="EntitySearchableReport" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirect_Column" Association="Self.FK_EntitySecurityDirect_Column">
-            <End Role="Column" EntitySet="Column" />
+          <AssociationSet Name="FK_EntitySecurityDirect_TableDrivedEntityState" Association="Self.FK_EntitySecurityDirect_TableDrivedEntityState">
+            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
             <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirect_EntityRelationshipTail" Association="Self.FK_EntitySecurityDirect_EntityRelationshipTail">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirect_Formula" Association="Self.FK_EntitySecurityDirect_Formula">
-            <End Role="Formula" EntitySet="Formula" />
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect" Association="Self.FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect">
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-            <End Role="EntitySecurityDirectSecuritySubject" EntitySet="EntitySecurityDirectSecuritySubject" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirectSecuritySubject_SecuritySubject" Association="Self.FK_EntitySecurityDirectSecuritySubject_SecuritySubject">
-            <End Role="SecuritySubject" EntitySet="SecuritySubject" />
-            <End Role="EntitySecurityDirectSecuritySubject" EntitySet="EntitySecurityDirectSecuritySubject" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirectValues_EntitySecurityDirect" Association="Self.FK_EntitySecurityDirectValues_EntitySecurityDirect">
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-            <End Role="EntitySecurityDirectValues" EntitySet="EntitySecurityDirectValues" />
           </AssociationSet>
           <AssociationSet Name="FK_Formula_CodeFunction" Association="Self.FK_Formula_CodeFunction">
             <End Role="CodeFunction" EntitySet="CodeFunction" />
@@ -5478,21 +5363,33 @@
             <End Role="SuperToSubRelationshipType" EntitySet="SuperToSubRelationshipType" />
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
           </AssociationSet>
-          <AssociationSet Name="FK_TableDrivedEntityState_EntityRelationshipTail" Association="Self.FK_TableDrivedEntityState_EntityRelationshipTail">
+          <AssociationSet Name="FK_TableDrivedEntityStateCondition_Column" Association="Self.FK_TableDrivedEntityStateCondition_Column">
+            <End Role="Column" EntitySet="Column" />
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateCondition_EntityRelationshipTail" Association="Self.FK_TableDrivedEntityStateCondition_EntityRelationshipTail">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateCondition_Formula" Association="Self.FK_TableDrivedEntityStateCondition_Formula">
+            <End Role="Formula" EntitySet="Formula" />
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateCondition_TableDrivedEntityState" Association="Self.FK_TableDrivedEntityStateCondition_TableDrivedEntityState">
             <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" Association="Self.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject">
             <End Role="SecuritySubject" EntitySet="SecuritySubject" />
-            <End Role="TableDrivedEntityStateSecuritySubject" EntitySet="TableDrivedEntityStateSecuritySubject" />
+            <End Role="TableDrivedEntityStateConditionSecuritySubject" EntitySet="TableDrivedEntityStateConditionSecuritySubject" />
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" Association="Self.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-            <End Role="TableDrivedEntityStateSecuritySubject" EntitySet="TableDrivedEntityStateSecuritySubject" />
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+            <End Role="TableDrivedEntityStateConditionSecuritySubject" EntitySet="TableDrivedEntityStateConditionSecuritySubject" />
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState" Association="Self.FK_TableDrivedEntityStateValues_TableDrivedEntityState">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-            <End Role="TableDrivedEntityStateValues" EntitySet="TableDrivedEntityStateValues" />
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+            <End Role="TableDrivedEntityStateConditionValues" EntitySet="TableDrivedEntityStateConditionValues" />
           </AssociationSet>
           <AssociationSet Name="FK_UIColumnValueRange_ColumnValueRange" Association="Self.FK_UIColumnValueRange_ColumnValueRange">
             <End Role="ColumnValueRange" EntitySet="ColumnValueRange" />
@@ -5793,14 +5690,6 @@
           <AssociationSet Name="FKEntitySear748558" Association="Self.FKEntitySear748558">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
-          </AssociationSet>
-          <AssociationSet Name="FKEntitySecu295394" Association="Self.FKEntitySecu295394">
-            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
-            <End Role="EntitySecurityInDirect" EntitySet="EntitySecurityInDirect" />
-          </AssociationSet>
-          <AssociationSet Name="FKEntitySecu489951" Association="Self.FKEntitySecu489951">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="EntitySecurityInDirect" EntitySet="EntitySecurityInDirect" />
           </AssociationSet>
           <AssociationSet Name="FKEntitySecu556643" Association="Self.FKEntitySecu556643">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
@@ -6114,10 +6003,6 @@
             <End Role="Column" EntitySet="Column" />
             <End Role="TableDrivedEntity_Columns" EntitySet="TableDrivedEntity_Columns" />
           </AssociationSet>
-          <AssociationSet Name="FKTableDrive277199" Association="Self.FKTableDrive277199">
-            <End Role="Column" EntitySet="Column" />
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-          </AssociationSet>
           <AssociationSet Name="FKTableDrive311898" Association="Self.FKTableDrive311898">
             <End Role="Table" EntitySet="Table" />
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
@@ -6129,10 +6014,6 @@
           <AssociationSet Name="FKTableDrive379163" Association="Self.FKTableDrive379163">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="TableDrivedEntity_Columns" EntitySet="TableDrivedEntity_Columns" />
-          </AssociationSet>
-          <AssociationSet Name="FKTableDrive466458" Association="Self.FKTableDrive466458">
-            <End Role="Formula" EntitySet="Formula" />
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
           </AssociationSet>
           <AssociationSet Name="FKTableDrive764829" Association="Self.FKTableDrive764829">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
@@ -6341,8 +6222,9 @@
           <EntitySet Name="TableDrivedEntity_Columns" EntityType="MyProjectModel.TableDrivedEntity_Columns" />
           <EntitySet Name="TableDrivedEntity_EntityCommand" EntityType="MyProjectModel.TableDrivedEntity_EntityCommand" />
           <EntitySet Name="TableDrivedEntityState" EntityType="MyProjectModel.TableDrivedEntityState" />
-          <EntitySet Name="TableDrivedEntityStateSecuritySubject" EntityType="MyProjectModel.TableDrivedEntityStateSecuritySubject" />
-          <EntitySet Name="TableDrivedEntityStateValues" EntityType="MyProjectModel.TableDrivedEntityStateValues" />
+          <EntitySet Name="TableDrivedEntityStateCondition" EntityType="MyProjectModel.TableDrivedEntityStateCondition" />
+          <EntitySet Name="TableDrivedEntityStateConditionSecuritySubject" EntityType="MyProjectModel.TableDrivedEntityStateConditionSecuritySubject" />
+          <EntitySet Name="TableDrivedEntityStateConditionValues" EntityType="MyProjectModel.TableDrivedEntityStateConditionValues" />
           <EntitySet Name="TabPageUISetting" EntityType="MyProjectModel.TabPageUISetting" />
           <EntitySet Name="TimeColumnType" EntityType="MyProjectModel.TimeColumnType" />
           <EntitySet Name="UIActionActivity" EntityType="MyProjectModel.UIActionActivity" />
@@ -6353,9 +6235,6 @@
           <EntitySet Name="UnionToSubUnionRelationshipType" EntityType="MyProjectModel.UnionToSubUnionRelationshipType" />
           <EntitySet Name="UniqueConstraint" EntityType="MyProjectModel.UniqueConstraint" />
           <EntitySet Name="EntitySecurityDirect" EntityType="MyProjectModel.EntitySecurityDirect" />
-          <EntitySet Name="EntitySecurityDirectSecuritySubject" EntityType="MyProjectModel.EntitySecurityDirectSecuritySubject" />
-          <EntitySet Name="EntitySecurityDirectValues" EntityType="MyProjectModel.EntitySecurityDirectValues" />
-          <EntitySet Name="EntitySecurityInDirect" EntityType="MyProjectModel.EntitySecurityInDirect" />
           <EntitySet Name="Organization" EntityType="MyProjectModel.Organization" />
           <EntitySet Name="OrganizationPost" EntityType="MyProjectModel.OrganizationPost" />
           <EntitySet Name="OrganizationType" EntityType="MyProjectModel.OrganizationType" />
@@ -6529,10 +6408,6 @@
             <End Role="Column" EntitySet="Column" />
             <End Role="EntityDirectlReportParameters" EntitySet="EntityDirectlReportParameters" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirect_Column" Association="MyProjectModel.FK_EntitySecurityDirect_Column">
-            <End Role="Column" EntitySet="Column" />
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-          </AssociationSet>
           <AssociationSet Name="FK_RelationshipSearchFilter_Column" Association="MyProjectModel.FK_RelationshipSearchFilter_Column">
             <End Role="Column" EntitySet="Column" />
             <End Role="RelationshipSearchFilter" EntitySet="RelationshipSearchFilter" />
@@ -6552,6 +6427,10 @@
           <AssociationSet Name="FK_TableDrivedEntity_Column" Association="MyProjectModel.FK_TableDrivedEntity_Column">
             <End Role="Column" EntitySet="Column" />
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateCondition_Column" Association="MyProjectModel.FK_TableDrivedEntityStateCondition_Column">
+            <End Role="Column" EntitySet="Column" />
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
           </AssociationSet>
           <AssociationSet Name="FK_UnionToSubUnionRelationshipType_Column" Association="MyProjectModel.FK_UnionToSubUnionRelationshipType_Column">
             <End Role="Column" EntitySet="Column" />
@@ -6604,10 +6483,6 @@
           <AssociationSet Name="FKTableDrive108467" Association="MyProjectModel.FKTableDrive108467">
             <End Role="Column" EntitySet="Column" />
             <End Role="TableDrivedEntity_Columns" EntitySet="TableDrivedEntity_Columns" />
-          </AssociationSet>
-          <AssociationSet Name="FKTableDrive277199" Association="MyProjectModel.FKTableDrive277199">
-            <End Role="Column" EntitySet="Column" />
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
           </AssociationSet>
           <AssociationSet Name="FKUIEnablity310255" Association="MyProjectModel.FKUIEnablity310255">
             <End Role="Column" EntitySet="Column" />
@@ -6977,10 +6852,6 @@
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="EntityRelationshipTailDataMenu" EntitySet="EntityRelationshipTailDataMenu" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirect_EntityRelationshipTail" Association="MyProjectModel.FK_EntitySecurityDirect_EntityRelationshipTail">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-          </AssociationSet>
           <AssociationSet Name="FK_GraphDefinition_EntityRelationshipTail_EntityRelationshipTail" Association="MyProjectModel.FK_GraphDefinition_EntityRelationshipTail_EntityRelationshipTail">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="GraphDefinition_EntityRelationshipTail" EntitySet="GraphDefinition_EntityRelationshipTail" />
@@ -6989,9 +6860,9 @@
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="LetterTemplateRelationshipField" EntitySet="LetterTemplateRelationshipField" />
           </AssociationSet>
-          <AssociationSet Name="FK_TableDrivedEntityState_EntityRelationshipTail" Association="MyProjectModel.FK_TableDrivedEntityState_EntityRelationshipTail">
+          <AssociationSet Name="FK_TableDrivedEntityStateCondition_EntityRelationshipTail" Association="MyProjectModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
           </AssociationSet>
           <AssociationSet Name="FKEntityRela568378" Association="MyProjectModel.FKEntityRela568378">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
@@ -7004,10 +6875,6 @@
           <AssociationSet Name="FKEntitySear748558" Association="MyProjectModel.FKEntitySear748558">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
-          </AssociationSet>
-          <AssociationSet Name="FKEntitySecu489951" Association="MyProjectModel.FKEntitySecu489951">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="EntitySecurityInDirect" EntitySet="EntitySecurityInDirect" />
           </AssociationSet>
           <AssociationSet Name="FKRelationsh552099" Association="MyProjectModel.FKRelationsh552099">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
@@ -7105,13 +6972,13 @@
             <End Role="RelationshipType" EntitySet="RelationshipType" />
             <End Role="ExplicitOneToOneRelationshipType" EntitySet="ExplicitOneToOneRelationshipType" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirect_Formula" Association="MyProjectModel.FK_EntitySecurityDirect_Formula">
-            <End Role="Formula" EntitySet="Formula" />
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-          </AssociationSet>
           <AssociationSet Name="FK_Formula_LinearFormula" Association="MyProjectModel.FK_Formula_LinearFormula">
             <End Role="LinearFormula" EntitySet="LinearFormula" />
             <End Role="Formula" EntitySet="Formula" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateCondition_Formula" Association="MyProjectModel.FK_TableDrivedEntityStateCondition_Formula">
+            <End Role="Formula" EntitySet="Formula" />
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
           </AssociationSet>
           <AssociationSet Name="FKFormula967405" Association="MyProjectModel.FKFormula967405">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
@@ -7132,10 +6999,6 @@
           <AssociationSet Name="FKState_Form943524" Association="MyProjectModel.FKState_Form943524">
             <End Role="Formula" EntitySet="Formula" />
             <End Role="State_Formula" EntitySet="State_Formula" />
-          </AssociationSet>
-          <AssociationSet Name="FKTableDrive466458" Association="MyProjectModel.FKTableDrive466458">
-            <End Role="Formula" EntitySet="Formula" />
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
           </AssociationSet>
           <AssociationSet Name="FKTransition813783" Association="MyProjectModel.FKTransition813783">
             <End Role="Formula" EntitySet="Formula" />
@@ -7321,10 +7184,6 @@
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="UIActionActivity" EntitySet="UIActionActivity" />
           </AssociationSet>
-          <AssociationSet Name="FKEntitySecu295394" Association="MyProjectModel.FKEntitySecu295394">
-            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
-            <End Role="EntitySecurityInDirect" EntitySet="EntitySecurityInDirect" />
-          </AssociationSet>
           <AssociationSet Name="FKEntitySecu556643" Association="MyProjectModel.FKEntitySecu556643">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
@@ -7341,17 +7200,25 @@
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
           </AssociationSet>
-          <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" Association="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
+          <AssociationSet Name="FK_EntitySecurityDirect_TableDrivedEntityState" Association="MyProjectModel.FK_EntitySecurityDirect_TableDrivedEntityState">
             <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-            <End Role="TableDrivedEntityStateSecuritySubject" EntitySet="TableDrivedEntityStateSecuritySubject" />
+            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateCondition_TableDrivedEntityState" Association="MyProjectModel.FK_TableDrivedEntityStateCondition_TableDrivedEntityState">
+            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" Association="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+            <End Role="TableDrivedEntityStateConditionSecuritySubject" EntitySet="TableDrivedEntityStateConditionSecuritySubject" />
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState" Association="MyProjectModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-            <End Role="TableDrivedEntityStateValues" EntitySet="TableDrivedEntityStateValues" />
+            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+            <End Role="TableDrivedEntityStateConditionValues" EntitySet="TableDrivedEntityStateConditionValues" />
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" Association="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject">
             <End Role="SecuritySubject" EntitySet="SecuritySubject" />
-            <End Role="TableDrivedEntityStateSecuritySubject" EntitySet="TableDrivedEntityStateSecuritySubject" />
+            <End Role="TableDrivedEntityStateConditionSecuritySubject" EntitySet="TableDrivedEntityStateConditionSecuritySubject" />
           </AssociationSet>
           <AssociationSet Name="FK_UIEnablityDetails_UIActionActivity" Association="MyProjectModel.FK_UIEnablityDetails_UIActionActivity">
             <End Role="UIActionActivity" EntitySet="UIActionActivity" />
@@ -7368,18 +7235,6 @@
           <AssociationSet Name="FKUnionToSub933310" Association="MyProjectModel.FKUnionToSub933310">
             <End Role="UnionRelationshipType" EntitySet="UnionRelationshipType" />
             <End Role="UnionToSubUnionRelationshipType" EntitySet="UnionToSubUnionRelationshipType" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect" Association="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect">
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-            <End Role="EntitySecurityDirectSecuritySubject" EntitySet="EntitySecurityDirectSecuritySubject" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirectValues_EntitySecurityDirect" Association="MyProjectModel.FK_EntitySecurityDirectValues_EntitySecurityDirect">
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-            <End Role="EntitySecurityDirectValues" EntitySet="EntitySecurityDirectValues" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirectSecuritySubject_SecuritySubject" Association="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_SecuritySubject">
-            <End Role="SecuritySubject" EntitySet="SecuritySubject" />
-            <End Role="EntitySecurityDirectSecuritySubject" EntitySet="EntitySecurityDirectSecuritySubject" />
           </AssociationSet>
           <AssociationSet Name="FKOrganizati165700" Association="MyProjectModel.FKOrganizati165700">
             <End Role="OrganizationType" EntitySet="OrganizationType" />
@@ -7723,12 +7578,12 @@
           <NavigationProperty Name="ColumnValueRange" Relationship="MyProjectModel.FK_ColumnValueRange_Column" FromRole="Column" ToRole="ColumnValueRange" />
           <NavigationProperty Name="DateTimeColumnType" Relationship="MyProjectModel.FK_DateTimeColumnType_Column" FromRole="Column" ToRole="DateTimeColumnType" />
           <NavigationProperty Name="EntityDirectlReportParameters" Relationship="MyProjectModel.FK_EntityDirectlReportParameters_Column" FromRole="Column" ToRole="EntityDirectlReportParameters" />
-          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirect_Column" FromRole="Column" ToRole="EntitySecurityDirect" />
           <NavigationProperty Name="RelationshipSearchFilter" Relationship="MyProjectModel.FK_RelationshipSearchFilter_Column" FromRole="Column" ToRole="RelationshipSearchFilter" />
           <NavigationProperty Name="RelationshipSearchFilter1" Relationship="MyProjectModel.FK_RelationshipSearchFilter_Column1" FromRole="Column" ToRole="RelationshipSearchFilter" />
           <NavigationProperty Name="TimeColumnType" Relationship="MyProjectModel.FK_StringTimeColumnType_Column" FromRole="Column" ToRole="TimeColumnType" />
           <NavigationProperty Name="SuperToSubRelationshipType" Relationship="MyProjectModel.FK_SuperToSubRelationshipType_Column" FromRole="Column" ToRole="SuperToSubRelationshipType" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FK_TableDrivedEntity_Column" FromRole="Column" ToRole="TableDrivedEntity" />
+          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyProjectModel.FK_TableDrivedEntityStateCondition_Column" FromRole="Column" ToRole="TableDrivedEntityStateCondition" />
           <NavigationProperty Name="UnionToSubUnionRelationshipType" Relationship="MyProjectModel.FK_UnionToSubUnionRelationshipType_Column" FromRole="Column" ToRole="UnionToSubUnionRelationshipType" />
           <NavigationProperty Name="Table" Relationship="MyProjectModel.FKColumn659222" FromRole="Column" ToRole="Table" />
           <NavigationProperty Name="SecurityObject" Relationship="MyProjectModel.FKColumn689451" FromRole="Column" ToRole="SecurityObject" />
@@ -7742,7 +7597,6 @@
           <NavigationProperty Name="NumericColumnType" Relationship="MyProjectModel.FKNumericCol878005" FromRole="Column" ToRole="NumericColumnType" />
           <NavigationProperty Name="StringColumnType" Relationship="MyProjectModel.FKStringColu936883" FromRole="Column" ToRole="StringColumnType" />
           <NavigationProperty Name="TableDrivedEntity_Columns" Relationship="MyProjectModel.FKTableDrive108467" FromRole="Column" ToRole="TableDrivedEntity_Columns" />
-          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyProjectModel.FKTableDrive277199" FromRole="Column" ToRole="TableDrivedEntityState" />
           <NavigationProperty Name="UIEnablityDetails" Relationship="MyProjectModel.FKUIEnablity310255" FromRole="Column" ToRole="UIEnablityDetails" />
           <NavigationProperty Name="RelationshipColumns" Relationship="MyProjectModel.Relationship_FirstEntityColumns" FromRole="Column" ToRole="RelationshipColumns" />
           <NavigationProperty Name="RelationshipColumns1" Relationship="MyProjectModel.Relationship_SecondEntityColumns" FromRole="Column" ToRole="RelationshipColumns" />
@@ -8303,14 +8157,12 @@
           <NavigationProperty Name="EntityListViewColumns" Relationship="MyProjectModel.FKEntityList705975" FromRole="EntityRelationshipTail" ToRole="EntityListViewColumns" />
           <NavigationProperty Name="EntityGroup_Relationship" Relationship="MyProjectModel.FK_EntityGroup_Relationship_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="EntityGroup_Relationship" />
           <NavigationProperty Name="EntityRelationshipTailDataMenu" Relationship="MyProjectModel.FK_EntityRelationshipTailDataMenu_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="EntityRelationshipTailDataMenu" />
-          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirect_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="EntitySecurityDirect" />
           <NavigationProperty Name="GraphDefinition_EntityRelationshipTail" Relationship="MyProjectModel.FK_GraphDefinition_EntityRelationshipTail_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="GraphDefinition_EntityRelationshipTail" />
           <NavigationProperty Name="LetterTemplateRelationshipField" Relationship="MyProjectModel.FK_LetterTemplateRelationshipField_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="LetterTemplateRelationshipField" />
-          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyProjectModel.FK_TableDrivedEntityState_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntityState" />
+          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyProjectModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntityStateCondition" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FKEntityRela568378" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="TableDrivedEntity1" Relationship="MyProjectModel.FKEntityRela831147" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="EntitySearchColumns" Relationship="MyProjectModel.FKEntitySear748558" FromRole="EntityRelationshipTail" ToRole="EntitySearchColumns" />
-          <NavigationProperty Name="EntitySecurityInDirect" Relationship="MyProjectModel.FKEntitySecu489951" FromRole="EntityRelationshipTail" ToRole="EntitySecurityInDirect" />
           <NavigationProperty Name="RelationshipSearchFilter" Relationship="MyProjectModel.FKRelationsh552099" FromRole="EntityRelationshipTail" ToRole="RelationshipSearchFilter" />
         </EntityType>
         <EntityType Name="EntityRelationshipTailDataMenu">
@@ -8475,14 +8327,13 @@
           <NavigationProperty Name="ColumnCustomFormula" Relationship="MyProjectModel.FK_ColumnCustomFormula_Formula" FromRole="Formula" ToRole="ColumnCustomFormula" />
           <NavigationProperty Name="DatabaseFunction_TableDrivedEntity" Relationship="MyProjectModel.FK_Formula_DatabaseFunction_TableDrivedEntity" FromRole="Formula" ToRole="DatabaseFunction_TableDrivedEntity" />
           <NavigationProperty Name="EntityValidation" Relationship="MyProjectModel.FKEntityVali933297" FromRole="Formula" ToRole="EntityValidation" />
-          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirect_Formula" FromRole="Formula" ToRole="EntitySecurityDirect" />
           <NavigationProperty Name="LinearFormula" Relationship="MyProjectModel.FK_Formula_LinearFormula" FromRole="Formula" ToRole="LinearFormula" />
+          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyProjectModel.FK_TableDrivedEntityStateCondition_Formula" FromRole="Formula" ToRole="TableDrivedEntityStateCondition" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FKFormula967405" FromRole="Formula" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="FormulaItems" Relationship="MyProjectModel.FKFormulaIte505844" FromRole="Formula" ToRole="FormulaItems" />
           <NavigationProperty Name="FormulaItems1" Relationship="MyProjectModel.FKFormulaIte540022" FromRole="Formula" ToRole="FormulaItems" />
           <NavigationProperty Name="LetterTemplatePlainField" Relationship="MyProjectModel.FKLetterTemp586744" FromRole="Formula" ToRole="LetterTemplatePlainField" />
           <NavigationProperty Name="State_Formula" Relationship="MyProjectModel.FKState_Form943524" FromRole="Formula" ToRole="State_Formula" />
-          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyProjectModel.FKTableDrive466458" FromRole="Formula" ToRole="TableDrivedEntityState" />
           <NavigationProperty Name="TransitionAction_Formula" Relationship="MyProjectModel.FKTransition813783" FromRole="Formula" ToRole="TransitionAction_Formula" />
         </EntityType>
         <EntityType Name="FormulaItems">
@@ -8663,7 +8514,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AndOrType" Type="Boolean" Nullable="false" />
+          <Property Name="AndOrType" Type="Int16" Nullable="false" />
           <NavigationProperty Name="SearchRepository" Relationship="MyProjectModel.FK_RelationshipPhrase_LogicPhrase" FromRole="LogicPhrase" ToRole="SearchRepository" />
           <NavigationProperty Name="Phrase" Relationship="MyProjectModel.FKPhrase543572" FromRole="LogicPhrase" ToRole="Phrase" />
           <NavigationProperty Name="Phrase1" Relationship="MyProjectModel.FKPhrase614152" FromRole="LogicPhrase" ToRole="Phrase" />
@@ -9024,7 +8875,6 @@
           <NavigationProperty Name="Process" Relationship="MyProjectModel.FK_Process_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="Process" />
           <NavigationProperty Name="TableDrivedEntity_EntityCommand" Relationship="MyProjectModel.FK_TableDrivedEntity_EntityCommand_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="TableDrivedEntity_EntityCommand" />
           <NavigationProperty Name="UIActionActivity" Relationship="MyProjectModel.FKActionActi421900" FromRole="TableDrivedEntity" ToRole="UIActionActivity" />
-          <NavigationProperty Name="EntitySecurityInDirect" Relationship="MyProjectModel.FKEntitySecu295394" FromRole="TableDrivedEntity" ToRole="EntitySecurityInDirect" />
           <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FKEntitySecu556643" FromRole="TableDrivedEntity" ToRole="EntitySecurityDirect" />
           <NavigationProperty Name="SecurityObject" Relationship="MyProjectModel.FKTableDrive36776" FromRole="TableDrivedEntity" ToRole="SecurityObject" />
           <NavigationProperty Name="TableDrivedEntity_Columns" Relationship="MyProjectModel.FKTableDrive379163" FromRole="TableDrivedEntity" ToRole="TableDrivedEntity_Columns" />
@@ -9057,40 +8907,52 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
-          <Property Name="FormulaID" Type="Int32" />
-          <Property Name="ColumnID" Type="Int32" />
           <Property Name="Title" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="EntityStateOperator" Type="Int16" />
-          <Property Name="EntityRelationshipTailID" Type="Int32" />
-          <Property Name="SecuritySubjectInOrNotIn" Type="Boolean" />
-          <NavigationProperty Name="Column" Relationship="MyProjectModel.FKTableDrive277199" FromRole="TableDrivedEntityState" ToRole="Column" />
-          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyProjectModel.FK_TableDrivedEntityState_EntityRelationshipTail" FromRole="TableDrivedEntityState" ToRole="EntityRelationshipTail" />
+          <Property Name="ConditionOperator" Type="Int16" />
           <NavigationProperty Name="EntityState_UIActionActivity" Relationship="MyProjectModel.FKEntityStat936255" FromRole="TableDrivedEntityState" ToRole="EntityState_UIActionActivity" />
-          <NavigationProperty Name="Formula" Relationship="MyProjectModel.FKTableDrive466458" FromRole="TableDrivedEntityState" ToRole="Formula" />
           <NavigationProperty Name="FormulaItems" Relationship="MyProjectModel.FK_FormulaItems_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="FormulaItems" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FKTableDrive764829" FromRole="TableDrivedEntityState" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="TableDrivedEntityStateSecuritySubject" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="TableDrivedEntityStateSecuritySubject" />
-          <NavigationProperty Name="TableDrivedEntityStateValues" Relationship="MyProjectModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="TableDrivedEntityStateValues" />
+          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirect_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="EntitySecurityDirect" />
+          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyProjectModel.FK_TableDrivedEntityStateCondition_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="TableDrivedEntityStateCondition" />
         </EntityType>
-        <EntityType Name="TableDrivedEntityStateSecuritySubject">
+        <EntityType Name="TableDrivedEntityStateCondition">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
           <Property Name="TableDrivedEntityStateID" Type="Int32" Nullable="false" />
-          <Property Name="SecuritySubjectID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" FromRole="TableDrivedEntityStateSecuritySubject" ToRole="TableDrivedEntityState" />
-          <NavigationProperty Name="SecuritySubject" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" FromRole="TableDrivedEntityStateSecuritySubject" ToRole="SecuritySubject" />
+          <Property Name="FormulaID" Type="Int32" />
+          <Property Name="ColumnID" Type="Int32" />
+          <Property Name="EntityRelationshipTailID" Type="Int32" />
+          <Property Name="ValueOpoerator" Type="Int16" />
+          <Property Name="SecuritySubjectInOrNotIn" Type="Int16" />
+          <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_TableDrivedEntityStateCondition_Column" FromRole="TableDrivedEntityStateCondition" ToRole="Column" />
+          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyProjectModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail" FromRole="TableDrivedEntityStateCondition" ToRole="EntityRelationshipTail" />
+          <NavigationProperty Name="Formula" Relationship="MyProjectModel.FK_TableDrivedEntityStateCondition_Formula" FromRole="TableDrivedEntityStateCondition" ToRole="Formula" />
+          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyProjectModel.FK_TableDrivedEntityStateCondition_TableDrivedEntityState" FromRole="TableDrivedEntityStateCondition" ToRole="TableDrivedEntityState" />
+          <NavigationProperty Name="TableDrivedEntityStateConditionSecuritySubject" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" FromRole="TableDrivedEntityStateCondition" ToRole="TableDrivedEntityStateConditionSecuritySubject" />
+          <NavigationProperty Name="TableDrivedEntityStateConditionValues" Relationship="MyProjectModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState" FromRole="TableDrivedEntityStateCondition" ToRole="TableDrivedEntityStateConditionValues" />
         </EntityType>
-        <EntityType Name="TableDrivedEntityStateValues">
+        <EntityType Name="TableDrivedEntityStateConditionSecuritySubject">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TableDrivedEntityStateConditionID" Type="Int32" Nullable="false" />
+          <Property Name="SecuritySubjectID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" FromRole="TableDrivedEntityStateConditionSecuritySubject" ToRole="TableDrivedEntityStateCondition" />
+          <NavigationProperty Name="SecuritySubject" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" FromRole="TableDrivedEntityStateConditionSecuritySubject" ToRole="SecuritySubject" />
+        </EntityType>
+        <EntityType Name="TableDrivedEntityStateConditionValues">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="TableDrivedEntityStateID" Type="Int32" Nullable="false" />
+          <Property Name="TableDrivedEntityStateConditionID" Type="Int32" Nullable="false" />
           <Property Name="ReservedValue" Type="Int16" />
-          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyProjectModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState" FromRole="TableDrivedEntityStateValues" ToRole="TableDrivedEntityState" />
+          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyProjectModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState" FromRole="TableDrivedEntityStateConditionValues" ToRole="TableDrivedEntityStateCondition" />
         </EntityType>
         <EntityType Name="TabPageUISetting">
           <Key>
@@ -9204,49 +9066,10 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Description" Type="String" MaxLength="1028" FixedLength="false" Unicode="true" />
           <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
-          <Property Name="IgnoreSecurity" Type="Boolean" Nullable="false" />
-          <Property Name="SecuritySubjectOperator" Type="Int16" />
           <Property Name="Mode" Type="Int16" />
-          <Property Name="FormulaID" Type="Int32" />
-          <Property Name="ColumnID" Type="Int32" />
-          <Property Name="EntityRelationshipTailID" Type="Int32" />
-          <Property Name="ValueOperator" Type="Int16" />
-          <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_EntitySecurityDirect_Column" FromRole="EntitySecurityDirect" ToRole="Column" />
-          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyProjectModel.FK_EntitySecurityDirect_EntityRelationshipTail" FromRole="EntitySecurityDirect" ToRole="EntityRelationshipTail" />
-          <NavigationProperty Name="Formula" Relationship="MyProjectModel.FK_EntitySecurityDirect_Formula" FromRole="EntitySecurityDirect" ToRole="Formula" />
+          <Property Name="TableDrivedEntityStateID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FKEntitySecu556643" FromRole="EntitySecurityDirect" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="EntitySecurityDirectSecuritySubject" Relationship="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect" FromRole="EntitySecurityDirect" ToRole="EntitySecurityDirectSecuritySubject" />
-          <NavigationProperty Name="EntitySecurityDirectValues" Relationship="MyProjectModel.FK_EntitySecurityDirectValues_EntitySecurityDirect" FromRole="EntitySecurityDirect" ToRole="EntitySecurityDirectValues" />
-        </EntityType>
-        <EntityType Name="EntitySecurityDirectSecuritySubject">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SecuritySubjectID" Type="Int32" Nullable="false" />
-          <Property Name="EntitySecurityDirectID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect" FromRole="EntitySecurityDirectSecuritySubject" ToRole="EntitySecurityDirect" />
-          <NavigationProperty Name="SecuritySubject" Relationship="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_SecuritySubject" FromRole="EntitySecurityDirectSecuritySubject" ToRole="SecuritySubject" />
-        </EntityType>
-        <EntityType Name="EntitySecurityDirectValues">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="EntitySecurityDirectID" Type="Int32" Nullable="false" />
-          <Property Name="ReservedValue" Type="Int16" />
-          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyProjectModel.FK_EntitySecurityDirectValues_EntitySecurityDirect" FromRole="EntitySecurityDirectValues" ToRole="EntitySecurityDirect" />
-        </EntityType>
-        <EntityType Name="EntitySecurityInDirect">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
-          <Property Name="EntityRelationshipTailID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyProjectModel.FKEntitySecu489951" FromRole="EntitySecurityInDirect" ToRole="EntityRelationshipTail" />
-          <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FKEntitySecu295394" FromRole="EntitySecurityInDirect" ToRole="TableDrivedEntity" />
+          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyProjectModel.FK_EntitySecurityDirect_TableDrivedEntityState" FromRole="EntitySecurityDirect" ToRole="TableDrivedEntityState" />
         </EntityType>
         <EntityType Name="Organization">
           <Key>
@@ -9356,8 +9179,7 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Type" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="TableDrivedEntityStateSecuritySubject" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" FromRole="SecuritySubject" ToRole="TableDrivedEntityStateSecuritySubject" />
-          <NavigationProperty Name="EntitySecurityDirectSecuritySubject" Relationship="MyProjectModel.FK_EntitySecurityDirectSecuritySubject_SecuritySubject" FromRole="SecuritySubject" ToRole="EntitySecurityDirectSecuritySubject" />
+          <NavigationProperty Name="TableDrivedEntityStateConditionSecuritySubject" Relationship="MyProjectModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" FromRole="SecuritySubject" ToRole="TableDrivedEntityStateConditionSecuritySubject" />
           <NavigationProperty Name="Organization" Relationship="MyProjectModel.FKOrganizati892027" FromRole="SecuritySubject" ToRole="Organization" />
           <NavigationProperty Name="OrganizationPost" Relationship="MyProjectModel.FKOrganizati807635" FromRole="SecuritySubject" ToRole="OrganizationPost" />
           <NavigationProperty Name="OrganizationType" Relationship="MyProjectModel.FKOrganizati936301" FromRole="SecuritySubject" ToRole="OrganizationType" />
@@ -10004,18 +9826,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntitySecurityDirect_Column">
-          <End Type="MyProjectModel.Column" Role="Column" Multiplicity="0..1" />
-          <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Column">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirect">
-              <PropertyRef Name="ColumnID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_RelationshipSearchFilter_Column">
           <End Type="MyProjectModel.Column" Role="Column" Multiplicity="1" />
           <End Type="MyProjectModel.RelationshipSearchFilter" Role="RelationshipSearchFilter" Multiplicity="*" />
@@ -10073,6 +9883,18 @@
             </Principal>
             <Dependent Role="TableDrivedEntity">
               <PropertyRef Name="DeterminerColumnID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateCondition_Column">
+          <End Type="MyProjectModel.Column" Role="Column" Multiplicity="0..1" />
+          <End Type="MyProjectModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Column">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TableDrivedEntityStateCondition">
+              <PropertyRef Name="ColumnID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -10228,18 +10050,6 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="TableDrivedEntity_Columns">
-              <PropertyRef Name="ColumnID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKTableDrive277199">
-          <End Type="MyProjectModel.Column" Role="Column" Multiplicity="0..1" />
-          <End Type="MyProjectModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Column">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TableDrivedEntityState">
               <PropertyRef Name="ColumnID" />
             </Dependent>
           </ReferentialConstraint>
@@ -11348,18 +11158,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntitySecurityDirect_EntityRelationshipTail">
-          <End Type="MyProjectModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="0..1" />
-          <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirect">
-              <PropertyRef Name="EntityRelationshipTailID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_GraphDefinition_EntityRelationshipTail_EntityRelationshipTail">
           <End Type="MyProjectModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="1" />
           <End Type="MyProjectModel.GraphDefinition_EntityRelationshipTail" Role="GraphDefinition_EntityRelationshipTail" Multiplicity="*" />
@@ -11384,14 +11182,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TableDrivedEntityState_EntityRelationshipTail">
+        <Association Name="FK_TableDrivedEntityStateCondition_EntityRelationshipTail">
           <End Type="MyProjectModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="0..1" />
-          <End Type="MyProjectModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="*" />
+          <End Type="MyProjectModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="EntityRelationshipTail">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityState">
+            <Dependent Role="TableDrivedEntityStateCondition">
               <PropertyRef Name="EntityRelationshipTailID" />
             </Dependent>
           </ReferentialConstraint>
@@ -11428,18 +11226,6 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EntitySearchColumns">
-              <PropertyRef Name="EntityRelationshipTailID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKEntitySecu489951">
-          <End Type="MyProjectModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="1" />
-          <End Type="MyProjectModel.EntitySecurityInDirect" Role="EntitySecurityInDirect" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityInDirect">
               <PropertyRef Name="EntityRelationshipTailID" />
             </Dependent>
           </ReferentialConstraint>
@@ -11732,18 +11518,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntitySecurityDirect_Formula">
-          <End Type="MyProjectModel.Formula" Role="Formula" Multiplicity="0..1" />
-          <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Formula">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirect">
-              <PropertyRef Name="FormulaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Formula_LinearFormula">
           <End Type="MyProjectModel.LinearFormula" Role="LinearFormula" Multiplicity="0..1" />
           <End Type="MyProjectModel.Formula" Role="Formula" Multiplicity="*" />
@@ -11753,6 +11527,18 @@
             </Principal>
             <Dependent Role="Formula">
               <PropertyRef Name="LinearFormulaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateCondition_Formula">
+          <End Type="MyProjectModel.Formula" Role="Formula" Multiplicity="0..1" />
+          <End Type="MyProjectModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Formula">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TableDrivedEntityStateCondition">
+              <PropertyRef Name="FormulaID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11812,18 +11598,6 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="State_Formula">
-              <PropertyRef Name="FormulaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKTableDrive466458">
-          <End Type="MyProjectModel.Formula" Role="Formula" Multiplicity="0..1" />
-          <End Type="MyProjectModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Formula">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TableDrivedEntityState">
               <PropertyRef Name="FormulaID" />
             </Dependent>
           </ReferentialConstraint>
@@ -12380,18 +12154,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKEntitySecu295394">
-          <End Type="MyProjectModel.TableDrivedEntity" Role="TableDrivedEntity" Multiplicity="1" />
-          <End Type="MyProjectModel.EntitySecurityInDirect" Role="EntitySecurityInDirect" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntity">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityInDirect">
-              <PropertyRef Name="TableDrivedEntityID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKEntitySecu556643">
           <End Type="MyProjectModel.TableDrivedEntity" Role="TableDrivedEntity" Multiplicity="1" />
           <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="*" />
@@ -12440,38 +12202,62 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
+        <Association Name="FK_EntitySecurityDirect_TableDrivedEntityState">
           <End Type="MyProjectModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="1" />
-          <End Type="MyProjectModel.TableDrivedEntityStateSecuritySubject" Role="TableDrivedEntityStateSecuritySubject" Multiplicity="*" />
+          <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TableDrivedEntityState">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateSecuritySubject">
+            <Dependent Role="EntitySecurityDirect">
               <PropertyRef Name="TableDrivedEntityStateID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState">
+        <Association Name="FK_TableDrivedEntityStateCondition_TableDrivedEntityState">
           <End Type="MyProjectModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="1" />
-          <End Type="MyProjectModel.TableDrivedEntityStateValues" Role="TableDrivedEntityStateValues" Multiplicity="*" />
+          <End Type="MyProjectModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TableDrivedEntityState">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateValues">
+            <Dependent Role="TableDrivedEntityStateCondition">
               <PropertyRef Name="TableDrivedEntityStateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
+          <End Type="MyProjectModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="1" />
+          <End Type="MyProjectModel.TableDrivedEntityStateConditionSecuritySubject" Role="TableDrivedEntityStateConditionSecuritySubject" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableDrivedEntityStateCondition">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TableDrivedEntityStateConditionSecuritySubject">
+              <PropertyRef Name="TableDrivedEntityStateConditionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState">
+          <End Type="MyProjectModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="1" />
+          <End Type="MyProjectModel.TableDrivedEntityStateConditionValues" Role="TableDrivedEntityStateConditionValues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableDrivedEntityStateCondition">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TableDrivedEntityStateConditionValues">
+              <PropertyRef Name="TableDrivedEntityStateConditionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TableDrivedEntityStateSecuritySubject_SecuritySubject">
           <End Type="MyProjectModel.SecuritySubject" Role="SecuritySubject" Multiplicity="1" />
-          <End Type="MyProjectModel.TableDrivedEntityStateSecuritySubject" Role="TableDrivedEntityStateSecuritySubject" Multiplicity="*" />
+          <End Type="MyProjectModel.TableDrivedEntityStateConditionSecuritySubject" Role="TableDrivedEntityStateConditionSecuritySubject" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SecuritySubject">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateSecuritySubject">
+            <Dependent Role="TableDrivedEntityStateConditionSecuritySubject">
               <PropertyRef Name="SecuritySubjectID" />
             </Dependent>
           </ReferentialConstraint>
@@ -12521,42 +12307,6 @@
             </Principal>
             <Dependent Role="UnionToSubUnionRelationshipType">
               <PropertyRef Name="UnionRelationshipTypeID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntitySecurityDirectSecuritySubject_EntitySecurityDirect">
-          <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="1" />
-          <End Type="MyProjectModel.EntitySecurityDirectSecuritySubject" Role="EntitySecurityDirectSecuritySubject" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySecurityDirect">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirectSecuritySubject">
-              <PropertyRef Name="EntitySecurityDirectID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntitySecurityDirectValues_EntitySecurityDirect">
-          <End Type="MyProjectModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="1" />
-          <End Type="MyProjectModel.EntitySecurityDirectValues" Role="EntitySecurityDirectValues" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySecurityDirect">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirectValues">
-              <PropertyRef Name="EntitySecurityDirectID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntitySecurityDirectSecuritySubject_SecuritySubject">
-          <End Type="MyProjectModel.SecuritySubject" Role="SecuritySubject" Multiplicity="1" />
-          <End Type="MyProjectModel.EntitySecurityDirectSecuritySubject" Role="EntitySecurityDirectSecuritySubject" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SecuritySubject">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirectSecuritySubject">
-              <PropertyRef Name="SecuritySubjectID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -14182,31 +13932,41 @@
           <EntitySetMapping Name="TableDrivedEntityState">
             <EntityTypeMapping TypeName="MyProjectModel.TableDrivedEntityState">
               <MappingFragment StoreEntitySet="TableDrivedEntityState">
-                <ScalarProperty Name="SecuritySubjectInOrNotIn" ColumnName="SecuritySubjectInOrNotIn" />
-                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
-                <ScalarProperty Name="EntityStateOperator" ColumnName="EntityStateOperator" />
+                <ScalarProperty Name="ConditionOperator" ColumnName="ConditionOperator" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
-                <ScalarProperty Name="FormulaID" ColumnName="FormulaID" />
                 <ScalarProperty Name="TableDrivedEntityID" ColumnName="TableDrivedEntityID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TableDrivedEntityStateSecuritySubject">
-            <EntityTypeMapping TypeName="MyProjectModel.TableDrivedEntityStateSecuritySubject">
-              <MappingFragment StoreEntitySet="TableDrivedEntityStateSecuritySubject">
-                <ScalarProperty Name="SecuritySubjectID" ColumnName="SecuritySubjectID" />
+          <EntitySetMapping Name="TableDrivedEntityStateCondition">
+            <EntityTypeMapping TypeName="MyProjectModel.TableDrivedEntityStateCondition">
+              <MappingFragment StoreEntitySet="TableDrivedEntityStateCondition">
+                <ScalarProperty Name="SecuritySubjectInOrNotIn" ColumnName="SecuritySubjectInOrNotIn" />
+                <ScalarProperty Name="ValueOpoerator" ColumnName="ValueOpoerator" />
+                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
+                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
+                <ScalarProperty Name="FormulaID" ColumnName="FormulaID" />
                 <ScalarProperty Name="TableDrivedEntityStateID" ColumnName="TableDrivedEntityStateID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TableDrivedEntityStateValues">
-            <EntityTypeMapping TypeName="MyProjectModel.TableDrivedEntityStateValues">
-              <MappingFragment StoreEntitySet="TableDrivedEntityStateValues">
+          <EntitySetMapping Name="TableDrivedEntityStateConditionSecuritySubject">
+            <EntityTypeMapping TypeName="MyProjectModel.TableDrivedEntityStateConditionSecuritySubject">
+              <MappingFragment StoreEntitySet="TableDrivedEntityStateConditionSecuritySubject">
+                <ScalarProperty Name="SecuritySubjectID" ColumnName="SecuritySubjectID" />
+                <ScalarProperty Name="TableDrivedEntityStateConditionID" ColumnName="TableDrivedEntityStateConditionID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TableDrivedEntityStateConditionValues">
+            <EntityTypeMapping TypeName="MyProjectModel.TableDrivedEntityStateConditionValues">
+              <MappingFragment StoreEntitySet="TableDrivedEntityStateConditionValues">
                 <ScalarProperty Name="ReservedValue" ColumnName="ReservedValue" />
-                <ScalarProperty Name="TableDrivedEntityStateID" ColumnName="TableDrivedEntityStateID" />
+                <ScalarProperty Name="TableDrivedEntityStateConditionID" ColumnName="TableDrivedEntityStateConditionID" />
                 <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
@@ -14308,43 +14068,10 @@
           <EntitySetMapping Name="EntitySecurityDirect">
             <EntityTypeMapping TypeName="MyProjectModel.EntitySecurityDirect">
               <MappingFragment StoreEntitySet="EntitySecurityDirect">
-                <ScalarProperty Name="ValueOperator" ColumnName="ValueOperator" />
-                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
-                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
-                <ScalarProperty Name="FormulaID" ColumnName="FormulaID" />
+                <ScalarProperty Name="TableDrivedEntityStateID" ColumnName="TableDrivedEntityStateID" />
                 <ScalarProperty Name="Mode" ColumnName="Mode" />
-                <ScalarProperty Name="SecuritySubjectOperator" ColumnName="SecuritySubjectOperator" />
-                <ScalarProperty Name="IgnoreSecurity" ColumnName="IgnoreSecurity" />
                 <ScalarProperty Name="TableDrivedEntityID" ColumnName="TableDrivedEntityID" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EntitySecurityDirectSecuritySubject">
-            <EntityTypeMapping TypeName="MyProjectModel.EntitySecurityDirectSecuritySubject">
-              <MappingFragment StoreEntitySet="EntitySecurityDirectSecuritySubject">
-                <ScalarProperty Name="EntitySecurityDirectID" ColumnName="EntitySecurityDirectID" />
-                <ScalarProperty Name="SecuritySubjectID" ColumnName="SecuritySubjectID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EntitySecurityDirectValues">
-            <EntityTypeMapping TypeName="MyProjectModel.EntitySecurityDirectValues">
-              <MappingFragment StoreEntitySet="EntitySecurityDirectValues">
-                <ScalarProperty Name="ReservedValue" ColumnName="ReservedValue" />
-                <ScalarProperty Name="EntitySecurityDirectID" ColumnName="EntitySecurityDirectID" />
-                <ScalarProperty Name="Value" ColumnName="Value" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EntitySecurityInDirect">
-            <EntityTypeMapping TypeName="MyProjectModel.EntitySecurityInDirect">
-              <MappingFragment StoreEntitySet="EntitySecurityInDirect">
-                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
-                <ScalarProperty Name="TableDrivedEntityID" ColumnName="TableDrivedEntityID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

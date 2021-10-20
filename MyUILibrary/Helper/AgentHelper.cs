@@ -38,12 +38,11 @@ namespace MyUILibrary
             T newObject = (T)dcSer.ReadObject(memoryStream);
             return newObject;
         }
-        public static void SetPropertyTitle(RelationshipColumnControl propertyControl)
-        {
-            //title += (title == "" ? "" : " > ") + (propertyControl as RelationSourceControl).EditNdTypeArea.AreaInitializer.TemplateEntity.Name + "." + (propertyControl as RelationSourceControl).EditNdTypeArea.AreaInitializer.SourceRelation.RelationshipType.ToString();
-            var relationshipAlias = propertyControl.Relationship.Alias;
-            propertyControl.Alias = (string.IsNullOrEmpty(relationshipAlias) ? "" : relationshipAlias + " : ");// + propertyControl.Column.Alias;
-        }
+        //public static void SetPropertyTitle(RelationshipColumnControl propertyControl)
+        //{
+        //    //title += (title == "" ? "" : " > ") + (propertyControl as RelationSourceControl).EditNdTypeArea.AreaInitializer.TemplateEntity.Name + "." + (propertyControl as RelationSourceControl).EditNdTypeArea.AreaInitializer.SourceRelation.RelationshipType.ToString();
+        //  // + propertyControl.Column.Alias;
+        //}
 
         internal static string GetUniqueDataPostfix(DP_DataRepository dataItem, string result = "", RelationshipDTO relationship = null)
         {
@@ -54,6 +53,18 @@ namespace MyUILibrary
                 return result += "&" + dataItem.ParantChildRelationshipInfo.Relationship.ID + GetUniqueDataPostfix(dataItem.ParantChildRelationshipInfo.SourceData, result, dataItem.ParantChildRelationshipInfo.Relationship);
             else
                 return "";
+        }
+
+        internal static AndOREqualType GetNotOperator(AndOREqualType conditionOperator)
+        {
+            if (conditionOperator == AndOREqualType.And)
+                return AndOREqualType.NotAnd;
+            else if (conditionOperator == AndOREqualType.Or)
+                return AndOREqualType.NotOr;
+            else if (conditionOperator == AndOREqualType.NotAnd)
+                return AndOREqualType.And;
+            else 
+                return AndOREqualType.Or;
         }
 
         public static DateTime GetMiladiDateFromShamsi(string date)
@@ -579,7 +590,7 @@ namespace MyUILibrary
                 if (column.ColumnCustomFormula != null && column.ColumnCustomFormula.CalculateFormulaAsDefault == true)
                 {
                     var property = result.GetProperty(column.ID);
-                    editEntityArea.AreaInitializer.UIFomulaManager.CalculateProperty(property, column.ColumnCustomFormula, result,true);
+                    editEntityArea.AreaInitializer.UIFomulaManager.CalculateProperty(property, column.ColumnCustomFormula, result, true);
                     //    var res = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.CalculateFormula(column.ColumnCustomFormula.FormulaID, result, AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
                     //if (res.Exception == null)
                     //    value = res.Result;

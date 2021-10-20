@@ -265,6 +265,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
+        //موجودیت درخت تنظیمات ظاهری فرم را دریافت و نگهداری میکند
         bool UICompositionsCalled;
         EntityUICompositionCompositeDTO _UICompositions;
         public EntityUICompositionCompositeDTO UICompositions
@@ -565,9 +566,10 @@ namespace MyUILibrary.EntityArea
             SimpleColumnControls.Clear();
             RelationshipColumnControls.Clear();
             List<BaseColumnControl> sortedListOfColumnControls = new List<EntityArea.BaseColumnControl>();
+
+            //بر اساس همه ستونها ساخته می شود
             foreach (var column in DataEntryEntity.Columns.OrderBy(x => x.Position))
             {
-
                 if (DataEntryEntity.Relationships.Any(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID)))
                 {
                     if (!RelationshipColumnControls.Any(x => x.Columns.Any(z => z.ID == column.ID)))
@@ -754,29 +756,32 @@ namespace MyUILibrary.EntityArea
 
         private void AddRelationshipControl(RelationshipDTO relationship, List<BaseColumnControl> sortedListOfColumnControls)
         {
-            RelationshipColumnControl propertyControl = new RelationshipColumnControl();
-            propertyControl.Relationship = relationship;
-            AgentHelper.SetPropertyTitle(propertyControl);
-
+            اینجا
+            RelationshipColumnControl relationshipColumnControl = new RelationshipColumnControl();
+            relationshipColumnControl.Relationship = relationship;
+            
+            var relationshipAlias = relationshipColumnControl.Relationship.Alias;
+            relationshipColumnControl.Alias = (string.IsNullOrEmpty(relationshipAlias) ? "" : relationshipAlias + " : ");
+          
             foreach (var relcolumn in relationship.RelationshipColumns)
             {
-                propertyControl.Columns.Add(relcolumn.FirstSideColumn);
+                relationshipColumnControl.Columns.Add(relcolumn.FirstSideColumn);
             }
-            var relatedTuple = GenerateEditEntityAreaWithUIControlPackage(propertyControl);
+            var relatedTuple = GenerateEditEntityAreaWithUIControlPackage(relationshipColumnControl);
             if (relatedTuple != null)
             {
 
 
                 // relatedTuple.Item2.AddMessage(new BaseMessageItem() { IsPermanentMessage = true, Key = "relationshipInfo", Message = relatedTuple.Item1.AreaInitializer.SourceRelation.Relationship.Info });
                 //  propertyControl = new RelationshipColumnControl();
-                propertyControl.EditNdTypeArea = relatedTuple.Item1;
-                propertyControl.ControlManager = relatedTuple.Item2;
-                RelationshipColumnControls.Add(propertyControl);
-                sortedListOfColumnControls.Add(propertyControl);
+                relationshipColumnControl.EditNdTypeArea = relatedTuple.Item1;
+                relationshipColumnControl.ControlManager = relatedTuple.Item2;
+                RelationshipColumnControls.Add(relationshipColumnControl);
+                sortedListOfColumnControls.Add(relationshipColumnControl);
 
                 //برای ادمین فعال شود بد نیست
                 var info = relationship.ID + "," + relationship.Name + Environment.NewLine + relationship.TypeStr + Environment.NewLine + relationship.Info;
-                AddColumnControlMessage(new ColumnControlMessageItem(propertyControl, ControlOrLabelAsTarget.Label) { Key = "relationshipinfo", Message = info });
+                AddColumnControlMessage(new ColumnControlMessageItem(relationshipColumnControl, ControlOrLabelAsTarget.Label) { Key = "relationshipinfo", Message = info });
                 //    AddRelationshipColumnMessageItem(propertyControl, info, InfoColor.Black, "permanentCaption", null, true);
 
             }
@@ -1294,13 +1299,20 @@ namespace MyUILibrary.EntityArea
                 var entityState = new EntityStateDTO();
                 //////entityState.ColumnID = item.Item2.SimpleEntity.DeterminerColumnID;
                 //////entityState.Value = item.Item2.SimpleEntity.DeterminerColumnValue;
-                entityState.Title = entityState.ColumnID + ">";// + entityState.Value;
-                entityState.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                ///
+                //////EntityStateConditionDTO condition = new EntityStateConditionDTO();
+                //////  condition.ColumnID = item.Item2.SimpleEntity.DeterminerColumnID;
+                //////  condition.Values.Add(new  EntityStateValueDTO() { Value = item.Item2.SimpleEntity.DeterminerColumnValue });
+                //////  entityState.StateConditions.Add(condition);
+
+
+                entityState.Title = "determiner";// entityState.ColumnID + ">";// + entityState.Value;
+                                                 //     entityState.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
                 var stateAction = new UIActionActivityDTO();
                 stateAction.Title = item.Item1.Name + ">Hidden";
                 stateAction.UIEnablityDetails.Add(new UIEnablityDetailsDTO() { RelationshipID = item.Item1.ID, Hidden = true });
                 entityState.ActionActivities.Add(stateAction);
-                EntityStates.Add(entityState);
+                EntityStates1.Add(entityState);
             }
             if (AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.Relationship is SubToSuperRelationshipDTO && (AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO).ISARelationship.InternalTable)
             {
@@ -1557,7 +1569,7 @@ namespace MyUILibrary.EntityArea
             var dataList = GetDataList().ToList();
             foreach (var data in dataList)
             {
-                if (EntityStates != null && EntityStates.Count != 0)
+                if (EntityStates1 != null && EntityStates1.Count != 0)
                     AreaInitializer.ActionActivityManager.CheckAndImposeEntityStates(data, false, ActionActivitySource.BeforeUpdate);
 
                 if (shouldCheckChilds)
@@ -2481,7 +2493,7 @@ namespace MyUILibrary.EntityArea
             set; get;
         }
 
-        public List<EntityStateGroupDTO> EntityStateGroups { set; get; }
+        //  public List<EntityStateGroupDTO> EntityStateGroups { set; get; }
 
         public void SelectFromParent(DP_DataRepository parentDataItem, Dictionary<int, string> colAndValues)
         {
@@ -3112,9 +3124,21 @@ namespace MyUILibrary.EntityArea
         //}
         public void SetColumnValueFromState(DP_DataRepository dataItem, List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula)
         {
-
             if (DataItemIsInEditMode(dataItem))
             {
+                string title = "";
+                string key = "";
+                if (state != null)
+                {
+                    key = "state" + "_" + state.ID;
+                    title = "بر اساس وضعیت" + " " + state.Title;
+                }
+                else if (formula != null)
+                {
+                    key = "formula" + "_" + formula.ID;
+                    title = "بر اساس فرمول" + " " + formula.Title;
+                }
+
                 List<Tuple<DP_DataRepository, SimpleColumnControl, string>> simpleColumnValues = new List<Tuple<DP_DataRepository, SimpleColumnControl, string>>();
                 List<Tuple<DP_DataRepository, RelationshipColumnControl, Dictionary<int, string>>> relationshipColumnValues = new List<Tuple<DP_DataRepository, RelationshipColumnControl, Dictionary<int, string>>>();
 
@@ -3141,6 +3165,7 @@ namespace MyUILibrary.EntityArea
                                     listColumns.Add(relCol.FirstSideColumnID, uIColumnValue.First(x => x.ColumnID == relCol.FirstSideColumnID).ExactValue);
                                 }
                                 relationshipColumnValues.Add(new Tuple<DP_DataRepository, RelationshipColumnControl, Dictionary<int, string>>(dataItem, relationshipColumn, listColumns));
+
                             }
                         }
                         else if (SimpleColumnControls.Any(x => x.Column.ID == column.ColumnID))
@@ -3155,18 +3180,7 @@ namespace MyUILibrary.EntityArea
                     }
                 }
 
-                string title = "";
-                string key = "";
-                if (state != null)
-                {
-                    key = "state" + "_" + state.ID;
-                    title = "بر اساس وضعیت" + " " + state.Title;
-                }
-                else if (formula != null)
-                {
-                    key = "formula" + "_" + formula.ID;
-                    title = "بر اساس فرمول" + " " + formula.Title;
-                }
+
                 foreach (var item in simpleColumnValues)
                 {
                     //if (dataItem.IsNewItem && AgentHelper.ValueIsEmptyOrDefaultValue(item.Item1.GetProperty(item.Item2.Column.ID)))
@@ -3182,11 +3196,14 @@ namespace MyUILibrary.EntityArea
         private void SetDataItemRelationshipColumnValue(DP_DataRepository dataItem, RelationshipColumnControl relationshipColumnControl, Dictionary<int, string> values
             , string key, string title)
         {
-            var childInfo = dataItem.ChildRelationshipInfos.First(x => x.Relationship.ID == relationshipColumnControl.Relationship.ID);
-            if (!childInfo.Relationship.IsReadonly && !childInfo.IsReadonly && !childInfo.IsHidden)
+            var childInfo = dataItem.ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationshipColumnControl.Relationship.ID);
+            if (childInfo != null)
             {
-                relationshipColumnControl.EditNdTypeArea.SetChildRelationshipInfo(childInfo);
-                relationshipColumnControl.EditNdTypeArea.SelectFromParent(dataItem, values);
+                if (!childInfo.Relationship.IsReadonly && !childInfo.IsReadonly && !childInfo.IsHidden)
+                {
+                    relationshipColumnControl.EditNdTypeArea.SetChildRelationshipInfo(childInfo);
+                    relationshipColumnControl.EditNdTypeArea.SelectFromParent(dataItem, values);
+                }
             }
         }
 
@@ -3198,7 +3215,14 @@ namespace MyUILibrary.EntityArea
                 property.Value = value;
             }
         }
-
+        private void SetPropertyValue(DP_DataRepository dataItem, int columnID, string value, string key, string title)
+        {
+            var property = dataItem.GetProperty(columnID);
+            if (!property.IsReadonly && !property.IsReadonly && !property.IsHidden)
+            {      //اینجا باید بررسی بشه که نوع مقدار و پراپرتی مناسب هستند
+                property.Value = value;
+            }
+        }
 
         public void SetColumnValueRange(SimpleColumnControl propertyControl, List<ColumnValueRangeDetailsDTO> details)
         {

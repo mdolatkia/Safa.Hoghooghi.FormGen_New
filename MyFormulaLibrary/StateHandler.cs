@@ -45,85 +45,92 @@ namespace MyFormulaFunctionStateFunctionLibrary
         public StateResult GetStateResult(EntityStateDTO state, DP_DataRepository mainDataItem, DR_Requester requester)
         {
             StateResult result = new StateResult();
-
-            if (state.ColumnID != 0)
+            bool hasAnyOfConditions = false;
+            bool hasAllOfConditions = true;
+            foreach (var condition in state.StateConditions)
             {
-                DataitemRelatedColumnValueHandler dataitemRelatedColumnValueHandler = new MyFormulaFunctionStateFunctionLibrary.DataitemRelatedColumnValueHandler();
-                var value = dataitemRelatedColumnValueHandler.GetValueSomeHow(requester, mainDataItem, state.RelationshipTail, state.ColumnID);
-
-                result.Result = StateHasValue(requester, state, value);
-                //if (state.EntityStateOperator == Enum_EntityStateOperator.Equals)
-                //    result.Result = state.Values.Any(x => x.Value.Equals(value.ToString().ToLower()));
-                //else
-                //    result.Result = !state.Values.Any(x => x.Value.Equals(value.ToString().ToLower()));
+                var conditionResult = GetConditionResult(condition, mainDataItem, requester);
+                if (conditionResult)
+                    hasAnyOfConditions = true;
+                else
+                    hasAllOfConditions = false;
             }
-            else if (state.FormulaID != 0)
+            if (state.ConditionOperator == AndOREqualType.And)
+                result.Result = hasAllOfConditions;
+            else if (state.ConditionOperator == AndOREqualType.Or)
+                result.Result = hasAnyOfConditions;
+            else if (state.ConditionOperator == AndOREqualType.NotAnd)
+                result.Result = !hasAllOfConditions;
+            else if (state.ConditionOperator == AndOREqualType.NotOr)
+                result.Result = !hasAnyOfConditions;
+            return result;
+        }
+
+        private bool GetConditionResult(EntityStateConditionDTO condition, DP_DataRepository mainDataItem, DR_Requester requester)
+        {
+            bool result = false;
+            bool securitySubjectIsOk = false;
+            if (condition.SecuritySubjects.Any())
             {
-                FormulaFunctionHandler FormulaFunctionHandler = new FormulaFunctionHandler();
-                var value = FormulaFunctionHandler.CalculateFormula(state.FormulaID, mainDataItem, requester);
-                result.Result = StateHasValue(requester, state, value.Result);
-            }
-            if (result.Result)
-            {
-                if (state.SecuritySubjects.Any())
+                bool hasAnyOfSubjects = false;
+                foreach (var subject in condition.SecuritySubjects)
                 {
-                    bool hasAnyOfSubjects = false;
-                    foreach (var subject in state.SecuritySubjects)
+                    foreach (var post in requester.Posts)
                     {
-                        foreach (var post in requester.Posts)
-                        {
-                            if (post.CurrentUserID == subject.SecuritySubjectID
-                                || post.ID == subject.SecuritySubjectID
-                                 || post.OrganizationID == subject.SecuritySubjectID
-                                  || post.OrganizationTypeID == subject.SecuritySubjectID
-                                   || post.OrganizationTypeRoleTypeID == subject.SecuritySubjectID
-                                    || post.RoleTypeID == subject.SecuritySubjectID
-                                    )
-                                hasAnyOfSubjects = true;
-                        }
+                        if (post.CurrentUserID == subject.SecuritySubjectID
+                            || post.ID == subject.SecuritySubjectID
+                             || post.OrganizationID == subject.SecuritySubjectID
+                              || post.OrganizationTypeID == subject.SecuritySubjectID
+                               || post.OrganizationTypeRoleTypeID == subject.SecuritySubjectID
+                                || post.RoleTypeID == subject.SecuritySubjectID
+                                )
+                            hasAnyOfSubjects = true;
                     }
+                }
 
-                    if (state.SecuritySubjectInORNotIn == InORNotIn.In)
-                    {
-                        result.Result = hasAnyOfSubjects == true;
-                    }
-                    else
-                    {
-                        result.Result = hasAnyOfSubjects == false;
-                    }
-                    //bool hasNotAllSubject = true;
-                    //foreach (var subject in state.SecuritySubjects)
-                    //{
-                    //    bool hasSubject = false;
-                    //    foreach (var post in requester.Posts)
-                    //    {
-                    //        if (post.CurrentUserID == subject.SecuritySubjectID
-                    //            || post.ID == subject.SecuritySubjectID
-                    //             || post.OrganizationID == subject.SecuritySubjectID
-                    //              || post.OrganizationTypeID == subject.SecuritySubjectID
-                    //               || post.OrganizationTypeRoleTypeID == subject.SecuritySubjectID
-                    //                || post.RoleTypeID == subject.SecuritySubjectID
-                    //                )
-                    //            hasSubject = true;
-                    //    }
-                    //    if (hasSubject)
-                    //        hasNotAllSubject = false;
-                    //}
-                    //result.Result = hasNotAllSubject;
+                if (condition.SecuritySubjectInORNotIn == InORNotIn.In)
+                {
+                    securitySubjectIsOk = hasAnyOfSubjects == true;
+                }
+                else
+                {
+                    securitySubjectIsOk = hasAnyOfSubjects == false;
+                }
+            }
+            else
+                securitySubjectIsOk = true;
+         
+            if (securitySubjectIsOk)
+            {
+                if (condition.ColumnID != 0)
+                {
+                    DataitemRelatedColumnValueHandler dataitemRelatedColumnValueHandler = new MyFormulaFunctionStateFunctionLibrary.DataitemRelatedColumnValueHandler();
+                    var value = dataitemRelatedColumnValueHandler.GetValueSomeHow(requester, mainDataItem, condition.RelationshipTail, condition.ColumnID);
 
+                    result = StateHasValue(requester, condition, value);
+                }
+                else if (condition.FormulaID != 0)
+                {
+                    FormulaFunctionHandler FormulaFunctionHandler = new FormulaFunctionHandler();
+                    var value = FormulaFunctionHandler.CalculateFormula(condition.FormulaID, mainDataItem, requester);
+                    result = StateHasValue(requester, condition, value.Result);
+                }
+                else
+                {
+                    result = securitySubjectIsOk;
                 }
             }
             return result;
         }
 
-        private bool StateHasValue(DR_Requester requester, EntityStateDTO state, object columnValue)
+        private bool StateHasValue(DR_Requester requester, EntityStateConditionDTO condition, object columnValue)
         {
             bool hasAnyOfValues = false;
             if (columnValue == null)
             {
                 columnValue = "<Null>";
             }
-            foreach (var stateValue in state.Values)
+            foreach (var stateValue in condition.Values)
             {
                 if (!string.IsNullOrEmpty(stateValue.Value))
                 {
@@ -140,7 +147,7 @@ namespace MyFormulaFunctionStateFunctionLibrary
                     }
                 }
             }
-            if (state.EntityStateOperator == Enum_EntityStateOperator.Equals)
+            if (condition.EntityStateOperator == Enum_EntityStateOperator.Equals)
             {
                 return hasAnyOfValues == true;
             }

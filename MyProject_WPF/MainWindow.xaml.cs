@@ -91,8 +91,8 @@ namespace MyProject_WPF
                 permissionNode.MouseLeftButtonUp += PermissionNode_MouseLeftButtonUp;
                 var datasecurityNode = AddTreeItem(securityNode.Items, "دسترسی موجودیت/داده مستقیم", "../Images/datasecurity.png");
                 datasecurityNode.MouseLeftButtonUp += DatasecurityNode_MouseLeftButtonUp;
-                var datasecurityindeirectNode = AddTreeItem(securityNode.Items, "دسترسی موجودیت/داده غیر مستقیم", "../Images/datasecurityindeirect.png");
-                datasecurityindeirectNode.MouseLeftButtonUp += DatasecurityindeirectNode_MouseLeftButtonUp;
+                //var datasecurityindeirectNode = AddTreeItem(securityNode.Items, "دسترسی موجودیت/داده غیر مستقیم", "../Images/datasecurityindeirect.png");
+                //datasecurityindeirectNode.MouseLeftButtonUp += DatasecurityindeirectNode_MouseLeftButtonUp;
                 //var conditionalsecurityNode = AddTreeItem(securityNode.Items, "دسترسی های شرطی", "../Images/conditionalsecurity.png");
                 //conditionalsecurityNode.MouseLeftButtonUp += ConditionalsecurityNode_MouseLeftButtonUp;
 
@@ -269,15 +269,15 @@ namespace MyProject_WPF
         //    AddPane(frm, "دسترسی های شرطی");
         //}
 
-        private void DatasecurityindeirectNode_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            var title = "دسترسی موجودیت/داده غیر مستقیم";
-            if (!CheckPaneExists(title))
-            {
-                frmEntitySecurityIndirect frm = new frmEntitySecurityIndirect();
-                AddPane(frm, title);
-            }
-        }
+        //private void DatasecurityindeirectNode_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    var title = "دسترسی موجودیت/داده غیر مستقیم";
+        //    if (!CheckPaneExists(title))
+        //    {
+        //        frmEntitySecurityIndirect frm = new frmEntitySecurityIndirect();
+        //        AddPane(frm, title);
+        //    }
+        //}
 
         private void DatasecurityNode_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {

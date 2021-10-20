@@ -18,12 +18,11 @@ namespace DataAccess
         {
             this.ColumnCustomFormula = new HashSet<ColumnCustomFormula>();
             this.EntityValidation = new HashSet<EntityValidation>();
-            this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
+            this.TableDrivedEntityStateCondition = new HashSet<TableDrivedEntityStateCondition>();
             this.FormulaItems = new HashSet<FormulaItems>();
             this.FormulaItems1 = new HashSet<FormulaItems>();
             this.LetterTemplatePlainField = new HashSet<LetterTemplatePlainField>();
             this.State_Formula = new HashSet<State_Formula>();
-            this.TableDrivedEntityState = new HashSet<TableDrivedEntityState>();
             this.TransitionAction_Formula = new HashSet<TransitionAction_Formula>();
         }
     
@@ -42,14 +41,13 @@ namespace DataAccess
         public virtual ICollection<ColumnCustomFormula> ColumnCustomFormula { get; set; }
         public virtual DatabaseFunction_TableDrivedEntity DatabaseFunction_TableDrivedEntity { get; set; }
         public virtual ICollection<EntityValidation> EntityValidation { get; set; }
-        public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
         public virtual LinearFormula LinearFormula { get; set; }
+        public virtual ICollection<TableDrivedEntityStateCondition> TableDrivedEntityStateCondition { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
         public virtual ICollection<FormulaItems> FormulaItems1 { get; set; }
         public virtual ICollection<LetterTemplatePlainField> LetterTemplatePlainField { get; set; }
         public virtual ICollection<State_Formula> State_Formula { get; set; }
-        public virtual ICollection<TableDrivedEntityState> TableDrivedEntityState { get; set; }
         public virtual ICollection<TransitionAction_Formula> TransitionAction_Formula { get; set; }
     }
 }

@@ -18,11 +18,11 @@ namespace DataAccess
         {
             this.CodeFunction_TableDrivedEntity_Parameters = new HashSet<CodeFunction_TableDrivedEntity_Parameters>();
             this.EntityDirectlReportParameters = new HashSet<EntityDirectlReportParameters>();
-            this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
             this.RelationshipSearchFilter = new HashSet<RelationshipSearchFilter>();
             this.RelationshipSearchFilter1 = new HashSet<RelationshipSearchFilter>();
             this.SuperToSubRelationshipType = new HashSet<SuperToSubRelationshipType>();
             this.TableDrivedEntity = new HashSet<TableDrivedEntity>();
+            this.TableDrivedEntityStateCondition = new HashSet<TableDrivedEntityStateCondition>();
             this.UnionToSubUnionRelationshipType = new HashSet<UnionToSubUnionRelationshipType>();
             this.ColumnPhrase = new HashSet<ColumnPhrase>();
             this.UIColumnValue = new HashSet<UIColumnValue>();
@@ -31,7 +31,6 @@ namespace DataAccess
             this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
             this.FormulaItems = new HashSet<FormulaItems>();
             this.TableDrivedEntity_Columns = new HashSet<TableDrivedEntity_Columns>();
-            this.TableDrivedEntityState = new HashSet<TableDrivedEntityState>();
             this.UIEnablityDetails = new HashSet<UIEnablityDetails>();
             this.RelationshipColumns = new HashSet<RelationshipColumns>();
             this.RelationshipColumns1 = new HashSet<RelationshipColumns>();
@@ -65,12 +64,12 @@ namespace DataAccess
         public virtual ColumnValueRange ColumnValueRange { get; set; }
         public virtual DateTimeColumnType DateTimeColumnType { get; set; }
         public virtual ICollection<EntityDirectlReportParameters> EntityDirectlReportParameters { get; set; }
-        public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter { get; set; }
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter1 { get; set; }
         public virtual TimeColumnType TimeColumnType { get; set; }
         public virtual ICollection<SuperToSubRelationshipType> SuperToSubRelationshipType { get; set; }
         public virtual ICollection<TableDrivedEntity> TableDrivedEntity { get; set; }
+        public virtual ICollection<TableDrivedEntityStateCondition> TableDrivedEntityStateCondition { get; set; }
         public virtual ICollection<UnionToSubUnionRelationshipType> UnionToSubUnionRelationshipType { get; set; }
         public virtual Table Table { get; set; }
         public virtual SecurityObject SecurityObject { get; set; }
@@ -84,7 +83,6 @@ namespace DataAccess
         public virtual NumericColumnType NumericColumnType { get; set; }
         public virtual StringColumnType StringColumnType { get; set; }
         public virtual ICollection<TableDrivedEntity_Columns> TableDrivedEntity_Columns { get; set; }
-        public virtual ICollection<TableDrivedEntityState> TableDrivedEntityState { get; set; }
         public virtual ICollection<UIEnablityDetails> UIEnablityDetails { get; set; }
         public virtual ICollection<RelationshipColumns> RelationshipColumns { get; set; }
         public virtual ICollection<RelationshipColumns> RelationshipColumns1 { get; set; }

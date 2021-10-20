@@ -21,7 +21,7 @@ namespace DataAccess
         }
     
         public int ID { get; set; }
-        public bool AndOrType { get; set; }
+        public short AndOrType { get; set; }
     
         public virtual SearchRepository SearchRepository { get; set; }
         public virtual ICollection<Phrase> Phrase { get; set; }

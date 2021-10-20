@@ -28,19 +28,20 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0"  Text="موجودیت"></TextBlock>
             <MyCommonWPFControls:MySearchLookup x:Name="lokEntities" HorizontalAlignment="Stretch" Grid.Row="0"  Grid.Column="1" ></MyCommonWPFControls:MySearchLookup>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="نوع"></TextBlock>
+            <ComboBox x:Name="cmbMode" Grid.Row="0" HorizontalAlignment="Stretch"  Grid.Column="3"/>
             <!--<TextBlock Grid.Row="1"  Text="نقش/گروه"></TextBlock>
             <MyCommonWPFControls:MySearchLookup x:Name="lokSubject" Grid.Row="1" HorizontalAlignment="Stretch"  Grid.Column="1"/>-->
-            <TextBlock Grid.Row="1" x:Name="lblSecuritySubjects" Text="نقش/گروه"></TextBlock>
+            <!--<TextBlock Grid.Row="1" x:Name="lblSecuritySubjects" Text="نقش/گروه"></TextBlock>
             <telerik:RadGridView x:Name="dtgSecuritySubjects" MinHeight="80" AutoGenerateColumns="False" Grid.Row="1" Grid.Column="1" >
                 <telerik:RadGridView.Columns>
                     <MyCommonWPFControls:MySearchLookupColumn  x:Name="colSecuritySubject" Header="نقش/گروه" Width="200"  DataMemberBinding="{Binding Path=SecuritySubjectID}"></MyCommonWPFControls:MySearchLookupColumn>
-                    <!--<telerik:GridViewComboBoxColumn x:Name="colHasOrHasNot" Header="دارد/ندارد" DataMemberBinding="{Binding Path=SecuritySubjectOperator}"></telerik:GridViewComboBoxColumn>-->
+                    --><!--<telerik:GridViewComboBoxColumn x:Name="colHasOrHasNot" Header="دارد/ندارد" DataMemberBinding="{Binding Path=SecuritySubjectOperator}"></telerik:GridViewComboBoxColumn>--><!--
                 </telerik:RadGridView.Columns>
             </telerik:RadGridView>
             <TextBlock Text="عملگر" HorizontalAlignment="Right" x:Name="lblInOrNotIn"  Grid.Row="1" Grid.Column="2" VerticalAlignment="Top"  ></TextBlock>
             <ComboBox x:Name="cmbInOrNotIn" Grid.Column="3" Grid.Row="1" VerticalAlignment="Top" Width="120" ></ComboBox>
-            <TextBlock Grid.Row="2"  Text="نوع"></TextBlock>
-            <ComboBox x:Name="cmbMode" Grid.Row="2" HorizontalAlignment="Stretch"  Grid.Column="1"/>
+            
             <TextBlock x:Name="lblIgnoreSecurity" Grid.Row="2" Grid.Column="2" Text="دسترسی کامل"></TextBlock>
             <CheckBox x:Name="chkIgnoreSecurity" Grid.Row="2" HorizontalAlignment="Stretch"  Grid.Column="3"/>
             <Grid Grid.Row="4" Grid.ColumnSpan="3">
@@ -69,7 +70,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock  Text="فرمول مرتبط"></TextBlock>
                             <MyCommonWPFControls:MyStaticLookup x:Name="lokFormula" Width="260" Grid.Column="1"></MyCommonWPFControls:MyStaticLookup>
-                            <!--<Button x:Name="btnAddFormula" Width="90" Height="20" Content="تعریف فرمول" Grid.Column="2" Click="btnAddFormula_Click"></Button>-->
+                            --><!--<Button x:Name="btnAddFormula" Width="90" Height="20" Content="تعریف فرمول" Grid.Column="2" Click="btnAddFormula_Click"></Button>--><!--
                             <TextBlock Grid.Row="1" Text="مقدار مورد انتظار"></TextBlock>
                             <telerik:RadGridView x:Name="dtgFormulaValue" AutoGenerateColumns="False" MinHeight="80" Grid.Row="1" Grid.Column="1" >
                                 <telerik:RadGridView.Columns>
@@ -107,15 +108,15 @@
                             <ComboBox x:Name="cmbOperator" Width="230" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="1" ></ComboBox>
                         </Grid>
                     </TabItem>
-                </TabControl>
+                </TabControl>-->
                 <!--<Border BorderBrush="Black" Grid.Row="1" BorderThickness="1" CornerRadius="5" >
               
             </Border>-->
               
-            </Grid>
+            <!--</Grid>-->
             
-            <!--<TextBlock Grid.Row="4"  Text="وضعیت" ></TextBlock>
-            <MyCommonWPFControls:MyStaticLookup  Grid.Row="4"  x:Name="lokState" HorizontalAlignment="Stretch"  Grid.Column="1" ></MyCommonWPFControls:MyStaticLookup>-->
+            <TextBlock Grid.Row="4"  Text="وضعیت" ></TextBlock>
+            <MyCommonWPFControls:MyStaticLookup  Grid.Row="4"  x:Name="lokState" HorizontalAlignment="Stretch"  Grid.Column="1" ></MyCommonWPFControls:MyStaticLookup>
             <!--<telerik:RadGridView x:Name="dtgStates" Margin="0,2,0,2" AutoGenerateColumns="False" Height="300" ShowGroupPanel="False" Grid.Row="4" Grid.ColumnSpan="3" Grid.Column="1">
                 <telerik:RadGridView.Columns>
                     <MyCommonWPFControls:MyStaticLookupColumn EditItemEnabled="True" NewItemEnabled="True" x:Name="colEntityState" Header="وضعیت" Width="200"  DataMemberBinding="{Binding Path=EntityStateID}"></MyCommonWPFControls:MyStaticLookupColumn>
@@ -142,12 +143,12 @@
                     <TextBlock Text="حذف"></TextBlock>
                 </StackPanel>
             </Button>
-            <Button x:Name="btnSearch" Margin="2" Width="110" Click="btnSearch_Click">
+            <!--<Button x:Name="btnSearch" Margin="2" Width="110" Click="btnSearch_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Width="20" Source="..\Images\search.png"  />
                     <TextBlock Text="جستجو"></TextBlock>
                 </StackPanel>
-            </Button>
+            </Button>-->
             <Button x:Name="btnNew" Margin="2" Width="110" Click="btnNew_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Width="20" Source="..\Images\addnew.png"  />

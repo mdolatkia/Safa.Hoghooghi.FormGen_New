@@ -128,11 +128,11 @@ namespace MyUILibrary.EntityArea
             AddLogicNode(null, item);
             return true;
         }
-        private void RootAndMenu_Clicked(object sender, EventArgs e, AdvanceSearchNode node, bool and)
+        private void RootAndMenu_Clicked(object sender, EventArgs e, AdvanceSearchNode node, AndOREqualType andOrType)
         {
 
             var logicPhrase = new LogicPhraseDTO();
-            logicPhrase.AndOrType = (and ? AndORType.And : AndORType.Or);
+            logicPhrase.AndOrType = andOrType;
             AddLogicNode(node, logicPhrase);
 
 
@@ -190,7 +190,14 @@ namespace MyUILibrary.EntityArea
             }
             else
             {
-                newnode.Title = (logicPhrase.AndOrType == AndORType.And ? "And" : "Or");
+                if (logicPhrase.AndOrType == AndOREqualType.And)
+                    newnode.Title = "And";
+                else if (logicPhrase.AndOrType == AndOREqualType.Or)
+                    newnode.Title = "Or";
+                else if (logicPhrase.AndOrType == AndOREqualType.NotAnd)
+                    newnode.Title = "Not And";
+                else if (logicPhrase.AndOrType == AndOREqualType.NotOr)
+                    newnode.Title = "Not Or";
             }
             if (parentNode != null)
             {
@@ -241,9 +248,13 @@ namespace MyUILibrary.EntityArea
             if (GetParentSearchRepository(newnode))
             {
                 I_AdvanceSearchMenu rootAndMenu = newnode.NodeManager.AddMenu("And");
-                rootAndMenu.Clicked += (sender, e) => RootAndMenu_Clicked(sender, e, newnode, true);
+                rootAndMenu.Clicked += (sender, e) => RootAndMenu_Clicked(sender, e, newnode, AndOREqualType.And);
+                I_AdvanceSearchMenu rootNotAndMenu = newnode.NodeManager.AddMenu("Not And");
+                rootAndMenu.Clicked += (sender, e) => RootAndMenu_Clicked(sender, e, newnode, AndOREqualType.NotAnd);
                 I_AdvanceSearchMenu rootOrMenu = newnode.NodeManager.AddMenu("Or");
-                rootOrMenu.Clicked += (sender, e) => RootAndMenu_Clicked(sender, e, newnode, false);
+                rootOrMenu.Clicked += (sender, e) => RootAndMenu_Clicked(sender, e, newnode, AndOREqualType.Or);
+                I_AdvanceSearchMenu rootNotOrMenu = newnode.NodeManager.AddMenu("Or");
+                rootOrMenu.Clicked += (sender, e) => RootAndMenu_Clicked(sender, e, newnode, AndOREqualType.NotOr);
 
                 I_AdvanceSearchMenu simpleSearchMenu = newnode.NodeManager.AddMenu("خصوصیات");
                 simpleSearchMenu.Clicked += (sender1, e1) => RootAndMenu_Clicked1(sender1, e1, newnode);

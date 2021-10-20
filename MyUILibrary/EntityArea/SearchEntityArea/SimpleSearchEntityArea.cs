@@ -483,7 +483,7 @@ namespace MyUILibrary.EntityArea
         public LogicPhraseDTO GetQuickSearchLogicPhrase(string text, EntitySearchDTO entitySearch)
         {
             LogicPhraseDTO quickSearchLogic = new LogicPhraseDTO();
-            quickSearchLogic.AndOrType = AndORType.Or;
+            quickSearchLogic.AndOrType = AndOREqualType.Or;
             foreach (var item in entitySearch.EntitySearchAllColumns)
             {
                 if (item.ColumnID != 0)
@@ -499,7 +499,7 @@ namespace MyUILibrary.EntityArea
                     else
                     {
                         logic = AgentHelper.GetOrCreateSearchRepositoryFromRelationshipTail(quickSearchLogic, item.RelationshipTail, null);
-                        logic.AndOrType = AndORType.Or;
+                        logic.AndOrType = AndOREqualType.Or;
                     }
 
                     int n;

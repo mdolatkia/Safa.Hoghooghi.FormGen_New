@@ -26,12 +26,10 @@ namespace DataAccess
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
             this.EntityGroup_Relationship = new HashSet<EntityGroup_Relationship>();
             this.EntityRelationshipTailDataMenu = new HashSet<EntityRelationshipTailDataMenu>();
-            this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
             this.GraphDefinition_EntityRelationshipTail = new HashSet<GraphDefinition_EntityRelationshipTail>();
             this.LetterTemplateRelationshipField = new HashSet<LetterTemplateRelationshipField>();
-            this.TableDrivedEntityState = new HashSet<TableDrivedEntityState>();
+            this.TableDrivedEntityStateCondition = new HashSet<TableDrivedEntityStateCondition>();
             this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
-            this.EntitySecurityInDirect = new HashSet<EntitySecurityInDirect>();
             this.RelationshipSearchFilter = new HashSet<RelationshipSearchFilter>();
         }
     
@@ -50,14 +48,12 @@ namespace DataAccess
         public virtual ICollection<EntityListViewColumns> EntityListViewColumns { get; set; }
         public virtual ICollection<EntityGroup_Relationship> EntityGroup_Relationship { get; set; }
         public virtual ICollection<EntityRelationshipTailDataMenu> EntityRelationshipTailDataMenu { get; set; }
-        public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
         public virtual ICollection<GraphDefinition_EntityRelationshipTail> GraphDefinition_EntityRelationshipTail { get; set; }
         public virtual ICollection<LetterTemplateRelationshipField> LetterTemplateRelationshipField { get; set; }
-        public virtual ICollection<TableDrivedEntityState> TableDrivedEntityState { get; set; }
+        public virtual ICollection<TableDrivedEntityStateCondition> TableDrivedEntityStateCondition { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity1 { get; set; }
         public virtual ICollection<EntitySearchColumns> EntitySearchColumns { get; set; }
-        public virtual ICollection<EntitySecurityInDirect> EntitySecurityInDirect { get; set; }
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter { get; set; }
     }
 }

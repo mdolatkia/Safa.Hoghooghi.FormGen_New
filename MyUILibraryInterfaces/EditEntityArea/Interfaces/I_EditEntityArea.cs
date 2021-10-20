@@ -63,7 +63,7 @@ namespace MyUILibrary.EntityArea
         I_View_TemporaryView TemporaryDisplayView { set; get; }
         void SetTempText(ObservableCollection<DP_DataRepository> relatedData);
         List<EntityStateDTO> EntityStates1 { get; }
-        List<EntityStateGroupDTO> EntityStateGroups { get; }
+     //   List<EntityStateGroupDTO> EntityStateGroups { get; }
         //I_View_SearchEntityArea SearchView { set; get; }
 
         //I_View_ViewEntityArea ViewView { set; get; }

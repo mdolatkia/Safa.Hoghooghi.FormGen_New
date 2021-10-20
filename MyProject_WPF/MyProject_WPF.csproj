@@ -234,6 +234,9 @@
     <Compile Include="DrivedEntities\SelectDrivedEntites.xaml.cs">
       <DependentUpon>SelectDrivedEntites.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EntityState\frmEntityStateCondition.xaml.cs">
+      <DependentUpon>frmEntityStateCondition.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Formula\Definitions.cs" />
     <Compile Include="Formula\FormulaAutoComplete.xaml.cs">
       <DependentUpon>FormulaAutoComplete.xaml</DependentUpon>
@@ -393,9 +396,6 @@
     </Compile>
     <Compile Include="Security\frmEntitySecurityDirectSelect.xaml.cs">
       <DependentUpon>frmEntitySecurityDirectSelect.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Security\frmEntitySecurityIndirect.xaml.cs">
-      <DependentUpon>frmEntitySecurityIndirect.xaml</DependentUpon>
     </Compile>
     <Compile Include="Security\frmLogin.xaml.cs">
       <DependentUpon>frmLogin.xaml</DependentUpon>
@@ -610,6 +610,10 @@
     <Page Include="DrivedEntities\SelectDrivedEntites.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EntityState\frmEntityStateCondition.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Formula\FormulaAutoComplete.xaml">
       <SubType>Designer</SubType>
@@ -988,10 +992,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Security\frmEntitySecurityDirectSelect.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Security\frmEntitySecurityIndirect.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
