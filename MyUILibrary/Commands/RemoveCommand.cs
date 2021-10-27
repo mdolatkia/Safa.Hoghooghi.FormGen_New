@@ -25,12 +25,12 @@ namespace MyUILibrary.EntityArea.Commands
         List<DP_DataRepository> deleteDataList = new List<DP_DataRepository>();
         private void CommandManager_Clicked(object sender, EventArgs e)
         {
-            //if (EditArea.AreaInitializer.SourceRelation == null)
+            //if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
             //    return;
 
-            //if (EditArea.AreaInitializer.SourceRelation != null)
+            //if (EditArea.AreaInitializer.SourceRelationColumnControl != null)
             //{
-            //    //EditArea.AreaInitializer.SourceRelation.RelatedData.ValueChanged = true;
+            //    //EditArea.AreaInitializer.SourceRelationColumnControl.RelatedData.ValueChanged = true;
             //}
 
             //(EditArea as I_EditEntityAreaMultipleData).RemoveSelectedData();

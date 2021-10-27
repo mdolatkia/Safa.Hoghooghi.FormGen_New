@@ -1556,6 +1556,7 @@ namespace MyModelManager
             result.FromDifferentServer = result.ServerID1 != result.ServerID2;
             result.ServerName1 = item.TableDrivedEntity.Table.DBSchema.DatabaseInformation.DBServer.Name;
             result.ServerName2 = item.TableDrivedEntity1.Table.DBSchema.DatabaseInformation.DBServer.Name;
+            result.Entity1IsIndependent = item.TableDrivedEntity.IndependentDataEntry == true;
             result.Entity2IsIndependent = item.TableDrivedEntity1.IndependentDataEntry == true;
 
 

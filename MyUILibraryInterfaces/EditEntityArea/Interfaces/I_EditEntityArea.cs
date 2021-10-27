@@ -21,13 +21,13 @@ namespace MyUILibrary.EntityArea
         event EventHandler<EditAreaDataItemLoadedArg> DataItemShown;
         event EventHandler UIGenerated;
         event EventHandler DataViewGenerated;
-        TableDrivedEntityDTO DataEntryEntity { get; }
+        DataEntryEntityDTO DataEntryEntity { get; }
         //I_UIActionActivityManager ActionActivityManager { set; get; }
         ///    void ManageSecurity();
         //void SetDataShouldBeCounted();
         //bool ValidateData(List<DP_DataRepository> datalist);
         //bool ShouldBeReviewed { set; get; }
-        List<RelationshipColumnControl> SkippedRelationshipColumnControl { set; get; }
+        //List<RelationshipColumnControl> SkippedRelationshipColumnControl { set; get; }
         void GenerateDataView();
         bool SetChildRelationshipInfoAndShow(ChildRelationshipInfo value);
         bool ClearData(bool createDefaultData);
@@ -49,7 +49,7 @@ namespace MyUILibrary.EntityArea
         //event EventHandler<DataUpdatedArg> Updated;
         TableDrivedEntityDTO FullEntity { get; }
         //void ReadonlySimpleColumnControl(SimpleColumnControl column, bool readonlity);
-
+        void DecideButtonsEnablity(bool? isReadonly);
         void AddDataBusinessMessage(string message, InfoColor infoColor, string key, DP_DataRepository causingData, ControlItemPriority priority);
         void RemoveDataBusinessMessage(DP_DataRepository dataItem, string key);
         TableDrivedEntityDTO SimpleEntity { set; get; }
@@ -63,7 +63,7 @@ namespace MyUILibrary.EntityArea
         I_View_TemporaryView TemporaryDisplayView { set; get; }
         void SetTempText(ObservableCollection<DP_DataRepository> relatedData);
         List<EntityStateDTO> EntityStates1 { get; }
-     //   List<EntityStateGroupDTO> EntityStateGroups { get; }
+        //   List<EntityStateGroupDTO> EntityStateGroups { get; }
         //I_View_SearchEntityArea SearchView { set; get; }
 
         //I_View_ViewEntityArea ViewView { set; get; }
@@ -84,10 +84,10 @@ namespace MyUILibrary.EntityArea
         //////void ImposeDataViewSecurity();
         void GenerateUIComposition(List<EntityUICompositionDTO> UICompositions);
 
-        void DecideDataRelatedButtons();
+       // void DecideDataRelatedButtons();
 
         void DecideTempViewStaticButtons();
-        void DecideDataViewStaticButtons();
+        //  void DecideDataViewStaticButtons();
         EditEntityAreaInitializer AreaInitializer
         {
             get;
@@ -172,16 +172,16 @@ namespace MyUILibrary.EntityArea
         void ChangeSimpleColumnReadonlyFromState(DP_DataRepository dataItem, SimpleColumnControl simpleColumn, bool isReadonly, string message, string key);//, ImposeControlState hiddenControlState);
 
         void ChangeRelatoinsipColumnVisiblityFromState(ChildRelationshipInfo childRelationshipInfo, DP_DataRepository dataItem, RelationshipColumnControl relationshipControl, bool hidden, string message, string key, ImposeControlState hiddenControlState);
-        void ChangeDataItemVisiblityFromState( DP_DataRepository dataItem,string message, string key, bool skipUICheck);
+        void ChangeDataItemVisiblityFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck);
         void ChangeClearDataItemVisiblityFromState(DP_DataRepository dataItem, string key, bool skipUICheck);
 
-        void ChangeRelatoinsipColumnReadonlyFromState(ChildRelationshipInfo childRelationshipInfo, DP_DataRepository dataItem, RelationshipColumnControl relationshipControl, bool isReadonly,  string message, string key, ImposeControlState hiddenControlState);
+        void ChangeRelatoinsipColumnReadonlyFromState(ChildRelationshipInfo childRelationshipInfo, DP_DataRepository dataItem, RelationshipColumnControl relationshipControl, bool isReadonly, string message, string key, ImposeControlState hiddenControlState);
         //void ChangeRelatoinsipColumnUnReadonlyFromState(ChildRelationshipInfo childRelationshipInfo, DP_DataRepository dataItem, RelationshipColumnControl relationshipControl, string message, string key);
-        void ChangeDataItemReadonlyFromState( DP_DataRepository dataItem, string message, string key, bool skipUICheck);
+        void ChangeDataItemReadonlyFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck);
         void ChangeClearDataItemReadonlyFromState(DP_DataRepository dataItem, string key, bool skipUICheck);
         bool DataItemIsInEditMode(DP_DataRepository sourceData);
         bool DataItemIsInTempViewMode(DP_DataRepository dataItem);
-        void DecideButtonsReadonlityByState(bool isReadonly);
+        //    void DecideButtonsReadonlityByState(bool isReadonly);
         void ApplyStatesBeforeUpdate(bool shouldCheckChilds, ChildRelationshipInfo parentChildRelInfo);
         //       bool DataItemIsDBRelationshipAndRemoved(DP_DataRepository dataItem);
 
@@ -225,7 +225,7 @@ namespace MyUILibrary.EntityArea
     public interface I_UIFomulaManager
     {
         void UpdateFromulas();
-        void CalculateProperty(EntityInstanceProperty dataProperty, ColumnCustomFormulaDTO columnCustomFormula, DP_DataRepository dataItem,bool asDefault);
+        void CalculateProperty(EntityInstanceProperty dataProperty, ColumnCustomFormulaDTO columnCustomFormula, DP_DataRepository dataItem, bool asDefault);
         void UpdateFromulas(List<CalculatedPropertyTree> result, RelationshipDTO relationship = null);
     }
     public interface I_UIValidationManager
@@ -313,11 +313,12 @@ namespace MyUILibrary.EntityArea
             //   TargetRelationColumns = new List<ColumnDTO>();
         }
         //public Enum_DP_RelationSide SourceRelationSide { set; get; }
-        public RelationshipColumnControl SourceRelationshipColumnControl { set; get; }
-        public int SourceEntityID { set; get; }
-        public int SourceTableID { set; get; }
+        public RelationshipColumnControl RelationshipColumnControl { set; get; }
+        public int SourceEntityID { get { return RelationshipColumnControl.Relationship.EntityID1; } }
+        public int SourceTableID { get { return RelationshipColumnControl.Relationship.TableID1; } }
         public List<RelationshipColumnDTO> RelationshipColumns { set; get; }
-        public RelationshipDTO Relationship { set; get; }
+        public RelationshipDTO Relationship { get { return DataEntryRelationshiRelationship.Relationship; } }
+        public DataEntryRelationshipDTO DataEntryRelationshiRelationship { set; get; }
         public int TargetEntityID { set; get; }
         public int TargetTableID { set; get; }
         //   public List<ColumnDTO> TargetRelationColumns { set; get; }
@@ -834,10 +835,11 @@ namespace MyUILibrary.EntityArea
     public class RelationshipColumnControl : BaseColumnControl
     {
         public event EventHandler<ChildRelationshipInfo> DataViewForTemporaryViewShown;
+        public I_EditEntityArea ParentEditArea { set; get; }
         public I_EditEntityArea EditNdTypeArea { set; get; }
-        public RelationshipDTO Relationship { set; get; }
-        public List<ColumnDTO> Columns { set; get; }
-
+        public RelationshipDTO Relationship { get { return DataEntryRelationship.Relationship; } }
+        //    public List<ColumnDTO> RelationshipColumns { set; get; }
+        public DataEntryRelationshipDTO DataEntryRelationship { set; get; }
         //public Dictionary<DP_DataRepository, bool> BusinessHidden = new Dictionary<DP_DataRepository, bool>();
         public I_RelationshipControlManager RelationshipControlManager { get { return ControlManager as I_RelationshipControlManager; } }
 
@@ -848,7 +850,7 @@ namespace MyUILibrary.EntityArea
         //public event EventHandler<ColumnValueChangeArg> ValueChanged;
         public RelationshipColumnControl()
         {
-            Columns = new List<ColumnDTO>();
+            //    RelationshipColumns = new List<ColumnDTO>();
         }
 
         public void OnDataViewForTemporaryViewShown(ChildRelationshipInfo childRelationshipInfo)

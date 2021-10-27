@@ -24,14 +24,16 @@ namespace MyModelManager
                 {
                     if (DataIsAccessable(requester, item))
                         ToNavigationTreeDTO(requester, result.TreeItems, item, null, true);
+                    else
+                    {
+
+                    }
                 }
             }
             return result;
         }
         private bool DataIsAccessable(DR_Requester requester, NavigationTree navigationTree)
         {
-            if (requester.SkipSecurity)
-                return true;
             if (navigationTree.TableDrivedEntityID != null)
             {
                 if (!bizTableDrivedEntity.DataIsAccessable(requester, navigationTree.TableDrivedEntity))
@@ -57,12 +59,12 @@ namespace MyModelManager
         }
         private void ToNavigationTreeDTO(DR_Requester requester, List<ModelEntites.NavigationItemDTO> treeItems, NavigationTree item, NavigationItemDTO parentNavigationItem, bool withChilds)
         {
-            if (item.TableDrivedEntityID != null)
-            {
-                var entityEnabled = bizTableDrivedEntity.IsEntityEnabled(item.TableDrivedEntityID.Value);
-                if (!entityEnabled)
-                    return;
-            }
+            //if (item.TableDrivedEntityID != null)
+            //{
+            //    var entityEnabled = bizTableDrivedEntity.IsEntityEnabled(item.TableDrivedEntityID.Value);
+            //    if (!entityEnabled)
+            //        return;
+            //}
             var result = new NavigationItemDTO();
             result.ID = item.ID;
             result.ParentID = item.ParentID;

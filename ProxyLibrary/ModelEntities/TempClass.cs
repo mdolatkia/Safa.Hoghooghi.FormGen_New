@@ -1,4 +1,5 @@
 ﻿
+using CommonDefinitions.UISettings;
 using ProxyLibrary;
 using System;
 using System.Collections.Generic;
@@ -480,6 +481,7 @@ namespace ModelEntites
         public string Entity2Alias { get; set; }
         public bool OtherSideIsView { get; set; }
         public bool IsNotSkippable { get; set; }
+        public bool Entity1IsIndependent { get; set; }
         public bool Entity2IsIndependent { get; set; }
     }
     public enum CreateRelationshipType
@@ -1015,6 +1017,31 @@ namespace ModelEntites
         public bool ColumnsReviewed { get; set; }
         public SuperToSubRelationshipDTO InternalSuperToSubRelationship { get; set; }
         //public bool ColumnsAdded { get; set; }
+    }
+
+    public class DataEntryEntityDTO
+    {
+        public DataEntryEntityDTO()
+        {
+            Columns = new List<ColumnDTO>();
+            Relationships = new List<DataEntryRelationshipDTO>();
+            SkippedRelationships = new List<RelationshipDTO>();
+        }
+        public bool IsReadonly { set; get; }
+        public List<ColumnDTO> Columns { set; get; }
+        public List<DataEntryRelationshipDTO> Relationships { set; get; }
+        public DataEntryRelationshipDTO ParentDataEntryRelationship { set; get; }
+
+        public List<RelationshipDTO> SkippedRelationships { set; get; }
+        public string Info { set; get; }
+    }
+    public class DataEntryRelationshipDTO
+    {
+        public DataEntryEntityDTO TargetDataEntryEntity { set; get; }
+        public RelationshipDTO Relationship { set; get; }
+        public DataMode DataMode { set; get; }
+        public IntracionMode IntracionMode { set; get; }
+        public bool TempViewBecauseOfRelationHistory { set; get; }
     }
     public class EntityDeterminerDTO
     {

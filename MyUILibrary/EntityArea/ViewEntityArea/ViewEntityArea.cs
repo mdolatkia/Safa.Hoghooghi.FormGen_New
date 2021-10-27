@@ -92,9 +92,9 @@ namespace MyUILibrary.EntityArea
         //{
 
         //    //bool creatDefault = false;
-        //    //if (AreaInitializer.SourceRelation == null && AgentHelper.GetDataEntryMode(AreaInitializer. == DataMode.One)
+        //    //if (AreaInitializer.SourceRelationColumnControl == null && AgentHelper.GetDataEntryMode(AreaInitializer. == DataMode.One)
         //    //    creatDefault = true;
-        //    //if (AreaInitializer.SourceRelation != null && AgentHelper.GetDataEntryMode(AreaInitializer.SourceRelation.SourceEditArea.AreaInitializer. != DataMode.Multiple)
+        //    //if (AreaInitializer.SourceRelationColumnControl != null && AgentHelper.GetDataEntryMode(AreaInitializer.SourceRelationColumnControl.SourceEditArea.AreaInitializer. != DataMode.Multiple)
         //    //    creatDefault = true;
         //    //if (force || creatDefault)
         //    //{

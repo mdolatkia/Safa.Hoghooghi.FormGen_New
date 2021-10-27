@@ -230,7 +230,7 @@ namespace MyUILibrary.EntityArea
                     if (columnControl != null)
                     {
                         columnControl.UIControlPackageTreeItem = item;
-                        if (UICompositions.Count == 1 && parentUIControlPackage!=null&& parentUIControlPackage.Item is I_TabPageContainer)
+                        if (UICompositions.Count == 1 && parentUIControlPackage != null && parentUIControlPackage.Item is I_TabPageContainer)
                         {
                             (columnControl.ControlManager as I_RelationshipControlManager).TabPageContainer = parentUIControlPackage.Item as I_TabPageContainer;
                         }
@@ -328,9 +328,9 @@ namespace MyUILibrary.EntityArea
             //{
             //    shouldCreatData = false;
             //}
-            //if (AreaInitializer.SourceRelation != null)
+            //if (AreaInitializer.SourceRelationColumnControl != null)
             //{
-            //    if (AreaInitializer.SourceRelation.Relationship.IsReadonly)
+            //    if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
             //        shouldCreatData = false;
             //}
             if (shouldCreatData)
@@ -342,19 +342,33 @@ namespace MyUILibrary.EntityArea
                 var addResult = AddData(newData, true);
                 if (!addResult)
                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده پیش فرض و یا داده های وابسته", newData.ViewInfo, Temp.InfoColor.Red);
-                if (AreaInitializer.SourceRelation != null)
-                {
-                    if (DataView != null)
-                    {
-                        //////SpecializedDataView.DisableEnableDataSection(true);
-                        //////if (AreaInitializer.BusinessReadOnlyByParent || AreaInitializer.ParentDataItemBusinessReadOnly.Any(x => x == ChildRelationshipInfo.SourceData) || AreaInitializer.SecurityReadOnlyByParent || AreaInitializer.SecurityReadOnly)
-                        //////{
-                        //////    SpecializedDataView.DisableEnableDataSection(false);
-                        //////}
-                    }
-                }
+                //else
+                //{
+
+                //}
+                //if (AreaInitializer.SourceRelationColumnControl != null)
+                //{
+                //    if (DataView != null)
+                //    {
+                //        //////SpecializedDataView.DisableEnableDataSection(true);
+                //        //////if (AreaInitializer.BusinessReadOnlyByParent || AreaInitializer.ParentDataItemBusinessReadOnly.Any(x => x == ChildRelationshipInfo.SourceData) || AreaInitializer.SecurityReadOnlyByParent || AreaInitializer.SecurityReadOnly)
+                //        //////{
+                //        //////    SpecializedDataView.DisableEnableDataSection(false);
+                //        //////}
+                //    }
+                //}
             }
         }
+
+        private void DecideDataSectionEnablity()
+        {
+            var data = GetDataList();
+            bool enablity = true;
+            if (data.Any(x => x.IsUseLessBecauseNewAndReadonly))
+                enablity = false;
+            DataView.DisableEnableDataSection(enablity);
+        }
+
         //صدا زده میشود RelationData تنها بوسیله ShowData برای نمایش داده های اضافه شده در آن صدا زده میشود.در مابقی موارد ShowData که AddData فقط یکجا مشخص میشود و آنهم در specificDate
         public override bool ShowDataInDataView(DP_DataRepository specificDate)
         {
@@ -389,7 +403,7 @@ namespace MyUILibrary.EntityArea
                 bool relationshipFirstSideHasValue = relationshipControl.Relationship.RelationshipColumns.Any()
                     && relationshipControl.Relationship.RelationshipColumns.All(x => specificDate.GetProperties().Any(y => !AgentHelper.ValueIsEmpty(y) && y.ColumnID == x.FirstSideColumnID));
 
-                //relationshipControl.EditNdTypeArea.AreaInitializer.SourceRelation.RelatedData = specificDate;
+                //relationshipControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelatedData = specificDate;
                 //اینجا یکارایی بشه دسترسی موقت
 
                 bool childLoadedBefore = specificDate.ChildRelationshipInfos.Any(x => x.Relationship.ID == relationshipControl.Relationship.ID);
@@ -446,21 +460,20 @@ namespace MyUILibrary.EntityArea
             }
             if (result)
                 OnDataItemShown(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
-            CheckRelationshipReadonlyEnablity();
+            //    CheckRelationshipReadonlyEnablity();
+
+            DecideDataSectionEnablity();
+
             return result;
 
 
             //else
 
         }
-        private void CheckRelationshipReadonlyEnablity()
-        {
-            var data = GetDataList();
-            bool enablity = true;
-            if (data.Any() && DataIsNewInOneEditAreaAndReadonly(data.First()))
-                enablity = false;
-            DataView.DisableEnableDataSection(enablity);
-        }
+        //private void CheckRelationshipReadonlyEnablity()
+        //{
+
+        //}
         //اونی که کلید نداره قتی اول میشه موقع آپدیت اونی که کلید داره مقدار موجود اولیو نمیگیره؟؟
 
         //تنها یکبار و برای نمایش مقادیر در کنترلهای ساده و غیر فرمی صدا زده میشود

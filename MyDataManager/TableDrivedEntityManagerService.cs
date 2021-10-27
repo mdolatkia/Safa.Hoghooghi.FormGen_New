@@ -87,15 +87,15 @@ namespace MyDataManagerService
             return bizRelationship.GetRelationship(relationshipID);
         }
 
-        public  bool IsEntityEnabled(int entityID)
-        {
-            BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-            return bizTableDrivedEntity.IsEntityEnabled(entityID);
-        }
+        //public  bool IsEntityEnabled(int entityID)
+        //{
+        //    BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+        //    return bizTableDrivedEntity.IsEntityEnabled(entityID);
+        //}
 
-        public TableDrivedEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID)
+        public DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, DataEntryRelationshipDTO parentRelationship = null)
         {
-            return bizTableDrivedEntity.GetDataEntryEntity(requester,entityID);
+            return bizTableDrivedEntity.GetDataEntryEntity(requester,entityID, parentRelationship);
         }
         public TableDrivedEntityDTO GetPermissionedEntity(DR_Requester requester, int entityID)
         {

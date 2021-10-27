@@ -124,7 +124,7 @@ namespace MyUILibrary.EntityArea
                 }
                 foreach (var item in relationships.ToList())
                 {
-                    if (item.EditNdTypeArea.SimpleEntity.SearchInitially == true || (item.EditNdTypeArea.AreaInitializer.SourceRelation != null && item.EditNdTypeArea.AreaInitializer.SourceRelation.Relationship.SearchInitially))
+                    if (item.EditNdTypeArea.SimpleEntity.SearchInitially == true || (item.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl != null && item.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.SearchInitially))
                     {
                         var relFilters = AgentUICoreMediator.GetAgentUICoreMediator.relationshipFilterManagerService.GetRelationshipFilters(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), item.Relationship.ID);
                         //if (relFilters.Any())

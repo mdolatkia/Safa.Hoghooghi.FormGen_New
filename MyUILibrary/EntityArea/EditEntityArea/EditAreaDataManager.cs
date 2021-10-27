@@ -422,7 +422,7 @@ namespace MyUILibrary.EntityArea
         //    if (!EditEntityAreas.Any(x => x == editEntityArea))
         //    {
         //        EditEntityAreas.Add(editEntityArea);
-        //        if (editEntityArea.AreaInitializer.SourceRelation == null)
+        //        if (editEntityArea.AreaInitializer.SourceRelationColumnControl == null)
         //        {
         //            editEntityArea.AreaInitializer.Datas.CollectionChanged += Datas_CollectionChanged;
         //        }
@@ -616,12 +616,12 @@ namespace MyUILibrary.EntityArea
 
         //internal void SetTempInfo(I_EditEntityArea editArea)
         //{
-        //    if (editArea.AreaInitializer.SourceRelation != null)
+        //    if (editArea.AreaInitializer.SourceRelationColumnControl != null)
         //    {
         //        if (editArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect ||
         //          editArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect)
         //        {
-        //            var data = editArea.AreaInitializer.SourceRelation.RelatedData.GetRelatedData(editArea.AreaInitializer.SourceRelation.Relationship.ID);
+        //            var data = editArea.AreaInitializer.SourceRelationColumnControl.RelatedData.GetRelatedData(editArea.AreaInitializer.SourceRelationColumnControl.Relationship.ID);
         //            if (data.Any())
         //            {
         //                var text = "";
@@ -641,26 +641,26 @@ namespace MyUILibrary.EntityArea
         //                    }
         //                }
 
-        //                if (editArea.AreaInitializer.SourceRelation.SourceEditArea is I_EditEntityAreaOneData)
+        //                if (editArea.AreaInitializer.SourceRelationColumnControl.SourceEditArea is I_EditEntityAreaOneData)
         //                    editArea.TemporaryDisplayView.SetLinkText(text);
-        //                else if (editArea.AreaInitializer.SourceRelation.SourceEditArea is I_EditEntityAreaMultipleData)
+        //                else if (editArea.AreaInitializer.SourceRelationColumnControl.SourceEditArea is I_EditEntityAreaMultipleData)
         //                {
-        //                    var parentMultipleEditArea = (editArea.AreaInitializer.SourceRelation.SourceEditArea as I_EditEntityAreaMultipleData);
-        //                    var relationshipControl = parentMultipleEditArea.RelationshipColumnControls.FirstOrDefault(x => x.Relationship.ID == editArea.AreaInitializer.SourceRelation.Relationship.ID);
+        //                    var parentMultipleEditArea = (editArea.AreaInitializer.SourceRelationColumnControl.SourceEditArea as I_EditEntityAreaMultipleData);
+        //                    var relationshipControl = parentMultipleEditArea.RelationshipColumnControls.FirstOrDefault(x => x.Relationship.ID == editArea.AreaInitializer.SourceRelationColumnControl.Relationship.ID);
         //                    if (relationshipControl != null)
-        //                        relationshipControl.ControlPackage.View.SetTemporaryViewText(editArea.AreaInitializer.SourceRelation.RelatedData, text);
+        //                        relationshipControl.ControlPackage.View.SetTemporaryViewText(editArea.AreaInitializer.SourceRelationColumnControl.RelatedData, text);
         //                }
         //            }
         //            else
         //            {
-        //                if (editArea.AreaInitializer.SourceRelation.SourceEditArea is I_EditEntityAreaOneData)
+        //                if (editArea.AreaInitializer.SourceRelationColumnControl.SourceEditArea is I_EditEntityAreaOneData)
         //                    editArea.TemporaryDisplayView.SetLinkText("");
-        //                else if (editArea.AreaInitializer.SourceRelation.SourceEditArea is I_EditEntityAreaMultipleData)
+        //                else if (editArea.AreaInitializer.SourceRelationColumnControl.SourceEditArea is I_EditEntityAreaMultipleData)
         //                {
-        //                    var parentMultipleEditArea = (editArea.AreaInitializer.SourceRelation.SourceEditArea as I_EditEntityAreaMultipleData);
-        //                    var relationshipControl = parentMultipleEditArea.RelationshipColumnControls.FirstOrDefault(x => x.Relationship.ID == editArea.AreaInitializer.SourceRelation.Relationship.ID);
+        //                    var parentMultipleEditArea = (editArea.AreaInitializer.SourceRelationColumnControl.SourceEditArea as I_EditEntityAreaMultipleData);
+        //                    var relationshipControl = parentMultipleEditArea.RelationshipColumnControls.FirstOrDefault(x => x.Relationship.ID == editArea.AreaInitializer.SourceRelationColumnControl.Relationship.ID);
         //                    if (relationshipControl != null)
-        //                        relationshipControl.ControlPackage.View.SetTemporaryViewText(editArea.AreaInitializer.SourceRelation.RelatedData, "");
+        //                        relationshipControl.ControlPackage.View.SetTemporaryViewText(editArea.AreaInitializer.SourceRelationColumnControl.RelatedData, "");
         //                }
 
         //            }

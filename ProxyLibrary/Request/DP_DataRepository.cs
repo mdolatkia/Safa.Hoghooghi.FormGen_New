@@ -575,6 +575,8 @@ namespace ProxyLibrary
             {
                 if (IsEmptyOneDirectData)
                     return false;
+                else if (IsUseLessBecauseNewAndReadonly)
+                    return false;
                 else if (IsHiddenBecauseOfCreatorRelationshipOnState)
                     return false;
                 else if (ParantChildRelationshipInfo != null && ParantChildRelationshipInfo.IsReadonly && ParantChildRelationshipInfo.DataItemIsAdded(this))
@@ -584,6 +586,8 @@ namespace ProxyLibrary
                 return true;
             }
         }
+
+        public bool IsUseLessBecauseNewAndReadonly { get; set; }
 
         //public bool IsHiddenBecauseOfCreatorRelationshipOnShow { set; get; }
         //public bool IsHidden

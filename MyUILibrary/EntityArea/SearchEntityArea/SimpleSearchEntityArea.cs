@@ -88,7 +88,7 @@ namespace MyUILibrary.EntityArea
         //        {
         //            _FullEntity.Columns.Remove(remove);
         //        }
-        //        //if (AreaInitializer.SourceRelation != null)
+        //        //if (AreaInitializer.SourceRelationColumnControl != null)
         //        //    _FullEntity.Relationships.Clear();
         //        return _FullEntity;
         //    }

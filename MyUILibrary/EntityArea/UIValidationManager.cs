@@ -54,7 +54,7 @@ namespace MyUILibrary.EntityArea
                             {
                                 relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
 
-                                if (fromUpdate && EditArea.AreaInitializer.SourceRelation == null)
+                                if (fromUpdate && EditArea.AreaInitializer.SourceRelationColumnControl == null)
                                 {
                                     if (!relationshipControl.EditNdTypeArea.AreaInitializer.UIValidationManager.ValidateData(false))
                                         result = false;
@@ -130,8 +130,8 @@ namespace MyUILibrary.EntityArea
             {
                 if (EditArea.FullEntity.Columns.Any(x => x.DataEntryEnabled && x.IsMandatory &&
                 (!EditArea.SimpleColumnControls.Any(c => c.Column.ID == x.ID) &&
-                !EditArea.RelationshipColumnControls.Any(r => r.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && r.Columns.Any(rc => rc.ID == x.ID)) &&
-                (EditArea.AreaInitializer == null || EditArea.AreaInitializer.SourceRelation.MasterRelationshipType != Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.AreaInitializer.SourceRelation.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
+                !EditArea.RelationshipColumnControls.Any(r => r.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && r.Relationship.RelationshipColumns.Any(rc => rc.FirstSideColumnID == x.ID)) &&
+                (EditArea.AreaInitializer == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum!= Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
                 )
                 ))
                 {  //اگر غیر از این باشه و بخوایم ستونهایی که دسترسی دارند را از آنهایی که ندارند جدا کرده و بررسی کنیم قضیه خلی پیچیده میشود. 
@@ -139,8 +139,8 @@ namespace MyUILibrary.EntityArea
                     var columnNames = "";
                     foreach (var col in EditArea.FullEntity.Columns.Where(x => x.DataEntryEnabled && x.IsMandatory &&
                 (!EditArea.SimpleColumnControls.Any(c => c.Column.ID == x.ID) &&
-                !EditArea.RelationshipColumnControls.Any(r => r.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && r.Columns.Any(rc => rc.ID == x.ID)) &&
-                (EditArea.AreaInitializer == null || EditArea.AreaInitializer.SourceRelation.MasterRelationshipType != Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.AreaInitializer.SourceRelation.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
+                !EditArea.RelationshipColumnControls.Any(r => r.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && r.Relationship.RelationshipColumns.Any(rc => rc.FirstSideColumnID == x.ID)) &&
+                (EditArea.AreaInitializer == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum!= Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
                 )
                 ))
                     {
@@ -152,12 +152,12 @@ namespace MyUILibrary.EntityArea
                 }
 
                 if (EditArea.FullEntity.Relationships.Any(x => x.DataEntryEnabled == true && x.IsOtherSideMandatory == true &&
-              (!EditArea.RelationshipColumnControls.Any(r => r.Relationship.ID == x.ID) && (EditArea.AreaInitializer.SourceRelation == null || EditArea.AreaInitializer.SourceRelation.Relationship.PairRelationshipID != x.ID))))
+              (!EditArea.RelationshipColumnControls.Any(r => r.Relationship.ID == x.ID) && (EditArea.AreaInitializer.SourceRelationColumnControl == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID != x.ID))))
                 {  //اگر غیر از این باشه و بخوایم روابطی که دسترسی دارند را از آنهایی که ندارند جدا کرده و بررسی کنیم قضیه خلی پیچیده میشود. 
                    //بهتر است نیاز بیزینسی با اختصاصی سازی موجودیت حل شود ونه با دسترسی امنیتی
                     var relNames = "";
                     foreach (var rel in EditArea.FullEntity.Relationships.Where(x => x.DataEntryEnabled == true &&
-              (!EditArea.RelationshipColumnControls.Any(r => r.Relationship.ID == x.ID) && (EditArea.AreaInitializer.SourceRelation == null || EditArea.AreaInitializer.SourceRelation.Relationship.PairRelationshipID != x.ID))))
+              (!EditArea.RelationshipColumnControls.Any(r => r.Relationship.ID == x.ID) && (EditArea.AreaInitializer.SourceRelationColumnControl == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID != x.ID))))
                     {
                         relNames += (relNames == "" ? "" : Environment.NewLine) + rel.Name;
                     }
@@ -261,11 +261,11 @@ namespace MyUILibrary.EntityArea
             int parentSubToSuperRelationshipID = 0;
             string parentSubToSuperName = "";
 
-            if (EditArea.AreaInitializer.SourceRelation != null && EditArea.AreaInitializer.SourceRelation.Relationship is SubToSuperRelationshipDTO)
+            if (EditArea.AreaInitializer.SourceRelationColumnControl != null && EditArea.AreaInitializer.SourceRelationColumnControl.Relationship is SubToSuperRelationshipDTO)
             {
-                parentSubToSuperRelationshipID = (EditArea.AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO).ID;
-                parentSubToSuperName = (EditArea.AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO).Entity1;
-                parentISARelationshipID = (EditArea.AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO).ISARelationship.ID;
+                parentSubToSuperRelationshipID = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ID;
+                parentSubToSuperName = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).Entity1;
+                parentISARelationshipID = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.ID;
             }
             List<Tuple<ISARelationshipDTO, List<RelationshipColumnControl>>> isaRelationships = new List<Tuple<ISARelationshipDTO, List<RelationshipColumnControl>>>();
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
@@ -420,11 +420,11 @@ namespace MyUILibrary.EntityArea
             int parentSubToSuperRelationshipID = 0;
             string parentSubToSuperName = "";
 
-            if (EditArea.AreaInitializer.SourceRelation != null && EditArea.AreaInitializer.SourceRelation.Relationship is SubUnionToSuperUnionRelationshipDTO)
+            if (EditArea.AreaInitializer.SourceRelationColumnControl != null && EditArea.AreaInitializer.SourceRelationColumnControl.Relationship is SubUnionToSuperUnionRelationshipDTO)
             {
-                parentSubToSuperRelationshipID = (EditArea.AreaInitializer.SourceRelation.Relationship as SubUnionToSuperUnionRelationshipDTO).ID;
-                parentSubToSuperName = (EditArea.AreaInitializer.SourceRelation.Relationship as SubUnionToSuperUnionRelationshipDTO).Entity1;
-                parentUnionRelationshipID = (EditArea.AreaInitializer.SourceRelation.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship.ID;
+                parentSubToSuperRelationshipID = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).ID;
+                parentSubToSuperName = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).Entity1;
+                parentUnionRelationshipID = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship.ID;
             }
             List<Tuple<UnionRelationshipDTO, List<RelationshipColumnControl>>> unionRelationships = new List<Tuple<UnionRelationshipDTO, List<RelationshipColumnControl>>>();
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)

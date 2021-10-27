@@ -190,10 +190,10 @@ namespace MyUILibrary.EntityArea
                     }
                 }
             }
-            if (EditArea.AreaInitializer.SourceRelation != null && EditArea.AreaInitializer.SourceRelation.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion)
+            if (EditArea.AreaInitializer.SourceRelationColumnControl != null && EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion)
             {
 
-                var subToSuperRel = EditArea.AreaInitializer.SourceRelation.Relationship as SubUnionToSuperUnionRelationshipDTO;
+                var subToSuperRel = EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO;
                 if (subToSuperRel.DeterminerColumnID != 0 && !string.IsNullOrEmpty(subToSuperRel.DeterminerColumnValue))
                 {
                     var state = new EntityStateDTO();
@@ -257,10 +257,10 @@ namespace MyUILibrary.EntityArea
                     }
                 }
             }
-            if (EditArea.AreaInitializer.SourceRelation != null && EditArea.AreaInitializer.SourceRelation.Relationship.TypeEnum == Enum_RelationshipType.SubToSuper)
+            if (EditArea.AreaInitializer.SourceRelationColumnControl != null && EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.TypeEnum == Enum_RelationshipType.SubToSuper)
             {
 
-                var subToSuperRel = EditArea.AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO;
+                var subToSuperRel = EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO;
                 if (subToSuperRel.SuperEntityDeterminerColumn != null && subToSuperRel.DeterminerColumnValues.Any())
                 {
 
@@ -383,7 +383,7 @@ namespace MyUILibrary.EntityArea
 
         private void EditArea_DataItemShown(object sender, EditAreaDataItemLoadedArg e)
         {
-            //////if (EditArea.AreaInitializer.SourceRelation != null && e.InEditMode)
+            //////if (EditArea.AreaInitializer.SourceRelationColumnControl != null && e.InEditMode)
             //////    CheckParentReadonlyTail(e.DataItem);
             //حتمکا اینجا چک شود مخصوصا برای تمپ ویو ها که تک داده ای نیز باشند
             if ((EditArea.EntityStates1 == null || EditArea.EntityStates1.Count == 0))
@@ -514,7 +514,7 @@ namespace MyUILibrary.EntityArea
                     result.Add(state);
                 else
                 {
-                    if (state.ActionActivities.Any(x => x.UIEnablityDetails.Any(y => EditArea.AreaInitializer.SourceRelation != null && y.RelationshipID == EditArea.AreaInitializer.SourceRelation.Relationship.PairRelationshipID)))
+                    if (state.ActionActivities.Any(x => x.UIEnablityDetails.Any(y => EditArea.AreaInitializer.SourceRelationColumnControl != null && y.RelationshipID == EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID)))
                     {
                         //bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || (EditArea is I_EditEntityAreaOneData && EditArea.DataItemIsInTempViewMode(dataItem));
                         //چرا اینجا تمپ ویو هم باشه وضعیت حساب میشه؟
@@ -537,7 +537,7 @@ namespace MyUILibrary.EntityArea
             //        resultGroup.Add(group);
             //    else
             //    {
-            //        if (group.EntityStates.Any(z => z.ActionActivities.Any(x => x.UIEnablityDetails.Any(y => EditArea.AreaInitializer.SourceRelation != null && y.RelationshipID == EditArea.AreaInitializer.SourceRelation.Relationship.PairRelationshipID))))
+            //        if (group.EntityStates.Any(z => z.ActionActivities.Any(x => x.UIEnablityDetails.Any(y => EditArea.AreaInitializer.SourceRelationColumnControl != null && y.RelationshipID == EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID))))
             //        {
             //            //bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || (EditArea is I_EditEntityAreaOneData && EditArea.DataItemIsInTempViewMode(dataItem));
             //            bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || EditArea.DataItemIsInTempViewMode(dataItem);
@@ -1163,9 +1163,9 @@ namespace MyUILibrary.EntityArea
                     control = (editEntityArea as I_EditEntityAreaOneData).RelationshipColumnControls.First(x => x.Relationship.ID == relationshipID);
 
                 }
-                else if (editEntityArea.AreaInitializer.SourceRelation != null && editEntityArea.AreaInitializer.SourceRelation.Relationship.PairRelationshipID == relationshipID)
+                else if (editEntityArea.AreaInitializer.SourceRelationColumnControl != null && editEntityArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID == relationshipID)
                 {
-                    control = editEntityArea.AreaInitializer.SourceRelation.SourceRelationshipColumnControl;
+                    control = editEntityArea.AreaInitializer.SourceRelationColumnControl;
                 }
             }
             else if (editEntityArea is I_EditEntityAreaMultipleData)
@@ -1174,9 +1174,9 @@ namespace MyUILibrary.EntityArea
                 {
                     control = (editEntityArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.First(x => x.Relationship.ID == relationshipID);
                 }
-                else if (editEntityArea.AreaInitializer.SourceRelation != null && editEntityArea.AreaInitializer.SourceRelation.Relationship.PairRelationshipID == relationshipID)
+                else if (editEntityArea.AreaInitializer.SourceRelationColumnControl != null && editEntityArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID == relationshipID)
                 {
-                    control = editEntityArea.AreaInitializer.SourceRelation.SourceRelationshipColumnControl;
+                    control = editEntityArea.AreaInitializer.SourceRelationColumnControl;
                 }
             }
             return control;

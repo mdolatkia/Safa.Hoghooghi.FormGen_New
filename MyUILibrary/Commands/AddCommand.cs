@@ -28,17 +28,17 @@ namespace MyUILibrary.EntityArea.Commands
         {
             int relationID = 0;
             DP_DataRepository RelationData = null;
-            //if (EditArea.AreaInitializer.SourceRelation != null)
+            //if (EditArea.AreaInitializer.SourceRelationColumnControl != null)
             //{
-            //    relationID = EditArea.AreaInitializer.SourceRelation.Relationship.ID;
-            //    RelationData = EditArea.AreaInitializer.SourceRelation.RelatedData;
+            //    relationID = EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.ID;
+            //    RelationData = EditArea.AreaInitializer.SourceRelationColumnControl.RelatedData;
             //    //if (RelationData != null)
             //    //    RelationData.ValueChanged = true;
             //}
            
             DP_DataRepository newData = AgentHelper.CreateAreaInitializerNewData(EditArea);
             //var list = AgentHelper.CreateListFromSingleObject<DP_DataRepository>(newData);
-            //if (EditArea.AreaInitializer.SourceRelation == null)
+            //if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
             //{
             //    EditArea.AreaInitializer.Datas.Add(newData);
             //}

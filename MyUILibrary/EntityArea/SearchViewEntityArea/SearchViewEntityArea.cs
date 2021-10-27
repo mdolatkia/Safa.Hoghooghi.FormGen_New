@@ -213,9 +213,9 @@ namespace MyUILibrary.EntityArea
                 {
                     if (AreaInitializer.SourceEditArea.ChildRelationshipInfo != null)
                     {
-                        if (AreaInitializer.SourceEditArea.AreaInitializer.SourceRelation != null)
+                        if (AreaInitializer.SourceEditArea.AreaInitializer.SourceRelationColumnControl != null)
                         {
-                            _RelationshipFilters = AgentUICoreMediator.GetAgentUICoreMediator.relationshipFilterManagerService.GetRelationshipFilters(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.SourceEditArea.AreaInitializer.SourceRelation.Relationship.ID);
+                            _RelationshipFilters = AgentUICoreMediator.GetAgentUICoreMediator.relationshipFilterManagerService.GetRelationshipFilters(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.SourceEditArea.AreaInitializer.SourceRelationColumnControl.Relationship.ID);
                         }
                     }
                     else
@@ -276,7 +276,7 @@ namespace MyUILibrary.EntityArea
             if (SearchInitialyDone == false)
             {
                 bool? sarchInitially = null;
-                if (AreaInitializer.SourceEditArea.SimpleEntity.SearchInitially == true || (AreaInitializer.SourceEditArea.AreaInitializer.SourceRelation != null && AreaInitializer.SourceEditArea.AreaInitializer.SourceRelation.Relationship.SearchInitially))
+                if (AreaInitializer.SourceEditArea.SimpleEntity.SearchInitially == true || (AreaInitializer.SourceEditArea.AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceEditArea.AreaInitializer.SourceRelationColumnControl.Relationship.SearchInitially))
                     sarchInitially = AreaInitializer.SourceEditArea.SimpleEntity.SearchInitially;
                 if (sarchInitially == true)
                 {

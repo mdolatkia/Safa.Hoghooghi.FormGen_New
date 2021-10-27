@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ProxyLibrary;
 using System.Data.Entity.Infrastructure;
+using CommonDefinitions.UISettings;
 
 namespace MyModelManager
 {
@@ -237,10 +238,210 @@ namespace MyModelManager
             return entity.IsDataReference == true;
         }
 
-        public TableDrivedEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID)
+        public DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, DataEntryRelationshipDTO parentRelationship = null)
         {
             var entity = GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships);
-            return CheckDataEntryPermission(requester, entity, true);
+            var finalEntity = CheckDataEntryPermission(requester, entity, true);
+            return ToDataEntryEntityDTO(requester, finalEntity, parentRelationship);
+        }
+
+        private DataEntryEntityDTO ToDataEntryEntityDTO(DR_Requester requester, TableDrivedEntityDTO finalEntity, DataEntryRelationshipDTO parentRelationship)
+        {
+            DataEntryEntityDTO result = new DataEntryEntityDTO();
+            result.ParentDataEntryRelationship = parentRelationship;
+            result.IsReadonly = finalEntity.IsReadonly;
+            foreach (var column in finalEntity.Columns)
+                result.Columns.Add(column);
+            foreach (var relationship in finalEntity.Relationships)
+            {
+                if (parentRelationship != null)
+                    if (IsReverseRelation(parentRelationship.Relationship, relationship))
+                        continue;
+
+              
+                DataEntryRelationshipDTO relItem = new DataEntryRelationshipDTO();
+                relItem.Relationship = relationship;
+                if (relationship.TypeEnum == Enum_RelationshipType.OneToMany)
+                {
+                    relItem.DataMode = DataMode.Multiple;
+                }
+                else
+                    relItem.DataMode = DataMode.One;
+
+
+                if (parentRelationship != null && parentRelationship.DataMode == DataMode.Multiple)
+                    relItem.Relationship.IsOtherSideDirectlyCreatable = false;
+
+                if (relItem.Relationship.IsOtherSideCreatable == true)
+                {
+                    if (relItem.Relationship.IsOtherSideDirectlyCreatable == true)
+                    {
+                        if (relItem.Relationship.TypeEnum == Enum_RelationshipType.OneToMany)
+                            relItem.IntracionMode = IntracionMode.CreateDirect;
+                        else
+                            relItem.IntracionMode = IntracionMode.CreateSelectDirect;
+                    }
+                    else
+                    {
+                        if (relItem.Relationship.TypeEnum != Enum_RelationshipType.OneToMany)
+                            relItem.IntracionMode = IntracionMode.CreateSelectInDirect;
+                        else
+                            relItem.IntracionMode = IntracionMode.CreateInDirect;
+                    }
+                }
+                else
+                {
+                    if (relItem.Relationship.TypeEnum == Enum_RelationshipType.OneToMany)
+                    {
+                        result.SkippedRelationships.Add(relationship);
+                        continue;
+                    }
+                    else
+                        relItem.IntracionMode = IntracionMode.Select;
+                }
+
+                //این پایین اومده چون ممکنه پارامترها که بالا ست شدند هم دخیل بشن. فعلا دخلی نشدند
+                if (SkipableRelationship(parentRelationship, relationship))
+                {
+                    result.SkippedRelationships.Add(relationship);
+                    continue;
+                }
+
+                if (relItem.IntracionMode == IntracionMode.CreateDirect ||
+                  relItem.IntracionMode == IntracionMode.CreateSelectDirect)
+                {
+                    if (RelationHistoryContainsEntityID(parentRelationship, relItem.Relationship.EntityID2))
+                    {
+                        if (relItem.IntracionMode == IntracionMode.CreateDirect)
+                        {
+                            relItem.TempViewBecauseOfRelationHistory = true;
+                            relItem.IntracionMode = IntracionMode.CreateInDirect;
+                        }
+                        else if (relItem.IntracionMode == IntracionMode.CreateSelectDirect)
+                        {
+                            relItem.TempViewBecauseOfRelationHistory = true;
+                            relItem.IntracionMode = IntracionMode.CreateSelectInDirect;
+                        }
+                    }
+                }
+                if (relItem.IntracionMode == IntracionMode.CreateDirect ||
+                relItem.IntracionMode == IntracionMode.CreateSelectDirect)
+                {
+                    relItem.TargetDataEntryEntity = GetDataEntryEntity(requester, relationship.EntityID2, relItem);
+                }
+                result.Relationships.Add(relItem);
+            }
+            return result;
+        }
+        private bool SkipableRelationship(DataEntryRelationshipDTO parentRelationship, RelationshipDTO relationship)
+        {
+            if (parentRelationship != null)
+            {
+                //bool logicallyMandatory = RelationshipColumnControlIsLogicallyMandatory(relationshipColumnControl);
+                if (parentRelationship.IntracionMode == IntracionMode.CreateDirect ||
+                   parentRelationship.IntracionMode == IntracionMode.CreateSelectDirect)
+                {
+                    //اگه تمپ ویو بود همه کنترلهای سطح اول نمایش داده میشوند
+
+                    //این خصوصیت قابل مقداردهی توسط کاربر می باشد 
+                    if (!relationship.IsNotSkippable)
+                    {
+                        if (relationship.TypeEnum == Enum_RelationshipType.SubToSuper
+                            || relationship.TypeEnum == Enum_RelationshipType.SuperToSub
+                            || relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion
+                            || relationship.TypeEnum == Enum_RelationshipType.UnionToSubUnion)
+                        {
+                            if (relationship.TypeEnum == Enum_RelationshipType.SubToSuper)
+                                return true;
+                            else if (relationship.TypeEnum == Enum_RelationshipType.SuperToSub)
+                            {
+                                var isaRelationship = (relationship as SuperToSubRelationshipDTO).ISARelationship;
+
+                                int parentIsaRelationshipID = 0;
+                                if (parentRelationship.Relationship is SubToSuperRelationshipDTO)
+                                    parentIsaRelationshipID = (parentRelationship.Relationship as SubToSuperRelationshipDTO).ISARelationship.ID;
+                                if (isaRelationship.ID == parentIsaRelationshipID)
+                                {
+                                    if (isaRelationship.IsDisjoint)
+                                        return true;
+                                    else
+                                        return relationship.Entity1IsIndependent || relationship.Entity2IsIndependent;
+                                }
+                                else
+                                {
+                                    if (isaRelationship.IsTolatParticipation)
+                                    {
+                                        //مثل شخص ورود اطلاعات حقیقی یا حقوقی واجب است
+                                        return false;
+                                    }
+                                    else
+                                        return relationship.Entity1IsIndependent || relationship.Entity2IsIndependent;
+                                }
+                            }
+                            else if (relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion)
+                            {
+                                var unionRelationship = (relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship;
+                                return unionRelationship.IsTolatParticipation;
+                            }
+                            else
+                            {
+                                //relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.SuperToSub
+                                var unionRelationship = (relationship as UnionToSubUnionRelationshipDTO).UnionRelationship;
+
+                                int parentUnionRelationshipID = 0;
+                                if (parentRelationship.Relationship is SubUnionToSuperUnionRelationshipDTO)
+                                    parentUnionRelationshipID = (parentRelationship.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship.ID;
+                                if (unionRelationship.ID == parentUnionRelationshipID)
+                                {
+                                    return true;
+                                }
+                                else
+                                    return relationship.Entity1IsIndependent || relationship.Entity2IsIndependent;
+                            }
+                        }
+                        else
+                        {
+                            return !relationship.IsOtherSideMandatory;
+
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+        private static bool IsReverseRelation(RelationshipDTO relationship1, RelationshipDTO relationship2)
+        {
+            if ((relationship1.PairRelationshipID == relationship2.ID) || (relationship2.PairRelationshipID == relationship1.ID))
+                return true;
+            return false;
+        }
+        private static bool RelationHistoryContainsEntityID(DataEntryRelationshipDTO parentRelationship, int entityID)
+        {
+            if (parentRelationship != null && parentRelationship.TargetDataEntryEntity != null)
+            {
+                if (parentRelationship.IntracionMode != IntracionMode.CreateDirect &&
+                    parentRelationship.IntracionMode != IntracionMode.CreateSelectDirect)
+                    return false;
+                else if (parentRelationship.Relationship.EntityID2 == entityID)
+                {
+                    return true;
+                }
+                else
+                {
+                    return RelationHistoryContainsEntityID(parentRelationship.TargetDataEntryEntity.ParentDataEntryRelationship, entityID);
+
+                }
+
+            }
+            else
+                return false;
         }
         public TableDrivedEntityDTO GetPermissionedEntity(DR_Requester requester, int entityID)
         {
@@ -361,7 +562,7 @@ namespace MyModelManager
             List<int> result = new List<int>();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var entities = GetEntities(projectContext, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships,null)
+                var entities = GetEntities(projectContext, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships, null)
                     .Where(x => x.Table.DBSchema.DatabaseInformationID == databaseID).ToList();
                 foreach (var entity in entities)
                 {
@@ -1656,8 +1857,8 @@ namespace MyModelManager
             projectContext.RelationshipType.Remove(relType1);
             projectContext.SubToSuperRelationshipType.Remove(subRel);
 
-         
-           
+
+
 
         }
 

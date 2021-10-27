@@ -34,7 +34,7 @@ namespace MyUILibrary.EntityArea.Commands
                 (EditArea as I_EditEntityAreaMultipleData).ClearData(false);
             }
 
-            //if (EditArea.AreaInitializer.SourceRelation == null)
+            //if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
             //    EditArea.AreaInitializer.Datas.Clear();
             //else
             //{
@@ -46,11 +46,11 @@ namespace MyUILibrary.EntityArea.Commands
             //}
             //else if (EditArea is I_EditEntityAreaMultipleData)
             //{
-            //    if (EditArea.AreaInitializer.SourceRelation == null)
+            //    if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
             //        EditArea.AreaInitializer.Datas.Clear();
             //    else
             //    {
-            //        EditArea.AreaInitializer.SourceRelation.RelatedData.RemoveRelatedData(EditArea.AreaInitializer.SourceRelation.Relationship.ID);
+            //        EditArea.AreaInitializer.SourceRelationColumnControl.RelatedData.RemoveRelatedData(EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.ID);
             //        if (EditArea.ParentTemporaryView != null)
             //            EditArea.ParentTemporaryView.SetLinkText("");
             //    }

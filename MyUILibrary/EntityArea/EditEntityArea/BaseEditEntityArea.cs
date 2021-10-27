@@ -239,14 +239,18 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        TableDrivedEntityDTO _DataEntryEntity;
-        public TableDrivedEntityDTO DataEntryEntity
+        DataEntryEntityDTO _DataEntryEntity;
+        public DataEntryEntityDTO DataEntryEntity
         {
             get
             {
                 if (_DataEntryEntity == null)
                 {
-                    _DataEntryEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetDataEntryEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.DataEntryRelationship.TargetDataEntryEntity != null)
+                        return AreaInitializer.SourceRelationColumnControl.DataEntryRelationship.TargetDataEntryEntity;
+                    else
+                        _DataEntryEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetDataEntryEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID,
+                            AreaInitializer.SourceRelationColumnControl?.DataEntryRelationship);
                 }
                 return _DataEntryEntity;
             }
@@ -342,7 +346,7 @@ namespace MyUILibrary.EntityArea
         }
         public ObservableCollection<DP_DataRepository> GetDataList()
         {
-            if (AreaInitializer.SourceRelation == null)
+            if (AreaInitializer.SourceRelationColumnControl == null)
             {
                 return AreaInitializer.Datas;
             }
@@ -386,7 +390,7 @@ namespace MyUILibrary.EntityArea
             DetermineInteractionMode();
             // ManageSecurity();
             GenerateUIifNeeded();
-            if (AreaInitializer.SourceRelation == null)
+            if (AreaInitializer.SourceRelationColumnControl == null)
             {
                 AreaInitializer.Datas.CollectionChanged += Datas_CollectionChanged;
             }
@@ -425,9 +429,9 @@ namespace MyUILibrary.EntityArea
         //    else
         //        AreaInitializer.SecurityNoAccess = true;
 
-        //    if (AreaInitializer.SourceRelation != null)
+        //    if (AreaInitializer.SourceRelationColumnControl != null)
         //    {
-        //        if (AreaInitializer.SourceRelation.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
+        //        if (AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
         //        {
         //            if (AreaInitializer.SecurityReadOnly)
         //            {
@@ -436,7 +440,7 @@ namespace MyUILibrary.EntityArea
         //            }
         //            else
         //            {
-        //                var rel = AreaInitializer.SourceRelation.Relationship;
+        //                var rel = AreaInitializer.SourceRelationColumnControl.Relationship;
         //                foreach (var relCol in rel.RelationshipColumns)
         //                {
         //                    if (relCol.SecondSideColumn.IsReadonly)
@@ -477,14 +481,14 @@ namespace MyUILibrary.EntityArea
             {
                 TemporaryLinkState.searchView = true;
                 TemporaryLinkState.popup = true;
-                //if (!SimpleEntity.SearchInitially == true && !(AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.Relationship.SearchInitially))
+                //if (!SimpleEntity.SearchInitially == true && !(AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.SearchInitially))
                 TemporaryLinkState.quickSearch = true;
             }
             if (AreaInitializer.IntracionMode == IntracionMode.CreateInDirect || AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect)
             {
                 TemporaryLinkState.edit = true;
             }
-            if (AreaInitializer.SourceRelation == null || !(AreaInitializer.SourceRelation.SourceEditArea is I_EditEntityAreaMultipleData))
+            if (AreaInitializer.SourceRelationColumnControl == null || !(AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaMultipleData))
             {
                 TemporaryDisplayView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateTemporaryLinkUI(TemporaryLinkState);
                 if (TemporaryLinkState.quickSearch)
@@ -570,11 +574,12 @@ namespace MyUILibrary.EntityArea
             //بر اساس همه ستونها ساخته می شود
             foreach (var column in DataEntryEntity.Columns.OrderBy(x => x.Position))
             {
-                if (DataEntryEntity.Relationships.Any(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID)))
+                if (DataEntryEntity.Relationships.Any(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID)))
                 {
-                    if (!RelationshipColumnControls.Any(x => x.Columns.Any(z => z.ID == column.ID)))
+                    if (!RelationshipColumnControls.Any(x => x.Relationship.RelationshipColumns.Any(z => z.FirstSideColumnID == column.ID)))
                     {
-                        var relationship = DataEntryEntity.Relationships.First(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID));
+                        var relationship = DataEntryEntity.Relationships.First(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID));
+                        //کنترلهای رابطه ساخته میشن
                         AddRelationshipControl(relationship, sortedListOfColumnControls);
                     }
                 }
@@ -612,19 +617,19 @@ namespace MyUILibrary.EntityArea
 
                 }
             }
-            //if (AreaInitializer.SourceRelation != null)
+            //if (AreaInitializer.SourceRelationColumnControl != null)
             //{
-            //    if (AreaInitializer.SourceRelation.RelationshipType == Enum_RelationshipType.SubToSuper
-            //        || AreaInitializer.SourceRelation.RelationshipType == Enum_RelationshipType.SuperToSub)
+            //    if (AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SubToSuper
+            //        || AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SuperToSub)
             //    {
-            //        //////if (!AreaInitializer.SourceRelation.TargetRelationColumns.Select(x => x.ID).Contains(column.ID))
-            //        //////    if (AreaInitializer.SourceRelation.SourceEditArea.FullEntity.Columns.Any(x => x.ID == column.ID))
+            //        //////if (!AreaInitializer.SourceRelationColumnControl.TargetRelationColumns.Select(x => x.ID).Contains(column.ID))
+            //        //////    if (AreaInitializer.SourceRelationColumnControl.SourceEditArea.FullEntity.Columns.Any(x => x.ID == column.ID))
             //        //////        continue;
             //    }
             //}
 
             foreach (var relationship in DataEntryEntity.Relationships
-                            .Where(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
+                            .Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
             {
                 AddRelationshipControl(relationship, sortedListOfColumnControls);
             }
@@ -703,7 +708,7 @@ namespace MyUILibrary.EntityArea
                 if (columnControl.Relationship.IsOtherSideMandatory)
                     AddMandatoryMessage(columnControl);
             }
-            if ((AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.Relationship is SubToSuperRelationshipDTO && (AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO).ISARelationship.InternalTable)
+            if ((AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship is SubToSuperRelationshipDTO && (AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.InternalTable)
             || RelationshipColumnControls.Any(x => x.Relationship is SuperToSubRelationshipDTO && (x.Relationship as SuperToSubRelationshipDTO).ISARelationship.InternalTable))
             {
                 AddDeterminerStates();
@@ -718,11 +723,14 @@ namespace MyUILibrary.EntityArea
             //    columnAtrributes.ColumnControl = columnControl;
             //    AreaInitializer.FormAttributes.ColumnAttributes.Add(columnAtrributes);
             //}
+
             if (DataViewGenerated != null)
                 DataViewGenerated(this, null);
             AreaInitializer.FormComposed = true;
 
         }
+
+
 
         private bool DecideSimpleColumnReadony(SimpleColumnControl propertyControl, bool impose)
         {
@@ -731,11 +739,11 @@ namespace MyUILibrary.EntityArea
                 isReadonly = true;
             if (propertyControl.Column.DataEntryEnabled == false)
                 isReadonly = true;
-            if (AreaInitializer.SourceRelation != null)
+            if (AreaInitializer.SourceRelationColumnControl != null)
             {
-                if (AreaInitializer.SourceRelation.RelationshipColumns.Any(x => x.SecondSideColumnID == propertyControl.Column.ID))
+                if (AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(x => x.SecondSideColumnID == propertyControl.Column.ID))
                 {
-                    if (AreaInitializer.SourceRelation.MasterRelationshipType == Enum_MasterRelationshipType.FromPrimartyToForeign)
+                    if (AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
                         isReadonly = true;
                 }
             }
@@ -754,33 +762,25 @@ namespace MyUILibrary.EntityArea
             return isReadonly;
         }
 
-        private void AddRelationshipControl(RelationshipDTO relationship, List<BaseColumnControl> sortedListOfColumnControls)
+        private void AddRelationshipControl(DataEntryRelationshipDTO dataEntryRelationship, List<BaseColumnControl> sortedListOfColumnControls)
         {
-            اینجا
             RelationshipColumnControl relationshipColumnControl = new RelationshipColumnControl();
-            relationshipColumnControl.Relationship = relationship;
-            
+            relationshipColumnControl.DataEntryRelationship = dataEntryRelationship;
+            relationshipColumnControl.ParentEditArea = this;
             var relationshipAlias = relationshipColumnControl.Relationship.Alias;
             relationshipColumnControl.Alias = (string.IsNullOrEmpty(relationshipAlias) ? "" : relationshipAlias + " : ");
-          
-            foreach (var relcolumn in relationship.RelationshipColumns)
-            {
-                relationshipColumnControl.Columns.Add(relcolumn.FirstSideColumn);
-            }
+
+            //اینجا ادیت اریا رابطه و همچنین کنترل منیجر رابطه مشخص میشوند. اگر مثلا کاربر به موجودیت رابطه دسترسی نداشته باشد این مقادیر تولید نمی شوند و نال بر میگردد
             var relatedTuple = GenerateEditEntityAreaWithUIControlPackage(relationshipColumnControl);
             if (relatedTuple != null)
             {
-
-
-                // relatedTuple.Item2.AddMessage(new BaseMessageItem() { IsPermanentMessage = true, Key = "relationshipInfo", Message = relatedTuple.Item1.AreaInitializer.SourceRelation.Relationship.Info });
-                //  propertyControl = new RelationshipColumnControl();
                 relationshipColumnControl.EditNdTypeArea = relatedTuple.Item1;
                 relationshipColumnControl.ControlManager = relatedTuple.Item2;
                 RelationshipColumnControls.Add(relationshipColumnControl);
                 sortedListOfColumnControls.Add(relationshipColumnControl);
 
                 //برای ادمین فعال شود بد نیست
-                var info = relationship.ID + "," + relationship.Name + Environment.NewLine + relationship.TypeStr + Environment.NewLine + relationship.Info;
+                var info = dataEntryRelationship.Relationship.ID + "," + dataEntryRelationship.Relationship.Name + Environment.NewLine + dataEntryRelationship.Relationship.TypeStr + Environment.NewLine + dataEntryRelationship.Relationship.Info;
                 AddColumnControlMessage(new ColumnControlMessageItem(relationshipColumnControl, ControlOrLabelAsTarget.Label) { Key = "relationshipinfo", Message = info });
                 //    AddRelationshipColumnMessageItem(propertyControl, info, InfoColor.Black, "permanentCaption", null, true);
 
@@ -789,58 +789,43 @@ namespace MyUILibrary.EntityArea
         public List<RelationshipColumnControl> SkippedRelationshipColumnControl { set; get; }
         private Tuple<I_EditEntityArea, I_RelationshipControlManager> GenerateEditEntityAreaWithUIControlPackage(RelationshipColumnControl relationshipColumnControl)
         {
-            if (AreaInitializer.SourceRelation != null)
-                if (IsReverseRelation(AreaInitializer.SourceRelation.Relationship, relationshipColumnControl.Relationship))
-                    return null;
-            if (SkipableRelationship(relationshipColumnControl))
-            {
-                if (SkippedRelationshipColumnControl == null)
-                    SkippedRelationshipColumnControl = new List<RelationshipColumnControl>();
-                SkippedRelationshipColumnControl.Add(relationshipColumnControl);
-                return null;
-            }
-
             var newAreaInitializer = GenereateAreaInitializer(relationshipColumnControl);
-            if (newAreaInitializer != null)
-            {
-                var editAreaResult = EditEntityAreaConstructor.GetEditEntityArea(newAreaInitializer);
-                if (editAreaResult.Item1 != null)
-                {
-                    var editArea = editAreaResult.Item1;
-                    editArea.SetAreaInitializer(newAreaInitializer);
-                    I_RelationshipControlManager controlManager = null;//= uiPackage = new UIControlPackageForRelationshipColumn();
-                    if (this is I_EditEntityAreaOneData)
-                    {
-                        if (editArea.TemporaryDisplayView != null)
-                        {
 
-                            controlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelationshipControlManagerForOneDataForm(editArea.TemporaryDisplayView, GetRelationshipUISetting(relationshipColumnControl.Relationship, true), true, relationshipColumnControl.Alias);
-                            relationshipColumnControl.DataViewForTemporaryViewShown += RelationshipColumnControl_DataViewForTemporaryViewShown;
-                        }
-                        else if (editArea.DataView != null)
-                        {
-                            //  uiPackage = new UIControlPackageForRelationshipColumn();
-                            controlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelationshipControlManagerForOneDataForm(editArea.DataView, GetRelationshipUISetting(relationshipColumnControl.Relationship, false), true, relationshipColumnControl.Alias);
-                        }
-                    }
-                    else if (this is I_EditEntityAreaMultipleData)
+            var editAreaResult = EditEntityAreaConstructor.GetEditEntityArea(newAreaInitializer);
+            if (editAreaResult.Item1 != null)
+            {
+                var editArea = editAreaResult.Item1;
+                //اینجا اریا اینیشیالایزر ست می شود و جزئیات ظاهر رابطه نیز تولید می شود
+                editArea.SetAreaInitializer(newAreaInitializer);
+                I_RelationshipControlManager controlManager = null;
+                if (this is I_EditEntityAreaOneData)
+                {
+                    if (editArea.TemporaryDisplayView != null)
                     {
-                        controlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelationshipControlManagerForMultipleDataForm(editArea.TemporaryLinkState, GetRelationshipUISetting(relationshipColumnControl.Relationship, true), true, relationshipColumnControl.Alias);
-                        controlManager.TemporaryViewRequested += (sender, e) => View_TemporaryViewRequested(sender, e, editArea);
-                        controlManager.TemporaryViewLoaded += (sender, e) => View_TemporaryViewLoaded(sender, e, relationshipColumnControl as RelationshipColumnControl);
-                        controlManager.TemporaryViewSerchTextChanged += (sender, e) => View_TemporaryViewSearchText(sender, e, editArea);
-                        controlManager.FocusLost += ControlManager_FocusLost;
+                        controlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelationshipControlManagerForOneDataForm(editArea.TemporaryDisplayView, GetRelationshipUISetting(relationshipColumnControl.Relationship, true), true, relationshipColumnControl.Alias);
                         relationshipColumnControl.DataViewForTemporaryViewShown += RelationshipColumnControl_DataViewForTemporaryViewShown;
                     }
-                    if (controlManager != null)
+                    else if (editArea.DataView != null)
                     {
-                        if (RelationshipAreaGenerated != null)
-                            RelationshipAreaGenerated(this, new EditAreaGeneratedArg() { GeneratedEditArea = editArea });
-                        return new Tuple<I_EditEntityArea, I_RelationshipControlManager>(editArea, controlManager);
+                        controlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelationshipControlManagerForOneDataForm(editArea.DataView, GetRelationshipUISetting(relationshipColumnControl.Relationship, false), true, relationshipColumnControl.Alias);
                     }
                 }
+                else if (this is I_EditEntityAreaMultipleData)
+                {
+                    controlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelationshipControlManagerForMultipleDataForm(editArea.TemporaryLinkState, GetRelationshipUISetting(relationshipColumnControl.Relationship, true), true, relationshipColumnControl.Alias);
+                    controlManager.TemporaryViewRequested += (sender, e) => View_TemporaryViewRequested(sender, e, editArea);
+                    controlManager.TemporaryViewLoaded += (sender, e) => View_TemporaryViewLoaded(sender, e, relationshipColumnControl as RelationshipColumnControl);
+                    controlManager.TemporaryViewSerchTextChanged += (sender, e) => View_TemporaryViewSearchText(sender, e, editArea);
+                    controlManager.FocusLost += ControlManager_FocusLost;
+                    relationshipColumnControl.DataViewForTemporaryViewShown += RelationshipColumnControl_DataViewForTemporaryViewShown;
+                }
+
+                if (RelationshipAreaGenerated != null)
+                    RelationshipAreaGenerated(this, new EditAreaGeneratedArg() { GeneratedEditArea = editArea });
+                return new Tuple<I_EditEntityArea, I_RelationshipControlManager>(editArea, controlManager);
             }
-            return null;
+            else
+                return null;
         }
 
         private void RelationshipColumnControl_DataViewForTemporaryViewShown(object sender, ChildRelationshipInfo e)
@@ -851,45 +836,12 @@ namespace MyUILibrary.EntityArea
                 SetItemMessage(e.SourceData, relationshipColumnControl, ControlOrLabelAsTarget.Control);
                 SetItemColor(e.SourceData, ControlColorTarget.Background, relationshipColumnControl, ControlOrLabelAsTarget.Control);
                 SetItemColor(e.SourceData, ControlColorTarget.Border, relationshipColumnControl, ControlOrLabelAsTarget.Control);
-                relationshipColumnControl.EditNdTypeArea.DecideButtonsReadonlityByState(e.IsReadonly);
+                relationshipColumnControl.EditNdTypeArea.DecideButtonsEnablity(e.IsReadonly);
 
             }
         }
 
-        private bool SkipableRelationship(RelationshipColumnControl relationshipColumnControl)
-        {
-            if (AreaInitializer.SourceRelation != null)
-            {
-                //bool logicallyMandatory = RelationshipColumnControlIsLogicallyMandatory(relationshipColumnControl);
-                if (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-                   AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                {
-                    //اگه تمپ ویو بود همه کنترلهای سطح اول نمایش داده میشوند
-                    if (!relationshipColumnControl.Relationship.IsNotSkippable)
-                    {
-                        bool mandatory = RelationshipExistenceControlIsLogicallyMandatory(relationshipColumnControl);
-                        if (!mandatory)
-                        {
-                            if (AreaInitializer.SourceRelation.Relationship.TypeEnum != Enum_RelationshipType.SubToSuper
-                                && AreaInitializer.SourceRelation.Relationship.TypeEnum != Enum_RelationshipType.SubUnionToUnion)
-                            {
-                                return ParentIsNotSubToSuperSkipCondition(relationshipColumnControl);
-                            }
-                            else
-                            {
-                                return ParentIsSubToSuperSkipCondition(relationshipColumnControl);
-                            }
-                        }
-                    }
-                    else
-                    {
 
-                    }
-                }
-
-            }
-            return false;
-        }
 
         private bool ParentIsSubToSuperSkipCondition(RelationshipColumnControl relationshipColumnControl)
         {
@@ -907,9 +859,9 @@ namespace MyUILibrary.EntityArea
             else
             {
                 //یعنی اگر این شرط برقرار باشد در هر صورت اسکیپ میشود چه مستقیم باشد یا نباشد چه ایندپندنت باشد و..
-                if (AreaInitializer.SourceRelation.Relationship.TypeEnum == Enum_RelationshipType.SubToSuper)
+                if (AreaInitializer.SourceRelationColumnControl.Relationship.TypeEnum == Enum_RelationshipType.SubToSuper)
                 {
-                    var parentIsaRelationship = (AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO).ISARelationship;
+                    var parentIsaRelationship = (AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship;
                     if (parentIsaRelationship.IsDisjoint)
                     {
                         if (relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.SuperToSub)
@@ -920,9 +872,9 @@ namespace MyUILibrary.EntityArea
                         }
                     }
                 }
-                if (AreaInitializer.SourceRelation.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion)
+                if (AreaInitializer.SourceRelationColumnControl.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion)
                 {
-                    var parentUnionRelationship = (AreaInitializer.SourceRelation.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship;
+                    var parentUnionRelationship = (AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship;
                     if (relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.UnionToSubUnion)
                     {
                         var unionRelationship = (relationshipColumnControl.Relationship as UnionToSubUnionRelationshipDTO).UnionRelationship;
@@ -947,14 +899,12 @@ namespace MyUILibrary.EntityArea
             return false;
         }
 
-        private bool RelationshipExistenceControlIsLogicallyMandatory(RelationshipColumnControl relationshipColumnControl)
+        private bool RelationshipSkipable(RelationshipColumnControl relationshipColumnControl)
         {
-            if (relationshipColumnControl.Relationship.TypeEnum != Enum_RelationshipType.SuperToSub
-               && relationshipColumnControl.Relationship.TypeEnum != Enum_RelationshipType.SubToSuper
-               && relationshipColumnControl.Relationship.TypeEnum != Enum_RelationshipType.SubUnionToUnion
-               && relationshipColumnControl.Relationship.TypeEnum != Enum_RelationshipType.UnionToSubUnion)
+
+            if (relationshipColumnControl.Relationship.IsOtherSideMandatory)
             {
-                return relationshipColumnControl.Relationship.IsOtherSideMandatory;
+                return false;
             }
             else
             {
@@ -964,15 +914,19 @@ namespace MyUILibrary.EntityArea
                 {
                     var isaRelationship = (relationshipColumnControl.Relationship as SuperToSubRelationshipDTO).ISARelationship;
 
-                    var parentIsNotSubToSuperOrIsDifferent = false;
-                    if (!(AreaInitializer.SourceRelation.Relationship is SubToSuperRelationshipDTO))
-                        parentIsNotSubToSuperOrIsDifferent = true;
-                    else if ((AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO).ISARelationship.ID != isaRelationship.ID)
-                        parentIsNotSubToSuperOrIsDifferent = true;
-                    if (isaRelationship.IsTolatParticipation && parentIsNotSubToSuperOrIsDifferent)
-                        return true;
+                    int parentIsaRelationshipID = 0;
+                    if (AreaInitializer.SourceRelationColumnControl.Relationship is SubToSuperRelationshipDTO)
+                        parentIsaRelationshipID = (AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.ID;
+                    if (isaRelationship.ID == parentIsaRelationshipID)
+                    {
+                        if (isaRelationship.IsDisjoint)
+                            return false;
+                        else
+                            return SimpleEntity.IndependentDataEntry == true || relationshipColumnControl.Relationship.Entity2IsIndependent;
+                    }
                     else
-                        return false;
+                        return SimpleEntity.IndependentDataEntry == true || relationshipColumnControl.Relationship.Entity2IsIndependent;
+                    return isaRelationship.IsTolatParticipation;
                 }
                 else if (relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion)
                 {
@@ -984,9 +938,9 @@ namespace MyUILibrary.EntityArea
                     //relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.SuperToSub
                     var unionRelationship = (relationshipColumnControl.Relationship as UnionToSubUnionRelationshipDTO).UnionRelationship;
                     var parentIsNotSubToSuperOrIsDifferent = false;
-                    if (!(AreaInitializer.SourceRelation.Relationship is SubUnionToSuperUnionRelationshipDTO))
+                    if (!(AreaInitializer.SourceRelationColumnControl.Relationship is SubUnionToSuperUnionRelationshipDTO))
                         parentIsNotSubToSuperOrIsDifferent = true;
-                    else if ((AreaInitializer.SourceRelation.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship.ID != unionRelationship.ID)
+                    else if ((AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship.ID != unionRelationship.ID)
                         parentIsNotSubToSuperOrIsDifferent = true;
                     return parentIsNotSubToSuperOrIsDifferent;
                 }
@@ -997,8 +951,8 @@ namespace MyUILibrary.EntityArea
 
         //private bool CheckRelationshipControlIsaUnionSkip(RelationshipColumnControl relationshipColumnControl)
         //{
-        //    if (AreaInitializer.SourceRelation.Relationship.TypeEnum == Enum_RelationshipType.SubToSuper ||
-        //      AreaInitializer.SourceRelation.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion_UnionHoldsKeys)
+        //    if (AreaInitializer.SourceRelationColumnControl.Relationship.TypeEnum == Enum_RelationshipType.SubToSuper ||
+        //      AreaInitializer.SourceRelationColumnControl.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion_UnionHoldsKeys)
         //    {
         //        if (relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.OneToMany ||
         //            relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.ManyToOne ||
@@ -1017,9 +971,9 @@ namespace MyUILibrary.EntityArea
         //    {
         //        var isaRelationship = (relationshipColumnControl.Relationship as SuperToSubRelationshipDTO).ISARelationship;
         //        var parentIsNotSubToSuperOrIsDifferent = false;
-        //        if (!(AreaInitializer.SourceRelation.Relationship is SubToSuperRelationshipDTO))
+        //        if (!(AreaInitializer.SourceRelationColumnControl.Relationship is SubToSuperRelationshipDTO))
         //            parentIsNotSubToSuperOrIsDifferent = true;
-        //        else if ((AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO).ISARelationship.ID != isaRelationship.ID)
+        //        else if ((AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.ID != isaRelationship.ID)
         //            parentIsNotSubToSuperOrIsDifferent = true;
         //        if (isaRelationship.IsTolatParticipation && parentIsNotSubToSuperOrIsDifferent)
         //        {
@@ -1032,11 +986,11 @@ namespace MyUILibrary.EntityArea
         //        }
         //    }
 
-        //    if (AreaInitializer.SourceRelation.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion_UnionHoldsKeys)
+        //    if (AreaInitializer.SourceRelationColumnControl.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion_UnionHoldsKeys)
         //    {
         //        if (relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.UnionToSubUnion_UnionHoldsKeys)
         //        {
-        //            var parentUnionRelationship = (AreaInitializer.SourceRelation.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship;
+        //            var parentUnionRelationship = (AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship;
         //            var unionRelationship = (relationshipColumnControl.Relationship as SuperUnionToSubUnionRelationshipDTO).UnionRelationship;
         //            if (unionRelationship.IsTolatParticipation && isaRelationship.ID != parentIsaRelationship.ID)
         //            {
@@ -1067,7 +1021,6 @@ namespace MyUILibrary.EntityArea
         //            isaRelationship.SubTypeEntities
         //        }
         //    }
-
         //}
 
         private void ControlManager_FocusLost(object sender, EventArgs e)
@@ -1081,7 +1034,7 @@ namespace MyUILibrary.EntityArea
         }
         private void View_TemporaryViewRequested(object sender, Arg_MultipleTemporaryDisplayViewRequested e, I_EditEntityArea editEntityArea)
         {
-            editEntityArea.TemporaryViewActionRequestedFromMultipleEditor(sender as I_View_TemporaryView, e.LinkType, editEntityArea.AreaInitializer.SourceRelation.Relationship, e.DataItem as DP_DataRepository);
+            editEntityArea.TemporaryViewActionRequestedFromMultipleEditor(sender as I_View_TemporaryView, e.LinkType, editEntityArea.AreaInitializer.SourceRelationColumnControl.Relationship, e.DataItem as DP_DataRepository);
         }
         private void View_TemporaryViewLoaded(object sender, Arg_MultipleTemporaryDisplayLoaded e, RelationshipColumnControl relationshipColumnControl)
         {
@@ -1091,12 +1044,7 @@ namespace MyUILibrary.EntityArea
             //////    relationshipColumnControl.RelationshipControlManager.EnableDisable(e.DataItem, TemporaryLinkType.Clear, false);
             //////}
         }
-        private static bool IsReverseRelation(RelationshipDTO relationship1, RelationshipDTO relationship2)
-        {
-            if ((relationship1.PairRelationshipID == relationship2.ID) || (relationship2.PairRelationshipID == relationship1.ID))
-                return true;
-            return false;
-        }
+
         private EditEntityAreaInitializer GenereateAreaInitializer(RelationshipColumnControl relationshipColumnControl)
         {
             EditEntityAreaInitializer newAreaInitializer = new EditEntityAreaInitializer();
@@ -1105,56 +1053,47 @@ namespace MyUILibrary.EntityArea
             newAreaInitializer.Preview = AreaInitializer.Preview;
             newAreaInitializer.EntityID = relationshipColumnControl.Relationship.EntityID2;
 
-            newAreaInitializer.SourceRelation = new EditAreaRelationSource();
-            newAreaInitializer.SourceRelation.SourceEditArea = this;
-            newAreaInitializer.SourceRelation.SourceRelationshipColumnControl = relationshipColumnControl;
-            newAreaInitializer.SourceRelation.SourceEntityID = relationshipColumnControl.Relationship.EntityID1;
-            newAreaInitializer.SourceRelation.SourceTableID = relationshipColumnControl.Relationship.TableID1;
-            newAreaInitializer.SourceRelation.RelationshipColumns = relationshipColumnControl.Relationship.RelationshipColumns;
-            newAreaInitializer.SourceRelation.Relationship = relationshipColumnControl.Relationship;
-            newAreaInitializer.SourceRelation.TargetEntityID = relationshipColumnControl.Relationship.EntityID2;
-            newAreaInitializer.SourceRelation.TargetTableID = relationshipColumnControl.Relationship.TableID2;
-            newAreaInitializer.SourceRelation.TargetSideIsMandatory = relationshipColumnControl.Relationship.IsOtherSideMandatory;
+            newAreaInitializer.SourceRelationColumnControl = relationshipColumnControl;
+            newAreaInitializer.DataMode = relationshipColumnControl.DataEntryRelationship.DataMode;
+            newAreaInitializer.IntracionMode = relationshipColumnControl.DataEntryRelationship.IntracionMode;
+            //if (relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.OneToMany)
+            //{
+            //    newAreaInitializer.DataMode = DataMode.Multiple;
+            //}
+            //else
+            //    newAreaInitializer.DataMode = DataMode.One;
 
+            //if (this is I_EditEntityAreaMultipleData)
+            //    relationshipColumnControl.Relationship.IsOtherSideDirectlyCreatable = false;
 
-            if (relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.OneToMany)
-            {
-                newAreaInitializer.DataMode = DataMode.Multiple;
-            }
-            else
-                newAreaInitializer.DataMode = DataMode.One;
+            //if (relationshipColumnControl.Relationship.IsOtherSideCreatable == true)
+            //{
+            //    if (relationshipColumnControl.Relationship.IsOtherSideDirectlyCreatable == true)
+            //    {
+            //        if (relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.OneToMany)
+            //            newAreaInitializer.IntracionMode = IntracionMode.CreateDirect;
+            //        else
+            //            newAreaInitializer.IntracionMode = IntracionMode.CreateSelectDirect;
+            //    }
+            //    else
+            //    {
+            //        if (relationshipColumnControl.Relationship.TypeEnum != Enum_RelationshipType.OneToMany)
+            //            newAreaInitializer.IntracionMode = IntracionMode.CreateSelectInDirect;
+            //        else
+            //            newAreaInitializer.IntracionMode = IntracionMode.CreateInDirect;
+            //    }
+            //}
+            //else if (relationshipColumnControl.Relationship.IsOtherSideCreatable == false)
+            //{
+            //    if (relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.OneToMany)
+            //        return null;
+            //    else
+            //        newAreaInitializer.IntracionMode = IntracionMode.Select;
+            //}
 
-            if (this is I_EditEntityAreaMultipleData)
-                relationshipColumnControl.Relationship.IsOtherSideDirectlyCreatable = false;
-
-            if (relationshipColumnControl.Relationship.IsOtherSideCreatable == true)
-            {
-                if (relationshipColumnControl.Relationship.IsOtherSideDirectlyCreatable == true)
-                {
-                    if (relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.OneToMany)
-                        newAreaInitializer.IntracionMode = IntracionMode.CreateDirect;
-                    else
-                        newAreaInitializer.IntracionMode = IntracionMode.CreateSelectDirect;
-                }
-                else
-                {
-                    if (relationshipColumnControl.Relationship.TypeEnum != Enum_RelationshipType.OneToMany)
-                        newAreaInitializer.IntracionMode = IntracionMode.CreateSelectInDirect;
-                    else
-                        newAreaInitializer.IntracionMode = IntracionMode.CreateInDirect;
-                }
-            }
-            else if (relationshipColumnControl.Relationship.IsOtherSideCreatable == false)
-            {
-                if (relationshipColumnControl.Relationship.TypeEnum == Enum_RelationshipType.OneToMany)
-                    return null;
-                else
-                    newAreaInitializer.IntracionMode = IntracionMode.Select;
-            }
-
-            if (newAreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-              newAreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                CheckDirectPossiblity(newAreaInitializer);
+            //if (newAreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
+            //  newAreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+            //    CheckDirectPossiblity(newAreaInitializer);
 
 
             //////var relationshipPermission = Permission.ChildsPermissions.FirstOrDefault(x => x.SecurityObjectID == relationshipColumnControl.Relationship.ID);
@@ -1183,38 +1122,18 @@ namespace MyUILibrary.EntityArea
             return newAreaInitializer;
 
         }
-        private void CheckDirectPossiblity(EditEntityAreaInitializer newAreaInitializer)
-        {
-            if (RelationHistoryContainsEntityID(newAreaInitializer, newAreaInitializer.EntityID))
-            {
-                if (newAreaInitializer.IntracionMode == IntracionMode.CreateDirect)
-                    newAreaInitializer.IntracionMode = IntracionMode.CreateInDirect;
-                else if (newAreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                    newAreaInitializer.IntracionMode = IntracionMode.CreateSelectInDirect;
+        //private void CheckDirectPossiblity(EditEntityAreaInitializer newAreaInitializer)
+        //{
+        //    if (RelationHistoryContainsEntityID(newAreaInitializer, newAreaInitializer.EntityID))
+        //    {
+        //        if (newAreaInitializer.IntracionMode == IntracionMode.CreateDirect)
+        //            newAreaInitializer.IntracionMode = IntracionMode.CreateInDirect;
+        //        else if (newAreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+        //            newAreaInitializer.IntracionMode = IntracionMode.CreateSelectInDirect;
 
-            }
-        }
-        private static bool RelationHistoryContainsEntityID(EditEntityAreaInitializer areaInitializer, int entityID)
-        {
-            if (areaInitializer.SourceRelation != null)
-            {
-                if (areaInitializer.SourceRelation.SourceEditArea.AreaInitializer.IntracionMode != IntracionMode.CreateDirect &&
-                    areaInitializer.SourceRelation.SourceEditArea.AreaInitializer.IntracionMode != IntracionMode.CreateSelectDirect)
-                    return false;
-                else if (areaInitializer.SourceRelation.SourceEditArea.AreaInitializer.EntityID == entityID)
-                {
-                    return true;
-                }
-                else
-                {
-                    return RelationHistoryContainsEntityID(areaInitializer.SourceRelation.SourceEditArea.AreaInitializer, entityID);
+        //    }
+        //}
 
-                }
-
-            }
-            else
-                return false;
-        }
 
         //private void ManageSuperToSubControl(List<BaseColumnControl> sortedListOfColumnControls, RelationshipColumnControl relationshipControl)
         //{
@@ -1285,8 +1204,8 @@ namespace MyUILibrary.EntityArea
         {
             //بهتره اضافه بشه به یو ای اکتیویتی منیجر و نسبت به دیتا حساس باشه
             List<Tuple<RelationshipDTO, I_EditEntityArea>> items = new List<Tuple<RelationshipDTO, I_EditEntityArea>>();
-            if (AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.Relationship is SubToSuperRelationshipDTO && (AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO).ISARelationship.InternalTable)
-                items.Add(new Tuple<RelationshipDTO, I_EditEntityArea>(AreaInitializer.SourceRelation.Relationship, AreaInitializer.SourceRelation.SourceEditArea));
+            if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship is SubToSuperRelationshipDTO && (AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.InternalTable)
+                items.Add(new Tuple<RelationshipDTO, I_EditEntityArea>(AreaInitializer.SourceRelationColumnControl.Relationship, AreaInitializer.SourceRelationColumnControl.ParentEditArea));
             foreach (var item in RelationshipColumnControls.Where(x => x.Relationship is SuperToSubRelationshipDTO && (x.Relationship as SuperToSubRelationshipDTO).ISARelationship.InternalTable))
             {
                 items.Add(new Tuple<RelationshipDTO, I_EditEntityArea>(item.Relationship, item.EditNdTypeArea));
@@ -1314,19 +1233,19 @@ namespace MyUILibrary.EntityArea
                 entityState.ActionActivities.Add(stateAction);
                 EntityStates1.Add(entityState);
             }
-            if (AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.Relationship is SubToSuperRelationshipDTO && (AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO).ISARelationship.InternalTable)
+            if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship is SubToSuperRelationshipDTO && (AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.InternalTable)
             {
-                //////if (FullEntity.Columns.Any(x => x.ID == AreaInitializer.SourceRelation.SourceEditArea.FullEntity.DeterminerColumnID))
+                //////if (FullEntity.Columns.Any(x => x.ID == AreaInitializer.SourceRelationColumnControl.SourceEditArea.FullEntity.DeterminerColumnID))
                 //////{
-                //////    var determinerColumn = FullEntity.Columns.First(x => x.ID == AreaInitializer.SourceRelation.SourceEditArea.FullEntity.DeterminerColumnID);
-                //////    determinerColumn.DefaultValue = AreaInitializer.SourceRelation.SourceEditArea.FullEntity.DeterminerColumnValue;
+                //////    var determinerColumn = FullEntity.Columns.First(x => x.ID == AreaInitializer.SourceRelationColumnControl.SourceEditArea.FullEntity.DeterminerColumnID);
+                //////    determinerColumn.DefaultValue = AreaInitializer.SourceRelationColumnControl.SourceEditArea.FullEntity.DeterminerColumnValue;
                 //////}
             }
-            if (AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.Relationship is SubToSuperRelationshipDTO && (AreaInitializer.SourceRelation.Relationship as SubToSuperRelationshipDTO).ISARelationship.InternalTable)
+            if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship is SubToSuperRelationshipDTO && (AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.InternalTable)
             {
-                if (AreaInitializer.SourceRelation.SourceEditArea.AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.SourceEditArea.AreaInitializer.SourceRelation.MasterRelationshipType == Enum_MasterRelationshipType.FromPrimartyToForeign)
+                if (AreaInitializer.SourceRelationColumnControl.ParentEditArea.AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.ParentEditArea.AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
                 {
-                    foreach (var item in SimpleColumnControls.Where(x => AreaInitializer.SourceRelation.SourceEditArea.AreaInitializer.SourceRelation.RelationshipColumns.Any(y => y.SecondSideColumnID == x.Column.ID)))
+                    foreach (var item in SimpleColumnControls.Where(x => AreaInitializer.SourceRelationColumnControl.ParentEditArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(y => y.SecondSideColumnID == x.Column.ID)))
                     {
                         //(item as SimpleColumnControl).BusinessReadOnly[] = true;
                         //(item as SimpleColumnControl).BusinessHidden = true;
@@ -1342,10 +1261,10 @@ namespace MyUILibrary.EntityArea
 
             var clearCommand = new ClearCommand(this);
             Commands.Add(clearCommand);
-            DataView.AddCommand(clearCommand.CommandManager, (!(this is I_EditEntityAreaMultipleData) && AreaInitializer.SourceRelation != null));
-            //if (this.AreaInitializer.SourceRelation == null && DataEntryEntity.IsReadonly)
+            DataView.AddCommand(clearCommand.CommandManager, (!(this is I_EditEntityAreaMultipleData) && AreaInitializer.SourceRelationColumnControl != null));
+            //if (this.AreaInitializer.SourceRelationColumnControl == null && DataEntryEntity.IsReadonly)
             //    clearCommand.CommandManager.SetEnabled(false);
-            //if (this.AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.Relationship.IsReadonly)
+            //if (this.AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
             //    clearCommand.CommandManager.SetEnabled(false);
 
             var infoCommand = new InfoCommand(this);
@@ -1369,7 +1288,7 @@ namespace MyUILibrary.EntityArea
                 Commands.Add(letterCommand);
                 DataView.AddCommand(letterCommand.CommandManager, true);
             }
-            if (AreaInitializer.SourceRelation == null)
+            if (AreaInitializer.SourceRelationColumnControl == null)
             {
                 var saveCommand = new SaveCommand(this);
                 Commands.Add(saveCommand);
@@ -1430,8 +1349,8 @@ namespace MyUILibrary.EntityArea
             {
                 var searchCommand = new SearchCommand(this);
                 Commands.Add(searchCommand);
-                DataView.AddCommand(searchCommand.CommandManager, AreaInitializer.SourceRelation != null);
-                //if (this.AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.Relationship.IsReadonly)
+                DataView.AddCommand(searchCommand.CommandManager, AreaInitializer.SourceRelationColumnControl != null);
+                //if (this.AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
                 //    searchCommand.CommandManager.SetEnabled(false);
             }
 
@@ -1456,7 +1375,7 @@ namespace MyUILibrary.EntityArea
                 DataView.AddCommand(commandNew.CommandManager, true);
             }
 
-            if (AreaInitializer.SourceRelation != null)
+            if (AreaInitializer.SourceRelationColumnControl != null)
             {
                 if (AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect
                   || AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect)
@@ -1465,7 +1384,7 @@ namespace MyUILibrary.EntityArea
                 }
             }
 
-            DecideDataViewStaticButtons();
+            DecideButtonsEnablity(false);
         }
         //////public void ImposeDataViewSecurity()
         //////{
@@ -1604,8 +1523,10 @@ namespace MyUILibrary.EntityArea
 
             if (editEntityArea != this)
             {
-                foreach (var item in dataList)
-                    item.IsEmptyOneDirectData = IsEmptyOneDirectData(item);
+                foreach (var dataItem in dataList)
+                {
+                    dataItem.IsEmptyOneDirectData = !AgentHelper.DataOrRelatedChildDataHasValue(dataItem, null);
+                }
             }
             foreach (var relationshipControl in RelationshipColumnControls)
             {
@@ -1635,59 +1556,53 @@ namespace MyUILibrary.EntityArea
             //}
         }
 
-        private bool IsEmptyOneDirectData(DP_DataRepository dataItem)
-        {
-            if (DataIsNewInOneEditAreaAndReadonly(dataItem))
-                return true;
-            else
-                return !AgentHelper.DataOrRelatedChildDataHasValue(dataItem, null);
-        }
 
 
-        public bool DataIsNewInOneEditAreaAndReadonly(DP_DataRepository dataItem)
-        {
-            if (this is I_EditEntityAreaOneData && dataItem.IsNewItem &&
-                (DataEntryEntity.IsReadonly
-                || (AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.Relationship.IsReadonly))
-                )
-                return true;
-            else
-                return false;
+        //public bool DataIsNewInOneEditAreaAndReadonly(DP_DataRepository dataItem)
+        //{
+        //    //یعنی چون حالت مستقیم بوده مجبور بوده ایجاد بشه وگرنه نباید ایجاد میشده
+        //    if (this is I_EditEntityAreaOneData && dataItem.IsNewItem &&
+        //        (DataEntryEntity.IsReadonly
+        //        || (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly))
+        //        )
+        //        return true;
+        //    else
+        //        return false;
 
-        }
+        //}
 
-        private bool AreaShouldBeReviewed()
-        {
-            //if (this == editEntityArea)
-            //    return true;
-            var data = GetDataList();
-            if (AreaInitializer.SourceRelation != null)
-            {
-                if (AreaInitializer.SourceRelation.Relationship.TypeEnum == Enum_RelationshipType.OneToMany)
-                {
-                    if (data.Any())
-                        return true;
+        //private bool AreaShouldBeReviewed()
+        //{
+        //    //if (this == editEntityArea)
+        //    //    return true;
+        //    var data = GetDataList();
+        //    if (AreaInitializer.SourceRelationColumnControl != null)
+        //    {
+        //        if (AreaInitializer.SourceRelationColumnControl.Relationship.TypeEnum == Enum_RelationshipType.OneToMany)
+        //        {
+        //            if (data.Any())
+        //                return true;
 
-                }
-                else
-                {
+        //        }
+        //        else
+        //        {
 
-                    if (AreaInitializer.SourceRelation.Relationship.IsReadonly && data.Any(x => x.IsNewItem))
-                        return false;
-                    else
-                        return data.Any(x => AgentHelper.DataOrRelatedChildDataHasValue(x, AreaInitializer.SourceRelation.Relationship));
-                }
-            }
-            else
-            {
-                if (DataEntryEntity.IsReadonly && data.Any(x => x.IsNewItem))
-                    return false;
+        //            if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly && data.Any(x => x.IsNewItem))
+        //                return false;
+        //            else
+        //                return data.Any(x => AgentHelper.DataOrRelatedChildDataHasValue(x, AreaInitializer.SourceRelationColumnControl.Relationship));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (DataEntryEntity.IsReadonly && data.Any(x => x.IsNewItem))
+        //            return false;
 
-            }
+        //    }
 
-            return false;
+        //    return false;
 
-        }
+        //}
 
 
 
@@ -1695,13 +1610,13 @@ namespace MyUILibrary.EntityArea
         //public void SetDataShouldBeCounted()
         //{
         //    List<DP_DataRepository> datalist = null;
-        //    if (AreaInitializer.SourceRelation == null)
+        //    if (AreaInitializer.SourceRelationColumnControl == null)
         //    {
         //        datalist = AreaInitializer.Datas.ToList();
         //    }
         //    else
         //    {
-        //        datalist = ChildRelationshipInfo.GetRelatedData(AreaInitializer.SourceRelation.Relationship.ID);
+        //        datalist = ChildRelationshipInfo.GetRelatedData(AreaInitializer.SourceRelationColumnControl.Relationship.ID);
         //    }
         //    foreach (var data in datalist)
         //    {
@@ -1810,13 +1725,13 @@ namespace MyUILibrary.EntityArea
         //public void MakeFormReadOnly()
         //{
         //    List<I_Command> editCommands = Commands.Where(x => x is SaveCommand || x is SaveAndCloseDialogCommand || x is AddCommand).ToList();
-        //    if (AreaInitializer.SourceRelation == null)
+        //    if (AreaInitializer.SourceRelationColumnControl == null)
         //    {
 
         //    }
         //    else
         //    {
-        //        if (AreaInitializer.SourceRelation.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
+        //        if (AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
         //        {
         //            var otherCommands = Commands.Where(x => x is ClearCommand || x is SearchCommand);
         //            editCommands.AddRange(otherCommands);
@@ -1827,7 +1742,7 @@ namespace MyUILibrary.EntityArea
         //        }
         //    }
 
-        //    if (AreaInitializer.SourceRelation != null)
+        //    if (AreaInitializer.SourceRelationColumnControl != null)
         //    {
         //        var otherCommands = Commands.Where(x => x is ClearCommand || x is RemoveCommand);
         //        editCommands.AddRange(otherCommands);
@@ -1873,22 +1788,22 @@ namespace MyUILibrary.EntityArea
             }
             else if (linkType == TemporaryLinkType.SerachView)
             {
-                //if (AreaInitializer.SourceRelation != null)
-                //    AreaInitializer.SourceRelation.RelatedData = parentData;
+                //if (AreaInitializer.SourceRelationColumnControl != null)
+                //    AreaInitializer.SourceRelationColumnControl.RelatedData = parentData;
                 ShowTemporarySearchView(false);
             }
             else if (linkType == TemporaryLinkType.QuickSearch)
             {
-                //if (AreaInitializer.SourceRelation != null)
-                //    AreaInitializer.SourceRelation.RelatedData = parentData;
+                //if (AreaInitializer.SourceRelationColumnControl != null)
+                //    AreaInitializer.SourceRelationColumnControl.RelatedData = parentData;
                 TemporaryView.QuickSearchVisibility = !TemporaryView.QuickSearchVisibility;
                 if (TemporaryView.QuickSearchVisibility)
                     TemporaryView.QuickSearchSelectAll();
             }
             else if (linkType == TemporaryLinkType.Popup)
             {
-                //if (AreaInitializer.SourceRelation != null)
-                //    AreaInitializer.SourceRelation.RelatedData = parentData;
+                //if (AreaInitializer.SourceRelationColumnControl != null)
+                //    AreaInitializer.SourceRelationColumnControl.RelatedData = parentData;
                 if (!TemporaryView.PopupVisibility)
                 {
                     SearchViewEntityArea.RemoveViewEntityAreaView();
@@ -1948,9 +1863,9 @@ namespace MyUILibrary.EntityArea
             }
             DataView.IsOpenedTemporary = true;
 
-            if (AreaInitializer.SourceRelation != null)
+            if (AreaInitializer.SourceRelationColumnControl != null)
             {
-                AreaInitializer.SourceRelation.SourceRelationshipColumnControl.OnDataViewForTemporaryViewShown(ChildRelationshipInfo);
+                AreaInitializer.SourceRelationColumnControl.OnDataViewForTemporaryViewShown(ChildRelationshipInfo);
             }
             if (this is I_EditEntityAreaOneData && existingData.Count == 0)
             {
@@ -2035,7 +1950,7 @@ namespace MyUILibrary.EntityArea
             {
                 //اینجا تست شود
                 bool dataCleared = true;
-                if (AreaInitializer.SourceRelation != null)
+                if (AreaInitializer.SourceRelationColumnControl != null)
                     if (GetDataList().Any())
                     {
                         //وقتی داده هنوز موجود باشد یعنی کلیر انجام نشده است
@@ -2059,7 +1974,7 @@ namespace MyUILibrary.EntityArea
         private void Datas_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             DataCollectionChanged(AreaInitializer.Datas, e);
-            DecideDataRelatedButtons();
+            DecideButtonsEnablity(null);
         }
         public bool CheckRemoveData(List<DP_DataRepository> datas)
         {
@@ -2078,18 +1993,18 @@ namespace MyUILibrary.EntityArea
             var existingdatas = datas.Where(x => x.IsDBRelationship);
             if (existingdatas.Count() != 0)
             {
-                if (AreaInitializer.SourceRelation != null)
+                if (AreaInitializer.SourceRelationColumnControl != null)
                 {
 
-                    if (AreaInitializer.SourceRelation.MasterRelationshipType == Enum_MasterRelationshipType.FromPrimartyToForeign)
+                    if (AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
                     {
-                        if (AreaInitializer.SourceRelation.Relationship.DeleteOption == RelationshipDeleteOption.DeleteCascade || AreaInitializer.SourceRelation.Relationship.RelationshipColumns.Any(x => !x.SecondSideColumn.IsNull))
+                        if (AreaInitializer.SourceRelationColumnControl.Relationship.DeleteOption == RelationshipDeleteOption.DeleteCascade || AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(x => !x.SecondSideColumn.IsNull))
                         {
                             shouldDeleteFromDB = true;
                         }
                     }
                     //بعدا به این فکر شود
-                    //var relationship = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipManager.GetRelationship(AreaInitializer.SourceRelation.Relationship.PairRelationshipID);
+                    //var relationship = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipManager.GetRelationship(AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID);
                     //if (relationship.IsOtherSideMandatory)
                     //    shouldDeleteFromDB = true;
                 }
@@ -2140,15 +2055,15 @@ namespace MyUILibrary.EntityArea
             var datas = GetDataList();
             //if (datas == null)
             //    return false;
-            //if (this.AreaInitializer.SourceRelation == null && DataEntryEntity.IsReadonly)
+            //if (this.AreaInitializer.SourceRelationColumnControl == null && DataEntryEntity.IsReadonly)
             //    return false;
-            //if (this.AreaInitializer.SourceRelation != null && this.AreaInitializer.SourceRelation.Relationship.IsReadonly)
+            //if (this.AreaInitializer.SourceRelationColumnControl != null && this.AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
             //    return false;
 
 
             foreach (var item in datas)
             {
-                if (this.AreaInitializer.SourceRelation != null && this.AreaInitializer.SourceRelation.Relationship.IsReadonly && item.IsDBRelationship)
+                if (this.AreaInitializer.SourceRelationColumnControl != null && this.AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly && item.IsDBRelationship)
                     throw new Exception("Relationship is readonly!");
             }
 
@@ -2220,7 +2135,7 @@ namespace MyUILibrary.EntityArea
                 throw new Exception("sdf");
             if (data.EntityListView == null)
                 data.EntityListView = DefaultEntityListViewDTO;
-            if (AreaInitializer.SourceRelation == null)
+            if (AreaInitializer.SourceRelationColumnControl == null)
             {
                 AreaInitializer.Datas.Add(data);
             }
@@ -2291,7 +2206,7 @@ namespace MyUILibrary.EntityArea
             }
 
             CheckRelationshipLabel();
-            DecideDataRelatedButtons();
+            DecideButtonsEnablity(null);
 
             return result;
         }
@@ -2327,7 +2242,7 @@ namespace MyUILibrary.EntityArea
             foreach (var item in relatedData)
                 text += (text == "" ? "" : Environment.NewLine) + item.ViewInfo;
 
-            if (AreaInitializer.SourceRelation == null || AreaInitializer.SourceRelation.SourceEditArea is I_EditEntityAreaOneData)
+            if (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
             {
                 TemporaryDisplayView.SetLinkText(text);
                 //if (string.IsNullOrEmpty(text))
@@ -2339,7 +2254,7 @@ namespace MyUILibrary.EntityArea
             }
             else
             {
-                var relationshipControl = (AreaInitializer.SourceRelation.SourceEditArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.First(x => x.Relationship.ID == ChildRelationshipInfo.Relationship.ID);
+                var relationshipControl = (AreaInitializer.SourceRelationColumnControl.ParentEditArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.First(x => x.Relationship.ID == ChildRelationshipInfo.Relationship.ID);
                 relationshipControl.RelationshipControlManager.SetTemporaryViewText(ChildRelationshipInfo.SourceData, text);
                 //if (string.IsNullOrEmpty(text) && relationshipControl.EditNdTypeArea.TemporaryLinkState.searchView)
                 //    relationshipControl.RelationshipControlManager.SetQuickSearchVisibility(ChildRelationshipInfo.SourceData, true);
@@ -2359,11 +2274,11 @@ namespace MyUILibrary.EntityArea
         private void NewValue_RelatedDataChanged(object sender, NotifyCollectionChangedEventArgs e, ChildRelationshipInfo childRelationshipInfo)
         {
             DataCollectionChanged(ChildRelationshipInfo.RelatedData, e);
-            if (AreaInitializer.SourceRelation != null)
+            if (AreaInitializer.SourceRelationColumnControl != null)
             {
-                if (AreaInitializer.SourceRelation.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary)
+                if (AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary)
                 {
-                    foreach (var col in AreaInitializer.SourceRelation.Relationship.RelationshipColumns)
+                    foreach (var col in AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns)
                     {
                         var fkProp = ChildRelationshipInfo.SourceData.GetProperty(col.FirstSideColumnID);
                         if (fkProp != null)
@@ -2379,11 +2294,11 @@ namespace MyUILibrary.EntityArea
                         }
                     }
                 }
-                else if (AreaInitializer.SourceRelation.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
+                else if (AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
                 {
                     foreach (var fkDataItem in ChildRelationshipInfo.RelatedData)
                     {
-                        foreach (var col in AreaInitializer.SourceRelation.Relationship.RelationshipColumns)
+                        foreach (var col in AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns)
                         {
                             var pkProp = ChildRelationshipInfo.SourceData.GetProperty(col.FirstSideColumnID);
                             if (pkProp != null)
@@ -2451,13 +2366,13 @@ namespace MyUILibrary.EntityArea
 
         private void CheckRelationshipLabel()
         {
-            //////if (AreaInitializer.SourceRelation != null)
+            //////if (AreaInitializer.SourceRelationColumnControl != null)
             //////{
 
-            //////    if (AreaInitializer.SourceRelation.SourceRelationshipColumnControl.RelationshipControlManager.TabPageContainer != null ||
-            //////                AreaInitializer.SourceRelation.SourceRelationshipColumnControl.RelationshipControlManager.HasExpander)
+            //////    if (AreaInitializer.SourceRelationColumnControl.SourceRelationshipColumnControl.RelationshipControlManager.TabPageContainer != null ||
+            //////                AreaInitializer.SourceRelationColumnControl.SourceRelationshipColumnControl.RelationshipControlManager.HasExpander)
             //////    {
-            //////        AreaInitializer.SourceRelation.SourceRelationshipColumnControl.RemoveLabelControlManagerColorByKey("hasdata");
+            //////        AreaInitializer.SourceRelationColumnControl.SourceRelationshipColumnControl.RemoveLabelControlManagerColorByKey("hasdata");
             //////        bool color = false;
             //////        if (this is I_EditEntityAreaMultipleData)
             //////        {
@@ -2466,7 +2381,7 @@ namespace MyUILibrary.EntityArea
             //////        }
             //////        else if (this is I_EditEntityAreaOneData)
             //////        {
-            //////            if (AreaInitializer.SourceRelation.Relationship.IsOtherSideDirectlyCreatable)
+            //////            if (AreaInitializer.SourceRelationColumnControl.Relationship.IsOtherSideDirectlyCreatable)
             //////            {
             //////                if (GetDataList().Count(x => !x.IsNewItem) != 0)
             //////                    color = true;
@@ -2478,7 +2393,7 @@ namespace MyUILibrary.EntityArea
             //////            }
             //////        }
             //////        if (color)
-            //////            AreaInitializer.SourceRelation.SourceRelationshipColumnControl.AddLabelControlManagerColor(new BaseColorItem() { Key = "hasdata", Color = InfoColor.LightGray, ColorTarget = ControlColorTarget.Background });
+            //////            AreaInitializer.SourceRelationColumnControl.SourceRelationshipColumnControl.AddLabelControlManagerColor(new BaseColorItem() { Key = "hasdata", Color = InfoColor.LightGray, ColorTarget = ControlColorTarget.Background });
             //////    }
             //////}
         }
@@ -2499,7 +2414,7 @@ namespace MyUILibrary.EntityArea
         {
             bool fromDataview = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
                             AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
-            SearchViewEntityArea.SelectFromParent(fromDataview, AreaInitializer.SourceRelation.Relationship, parentDataItem, colAndValues);
+            SearchViewEntityArea.SelectFromParent(fromDataview, AreaInitializer.SourceRelationColumnControl.Relationship, parentDataItem, colAndValues);
         }
 
 
@@ -2761,13 +2676,13 @@ namespace MyUILibrary.EntityArea
             {
                 if (this is I_EditEntityAreaOneData)
                 {
-                    if (AreaInitializer.SourceRelation == null || AreaInitializer.SourceRelation.SourceEditArea is I_EditEntityAreaOneData)
+                    if (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
                     {
                         result.Add(new Tuple<I_DataControlManager, DP_DataRepository>(TemporaryDisplayView, dataItem));
                     }
                     else
                     {
-                        var relationshipControl = AreaInitializer.SourceRelation.SourceRelationshipColumnControl;
+                        var relationshipControl = AreaInitializer.SourceRelationColumnControl;
                         result.Add(new Tuple<I_DataControlManager, DP_DataRepository>(relationshipControl.RelationshipControlManager, dataItem.ParantChildRelationshipInfo.SourceData));
                     }
                 }
@@ -2785,14 +2700,14 @@ namespace MyUILibrary.EntityArea
             {
                 result.Add(new Tuple<I_DataControlManager, DP_DataRepository>(DataView, null));
             }
-            if (AreaInitializer.SourceRelation == null || AreaInitializer.SourceRelation.SourceEditArea is I_EditEntityAreaOneData)
+            if (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
             {
                 if (TemporaryDisplayView != null)
                     result.Add(new Tuple<I_DataControlManager, DP_DataRepository>(TemporaryDisplayView, null));
             }
             else if (ChildRelationshipInfo != null)
             {
-                var relationshipControl = AreaInitializer.SourceRelation.SourceRelationshipColumnControl;
+                var relationshipControl = AreaInitializer.SourceRelationColumnControl;
                 result.Add(new Tuple<I_DataControlManager, DP_DataRepository>(relationshipControl.RelationshipControlManager, ChildRelationshipInfo.SourceData));
             }
 
@@ -2860,144 +2775,241 @@ namespace MyUILibrary.EntityArea
 
 
 
-        public void DecideDataViewStaticButtons()
+        //public void DecideDataViewStaticButtons()
+        //{
+
+        //}
+        public void DecideButtonsEnablity(bool? isReadonly)
         {
-            if (DataEntryEntity.IsReadonly || (AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.Relationship.IsReadonly))
+            bool enabled = true;
+            if (isReadonly != null)
+                enabled = !isReadonly.Value;
+            var dataList = GetDataList();
+            var saveCommand = GetCommand(typeof(SaveCommand));
+            if (saveCommand != null)
             {
-                var addCommand = GetCommand(typeof(AddCommand));
-                if (addCommand != null)
+                if (DataEntryEntity.IsReadonly && dataList.Any(x => x.IsNewItem))
+                    saveCommand.CommandManager.SetEnabled(false);
+                else
+                    saveCommand.CommandManager.SetEnabled(dataList.Any());
+            }
+
+
+            var addCommand = GetCommand(typeof(AddCommand));
+            if (addCommand != null)
+            {
+                if (DataEntryEntity.IsReadonly || (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly))
                     addCommand.CommandManager.SetEnabled(false);
-            }
-
-            if (AreaInitializer.SourceRelation == null && DataEntryEntity.IsReadonly)
-            {
-                var deleteCommand = GetCommand(typeof(DeleteCommand));
-                deleteCommand.CommandManager.SetEnabled(false);
-
-                //var saveCommand = GetCommand(typeof(SaveCommand));
-                //saveCommand.CommandManager.SetEnabled(false);
-
-                //var saveCloseCommand = GetCommand(typeof(SaveAndCloseDialogCommand));
-                //if (saveCloseCommand != null)
-                //    saveCloseCommand.CommandManager.SetEnabled(saveEnable);
-            }
-            else if (AreaInitializer.SourceRelation != null && AreaInitializer.SourceRelation.Relationship.IsReadonly)
-            {
-                var removeCommand = GetCommand(typeof(RemoveCommand));
-                if (removeCommand != null)
-                    removeCommand.CommandManager.SetEnabled(false);
-
-                var searchCommand = GetCommand(typeof(SearchCommand));
-                if (searchCommand != null)
-                    searchCommand.CommandManager.SetEnabled(false);
-
-                var clearCommand = GetCommand(typeof(ClearCommand));
-                if (clearCommand != null)
-                    clearCommand.CommandManager.SetEnabled(false);
-            }
-        }
-        public void DecideButtonsReadonlityByState(bool isReadonly)
-        {
-            if (AreaInitializer.SourceRelation == null || AreaInitializer.SourceRelation.Relationship.IsReadonly || ChildRelationshipInfo == null)
-                return;
-
-            var parentRelationshipControl = AreaInitializer.SourceRelation.SourceRelationshipColumnControl;
-            var parentData = ChildRelationshipInfo.SourceData;
-            bool isDataView = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-      AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
-
-            bool enabled = !isReadonly;
-            if (isDataView || (DataView != null && DataView.IsOpenedTemporary))
-            {
-                var addCommand = GetCommand(typeof(AddCommand));
-                if (addCommand != null)
+                else
                     addCommand.CommandManager.SetEnabled(enabled);
+            }
+            var deleteCommand = GetCommand(typeof(DeleteCommand));
+            if (deleteCommand != null)
+            {
+                if (DataEntryEntity.IsReadonly)
+                    deleteCommand.CommandManager.SetEnabled(false);
+            }
 
-
-                var removeCommand = GetCommand(typeof(RemoveCommand));
-                if (removeCommand != null)
+            //else if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+            //{
+            var removeCommand = GetCommand(typeof(RemoveCommand));
+            if (removeCommand != null)
+            {
+                if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+                    removeCommand.CommandManager.SetEnabled(false);
+                else
                 {
                     if (GetDataList().Any(x => !x.IsDBRelationship))
                         removeCommand.CommandManager.SetEnabled(true);
                     else
                         removeCommand.CommandManager.SetEnabled(enabled);
-
                 }
-
-                var searchCommand = GetCommand(typeof(SearchCommand));
-                if (searchCommand != null)
-                    searchCommand.CommandManager.SetEnabled(enabled);
-
-                var clearCommand = GetCommand(typeof(ClearCommand));
-                if (clearCommand != null)
-                    clearCommand.CommandManager.SetEnabled(enabled);
             }
 
-            if (!isDataView)
-            {
-                var dataList = GetDataList();
-                bool allowdataview = true;
+            bool searchCommandEnablity = true;
+            if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+                searchCommandEnablity = false;
+            else
+                searchCommandEnablity = enabled;
+            هینجا
+            var searchCommand = GetCommand(typeof(SearchCommand));
+            if (searchCommand != null)
+                searchCommand.CommandManager.SetEnabled(searchCommandEnablity);
 
-                if (AreaInitializer.SourceRelation.SourceEditArea is I_EditEntityAreaOneData)
+            var clearCommand = GetCommand(typeof(ClearCommand));
+            if (clearCommand != null)
+            {
+                if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+                    clearCommand.CommandManager.SetEnabled(false);
+                else
                 {
-                    TemporaryDisplayView.DisableEnable(TemporaryLinkType.Clear, enabled);
-                    TemporaryDisplayView.DisableEnable(TemporaryLinkType.SerachView, enabled);
-                    TemporaryDisplayView.DisableEnable(TemporaryLinkType.Popup, enabled);
-                    if (isReadonly)
+                    clearCommand.CommandManager.SetEnabled(enabled);
+                }
+            }
+            //  }
+
+
+
+            if (TemporaryDisplayView != null && AreaInitializer.SourceRelationColumnControl != null)
+            {
+                if (AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
+                {
+                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.Clear, false);
+                    else
+                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.Clear, enabled);
+
+                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.SerachView, false);
+                    else
+                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.SerachView, enabled);
+                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.Popup, false);
+                    else
+                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.Popup, enabled);
+
+                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
                     {
                         TemporaryDisplayView.DisableEnable(TemporaryLinkType.QuickSearch, false);
-                        TemporaryDisplayView.QuickSearchVisibility = false;
-
-                        if (dataList.Count == 0)
-                        {
-                            allowdataview = false;
-                        }
+                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.DataView, dataList.Count != 0);
                     }
                     else
                     {
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.QuickSearch, TemporaryLinkState.quickSearch);
-                        TemporaryDisplayView.QuickSearchVisibility = false;
+                        if (enabled)
+                        {
+                            TemporaryDisplayView.DisableEnable(TemporaryLinkType.QuickSearch, TemporaryLinkState.quickSearch);
+                        }
+                        else
+                        {
+                            TemporaryDisplayView.DisableEnable(TemporaryLinkType.QuickSearch, enabled);
+                        }
                     }
-                    TemporaryDisplayView.DisableEnable(TemporaryLinkType.DataView, allowdataview);
+                    //      TemporaryDisplayView.QuickSearchVisibility = false;
 
                 }
                 else
                 {
 
-                    //var relationshipControl = (AreaInitializer.SourceRelation.SourceEditArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.First(x => x.Relationship.ID == ChildRelationshipInfo.Relationship.ID);
+                    //var relationshipControl = (AreaInitializer.SourceRelationColumnControl.SourceEditArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.First(x => x.Relationship.ID == ChildRelationshipInfo.Relationship.ID);
                     //relationshipControl.RelationshipControlManager.EnableDisable(ChildRelationshipInfo.SourceData, TemporaryLinkType.DataView, allowdataview);
+                    var parentRelationshipControl = AreaInitializer.SourceRelationColumnControl;
+                    var parentData = ChildRelationshipInfo.SourceData;
 
-                    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Clear, enabled);
-                    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.SerachView, enabled);
-                    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Popup, enabled);
-                    if (isReadonly)
+                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Clear, false);
+                    else
+                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Clear, enabled);
+
+                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.SerachView, false);
+                    else
+                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.SerachView, enabled);
+                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Popup, false);
+                    else
+                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Popup, enabled);
+
+                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
                     {
                         parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.QuickSearch, false);
-                        parentRelationshipControl.RelationshipControlManager.SetQuickSearchVisibility(parentData, false);
+                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.DataView, dataList.Count != 0);
 
-                        if (dataList.Count == 0)
-                        {
-                            allowdataview = false;
-                        }
                     }
                     else
                     {
-                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.QuickSearch, TemporaryLinkState.quickSearch);
-                        parentRelationshipControl.RelationshipControlManager.SetQuickSearchVisibility(parentData, false);
+                        if (enabled)
+                        {
+                            parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.QuickSearch, TemporaryLinkState.quickSearch);
+                        }
+                        else
+                        {
+                            parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.QuickSearch, enabled);
+
+                        }
                     }
-                    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.DataView, allowdataview);
+                    //if (isReadonly)
+                    //{
+                    //    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.QuickSearch, false);
+                    //    parentRelationshipControl.RelationshipControlManager.SetQuickSearchVisibility(parentData, dataList.Count != 0);
+
+                    //    if (dataList.Count == 0)
+                    //    {
+                    //        allowdataview = false;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.QuickSearch, TemporaryLinkState.quickSearch);
+                    //    parentRelationshipControl.RelationshipControlManager.SetQuickSearchVisibility(parentData, false);
+                    //}
+                    //parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.DataView, allowdataview);
 
                 }
             }
+
+
+
+            if (AreaInitializer.SourceRelationColumnControl != null)
+            {
+                if (!isDataView)
+                {
+                    bool allowdataview = true;
+                    if (dataList.Count == 0)
+                    {
+                        allowdataview = false;
+                    }
+                    if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+                    {
+                        if (AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
+                        {
+                            TemporaryDisplayView.DisableEnable(TemporaryLinkType.DataView, allowdataview);
+                            TemporaryLinkState.edit = allowdataview;
+                        }
+                        else
+                        {
+
+                            var relationshipControl = (AreaInitializer.SourceRelationColumnControl.ParentEditArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.First(x => x.Relationship.ID == ChildRelationshipInfo.Relationship.ID);
+                            relationshipControl.RelationshipControlManager.EnableDisable(ChildRelationshipInfo.SourceData, TemporaryLinkType.DataView, allowdataview);
+                        }
+                    }
+
+                }
+
+
+            }
+
+            //      if (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly || ChildRelationshipInfo == null)
+            //          return;
+
+            //      bool isDataView = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
+            //AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
+
+            //if (isDataView || (DataView != null && DataView.IsOpenedTemporary))
+            //{
+
+
+            //    var searchCommand = GetCommand(typeof(SearchCommand));
+            //    if (searchCommand != null)
+
+
+            //    var clearCommand = GetCommand(typeof(ClearCommand));
+            //    if (clearCommand != null)
+            //        clearCommand.CommandManager.SetEnabled(enabled);
+            //}
+
+            //if (!isDataView)
+            //{
+
+            //}
 
         }
 
 
         public void DecideTempViewStaticButtons()
         {
-            if (AreaInitializer.SourceRelation != null)
+            if (AreaInitializer.SourceRelationColumnControl != null)
             {
-                if (AreaInitializer.SourceRelation.Relationship.IsReadonly)
+                if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
                 {
                     if (TemporaryDisplayView != null)
                     {
@@ -3014,51 +3026,7 @@ namespace MyUILibrary.EntityArea
                 }
             }
         }
-        public void DecideDataRelatedButtons()
-        {
-            bool isDataView = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-             AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
-            var dataList = GetDataList();
-            var saveCommand = GetCommand(typeof(SaveCommand));
-            if (saveCommand != null && AreaInitializer.SourceRelation == null && DataEntryEntity.IsReadonly)
-            {
 
-                bool saveEnable = true;
-                if (!dataList.Any())
-                    saveEnable = false;
-                else if (dataList.Any(x => x.IsNewItem))
-                    saveEnable = false;
-                saveCommand.CommandManager.SetEnabled(saveEnable);
-            }
-            if (AreaInitializer.SourceRelation != null)
-            {
-                if (!isDataView)
-                {
-                    bool allowdataview = true;
-                    if (dataList.Count == 0)
-                    {
-                        allowdataview = false;
-                    }
-                    if (AreaInitializer.SourceRelation.Relationship.IsReadonly)
-                    {
-                        if (AreaInitializer.SourceRelation.SourceEditArea is I_EditEntityAreaOneData)
-                        {
-                            TemporaryDisplayView.DisableEnable(TemporaryLinkType.DataView, allowdataview);
-                            TemporaryLinkState.edit = allowdataview;
-                        }
-                        else
-                        {
-
-                            var relationshipControl = (AreaInitializer.SourceRelation.SourceEditArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.First(x => x.Relationship.ID == ChildRelationshipInfo.Relationship.ID);
-                            relationshipControl.RelationshipControlManager.EnableDisable(ChildRelationshipInfo.SourceData, TemporaryLinkType.DataView, allowdataview);
-                        }
-                    }
-
-                }
-
-
-            }
-        }
 
         private I_Command GetCommand(Type type)
         {
@@ -3080,7 +3048,7 @@ namespace MyUILibrary.EntityArea
                 }
                 else
                 {
-                    if (AreaInitializer.SourceRelation == null)
+                    if (AreaInitializer.SourceRelationColumnControl == null)
                     {
                         if (AreaInitializer.IntracionMode == IntracionMode.CreateDirect || AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
                             return true;
@@ -3089,7 +3057,7 @@ namespace MyUILibrary.EntityArea
                     }
                     else
                     {
-                        return AreaInitializer.SourceRelation.SourceEditArea.DataItemIsInEditMode(dataItem.ParantChildRelationshipInfo.SourceData);
+                        return AreaInitializer.SourceRelationColumnControl.ParentEditArea.DataItemIsInEditMode(dataItem.ParantChildRelationshipInfo.SourceData);
                     }
                 }
 
@@ -3107,8 +3075,8 @@ namespace MyUILibrary.EntityArea
                 bool hasTempView = (AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
            AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect ||
             AreaInitializer.IntracionMode == IntracionMode.Select);
-                //if ((DataView == null || DataView.IsOpenedTemporary == false) && (AreaInitializer.SourceRelation == null || AreaInitializer.SourceRelation.SourceEditArea.DataItemIsInEditMode(dataItem.ParantChildRelationshipInfo.SourceData)))
-                if (hasTempView && (AreaInitializer.SourceRelation == null || AreaInitializer.SourceRelation.SourceEditArea.DataItemIsInEditMode(dataItem.ParantChildRelationshipInfo.SourceData)))
+                //if ((DataView == null || DataView.IsOpenedTemporary == false) && (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.SourceEditArea.DataItemIsInEditMode(dataItem.ParantChildRelationshipInfo.SourceData)))
+                if (hasTempView && (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.ParentEditArea.DataItemIsInEditMode(dataItem.ParantChildRelationshipInfo.SourceData)))
                     return true;
             }
             return false;
@@ -3327,7 +3295,7 @@ namespace MyUILibrary.EntityArea
                     if (hiddenControlState == ImposeControlState.Impose || hiddenControlState == ImposeControlState.Both)
                     {
                         relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(childRelationshipInfo);
-                        relationshipControl.EditNdTypeArea.DecideButtonsReadonlityByState(isReadonly);
+                        relationshipControl.EditNdTypeArea.DecideButtonsEnablity(isReadonly);
                     }
 
                     if (hiddenControlState == ImposeControlState.AddMessageColor || hiddenControlState == ImposeControlState.Both)
@@ -3356,25 +3324,25 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        public void ChangeRelatoinsipColumnUnReadonlyFromState(ChildRelationshipInfo childRelationshipInfo, DP_DataRepository dataItem, RelationshipColumnControl relationshipControl, string message, string key)
-        {
-            if (DataItemIsInEditMode(dataItem))
-            {
-                if (!childRelationshipInfo.Relationship.IsReadonly)
-                {
-                    childRelationshipInfo.IsReadonly = false;
-                    relationshipControl.EditNdTypeArea.DecideButtonsReadonlityByState(false);
+        //public void ChangeRelatoinsipColumnUnReadonlyFromState(ChildRelationshipInfo childRelationshipInfo, DP_DataRepository dataItem, RelationshipColumnControl relationshipControl, string message, string key)
+        //{
+        //    if (DataItemIsInEditMode(dataItem))
+        //    {
+        //        if (!childRelationshipInfo.Relationship.IsReadonly)
+        //        {
+        //            childRelationshipInfo.IsReadonly = false;
+        //            relationshipControl.EditNdTypeArea.DecideButtonsReadonlityByState(false);
 
 
-                    //foreach (var relCol in childRelationshipInfo.Relationship.RelationshipColumns)
-                    //{
-                    //    var fkProp = dataItem.GetProperty(childRelationshipInfo.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary ? relCol.FirstSideColumnID : relCol.SecondSideColumnID);
-                    //    fkProp.IsReadonlyFromState = false;
-                    //}
-                }
+        //            //foreach (var relCol in childRelationshipInfo.Relationship.RelationshipColumns)
+        //            //{
+        //            //    var fkProp = dataItem.GetProperty(childRelationshipInfo.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary ? relCol.FirstSideColumnID : relCol.SecondSideColumnID);
+        //            //    fkProp.IsReadonlyFromState = false;
+        //            //}
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
 
         public void ChangeDataItemReadonlyFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck)

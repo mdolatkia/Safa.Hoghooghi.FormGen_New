@@ -24,7 +24,8 @@ namespace MyUILibrary.EntityArea
             //UISettings.FlowDirection = FlowDirection.RightToLeft;
             UISettings.Language = "farsi";
         }
-        public EditAreaRelationSource SourceRelation { set; get; }
+        public RelationshipColumnControl SourceRelationColumnControl { set; get; }
+     //   public RelationshipColumnControl SourceEditArea { set; get; }
         //public TableDrivedEntityDTO TemplateEntity { set; get; }
         public int EntityID { set; get; }
         //public string Title
@@ -44,7 +45,7 @@ namespace MyUILibrary.EntityArea
             set { _Datas = value; }
             get
             {
-                if (SourceRelation != null)
+                if (SourceRelationColumnControl != null)
                     throw new Exception("sdfsdg");
                 return _Datas;
             }

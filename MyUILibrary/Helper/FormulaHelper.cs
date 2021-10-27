@@ -142,7 +142,7 @@ namespace MyUILibrary
         //                }
         //                else
         //                {
-        //                    var dataFromRelation = AgentHelper.SelectDataFromDB(relatedEditEntityArea.AreaInitializer.SourceRelation.Relationship, data);
+        //                    var dataFromRelation = AgentHelper.SelectDataFromDB(relatedEditEntityArea.AreaInitializer.SourceRelationColumnControl.Relationship, data);
         //                    if (dataFromRelation != null
         //                        && dataFromRelation.Count > 0)
         //                    {
