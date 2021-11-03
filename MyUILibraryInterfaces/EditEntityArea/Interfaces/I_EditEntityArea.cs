@@ -49,7 +49,7 @@ namespace MyUILibrary.EntityArea
         //event EventHandler<DataUpdatedArg> Updated;
         TableDrivedEntityDTO FullEntity { get; }
         //void ReadonlySimpleColumnControl(SimpleColumnControl column, bool readonlity);
-        void DecideButtonsEnablity(bool? isReadonly);
+        void DecideButtonsEnablity();
         void AddDataBusinessMessage(string message, InfoColor infoColor, string key, DP_DataRepository causingData, ControlItemPriority priority);
         void RemoveDataBusinessMessage(DP_DataRepository dataItem, string key);
         TableDrivedEntityDTO SimpleEntity { set; get; }
@@ -86,7 +86,7 @@ namespace MyUILibrary.EntityArea
 
        // void DecideDataRelatedButtons();
 
-        void DecideTempViewStaticButtons();
+ //       void DecideTempViewStaticButtons();
         //  void DecideDataViewStaticButtons();
         EditEntityAreaInitializer AreaInitializer
         {
@@ -172,17 +172,19 @@ namespace MyUILibrary.EntityArea
         void ChangeSimpleColumnReadonlyFromState(DP_DataRepository dataItem, SimpleColumnControl simpleColumn, bool isReadonly, string message, string key);//, ImposeControlState hiddenControlState);
 
         void ChangeRelatoinsipColumnVisiblityFromState(ChildRelationshipInfo childRelationshipInfo, DP_DataRepository dataItem, RelationshipColumnControl relationshipControl, bool hidden, string message, string key, ImposeControlState hiddenControlState);
-        void ChangeDataItemVisiblityFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck);
-        void ChangeClearDataItemVisiblityFromState(DP_DataRepository dataItem, string key, bool skipUICheck);
+        void ChangeDataItemVisiblityBecauseOfCreatorRelationshipFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck);
+        void ChangeClearDataItemVisiblityBecauseOfCreatorRelationshipFromState(DP_DataRepository dataItem, string key, bool skipUICheck);
 
         void ChangeRelatoinsipColumnReadonlyFromState(ChildRelationshipInfo childRelationshipInfo, DP_DataRepository dataItem, RelationshipColumnControl relationshipControl, bool isReadonly, string message, string key, ImposeControlState hiddenControlState);
         //void ChangeRelatoinsipColumnUnReadonlyFromState(ChildRelationshipInfo childRelationshipInfo, DP_DataRepository dataItem, RelationshipColumnControl relationshipControl, string message, string key);
-        void ChangeDataItemReadonlyFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck);
-        void ChangeClearDataItemReadonlyFromState(DP_DataRepository dataItem, string key, bool skipUICheck);
+        void ChangeDataItemReadonlyBecauseOfCreatorRelationshipFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck);
+        void ChangeClearDataItemReadonlyBecauseOfCreatorRelationshipFromState(DP_DataRepository dataItem, string key, bool skipUICheck);
         bool DataItemIsInEditMode(DP_DataRepository sourceData);
         bool DataItemIsInTempViewMode(DP_DataRepository dataItem);
         //    void DecideButtonsReadonlityByState(bool isReadonly);
         void ApplyStatesBeforeUpdate(bool shouldCheckChilds, ChildRelationshipInfo parentChildRelInfo);
+        void ChangeDataItemReadonlyFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck);
+        void ChangeClearDataItemReadonlyFromState(DP_DataRepository dataItem, string key, bool skipUICheck);
         //       bool DataItemIsDBRelationshipAndRemoved(DP_DataRepository dataItem);
 
 

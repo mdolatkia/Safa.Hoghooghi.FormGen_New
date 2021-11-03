@@ -730,7 +730,7 @@ namespace MyUILibrary.EntityArea
                                     else if (dataItem.ParantChildRelationshipInfo != null && dataItem.ParantChildRelationshipInfo.Relationship.ID == relationshipControl.Relationship.ID)
                                     {
                                         var childRelationshipInfo = dataItem.ParantChildRelationshipInfo;
-                                        EditArea.ChangeClearDataItemVisiblityFromState(dataItem, detail.ID.ToString(), skipUICheck);
+                                        EditArea.ChangeClearDataItemVisiblityBecauseOfCreatorRelationshipFromState(dataItem, detail.ID.ToString(), skipUICheck);
                                     }
 
                                 }
@@ -745,7 +745,7 @@ namespace MyUILibrary.EntityArea
                                     else if (dataItem.ParantChildRelationshipInfo != null && dataItem.ParantChildRelationshipInfo.Relationship.ID == relationshipControl.Relationship.ID)
                                     {
                                         //  var childRelationshipInfo = dataItem.ParantChildRelationshipInfo;
-                                        EditArea.ChangeClearDataItemReadonlyFromState(dataItem, detail.ID.ToString(), skipUICheck);
+                                        EditArea.ChangeClearDataItemReadonlyBecauseOfCreatorRelationshipFromState(dataItem, detail.ID.ToString(), skipUICheck);
                                     }
                                 }
                             }
@@ -777,8 +777,7 @@ namespace MyUILibrary.EntityArea
                     {
                         //موقتی گذاشته شد
                         //بهتره از ClearDataItemReadonlyFromState استفاده بشه
-                        EditArea.RemoveDataBusinessMessage(dataItem, "DataReadonlyByState");
-                        dataItem.IsReadonlyBecauseOfState = false;
+                        EditArea.ChangeClearDataItemReadonlyFromState(dataItem, actionActivity.ID.ToString(),skipUICheck);
                     }
                 }
             }
@@ -850,7 +849,7 @@ namespace MyUILibrary.EntityArea
                                                         dataItem.IsReadonlyBecauseOfCreatorRelationshipOnShow = true;
                                                 }
                                             }
-                                            EditArea.ChangeDataItemVisiblityFromState(dataItem, "غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck);
+                                            EditArea.ChangeDataItemVisiblityBecauseOfCreatorRelationshipFromState(dataItem, "غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck);
                                         }
                                     }
                                     else if (detail.Readonly == true)
@@ -886,7 +885,7 @@ namespace MyUILibrary.EntityArea
                                                         dataItem.IsReadonlyBecauseOfCreatorRelationshipOnShow = true;
                                                 }
                                             }
-                                            EditArea.ChangeDataItemReadonlyFromState(dataItem, "فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck);
+                                            EditArea.ChangeDataItemReadonlyBecauseOfCreatorRelationshipFromState(dataItem, "فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck);
                                         }
                                     }
                                 }
@@ -953,10 +952,11 @@ namespace MyUILibrary.EntityArea
                     }
 
                     if (item.Type == Enum_ActionActivityType.EntityReadonly)
-                    {  //موقتی گذاشته شد
+                    {
+                        //موقتی گذاشته شد
                         //بهتره از ChangeDataItemReadonlyFromState استفاده بشه
-                        EditArea.AddDataBusinessMessage("داده به علت وضعیت"+" "+ state.Title+" "+"فقط خواندنی شد",Temp.InfoColor.Red,"DataReadonlyByState",dataItem,ControlItemPriority.High); 
-                        dataItem.IsReadonlyBecauseOfState = true;
+                        EditArea.ChangeDataItemReadonlyFromState(dataItem, "داده به علت وضعیت" + " " + state.Title + " " + "فقط خواندنی شد", item.ID.ToString(), skipUICheck);
+                       
                     }
                     EditArea.RunningActionActivities.Remove(item);
                 }

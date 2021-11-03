@@ -502,7 +502,7 @@ namespace MyUILibrary.EntityArea
 
             }
 
-            DecideTempViewStaticButtons();
+            DecideButtonsEnablity();
         }
 
 
@@ -536,6 +536,7 @@ namespace MyUILibrary.EntityArea
             if (AreaInitializer.Preview)
                 return;
             GenerateCommands();
+            DecideButtonsEnablity();
             //////ImposeDataViewSecurity();
         }
         public I_View_DataContainer DataView
@@ -836,7 +837,7 @@ namespace MyUILibrary.EntityArea
                 SetItemMessage(e.SourceData, relationshipColumnControl, ControlOrLabelAsTarget.Control);
                 SetItemColor(e.SourceData, ControlColorTarget.Background, relationshipColumnControl, ControlOrLabelAsTarget.Control);
                 SetItemColor(e.SourceData, ControlColorTarget.Border, relationshipColumnControl, ControlOrLabelAsTarget.Control);
-                relationshipColumnControl.EditNdTypeArea.DecideButtonsEnablity(e.IsReadonly);
+                relationshipColumnControl.EditNdTypeArea.DecideButtonsEnablity();
 
             }
         }
@@ -1384,7 +1385,7 @@ namespace MyUILibrary.EntityArea
                 }
             }
 
-            DecideButtonsEnablity(false);
+
         }
         //////public void ImposeDataViewSecurity()
         //////{
@@ -1830,7 +1831,7 @@ namespace MyUILibrary.EntityArea
                 if (GetDataList().Any())
                 {
                     var data = GetDataList().First();
-                    if (data.IsDBRelationship && (data.IsHiddenBecauseOfCreatorRelationshipOnState || data.IsReadonlyBecauseOfCreatorRelationship))
+                    if (data.IsDBRelationship && (data.IsHiddenBecauseOfCreatorRelationshipOnState || data.IsReadonlySomeHow))
                         return;
                     //البته بهتره فانکشنی نوشته بشه که بعد از اعمال وضعیت خود دکمه ها غیر فعال شوند
                     //فقط باید مواظب بود که اگر مثلا خالی شد دوباره دکمه ها فعال شوند
@@ -1974,7 +1975,7 @@ namespace MyUILibrary.EntityArea
         private void Datas_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             DataCollectionChanged(AreaInitializer.Datas, e);
-            DecideButtonsEnablity(null);
+            DecideButtonsEnablity();
         }
         public bool CheckRemoveData(List<DP_DataRepository> datas)
         {
@@ -1982,7 +1983,7 @@ namespace MyUILibrary.EntityArea
             if (datas.Any(x => x.IsDBRelationship))
             {
                 //برای روابط پرایمری به فارن که وضعیت اعمال میشه
-                if (datas.Where(x => x.IsDBRelationship).Any(x => x.IsHiddenBecauseOfCreatorRelationshipOnState || x.IsReadonlyBecauseOfCreatorRelationship))
+                if (datas.Where(x => x.IsDBRelationship).Any(x => x.IsHiddenBecauseOfCreatorRelationshipOnState || x.IsReadonlySomeHow))
                     return false;
 
                 //برای روابط فارن به پرایمری که وضعیت اعمال میشه
@@ -2206,7 +2207,7 @@ namespace MyUILibrary.EntityArea
             }
 
             CheckRelationshipLabel();
-            DecideButtonsEnablity(null);
+            DecideButtonsEnablity();
 
             return result;
         }
@@ -2323,7 +2324,6 @@ namespace MyUILibrary.EntityArea
 
             if (this is I_EditEntityAreaOneData)
             {
-
                 if (LastTemporaryView != null || TemporaryDisplayView != null)
                 {
                     if (LastTemporaryView != null)
@@ -2779,11 +2779,16 @@ namespace MyUILibrary.EntityArea
         //{
 
         //}
-        public void DecideButtonsEnablity(bool? isReadonly)
+        public void DecideButtonsEnablity()
         {
-            bool enabled = true;
-            if (isReadonly != null)
-                enabled = !isReadonly.Value;
+            //bool isreadonly = false;
+            //if (DataEntryEntity.IsReadonly || (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly))
+            //    isreadonly = true;
+            //else
+            //{
+            //    if (ChildRelationshipInfo != null)
+            //        isreadonly = ChildRelationshipInfo.IsReadonly;
+            //}
             var dataList = GetDataList();
             var saveCommand = GetCommand(typeof(SaveCommand));
             if (saveCommand != null)
@@ -2791,142 +2796,142 @@ namespace MyUILibrary.EntityArea
                 if (DataEntryEntity.IsReadonly && dataList.Any(x => x.IsNewItem))
                     saveCommand.CommandManager.SetEnabled(false);
                 else
-                    saveCommand.CommandManager.SetEnabled(dataList.Any());
+                    saveCommand.CommandManager.SetEnabled(dataList.Any(x => !x.IsReadonlyBecauseOfState));
             }
-
 
             var addCommand = GetCommand(typeof(AddCommand));
             if (addCommand != null)
             {
-                if (DataEntryEntity.IsReadonly || (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly))
+                if (DataEntryEntity.IsReadonly
+                    || (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+                    || (ChildRelationshipInfo != null && ChildRelationshipInfo.IsReadonly))
                     addCommand.CommandManager.SetEnabled(false);
                 else
-                    addCommand.CommandManager.SetEnabled(enabled);
+                    addCommand.CommandManager.SetEnabled(true);
             }
             var deleteCommand = GetCommand(typeof(DeleteCommand));
             if (deleteCommand != null)
             {
                 if (DataEntryEntity.IsReadonly)
                     deleteCommand.CommandManager.SetEnabled(false);
+                else
+                {
+                    //رو خود دکمه هم کنترل بشه
+                    deleteCommand.CommandManager.SetEnabled(dataList.Any(x => !x.IsReadonlyBecauseOfState));
+                }
             }
 
-            //else if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-            //{
+
             var removeCommand = GetCommand(typeof(RemoveCommand));
             if (removeCommand != null)
             {
-                if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                    removeCommand.CommandManager.SetEnabled(false);
+                if (AreaInitializer.SourceRelationColumnControl != null)
+                {
+                    //در دل خودش 
+                    if (dataList.Any(x => !x.IsDBRelationship))
+                    {
+                        //باید رو ریمو خود داده کنترل شود
+                        removeCommand.CommandManager.SetEnabled(true);
+                    }
+                    else
+                    {
+                        if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly
+                     || ChildRelationshipInfo.IsReadonly
+                     || dataList.All(x => x.IsDBRelationship && x.IsReadonlySomeHow))
+                            removeCommand.CommandManager.SetEnabled(false);
+                        else
+                        {
+                            //باید IsReadonlySomeHow رو خود داده هم موقع ریمو کردن چک شود
+                            removeCommand.CommandManager.SetEnabled(true);
+                        }
+                    }
+                }
                 else
                 {
-                    if (GetDataList().Any(x => !x.IsDBRelationship))
-                        removeCommand.CommandManager.SetEnabled(true);
-                    else
-                        removeCommand.CommandManager.SetEnabled(enabled);
+                    removeCommand.CommandManager.SetEnabled(dataList.Any());
                 }
             }
 
             bool searchCommandEnablity = true;
-            if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                searchCommandEnablity = false;
-            else
-                searchCommandEnablity = enabled;
-            هینجا
+            if (AreaInitializer.SourceRelationColumnControl != null)
+            {
+                if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly
+                   || ChildRelationshipInfo.IsReadonly
+                || dataList.All(x => x.IsDBRelationship && x.IsReadonlySomeHow))
+                    searchCommandEnablity = false;
+
+                //شرط آخر مثلا برای رابطه پدر یک به یک اصلی به فرعی بود و داده موجود فقط خواندنی باشد
+            }
             var searchCommand = GetCommand(typeof(SearchCommand));
             if (searchCommand != null)
                 searchCommand.CommandManager.SetEnabled(searchCommandEnablity);
 
+            bool clearCommandEnablity = true;
+            if (AreaInitializer.SourceRelationColumnControl != null)
+            {
+                if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly
+                   || ChildRelationshipInfo.IsReadonly
+                || dataList.All(x => x.IsDBRelationship && x.IsReadonlySomeHow))
+                    clearCommandEnablity = false;
+
+                //شرط آخر مثلا برای رابطه پدر یک به یک اصلی به فرعی بود و داده موجود فقط خواندنی باشد
+            }
+
             var clearCommand = GetCommand(typeof(ClearCommand));
             if (clearCommand != null)
             {
-                if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                    clearCommand.CommandManager.SetEnabled(false);
-                else
-                {
-                    clearCommand.CommandManager.SetEnabled(enabled);
-                }
+                clearCommand.CommandManager.SetEnabled(clearCommandEnablity);
             }
-            //  }
-
-
 
             if (TemporaryDisplayView != null && AreaInitializer.SourceRelationColumnControl != null)
             {
-                if (AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
-                {
-                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.Clear, false);
-                    else
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.Clear, enabled);
 
-                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.SerachView, false);
-                    else
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.SerachView, enabled);
-                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.Popup, false);
-                    else
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.Popup, enabled);
+                bool quickSearchEnablity = true;
 
-                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                    {
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.QuickSearch, false);
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.DataView, dataList.Count != 0);
-                    }
-                    else
-                    {
-                        if (enabled)
-                        {
-                            TemporaryDisplayView.DisableEnable(TemporaryLinkType.QuickSearch, TemporaryLinkState.quickSearch);
-                        }
-                        else
-                        {
-                            TemporaryDisplayView.DisableEnable(TemporaryLinkType.QuickSearch, enabled);
-                        }
-                    }
-                    //      TemporaryDisplayView.QuickSearchVisibility = false;
 
-                }
+                if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly
+                   || ChildRelationshipInfo.IsReadonly)
+                    quickSearchEnablity = false;
                 else
+                    quickSearchEnablity = TemporaryLinkState.quickSearch;
+
+
+                bool dataViewEnablity = true;
+                if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly
+                 || ChildRelationshipInfo.IsReadonly)
+                    dataViewEnablity = dataList.Count != 0;
+
+
+                TemporaryLinkState.clear = clearCommandEnablity;
+                TemporaryLinkState.searchView = searchCommandEnablity;
+                TemporaryLinkState.popup = searchCommandEnablity;
+                TemporaryLinkState.quickSearch = quickSearchEnablity;
+                TemporaryLinkState.edit = dataViewEnablity;
+                TemporaryDisplayView.DisableEnable(TemporaryLinkType.Clear, clearCommandEnablity);
+                TemporaryDisplayView.DisableEnable(TemporaryLinkType.SerachView, searchCommandEnablity);
+                TemporaryDisplayView.DisableEnable(TemporaryLinkType.Popup, searchCommandEnablity);
+                TemporaryDisplayView.DisableEnable(TemporaryLinkType.QuickSearch, quickSearchEnablity);
+                TemporaryDisplayView.DisableEnable(TemporaryLinkType.DataView, dataViewEnablity);
+                if (AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaMultipleData)
                 {
+
+
 
                     //var relationshipControl = (AreaInitializer.SourceRelationColumnControl.SourceEditArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.First(x => x.Relationship.ID == ChildRelationshipInfo.Relationship.ID);
                     //relationshipControl.RelationshipControlManager.EnableDisable(ChildRelationshipInfo.SourceData, TemporaryLinkType.DataView, allowdataview);
                     var parentRelationshipControl = AreaInitializer.SourceRelationColumnControl;
                     var parentData = ChildRelationshipInfo.SourceData;
 
-                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Clear, false);
-                    else
-                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Clear, enabled);
 
-                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.SerachView, false);
-                    else
-                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.SerachView, enabled);
-                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Popup, false);
-                    else
-                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Popup, enabled);
+                    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Clear, clearCommandEnablity);
+                    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.SerachView, searchCommandEnablity);
+                    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.Popup, searchCommandEnablity);
 
-                    if (AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                    {
-                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.QuickSearch, false);
-                        parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.DataView, dataList.Count != 0);
 
-                    }
-                    else
-                    {
-                        if (enabled)
-                        {
-                            parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.QuickSearch, TemporaryLinkState.quickSearch);
-                        }
-                        else
-                        {
-                            parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.QuickSearch, enabled);
+                    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.QuickSearch, quickSearchEnablity);
+                    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.DataView, dataViewEnablity);
 
-                        }
-                    }
+
                     //if (isReadonly)
                     //{
                     //    parentRelationshipControl.RelationshipControlManager.EnableDisable(parentData, TemporaryLinkType.QuickSearch, false);
@@ -2949,34 +2954,34 @@ namespace MyUILibrary.EntityArea
 
 
 
-            if (AreaInitializer.SourceRelationColumnControl != null)
-            {
-                if (!isDataView)
-                {
-                    bool allowdataview = true;
-                    if (dataList.Count == 0)
-                    {
-                        allowdataview = false;
-                    }
-                    if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                    {
-                        if (AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
-                        {
-                            TemporaryDisplayView.DisableEnable(TemporaryLinkType.DataView, allowdataview);
-                            TemporaryLinkState.edit = allowdataview;
-                        }
-                        else
-                        {
+            //if (AreaInitializer.SourceRelationColumnControl != null)
+            //{
+            //    if (!isDataView)
+            //    {
+            //        bool allowdataview = true;
+            //        if (dataList.Count == 0)
+            //        {
+            //            allowdataview = false;
+            //        }
+            //        if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+            //        {
+            //            if (AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
+            //            {
+            //                TemporaryDisplayView.DisableEnable(TemporaryLinkType.DataView, allowdataview);
+            //                TemporaryLinkState.edit = allowdataview;
+            //            }
+            //            else
+            //            {
 
-                            var relationshipControl = (AreaInitializer.SourceRelationColumnControl.ParentEditArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.First(x => x.Relationship.ID == ChildRelationshipInfo.Relationship.ID);
-                            relationshipControl.RelationshipControlManager.EnableDisable(ChildRelationshipInfo.SourceData, TemporaryLinkType.DataView, allowdataview);
-                        }
-                    }
+            //                var relationshipControl = (AreaInitializer.SourceRelationColumnControl.ParentEditArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.First(x => x.Relationship.ID == ChildRelationshipInfo.Relationship.ID);
+            //                relationshipControl.RelationshipControlManager.EnableDisable(ChildRelationshipInfo.SourceData, TemporaryLinkType.DataView, allowdataview);
+            //            }
+            //        }
 
-                }
+            //    }
 
 
-            }
+            //}
 
             //      if (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly || ChildRelationshipInfo == null)
             //          return;
@@ -3005,27 +3010,27 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        public void DecideTempViewStaticButtons()
-        {
-            if (AreaInitializer.SourceRelationColumnControl != null)
-            {
-                if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
-                {
-                    if (TemporaryDisplayView != null)
-                    {
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.Clear, false);
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.SerachView, false);
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.Popup, false);
-                        TemporaryDisplayView.DisableEnable(TemporaryLinkType.QuickSearch, false);
-                        TemporaryDisplayView.QuickSearchVisibility = false;
-                    }
-                    TemporaryLinkState.clear = false;
-                    TemporaryLinkState.searchView = false;
-                    TemporaryLinkState.popup = false;
-                    TemporaryLinkState.quickSearch = false;
-                }
-            }
-        }
+        //public void DecideTempViewStaticButtons()
+        //{
+        //    if (AreaInitializer.SourceRelationColumnControl != null)
+        //    {
+        //        if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+        //        {
+        //            if (TemporaryDisplayView != null)
+        //            {
+        //                TemporaryDisplayView.DisableEnable(TemporaryLinkType.Clear, false);
+        //                TemporaryDisplayView.DisableEnable(TemporaryLinkType.SerachView, false);
+        //                TemporaryDisplayView.DisableEnable(TemporaryLinkType.Popup, false);
+        //                TemporaryDisplayView.DisableEnable(TemporaryLinkType.QuickSearch, false);
+        //                TemporaryDisplayView.QuickSearchVisibility = false;
+        //            }
+        //            TemporaryLinkState.clear = false;
+        //            TemporaryLinkState.searchView = false;
+        //            TemporaryLinkState.popup = false;
+        //            TemporaryLinkState.quickSearch = false;
+        //        }
+        //    }
+        //}
 
 
         private I_Command GetCommand(Type type)
@@ -3295,7 +3300,7 @@ namespace MyUILibrary.EntityArea
                     if (hiddenControlState == ImposeControlState.Impose || hiddenControlState == ImposeControlState.Both)
                     {
                         relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(childRelationshipInfo);
-                        relationshipControl.EditNdTypeArea.DecideButtonsEnablity(isReadonly);
+                        relationshipControl.EditNdTypeArea.DecideButtonsEnablity();
                     }
 
                     if (hiddenControlState == ImposeControlState.AddMessageColor || hiddenControlState == ImposeControlState.Both)
@@ -3345,7 +3350,7 @@ namespace MyUILibrary.EntityArea
         //}
 
 
-        public void ChangeDataItemReadonlyFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck)
+        public void ChangeDataItemReadonlyBecauseOfCreatorRelationshipFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck)
         {
             if (skipUICheck)
             {
@@ -3380,7 +3385,23 @@ namespace MyUILibrary.EntityArea
                 }
             }
         }
+
+
+        public void ChangeDataItemReadonlyFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck)
+        {
+            if (!skipUICheck)
+                AddDataBusinessMessage(message, Temp.InfoColor.Red, "DataReadonlyByState", dataItem, ControlItemPriority.High);
+            dataItem.IsReadonlyBecauseOfState = true;
+        }
         public void ChangeClearDataItemReadonlyFromState(DP_DataRepository dataItem, string key, bool skipUICheck)
+        {
+            if (!skipUICheck)
+            {
+                RemoveDataBusinessMessage(dataItem, key);
+            }
+            dataItem.IsReadonlyBecauseOfState = false;
+        }
+        public void ChangeClearDataItemReadonlyBecauseOfCreatorRelationshipFromState(DP_DataRepository dataItem, string key, bool skipUICheck)
         {
             dataItem.IsReadonlyBecauseOfCreatorRelationshipOnState = false;
             if (!skipUICheck)
@@ -3429,7 +3450,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        public void ChangeDataItemVisiblityFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck)
+        public void ChangeDataItemVisiblityBecauseOfCreatorRelationshipFromState(DP_DataRepository dataItem, string message, string key, bool skipUICheck)
         {
             if (skipUICheck)
             {
@@ -3459,7 +3480,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        public void ChangeClearDataItemVisiblityFromState(DP_DataRepository dataItem, string key, bool skipUICheck)
+        public void ChangeClearDataItemVisiblityBecauseOfCreatorRelationshipFromState(DP_DataRepository dataItem, string key, bool skipUICheck)
         {
             dataItem.IsHiddenBecauseOfCreatorRelationshipOnState = false;
             if (!skipUICheck)
@@ -3510,7 +3531,6 @@ namespace MyUILibrary.EntityArea
             //    SetItemMessage(lastOneData, item, ControlOrLabelAsTarget.Control);
             //}
         }
-
 
 
     }

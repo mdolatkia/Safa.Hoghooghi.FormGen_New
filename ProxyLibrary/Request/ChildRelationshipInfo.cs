@@ -205,7 +205,7 @@ namespace ProxyLibrary
                 {
                     if (item.ShoudBeCounted)
                     {
-                        if (item.IsHiddenBecauseOfCreatorRelationshipOnState || this.IsReadonly || item.IsReadonlyBecauseOfCreatorRelationship)
+                        if (item.IsHiddenBecauseOfCreatorRelationshipOnState || this.IsReadonly || item.IsReadonlySomeHow)
                         {
                             if (!DataItemIsAdded(item))
                                 result.Add(item);
@@ -216,7 +216,7 @@ namespace ProxyLibrary
                 }
                 foreach (var item in RemovedOriginalDatas)
                 {
-                    if (item.IsHiddenBecauseOfCreatorRelationshipOnState || this.IsReadonly || item.IsReadonlyBecauseOfCreatorRelationship)
+                    if (item.IsHiddenBecauseOfCreatorRelationshipOnState || this.IsReadonly || item.IsReadonlySomeHow)
                     {
                         result.Add(item);
                     }
@@ -239,7 +239,7 @@ namespace ProxyLibrary
 
         //میشه ریدونلی بودن ریلیشنشیپ رو هم داخل این گذاشت یا لازم نیست؟
         public bool IsReadonly { get; set; }
-
+        این باید خود رابطه را چک کنه همچنین اینکه رابطه کریتورش فقط خواندنی هست یا نه؟ خود موجودیت طرفین هم فکر بشه
 
         List<ChangeMonitor> ChangeMonitorItems = new List<ChangeMonitor>();
 

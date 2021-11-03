@@ -250,7 +250,7 @@ namespace MyUILibrary.EntityArea.Commands
                         //bool skipOriginalData = false;
                        
                             //برای وقتی که شرط داده اجازه حذف میداده و داده حذف شده اما قبل از آپد یت دیگه شرط اجازه حذف را به علت هیدن یا ریدونلی بودن نمیده
-                            if (orginalData.IsHiddenBecauseOfCreatorRelationshipOnState || childItem.IsReadonly || orginalData.IsReadonlyBecauseOfCreatorRelationship
+                            if (orginalData.IsHiddenBecauseOfCreatorRelationshipOnState || childItem.IsReadonly || orginalData.IsReadonlySomeHow
                           
                             )
                             {

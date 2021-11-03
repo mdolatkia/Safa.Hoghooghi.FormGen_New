@@ -560,7 +560,7 @@ namespace ProxyLibrary
         public bool IsReadonlyBecauseOfCreatorRelationshipOnState { get; set; }
         public bool IsReadonlyBecauseOfCreatorRelationshipOnShow { set; get; }
 
-        public bool IsReadonlyBecauseOfCreatorRelationship
+        public bool IsReadonlySomeHow
         {
             get
             {
@@ -581,7 +581,7 @@ namespace ProxyLibrary
                     return false;
                 else if (ParantChildRelationshipInfo != null && ParantChildRelationshipInfo.IsReadonly && ParantChildRelationshipInfo.DataItemIsAdded(this))
                     return false;
-                else if (IsReadonlyBecauseOfCreatorRelationship && ParantChildRelationshipInfo != null && ParantChildRelationshipInfo.DataItemIsAdded(this))
+                else if (IsReadonlySomeHow && ParantChildRelationshipInfo != null && ParantChildRelationshipInfo.DataItemIsAdded(this))
                     return false;
                 return true;
             }

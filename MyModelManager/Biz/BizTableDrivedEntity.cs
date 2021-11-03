@@ -941,9 +941,9 @@ namespace MyModelManager
             // ستونهای disable از لیست ستونها حذف میشوند
 
 
-            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Entity, item.ID.ToString(), columnInfoType.ToString(), relationshipInfoType.ToString());
-            if (cachedItem != null)
-                return (cachedItem as TableDrivedEntityDTO);
+            //var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Entity, item.ID.ToString(), columnInfoType.ToString(), relationshipInfoType.ToString());
+            //if (cachedItem != null)
+            //    return (cachedItem as TableDrivedEntityDTO);
 
 
             TableDrivedEntityDTO result = new TableDrivedEntityDTO();
