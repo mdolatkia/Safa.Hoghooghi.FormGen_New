@@ -79,17 +79,17 @@ namespace MyModelManager
             return bizTableDrivedEntity.DataIsAccessable(requester, entitySearch.TableDrivedEntity1);
 
         }
-        private bool ImposeSecurity(DR_Requester requester, EntitySearchDTO entitySearchDTO, TableDrivedEntity entity)
+        private void ImposeSecurity(DR_Requester requester, EntitySearchDTO entitySearchDTO, TableDrivedEntity entity)
         {
             BizColumn bizColumn = new BizColumn();
 
             if (requester.SkipSecurity)
-                return true;
+                return ;
 
-            if (!bizTableDrivedEntity.DataIsAccessable(requester, entity))
-            {
-                return false;
-            }
+            //if (!bizTableDrivedEntity.DataIsAccessable(requester, entity))
+            //{
+            //    return false;
+            //}
             var permission = bizTableDrivedEntity.GetEntityAssignedPermissions(requester, entitySearchDTO.TableDrivedEntityID, true);
 
             List<EntitySearchColumnsDTO> removeList = new List<ModelEntites.EntitySearchColumnsDTO>();
@@ -125,7 +125,7 @@ namespace MyModelManager
             {
                 entitySearchDTO.EntitySearchAllColumns.Remove(remove);
             }
-            return true;
+           // return true;
 
         }
         private EntitySearchDTO ToEntitySimpleSearch(TableDrivedEntityDTO entityDTO)

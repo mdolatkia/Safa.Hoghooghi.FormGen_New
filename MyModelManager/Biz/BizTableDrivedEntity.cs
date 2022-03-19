@@ -241,7 +241,7 @@ namespace MyModelManager
         public DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, DataEntryRelationshipDTO parentRelationship = null)
         {
             var entity = GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships);
-            var finalEntity = CheckDataEntryPermission(requester, entity, true);
+            var finalEntity = CheckDataEntryPermission(requester, entity, true, parentRelationship);
             return ToDataEntryEntityDTO(requester, finalEntity, parentRelationship);
         }
 
@@ -258,7 +258,7 @@ namespace MyModelManager
                     if (IsReverseRelation(parentRelationship.Relationship, relationship))
                         continue;
 
-              
+
                 DataEntryRelationshipDTO relItem = new DataEntryRelationshipDTO();
                 relItem.Relationship = relationship;
                 if (relationship.TypeEnum == Enum_RelationshipType.OneToMany)
@@ -449,14 +449,16 @@ namespace MyModelManager
             return CheckDataEntryPermission(requester, entity, false);
         }
 
-        private TableDrivedEntityDTO CheckDataEntryPermission(DR_Requester requester, TableDrivedEntityDTO entity, bool dataEntry)
+        private TableDrivedEntityDTO CheckDataEntryPermission(DR_Requester requester, TableDrivedEntityDTO entity, bool dataEntry, DataEntryRelationshipDTO parentRelationship = null)
         {
             //باید روابط اجباری همه برای ورود اطلاعلات فعال باشند. بعداً این کنترلها چک شود
             BizColumn bizColumn = new MyModelManager.BizColumn();
             BizRelationship bizRelationship = new BizRelationship();
             List<ColumnDTO> InValidColumns = new List<ColumnDTO>();
             List<RelationshipDTO> InValidRelationships = new List<RelationshipDTO>();
-            var permission = GetEntityAssignedPermissions(requester, entity.ID, true);
+
+            entity.IsReadonly = DataIsReadonly(requester, entity.ID);
+
             foreach (var rel in entity.Relationships)
             {
                 bool relAccess = bizRelationship.DataIsAccessable(requester, rel.ID, false, true);
@@ -493,8 +495,7 @@ namespace MyModelManager
                 entity.Columns.Remove(removeCol);
             }
 
-            if (!entity.IsReadonly && permission.GrantedActions.Any(x => x == SecurityAction.ReadOnly))
-                entity.IsReadonly = true;
+
 
             if (entity.IsReadonly)
             {
@@ -513,9 +514,21 @@ namespace MyModelManager
                 {
                     relationship.IsReadonly = bizRelationship.DataIsReadonly(requester, relationship.ID);
                 }
+
                 foreach (var column in entity.Columns)
                 {
                     column.IsReadonly = bizColumn.DataIsReadonly(requester, column.ID);
+                    if (!column.IsReadonly)
+                    {
+                        if (parentRelationship != null)
+                        {
+                            if (parentRelationship.Relationship.RelationshipColumns.Any(x => x.SecondSideColumnID == column.ID))
+                            {
+                                if (parentRelationship.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
+                                    column.IsReadonly = true;
+                            }
+                        }
+                    }
                 }
             }
             return entity;

@@ -815,7 +815,7 @@ namespace MyUILibrary.EntityArea
         public ColumnDTO Column { set; get; }
         public I_SimpleControlManager SimpleControlManager { get { return ControlManager as I_SimpleControlManager; } }
 
-        public bool IsReadonly { get; set; }
+      //  public bool IsReadonly { get; set; }
 
         //    public List<ColumnValueRangeDetailsDTO> CurrentItemsSource { get; set; }
 

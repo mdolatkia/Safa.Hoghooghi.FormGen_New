@@ -434,7 +434,12 @@ namespace MyModelManager
                     firstFKCol = relationship.RelationshipColumns.First().Column;
                 else
                     firstFKCol = relationship.RelationshipColumns.First().Column1;
-                if (firstFKCol.IsDisabled)
+
+                BizColumn bizColumn = new BizColumn();
+
+
+                //if (firstFKCol.IsDisabled)
+                if (!bizColumn.DataIsAccessable(requester, firstFKCol.ID))
                     return false;
                 else
                 {
@@ -501,7 +506,12 @@ namespace MyModelManager
                 firstFKCol = relationship.RelationshipColumns.First().Column1;
                 fkEntity = relationship.TableDrivedEntity1;
             }
-            if (firstFKCol.IsReadonly)
+            BizColumn bizColumn = new BizColumn();
+
+
+            //if (firstFKCol.IsDisabled)
+
+            if (bizColumn.DataIsReadonly(requester, firstFKCol))
                 return true;
             else if (bizTableDrivedEntity.DataIsReadonly(requester, fkEntity))
                 return true;

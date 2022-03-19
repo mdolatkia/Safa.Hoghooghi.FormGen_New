@@ -740,21 +740,21 @@ namespace MyModelManager
             }
         }
 
-        public bool DataIsAccessable(DR_Requester requester, int columnID, bool isNotReadonlyCheck = false)
+        public bool DataIsAccessable(DR_Requester requester, int columnID)
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var dbColumn = projectContext.Column.First(x => x.ID == columnID);
-                return DataIsAccessable(requester, dbColumn, isNotReadonlyCheck);
+                return DataIsAccessable(requester, dbColumn);
             }
         }
-        public bool DataIsAccessable(DR_Requester requester, Column column, bool isNotReadonlyCheck = false)
+        public bool DataIsAccessable(DR_Requester requester, Column column)
         {
             SecurityHelper securityHelper = new SecurityHelper();
             if (column.IsDisabled == true)
                 return false;
-            else if (isNotReadonlyCheck && column.IsReadonly)
-                return false;
+            //else if (isNotReadonlyCheck && column.IsReadonly)
+            //    return false;
             else
             {
                 if (requester.SkipSecurity)
@@ -762,8 +762,8 @@ namespace MyModelManager
                 var permission = securityHelper.GetAssignedPermissions(requester, column.ID, false);
                 if (permission.GrantedActions.Any(y => y == SecurityAction.NoAccess))
                     return false;
-                else if (isNotReadonlyCheck && permission.GrantedActions.Any(y => y == SecurityAction.ReadOnly))
-                    return false;
+                //else if (isNotReadonlyCheck && permission.GrantedActions.Any(y => y == SecurityAction.ReadOnly))
+                //    return false;
                 else
                 {
                     return true;
@@ -787,14 +787,19 @@ namespace MyModelManager
                 return true;
             else
             {
-                if (requester.SkipSecurity)
-                    return false;
-                var permission = securityHelper.GetAssignedPermissions(requester, column.ID, false);
-                if (permission.GrantedActions.Any(y => y == SecurityAction.ReadOnly))
+                if (column.IsIdentity == true)
                     return true;
                 else
                 {
-                    return false;
+                    if (requester.SkipSecurity)
+                        return false;
+                    var permission = securityHelper.GetAssignedPermissions(requester, column.ID, false);
+                    if (permission.GrantedActions.Any(y => y == SecurityAction.ReadOnly))
+                        return true;
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
         }
