@@ -1056,7 +1056,7 @@ namespace MyModelManager
                 BizRelationship bizRelationship = new BizRelationship();
                 foreach (var relationship in item.Relationship.Where(x => x.Removed != true))
                 {
-                    var relationshipDTO = bizRelationship.ToRelationshipDTO(relationship);
+                    var relationshipDTO = bizRelationship.ToRelationshipDTO(relationship, true);
 
                     if (specializeRelationships)
                     {

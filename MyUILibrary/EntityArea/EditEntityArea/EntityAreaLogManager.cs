@@ -142,7 +142,7 @@ namespace MyUILibrary.EntityArea
         private EditAreaDataActionLog ToDataLog(DP_DataRepository item)
         {
             EditAreaDataActionLog log = new EditAreaDataActionLog();
-            if (item.ParantChildRelationshipInfo != null && item.ParantChildRelationshipInfo.DataItemIsAdded(item))
+            if (item.ParantChildRelationshipData != null && item.ParantChildRelationshipData.IsAdded)
             {
                 if (item.IsNewItem)
                     log.ActionType = LogAction.AddedToRelationshipNewData;
@@ -211,7 +211,7 @@ namespace MyUILibrary.EntityArea
                 }
                 log.LogProperties.Add(actionLogProperty);
             }
-            foreach (var child in item.ChildRelationshipInfos)
+            foreach (var child in item.ChildRelationshipDatas)
             {
                 var relatedLog = new RelatedDataLog();
                 relatedLog.RelationshipID = child.Relationship.ID;

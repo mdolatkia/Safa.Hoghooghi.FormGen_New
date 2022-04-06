@@ -1525,7 +1525,7 @@ namespace MyModelManager
 
             return dbRelationship;
         }
-        public RelationshipDTO ToRelationshipDTO(DataAccess.Relationship item)
+        public RelationshipDTO ToRelationshipDTO(DataAccess.Relationship item, bool withPair = false)
         {
             //var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Relationship, item.ID.ToString());
             //if (cachedItem != null)
@@ -1648,6 +1648,9 @@ namespace MyModelManager
             //result.IsOtherSideTransferable = item.RelationshipType.IsOtherSideTransferable;
             if (item.RelationshipType.DeleteOption != null)
                 result.DeleteOption = (RelationshipDeleteOption)item.RelationshipType.DeleteOption.Value;
+
+            if (withPair)
+                result.PairRelationship = ToRelationshipDTO(item.Relationship2, false);
 
             CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.Relationship, item.ID.ToString());
             return result;

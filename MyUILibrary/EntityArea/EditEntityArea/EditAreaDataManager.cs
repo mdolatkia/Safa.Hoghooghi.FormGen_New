@@ -17,11 +17,11 @@ namespace MyUILibrary.EntityArea
         public EditAreaDataManager()
         {
             EditEntityAreas = new List<I_EditEntityArea>();
-            DataList = new ObservableCollection<DP_DataRepository>();
+            DataList = new ObservableCollection<DP_FormDataRepository>();
         }
         RelationshipDataManager relationshipManager = new RelationshipDataManager();
         List<I_EditEntityArea> EditEntityAreas { set; get; }
-        ObservableCollection<DP_DataRepository> DataList { set; get; }
+        ObservableCollection<DP_FormDataRepository> DataList { set; get; }
 
         /// <summary>
         /// /////////////////////////مشترک
@@ -30,7 +30,7 @@ namespace MyUILibrary.EntityArea
         /// <param name="editEntityArea"></param>
         /// <param name="parentRelationData"></param>
         /// <returns></returns>
-        public ChildRelationshipInfo SerachDataFromParentRelationForChildDataView(RelationshipDTO relationship, I_EditEntityAreaOneData sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, DP_DataRepository parentRelationData)
+        public ChildRelationshipInfo SerachDataFromParentRelationForChildDataView(RelationshipDTO relationship, I_EditEntityAreaOneData sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControl relationshipColumnControl, DP_FormDataRepository parentRelationData)
         {
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
 
@@ -38,7 +38,7 @@ namespace MyUILibrary.EntityArea
             childRelationshipInfo = parentRelationData.ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationship.ID);
             if (childRelationshipInfo == null)
             {
-                childRelationshipInfo = parentRelationData.AddChildRelationshipInfo(relationship);
+                childRelationshipInfo = parentRelationData.AddChildRelationshipInfo(relationshipColumnControl);
             }
             else
             {
@@ -77,7 +77,7 @@ namespace MyUILibrary.EntityArea
             }
             return childRelationshipInfo;
             //foreach (var item in childFullData)
-            //    searchedData.Add(new Tuple<DP_DataRepository, DP_DataView>(item, null));
+            //    searchedData.Add(new Tuple<DP_FormDataRepository, DP_DataView>(item, null));
 
             //return AddEditSearchData(searchedData, editEntityArea);
         }
@@ -99,10 +99,10 @@ namespace MyUILibrary.EntityArea
             else
                 return null;
         }
-        public ChildRelationshipInfo SerachDataFromParentRelationForChildTempView(RelationshipDTO relationship, I_EditEntityArea sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, DP_DataRepository parentRelationData)
+        public ChildRelationshipInfo SerachDataFromParentRelationForChildTempView(RelationshipDTO relationship, I_EditEntityArea sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControl relationshipColumnControl, DP_FormDataRepository parentRelationData)
         {
 
-            //List<DP_DataRepository> re = null;
+            //List<DP_FormDataRepository> re = null;
             //if (parentRelationData.ChildRelationshipInfos.Any(x => x.Relationship.ID == relationshipID))
             //{
             //    childViewData = new List<DP_DataView>();
@@ -115,14 +115,14 @@ namespace MyUILibrary.EntityArea
             childRelationshipInfo = parentRelationData.ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationship.ID);
             if (childRelationshipInfo == null)
             {
-                childRelationshipInfo = parentRelationData.AddChildRelationshipInfo(relationship);
+                childRelationshipInfo = parentRelationData.AddChildRelationshipInfo(relationshipColumnControl);
             }
             else
             {
                 throw new Exception("Asd");
             }
 
-            List<DP_DataRepository> result = new List<DP_DataRepository>();
+            List<DP_FormDataRepository> result = new List<DP_FormDataRepository>();
             var searchDataItem = relationshipManager.GetSecondSideSearchDataItemByRelationship(parentRelationData, relationship.ID);
 
 
@@ -158,7 +158,9 @@ namespace MyUILibrary.EntityArea
             return childRelationshipInfo;
 
         }
-        public DP_DataRepository ConvertDP_DataViewToDP_DataRepository(DP_DataView item, I_EditEntityArea editEntityArea)
+
+
+        public DP_FormDataRepository ConvertDP_DataViewToDP_DataRepository(DP_DataView item, I_EditEntityArea editEntityArea)
         {
             DP_DataRepository dataRepository = new DP_DataRepository(item.TargetEntityID, item.TargetEntityAlias);
             if (dataRepository.EntityListView == null)
@@ -168,10 +170,11 @@ namespace MyUILibrary.EntityArea
             {
                 dataRepository.AddProperty(editEntityArea.EntityWithSimpleColumns.Columns.First(x => x.ID == key.ColumnID), key.Value);
             }
-            return dataRepository;
+
+            return new DP_FormDataRepository(dataRepository, editEntityArea);
         }
 
-        public bool ConvertDataViewToFullData(int entityID, DP_DataRepository dataITem, I_EditEntityArea editEntityArea)
+        public bool ConvertDataViewToFullData(int entityID, DP_FormDataRepository dataITem, I_EditEntityArea editEntityArea)
         {
             //اوکی نشده
             DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
@@ -230,11 +233,11 @@ namespace MyUILibrary.EntityArea
             else
                 return null;
         }
-        //public List<DP_DataRepository> SearchDataForEditFromExternalSource(int entityID, List<DP_DataRepository> searchViewData, I_EditEntityArea editEntityArea)
+        //public List<DP_FormDataRepository> SearchDataForEditFromExternalSource(int entityID, List<DP_FormDataRepository> searchViewData, I_EditEntityArea editEntityArea)
         //{
 
         //    DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
-        //    List<DP_DataRepository> result = new List<DP_DataRepository>();
+        //    List<DP_FormDataRepository> result = new List<DP_FormDataRepository>();
         //    foreach (var item in searchViewData)
         //    {
         //        foreach (var col in item.KeyProperties)
@@ -271,7 +274,7 @@ namespace MyUILibrary.EntityArea
                 return null;
         }
 
-        //public List<DP_DataView> SearchDataForViewFromExternalSource(int entityID, List<DP_DataRepository> searchViewData, I_EditEntityArea editEntityArea)
+        //public List<DP_DataView> SearchDataForViewFromExternalSource(int entityID, List<DP_FormDataRepository> searchViewData, I_EditEntityArea editEntityArea)
         //{
         //    //اوکی نشده
         //    DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
@@ -294,7 +297,7 @@ namespace MyUILibrary.EntityArea
         //    }
         //    return result;
         //}
-        public DP_DataRepository GetFullDataFromDataViewSearch(int entityID, DP_DataView searchViewData, I_EditEntityArea editEntityArea)
+        public DP_FormDataRepository GetFullDataFromDataViewSearch(int entityID, DP_DataView searchViewData, I_EditEntityArea editEntityArea)
         {
             //سکوریتی داده اعمال میشود
             DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
@@ -310,7 +313,7 @@ namespace MyUILibrary.EntityArea
             {
                 var froundItem = res[0];
                 froundItem.DataView = searchViewData;
-                return froundItem;
+                return new DP_FormDataRepository(froundItem, editEntityArea);
             }
 
             else
@@ -320,11 +323,11 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        //public List<DP_DataRepository> GetFullDataFromDataViewSearch(int entityID, List<DP_DataView> searchViewData, I_EditEntityArea editEntityArea)
+        //public List<DP_FormDataRepository> GetFullDataFromDataViewSearch(int entityID, List<DP_DataView> searchViewData, I_EditEntityArea editEntityArea)
         //{
         //    //سکوریتی داده اعمال میشود
         //    //حتما اینجا باید وقتی بیاد که فرم شروع کننه باشد
-        //    List<DP_DataRepository> result = new List<DP_DataRepository>();
+        //    List<DP_FormDataRepository> result = new List<DP_FormDataRepository>();
         //    foreach (var item in searchViewData)
         //    {
         //        DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
@@ -350,7 +353,7 @@ namespace MyUILibrary.EntityArea
         //    return result;
         //}
 
-        //public void ConvertDataViewToFullData(int entityID, List<DP_DataRepository> searchViewDatas, I_EditEntityArea editEntityArea)
+        //public void ConvertDataViewToFullData(int entityID, List<DP_FormDataRepository> searchViewDatas, I_EditEntityArea editEntityArea)
         //{
         //    foreach (var searchViewData in searchViewData)
         //    {
@@ -367,18 +370,18 @@ namespace MyUILibrary.EntityArea
         //    }
         //}
 
-        //public List<DP_DataRepository> ConvertDP_DataViewToDP_DataRepository(List<DP_DataView> searechedData, I_EditEntityArea editEntityArea)
+        //public List<DP_FormDataRepository> ConvertDP_DataViewToDP_FormDataRepository(List<DP_DataView> searechedData, I_EditEntityArea editEntityArea)
         //{
-        //    List<DP_DataRepository> result = new List<DP_DataRepository>();
+        //    List<DP_FormDataRepository> result = new List<DP_FormDataRepository>();
         //    foreach (var item in searechedData)
         //        result.Add(ConvertDataViewToDataRepository(item, editEntityArea));
         //    return result;
         //}
 
-        //private List<DP_DataRepository> AddEditSearchData(List<Tuple<DP_DataRepository, DP_DataView>> searchedData, I_EditEntityArea editEntityArea)
+        //private List<DP_FormDataRepository> AddEditSearchData(List<Tuple<DP_FormDataRepository, DP_DataView>> searchedData, I_EditEntityArea editEntityArea)
         //{
         //    CheckEditArea(editEntityArea);
-        //    List<DP_DataRepository> result = new List<DP_DataRepository>();
+        //    List<DP_FormDataRepository> result = new List<DP_FormDataRepository>();
         //    //bool newItemAdded = false;
         //    foreach (var titem in searchedData)
         //    {
@@ -437,10 +440,10 @@ namespace MyUILibrary.EntityArea
         //{
 
         //}
-        //private List<DP_DataRepository> AddViewSearchData(List<DP_DataView> searchedData, I_EditEntityArea editEntityArea)
+        //private List<DP_FormDataRepository> AddViewSearchData(List<DP_DataView> searchedData, I_EditEntityArea editEntityArea)
         //{
         //    CheckEditArea(editEntityArea);
-        //    List<DP_DataRepository> result = new List<DP_DataRepository>();
+        //    List<DP_FormDataRepository> result = new List<DP_FormDataRepository>();
         //    foreach (var item in searchedData)
         //    {
         //        var keys = item.Properties.Where(x => x.IsKey);
@@ -467,12 +470,12 @@ namespace MyUILibrary.EntityArea
         //    return result;
         //}
 
-        //private DP_DataRepository ConvertDataViewToDataRepository(DP_DataView item, I_EditEntityArea editEntityArea)
+        //private DP_FormDataRepository ConvertDataViewToDataRepository(DP_DataView item, I_EditEntityArea editEntityArea)
         //{
 
         //}
 
-        //private void CheckItemInfo(DP_DataRepository mainItem, I_EditEntityArea editEntityArea)
+        //private void CheckItemInfo(DP_FormDataRepository mainItem, I_EditEntityArea editEntityArea)
         //{
         //    if (string.IsNullOrEmpty(mainItem.ViewInfo))
 
@@ -541,7 +544,7 @@ namespace MyUILibrary.EntityArea
         //}
 
 
-        //private void CheckItemInfo(DP_DataRepository mainItem, DP_DataRepository viewItem, I_EditEntityArea editEntityArea)
+        //private void CheckItemInfo(DP_FormDataRepository mainItem, DP_FormDataRepository viewItem, I_EditEntityArea editEntityArea)
         //{
         //    if (string.IsNullOrEmpty(mainItem.ViewInfo))
         //    {
@@ -590,7 +593,7 @@ namespace MyUILibrary.EntityArea
         //}
 
 
-        //public List<DP_DataRepository> SerachDataViewFromParentRelation(int relationshipID, DP_DataRepository parentRelationData)
+        //public List<DP_FormDataRepository> SerachDataViewFromParentRelation(int relationshipID, DP_FormDataRepository parentRelationData)
         //{
         //    return null;
         //}
@@ -601,7 +604,7 @@ namespace MyUILibrary.EntityArea
         //{
         //    //if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         //    //{
-        //    //    foreach (DP_DataRepository item in e.NewItems)
+        //    //    foreach (DP_FormDataRepository item in e.NewItems)
         //    //    {
         //    //        if (item.IsNewItem)
         //    //        {
@@ -670,27 +673,27 @@ namespace MyUILibrary.EntityArea
 
         //}
 
-        private string GetInfo(DP_DataRepository dP_DataRepository, I_EditEntityArea editEntityArea)
+        private string GetInfo(DP_FormDataRepository DP_FormDataRepository, I_EditEntityArea editEntityArea)
         {
             string result = "";
-            if (dP_DataRepository.DataView == null)
+            if (DP_FormDataRepository.DataView == null)
             {
-                if (!dP_DataRepository.IsFullData)
+                if (!DP_FormDataRepository.IsFullData)
                     throw new Exception("Asdadsf");
                 var columns = editEntityArea.DefaultEntityListViewDTO.EntityListViewAllColumns.Where(x => x.RelationshipTailID == 0);
                 if (columns.Any())
                 {
                     foreach (var item in columns)
                     {
-                        var property = dP_DataRepository.GetProperty(item.ColumnID);
+                        var property = DP_FormDataRepository.GetProperty(item.ColumnID);
                         result += (result == "" ? "" : ",") + property.Name + ":" + property.Value;
                     }
                 }
                 else
                 {
-                    foreach (var item in dP_DataRepository.GetProperties().Take(3))
+                    foreach (var item in DP_FormDataRepository.GetProperties().Take(3))
                     {
-                        var property = dP_DataRepository.GetProperty(item.ColumnID);
+                        var property = DP_FormDataRepository.GetProperty(item.ColumnID);
                         result += (result == "" ? "" : ",") + property.Name + ":" + property.Value;
                     }
                     result += " ...";
@@ -698,9 +701,9 @@ namespace MyUILibrary.EntityArea
             }
             else
             {
-                foreach (var item in dP_DataRepository.DataView.Properties)
+                foreach (var item in DP_FormDataRepository.DataView.Properties)
                 {
-                    //var column = dP_DataRepository.DataView.Properties;
+                    //var column = DP_FormDataRepository.DataView.Properties;
                     result += (result == "" ? "" : ",") + item.Name + ":" + item.Value;
                 }
             }
@@ -709,7 +712,9 @@ namespace MyUILibrary.EntityArea
 
 
 
-        //private   GetDataItemInfo(I_EditEntityArea editArea, DP_DataRepository specificDate)
+
+
+        //private   GetDataItemInfo(I_EditEntityArea editArea, DP_FormDataRepository specificDate)
         //{
 
         //    return title;

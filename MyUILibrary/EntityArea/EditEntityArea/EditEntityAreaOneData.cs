@@ -33,7 +33,7 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        public override bool AddData(DP_DataRepository data, bool showDataInDataView)
+        public override bool AddData(DP_FormDataRepository data, bool showDataInDataView)
         {
             if (base.BaseAddData(data))
             {
@@ -56,10 +56,10 @@ namespace MyUILibrary.EntityArea
                 return false;
             //ManageDataSecurity();
         }
-        public void OnDataItemSelected(DP_DataRepository dP_DataRepository)
+        public void OnDataItemSelected(DP_FormDataRepository DP_FormDataRepository)
         {
             if (DataItemSelected != null)
-                DataItemSelected(this, new EditAreaDataItemArg() { DataItem = dP_DataRepository });
+                DataItemSelected(this, new EditAreaDataItemArg() { DataItem = DP_FormDataRepository });
         }
         public void ShowDataFromExternalSource(DP_DataView dataRepository = null)
         {
@@ -338,7 +338,7 @@ namespace MyUILibrary.EntityArea
 
             if (shouldCreatData)
             {
-                DP_DataRepository newData = AgentHelper.CreateAreaInitializerNewData(this);
+                var newData = AgentHelper.CreateAreaInitializerNewData(this);
                 var addResult = AddData(newData, true);
                 if (!addResult)
                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده پیش فرض و یا داده های وابسته", newData.ViewInfo, Temp.InfoColor.Red);
@@ -370,7 +370,7 @@ namespace MyUILibrary.EntityArea
         }
 
         //صدا زده میشود RelationData تنها بوسیله ShowData برای نمایش داده های اضافه شده در آن صدا زده میشود.در مابقی موارد ShowData که AddData فقط یکجا مشخص میشود و آنهم در specificDate
-        public override bool ShowDataInDataView(DP_DataRepository specificDate)
+        public override bool ShowDataInDataView(DP_FormDataRepository specificDate)
         {
 
             if (!specificDate.IsFullData)
@@ -415,16 +415,16 @@ namespace MyUILibrary.EntityArea
                 {
                     if (!relationshipFirstSideHasValue)
                     {
-                        childData = specificDate.AddChildRelationshipInfo(relationshipControl.Relationship);
+                        childData = specificDate.AddChildRelationshipInfo(relationshipControl);
                     }
                     else
                     {
                         bool childIsDataView = (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
                                                relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
                         if (childIsDataView)
-                            childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildDataView(relationshipControl.Relationship, this, relationshipControl.EditNdTypeArea, specificDate);
+                            childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildDataView(relationshipControl.Relationship, this, relationshipControl.EditNdTypeArea, relationshipControl, specificDate);
                         else
-                            childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildTempView(relationshipControl.Relationship, this, relationshipControl.EditNdTypeArea, specificDate);
+                            childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildTempView(relationshipControl.Relationship, this, relationshipControl.EditNdTypeArea, relationshipControl, specificDate);
                     }
                 }
                 if (childData.SecurityIssue == false)
@@ -477,14 +477,15 @@ namespace MyUILibrary.EntityArea
         //اونی که کلید نداره قتی اول میشه موقع آپدیت اونی که کلید داره مقدار موجود اولیو نمیگیره؟؟
 
         //تنها یکبار و برای نمایش مقادیر در کنترلهای ساده و غیر فرمی صدا زده میشود
-        //public bool ShowTypePropertyControlValue(DP_DataRepository dataItem, SimpleColumnControl typePropertyControl, string value)
+        //public bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControl typePropertyControl, string value)
         //{
         //    return typePropertyControl.SetValue(value);
 
         //}
-        public void SetBinding(DP_DataRepository dataItem, SimpleColumnControl typePropertyControl, EntityInstanceProperty property)
+        public void SetBinding(DP_FormDataRepository dataItem, SimpleColumnControl simpleColumnControl, EntityInstanceProperty property)
         {
-            typePropertyControl.SimpleControlManager.SetBinding(dataItem, property);
+            dataItem.AddChildSimpleContorlProperty(simpleColumnControl, property);
+            simpleColumnControl.SimpleControlManager.SetBinding(dataItem, property);
         }
 
 

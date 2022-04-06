@@ -291,23 +291,23 @@ namespace MyFormulaFunctionStateFunctionLibrary
         private List<DP_DataRepository> GetRelatedDataItems(DP_DataRepository dataItem, RelationshipDTO relationship, List<EntityInstanceProperty> relationshipProperties)
         {
             List<DP_DataRepository> result = new List<DP_DataRepository>();
-            var childRelationshipInfo = dataItem.ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationship.ID);
+            var childRelationshipInfo = dataItem.ChildRelationshipDatas.FirstOrDefault(x => x.Relationship.ID == relationship.ID);
             //فقط فول ها حسابند چون داده باید کامل باشه که تمامی فیلدها برای محاسبه حاضر باشند
             if (childRelationshipInfo != null && !childRelationshipInfo.RelatedData.Any(x => !x.IsFullData))
                 result = childRelationshipInfo.RelatedData.ToList();
             else
             {
                 bool gotFromParant = false;
-                if (dataItem.ParantChildRelationshipInfo != null)
+                if (dataItem.ParantChildRelationshipData != null)
                 {
                     //اگر داده پرنت بصورت بازگشتی صدا زده شده باشد از پایگاه داده نمی خواند و سعی میکند از همان داده پرنت هر چه که هست استفاده کند
 
                     //چون غیر از چند به یک همه داده های رابطه موجودند
-                    if (dataItem.ParantChildRelationshipInfo.Relationship.TypeEnum != Enum_RelationshipType.ManyToOne)
+                    if (dataItem.ParantChildRelationshipData.ToRelationship.TypeEnum != Enum_RelationshipType.OneToMany)
                     {
-                        if (dataItem.ParantChildRelationshipInfo.Relationship.ID == relationship.PairRelationshipID)
+                        if (dataItem.ParantChildRelationshipData.RelationshipID == relationship.ID)
                         {
-                            result.Add(dataItem.ParantChildRelationshipInfo.SourceData);
+                            result.Add(dataItem.ParantChildRelationshipData.SourceData);
                             gotFromParant = true;
                         }
                     }

@@ -32,7 +32,7 @@ namespace MyUILibrary.EntityArea
             //SimpleColumnControls = new List<SimpleColumnControl>();
             //RelationshipColumnControls = new List<RelationshipColumnControl>();
         }
-        public void RemoveData(List<DP_DataRepository> datas, bool fromDataView)
+        public void RemoveData(List<DP_FormDataRepository> datas, bool fromDataView)
         {
             //DataChangedFromDataView = fromDataView;
             if (AreaInitializer.SourceRelationColumnControl == null)
@@ -64,7 +64,7 @@ namespace MyUILibrary.EntityArea
             }
 
         }
-        //private void View_ButtonClicked(object sender, ConfirmModeClickedArg e, List<DP_DataRepository> deleteDataList)
+        //private void View_ButtonClicked(object sender, ConfirmModeClickedArg e, List<DP_FormDataRepository> deleteDataList)
         //{
         //    I_ViewDeleteInquiry view = sender as I_ViewDeleteInquiry;
         //    if (view != null)
@@ -87,14 +87,15 @@ namespace MyUILibrary.EntityArea
         //        }
         //    }
         //}
-        public void RemoveData(DP_DataRepository data, bool fromDataView)
+        public void RemoveData(DP_FormDataRepository data, bool fromDataView)
         {
             //DataChangedFromDataView = fromDataView;
             GetDataList().Remove(data);
             RemoveDataContainer(data);
 
         }
-        public override bool AddData(DP_DataRepository data, bool showDataInDataView)
+      
+        public override bool AddData(DP_FormDataRepository data, bool showDataInDataView)
         {
             if (base.BaseAddData(data))
             {
@@ -121,17 +122,17 @@ namespace MyUILibrary.EntityArea
                 if (DataItemRemoved != null)
                 {
                     foreach (var item in list)
-                        DataItemRemoved(this, new EditAreaDataItemArg() { DataItem = item as DP_DataRepository });
+                        DataItemRemoved(this, new EditAreaDataItemArg() { DataItem = item as DP_FormDataRepository });
                 }
             }
         }
-        private void RemoveDataContainer(DP_DataRepository dataItem)
+        private void RemoveDataContainer(DP_FormDataRepository dataItem)
         {
             (DataView as I_View_EditEntityAreaMultiple).RemoveDataContainer(dataItem);
             if (DataItemRemoved != null)
                 DataItemRemoved(this, new EditAreaDataItemArg() { DataItem = dataItem });
         }
-        public bool ShowDatasInDataView(List<DP_DataRepository> dataItems)
+        public bool ShowDatasInDataView(List<DP_FormDataRepository> dataItems)
         {
             bool result = true;
             foreach (var item in dataItems)
@@ -142,13 +143,13 @@ namespace MyUILibrary.EntityArea
             }
             return result;
         }
-        public override bool ShowDataInDataView(DP_DataRepository dataItem)
+        public override bool ShowDataInDataView(DP_FormDataRepository dataItem)
         {
             (DataView as I_View_EditEntityAreaMultiple).AddDataContainer(dataItem);
             return InternalShowDataInDataView(dataItem);
         }
         //بعدا بررسی شود
-        private bool InternalShowDataInDataView(DP_DataRepository specificDate)
+        private bool InternalShowDataInDataView(DP_FormDataRepository specificDate)
         {
             if (!specificDate.IsFullData)
                 throw new Exception("asdasd");
@@ -201,9 +202,9 @@ namespace MyUILibrary.EntityArea
                 else
                 {
                     if (!relationshipFirstSideHasValue)
-                        childData = specificDate.AddChildRelationshipInfo(relationshipControl.Relationship);
+                        childData = specificDate.AddChildRelationshipInfo(relationshipControl);
                     else
-                        childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildTempView(relationshipControl.Relationship, this, relationshipControl.EditNdTypeArea, specificDate);
+                        childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildTempView(relationshipControl.Relationship, this, relationshipControl.EditNdTypeArea, relationshipControl, specificDate);
 
                 }
                 if (childData.SecurityIssue == false)
@@ -343,34 +344,34 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        private void SearchViewEntityArea_DataSelected(object sender, DataSelectedEventArg e)
-        {
-            foreach (var data in e.DataItem)
-            {
-                DP_DataRepository result = null;
-                if (SearchViewEntityArea.IsCalledFromDataView)
-                {
-                    result = AreaInitializer.EditAreaDataManager.GetFullDataFromDataViewSearch(AreaInitializer.EntityID, data, this);
+        //private void SearchViewEntityArea_DataSelected(object sender, DataSelectedEventArg e)
+        //{
+        //    foreach (var data in e.DataItem)
+        //    {
+        //        DP_FormDataRepository result = null;
+        //        if (SearchViewEntityArea.IsCalledFromDataView)
+        //        {
+        //            result = AreaInitializer.EditAreaDataManager.GetFullDataFromDataViewSearch(AreaInitializer.EntityID, data, this);
 
-                }
-                else
-                {
-                    result = AreaInitializer.EditAreaDataManager.ConvertDP_DataViewToDP_DataRepository(data, this);
-                }
+        //        }
+        //        else
+        //        {
+        //            result = AreaInitializer.EditAreaDataManager.ConvertDP_DataViewToDP_DataRepository(data, this);
+        //        }
 
-                if (result != null)
-                {
-                    bool addResult = AddData(result, SearchViewEntityArea.IsCalledFromDataView);
-                    if (!addResult)
-                        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", data.ViewInfo, Temp.InfoColor.Red);
+        //        if (result != null)
+        //        {
+        //            bool addResult = AddData(result, SearchViewEntityArea.IsCalledFromDataView);
+        //            if (!addResult)
+        //                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", data.ViewInfo, Temp.InfoColor.Red);
 
-                }
-                else
-                {
-                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", e.DataItem.First().ViewInfo, Temp.InfoColor.Red);
-                }
-            }
-        }
+        //        }
+        //        else
+        //        {
+        //            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", e.DataItem.First().ViewInfo, Temp.InfoColor.Red);
+        //        }
+        //    }
+        //}
 
         public I_View_EditEntityAreaMultiple SpecializedDataView
         {
@@ -402,19 +403,19 @@ namespace MyUILibrary.EntityArea
         //    return searchViewEntityArea;
         //}
 
-        public List<DP_DataRepository> GetSelectedData()
+        public List<DP_FormDataRepository> GetSelectedData()
         {
-            List<DP_DataRepository> selectedData = (DataView as I_View_EditEntityAreaMultiple).GetSelectedData().Cast<DP_DataRepository>().ToList();
+            List<DP_FormDataRepository> selectedData = (DataView as I_View_EditEntityAreaMultiple).GetSelectedData().Cast<DP_FormDataRepository>().ToList();
             return selectedData;
         }
 
 
-        public void SetBinding(DP_DataRepository dataItem, SimpleColumnControl typePropertyControl, EntityInstanceProperty property)
+        public void SetBinding(DP_FormDataRepository dataItem, SimpleColumnControl typePropertyControl, EntityInstanceProperty property)
         {
             typePropertyControl.SimpleControlManager.SetBinding(dataItem, property);
         }
 
-        public bool ShowTypePropertyControlValue(DP_DataRepository dataItem, SimpleColumnControl typePropertyControl, string value)
+        public bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControl typePropertyControl, string value)
         {
 
             //ColumnSetting columnSetting = new ColumnSetting();
@@ -436,7 +437,7 @@ namespace MyUILibrary.EntityArea
 
 
 
-        public object FetchTypePropertyControlValue(DP_DataRepository dataRepository, SimpleColumnControl SimpleColumnControlMultipleData)
+        public object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControl SimpleColumnControlMultipleData)
         {
             //if (AreaInitializer.DataMode == DataMode.Multiple)
             return SimpleColumnControlMultipleData.SimpleControlManager.GetValue(dataRepository);

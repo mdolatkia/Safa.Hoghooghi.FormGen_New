@@ -26,8 +26,8 @@ namespace MyUILibrary.EntityArea.Commands
 
         private void CommandManager_Clicked(object sender, EventArgs e)
         {
-            int relationID = 0;
-            DP_DataRepository RelationData = null;
+            //int relationID = 0;
+            //DP_DataRepository RelationData = null;
             //if (EditArea.AreaInitializer.SourceRelationColumnControl != null)
             //{
             //    relationID = EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.ID;
@@ -35,8 +35,8 @@ namespace MyUILibrary.EntityArea.Commands
             //    //if (RelationData != null)
             //    //    RelationData.ValueChanged = true;
             //}
-           
-            DP_DataRepository newData = AgentHelper.CreateAreaInitializerNewData(EditArea);
+
+            var newData = AgentHelper.CreateAreaInitializerNewData(EditArea);
             //var list = AgentHelper.CreateListFromSingleObject<DP_DataRepository>(newData);
             //if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
             //{

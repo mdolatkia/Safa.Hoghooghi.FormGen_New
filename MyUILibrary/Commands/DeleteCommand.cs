@@ -36,7 +36,7 @@ namespace MyUILibrary.EntityArea.Commands
             }
             else if (EditArea.AreaInitializer.DataMode == DataMode.Multiple)
             {
-                dataList = (EditArea as I_EditEntityAreaMultipleData).GetSelectedData();
+                dataList = (EditArea as I_EditEntityAreaMultipleData).GetSelectedData().ToList<DP_DataRepository>();
             }
             if (dataList.Count != 0 && !dataList.Any(x => x.IsNewItem == true))
             {
@@ -56,7 +56,7 @@ namespace MyUILibrary.EntityArea.Commands
                 else
                 {
                     view.SetUserConfirmMode(UserDialogMode.YesNo);
-                    if (reuslt.DataTreeItems.Any(x => x.ChildRelationshipInfos.Any(y => y.RelationshipDeleteOption == ModelEntites.RelationshipDeleteOption.DeleteCascade && y.RelatedData.Any())))
+                    if (reuslt.DataTreeItems.Any(x => x.ChildRelationshipDatas.Any(y => y.RelationshipDeleteOption == ModelEntites.RelationshipDeleteOption.DeleteCascade && y.RelatedData.Any())))
                         view.SetMessage("داده های وابسته نمایش داده شده نیز حذف خواهند شد. آیا مطمئن هستید؟");
                     else
                         view.SetMessage("داده های نمایش داده شده حذف خواهد شد. آیا مطمئن هستید؟");

@@ -35,7 +35,7 @@ namespace MyUILibraryInterfaces.FormulaCalculationArea
     public class FormulaCalculationAreaInitializer
     {
         public SimpleColumnControl ColumnControl { get; set; }
-        public DP_DataRepository DataItem { set; get; }
+        public DP_FormDataRepository DataItem { set; get; }
         public ColumnCustomFormulaDTO ColumnCustomFormula { set; get; }
 
         public I_UIFomulaManager FomulaManager { set; get; }

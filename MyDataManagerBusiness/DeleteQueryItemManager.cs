@@ -41,7 +41,7 @@ namespace MyDataEditManagerBusiness
 
         public bool GetTreeItems(DR_Requester requester, DP_DataRepository deleteDataItem, DP_DataRepository rootDeleteItem)
         {
-            List<ChildRelationshipInfo> result = new List<ChildRelationshipInfo>();
+            List<ChildRelationshipData> result = new List<ChildRelationshipData>();
             bool loop = false;
             //   DP_DataRepository resultItem = item;
             var entity = bizTableDrivedEntity.GetTableDrivedEntity(requester, deleteDataItem.TargetEntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
@@ -57,20 +57,25 @@ namespace MyDataEditManagerBusiness
                     var searchViewResult = SearchRequestManager.Process(searchViewRequest);
                     if (searchViewResult.ResultDataItems.Any())
                     {
-                        var childRelationshipInfo = new ChildRelationshipInfo();
-                        childRelationshipInfo.SourceData = deleteDataItem;
-                        childRelationshipInfo.Relationship = relationship;
-                        result.Add(childRelationshipInfo);
-                        childRelationshipInfo.RelationshipDeleteOption = relationship.DeleteOption;
-                        deleteDataItem.ChildRelationshipInfos.Add(childRelationshipInfo);
-                        if (childRelationshipInfo.RelationshipDeleteOption == RelationshipDeleteOption.SetNull)
+                     
+
+                        var ChildRelationshipData = new ChildRelationshipData();
+                        ChildRelationshipData.SourceData = deleteDataItem;
+                        ChildRelationshipData.Relationship = relationship;
+                        result.Add(ChildRelationshipData);
+                        ChildRelationshipData.RelationshipDeleteOption = relationship.DeleteOption;
+                        deleteDataItem.ChildRelationshipDatas.Add(ChildRelationshipData);
+
+                        var ParentRelationshipData = new ParentRelationshipData(ChildRelationshipData);
+
+                        if (ChildRelationshipData.RelationshipDeleteOption == RelationshipDeleteOption.SetNull)
                         {
                             foreach (var childItem in searchViewResult.ResultDataItems)
                             {
                                 DP_DataRepository dataItem = new DP_DataRepository(childItem.TargetEntityID, childItem.TargetEntityAlias);
                                 dataItem.DataView = childItem;
-                                dataItem.ParantChildRelationshipInfo = childRelationshipInfo;
-                                childRelationshipInfo.RelatedData.Add(dataItem);
+                                dataItem.ParantChildRelationshipData = ParentRelationshipData;
+                                ChildRelationshipData.RelatedData.Add(dataItem);
 
 
                             }
@@ -80,7 +85,7 @@ namespace MyDataEditManagerBusiness
                             bool repeatedInParents = false;
                             foreach (var childItem in searchViewResult.ResultDataItems)
                             {//هردفعه پرنتها برای هر ایتم گرفته نشود
-                                List<DP_DataRepository> parents = GetParentDataItems(childRelationshipInfo);
+                                List<DP_DataRepository> parents = GetParentDataItems(ParentRelationshipData);
                                 if (parents.Any(z => z.TargetEntityID == childItem.TargetEntityID && z.KeyProperties.All(x => childItem.Properties.Any(y => y.IsKey && x.ColumnID == y.ColumnID && x.Value == y.Value))))
                                 {
                                     var parentRepeted = parents.First(z => z.TargetEntityID == childItem.TargetEntityID && z.KeyProperties.All(x => childItem.Properties.Any(y => y.IsKey && x.ColumnID == y.ColumnID && x.Value == y.Value)));
@@ -88,9 +93,9 @@ namespace MyDataEditManagerBusiness
                                     repeatedInParents = true;
                                     DP_DataRepository dataItem = new DP_DataRepository(childItem.TargetEntityID, childItem.TargetEntityAlias);
                                     dataItem.DataView = childItem;
-                                    dataItem.ParantChildRelationshipInfo = childRelationshipInfo;
+                                    dataItem.ParantChildRelationshipData = ParentRelationshipData;
                                     dataItem.Error = "وابستگی تکراری با " + parentRepeted.ViewInfo;
-                                    childRelationshipInfo.RelatedData.Add(dataItem);
+                                    ChildRelationshipData.RelatedData.Add(dataItem);
                                 }
                             }
                             if (!repeatedInParents)
@@ -105,8 +110,8 @@ namespace MyDataEditManagerBusiness
                                     {
                                         DP_DataRepository dataItem = new DP_DataRepository(childItem.TargetEntityID, childItem.TargetEntityAlias);
                                         dataItem.DataView = childItem;
-                                        dataItem.ParantChildRelationshipInfo = childRelationshipInfo;
-                                        childRelationshipInfo.RelatedData.Add(dataItem);
+                                        dataItem.ParantChildRelationshipData = ParentRelationshipData;
+                                        ChildRelationshipData.RelatedData.Add(dataItem);
                                         var innerloop = GetTreeItems(requester, dataItem, rootDeleteItem);
                                         if (innerloop)
                                         {
@@ -141,14 +146,14 @@ namespace MyDataEditManagerBusiness
                 return null;
         }
 
-        private List<DP_DataRepository> GetParentDataItems(ChildRelationshipInfo childRelationshipInfo, List<DP_DataRepository> items = null)
+        private List<DP_DataRepository> GetParentDataItems(ParentRelationshipData ParentRelationshipData, List<DP_DataRepository> items = null)
         {
             if (items == null)
                 items = new List<DP_DataRepository>();
-            if (childRelationshipInfo != null)
+            if (ParentRelationshipData != null)
             {
-                items.Add(childRelationshipInfo.SourceData);
-                return GetParentDataItems(childRelationshipInfo.SourceData.ParantChildRelationshipInfo, items);
+                items.Add(ParentRelationshipData.SourceData);
+                return GetParentDataItems(ParentRelationshipData.SourceData.ParantChildRelationshipData, items);
             }
             else
             {
@@ -161,7 +166,7 @@ namespace MyDataEditManagerBusiness
             //برای برابری یه چیز کاملتو عمومی نوشته شود
             if (treeItem.TargetEntityID == childItem.TargetEntityID && treeItem.KeyProperties.All(x => childItem.Properties.Any(y => y.IsKey && x.ColumnID == y.ColumnID && x.Value == y.Value)))
                 return true;
-            foreach (var childInfo in treeItem.ChildRelationshipInfos.Where(x => x.RelatedData.Any(y => y.TargetEntityID == childItem.TargetEntityID)))
+            foreach (var childInfo in treeItem.ChildRelationshipDatas.Where(x => x.RelatedData.Any(y => y.TargetEntityID == childItem.TargetEntityID)))
             {
                 foreach (var item in childInfo.RelatedData)
                     return ChildItemExistInTree(item, childItem);
@@ -242,15 +247,15 @@ namespace MyDataEditManagerBusiness
             else
                 return "'" + value + "'";
         }
-        private List<QueryItem> GetDeleteQueryQueue(DR_Requester requester, DP_DataRepository item, ChildRelationshipInfo parentChildRelatoinshipInfo = null, List<QueryItem> result = null)
+        private List<QueryItem> GetDeleteQueryQueue(DR_Requester requester, DP_DataRepository item, ChildRelationshipData  parentChildRelatoinshipInfo = null, List<QueryItem> result = null)
         {
             //اینجا کوئری آیتمها بصورت درختی ست نمیشوند چون لازم نیست همینکه بترتیب می آیند کافی است
             if (result == null)
                 result = new List<QueryItem>();
 
-            if (item.ChildRelationshipInfos.Any(x => x.RelatedData.Any()))
+            if (item.ChildRelationshipDatas.Any(x => x.RelatedData.Any()))
             {
-                foreach (var child in item.ChildRelationshipInfos)
+                foreach (var child in item.ChildRelationshipDatas)
                 {
                     //اول زیر مجموعه ها حذف شوند 
                     foreach (var cItem in child.RelatedData)
@@ -262,7 +267,7 @@ namespace MyDataEditManagerBusiness
             return result;
         }
 
-        private Tuple<Enum_QueryItemType, List<EntityInstanceProperty>> GetQueryDeleteOrUpdateNull(DP_DataRepository item, ChildRelationshipInfo parentChildRelatoinshipInfo)
+        private Tuple<Enum_QueryItemType, List<EntityInstanceProperty>> GetQueryDeleteOrUpdateNull(DP_DataRepository item, ChildRelationshipData parentChildRelatoinshipInfo)
         {
 
             Enum_QueryItemType queryItemType;

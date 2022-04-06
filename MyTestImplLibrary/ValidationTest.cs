@@ -14,7 +14,7 @@ namespace MyTestImplLibrary
         public FunctionResult ValidateServiceRequest(CodeFunctionParamOneDataItem data)
         {
             FunctionResult result = new FunctionResult();
-            var productItemRel = data.DataItem.ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.Entity2Alias.Contains("کالا"));
+            var productItemRel = data.DataItem.ChildRelationshipDatas.FirstOrDefault(x => x.Relationship.Entity2Alias.Contains("کالا"));
             if (productItemRel != null)
             {
                 if (productItemRel.RelatedData.Any())

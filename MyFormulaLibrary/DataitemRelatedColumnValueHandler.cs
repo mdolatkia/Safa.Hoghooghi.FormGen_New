@@ -22,14 +22,14 @@ namespace MyFormulaFunctionStateFunctionLibrary
             else
             {
                 DP_DataRepository relatedData = null;
-                if (sentdata.ParantChildRelationshipInfo != null && sentdata.ParantChildRelationshipInfo.Relationship.PairRelationshipID == valueRelationshipTail.Relationship.ID)
+                if (sentdata.ParantChildRelationshipData != null && sentdata.ParantChildRelationshipData.RelationshipID == valueRelationshipTail.Relationship.ID)
                 {
-                    if (sentdata.ParantChildRelationshipInfo.Relationship.PairRelationshipID == valueRelationshipTail.Relationship.ID)
-                        relatedData = sentdata.ParantChildRelationshipInfo.SourceData;
+                    if (sentdata.ParantChildRelationshipData.RelationshipID == valueRelationshipTail.Relationship.ID)
+                        relatedData = sentdata.ParantChildRelationshipData.SourceData;
                 }
-                else if (sentdata.ChildRelationshipInfos.Any(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID))
+                else if (sentdata.ChildRelationshipDatas.Any(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID))
                 {
-                    var childInfo = sentdata.ChildRelationshipInfos.First(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID);
+                    var childInfo = sentdata.ChildRelationshipDatas.First(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID);
                     if (childInfo.RelatedData.Count > 1)
                     {
                         if (firstIfMultiple)

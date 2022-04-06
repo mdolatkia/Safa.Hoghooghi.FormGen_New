@@ -435,7 +435,7 @@ namespace ModelEntites
         // public List<ColumnDTO> SecondSideColumns { set; get; }
 
 
-        public string PairRelationship { set; get; }
+        public RelationshipDTO PairRelationship { set; get; }
         public int PairRelationshipID { set; get; }
         public string Alias { set; get; }
 

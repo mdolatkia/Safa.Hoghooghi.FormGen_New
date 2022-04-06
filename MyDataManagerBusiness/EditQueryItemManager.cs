@@ -103,11 +103,11 @@ namespace MyDataEditManagerBusiness
             //}
             return result;
         }
-        private QueryItem SetSortedTree(DR_Requester requester, List<QueryItem> result, DP_DataRepository item, QueryItem parentQueryItem = null, ChildRelationshipInfo parentChildRelationshipInfo = null)
+        private QueryItem SetSortedTree(DR_Requester requester, List<QueryItem> result, DP_DataRepository item, QueryItem parentQueryItem = null, ChildRelationshipData parentChildRelationshipInfo = null)
         {
             List<EntityInstanceProperty> editingProperties = new List<EntityInstanceProperty>();
 
-            foreach (var child in item.ChildRelationshipInfos.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
+            foreach (var child in item.ChildRelationshipDatas.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
             {
                 List<EntityInstanceProperty> foreignKeyProperties = new List<EntityInstanceProperty>();
                 //foreach (var relCol in child.Relationship.RelationshipColumns)
@@ -230,7 +230,7 @@ namespace MyDataEditManagerBusiness
             QueryItem queryItem = new QueryItem(GetTableDrivedDTO(requester, item.TargetEntityID), item.IsNewItem ? Enum_QueryItemType.Insert : Enum_QueryItemType.Update, editingProperties, item);
             result.Add(queryItem);
 
-            foreach (var child in item.ChildRelationshipInfos.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
+            foreach (var child in item.ChildRelationshipDatas.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
                 foreach (var childItem in child.RelatedData)
                     SetSortedTree(requester, result, childItem, queryItem, child);
 
@@ -470,7 +470,7 @@ namespace MyDataEditManagerBusiness
                 result = new List<Tuple<RelationshipDTO, DP_DataRepository>>();
             foreach (var item in listdata)
             {
-                foreach (var removeChild in item.ChildRelationshipInfos.Where(x => x.RemovedDataForUpdate.Any() && x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
+                foreach (var removeChild in item.ChildRelationshipDatas.Where(x => x.RemovedDataForUpdate.Any() && x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
                 {
                     if (removeChild.RelationshipDeleteOption == RelationshipDeleteOption.SetNull)
                         foreach (var removeItem in removeChild.RemovedDataForUpdate)
@@ -479,7 +479,7 @@ namespace MyDataEditManagerBusiness
                             result.Add(new Tuple<RelationshipDTO, DP_DataRepository>(relationship, removeItem));
                         }
                 }
-                foreach (var child in item.ChildRelationshipInfos)
+                foreach (var child in item.ChildRelationshipDatas)
                 {
                     GetRemoveItems(child.RelatedData.ToList(), result);
                 }
@@ -511,13 +511,13 @@ namespace MyDataEditManagerBusiness
                 result = new List<DP_DataRepository>();
             foreach (var item in listdata)
             {
-                foreach (var removeChild in item.ChildRelationshipInfos.Where(x => x.RemovedDataForUpdate.Any() && x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
+                foreach (var removeChild in item.ChildRelationshipDatas.Where(x => x.RemovedDataForUpdate.Any() && x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
                 {
                     if (removeChild.RelationshipDeleteOption == RelationshipDeleteOption.DeleteCascade || removeChild.Relationship.RelationshipColumns.Any(x => !x.SecondSideColumn.IsNull))
                         foreach (var removeItem in removeChild.RemovedDataForUpdate)
                             result.Add(removeItem);
                 }
-                foreach (var child in item.ChildRelationshipInfos)
+                foreach (var child in item.ChildRelationshipDatas)
                 {
                     GetDeleteItems(child.RelatedData.ToList(), result);
                 }

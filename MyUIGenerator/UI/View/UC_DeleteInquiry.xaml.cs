@@ -54,14 +54,14 @@ namespace MyUIGenerator.View
                 ToolTipService.SetToolTip(node, item.Error);
             }
             items.Add(node);
-            foreach (var child in item.ChildRelationshipInfos)
+            foreach (var child in item.ChildRelationshipDatas)
             {
                 AddTreeItem(node.Items, child);
             }
            
         }
 
-        private void AddTreeItem(ItemCollection items, ChildRelationshipInfo child)
+        private void AddTreeItem(ItemCollection items, ChildRelationshipData child)
         {
             RadTreeViewItem node = new RadTreeViewItem();
             node.Header = child.Relationship.Alias;

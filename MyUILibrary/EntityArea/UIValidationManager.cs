@@ -30,7 +30,7 @@ namespace MyUILibrary.EntityArea
             //اگر از دکمه آپدیت اومده باشه چک میشه حتی اگر داده مخفی باشد زیرا اونموقع یعنی برای یک تمپ هستش که در فرم پدرش ممکنه
             //وضعیتش تغییر کنه و از حالت هیدن خارج بشه
             //اما برای کنترل داده های چایلد مستقیم هم خود داده باید ولید باشه وهم دادهی های چایلد غیر فعال نباشند
-            List<ProxyLibrary.DP_DataRepository> dataList = null;
+            List<DP_FormDataRepository> dataList = null;
             if (fromUpdate)
                 dataList = EditArea.GetDataList().ToList();
             else
@@ -87,7 +87,7 @@ namespace MyUILibrary.EntityArea
 
         }
 
-        private bool ValidateData(DP_DataRepository data)
+        private bool ValidateData(DP_FormDataRepository data)
         {
             bool result = true;
             data.ISValid = true;
@@ -124,7 +124,7 @@ namespace MyUILibrary.EntityArea
             return result;
         }
 
-        private void CheckAccessValidation(DP_DataRepository dataITem)
+        private void CheckAccessValidation(DP_FormDataRepository dataITem)
         {
             if (dataITem.IsNewItem)
             {
@@ -169,7 +169,7 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        private void ValidateEntityValidations(DP_DataRepository data)
+        private void ValidateEntityValidations(DP_FormDataRepository data)
         {
             foreach (var validation in EditArea.EntityValidations)
             {
@@ -197,7 +197,7 @@ namespace MyUILibrary.EntityArea
             }
 
         }
-        private void ValidateISARelationships(DP_DataRepository data)
+        private void ValidateISARelationships(DP_FormDataRepository data)
         {
             //ایزه ریلیشنهای ساب به سوپر
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
@@ -363,7 +363,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        private void ValidateUnionRelationships(DP_DataRepository data)
+        private void ValidateUnionRelationships(DP_FormDataRepository data)
         {
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
@@ -497,7 +497,7 @@ namespace MyUILibrary.EntityArea
 
 
         }
-        private void ValidateRelationshipColumn(DP_DataRepository dataItem, ChildRelationshipInfo childRelationshipInfo, RelationshipColumnControl relationshipControl)
+        private void ValidateRelationshipColumn(DP_FormDataRepository dataItem, ChildRelationshipInfo childRelationshipInfo, RelationshipColumnControl relationshipControl)
         {
             if (!childRelationshipInfo.IsHidden)
             {
@@ -511,7 +511,7 @@ namespace MyUILibrary.EntityArea
             }
             //یک ولیدشن دیگه انجام شود.اینکه اگر رابطه فیلتر داشت و یک بار جستجو با داده انتخاب شده وفیلتر انجام شود تا جلوی رکوردهای غیر مجاز گرفته شود.مثل اداره مربوطه در تشکیل پرونده که آیتم سورس آنها تغییر میکند
         }
-        private void ValidateRelationshipFilters(DP_DataRepository data)
+        private void ValidateRelationshipFilters(DP_FormDataRepository data)
         {
             //اینجا هم بحث realdata یا relateddata چک بشه
             //
@@ -555,7 +555,7 @@ namespace MyUILibrary.EntityArea
                 }
             }
         }
-        private void ValidateTailDataValidation(DP_DataRepository data)
+        private void ValidateTailDataValidation(DP_FormDataRepository data)
         {
             //برای فرمهایی که از کارتابل باز میشود اینکه داده ها حتما با داده مرجع در ارتباط باشند
             //تست شود
@@ -577,7 +577,7 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        private void ValidateSimpleColumn(DP_DataRepository dataItem, EntityInstanceProperty dataColumn, SimpleColumnControl simplePropertyControl)
+        private void ValidateSimpleColumn(DP_FormDataRepository dataItem, EntityInstanceProperty dataColumn, SimpleColumnControl simplePropertyControl)
         {
             if (simplePropertyControl.Column.IsMandatory == true)
             {
@@ -673,34 +673,26 @@ namespace MyUILibrary.EntityArea
                 if (simplePropertyControl.Column.ColumnValueRange != null
                     && simplePropertyControl.Column.ColumnValueRange.Details.Any())
                 {
-                    List<ColumnValueRangeDetailsDTO> validValueRange = null;
-                    if (dataItem.ColumnKeyValueRanges.Any(x => x.Key == simplePropertyControl.Column.ID && x.Value.Any()))
-                    {
-                        validValueRange = dataItem.ColumnKeyValueRanges.First(x => x.Key == simplePropertyControl.Column.ID && x.Value.Any()).Value;
 
-                    }
-                    else
-                        validValueRange = simplePropertyControl.Column.ColumnValueRange.Details;
-                    //if (simplePropertyControl.Column.ColumnValueRange.ValueFromTitleOrValue)
-                    //{
-                    //    if (!validValueRange.Any(x => x.KeyTitle == dataColumn.Value))
-                    //    {
-                    //        string message = "مقدار این خصوصیت در لیست مقادیر مجاز نمی باشد";
-                    //        AddColumnControlValidationMessage(simplePropertyControl, message, dataItem);
-                    //    }
-                    //}
-                    //else
-                    //{
+                    List<ColumnValueRangeDetailsDTO> validValueRange = null;
+                    //اینجا
+                    //////if (dataItem.ColumnKeyValueRanges.Any(x => x.Key == simplePropertyControl.Column.ID && x.Value.Any()))
+                    //////{
+                    //////    validValueRange = dataItem.ColumnKeyValueRanges.First(x => x.Key == simplePropertyControl.Column.ID && x.Value.Any()).Value;
+
+                    //////}
+                    //////else
+                    //////    validValueRange = simplePropertyControl.Column.ColumnValueRange.Details;
+                  
                     if (!validValueRange.Any(x => x.Value == dataColumn.Value.ToString()))
                     {
                         string message = "مقدار این خصوصیت در لیست مقادیر مجاز نمی باشد";
                         AddColumnControlValidationMessage(simplePropertyControl, message, dataItem);
                     }
-                    //}
                 }
             }
         }
-        //public void AddRelationshipColumnMessageItem(RelationshipColumnControl relationshipControl, string message, InfoColor infoColor, string key, DP_DataRepository causingData, bool isPermanent)
+        //public void AddRelationshipColumnMessageItem(RelationshipColumnControl relationshipControl, string message, InfoColor infoColor, string key, DP_FormDataRepository causingData, bool isPermanent)
         //{
         //    BaseMessageItem baseMessageItem = new BaseMessageItem();
         //    baseMessageItem.ColumnControl = relationshipControl;
@@ -714,7 +706,7 @@ namespace MyUILibrary.EntityArea
         //}
 
 
-        public void AddColumnControlValidationMessage(BaseColumnControl baseColumnControl, string message, DP_DataRepository causingData)
+        public void AddColumnControlValidationMessage(BaseColumnControl baseColumnControl, string message, DP_FormDataRepository causingData)
         {
             causingData.ISValid = false;
             ColumnControlMessageItem baseMessageItem = new ColumnControlMessageItem(baseColumnControl, ControlOrLabelAsTarget.Control);
@@ -733,7 +725,7 @@ namespace MyUILibrary.EntityArea
             EditArea.AddColumnControlColor(baseColorItem); ;
 
         }
-        public void AddDataValidationMessage(string message, DP_DataRepository causingData)
+        public void AddDataValidationMessage(string message, DP_FormDataRepository causingData)
         {
             //BaseMessageItem baseMessageItem = new BaseMessageItem();
             //baseMessageItem.CausingDataItem = causingData;

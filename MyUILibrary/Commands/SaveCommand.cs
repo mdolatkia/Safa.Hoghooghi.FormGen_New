@@ -87,7 +87,8 @@ namespace MyUILibrary.EntityArea.Commands
             {
                 var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
                 DR_EditRequest request = new DR_EditRequest(requester);
-                request.EditPackages = Datas;
+             //اینجا
+                //request.EditPackages = Datas;
 
                 var reuslt = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendEditRequest(request);
                 if (reuslt.Result == Enum_DR_ResultType.SeccessfullyDone)
@@ -149,7 +150,7 @@ namespace MyUILibrary.EntityArea.Commands
 
         private void SetFKProperties(ChildRelationshipInfo parentChildRelationshipInfo = null)
         {
-            List<ProxyLibrary.DP_DataRepository> sourceList = null;
+            List<DP_FormDataRepository> sourceList = null;
 
             if (parentChildRelationshipInfo == null)
                 sourceList = EditArea.GetDataList().ToList();
@@ -182,42 +183,43 @@ namespace MyUILibrary.EntityArea.Commands
 
         private ObservableCollection<DP_DataRepository> GetData()
         {
-            List<ProxyLibrary.DP_DataRepository> sourceList = EditArea.GetDataList().ToList();
+            List<DP_FormDataRepository> sourceList = EditArea.GetDataList().ToList();
             ObservableCollection<DP_DataRepository> result = new ObservableCollection<DP_DataRepository>();
             foreach (var item in sourceList)
             {
                 if (item.ShoudBeCounted)
                     result.Add(GetData(item));
             }
-            //if (parentChildRelationshipInfo == null)
-            RemoveUnwantedItems(result);
+
+            //انیجا
+          //  RemoveUnwantedItems(result);
             return result;
 
         }
-        private DP_DataRepository GetData(DP_DataRepository item)
+        private DP_DataRepository GetData(DP_FormDataRepository item)
         {
             DP_DataRepository newItem = new DP_DataRepository(item.TargetEntityID, item.TargetEntityAlias);
-            foreach (var property in item.GetProperties())
-            {
-                if (!property.IsHidden && (property.IsKey || !property.ISFK))
-                {
-                    var originalProperty = item.OriginalProperties.First(x => x.ColumnID == property.ColumnID);
-                    var newProperty = newItem.AddCopyProperty(property);
-                    newItem.OriginalProperties.Add(originalProperty);
-                    if (property.IsReadonly)
-                        newProperty.Value = originalProperty.Value;
-                }
-            }
+            //////foreach (var property in item.GetProperties())
+            //////{
+            //////    if (!property.IsHidden && (property.IsKey || !property.ISFK))
+            //////    {
+            //////        var originalProperty = item.OriginalProperties.First(x => x.ColumnID == property.ColumnID);
+            //////        var newProperty = newItem.AddCopyProperty(property);
+            //////        newItem.OriginalProperties.Add(originalProperty);
+            //////        if (property.IsReadonly)
+            //////            newProperty.Value = originalProperty.Value;
+            //////    }
+            //////}
             newItem.IsFullData = item.IsFullData;
             newItem.DataView = item.DataView;
             //   newItem.HasDirectData = item.HasDirectData;
             newItem.IsDBRelationship = item.IsDBRelationship;
 
             //newItem.IsHiddenBecauseOfCreatorRelationshipOnShow = item.IsHiddenBecauseOfCreatorRelationshipOnShow;
-            newItem.IsHiddenBecauseOfCreatorRelationshipOnState = item.IsHiddenBecauseOfCreatorRelationshipOnState;
-            newItem.IsReadonlyBecauseOfCreatorRelationshipOnShow = item.IsReadonlyBecauseOfCreatorRelationshipOnShow;
-            newItem.IsReadonlyBecauseOfCreatorRelationshipOnState = item.IsReadonlyBecauseOfCreatorRelationshipOnState;
-            newItem.IsReadonlyBecauseOfState = item.IsReadonlyBecauseOfState;
+            //  newItem.IsHiddenBecauseOfCreatorRelationshipOnState = item.IsHiddenBecauseOfCreatorRelationshipOnState;
+            //newItem.IsReadonlyBecauseOfCreatorRelationshipOnShow = item.IsReadonlyBecauseOfCreatorRelationshipOnShow;
+            //newItem.IsReadonlyBecauseOfCreatorRelationshipOnState = item.IsReadonlyBecauseOfCreatorRelationshipOnState;
+            //newItem.IsReadonlyBecauseOfState = item.IsReadonlyBecauseOfState;
             newItem.EntityListView = item.EntityListView;
             newItem.IsNewItem = item.IsNewItem;
             // newItem.ParantChildRelationshipInfo = newParentChildRelationshipInfo;
@@ -235,29 +237,31 @@ namespace MyUILibrary.EntityArea.Commands
                 //}
                 if (!childItem.IsHidden)
                 {
-                    var newChildItems = new ChildRelationshipInfo();
+                    var newChildItems = new ChildRelationshipData();
                     newChildItems.Relationship = childItem.Relationship;
 
                     newChildItems.RelationshipDeleteOption = childItem.RelationshipDeleteOption;
                     foreach (var orginalData in childItem.OriginalRelatedData)
                     {
-                        //if (childItem.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
-                        //{
                         newChildItems.OriginalRelatedData.Add(orginalData);
                     }
+                    //foreach (var orginalData in childItem.HiddenData)
+                    //{
+                    //    //if (childItem.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
+                    //    //{
+                    //    newChildItems.HiddenData.Add(orginalData);
+                    //}
                     foreach (var orginalData in childItem.RemovedOriginalDatas)
                     {
                         //bool skipOriginalData = false;
-                       
-                            //برای وقتی که شرط داده اجازه حذف میداده و داده حذف شده اما قبل از آپد یت دیگه شرط اجازه حذف را به علت هیدن یا ریدونلی بودن نمیده
-                            if (orginalData.IsHiddenBecauseOfCreatorRelationshipOnState || childItem.IsReadonly || orginalData.IsReadonlySomeHow
-                          
-                            )
-                            {
-                            }
-                            else
-                                newChildItems.RemovedDataForUpdate.Add(orginalData);
-                      
+
+                        //برای وقتی که شرط داده اجازه حذف میداده و داده حذف شده اما قبل از آپد یت دیگه شرط اجازه حذف را به علت هیدن یا ریدونلی بودن نمیده
+                        if ((orginalData.ParantChildRelationshipInfo != null && orginalData.ParantChildRelationshipInfo.IsHidden) || childItem.IsReadonly || orginalData.IsReadonlyBecauseOfState)
+                        {
+                        }
+                        else
+                            newChildItems.RemovedDataForUpdate.Add(orginalData);
+
                         //else
                         //{
                         //    var relatedDataToOriginalData = childItem.GetRelatedDataOfOriginalData(orginalData);
@@ -286,7 +290,7 @@ namespace MyUILibrary.EntityArea.Commands
                     //    newChildItems.RelatedData.Add(cItem);
 
                     //  newChildItems.CheckAddedRemovedRelationships();
-                    newItem.ChildRelationshipInfos.Add(newChildItems);
+                    newItem.ChildRelationshipDatas.Add(newChildItems);
 
                 }
 
@@ -300,16 +304,16 @@ namespace MyUILibrary.EntityArea.Commands
         //    throw new NotImplementedException();
         //}
 
-        private void RemoveUnwantedItems(ObservableCollection<DP_DataRepository> result)
+        private void RemoveUnwantedItems(ObservableCollection<DP_FormDataRepository> result)
         {
 
             //  SetDataOrRelatedDataIsChangedToNull(result);
             foreach (var data in result)
             {
-                if (data.IsHiddenBecauseOfCreatorRelationshipOnState)
-                {
-                    throw (new Exception("داده غیر فعال امکان حذف شدن را ندارد"));
-                }
+                //if (data.IsHiddenBecauseOfCreatorRelationshipOnState)
+                //{
+                //    throw (new Exception("داده غیر فعال امکان حذف شدن را ندارد"));
+                //}
             }
             SetChangedProperties(result);
             SetDataOrRelatedDataIsChanged(result);
@@ -320,29 +324,29 @@ namespace MyUILibrary.EntityArea.Commands
 
 
 
-        private void SetChangedProperties(ObservableCollection<DP_DataRepository> result)
+        private void SetChangedProperties(ObservableCollection<DP_FormDataRepository> result)
         {
-            foreach (var data in result)
-            {
-                List<EntityInstanceProperty> removeProperties = new List<EntityInstanceProperty>();
-                foreach (var property in data.GetProperties().Where(x => !x.ISFK))
-                {
-                    property.ValueIsChanged = data.PropertyValueIsChanged(property);
-                }
-                foreach (var child in data.ChildRelationshipInfos)
-                {
-                    SetChangedProperties(child.RelatedData);
-                }
-            }
+            //foreach (var data in result)
+            //{
+            //    List<EntityInstanceProperty> removeProperties = new List<EntityInstanceProperty>();
+            //    foreach (var property in data.GetProperties().Where(x => !x.ISFK))
+            //    {
+            //        property.ValueIsChanged = data.PropertyValueIsChanged(property);
+            //    }
+            //    foreach (var child in data.ChildRelationshipInfos)
+            //    {
+            //        SetChangedProperties(child.RelatedData);
+            //    }
+            //}
         }
-        private void SetDataOrRelatedDataIsChanged(ObservableCollection<DP_DataRepository> result)
+        private void SetDataOrRelatedDataIsChanged(ObservableCollection<DP_FormDataRepository> result)
         {
             foreach (var data in result)
             {
                 DataOrRelatedDataHasChanged(data);
             }
         }
-        void DataOrRelatedDataHasChanged(DP_DataRepository data)
+        void DataOrRelatedDataHasChanged(DP_FormDataRepository data)
         {
 
             if (data.DataOrRelatedDataIsChanged == null)
@@ -360,8 +364,8 @@ namespace MyUILibrary.EntityArea.Commands
                     {
                         data.IsEdited = true;
                     }
-                    if (data.ParantChildRelationshipInfo != null && data.ParantChildRelationshipInfo.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign
-                   && data.ParantChildRelationshipInfo.DataItemIsAdded(data))
+                    if (data.ParantChildRelationshipInfo != null && data.ParantChildRelationshipInfo.ToRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary
+                   && !data.IsDBRelationship)
                     {
                         data.IsEdited = true;
                     }
@@ -383,7 +387,7 @@ namespace MyUILibrary.EntityArea.Commands
             }
         }
 
-        private void RemoveUnchangedProperties(ObservableCollection<DP_DataRepository> result)
+        private void RemoveUnchangedProperties(ObservableCollection<DP_FormDataRepository> result)
         {
             foreach (var data in result)
             {
@@ -410,9 +414,9 @@ namespace MyUILibrary.EntityArea.Commands
             }
         }
 
-        private void RemoveAllUnchangedDatas(ObservableCollection<DP_DataRepository> result, ChildRelationshipInfo parentChildRelationshipInfo)
+        private void RemoveAllUnchangedDatas(ObservableCollection<DP_FormDataRepository> result, ChildRelationshipInfo childRelationshipInfo)
         {
-            List<DP_DataRepository> removeItems = new List<DP_DataRepository>();
+            List<DP_FormDataRepository> removeItems = new List<DP_FormDataRepository>();
 
             foreach (var data in result)
             {
@@ -424,13 +428,13 @@ namespace MyUILibrary.EntityArea.Commands
                     throw new Exception("xbxcvxcv");
                 if (data.DataOrRelatedDataIsChanged == false)
                 {
-                    if (parentChildRelationshipInfo == null || !parentChildRelationshipInfo.DataItemIsAdded(data))
+                    if (childRelationshipInfo == null || data.IsDBRelationship)
                     {
                         removeItems.Add(data);
 
                         //این بیخوده فکر کنم
-                        if (parentChildRelationshipInfo != null)
-                            parentChildRelationshipInfo.RemovedDataForUpdate.Remove(parentChildRelationshipInfo.GetOroginalDataOfOriginalData(data));
+                        if (childRelationshipInfo != null)
+                            childRelationshipInfo.RemovedDataForUpdate.Remove(childRelationshipInfo.GetOroginalDataOfOriginalData(data));
                     }
 
                 }
@@ -446,7 +450,7 @@ namespace MyUILibrary.EntityArea.Commands
             }
 
         }
-        private void RemoveAllUnChangedChildRelInfos(ObservableCollection<DP_DataRepository> result)
+        private void RemoveAllUnChangedChildRelInfos(ObservableCollection<DP_FormDataRepository> result)
         {
 
             foreach (var data in result)

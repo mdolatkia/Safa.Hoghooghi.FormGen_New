@@ -95,7 +95,7 @@ namespace MyUILibrary.EntityArea
         {
             if (e.GeneralKey.StartsWith("formulaColumn"))
             {
-                if (EditArea.DataItemIsInEditMode(e.DataToCall))
+                if (e.DataToCall.DataIsInEditMode())
                 {
                     foreach (var columnControl in FormulaColumns.Where(x => x.Column.ID.ToString() == e.UsageKey))
                     {
@@ -119,7 +119,7 @@ namespace MyUILibrary.EntityArea
         //}
 
 
-        public void CalculateProperty(EntityInstanceProperty dataProperty, ColumnCustomFormulaDTO columnCustomFormula, DP_DataRepository dataItem, bool asDefault)
+        public void CalculateProperty(EntityInstanceProperty dataProperty, ColumnCustomFormulaDTO columnCustomFormula, DP_FormDataRepository dataItem, bool asDefault)
         {
 
 
@@ -167,7 +167,7 @@ namespace MyUILibrary.EntityArea
                 AddDataMessageItem(dataItem, key, ControlItemPriority.Normal, "خطا در محاسبه فرمول" + " " + columnCustomFormula.Formula.Title + ":" + " " + dataProperty.FormulaException);
             }
 
-            if (asDefault )
+            if (asDefault)
             {
                 dataProperty.Value = result.Result;
             }
@@ -180,11 +180,11 @@ namespace MyUILibrary.EntityArea
                 uiColumnValue.EvenHasValue = !columnCustomFormula.OnlyOnEmptyValue;
                 uiColumnValue.EvenIsNotNew = !columnCustomFormula.OnlyOnNewData;
                 List<UIColumnValueDTO> uIColumnValues = new List<UIColumnValueDTO>() { uiColumnValue };
-                EditArea.SetColumnValueFromState(dataItem, uIColumnValues, null, columnCustomFormula.Formula);
+                EditArea.SetColumnValueFromState(dataItem, uIColumnValues, null, columnCustomFormula.Formula, false);
             }
         }
 
-        private void AddDataMessageItem(DP_DataRepository dataItem, string key, ControlItemPriority priority, string message)
+        private void AddDataMessageItem(DP_FormDataRepository dataItem, string key, ControlItemPriority priority, string message)
         {
             DataMessageItem baseMessageItem = new DataMessageItem();
             baseMessageItem.CausingDataItem = dataItem;
@@ -222,11 +222,11 @@ namespace MyUILibrary.EntityArea
 
         private void CpMenuFormulaCalculation_MenuClicked(object sender, ConrolPackageMenuArg e, SimpleColumnControl columnControl)
         {
-            DP_DataRepository dataItem = null;
+            DP_FormDataRepository dataItem = null;
             if (EditArea is I_EditEntityAreaOneData)
                 dataItem = EditArea.GetDataList().First();
             else
-                dataItem = e.data as DP_DataRepository;
+                dataItem = e.data as DP_FormDataRepository;
             FormulaCalculationAreaInitializer initializer = new FormulaCalculationAreaInitializer();
             initializer.DataItem = dataItem;
             initializer.FomulaManager = this;

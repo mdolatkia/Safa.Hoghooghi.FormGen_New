@@ -44,13 +44,13 @@ namespace MyUILibrary
         //  // + propertyControl.Column.Alias;
         //}
 
-        internal static string GetUniqueDataPostfix(DP_DataRepository dataItem, string result = "", RelationshipDTO relationship = null)
+        internal static string GetUniqueDataPostfix(DP_FormDataRepository dataItem, string result = "", RelationshipDTO relationship = null)
         {
             if (result == "")
                 result = "_";
 
             if (dataItem.ParantChildRelationshipInfo != null)
-                return result += "&" + dataItem.ParantChildRelationshipInfo.Relationship.ID + GetUniqueDataPostfix(dataItem.ParantChildRelationshipInfo.SourceData, result, dataItem.ParantChildRelationshipInfo.Relationship);
+                return result += "&" + dataItem.ParantChildRelationshipInfo.RelationshipID + GetUniqueDataPostfix(dataItem.ParantChildRelationshipInfo.SourceData, result, dataItem.ParantChildRelationshipInfo.ToRelationship);
             else
                 return "";
         }
@@ -490,7 +490,7 @@ namespace MyUILibrary
 
 
         //یک قلم داده جدید ایجاد میکند
-        internal static DP_DataRepository CreateAreaInitializerNewData(I_EditEntityArea editEntityArea)
+        internal static DP_FormDataRepository CreateAreaInitializerNewData(I_EditEntityArea editEntityArea)
         {
             if (editEntityArea is I_EditEntityAreaMultipleData)
             {
@@ -505,7 +505,7 @@ namespace MyUILibrary
                 }
             }
 
-            var result = new DP_DataRepository(editEntityArea.AreaInitializer.EntityID, editEntityArea.SimpleEntity.Alias);
+            var result = new DP_FormDataRepository(new DP_DataRepository(editEntityArea.AreaInitializer.EntityID, editEntityArea.SimpleEntity.Alias), editEntityArea);
 
             if (editEntityArea.DataEntryEntity.IsReadonly
                || (editEntityArea.AreaInitializer.SourceRelationColumnControl != null && editEntityArea.AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly))
@@ -856,7 +856,7 @@ namespace MyUILibrary
 
 
 
-        internal static bool DataOrRelatedChildDataHasValue(DP_DataRepository dataItem, RelationshipDTO relationship)
+        internal static bool DataOrRelatedChildDataHasValue(DP_FormDataRepository dataItem, RelationshipDTO relationship)
         {
             List<int> excludeColumns = new List<int>();
             if (relationship != null)
@@ -1251,11 +1251,11 @@ namespace MyUILibrary
         //}
 
 
-        public static List<DP_DataView> GetRelatedDataItemsSomeHow(DP_DataRepository sentdata, EntityRelationshipTailDTO valueRelationshipTail)
+        public static List<DP_DataView> GetRelatedDataItemsSomeHow(DP_FormDataRepository sentdata, EntityRelationshipTailDTO valueRelationshipTail)
         {
-            return GetRelatedDataItemsSomeHow(valueRelationshipTail, new List<DP_DataRepository>() { sentdata });
+            return GetRelatedDataItemsSomeHow(valueRelationshipTail, new List<DP_FormDataRepository>() { sentdata });
         }
-        private static List<DP_DataView> GetRelatedDataItemsSomeHow(EntityRelationshipTailDTO valueRelationshipTail, List<DP_DataRepository> lastFoundItems, List<DP_DataView> result = null)
+        private static List<DP_DataView> GetRelatedDataItemsSomeHow(EntityRelationshipTailDTO valueRelationshipTail, List<DP_FormDataRepository> lastFoundItems, List<DP_DataView> result = null)
         {
             if (result == null)
                 result = new List<DP_DataView>();
@@ -1265,12 +1265,12 @@ namespace MyUILibrary
             {
                 foreach (var sentdata in lastFoundItems)
                 {
-                    if ((sentdata.ParantChildRelationshipInfo != null && sentdata.ParantChildRelationshipInfo.Relationship.PairRelationshipID == valueRelationshipTail.Relationship.ID)
+                    if ((sentdata.ParantChildRelationshipInfo != null && sentdata.ParantChildRelationshipInfo.RelationshipID == valueRelationshipTail.Relationship.ID)
                         || (sentdata.ChildRelationshipInfos.Any(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID)))
                     {
-                        List<DP_DataRepository> relatedData = new List<DP_DataRepository>();
+                        List<DP_FormDataRepository> relatedData = new List<DP_FormDataRepository>();
 
-                        if (sentdata.ParantChildRelationshipInfo != null && sentdata.ParantChildRelationshipInfo.Relationship.PairRelationshipID == valueRelationshipTail.Relationship.ID)
+                        if (sentdata.ParantChildRelationshipInfo != null && sentdata.ParantChildRelationshipInfo.RelationshipID == valueRelationshipTail.Relationship.ID)
                         {
                             relatedData.Add(sentdata.ParantChildRelationshipInfo.SourceData);
                         }
