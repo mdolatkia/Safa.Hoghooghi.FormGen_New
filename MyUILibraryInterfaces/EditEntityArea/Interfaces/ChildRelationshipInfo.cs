@@ -437,7 +437,7 @@ namespace MyUILibrary.EntityArea
                     }
                     else
                     {
-                        RelationshipControl.EditNdTypeArea.AddColumnControlColor(new ColumnControlColorItem(RelationshipControl, ControlOrLabelAsTarget.Control) { CausingDataItem = SourceData, Color = InfoColor.Red, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
+                        AddColumnControlColor( InfoColor.Red,  ControlColorTarget.Background,   key,  ControlItemPriority.High);
                         RelationshipControl.EditNdTypeArea.AddColumnControlColor(new ColumnControlColorItem(RelationshipControl, ControlOrLabelAsTarget.Control) { CausingDataItem = SourceData, Color = InfoColor.Red, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
                         RelationshipControl.EditNdTypeArea.AddColumnControlMessage(new ColumnControlMessageItem(RelationshipControl, ControlOrLabelAsTarget.Control) { CausingDataItem = SourceData, Message = message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", Key = key, Priority = ControlItemPriority.High });
                         if (this is I_EditEntityAreaOneData)
@@ -454,6 +454,11 @@ namespace MyUILibrary.EntityArea
                 //    fkProp.IsHidden = hidden;
                 //}
             }
+        }
+
+        private void AddColumnControlColor(InfoColor infoColor,  ControlColorTarget controlColorTarget,string key, ControlItemPriority priority)
+        {
+            SourceData.EditEntityArea.AddColumnControlColor(new ColumnControlColorItem(RelationshipControl, ControlOrLabelAsTarget.Control) { CausingDataItem = SourceData, Color = infoColor, ColorTarget = controlColorTarget, Key = key, Priority = priority });
         }
 
         public void SelectFromParent(Dictionary<int, string> colAndValues)

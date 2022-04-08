@@ -2646,6 +2646,37 @@ namespace MyUILibrary.EntityArea
         //    }
 
         //}
+
+        private void SetColumnControlColor(DP_FormDataRepository CausingDataItem, ControlColorTarget ColorTarget, BaseColumnControl ColumnControl, ControlOrLabelAsTarget ControlOrLabel)
+        {
+            List<Tuple<I_DataControlManager, DP_FormDataRepository>> controlManagers = null;
+            InfoColor color = InfoColor.Null;
+
+            //var columnControlMessageItem = baseItem as ColumnControlColorItem;
+            var list = ColumnControlColorItems.Where(x => x.ControlOrLabel == ControlOrLabel && x.ColumnControl == ColumnControl
+            && x.CausingDataItem == CausingDataItem && x.ColorTarget == ColorTarget).ToList<BaseColorItem>();
+            color = GetColor(list);
+            controlManagers = GetColumnControlDataManagers(ColumnControl, ControlOrLabel, CausingDataItem);
+
+            //     var list = ControlManagerColorItems.Where(x => x.CausingDataItem == baseColorItem.CausingDataItem && x.ColorTarget == baseColorItem.ColorTarget).ToList<BaseColorItem>();
+
+            foreach (var view in controlManagers)
+            {
+                if (ColorTarget == ControlColorTarget.Background)
+                {
+                    view.Item1.SetBackgroundColor(view.Item2, color);
+                }
+                if (ColorTarget == ControlColorTarget.Foreground)
+                {
+                    view.Item1.SetForegroundColor(view.Item2, color);
+                }
+                if (ColorTarget == ControlColorTarget.Border)
+                {
+                    view.Item1.SetBorderColor(view.Item2, color);
+                }
+            }
+        }
+
         private void SetItemColor(DP_FormDataRepository CausingDataItem, ControlColorTarget ColorTarget, BaseColumnControl ColumnControl = null, ControlOrLabelAsTarget? ControlOrLabel = null)
         {
             List<Tuple<I_DataControlManager, DP_FormDataRepository>> controlManagers = null;
@@ -2800,8 +2831,6 @@ namespace MyUILibrary.EntityArea
         //}
         public void DecideButtonsEnablity1()
         {
-
-            ببین اصلا لازمه برای وضعیتهای غیر فعال بشن دکمه ها یا نه
 
             var dataEntryEntityIsReadonly = DataEntryEntity.IsReadonly;
             //if (AreaInitializer.SourceRelationColumnControl != null && ChildRelationshipInfo == null)
