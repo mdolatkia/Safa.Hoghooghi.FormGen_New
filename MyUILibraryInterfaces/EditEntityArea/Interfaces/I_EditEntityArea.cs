@@ -984,7 +984,7 @@ namespace MyUILibrary.EntityArea
     {
         public String Key { get; set; }
         //   public List<I_DataControlManager> MultipleDataControlManager { get; set; }
-        public DP_FormDataRepository CausingDataItem { set; get; }
+    //    public DP_FormDataRepository CausingDataItem { set; get; }
         public ControlItemPriority Priority { set; get; }
     }
 
@@ -1011,10 +1011,12 @@ namespace MyUILibrary.EntityArea
 
     public class ColumnControlMessageItem : BaseMessageItem
     {
-        public ColumnControlMessageItem(BaseColumnControl columnControl, ControlOrLabelAsTarget controlOrLabel)
+        public ColumnControlMessageItem(string message, ControlOrLabelAsTarget controlOrLabelAsTarget,  string key, ControlItemPriority priority)
         {
-            ColumnControl = columnControl;
-            ControlOrLabel = controlOrLabel;
+            Message = message;
+            ControlOrLabel = controlOrLabelAsTarget;
+            Key = key;
+            Priority = priority;
         }
         public BaseColumnControl ColumnControl { set; get; }
         public ControlOrLabelAsTarget ControlOrLabel { set; get; }
@@ -1023,15 +1025,15 @@ namespace MyUILibrary.EntityArea
 
     public class ColumnControlColorItem : BaseColorItem
     {
-        public ColumnControlColorItem(BaseColumnControl columnControl, ControlOrLabelAsTarget controlOrLabel)
+        public ColumnControlColorItem(InfoColor infoColor, ControlOrLabelAsTarget controlOrLabelAsTarget, ControlColorTarget controlColorTarget, string key, ControlItemPriority priority)
         {
-            ColumnControl = columnControl;
-            ControlOrLabel = controlOrLabel;
+            Color = infoColor;
+            ControlOrLabel = controlOrLabelAsTarget;
+            ColorTarget = controlColorTarget;
+            Key = key;
+            Priority = priority;
         }
-        public BaseColumnControl ColumnControl { set; get; }
         public ControlOrLabelAsTarget ControlOrLabel { set; get; }
-
-
     }
     public enum ControlOrLabelAsTarget
     {

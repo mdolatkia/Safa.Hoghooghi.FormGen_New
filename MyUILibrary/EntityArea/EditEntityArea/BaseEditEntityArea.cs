@@ -2082,10 +2082,10 @@ namespace MyUILibrary.EntityArea
                 //    ResetStatesColorAndText(dataItem);
                 //}
 
-                if (this is I_EditEntityAreaOneData)
-                {
-                    ResetStatesColorAndText();
-                }
+                //if (this is I_EditEntityAreaOneData)
+                //{
+                //    ResetStatesColorAndText();
+                //}
                 GetDataList().Clear();
                 if (this is I_EditEntityAreaOneData)
                 {
@@ -2180,10 +2180,10 @@ namespace MyUILibrary.EntityArea
         public bool SetChildRelationshipInfoAndShow(ChildRelationshipInfo value)
         {
             bool result = true;
-            if (this is I_EditEntityAreaOneData && !value.RelatedData.Any())
-            {
-                ResetStatesColorAndText();
-            }
+            //if (this is I_EditEntityAreaOneData && !value.RelatedData.Any())
+            //{
+            //    ResetStatesColorAndText();
+            //}
             SetChildRelationshipInfo(value);
 
             bool isDataView = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
@@ -2517,11 +2517,6 @@ namespace MyUILibrary.EntityArea
 
 
 
-        //private I_View_TemporaryView GetTemporaryView()
-        //{
-
-        //}
-
         private InfoColor GetColor(List<BaseColorItem> list)
         {
             var color = InfoColor.Null;
@@ -2530,67 +2525,6 @@ namespace MyUILibrary.EntityArea
             return color;
         }
 
-        private List<ColumnControlColorItem> ColumnControlColorItems = new List<ColumnControlColorItem>();
-        private List<ColumnControlMessageItem> ColumnControlMessageItems = new List<ColumnControlMessageItem>();
-        private List<ColumnControlMessageItem> LabelControlMessageItems = new List<ColumnControlMessageItem>();
-        private List<ColumnControlColorItem> LabelControlColorItems = new List<ColumnControlColorItem>();
-
-        public void AddColumnControlMessage(ColumnControlMessageItem item)
-        {
-            if (!ColumnControlMessageItems.Any(x => x.ColumnControl == item.ColumnControl && x.ControlOrLabel == item.ControlOrLabel && x.CausingDataItem == item.CausingDataItem && x.Key == item.Key && x.Message == item.Message))
-                ColumnControlMessageItems.Add(item);
-            SetItemMessage(item.CausingDataItem, item.ColumnControl, item.ControlOrLabel);
-        }
-
-        public void RemoveColumnControlMessage(BaseColumnControl columnControl, ControlOrLabelAsTarget ControlOrLabel, DP_FormDataRepository dataItem, string key)
-        {
-            foreach (var item in ColumnControlMessageItems.Where(x => x.ControlOrLabel == ControlOrLabel && x.ColumnControl == columnControl && x.CausingDataItem == dataItem && x.Key == key).ToList())
-            {
-                ColumnControlMessageItems.Remove(item);
-            }
-            SetItemMessage(dataItem, columnControl, ControlOrLabel);
-
-        }
-        public void RemoveColumnControlMessage(BaseColumnControl columnControl, ControlOrLabelAsTarget ControlOrLabel, string key)
-        {
-            List<Tuple<BaseColumnControl, ControlOrLabelAsTarget, DP_FormDataRepository>> items = new List<Tuple<BaseColumnControl, ControlOrLabelAsTarget, DP_FormDataRepository>>();
-            foreach (var item in ColumnControlMessageItems.Where(x => x.ControlOrLabel == ControlOrLabel && x.ColumnControl == columnControl && x.Key == key).ToList())
-            {
-                items.Add(new Tuple<BaseColumnControl, ControlOrLabelAsTarget, DP_FormDataRepository>(item.ColumnControl, item.ControlOrLabel, item.CausingDataItem));
-            }
-            foreach (var item in items)
-            {
-                RemoveColumnControlMessage(item.Item1, item.Item2, item.Item3, key);
-            }
-        }
-
-        public void AddColumnControlColor(ColumnControlColorItem item)
-        {
-            if (!ColumnControlColorItems.Any(x => x.ColumnControl == item.ColumnControl && x.ControlOrLabel == item.ControlOrLabel && x.CausingDataItem == item.CausingDataItem && x.Key == item.Key && x.ColorTarget == item.ColorTarget))
-                ColumnControlColorItems.Add(item);
-            SetItemColor(item.CausingDataItem, item.ColorTarget, item.ColumnControl, item.ControlOrLabel);
-        }
-        public void RemoveColumnControlColor(BaseColumnControl columnControl, ControlOrLabelAsTarget ControlOrLabel, DP_FormDataRepository dataItem, string key)
-        {
-            foreach (var item in ColumnControlColorItems.Where(x => x.ControlOrLabel == ControlOrLabel && x.ColumnControl == columnControl && x.CausingDataItem == dataItem && x.Key == key).ToList())
-            {
-                ColumnControlColorItems.Remove(item);
-            }
-            SetItemColor(dataItem, ControlColorTarget.Background, columnControl, ControlOrLabel);
-            SetItemColor(dataItem, ControlColorTarget.Border, columnControl, ControlOrLabel);
-        }
-        public void RemoveColumnControlColor(BaseColumnControl columnControl, ControlOrLabelAsTarget ControlOrLabel, string key)
-        {
-            List<Tuple<BaseColumnControl, ControlOrLabelAsTarget, DP_FormDataRepository>> items = new List<Tuple<BaseColumnControl, ControlOrLabelAsTarget, DP_FormDataRepository>>();
-            foreach (var item in ColumnControlColorItems.Where(x => x.ColumnControl == columnControl && x.ControlOrLabel == ControlOrLabel && x.Key == key))
-            {
-                items.Add(new Tuple<BaseColumnControl, ControlOrLabelAsTarget, DP_FormDataRepository>(item.ColumnControl, item.ControlOrLabel, item.CausingDataItem));
-            }
-            foreach (var item in items)
-            {
-                RemoveColumnControlColor(item.Item1, item.Item2, item.Item3, key);
-            }
-        }
         private void SetItemMessage(DP_FormDataRepository CausingDataItem, BaseColumnControl ColumnControl = null, ControlOrLabelAsTarget? ControlOrLabel = null)
         {
             List<Tuple<I_DataControlManager, DP_FormDataRepository>> controlManagers = null;
@@ -2619,84 +2553,16 @@ namespace MyUILibrary.EntityArea
 
         }
 
-        //    private void SetControlManagerMessage(BaseMessageItem baseItem)
-        //{
-        //    List<I_DataControlManager> controlManagers = null;
-        //    string tooltip = "";
-        //    if (baseItem is DataMessageItem)
-        //    {
-        //        var list = DataItemMessageItems.Where(x => x.CausingDataItem == baseItem.CausingDataItem).ToList<BaseMessageItem>();
-        //        tooltip = GetTooltip(list);
-        //        controlManagers = GetControlDataManagers(baseItem.CausingDataItem);
-
-        //    }
-        //    else if (baseItem is ColumnControlMessageItem)
-        //    {
-        //        var columnControlMessageItem = baseItem as ColumnControlMessageItem;
-        //        var list = ColumnControlMessageItems.Where(x => x.ControlOrLabel == columnControlMessageItem.ControlOrLabel && x.ColumnControl == columnControlMessageItem.ColumnControl && x.CausingDataItem == baseItem.CausingDataItem).ToList<BaseMessageItem>();
-        //        tooltip = GetTooltip(list);
-
-        //        controlManagers = GetColumnControlDataManagers(columnControlMessageItem.ColumnControl, columnControlMessageItem.ControlOrLabel);
-
-        //    }
-
-        //    foreach (var view in controlManagers)
-        //    {
-        //        view.SetTooltip(baseItem.CausingDataItem, tooltip);
-        //    }
-
-        //}
-
-        private void SetColumnControlColor(DP_FormDataRepository CausingDataItem, ControlColorTarget ColorTarget, BaseColumnControl ColumnControl, ControlOrLabelAsTarget ControlOrLabel)
-        {
-            List<Tuple<I_DataControlManager, DP_FormDataRepository>> controlManagers = null;
-            InfoColor color = InfoColor.Null;
-
-            //var columnControlMessageItem = baseItem as ColumnControlColorItem;
-            var list = ColumnControlColorItems.Where(x => x.ControlOrLabel == ControlOrLabel && x.ColumnControl == ColumnControl
-            && x.CausingDataItem == CausingDataItem && x.ColorTarget == ColorTarget).ToList<BaseColorItem>();
-            color = GetColor(list);
-            controlManagers = GetColumnControlDataManagers(ColumnControl, ControlOrLabel, CausingDataItem);
-
-            //     var list = ControlManagerColorItems.Where(x => x.CausingDataItem == baseColorItem.CausingDataItem && x.ColorTarget == baseColorItem.ColorTarget).ToList<BaseColorItem>();
-
-            foreach (var view in controlManagers)
-            {
-                if (ColorTarget == ControlColorTarget.Background)
-                {
-                    view.Item1.SetBackgroundColor(view.Item2, color);
-                }
-                if (ColorTarget == ControlColorTarget.Foreground)
-                {
-                    view.Item1.SetForegroundColor(view.Item2, color);
-                }
-                if (ColorTarget == ControlColorTarget.Border)
-                {
-                    view.Item1.SetBorderColor(view.Item2, color);
-                }
-            }
-        }
-
         private void SetItemColor(DP_FormDataRepository CausingDataItem, ControlColorTarget ColorTarget, BaseColumnControl ColumnControl = null, ControlOrLabelAsTarget? ControlOrLabel = null)
         {
             List<Tuple<I_DataControlManager, DP_FormDataRepository>> controlManagers = null;
             InfoColor color = InfoColor.Null;
-            if (ColumnControl == null)
-            {
-                var list = DataItemColorItems.Where(x => x.CausingDataItem == CausingDataItem && x.ColorTarget == ColorTarget).ToList<BaseColorItem>();
-                color = GetColor(list);
-                controlManagers = GetControlDataManagers(CausingDataItem);
 
-            }
-            else
-            {
-                //var columnControlMessageItem = baseItem as ColumnControlColorItem;
-                var list = ColumnControlColorItems.Where(x => x.ControlOrLabel == ControlOrLabel && x.ColumnControl == ColumnControl
-                && x.CausingDataItem == CausingDataItem && x.ColorTarget == ColorTarget).ToList<BaseColorItem>();
-                color = GetColor(list);
-                controlManagers = GetColumnControlDataManagers(ColumnControl, ControlOrLabel.Value, CausingDataItem);
+            var list = DataItemColorItems.Where(x => x.CausingDataItem == CausingDataItem && x.ColorTarget == ColorTarget).ToList<BaseColorItem>();
+            color = GetColor(list);
+            controlManagers = GetControlDataManagers(CausingDataItem);
 
-            }
+
 
             //     var list = ControlManagerColorItems.Where(x => x.CausingDataItem == baseColorItem.CausingDataItem && x.ColorTarget == baseColorItem.ColorTarget).ToList<BaseColorItem>();
 
@@ -2739,69 +2605,69 @@ namespace MyUILibrary.EntityArea
             }
             return result;
         }
-        private List<Tuple<I_DataControlManager, DP_FormDataRepository>> GetControlDataManagers()
-        {
-            List<Tuple<I_DataControlManager, DP_FormDataRepository>> result = new List<Tuple<I_DataControlManager, DP_FormDataRepository>>();
-            bool hasTempView = (AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
-        AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect ||
-         AreaInitializer.IntracionMode == IntracionMode.Select);
+        //private List<Tuple<I_DataControlManager, DP_FormDataRepository>> GetControlDataManagers()
+        //{
+        //    List<Tuple<I_DataControlManager, DP_FormDataRepository>> result = new List<Tuple<I_DataControlManager, DP_FormDataRepository>>();
+        //    bool hasTempView = (AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
+        //AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect ||
+        // AreaInitializer.IntracionMode == IntracionMode.Select);
 
-            if (DataView != null)
-            {
-                result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>(DataView, null));
-            }
-            if (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
-            {
-                if (TemporaryDisplayView != null)
-                    result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>(TemporaryDisplayView, null));
-            }
-            else if (ChildRelationshipInfo != null)
-            {
-                var relationshipControl = AreaInitializer.SourceRelationColumnControl;
-                result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>(relationshipControl.RelationshipControlManager, ChildRelationshipInfo.SourceData));
-            }
+        //    if (DataView != null)
+        //    {
+        //        result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>(DataView, null));
+        //    }
+        //    if (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
+        //    {
+        //        if (TemporaryDisplayView != null)
+        //            result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>(TemporaryDisplayView, null));
+        //    }
+        //    else if (ChildRelationshipInfo != null)
+        //    {
+        //        var relationshipControl = AreaInitializer.SourceRelationColumnControl;
+        //        result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>(relationshipControl.RelationshipControlManager, ChildRelationshipInfo.SourceData));
+        //    }
 
-            return result;
-        }
-        private List<Tuple<I_DataControlManager, DP_FormDataRepository>> GetColumnControlDataManagers(BaseColumnControl columnControl, ControlOrLabelAsTarget controlOrLabelAsTarget, DP_FormDataRepository dataItem)
-        {
-            List<Tuple<I_DataControlManager, DP_FormDataRepository>> result = new List<Tuple<I_DataControlManager, DP_FormDataRepository>>();
-            if (controlOrLabelAsTarget == ControlOrLabelAsTarget.Control)
-            {
-                if (columnControl is SimpleColumnControl)
-                {
-                    result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>((columnControl as SimpleColumnControl).ControlManager, dataItem));
-                }
-                else if (columnControl is RelationshipColumnControl)
-                {
-                    var relationshipControl = (columnControl as RelationshipColumnControl);
-                    result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>((columnControl as RelationshipColumnControl).ControlManager, dataItem));
+        //    return result;
+        //}
+        //private List<Tuple<I_DataControlManager, DP_FormDataRepository>> GetColumnControlDataManagers(BaseColumnControl columnControl, ControlOrLabelAsTarget controlOrLabelAsTarget, DP_FormDataRepository dataItem)
+        //{
+        //    List<Tuple<I_DataControlManager, DP_FormDataRepository>> result = new List<Tuple<I_DataControlManager, DP_FormDataRepository>>();
+        //    if (controlOrLabelAsTarget == ControlOrLabelAsTarget.Control)
+        //    {
+        //        if (columnControl is SimpleColumnControl)
+        //        {
+        //            result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>((columnControl as SimpleColumnControl).ControlManager, dataItem));
+        //        }
+        //        else if (columnControl is RelationshipColumnControl)
+        //        {
+        //            var relationshipControl = (columnControl as RelationshipColumnControl);
+        //            result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>((columnControl as RelationshipColumnControl).ControlManager, dataItem));
 
-                    bool hasTempView = (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
-          relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect ||
-           relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.Select);
-                    if (hasTempView)
-                    {
-                        if (relationshipControl.EditNdTypeArea.DataView != null)
-                            if (relationshipControl.EditNdTypeArea.DataView.IsOpenedTemporary)
-                                result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>(relationshipControl.EditNdTypeArea.DataView, null));
-                    }
+        //            bool hasTempView = (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
+        //  relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect ||
+        //   relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.Select);
+        //            if (hasTempView)
+        //            {
+        //                if (relationshipControl.EditNdTypeArea.DataView != null)
+        //                    if (relationshipControl.EditNdTypeArea.DataView.IsOpenedTemporary)
+        //                        result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>(relationshipControl.EditNdTypeArea.DataView, null));
+        //            }
 
-                }
-            }
-            else
-            {
-                if (columnControl is SimpleColumnControl)
-                {
-                    result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>((columnControl as SimpleColumnControl).ControlManager.LabelControlManager, null));
-                }
-                else if (columnControl is RelationshipColumnControl)
-                {
-                    result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>((columnControl as RelationshipColumnControl).ControlManager.LabelControlManager, null));
-                }
-            }
-            return result;
-        }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (columnControl is SimpleColumnControl)
+        //        {
+        //            result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>((columnControl as SimpleColumnControl).ControlManager.LabelControlManager, null));
+        //        }
+        //        else if (columnControl is RelationshipColumnControl)
+        //        {
+        //            result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>((columnControl as RelationshipColumnControl).ControlManager.LabelControlManager, null));
+        //        }
+        //    }
+        //    return result;
+        //}
         //private InfoColor GetColor(List<BaseColorItem> list)
         //{
         //    var color = InfoColor.Null;
@@ -3262,48 +3128,48 @@ namespace MyUILibrary.EntityArea
 
 
 
-        private void ResetStatesColorAndText()
-        {
-            //بهتر شه و عمومی نوشته بشه یعنی به دیتا کاری نداشته باشه و کلا پاک بشن ظاهر ها . بررسی شود
-            if (this is I_EditEntityAreaOneData)
-            {
-                //برای وقتی که داده وضعیت دار رابطه بوجود آورنده خودش رو رنگی میکنه و در حال تمپ هم هست
-                //چون وقتی کلیر میکنه داده ای دیگر موجود نیست که رنگ را به حالت اول برگرداند
-                //اگر تو حالت دیتا ویو باشد چون خود داده وضعیتها را ریست میکند مشکلی پیش نمی آید
-                //DataItemColorItems.Clear();
-                //DataItemMessageItems.Clear();
-                //ColumnControlColorItems.Clear();
-                //ColumnControlMessageItems.Clear();
-                var controlManagers = GetControlDataManagers();
+        //private void ResetStatesColorAndText()
+        //{
+        //    //بهتر شه و عمومی نوشته بشه یعنی به دیتا کاری نداشته باشه و کلا پاک بشن ظاهر ها . بررسی شود
+        //    if (this is I_EditEntityAreaOneData)
+        //    {
+        //        //برای وقتی که داده وضعیت دار رابطه بوجود آورنده خودش رو رنگی میکنه و در حال تمپ هم هست
+        //        //چون وقتی کلیر میکنه داده ای دیگر موجود نیست که رنگ را به حالت اول برگرداند
+        //        //اگر تو حالت دیتا ویو باشد چون خود داده وضعیتها را ریست میکند مشکلی پیش نمی آید
+        //        //DataItemColorItems.Clear();
+        //        //DataItemMessageItems.Clear();
+        //        //ColumnControlColorItems.Clear();
+        //        //ColumnControlMessageItems.Clear();
+        //        var controlManagers = GetControlDataManagers();
 
 
 
-                foreach (var view in controlManagers)
-                {
-                    view.Item1.SetTooltip(view.Item2, "");
-                    view.Item1.SetBackgroundColor(view.Item2, InfoColor.Null);
-                    view.Item1.SetBorderColor(view.Item2, InfoColor.Null);
-                }
-            }
-            //foreach (var item in SimpleColumnControls)
-            //{
-            //    SetItemColor(lastOneData, ControlColorTarget.Background, item, ControlOrLabelAsTarget.Label);
-            //    SetItemColor(lastOneData, ControlColorTarget.Border, item, ControlOrLabelAsTarget.Label);
-            //    SetItemColor(lastOneData, ControlColorTarget.Background, item, ControlOrLabelAsTarget.Control);
-            //    SetItemColor(lastOneData, ControlColorTarget.Border, item, ControlOrLabelAsTarget.Control);
-            //    SetItemMessage(lastOneData, item, ControlOrLabelAsTarget.Label);
-            //    SetItemMessage(lastOneData, item, ControlOrLabelAsTarget.Control);
-            //}
-            //foreach (var item in RelationshipColumnControls)
-            //{
-            //    SetItemColor(lastOneData, ControlColorTarget.Background, item, ControlOrLabelAsTarget.Label);
-            //    SetItemColor(lastOneData, ControlColorTarget.Border, item, ControlOrLabelAsTarget.Label);
-            //    SetItemColor(lastOneData, ControlColorTarget.Background, item, ControlOrLabelAsTarget.Control);
-            //    SetItemColor(lastOneData, ControlColorTarget.Border, item, ControlOrLabelAsTarget.Control);
-            //    SetItemMessage(lastOneData, item, ControlOrLabelAsTarget.Label);
-            //    SetItemMessage(lastOneData, item, ControlOrLabelAsTarget.Control);
-            //}
-        }
+        //        foreach (var view in controlManagers)
+        //        {
+        //            view.Item1.SetTooltip(view.Item2, "");
+        //            view.Item1.SetBackgroundColor(view.Item2, InfoColor.Null);
+        //            view.Item1.SetBorderColor(view.Item2, InfoColor.Null);
+        //        }
+        //    }
+        //    //foreach (var item in SimpleColumnControls)
+        //    //{
+        //    //    SetItemColor(lastOneData, ControlColorTarget.Background, item, ControlOrLabelAsTarget.Label);
+        //    //    SetItemColor(lastOneData, ControlColorTarget.Border, item, ControlOrLabelAsTarget.Label);
+        //    //    SetItemColor(lastOneData, ControlColorTarget.Background, item, ControlOrLabelAsTarget.Control);
+        //    //    SetItemColor(lastOneData, ControlColorTarget.Border, item, ControlOrLabelAsTarget.Control);
+        //    //    SetItemMessage(lastOneData, item, ControlOrLabelAsTarget.Label);
+        //    //    SetItemMessage(lastOneData, item, ControlOrLabelAsTarget.Control);
+        //    //}
+        //    //foreach (var item in RelationshipColumnControls)
+        //    //{
+        //    //    SetItemColor(lastOneData, ControlColorTarget.Background, item, ControlOrLabelAsTarget.Label);
+        //    //    SetItemColor(lastOneData, ControlColorTarget.Border, item, ControlOrLabelAsTarget.Label);
+        //    //    SetItemColor(lastOneData, ControlColorTarget.Background, item, ControlOrLabelAsTarget.Control);
+        //    //    SetItemColor(lastOneData, ControlColorTarget.Border, item, ControlOrLabelAsTarget.Control);
+        //    //    SetItemMessage(lastOneData, item, ControlOrLabelAsTarget.Label);
+        //    //    SetItemMessage(lastOneData, item, ControlOrLabelAsTarget.Control);
+        //    //}
+        //}
 
 
     }

@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace MyUILibrary.EntityArea
 {
-    public class ChildSimpleContorlProperty
+    public class ChildSimpleContorlProperty : BaseChildProperty
     {
-        public DP_FormDataRepository SourceData { set; get; }
         public SimpleColumnControl SimpleColumnControl { set; get; }
         public EntityInstanceProperty Property { set; get; }
 
@@ -24,7 +23,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        public ChildSimpleContorlProperty(SimpleColumnControl simpleColumnControl, DP_FormDataRepository sourceData, EntityInstanceProperty property)
+        public ChildSimpleContorlProperty(SimpleColumnControl simpleColumnControl, DP_FormDataRepository sourceData, EntityInstanceProperty property) : base(sourceData, simpleColumnControl)
         {
             SourceData = sourceData;
             SimpleColumnControl = simpleColumnControl;
@@ -82,20 +81,21 @@ namespace MyUILibrary.EntityArea
                     //{
                     if (isReadonly)
                     {
-                        SourceData.EditEntityArea.AddColumnControlMessage(new ColumnControlMessageItem(SimpleColumnControl, ControlOrLabelAsTarget.Control) { CausingDataItem = SourceData, Message = message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات فیلد اعمال نخواهد شد", Key = key, Priority = ControlItemPriority.High });
+                        AddColumnControlMessage(message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات فیلد اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
+
                         // AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Control) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
                         //   AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Control) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
                         if (this is I_EditEntityAreaOneData)
                         {
                             //     AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Label) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
                             //     AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Label) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
-                            SourceData.EditEntityArea.AddColumnControlMessage(new ColumnControlMessageItem(SimpleColumnControl, ControlOrLabelAsTarget.Label) { CausingDataItem = SourceData, Message = message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات فیلد اعمال نخواهد شد", Key = key, Priority = ControlItemPriority.High });
+                            AddColumnControlMessage(message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات فیلد اعمال نخواهد شد", ControlOrLabelAsTarget.Label, key, ControlItemPriority.High);
                         }
                     }
                     else
                     {
-                        SourceData.EditEntityArea.RemoveColumnControlMessage(SimpleColumnControl, ControlOrLabelAsTarget.Control, SourceData, key);
-                        SourceData.EditEntityArea.RemoveColumnControlMessage(SimpleColumnControl, ControlOrLabelAsTarget.Label, SourceData, key);
+                        RemoveColumnControlMessage(ControlOrLabelAsTarget.Control, key);
+                        RemoveColumnControlMessage(ControlOrLabelAsTarget.Label, key);
                         // RemoveColumnControlColor(simpleColumn, ControlOrLabelAsTarget.Control, dataItem, key);
                         //  RemoveColumnControlColor(simpleColumn, ControlOrLabelAsTarget.Label, dataItem, key);
                     }

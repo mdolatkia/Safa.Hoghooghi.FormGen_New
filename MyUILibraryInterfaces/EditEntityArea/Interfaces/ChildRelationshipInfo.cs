@@ -11,12 +11,11 @@ using System.Threading.Tasks;
 
 namespace MyUILibrary.EntityArea
 {
-    public class ChildRelationshipInfo
+    public class ChildRelationshipInfo : BaseChildProperty
     {
-        public DP_FormDataRepository SourceData { set; get; }
         public RelationshipColumnControl RelationshipControl { set; get; }
         public event EventHandler<System.Collections.Specialized.NotifyCollectionChangedEventArgs> CollectionChanged;
-        public ChildRelationshipInfo(RelationshipColumnControl relationshipControl, DP_FormDataRepository sourceData)
+        public ChildRelationshipInfo(RelationshipColumnControl relationshipControl, DP_FormDataRepository sourceData) : base(sourceData, relationshipControl)
         {
             SourceData = sourceData;
             RelationshipControl = relationshipControl;
@@ -348,6 +347,8 @@ namespace MyUILibrary.EntityArea
         }
 
 
+
+
         //public ObservableCollection<DP_FormDataRepository> HiddenData { set; get; }
         //public void AddHiddenDataRelationship(DP_FormDataRepository dataItem)
         //{
@@ -393,22 +394,22 @@ namespace MyUILibrary.EntityArea
                     {
                         if (isReadonly)
                         {
-                            RelationshipControl.EditNdTypeArea.AddColumnControlMessage(new ColumnControlMessageItem(RelationshipControl, ControlOrLabelAsTarget.Control) { CausingDataItem = SourceData, Message = message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", Key = key, Priority = ControlItemPriority.High });
-                            RelationshipControl.EditNdTypeArea.AddColumnControlColor(new ColumnControlColorItem(RelationshipControl, ControlOrLabelAsTarget.Control) { CausingDataItem = SourceData, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
-                            RelationshipControl.EditNdTypeArea.AddColumnControlColor(new ColumnControlColorItem(RelationshipControl, ControlOrLabelAsTarget.Control) { CausingDataItem = SourceData, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
-                            if (this is I_EditEntityAreaOneData)
+                            AddColumnControlMessage(message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
+                            AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
+                            AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, key, ControlItemPriority.High);
+                            if (SourceData.EditEntityArea is I_EditEntityAreaOneData)
                             {
-                                RelationshipControl.EditNdTypeArea.AddColumnControlColor(new ColumnControlColorItem(RelationshipControl, ControlOrLabelAsTarget.Label) { CausingDataItem = SourceData, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
-                                RelationshipControl.EditNdTypeArea.AddColumnControlColor(new ColumnControlColorItem(RelationshipControl, ControlOrLabelAsTarget.Label) { CausingDataItem = SourceData, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
-                                RelationshipControl.EditNdTypeArea.AddColumnControlMessage(new ColumnControlMessageItem(RelationshipControl, ControlOrLabelAsTarget.Label) { CausingDataItem = SourceData, Message = message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", Key = key, Priority = ControlItemPriority.High });
+                                AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
+                                AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, key, ControlItemPriority.High);
+                                AddColumnControlMessage(message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
                             }
                         }
                         else
                         {
-                            RelationshipControl.EditNdTypeArea.RemoveColumnControlMessage(RelationshipControl, ControlOrLabelAsTarget.Control, SourceData, key);
-                            RelationshipControl.EditNdTypeArea.RemoveColumnControlMessage(RelationshipControl, ControlOrLabelAsTarget.Label, SourceData, key);
-                            RelationshipControl.EditNdTypeArea.RemoveColumnControlColor(RelationshipControl, ControlOrLabelAsTarget.Control, SourceData, key);
-                            RelationshipControl.EditNdTypeArea.RemoveColumnControlColor(RelationshipControl, ControlOrLabelAsTarget.Label, SourceData, key);
+                            RemoveColumnControlColor(ControlOrLabelAsTarget.Label, key);
+                            RemoveColumnControlMessage(ControlOrLabelAsTarget.Label, key);
+                            RemoveColumnControlColor(ControlOrLabelAsTarget.Control, key);
+                            RemoveColumnControlMessage(ControlOrLabelAsTarget.Control, key);
                         }
                     }
                 }
@@ -430,21 +431,21 @@ namespace MyUILibrary.EntityArea
                 {
                     if (!hidden)
                     {
-                        RelationshipControl.EditNdTypeArea.RemoveColumnControlColor(RelationshipControl, ControlOrLabelAsTarget.Label, SourceData, key);
-                        RelationshipControl.EditNdTypeArea.RemoveColumnControlMessage(RelationshipControl, ControlOrLabelAsTarget.Label, SourceData, key);
-                        RelationshipControl.EditNdTypeArea.RemoveColumnControlColor(RelationshipControl, ControlOrLabelAsTarget.Control, SourceData, key);
-                        RelationshipControl.EditNdTypeArea.RemoveColumnControlMessage(RelationshipControl, ControlOrLabelAsTarget.Control, SourceData, key);
+                        RemoveColumnControlColor(ControlOrLabelAsTarget.Label, key);
+                        RemoveColumnControlMessage(ControlOrLabelAsTarget.Label, key);
+                        RemoveColumnControlColor(ControlOrLabelAsTarget.Control, key);
+                        RemoveColumnControlMessage(ControlOrLabelAsTarget.Control, key);
                     }
                     else
                     {
-                        AddColumnControlColor( InfoColor.Red,  ControlColorTarget.Background,   key,  ControlItemPriority.High);
-                        RelationshipControl.EditNdTypeArea.AddColumnControlColor(new ColumnControlColorItem(RelationshipControl, ControlOrLabelAsTarget.Control) { CausingDataItem = SourceData, Color = InfoColor.Red, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
-                        RelationshipControl.EditNdTypeArea.AddColumnControlMessage(new ColumnControlMessageItem(RelationshipControl, ControlOrLabelAsTarget.Control) { CausingDataItem = SourceData, Message = message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", Key = key, Priority = ControlItemPriority.High });
-                        if (this is I_EditEntityAreaOneData)
+                        AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
+                        AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, key, ControlItemPriority.High);
+                        AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
+                        if (SourceData.EditEntityArea is I_EditEntityAreaOneData)
                         {
-                            RelationshipControl.EditNdTypeArea.AddColumnControlColor(new ColumnControlColorItem(RelationshipControl, ControlOrLabelAsTarget.Label) { CausingDataItem = SourceData, Color = InfoColor.Red, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
-                            RelationshipControl.EditNdTypeArea.AddColumnControlColor(new ColumnControlColorItem(RelationshipControl, ControlOrLabelAsTarget.Label) { CausingDataItem = SourceData, Color = InfoColor.Red, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
-                            RelationshipControl.EditNdTypeArea.AddColumnControlMessage(new ColumnControlMessageItem(RelationshipControl, ControlOrLabelAsTarget.Label) { CausingDataItem = SourceData, Message = message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", Key = key, Priority = ControlItemPriority.High });
+                            AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Background, key, ControlItemPriority.High);
+                            AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Border, key, ControlItemPriority.High);
+                            AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Label, key, ControlItemPriority.High);
                         }
                     }
                 }
@@ -456,10 +457,8 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        private void AddColumnControlColor(InfoColor infoColor,  ControlColorTarget controlColorTarget,string key, ControlItemPriority priority)
-        {
-            SourceData.EditEntityArea.AddColumnControlColor(new ColumnControlColorItem(RelationshipControl, ControlOrLabelAsTarget.Control) { CausingDataItem = SourceData, Color = infoColor, ColorTarget = controlColorTarget, Key = key, Priority = priority });
-        }
+
+
 
         public void SelectFromParent(Dictionary<int, string> colAndValues)
         {

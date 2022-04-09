@@ -55,6 +55,7 @@
     <Compile Include="EditEntityArea\EditEntityAreaInfo.cs" />
     <Compile Include="EditEntityArea\EditEntityAreaInitializer.cs" />
     <Compile Include="EditEntityArea\Interfaces\ChildSimpleContorlProperty.cs" />
+    <Compile Include="EditEntityArea\Interfaces\Class1.cs" />
     <Compile Include="EditEntityArea\Interfaces\DP_FormDataRepository.cs" />
     <Compile Include="EditEntityArea\Interfaces\ChildRelationshipInfo.cs" />
     <Compile Include="EditEntityArea\Interfaces\IAG_View_TemporaryDisplayView.cs" />
