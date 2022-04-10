@@ -1,4 +1,5 @@
 ﻿using ModelEntites;
+using MyUILibrary.Temp;
 using ProxyLibrary;
 using System;
 using System.Collections.Generic;
@@ -13,97 +14,137 @@ namespace MyUILibrary.EntityArea
         public SimpleColumnControl SimpleColumnControl { set; get; }
         public EntityInstanceProperty Property { set; get; }
 
-        public bool IsHidden { get; set; }
-        public bool IsReadonlyFromState { set; get; }
-        public bool IsReadonly
-        {
-            get
-            {
-                return SimpleColumnControl.Column.IsReadonly || IsReadonlyFromState;
-            }
-        }
+
+        //public bool IsReadonlyFromState { set; get; }
+        //public bool IsReadonly
+        //{
+        //    get
+        //    {
+        //        return SimpleColumnControl.Column.IsReadonly || IsReadonlyFromState;
+        //    }
+        //}
 
         public ChildSimpleContorlProperty(SimpleColumnControl simpleColumnControl, DP_FormDataRepository sourceData, EntityInstanceProperty property) : base(sourceData, simpleColumnControl)
         {
             SourceData = sourceData;
             SimpleColumnControl = simpleColumnControl;
             Property = property;
+
+            if (SimpleColumnControl.Column.IsMandatory)
+                AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal);
+
+            CheckColumnReadonly();
+        }
+        public void Binded()
+        {
+            CheckColumnReadonly();
+        }
+        private void CheckColumnReadonly()
+        {
+            if (SourceData.DataIsInEditMode())
+                SimpleColumnControl.SimpleControlManager.SetReadonly(SourceData, SimpleColumnControl.Column.IsReadonly || IsReadonlyOnSHow);
         }
 
+        public bool IsReadonly
+        {
+            get
+            {
 
-        public void ChangeSimpleColumnVisiblityFromState(bool hidden, string message, string key)//, ImposeControlState hiddenControlState)
+                return SimpleColumnControl.Column.IsReadonly || IsReadonlyOnState || IsReadonlyOnSHow;
+
+                //|| (Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary &&
+                //              (SourceData.EditEntityArea.DataEntryEntity.IsReadonly || SourceData.IsReadonlyBecauseOfState));
+            }
+        }
+
+        public void SetSimpleColumnHiddenFromState(string message, string key, bool OnShow)//, ImposeControlState hiddenControlState)
         {
             if (SourceData.DataIsInEditMode())
             {
                 //اگر کلیذد اصلی باشه چک میشه؟ خطا باید بده
 
-                IsHidden = hidden;
-                //if (hiddenControlState == ImposeControlState.Impose || hiddenControlState == ImposeControlState.Both)
-                //{
-                SimpleColumnControl.ControlManager.Visiblity(SourceData, !hidden);
-                //}
+                IsHiddenOnState = true;
 
-                //if (hiddenControlState == ImposeControlState.AddMessageColor || hiddenControlState == ImposeControlState.Both)
-                //{
-                //if (!hidden)
-                //{
-                //    RemoveColumnControlColor(simpleColumn, ControlOrLabelAsTarget.Label, dataItem, key);
-                //    RemoveColumnControlMessage(simpleColumn, ControlOrLabelAsTarget.Label, dataItem, key);
-                //    RemoveColumnControlColor(simpleColumn, ControlOrLabelAsTarget.Control, dataItem, key);
-                //    RemoveColumnControlMessage(simpleColumn, ControlOrLabelAsTarget.Control, dataItem, key);
-                //}
-                //else
-                //{
-                //    AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Control) { CausingDataItem = dataItem, Color = InfoColor.Red, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
-                //    AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Control) { CausingDataItem = dataItem, Color = InfoColor.Red, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
-                //    AddColumnControlMessage(new ColumnControlMessageItem(simpleColumn, ControlOrLabelAsTarget.Control) { CausingDataItem = dataItem, Message = message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", Key = key, Priority = ControlItemPriority.High });
-                //    AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Label) { CausingDataItem = dataItem, Color = InfoColor.Red, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
-                //    AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Label) { CausingDataItem = dataItem, Color = InfoColor.Red, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
-                //    AddColumnControlMessage(new ColumnControlMessageItem(simpleColumn, ControlOrLabelAsTarget.Label) { CausingDataItem = dataItem, Message = message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", Key = key, Priority = ControlItemPriority.High });
-                //}
-                //}
-            }
-        }
-
-        public void ChangeSimpleColumnReadonlyFromState(bool isReadonly, string message, string key)//, ImposeControlState hiddenControlState)
-        {
-            if (SourceData.DataIsInEditMode())
-            {
-                IsReadonlyFromState = isReadonly;
-                if (!SimpleColumnControl.Column.IsReadonly)
+                if (OnShow)
                 {
-                    //if (hiddenControlState == ImposeControlState.Impose || hiddenControlState == ImposeControlState.Both)
-                    //{
-                    SimpleColumnControl.SimpleControlManager.SetReadonly(SourceData, isReadonly);
-                    //}
+                    IsHiddenOnSHow = true;
+                    SimpleColumnControl.ControlManager.Visiblity(SourceData, false);
+                }
+                else
+                {
 
-                    //if (hiddenControlState == ImposeControlState.AddMessageColor || hiddenControlState == ImposeControlState.Both)
-                    //{
-                    if (isReadonly)
+                    AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
+                    AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, key, ControlItemPriority.High);
+                    AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
+                    if (SourceData.EditEntityArea is I_EditEntityAreaOneData)
                     {
-                        AddColumnControlMessage(message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات فیلد اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
+                        AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Background, key, ControlItemPriority.High);
+                        AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Border, key, ControlItemPriority.High);
+                        AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Label, key, ControlItemPriority.High);
+                    }
 
-                        // AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Control) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
-                        //   AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Control) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
-                        if (this is I_EditEntityAreaOneData)
-                        {
-                            //     AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Label) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
-                            //     AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Label) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
-                            AddColumnControlMessage(message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات فیلد اعمال نخواهد شد", ControlOrLabelAsTarget.Label, key, ControlItemPriority.High);
-                        }
-                    }
-                    else
-                    {
-                        RemoveColumnControlMessage(ControlOrLabelAsTarget.Control, key);
-                        RemoveColumnControlMessage(ControlOrLabelAsTarget.Label, key);
-                        // RemoveColumnControlColor(simpleColumn, ControlOrLabelAsTarget.Control, dataItem, key);
-                        //  RemoveColumnControlColor(simpleColumn, ControlOrLabelAsTarget.Label, dataItem, key);
-                    }
-                    // }
                 }
             }
         }
+        public void ResetSimpleColumnVisiblityFromState(string key)//, ImposeControlState hiddenControlState)
+        {
+            if (SourceData.DataIsInEditMode())
+            {
+                //اگر کلیذد اصلی باشه چک میشه؟ خطا باید بده
 
+                IsHiddenOnState = false;
+
+
+                SimpleColumnControl.ControlManager.Visiblity(SourceData, true);
+
+                RemoveColumnControlColor(ControlOrLabelAsTarget.Label, key);
+                RemoveColumnControlMessage(ControlOrLabelAsTarget.Label, key);
+                RemoveColumnControlColor(ControlOrLabelAsTarget.Control, key);
+                RemoveColumnControlMessage(ControlOrLabelAsTarget.Control, key);
+
+            }
+        }
+        public void SetSimpleColumnReadonlyFromState(string message, string key, bool OnShow)//, ImposeControlState hiddenControlState)
+        {
+            if (SourceData.DataIsInEditMode())
+            {
+                IsReadonlyOnState = true;
+                if (OnShow)
+                {
+                    IsReadonlyOnSHow = IsReadonlyOnState;
+                    if (IsReadonlyOnSHow)
+                        CheckColumnReadonly();
+                }
+
+                AddColumnControlMessage(message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات فیلد اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
+
+                // AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Control) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
+                //   AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Control) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
+                //if (this is I_EditEntityAreaOneData)
+                //{
+                //    //     AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Label) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
+                //    //     AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Label) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Border, Key = key, Priority = ControlItemPriority.High });
+                //    AddColumnControlMessage(message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات فیلد اعمال نخواهد شد", ControlOrLabelAsTarget.Label, key, ControlItemPriority.High);
+
+                // }
+
+            }
+        }
+        public void ResetSimpleColumnReadonlyFromState(string key)//, ImposeControlState hiddenControlState)
+        {
+            if (SourceData.DataIsInEditMode())
+            {
+                IsReadonlyOnState = false;
+
+                RemoveColumnControlMessage(ControlOrLabelAsTarget.Control, key);
+                //   RemoveColumnControlMessage(ControlOrLabelAsTarget.Label, key);
+                // RemoveColumnControlColor(simpleColumn, ControlOrLabelAsTarget.Control, dataItem, key);
+                //  RemoveColumnControlColor(simpleColumn, ControlOrLabelAsTarget.Label, dataItem, key);
+
+                // }
+
+            }
+        }
 
         public void SetValue(object value)
         {
@@ -135,5 +176,7 @@ namespace MyUILibrary.EntityArea
                 }
             }
         }
+
+
     }
 }

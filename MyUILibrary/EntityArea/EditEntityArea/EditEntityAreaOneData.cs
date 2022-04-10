@@ -484,6 +484,9 @@ namespace MyUILibrary.EntityArea
         //}
         public void SetBinding(DP_FormDataRepository dataItem, SimpleColumnControl simpleColumnControl, EntityInstanceProperty property)
         {
+            //اینجا 
+            //بایندینگ های قبلی نمیمونن مثلا برای فرم های چندتایی که با یک تکی ارتباط دارد//
+            //تکست را عوض کنیم بایند قبلی خصوصیت مقدارش تغییر کند
             dataItem.AddChildSimpleContorlProperty(simpleColumnControl, property);
             simpleColumnControl.SimpleControlManager.SetBinding(dataItem, property);
         }

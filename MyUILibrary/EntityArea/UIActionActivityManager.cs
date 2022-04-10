@@ -705,11 +705,11 @@ namespace MyUILibrary.EntityArea
                             {
                                 if (detail.Hidden == true)
                                 {
-                                    simpleColumn.ChangeSimpleColumnVisiblityFromState(false, "غیر فعال سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString());//, ImposeControlState.Both);
+                                    simpleColumn.ResetSimpleColumnVisiblityFromState( detail.ID.ToString());//, ImposeControlState.Both);
                                     hiddenControls.Add(simpleColumn.SimpleColumnControl);
                                 }
                                 else if (detail.Readonly == true)
-                                    simpleColumn.ChangeSimpleColumnReadonlyFromState(false, "فقط خواندنی سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString());//, ImposeControlState.Both);
+                                    simpleColumn.ResetSimpleColumnReadonlyFromState(detail.ID.ToString());//, ImposeControlState.Both);
                             }
                         }
                         else if (detail.RelationshipID != 0)
@@ -719,7 +719,7 @@ namespace MyUILibrary.EntityArea
                                 if (dataItem.ChildRelationshipInfos.Any(x => x.Relationship.ID == detail.RelationshipID))
                                 {
                                     var childRelationshipInfo = dataItem.ChildRelationshipInfos.First(x => x.Relationship.ID == detail.RelationshipID);
-                                    childRelationshipInfo.ChangeRelatoinsipColumnVisiblityFromState(false, "غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), ImposeControlState.Both);
+                                    childRelationshipInfo.ResetRelatoinsipColumnVisiblityFromState(detail.ID.ToString());
                                     hiddenControls.Add(childRelationshipInfo.RelationshipControl);
 
                                     //حتما داده باید در یو آی حاضر باشد
@@ -727,7 +727,7 @@ namespace MyUILibrary.EntityArea
                                 else if (dataItem.ParantChildRelationshipInfo != null && dataItem.ParantChildRelationshipInfo.RelationshipID == detail.RelationshipID)
                                 {
                                     //   var childRelationshipInfo = dataItem.ParantChildRelationshipInfo;
-                                    dataItem.ChangeDataItemParentRelationshipVisiblity(false, "", detail.ID.ToString(), skipUICheck);
+                                    dataItem.ChangeDataItemParentRelationshipVisiblity(false, "", detail.ID.ToString(), skipUICheck, false);
                                 }
 
                             }
@@ -736,13 +736,13 @@ namespace MyUILibrary.EntityArea
                                 if (dataItem.ChildRelationshipInfos.Any(x => x.Relationship.ID == detail.RelationshipID))
                                 {
                                     var childRelationshipInfo = dataItem.ChildRelationshipInfos.First(x => x.Relationship.ID == detail.RelationshipID);
-                                    childRelationshipInfo.ChangeRelatoinsipColumnReadonlyFromState(false, "فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), ImposeControlState.Both);
+                                    childRelationshipInfo.ResetColumnReadonlyFromState(detail.ID.ToString());
                                     //حتما داده باید در یو آی حاضر باشد
                                 }
                                 else if (dataItem.ParantChildRelationshipInfo != null && dataItem.ParantChildRelationshipInfo.RelationshipID == detail.RelationshipID)
                                 {
                                     //  var childRelationshipInfo = dataItem.ParantChildRelationshipInfo;
-                                    dataItem.ChangeDataItemParentRelationshipReadonly(false, "", detail.ID.ToString(), skipUICheck);
+                                    dataItem.ChangeDataItemParentRelationshipReadonly(false, "", detail.ID.ToString(), skipUICheck, false);
                                 }
                             }
 
@@ -774,7 +774,7 @@ namespace MyUILibrary.EntityArea
                     {
                         //موقتی گذاشته شد
                         //بهتره از ClearDataItemReadonlyFromState استفاده بشه
-                        dataItem.ChangeDataItemReadonlyFromState(false, "", actionActivity.ID.ToString(), skipUICheck);
+                        dataItem.ChangeDataItemReadonlyFromState(false, "", actionActivity.ID.ToString(), skipUICheck, false);
                     }
                 }
             }
@@ -819,29 +819,31 @@ namespace MyUILibrary.EntityArea
                                     if (dataItem.ChildRelationshipInfos.Any(x => x.Relationship.ID == detail.RelationshipID))
                                     {
                                         var childRelationshipInfo = dataItem.ChildRelationshipInfos.First(x => x.Relationship.ID == detail.RelationshipID);
-                                        childRelationshipInfo.ChangeRelatoinsipColumnVisiblityFromState(true, "غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), GetRelationshipHiddenControlState(childRelationshipInfo, state, detail.RelationshipID, actionActivitySource));
-                                        hiddenControls.Add(childRelationshipInfo.RelationshipControl);
+
+                                        childRelationshipInfo.SetRelatoinsipColumnHiddenFromState("غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
+                                        if (actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0)
+                                            hiddenControls.Add(childRelationshipInfo.RelationshipControl);
                                         //حتما داده باید در یو آی حاضر باشد
                                     }
                                     else if (dataItem.ParantChildRelationshipInfo != null && dataItem.ParantChildRelationshipInfo.RelationshipID == detail.RelationshipID)
                                     {
-                                        if (actionActivitySource == ActionActivitySource.OnShowData)
-                                        {
-                                            //if (state.StateConditions.Any(x => x.RelationshipTail != null &&
-                                            //    (x.RelationshipTail.RelationshipIDPath == dataItem.ParantChildRelationshipInfo.RelationshipID.ToString() ||
-                                            //    x.RelationshipTail.RelationshipIDPath.StartsWith(dataItem.ParantChildRelationshipInfo.RelationshipID.ToString() + ","))))
-                                            //{
+                                        //if ()
+                                        //{
+                                        //    //if (state.StateConditions.Any(x => x.RelationshipTail != null &&
+                                        //    //    (x.RelationshipTail.RelationshipIDPath == dataItem.ParantChildRelationshipInfo.RelationshipID.ToString() ||
+                                        //    //    x.RelationshipTail.RelationshipIDPath.StartsWith(dataItem.ParantChildRelationshipInfo.RelationshipID.ToString() + ","))))
+                                        //    //{
 
-                                            //}
-                                            //else
-                                            //{
-                                            //اینجا اگر ID صفر باشد یعنی بصورت موقت و برای ارث بری مثلا وضعیت ایجاد شده
-                                            //بهتر شود یعنی یک خصوصیت مخصوص ایجاد شود. کلا این قسمت باید مستند شود
-                                            if (detail.ID != 0)
-                                                dataItem.ParantChildRelationshipInfo.IsReadonlyOnShow = true;
-                                            //}
-                                        }
-                                        dataItem.ChangeDataItemParentRelationshipVisiblity(true, "غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck);
+                                        //    //}
+                                        //    //else
+                                        //    //{
+                                        //    //اینجا اگر ID صفر باشد یعنی بصورت موقت و برای ارث بری مثلا وضعیت ایجاد شده
+                                        //    //بهتر شود یعنی یک خصوصیت مخصوص ایجاد شود. کلا این قسمت باید مستند شود
+                                        //    if (detail.ID != 0)
+                                        //        dataItem.ParantChildRelationshipInfo.IsHiddenOnShow = true;
+                                        //    //}
+                                        //}
+                                        dataItem.ChangeDataItemParentRelationshipVisiblity(true, "غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
                                     }
                                 }
                                 else if (detail.Readonly == true)
@@ -857,7 +859,7 @@ namespace MyUILibrary.EntityArea
                                         //////        childRelationshipInfo.ReadonlyStateFromTails.Add(state.RelationshipTail.RelationshipIDPath);
                                         //////}
 
-                                        childRelationshipInfo.ChangeRelatoinsipColumnReadonlyFromState(true, "فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), GetRelationshipReadonlyControlState(childRelationshipInfo, state, detail.RelationshipID, actionActivitySource));
+                                        childRelationshipInfo.SetRelatoinsipColumnReadonlyFromState("فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
                                         //حتما داده باید در یو آی حاضر باشد
                                     }
                                     else if (dataItem.ParantChildRelationshipInfo != null && dataItem.ParantChildRelationshipInfo.RelationshipID == detail.RelationshipID)
@@ -877,7 +879,7 @@ namespace MyUILibrary.EntityArea
                                                 dataItem.ParantChildRelationshipInfo.IsReadonlyOnShow = true;
                                             //}
                                         }
-                                        dataItem.ChangeDataItemParentRelationshipReadonly(true, "فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck);
+                                        dataItem.ChangeDataItemParentRelationshipReadonly(true, "فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
                                     }
                                 }
                             }
@@ -888,11 +890,11 @@ namespace MyUILibrary.EntityArea
                                 {
                                     if (detail.Hidden == true)
                                     {
-                                        simpleColumn.ChangeSimpleColumnVisiblityFromState(true, "غیر فعال سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString());//, ImposeControlState.Impose);// GetColumnHiddenControlState(state, dataItem, detail.ColumnID, actionActivitySource));
+                                        simpleColumn.SetSimpleColumnHiddenFromState("غیر فعال سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);//, ImposeControlState.Impose);// GetColumnHiddenControlState(state, dataItem, detail.ColumnID, actionActivitySource));
                                         hiddenControls.Add(simpleColumn.SimpleColumnControl);
                                     }
                                     else if (detail.Readonly == true)
-                                        simpleColumn.ChangeSimpleColumnReadonlyFromState(true, "فقط خواندنی سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString());//, ImposeControlState.Impose);// GetColumnReadonlyControlState(state, dataItem, detail.ColumnID, actionActivitySource));
+                                        simpleColumn.SetSimpleColumnReadonlyFromState("فقط خواندنی سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);//, ImposeControlState.Impose);// GetColumnReadonlyControlState(state, dataItem, detail.ColumnID, actionActivitySource));
                                 }
                             }
                             //else if (detail.UICompositionID != 0)
@@ -944,7 +946,7 @@ namespace MyUILibrary.EntityArea
 
                     if (item.Type == Enum_ActionActivityType.EntityReadonly)
                     {
-                        dataItem.ChangeDataItemReadonlyFromState(true, "داده به علت وضعیت" + " " + state.Title + " " + "فقط خواندنی شد", item.ID.ToString(), skipUICheck);
+                        dataItem.ChangeDataItemReadonlyFromState(true, "داده به علت وضعیت" + " " + state.Title + " " + "فقط خواندنی شد", item.ID.ToString(), skipUICheck, actionActivitySource == ActionActivitySource.OnShowData);
                     }
                     EditArea.RunningActionActivities.Remove(item);
                 }
@@ -973,52 +975,52 @@ namespace MyUILibrary.EntityArea
         //            return false;
         //    }
         //}
-        private ImposeControlState GetRelationshipReadonlyControlState(ChildRelationshipInfo childRelationshipInfo, EntityStateDTO state, int relationshipID, ActionActivitySource actionActivitySource)
-        {
-            if (state.StateConditions.Any(x => x.RelationshipTailID != 0))
-            {
-                if (state.StateConditions.Any(x => x.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || x.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ",")))
-                {
-                    if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
-                        return ImposeControlState.AddMessageColor;
-                    else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
-                    {
-                        if (childRelationshipInfo.CheckRelationshipIsChanged())
-                        {
-                            return ImposeControlState.AddMessageColor;
-                        }
-                    }
-                    else if (actionActivitySource == ActionActivitySource.OnShowData)
-                    {
-                        return ImposeControlState.AddMessageColor;
-                    }
-                }
-            }
-            return ImposeControlState.Impose;
-        }
-        private ImposeControlState GetRelationshipHiddenControlState(ChildRelationshipInfo childRelationshipInfo, EntityStateDTO state, int relationshipID, ActionActivitySource actionActivitySource)
-        {
-            if (state.StateConditions.Any(x => x.RelationshipTailID != 0))
-            {
-                if (state.StateConditions.Any(x => x.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || x.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ",")))
-                {
-                    if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
-                        return ImposeControlState.AddMessageColor;
-                    else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
-                    {
-                        if (childRelationshipInfo.CheckRelationshipIsChanged())
-                        {
-                            return ImposeControlState.AddMessageColor;
-                        }
-                    }
-                    else if (actionActivitySource == ActionActivitySource.OnShowData)
-                    {
-                        return ImposeControlState.AddMessageColor;
-                    }
-                }
-            }
-            return ImposeControlState.Impose;
-        }
+        //private ImposeControlState GetRelationshipReadonlyControlState(ChildRelationshipInfo childRelationshipInfo, EntityStateDTO state, int relationshipID, ActionActivitySource actionActivitySource)
+        //{
+        //    if (state.StateConditions.Any(x => x.RelationshipTailID != 0))
+        //    {
+        //        if (state.StateConditions.Any(x => x.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || x.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ",")))
+        //        {
+        //            if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
+        //                return ImposeControlState.AddMessageColor;
+        //            else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
+        //            {
+        //                if (childRelationshipInfo.CheckRelationshipIsChanged())
+        //                {
+        //                    return ImposeControlState.AddMessageColor;
+        //                }
+        //            }
+        //            else if (actionActivitySource == ActionActivitySource.OnShowData)
+        //            {
+        //                return ImposeControlState.AddMessageColor;
+        //            }
+        //        }
+        //    }
+        //    return ImposeControlState.Impose;
+        //}
+        //private ImposeControlState GetRelationshipHiddenControlState(ChildRelationshipInfo childRelationshipInfo, EntityStateDTO state, int relationshipID, ActionActivitySource actionActivitySource)
+        //{
+        //    if (state.StateConditions.Any(x => x.RelationshipTailID != 0))
+        //    {
+        //        if (state.StateConditions.Any(x => x.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || x.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ",")))
+        //        {
+        //            if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
+        //                return ImposeControlState.AddMessageColor;
+        //            else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
+        //            {
+        //                if (childRelationshipInfo.CheckRelationshipIsChanged())
+        //                {
+        //                    return ImposeControlState.AddMessageColor;
+        //                }
+        //            }
+        //            else if (actionActivitySource == ActionActivitySource.OnShowData)
+        //            {
+        //                return ImposeControlState.AddMessageColor;
+        //            }
+        //        }
+        //    }
+        //    return ImposeControlState.Impose;
+        //}
         //private ImposeControlState GetColumnReadonlyControlState(EntityStateDTO state, DP_FormDataRepository dataItem, int columnID, ActionActivitySource actionActivitySource)
         //{
         //    if (state.RelationshipTailID == 0 && state.ColumnID != 0)

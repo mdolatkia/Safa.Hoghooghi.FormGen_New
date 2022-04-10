@@ -45,15 +45,15 @@ namespace MyUILibrary.EntityArea
         //void RemoveData(ProxyLibrary.DP_FormDataRepository data);
         ChildRelationshipInfo ChildRelationshipInfo { get; }
         //void DecideButtons();
-        void RemoveDataItemMessageByKey(string v);
-        void RemoveDataItemColorByKey(string v);
+   //     void RemoveDataItemMessageByKey(string v);
+     //   void RemoveDataItemColorByKey(string v);
         void SetChildRelationshipInfo(ChildRelationshipInfo value);
         //event EventHandler<DataUpdatedArg> Updated;
         TableDrivedEntityDTO FullEntity { get; }
         //void ReadonlySimpleColumnControl(SimpleColumnControl column, bool readonlity);
         void DecideButtonsEnablity1();
-        void AddDataBusinessMessage(string message, InfoColor infoColor, string key, DP_FormDataRepository causingData, ControlItemPriority priority);
-        void RemoveDataBusinessMessage(DP_FormDataRepository dataItem, string key);
+    //    void AddDataBusinessMessage(string message, InfoColor infoColor, string key, DP_FormDataRepository causingData, ControlItemPriority priority);
+     //   void RemoveDataBusinessMessage(DP_FormDataRepository dataItem, string key);
         TableDrivedEntityDTO SimpleEntity { set; get; }
         TableDrivedEntityDTO EntityWithSimpleColumns { get; }
         void SetColumnValueFromState(DP_FormDataRepository dataItem, List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula, bool setFkRelColumns);
@@ -188,14 +188,14 @@ namespace MyUILibrary.EntityArea
         void ApplyStatesBeforeUpdate(bool shouldCheckChilds, ChildRelationshipInfo parentChildRelInfo);
         //void ChangeDataItemReadonlyFromState(DP_FormDataRepository dataItem, string message, string key, bool skipUICheck);
         //void ChangeClearDataItemReadonlyFromState(DP_FormDataRepository dataItem, string key, bool skipUICheck);
-        void AddColumnControlMessage(ColumnControlMessageItem columnControlMessageItem);
-        void AddColumnControlColor(ColumnControlColorItem columnControlColorItem);
-        void RemoveColumnControlMessage(BaseColumnControl relationshipControl, ControlOrLabelAsTarget control, DP_FormDataRepository sourceData, string key);
-        void RemoveColumnControlColor(BaseColumnControl relationshipControl, ControlOrLabelAsTarget control, DP_FormDataRepository sourceData, string key);
-        void AddDataItemMessage(DataMessageItem dataMessageItem);
-        void AddDataItemColor(DataColorItem dataColorItem);
-        void RemoveDataItemColor(DP_FormDataRepository dP_FormDataRepository, string key);
-        void RemoveDataItemMessage(DP_FormDataRepository dP_FormDataRepository, string key);
+        //void AddColumnControlMessage(ColumnControlMessageItem columnControlMessageItem);
+        //void AddColumnControlColor(ColumnControlColorItem columnControlColorItem);
+        //void RemoveColumnControlMessage(BaseColumnControl relationshipControl, ControlOrLabelAsTarget control, DP_FormDataRepository sourceData, string key);
+        //void RemoveColumnControlColor(BaseColumnControl relationshipControl, ControlOrLabelAsTarget control, DP_FormDataRepository sourceData, string key);
+        //void AddDataItemMessage(DataMessageItem dataMessageItem);
+        //void AddDataItemColor(DataColorItem dataColorItem);
+        //void RemoveDataItemColor(DP_FormDataRepository dP_FormDataRepository, string key);
+        //void RemoveDataItemMessage(DP_FormDataRepository dP_FormDataRepository, string key);
 
 
         //      void AddRelationshipColumnMessageItem(RelationshipColumnControl relationshipControl, string message, InfoColor infoColor, string key, DP_FormDataRepository causingData, bool isPermanent);
@@ -984,7 +984,7 @@ namespace MyUILibrary.EntityArea
     {
         public String Key { get; set; }
         //   public List<I_DataControlManager> MultipleDataControlManager { get; set; }
-    //    public DP_FormDataRepository CausingDataItem { set; get; }
+        //    public DP_FormDataRepository CausingDataItem { set; get; }
         public ControlItemPriority Priority { set; get; }
     }
 
@@ -1000,18 +1000,28 @@ namespace MyUILibrary.EntityArea
     }
     public class DataMessageItem : BaseMessageItem
     {
-        public DataMessageItem()
+        public DataMessageItem(string message, string key, ControlItemPriority priority)
         {
+            Message = message;
+            Key = key;
+            Priority = priority;
         }
     }
     public class DataColorItem : BaseColorItem
     {
+        public DataColorItem(InfoColor infoColor, ControlColorTarget controlColorTarget, string key, ControlItemPriority priority)
+        {
+            Color = infoColor;
+            ColorTarget = controlColorTarget;
+            Key = key;
+            Priority = priority;
+        }
     }
 
 
     public class ColumnControlMessageItem : BaseMessageItem
     {
-        public ColumnControlMessageItem(string message, ControlOrLabelAsTarget controlOrLabelAsTarget,  string key, ControlItemPriority priority)
+        public ColumnControlMessageItem(string message, ControlOrLabelAsTarget controlOrLabelAsTarget, string key, ControlItemPriority priority)
         {
             Message = message;
             ControlOrLabel = controlOrLabelAsTarget;
@@ -1216,9 +1226,9 @@ namespace MyUILibrary.EntityArea
     }
 
 
-  
 
- 
+
+
 
 
 
@@ -1229,13 +1239,14 @@ namespace MyUILibrary.EntityArea
         {
             ParantChildRelationshipInfo = parantChildRelationshipInfo;
         }
-
         public RelationshipColumnControl RelationshipColumnControl { get { return ParantChildRelationshipInfo.RelationshipControl; } }
         public ChildRelationshipInfo ParantChildRelationshipInfo { set; get; }
         public int RelationshipID { get { return ParantChildRelationshipInfo.Relationship.PairRelationshipID; } }
         public RelationshipDTO ToRelationship { get { return ParantChildRelationshipInfo.Relationship.PairRelationship; } }
         public DP_FormDataRepository SourceData { get { return ParantChildRelationshipInfo.SourceData; } }
-        public bool IsHidden { get; set; }
+        public bool IsHidden { get { return IsHiddenOnState || IsHiddenOnShow; } }
+        public bool IsHiddenOnState { get; set; }
+        public bool IsHiddenOnShow { get; set; }
         public bool IsReadonly { get { return IsReadonlyOnState || IsReadonlyOnShow; } }
         public bool IsReadonlyOnState { get; set; }
         public bool IsReadonlyOnShow { get; set; }

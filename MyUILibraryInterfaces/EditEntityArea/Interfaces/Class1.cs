@@ -16,6 +16,26 @@ namespace MyUILibrary.EntityArea
         private List<ColumnControlColorItem> ColumnControlColorItems = new List<ColumnControlColorItem>();
         private List<ColumnControlMessageItem> ColumnControlMessageItems = new List<ColumnControlMessageItem>();
 
+        public bool IsHidden
+        {
+            get
+            {
+                return IsHiddenOnState || IsHiddenOnSHow;
+            }
+        }
+
+        public bool IsHiddenOnState { get; set; }
+        public bool IsHiddenOnSHow { set; get; }
+
+
+        
+
+        public bool IsReadonlyOnState
+        {
+            get; set;
+        }
+        public bool IsReadonlyOnSHow { set; get; }
+
         public BaseChildProperty(DP_FormDataRepository sourceData, BaseColumnControl baseColumnControl)
         {
             SourceData = sourceData;
@@ -39,7 +59,7 @@ namespace MyUILibrary.EntityArea
             SetItemColor(ControlOrLabel, ControlColorTarget.Border);
         }
 
-        private void SetItemColor(ControlOrLabelAsTarget controlOrLabelAsTarget, ControlColorTarget controlColorTarget)
+        public void SetItemColor(ControlOrLabelAsTarget controlOrLabelAsTarget, ControlColorTarget controlColorTarget)
         {
 
             InfoColor color = InfoColor.Null;
@@ -82,7 +102,7 @@ namespace MyUILibrary.EntityArea
             }
             SetItemMessage(ControlOrLabel);
         }
-        private void SetItemMessage(ControlOrLabelAsTarget controlOrLabel)
+        public void SetItemMessage(ControlOrLabelAsTarget controlOrLabel)
         {
             string tooltip = "";
             var list = ColumnControlMessageItems.Where(x => x.ControlOrLabel == controlOrLabel).ToList<BaseMessageItem>();

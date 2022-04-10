@@ -611,12 +611,9 @@ namespace MyUILibrary.EntityArea
                         propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column, GetColumnUISetting(column), hasRangeOfValues, true, propertyControl.Alias);
 
                     var info = column.ID + "," + column.Name;
-                    AddColumnControlMessage(new ColumnControlMessageItem(propertyControl, ControlOrLabelAsTarget.Label) { Key = "columninfo", Message = info });
+                    // propertyControl.AddColumnControlMessage(new ColumnControlMessageItem(propertyControl, ControlOrLabelAsTarget.Label) { Key = "columninfo", Message = info });
 
-                    if (DataView != null)
-                    {
-                        propertyControl.SimpleControlManager.SetReadonly(propertyControl.Column.IsReadonly);
-                    }
+                  
                     //  DecideSimpleColumnReadony(propertyControl, true);
 
 
@@ -713,13 +710,25 @@ namespace MyUILibrary.EntityArea
             {
                 if (columnControl.Column.IsMandatory)
                 {
-                    AddMandatoryMessage(columnControl);
+                    var text = columnControl.ControlManager.LabelControlManager.Text;
+                    if (!text.StartsWith("*"))
+                    {
+                        text = "* " + text;
+                        columnControl.ControlManager.LabelControlManager.Text = text;
+                    }
                 }
             }
             foreach (var columnControl in RelationshipColumnControls)
             {
                 if (columnControl.Relationship.IsOtherSideMandatory)
-                    AddMandatoryMessage(columnControl);
+                {
+                    var text = columnControl.ControlManager.LabelControlManager.Text;
+                    if (!text.StartsWith("*"))
+                    {
+                        text = "* " + text;
+                        columnControl.ControlManager.LabelControlManager.Text = text;
+                    }
+                }
             }
             if ((AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship is SubToSuperRelationshipDTO && (AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.InternalTable)
             || RelationshipColumnControls.Any(x => x.Relationship is SuperToSubRelationshipDTO && (x.Relationship as SuperToSubRelationshipDTO).ISARelationship.InternalTable))
@@ -785,7 +794,7 @@ namespace MyUILibrary.EntityArea
 
                 //برای ادمین فعال شود بد نیست
                 var info = dataEntryRelationship.Relationship.ID + "," + dataEntryRelationship.Relationship.Name + Environment.NewLine + dataEntryRelationship.Relationship.TypeStr + Environment.NewLine + dataEntryRelationship.Relationship.Info;
-                AddColumnControlMessage(new ColumnControlMessageItem(relationshipColumnControl, ControlOrLabelAsTarget.Label) { Key = "relationshipinfo", Message = info });
+                //AddColumnControlMessage(new ColumnControlMessageItem(relationshipColumnControl, ControlOrLabelAsTarget.Label) { Key = "relationshipinfo", Message = info });
                 //    AddRelationshipColumnMessageItem(propertyControl, info, InfoColor.Black, "permanentCaption", null, true);
 
             }
@@ -837,11 +846,10 @@ namespace MyUILibrary.EntityArea
             var relationshipColumnControl = sender as RelationshipColumnControl;
             if (relationshipColumnControl != null)
             {
-                SetItemMessage(e.SourceData, relationshipColumnControl, ControlOrLabelAsTarget.Control);
-                SetItemColor(e.SourceData, ControlColorTarget.Background, relationshipColumnControl, ControlOrLabelAsTarget.Control);
-                SetItemColor(e.SourceData, ControlColorTarget.Border, relationshipColumnControl, ControlOrLabelAsTarget.Control);
+                e.SetItemMessage(ControlOrLabelAsTarget.Control);
+                e.SetItemColor(ControlOrLabelAsTarget.Control, ControlColorTarget.Background);
+                e.SetItemColor(ControlOrLabelAsTarget.Control, ControlColorTarget.Border);
                 relationshipColumnControl.EditNdTypeArea.DecideButtonsEnablity1();
-
             }
         }
 
@@ -1643,42 +1651,14 @@ namespace MyUILibrary.EntityArea
 
 
 
-        private void AddMandatoryMessage(BaseColumnControl baseColumnControl)
-        {
-            var text = baseColumnControl.ControlManager.LabelControlManager.Text;
-            if (!text.StartsWith("*"))
-            {
-                text = "* " + text;
-                baseColumnControl.ControlManager.LabelControlManager.Text = text;
-            }
-            AddColumnControlColor(new ColumnControlColorItem(baseColumnControl, ControlOrLabelAsTarget.Label) { Key = "mandatory", Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Foreground });
-        }
+       
 
-        public void AddDataBusinessMessage(string message, InfoColor infoColor, string key, DP_FormDataRepository causingData, ControlItemPriority priority)
-        {
-            DataMessageItem baseMessageItem = new DataMessageItem();
-            baseMessageItem.CausingDataItem = causingData;
-            baseMessageItem.Key = key;
-            baseMessageItem.Message = message;
-            baseMessageItem.Priority = priority;
-            AddDataItemMessage(baseMessageItem);
-
-            DataColorItem baseColorItem = new DataColorItem();
-            baseColorItem.Key = key;
-            baseColorItem.Color = infoColor;
-            baseColorItem.ColorTarget = ControlColorTarget.Border;
-            baseColorItem.Priority = priority;
-            baseColorItem.CausingDataItem = causingData;
-            AddDataItemColor(baseColorItem); ;
-
-            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("اعتبارسنجی", message, infoColor);
-
-        }
-        public void RemoveDataBusinessMessage(DP_FormDataRepository dataItem, string key)
-        {
-            RemoveDataItemMessage(dataItem, key);
-            RemoveDataItemColor(dataItem, key);
-        }
+      
+        //public void RemoveDataBusinessMessage(DP_FormDataRepository dataItem, string key)
+        //{
+        //    RemoveDataItemMessage(dataItem, key);
+        //    RemoveDataItemColor(dataItem, key);
+        //}
 
         //public void RemoveMessageItem(BaseMessageItem baseMessageItem)
         //{
@@ -2451,160 +2431,9 @@ namespace MyUILibrary.EntityArea
 
 
 
-        private List<DataColorItem> DataItemColorItems = new List<DataColorItem>();
-        private List<DataMessageItem> DataItemMessageItems = new List<DataMessageItem>();
-        private string GetTooltip(List<BaseMessageItem> MessageItems)
-        {
-            var tooltip = "";
-            foreach (var item in MessageItems.OrderBy(x => x.Priority))
-                tooltip += (tooltip == "" ? "" : Environment.NewLine) + item.Message;
-            return tooltip;
-        }
-        public void AddDataItemMessage(DataMessageItem baseMessageItem)
-        {
-            //    baseMessageItem.MultipleDataControlManager = GetControlDataManagers(baseMessageItem.CausingDataItem);
-            if (!DataItemMessageItems.Any(x => x.CausingDataItem == baseMessageItem.CausingDataItem && x.Key == baseMessageItem.Key && x.Message == baseMessageItem.Message))
-                DataItemMessageItems.Add(baseMessageItem);
-            SetItemMessage(baseMessageItem.CausingDataItem);
-        }
-        public void RemoveDataItemMessage(DP_FormDataRepository dataItem, string key)
-        {
-            foreach (var baseMessageItem in DataItemMessageItems.Where(x => x.CausingDataItem == dataItem && x.Key == key).ToList())
-            {
-                DataItemMessageItems.Remove(baseMessageItem);
-            }
-            SetItemMessage(dataItem);
-        }
-        public void RemoveDataItemMessageByKey(string key)
-        {
-            List<DP_FormDataRepository> datas = new List<DP_FormDataRepository>();
-            foreach (var baseMessageItem in DataItemMessageItems.Where(x => x.Key == key).ToList())
-            {
-                datas.Add(baseMessageItem.CausingDataItem);
-            }
-            foreach (var data in datas)
-                RemoveDataItemMessage(data, key);
-
-        }
-
-        public void AddDataItemColor(DataColorItem colorItem)
-        {
-            if (!DataItemColorItems.Any(x => x.CausingDataItem == colorItem.CausingDataItem && x.Key == colorItem.Key && x.ColorTarget == colorItem.ColorTarget))
-                DataItemColorItems.Add(colorItem);
-            SetItemColor(colorItem.CausingDataItem, colorItem.ColorTarget);
-        }
-
-        public void RemoveDataItemColor(DP_FormDataRepository dataItem, string key)
-        {
-            foreach (var baseColorItem in DataItemColorItems.Where(x => x.CausingDataItem == dataItem && x.Key == key).ToList())
-            {
-                DataItemColorItems.Remove(baseColorItem);
-            }
-            SetItemColor(dataItem, ControlColorTarget.Background);
-            SetItemColor(dataItem, ControlColorTarget.Border);
-            //      SetItemColor(dataItem, ControlColorTarget.Foreground);
-        }
-        public void RemoveDataItemColorByKey(string key)
-        {
-            List<DP_FormDataRepository> datas = new List<DP_FormDataRepository>();
-            foreach (var baseColorItem in DataItemColorItems.Where(x => x.Key == key).ToList())
-            {
-                datas.Add(baseColorItem.CausingDataItem);
-            }
-            foreach (var data in datas)
-                RemoveDataItemColor(data, key);
-        }
 
 
 
-        private InfoColor GetColor(List<BaseColorItem> list)
-        {
-            var color = InfoColor.Null;
-            foreach (var item in list.Where(x => x.Color != InfoColor.Null).OrderByDescending(x => x.Priority))
-                color = item.Color;
-            return color;
-        }
-
-        private void SetItemMessage(DP_FormDataRepository CausingDataItem, BaseColumnControl ColumnControl = null, ControlOrLabelAsTarget? ControlOrLabel = null)
-        {
-            List<Tuple<I_DataControlManager, DP_FormDataRepository>> controlManagers = null;
-            string tooltip = "";
-            if (ColumnControl == null)
-            {
-                var list = DataItemMessageItems.Where(x => x.CausingDataItem == CausingDataItem).ToList<BaseMessageItem>();
-                tooltip = GetTooltip(list);
-                controlManagers = GetControlDataManagers(CausingDataItem);
-
-            }
-            else
-            {
-                // var columnControlMessageItem = baseItem as ColumnControlMessageItem;
-                var list = ColumnControlMessageItems.Where(x => x.ControlOrLabel == ControlOrLabel && x.ColumnControl == ColumnControl && x.CausingDataItem == CausingDataItem).ToList<BaseMessageItem>();
-                tooltip = GetTooltip(list);
-
-                controlManagers = GetColumnControlDataManagers(ColumnControl, ControlOrLabel.Value, CausingDataItem);
-
-            }
-
-            foreach (var view in controlManagers)
-            {
-                view.Item1.SetTooltip(view.Item2, tooltip);
-            }
-
-        }
-
-        private void SetItemColor(DP_FormDataRepository CausingDataItem, ControlColorTarget ColorTarget, BaseColumnControl ColumnControl = null, ControlOrLabelAsTarget? ControlOrLabel = null)
-        {
-            List<Tuple<I_DataControlManager, DP_FormDataRepository>> controlManagers = null;
-            InfoColor color = InfoColor.Null;
-
-            var list = DataItemColorItems.Where(x => x.CausingDataItem == CausingDataItem && x.ColorTarget == ColorTarget).ToList<BaseColorItem>();
-            color = GetColor(list);
-            controlManagers = GetControlDataManagers(CausingDataItem);
-
-
-
-            //     var list = ControlManagerColorItems.Where(x => x.CausingDataItem == baseColorItem.CausingDataItem && x.ColorTarget == baseColorItem.ColorTarget).ToList<BaseColorItem>();
-
-            foreach (var view in controlManagers)
-            {
-                if (ColorTarget == ControlColorTarget.Background)
-                {
-                    view.Item1.SetBackgroundColor(view.Item2, color);
-                }
-                else if (ColorTarget == ControlColorTarget.Foreground)
-                {
-                    view.Item1.SetForegroundColor(view.Item2, color);
-                }
-                if (ColorTarget == ControlColorTarget.Border)
-                {
-                    view.Item1.SetBorderColor(view.Item2, color);
-                }
-            }
-        }
-        private List<Tuple<I_DataControlManager, DP_FormDataRepository>> GetControlDataManagers(DP_FormDataRepository dataItem)
-        {
-            List<Tuple<I_DataControlManager, DP_FormDataRepository>> result = new List<Tuple<I_DataControlManager, DP_FormDataRepository>>();
-            if ((dataItem as DP_FormDataRepository).DataIsInEditMode())
-                result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>(DataView, dataItem));
-
-            if ((dataItem as DP_FormDataRepository).DataItemIsInTempViewMode())
-            {
-                if (this is I_EditEntityAreaOneData)
-                {
-                    if (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
-                    {
-                        result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>(TemporaryDisplayView, dataItem));
-                    }
-                    else
-                    {
-                        var relationshipControl = AreaInitializer.SourceRelationColumnControl;
-                        result.Add(new Tuple<I_DataControlManager, DP_FormDataRepository>(relationshipControl.RelationshipControlManager, dataItem.ParantChildRelationshipInfo.SourceData));
-                    }
-                }
-            }
-            return result;
-        }
         //private List<Tuple<I_DataControlManager, DP_FormDataRepository>> GetControlDataManagers()
         //{
         //    List<Tuple<I_DataControlManager, DP_FormDataRepository>> result = new List<Tuple<I_DataControlManager, DP_FormDataRepository>>();
@@ -2701,7 +2530,7 @@ namespace MyUILibrary.EntityArea
             var dataEntryEntityIsReadonly = DataEntryEntity.IsReadonly;
             //if (AreaInitializer.SourceRelationColumnControl != null && ChildRelationshipInfo == null)
             //            throw new Exception("!!!");
-            var sourceRelationshipIsReadonly = ChildRelationshipInfo != null && ChildRelationshipInfo.IsReadonlyOrRelationshipIsReadonly;
+            var sourceRelationshipIsReadonly = ChildRelationshipInfo != null && ChildRelationshipInfo.IsReadonly;
             var dataList = GetDataList();
 
             bool saveCommandEnablity = true;
@@ -3044,7 +2873,7 @@ namespace MyUILibrary.EntityArea
                         var childInfo = dataItem.ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == item.Item2.Relationship.ID);
                         if (childInfo != null)
                         {
-                            if (!childInfo.Relationship.IsReadonly && !childInfo.IsReadonly && !childInfo.IsHidden)
+                            if (!childInfo.Relationship.IsReadonly && !childInfo.IsReadonlyOnState && !childInfo.IsHidden)
                             {
                                 childInfo.SelectFromParent(item.Item3);
                             }

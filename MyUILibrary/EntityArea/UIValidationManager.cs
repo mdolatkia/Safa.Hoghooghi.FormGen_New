@@ -70,20 +70,21 @@ namespace MyUILibrary.EntityArea
         }
         public void RemoveValidationMessages()
         {
-            foreach (var item in EditArea.SimpleColumnControls)
-            {
-                EditArea.RemoveColumnControlColor(item, ControlOrLabelAsTarget.Control, "validation");
-                EditArea.RemoveColumnControlMessage(item, ControlOrLabelAsTarget.Control, "validation");
+            //اینجا
+            //////foreach (var item in EditArea.SimpleColumnControls)
+            //////{
+            //////    EditArea.RemoveColumnControlColor(item, ControlOrLabelAsTarget.Control, "validation");
+            //////    EditArea.RemoveColumnControlMessage(item, ControlOrLabelAsTarget.Control, "validation");
 
-            }
-            foreach (var item in EditArea.RelationshipColumnControls)
-            {
-                EditArea.RemoveColumnControlColor(item, ControlOrLabelAsTarget.Control, "validation");
-                EditArea.RemoveColumnControlMessage(item, ControlOrLabelAsTarget.Control, "validation");
-            }
+            //////}
+            //////foreach (var item in EditArea.RelationshipColumnControls)
+            //////{
+            //////    EditArea.RemoveColumnControlColor(item, ControlOrLabelAsTarget.Control, "validation");
+            //////    EditArea.RemoveColumnControlMessage(item, ControlOrLabelAsTarget.Control, "validation");
+            //////}
 
-            EditArea.RemoveDataItemMessageByKey("validation");
-            EditArea.RemoveDataItemColorByKey("validation");
+            //////EditArea.RemoveDataItemMessageByKey("validation");
+            //////EditArea.RemoveDataItemColorByKey("validation");
 
         }
 
@@ -709,20 +710,21 @@ namespace MyUILibrary.EntityArea
         public void AddColumnControlValidationMessage(BaseColumnControl baseColumnControl, string message, DP_FormDataRepository causingData)
         {
             causingData.ISValid = false;
-            ColumnControlMessageItem baseMessageItem = new ColumnControlMessageItem(baseColumnControl, ControlOrLabelAsTarget.Control);
-            baseMessageItem.CausingDataItem = causingData;
-            baseMessageItem.Key = "validation";
-            baseMessageItem.Message = message;
-            baseMessageItem.Priority = ControlItemPriority.High;
-            EditArea.AddColumnControlMessage(baseMessageItem);
+            //اینجا
+            //////ColumnControlMessageItem baseMessageItem = new ColumnControlMessageItem(baseColumnControl, ControlOrLabelAsTarget.Control);
+            //////baseMessageItem.CausingDataItem = causingData;
+            //////baseMessageItem.Key = "validation";
+            //////baseMessageItem.Message = message;
+            //////baseMessageItem.Priority = ControlItemPriority.High;
+            //////EditArea.AddColumnControlMessage(baseMessageItem);
 
-            ColumnControlColorItem baseColorItem = new ColumnControlColorItem(baseColumnControl, ControlOrLabelAsTarget.Control);
-            baseColorItem.Key = "validation";
-            baseColorItem.Color = InfoColor.Red;
-            baseColorItem.ColorTarget = ControlColorTarget.Border;
-            baseColorItem.Priority = ControlItemPriority.High;
-            baseColorItem.CausingDataItem = causingData;
-            EditArea.AddColumnControlColor(baseColorItem); ;
+            //////ColumnControlColorItem baseColorItem = new ColumnControlColorItem(baseColumnControl, ControlOrLabelAsTarget.Control);
+            //////baseColorItem.Key = "validation";
+            //////baseColorItem.Color = InfoColor.Red;
+            //////baseColorItem.ColorTarget = ControlColorTarget.Border;
+            //////baseColorItem.Priority = ControlItemPriority.High;
+            //////baseColorItem.CausingDataItem = causingData;
+            //////EditArea.AddColumnControlColor(baseColorItem); ;
 
         }
         public void AddDataValidationMessage(string message, DP_FormDataRepository causingData)
@@ -740,21 +742,22 @@ namespace MyUILibrary.EntityArea
             //اینکه کدام داده هست به مسیج اضافه شود
 
             causingData.ISValid = false;
-            DataMessageItem baseMessageItem = new DataMessageItem();
-            baseMessageItem.CausingDataItem = causingData;
-            baseMessageItem.Key = "validation";
-            baseMessageItem.Message = message;
-            baseMessageItem.Priority = ControlItemPriority.High;
-            EditArea.AddDataItemMessage(baseMessageItem);
+            //اینجا
+            //////DataMessageItem baseMessageItem = new DataMessageItem();
+            //////baseMessageItem.CausingDataItem = causingData;
+            //////baseMessageItem.Key = "validation";
+            //////baseMessageItem.Message = message;
+            //////baseMessageItem.Priority = ControlItemPriority.High;
+            //////EditArea.AddDataItemMessage(baseMessageItem);
 
-            DataColorItem baseColorItem = new DataColorItem();
-            baseColorItem.Key = "validation";
-            baseColorItem.Color = InfoColor.Red;
-            baseColorItem.ColorTarget = ControlColorTarget.Border;
-            baseColorItem.Priority = ControlItemPriority.High;
-            baseColorItem.CausingDataItem = causingData;
-            EditArea.AddDataItemColor(baseColorItem); ;
-            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("اعتبارسنجی", message, InfoColor.Red);
+            //////DataColorItem baseColorItem = new DataColorItem();
+            //////baseColorItem.Key = "validation";
+            //////baseColorItem.Color = InfoColor.Red;
+            //////baseColorItem.ColorTarget = ControlColorTarget.Border;
+            //////baseColorItem.Priority = ControlItemPriority.High;
+            //////baseColorItem.CausingDataItem = causingData;
+            //////EditArea.AddDataItemColor(baseColorItem); ;
+            //////AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("اعتبارسنجی", message, InfoColor.Red);
         }
 
     }

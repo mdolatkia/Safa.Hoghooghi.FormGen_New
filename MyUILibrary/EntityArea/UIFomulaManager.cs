@@ -124,13 +124,13 @@ namespace MyUILibrary.EntityArea
 
 
             var key = "formulaCalculated" + "_" + dataProperty.ColumnID;
-            EditArea.RemoveDataItemMessage(dataItem, key);
+            dataItem.RemoveDataItemMessageByKey(key);
 
             if (columnCustomFormula.OnlyOnNewData)
             {
                 if (!dataItem.IsNewItem)
                 {
-                    AddDataMessageItem(dataItem, key, ControlItemPriority.Normal, "فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی داده موجود اعمال نمی شود");
+                    dataItem.AddDataItemMessage("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی داده موجود اعمال نمی شود", key, ControlItemPriority.Normal);
                     return;
                 }
             }
@@ -138,7 +138,7 @@ namespace MyUILibrary.EntityArea
             {
                 if (dataProperty.Value != null && !string.IsNullOrEmpty(dataProperty.Value.ToString()))
                 {
-                    AddDataMessageItem(dataItem, key, ControlItemPriority.Normal, "فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی خصوصیت دارای مقدار اعمال نمی شود");
+                    dataItem.AddDataItemMessage("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی خصوصیت دارای مقدار اعمال نمی شود", key, ControlItemPriority.Normal);
                     return;
                 }
             }
@@ -164,7 +164,7 @@ namespace MyUILibrary.EntityArea
                 //  dataProperty.Value = "";
 
                 //اینجا خطا روی ستون یا رابطه بدهد
-                AddDataMessageItem(dataItem, key, ControlItemPriority.Normal, "خطا در محاسبه فرمول" + " " + columnCustomFormula.Formula.Title + ":" + " " + dataProperty.FormulaException);
+                dataItem.AddDataItemMessage( "خطا در محاسبه فرمول" + " " + columnCustomFormula.Formula.Title + ":" + " " + dataProperty.FormulaException, key, ControlItemPriority.Normal);
             }
 
             if (asDefault)
@@ -184,15 +184,15 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        private void AddDataMessageItem(DP_FormDataRepository dataItem, string key, ControlItemPriority priority, string message)
-        {
-            DataMessageItem baseMessageItem = new DataMessageItem();
-            baseMessageItem.CausingDataItem = dataItem;
-            baseMessageItem.Key = key;
-            baseMessageItem.Priority = priority;
-            baseMessageItem.Message = message;
-            EditArea.AddDataItemMessage(baseMessageItem);
-        }
+        //private void AddDataMessageItem(DP_FormDataRepository dataItem, string key, ControlItemPriority priority, string message)
+        //{
+        //    DataMessageItem baseMessageItem = new DataMessageItem();
+        //    baseMessageItem.CausingDataItem = dataItem;
+        //    baseMessageItem.Key = key;
+        //    baseMessageItem.Priority = priority;
+        //    baseMessageItem.Message = message;
+        //    EditArea.AddDataItemMessage(baseMessageItem);
+        //}
 
         //private List<FormulaItemDTO> GetFlatList(List<FormulaItemDTO> treeFormulaItems, List<FormulaItemDTO> result = null)
         //{
