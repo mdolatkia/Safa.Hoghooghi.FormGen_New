@@ -379,15 +379,15 @@ namespace MyUILibrary.EntityArea
                     RelationshipControl.EditNdTypeArea.SetChildRelationshipInfo(this);
                     RelationshipControl.EditNdTypeArea.DecideButtonsEnablity1();
                 }
-                AddColumnControlMessage(message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
-                AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
                 AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, key, ControlItemPriority.High);
-                if (SourceData.EditEntityArea is I_EditEntityAreaOneData)
-                {
-                    AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Background, key, ControlItemPriority.High);
-                    AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Border, key, ControlItemPriority.High);
-                    AddColumnControlMessage(message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
-                }
+                AddColumnControlMessage(message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
+              //  AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
+                //if (SourceData.EditEntityArea is I_EditEntityAreaOneData)
+                //{
+                //    AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Background, key, ControlItemPriority.High);
+                //    AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Border, key, ControlItemPriority.High);
+                //    AddColumnControlMessage(message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
+                //}
 
 
             }
@@ -417,15 +417,15 @@ namespace MyUILibrary.EntityArea
                 else
                 {
 
-                    AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
+                   // AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
                     AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, key, ControlItemPriority.High);
                     AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
-                    if (SourceData.EditEntityArea is I_EditEntityAreaOneData)
-                    {
-                        AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Background, key, ControlItemPriority.High);
-                        AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Border, key, ControlItemPriority.High);
-                        AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Label, key, ControlItemPriority.High);
-                    }
+                    //if (SourceData.EditEntityArea is I_EditEntityAreaOneData)
+                    //{
+                    //    AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Background, key, ControlItemPriority.High);
+                    //    AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Border, key, ControlItemPriority.High);
+                    //    AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Label, key, ControlItemPriority.High);
+                    //}
 
                 }
             }

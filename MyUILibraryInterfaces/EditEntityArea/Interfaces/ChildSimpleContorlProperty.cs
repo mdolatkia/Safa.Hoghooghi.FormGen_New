@@ -73,15 +73,15 @@ namespace MyUILibrary.EntityArea
                 else
                 {
 
-                    AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
+                   // AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
                     AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, key, ControlItemPriority.High);
                     AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
-                    if (SourceData.EditEntityArea is I_EditEntityAreaOneData)
-                    {
-                        AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Background, key, ControlItemPriority.High);
-                        AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Border, key, ControlItemPriority.High);
-                        AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Label, key, ControlItemPriority.High);
-                    }
+                    //if (SourceData.EditEntityArea is I_EditEntityAreaOneData)
+                    //{
+                    //    AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Background, key, ControlItemPriority.High);
+                    //    AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Border, key, ControlItemPriority.High);
+                    //    AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Label, key, ControlItemPriority.High);
+                    //}
 
                 }
             }
@@ -115,7 +115,7 @@ namespace MyUILibrary.EntityArea
                     if (IsReadonlyOnSHow)
                         CheckColumnReadonly();
                 }
-
+                AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, key, ControlItemPriority.High);
                 AddColumnControlMessage(message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات فیلد اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
 
                 // AddColumnControlColor(new ColumnControlColorItem(simpleColumn, ControlOrLabelAsTarget.Control) { CausingDataItem = dataItem, Color = InfoColor.DarkRed, ColorTarget = ControlColorTarget.Background, Key = key, Priority = ControlItemPriority.High });
@@ -138,7 +138,7 @@ namespace MyUILibrary.EntityArea
 
                 RemoveColumnControlMessage(ControlOrLabelAsTarget.Control, key);
                 //   RemoveColumnControlMessage(ControlOrLabelAsTarget.Label, key);
-                // RemoveColumnControlColor(simpleColumn, ControlOrLabelAsTarget.Control, dataItem, key);
+                 RemoveColumnControlColor( ControlOrLabelAsTarget.Control,  key);
                 //  RemoveColumnControlColor(simpleColumn, ControlOrLabelAsTarget.Label, dataItem, key);
 
                 // }
