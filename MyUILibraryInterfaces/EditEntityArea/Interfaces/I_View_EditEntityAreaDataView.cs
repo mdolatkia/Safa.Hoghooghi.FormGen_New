@@ -42,17 +42,21 @@ namespace MyUILibrary.EntityArea
     {
         public UserDialogResult Result { set; get; }
     }
-    public interface I_View_EditEntityAreaDataView : I_View_GridContainer, I_View_DataContainer
+    public interface I_View_EditEntityAreaDataView : I_View_GridContainer
     {
 
     }
 
 
-    public interface I_View_GridContainer : I_View_Container
+    public interface I_View_GridContainer : I_View_Area
     {
         //void ClearControls();
         //object ContentGrid { get; }
         //GridSetting GridSetting { set; get; }
+
+        void AddView(I_UIControlManager labelControlManager, I_RelationshipControlManagerOne relationshipControlManager);
+        void AddUIControlPackage(I_SimpleControlManagerOne controlManager, I_UIControlManager labelControlManager);
+
         void AddGroup(I_UICompositionContainer view, string title, GroupUISettingDTO groupUISettingDTO);
         void AddTabGroup(I_TabGroupContainer view, string title, TabGroupUISettingDTO groupUISettingDTO);
         //void AddTabPage(I_TabGroupContainer tabGroupContainer, I_TabPageContainer view, string title, TabPageUISettingDTO groupUISettingDTO);
@@ -68,48 +72,80 @@ namespace MyUILibrary.EntityArea
         void AddEmptySpace(EmptySpaceUISettingDTO setting);
     }
 
-    public interface I_View_Area
+
+    public interface I_View_DataArea : I_View_Area
     {
-    //    object UIElement { get; }
-        void DeHighlightCommands();
-        void AddCommand(I_CommandManager command, bool indirect = false);
-        void SetBackgroundColor(string color);
+        //    object UIElement { get; }
+       // void DeHighlightCommands();
+       // void AddCommand(I_CommandManager command, bool indirect = false);
+       // void SetBackgroundColor(string color);
         void DisableEnableDataSection(bool enable);
-        void Visiblity(bool visible);
-        void EnableDisable(bool enable);
-    }
-    public interface I_View_Container : I_View_Area
-    {
-        void AddView(object view, I_LabelControlManager labelControlManager);
-        void AddUIControlPackage(I_SimpleControlManager controlManager, I_LabelControlManager labelControlManager);
+      //  void Visiblity(bool visible);
+      //  void EnableDisable(bool enable);
+
+
         void ClearControls();
-        int ControlsCount { get; }
-        void SetTooltip(string tooltip);
-        void SetBorderColor(InfoColor color);
-        void SetBackgroundColor(InfoColor color);
-        void SetForegroundColor(InfoColor color);
-        bool IsOpenedTemporary { get; set; }
+     //   int ControlsCount { get; }
+        //void SetTooltip(string tooltip);
+        //void SetBorderColor(InfoColor color);
+        //void SetBackgroundColor(InfoColor color);
+        //void SetForegroundColor(InfoColor color);
+        //  bool IsOpenedTemporary { get; set; }
         //event EventHandler<Arg_CommandExecuted> CommandExecuted;
         //void AddCommands(List<I_Command> Commands, TemplateEntityUISettings templateEntityUISettings);
-        UIControlPackageTree UIControlPackageTreeItem { get; set; }
+        //  UIControlPackageTree UIControlPackageTreeItem { get; set; }
 
-        //bool AllowExpand { set; get; }
-        //void SetExpanderInfo(object header);
-        //void Expand();
-        //void Collapse();
-        //void SetVisibility(bool visible);
 
     }
-    public interface I_View_DataContainer : I_View_Container, I_DataControlManager
+
+    public interface I_View_Area : I_UIElementManager
     {
+        //    object UIElement { get; }
+        void DeHighlightCommands();
+        void AddCommand(I_CommandManager command, bool indirect = false);
+        //void SetBackgroundColor(string color);
+   //     void DisableEnableDataSection(bool enable);
+     //   void Visiblity(bool visible);
+        void EnableDisable(bool enable);
+
+
+        //void ClearControls();
+        //int ControlsCount { get; }
+        //void SetTooltip(string tooltip);
+        //void SetBorderColor(InfoColor color);
+        //void SetBackgroundColor(InfoColor color);
+        //void SetForegroundColor(InfoColor color);
+      //  bool IsOpenedTemporary { get; set; }
+        //event EventHandler<Arg_CommandExecuted> CommandExecuted;
+        //void AddCommands(List<I_Command> Commands, TemplateEntityUISettings templateEntityUISettings);
+      //  UIControlPackageTree UIControlPackageTreeItem { get; set; }
+
 
     }
-    public interface I_View_MultipleDataContainer : I_View_DataContainer
+    //public interface I_View_ControlContainer : I_View_Area
+    //{
+
+      
+
+    //    //bool AllowExpand { set; get; }
+    //    //void SetExpanderInfo(object header);
+    //    //void Expand();
+    //    //void Collapse();
+    //    //void SetVisibility(bool visible);
+
+    //}
+    //public interface I_View_DataContainer : I_View_Container
+    //{
+
+    //}
+    public interface I_View_MultipleDataContainer : I_View_Area
     {
         event EventHandler<DataContainerLoadedArg> DataContainerLoaded;
         event EventHandler<DataContainerLoadedArg> ItemDoubleClicked;
         //I_RelationshipControlManager GenerateRelationshipControlManager(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipUISettingDTO);
 
+        void AddView(I_UIControlManager labelControlManager, I_RelationshipControlManagerMultiple relationshipControlManager);
+        void AddUIControlPackage(I_SimpleControlManagerMultiple controlManager, I_UIControlManager labelControlManager);
 
         //I_SimpleControlManager GenerateControlManager(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues, bool valueIsTitleOrValue);
         //bool ShowMultipleDateItemControlValue(DP_DataRepository dataItem, UIControlPackageMultipleData controlPackage, string value);
@@ -122,8 +158,8 @@ namespace MyUILibrary.EntityArea
         List<object> RemoveDataContainers();
 
         List<object> GetSelectedData();
-        void RemoveUIControlPackage(I_SimpleControlManager controlManager);
-        void RemoveView(I_RelationshipControlManager controlManager);
+        void RemoveUIControlPackage(I_SimpleControlManagerMultiple controlManager);
+        void RemoveView(I_RelationshipControlManagerMultiple controlManager);
         void SetSelectedData(List<object> dataItems);
 
         void RemoveDataContainer(object data);

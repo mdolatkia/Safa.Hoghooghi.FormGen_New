@@ -1,4 +1,5 @@
 ﻿using MyUILibrary;
+using MyUILibrary.Temp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,11 @@ using Telerik.Windows.Controls;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public class BaseControlHelper
+    public abstract class BaseControlHelper
     {
         public Grid theGrid;
-
+        public abstract Control MainControl { get; }
+        public FrameworkElement WholeControl { get { return theGrid; } }
         RadDropDownButton dropDownButton { set; get; }
         ListBox listBox { set; get; }
         public void AddButtonMenu(ConrolPackageMenu menu)
@@ -67,17 +69,56 @@ namespace MyUIGenerator.UIControlHelper
         {
             List<object> removeButtons = new List<object>();
 
-            foreach(var item in listBox.Items)
+            foreach (var item in listBox.Items)
             {
-                if(item is Button)
+                if (item is Button)
                 {
-                    if ((item as Button).Name==name)
+                    if ((item as Button).Name == name)
                     {
                         removeButtons.Add(item);
                     }
                 }
             }
             removeButtons.ForEach(x => listBox.Items.Remove(x));
+        }
+
+        public void Visiblity(bool visible)
+        {
+            (WholeControl as UIElement).Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        //public void SetBorderColor(InfoColor color)
+        //{
+        //    (MainControl as Control).BorderBrush = UIManager.GetColorFromInfoColor(color);
+        //    (MainControl as Control).BorderThickness = new Thickness(1);
+        //}
+        //public void SetBackgroundColor(InfoColor color)
+        //{
+        //    (MainControl as Control).Background = UIManager.GetColorFromInfoColor(color);
+        //}
+        //public void SetForegroundColor(InfoColor color)
+        //{
+        //    (MainControl as Control).Foreground = UIManager.GetColorFromInfoColor(color);
+        //}
+
+        public object GetUIControl()
+        {
+            return WholeControl;
+        }
+
+        public void SetTooltip(string tooltip)
+        {
+            if (!string.IsNullOrEmpty(tooltip))
+                ToolTipService.SetToolTip(WholeControl, tooltip);
+            else
+                ToolTipService.SetToolTip(WholeControl, null);
+
+        }
+
+        public void SetColor(InfoColor color)
+        {
+            (MainControl as Control).BorderBrush = UIManager.GetColorFromInfoColor(color);
+            (MainControl as Control).BorderThickness = new Thickness(1);
         }
     }
 }

@@ -121,16 +121,14 @@ namespace MyUILibrary.EntityArea
 
         public void CalculateProperty(EntityInstanceProperty dataProperty, ColumnCustomFormulaDTO columnCustomFormula, DP_FormDataRepository dataItem, bool asDefault)
         {
-
-
             var key = "formulaCalculated" + "_" + dataProperty.ColumnID;
-            dataItem.RemoveDataItemMessageByKey(key);
+            dataItem.RemovePropertyFormulaComment(key);
 
             if (columnCustomFormula.OnlyOnNewData)
             {
                 if (!dataItem.IsNewItem)
                 {
-                    dataItem.AddDataItemMessage("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی داده موجود اعمال نمی شود", key, ControlItemPriority.Normal);
+                    dataItem.AddPropertyFormulaComment("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی داده موجود اعمال نمی شود", key);
                     return;
                 }
             }
@@ -138,7 +136,7 @@ namespace MyUILibrary.EntityArea
             {
                 if (dataProperty.Value != null && !string.IsNullOrEmpty(dataProperty.Value.ToString()))
                 {
-                    dataItem.AddDataItemMessage("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی خصوصیت دارای مقدار اعمال نمی شود", key, ControlItemPriority.Normal);
+                    dataItem.AddPropertyFormulaComment("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی خصوصیت دارای مقدار اعمال نمی شود", key);
                     return;
                 }
             }
@@ -164,7 +162,7 @@ namespace MyUILibrary.EntityArea
                 //  dataProperty.Value = "";
 
                 //اینجا خطا روی ستون یا رابطه بدهد
-                dataItem.AddDataItemMessage( "خطا در محاسبه فرمول" + " " + columnCustomFormula.Formula.Title + ":" + " " + dataProperty.FormulaException, key, ControlItemPriority.Normal);
+                dataItem.AddPropertyFormulaComment( "خطا در محاسبه فرمول" + " " + columnCustomFormula.Formula.Title + ":" + " " + dataProperty.FormulaException, key);
             }
 
             if (asDefault)
@@ -351,7 +349,7 @@ namespace MyUILibrary.EntityArea
                 foreach (var relationshipControl in EditArea.RelationshipColumnControls)
                 {
                     var childRelInfo = data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship);
-                    if (!childRelInfo.IsHidden)
+                    if (!childRelInfo.IsHiddenOnState)
                     {
                         relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
                         if (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect

@@ -135,11 +135,11 @@ namespace MyUIGenerator.UIControlHelper
         {
             Grid.Children.Remove(view as UIElement);
         }
-        public override void AddUIControlPackage(I_SimpleControlManager control, I_LabelControlManager labelControlManager)
+        public void AddUIControlPackage(I_SimpleControlManagerOne control, I_UIControlManager labelControlManager)
         {
 
             var localControlManager = control as SimpleControlManagerForOneDataForm;
-            var localLabelControlManager = labelControlManager as LabelControlManager;
+            //   var localLabelControlManager = labelControlManager as LabelControlManager;
             //FrameworkElement labelControl = null;
             //if (!localControlManager.RelatedControl.Any())
             //{
@@ -161,11 +161,11 @@ namespace MyUIGenerator.UIControlHelper
             //AddControlToGrid(labelControl);
             //}
             //var uiControl = controlPackage.UIControl;
-            AddControlToGrid(localControlManager.MyControlHelper.WholeControl, localControlManager.ColumnUISettingDTO.UIColumnsType, localControlManager.ColumnUISettingDTO.UIRowsCount, localLabelControlManager.WholeControl);
+            AddControlToGrid(localControlManager.MyControlHelper.GetUIControl() as FrameworkElement, localControlManager.ColumnUISettingDTO.UIColumnsType, localControlManager.ColumnUISettingDTO.UIRowsCount, labelControlManager.GetUIControl() as FrameworkElement);
         }
 
 
-        public override void AddView(object view, I_LabelControlManager labelControlManager)
+        public  void AddView(I_UIControlManager labelControlManager, I_RelationshipControlManagerOne relationshipControlManager)
         {
             //UISingleControl labelControl = new UISingleControl();
             ////if (!string.IsNullOrEmpty(title))
@@ -173,8 +173,8 @@ namespace MyUIGenerator.UIControlHelper
             //labelControl.ColumnSetting = new ModelEntites.ColumnUISettingDTO();
             //labelControl.ColumnSetting.UIColumnsType = ModelEntites.Enum_UIColumnsType.Normal;
             //labelControl.ColumnSetting.UIRowsCount = 1;
-            var localRelationshipControlManager = (view as RelationshipControlManagerForOneDataForm);
-            var localLabelControlManager = labelControlManager as LabelControlManager;
+            var localRelationshipControlManager = relationshipControlManager as RelationshipControlManagerForOneDataForm;
+               var localLabelControlManager = labelControlManager as LabelHelper;
 
             //FrameworkElement labelControl = null;
             ////برای پریویو که دوباره لیبل تولید نشود
@@ -474,6 +474,8 @@ namespace MyUIGenerator.UIControlHelper
         {
             Grid.Children.Clear();
         }
+
+
 
         public int ControlsCount { get { return Grid.Children.Count; } }
 

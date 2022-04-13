@@ -109,7 +109,7 @@ namespace MyUILibrary.DataViewArea
                 var columnControl = ViewColumnControls.FirstOrDefault(x => x.RelativeColumnName == property.RelativeName);
                 if (columnControl != null)
                 {
-                    columnControl.ControlManager.SetValue(dataRepository, property.Value);
+                    columnControl.ControlManager.GetUIControlManager(dataRepository).SetValue(property.Value);
                 }
             }
         }

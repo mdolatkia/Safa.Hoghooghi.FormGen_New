@@ -396,7 +396,7 @@ namespace MyUILibrary.EntityArea
             {
                 CheckDataItemChangeMonitors(e.DataItem, state);
             }
-            CheckAndImposeEntityStates(e.DataItem, false, ActionActivitySource.OnShowData);
+            CheckAndImposeEntityStates(e.DataItem, ActionActivitySource.OnShowData);
 
         }
 
@@ -471,7 +471,7 @@ namespace MyUILibrary.EntityArea
         //    return result;
         //}
 
-        public void CheckAndImposeEntityStates(DP_FormDataRepository dataItem, bool skipUICheck, ActionActivitySource actionActivitySource)
+        public void CheckAndImposeEntityStates(DP_FormDataRepository dataItem, ActionActivitySource actionActivitySource)
         {
             if (GetAllStates(EditArea).Count == 0)
                 return;
@@ -485,10 +485,10 @@ namespace MyUILibrary.EntityArea
                 ListDataAndStates.Add(item);
             }
 
-            ResetActionActivities(dataItem, skipUICheck);
+            ResetActionActivities(dataItem);
             item.EntityStates1.Clear();
             //List<EntityStateDTO> trueStates = new List<EntityStateDTO>();
-            var appliableStates = GetAppliableStates(dataItem, skipUICheck);
+            var appliableStates = GetAppliableStates(dataItem);
             foreach (var state in appliableStates)
             {
                 if (CheckEntityState(dataItem, state))
@@ -501,33 +501,33 @@ namespace MyUILibrary.EntityArea
             //        item.EntityStateGroups.Add(group);
             //}
             if (item.EntityStates1.Any())
-                DoStateActionActivity(item, skipUICheck, actionActivitySource);
+                DoStateActionActivity(item, actionActivitySource);
         }
         //private void EditArea_DataItemLoaded(object sender, EditAreaDataItemLoadedArg e)
         //{
-        private List<EntityStateDTO> GetAppliableStates(DP_FormDataRepository dataItem, bool skipUICheck)
+        private List<EntityStateDTO> GetAppliableStates(DP_FormDataRepository dataItem)
         {
             List<EntityStateDTO> result = new List<EntityStateDTO>();
             foreach (var state in EditArea.EntityStates1.Where(x => x.ActionActivities.Any()))
             {
-                if (skipUICheck)
-                    result.Add(state);
+                //if (skipUICheck)
+                //    result.Add(state);
+                //else
+                //{
+                if (state.ActionActivities.Any(x => x.UIEnablityDetails.Any(y => EditArea.AreaInitializer.SourceRelationColumnControl != null && y.RelationshipID == EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID)))
+                {
+                    //bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || (EditArea is I_EditEntityAreaOneData && EditArea.DataItemIsInTempViewMode(dataItem));
+                    //چرا اینجا تمپ ویو هم باشه وضعیت حساب میشه؟
+                    bool dataIsInValidMode = dataItem.DataIsInEditMode() || dataItem.DataItemIsInTempViewMode();
+                    if (dataIsInValidMode)
+                        result.Add(state);
+                }
                 else
                 {
-                    if (state.ActionActivities.Any(x => x.UIEnablityDetails.Any(y => EditArea.AreaInitializer.SourceRelationColumnControl != null && y.RelationshipID == EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID)))
-                    {
-                        //bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || (EditArea is I_EditEntityAreaOneData && EditArea.DataItemIsInTempViewMode(dataItem));
-                        //چرا اینجا تمپ ویو هم باشه وضعیت حساب میشه؟
-                        bool dataIsInValidMode = dataItem.DataIsInEditMode() || dataItem.DataItemIsInTempViewMode();
-                        if (dataIsInValidMode)
-                            result.Add(state);
-                    }
-                    else
-                    {
-                        if (dataItem.DataIsInEditMode())
-                            result.Add(state);
-                    }
+                    if (dataItem.DataIsInEditMode())
+                        result.Add(state);
                 }
+                //}
             }
             //List<EntityStateGroupDTO> resultGroup = new List<EntityStateGroupDTO>();
             //foreach (var group in EditArea.EntityStateGroups.Where(x => x.ActionActivities.Any()))
@@ -620,7 +620,7 @@ namespace MyUILibrary.EntityArea
         {
             if (e.GeneralKey.StartsWith("stateWatch"))
             {
-                foreach (var entityState in GetAppliableStates(e.DataToCall, false).Where(x => x.ID.ToString() == e.UsageKey))
+                foreach (var entityState in GetAppliableStates(e.DataToCall).Where(x => x.ID.ToString() == e.UsageKey))
                 {
                     if (e.UsageKey == entityState.ID.ToString())
                     {
@@ -648,8 +648,8 @@ namespace MyUILibrary.EntityArea
                         }
                         if (changed)
                         {
-                            ResetActionActivities(listItem.DataItem, false);
-                            DoStateActionActivity(listItem, false, ActionActivitySource.TailOrPropertyChange);
+                            ResetActionActivities(listItem.DataItem);
+                            DoStateActionActivity(listItem, ActionActivitySource.TailOrPropertyChange);
                         }
 
                     }
@@ -688,11 +688,11 @@ namespace MyUILibrary.EntityArea
 
         }
 
-        public void ResetActionActivities(DP_FormDataRepository dataItem, bool skipUICheck)
+        public void ResetActionActivities(DP_FormDataRepository dataItem)
         {
             List<BaseColumnControl> hiddenControls = new List<BaseColumnControl>();
 
-            foreach (var state in GetAppliableStates(dataItem, skipUICheck))
+            foreach (var state in GetAppliableStates(dataItem))
             {
                 foreach (var actionActivity in state.ActionActivities)
                 {
@@ -727,7 +727,7 @@ namespace MyUILibrary.EntityArea
                                 else if (dataItem.ParantChildRelationshipInfo != null && dataItem.ParantChildRelationshipInfo.RelationshipID == detail.RelationshipID)
                                 {
                                     //   var childRelationshipInfo = dataItem.ParantChildRelationshipInfo;
-                                    dataItem.ChangeDataItemParentRelationshipVisiblity(false, "", detail.ID.ToString(), skipUICheck, false);
+                                    dataItem.ResetDataItemParentRelationshipVisiblity(detail.ID.ToString());
                                 }
 
                             }
@@ -742,7 +742,7 @@ namespace MyUILibrary.EntityArea
                                 else if (dataItem.ParantChildRelationshipInfo != null && dataItem.ParantChildRelationshipInfo.RelationshipID == detail.RelationshipID)
                                 {
                                     //  var childRelationshipInfo = dataItem.ParantChildRelationshipInfo;
-                                    dataItem.ChangeDataItemParentRelationshipReadonly(false, "", detail.ID.ToString(), skipUICheck, false);
+                                    dataItem.ResetDataItemParentRelationshipReadonly(detail.ID.ToString());
                                 }
                             }
 
@@ -774,7 +774,7 @@ namespace MyUILibrary.EntityArea
                     {
                         //موقتی گذاشته شد
                         //بهتره از ClearDataItemReadonlyFromState استفاده بشه
-                        dataItem.ChangeDataItemReadonlyFromState(false, "", actionActivity.ID.ToString(), skipUICheck, false);
+                        dataItem.ResetDataItemReadonlyFromState(actionActivity.ID.ToString());
                     }
                 }
             }
@@ -797,7 +797,7 @@ namespace MyUILibrary.EntityArea
 
 
 
-        public void DoStateActionActivity(DataAndStates dataAndState, bool skipUICheck, ActionActivitySource actionActivitySource)
+        public void DoStateActionActivity(DataAndStates dataAndState, ActionActivitySource actionActivitySource)
         {
             var dataItem = dataAndState.DataItem;
             List<BaseColumnControl> hiddenControls = new List<BaseColumnControl>();
@@ -829,7 +829,7 @@ namespace MyUILibrary.EntityArea
                                         }
                                         else if (dataItem.ParantChildRelationshipInfo != null && dataItem.ParantChildRelationshipInfo.RelationshipID == detail.RelationshipID)
                                         {
-                                            dataItem.ChangeDataItemParentRelationshipVisiblity(true, "غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
+                                            dataItem.SetDataItemParentRelationshipVisiblity("غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
                                         }
                                     }
                                     else if (detail.Readonly == true)
@@ -847,7 +847,7 @@ namespace MyUILibrary.EntityArea
                                                 if (detail.ID != 0)
                                                     dataItem.ParantChildRelationshipInfo.IsReadonlyOnShow = true;
                                             }
-                                            dataItem.ChangeDataItemParentRelationshipReadonly(true, "فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), skipUICheck, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
+                                            dataItem.SetDataItemParentRelationshipReadonly("فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
                                         }
                                     }
                                 }
@@ -897,7 +897,7 @@ namespace MyUILibrary.EntityArea
                     }
                     else if (item.Type == Enum_ActionActivityType.EntityReadonly)
                     {
-                        dataItem.ChangeDataItemReadonlyFromState(true, "داده به علت وضعیت" + " " + state.Title + " " + "فقط خواندنی شد", item.ID.ToString(), skipUICheck, actionActivitySource == ActionActivitySource.OnShowData);
+                        dataItem.SetDataItemReadonlyFromState("داده به علت وضعیت" + " " + state.Title + " " + "فقط خواندنی شد", item.ID.ToString(), actionActivitySource == ActionActivitySource.OnShowData);
                     }
                     EditArea.RunningActionActivities.Remove(item);
                 }
@@ -1030,7 +1030,7 @@ namespace MyUILibrary.EntityArea
         //        return true;
         //    }
         //}
-        private List<ColumnValueRangeDetailsDTO> GetFilteredRange(SimpleColumnControl simpleColumn, IGrouping<int, UIColumnValueRangeDTO> columnValueRange)
+        private List<ColumnValueRangeDetailsDTO> GetFilteredRange(SimpleColumnControlGenerel simpleColumn, IGrouping<int, UIColumnValueRangeDTO> columnValueRange)
         {
             var result = new List<ColumnValueRangeDetailsDTO>();
             foreach (var columnValueItem in columnValueRange)

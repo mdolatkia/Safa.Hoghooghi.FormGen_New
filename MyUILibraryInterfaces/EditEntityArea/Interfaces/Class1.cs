@@ -9,168 +9,306 @@ using System.Threading.Tasks;
 namespace MyUILibrary.EntityArea
 {
 
-    public class BaseChildProperty
+    public abstract class BaseChildProperty
     {
         public DP_FormDataRepository SourceData { set; get; }
+        public abstract List<I_UIElementManager> GetColumnControlDataManagers(ControlOrLabelAsTarget controlOrLabelAsTarget);
         public BaseColumnControl BaseColumnControl { set; get; }
-        private List<ColumnControlColorItem> ColumnControlColorItems = new List<ColumnControlColorItem>();
-        private List<ColumnControlMessageItem> ColumnControlMessageItems = new List<ColumnControlMessageItem>();
+        public bool LableIsShared { get { return SourceData.EditEntityArea is I_EditEntityAreaMultipleData; } }
+        //public I_UIControlManager LabelControlManager
+        //{
+        //    get
+        //    {
+        //        if (this is ChildRelationshipInfo)
+        //        {
 
-        public bool IsHidden
-        {
-            get
-            {
-                return IsHiddenOnState || IsHiddenOnSHow;
-            }
-        }
+        //        }
+        //        else if (this is ChildSimpleContorlProperty)
+        //        {
+        //            return (this as ChildSimpleContorlProperty).SimpleColumnControl.SimpleControlManager.LabelControlManager;
+        //        }
+        //        return null;
+        //    }
+        //}
 
-        public bool IsHiddenOnState { get; set; }
-        public bool IsHiddenOnSHow { set; get; }
-
-
-        
-
-        public bool IsReadonlyOnState
-        {
-            get; set;
-        }
-        public bool IsReadonlyOnSHow { set; get; }
+        public List<ControlStateItem> ControlReadonlyStateItems = new List<ControlStateItem>();
+        public List<ControlStateItem> ControlHiddenStateItems = new List<ControlStateItem>();
 
         public BaseChildProperty(DP_FormDataRepository sourceData, BaseColumnControl baseColumnControl)
         {
             SourceData = sourceData;
             BaseColumnControl = baseColumnControl;
+            SetMessageAndColor();
         }
 
-        public void AddColumnControlColor(InfoColor infoColor, ControlOrLabelAsTarget controlOrLabelAsTarget, ControlColorTarget controlColorTarget, string key, ControlItemPriority priority)
+        public void AddReadonlyState(string key, string message, bool onShow)
         {
-            if (!ColumnControlColorItems.Any(x => x.ControlOrLabel == controlOrLabelAsTarget && x.Key == key && x.ColorTarget == controlColorTarget))
-                ColumnControlColorItems.Add(new ColumnControlColorItem(infoColor, controlOrLabelAsTarget, controlColorTarget, key, priority));
-            SetItemColor(controlOrLabelAsTarget, controlColorTarget);
+            if (!ControlReadonlyStateItems.Any(x => x.Key == key))
+                ControlReadonlyStateItems.Add(new ControlStateItem(key, message, onShow));
 
+            SetMessageAndColor();
         }
-        public void RemoveColumnControlColor(ControlOrLabelAsTarget ControlOrLabel, string key)
+        public void RemoveReadonlyState(string key)
         {
-            foreach (var item in ColumnControlColorItems.Where(x => x.ControlOrLabel == ControlOrLabel && x.Key == key).ToList())
+            if (ControlReadonlyStateItems.Any(x => x.Key == key && x.Permanent == false))
+                ControlReadonlyStateItems.RemoveAll(x => x.Key == key && x.Permanent == false);
+
+            SetMessageAndColor();
+        }
+        public void AddHiddenState(string key, string message, bool onShow)
+        {
+            if (!ControlHiddenStateItems.Any(x => x.Key == key))
+                ControlHiddenStateItems.Add(new ControlStateItem(key, message, onShow));
+
+            SetMessageAndColor();
+        }
+        public void RemoveHiddenState(string key)
+        {
+            if (ControlHiddenStateItems.Any(x => x.Key == key && x.Permanent == false))
+                ControlHiddenStateItems.RemoveAll(x => x.Key == key && x.Permanent == false);
+
+            SetMessageAndColor();
+        }
+        public void SetMessageAndColor()
+        {
+            List<ColumnControlColorItem> columnControlColorItems = new List<ColumnControlColorItem>();
+            List<ColumnControlMessageItem> columnControlMessageItems = new List<ColumnControlMessageItem>();
+
+            if (this is ChildRelationshipInfo)
             {
-                ColumnControlColorItems.Remove(item);
+                if ((this as ChildRelationshipInfo).RelationshipControl.Relationship.IsOtherSideMandatory)
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
+
+                foreach (var item in ControlHiddenStateItems)
+                {
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
+                    columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
+                }
+                foreach (var item in ControlReadonlyStateItems)
+                {
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
+                    columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
+                }
+                SetItemColor(columnControlColorItems);
+                SetItemMessage(columnControlMessageItems);
             }
-            SetItemColor(ControlOrLabel, ControlColorTarget.Background);
-            SetItemColor(ControlOrLabel, ControlColorTarget.Border);
-        }
-
-        public void SetItemColor(ControlOrLabelAsTarget controlOrLabelAsTarget, ControlColorTarget controlColorTarget)
-        {
-
-            InfoColor color = InfoColor.Null;
-
-            var list = ColumnControlColorItems.Where(x => x.ControlOrLabel == controlOrLabelAsTarget
-            && x.ColorTarget == controlColorTarget).ToList<BaseColorItem>();
-            color = GetColor(list);
-            var controlManagers = GetColumnControlDataManagers(controlOrLabelAsTarget);
-
-            //     var list = ControlManagerColorItems.Where(x => x.CausingDataItem == baseColorItem.CausingDataItem && x.ColorTarget == baseColorItem.ColorTarget).ToList<BaseColorItem>();
-
-            foreach (var view in controlManagers)
+            else if (this is ChildSimpleContorlProperty)
             {
-                if (controlColorTarget == ControlColorTarget.Background)
+                if ((this as ChildSimpleContorlProperty).SimpleColumnControl.Column.IsMandatory)
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
+
+                foreach (var item in ControlHiddenStateItems)
                 {
-                    view.SetBackgroundColor(SourceData, color);
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
+                    columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
                 }
-                else if (controlColorTarget == ControlColorTarget.Foreground)
+                foreach (var item in ControlReadonlyStateItems)
                 {
-                    view.SetForegroundColor(SourceData, color);
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
+                    columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات اعمال نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
                 }
-                if (controlColorTarget == ControlColorTarget.Border)
-                {
-                    view.SetBorderColor(SourceData, color);
-                }
+                SetItemColor(columnControlColorItems);
+                SetItemMessage(columnControlMessageItems);
             }
         }
 
-        public void AddColumnControlMessage(string message, ControlOrLabelAsTarget controlOrLabelAsTarget, string key, ControlItemPriority priority)
+
+        //public bool IsHidden
+        //{
+        //    get
+        //    {
+        //        return IsHiddenOnState || IsHiddenOnSHow;
+        //    }
+        //}
+
+        public bool IsHiddenOnState
         {
-            if (!ColumnControlMessageItems.Any(x => x.ControlOrLabel == controlOrLabelAsTarget && x.Key == key))
-                ColumnControlMessageItems.Add(new ColumnControlMessageItem(message, controlOrLabelAsTarget, key, priority));
-            SetItemMessage(controlOrLabelAsTarget);
-        }
-        public void RemoveColumnControlMessage(ControlOrLabelAsTarget ControlOrLabel, string key)
-        {
-            foreach (var item in ColumnControlMessageItems.Where(x => x.ControlOrLabel == ControlOrLabel && x.Key == key).ToList())
+            get
             {
-                ColumnControlMessageItems.Remove(item);
+                return ControlHiddenStateItems.Any();
             }
-            SetItemMessage(ControlOrLabel);
         }
-        public void SetItemMessage(ControlOrLabelAsTarget controlOrLabel)
+        // public bool IsHiddenOnSHow { set; get; }
+
+
+
+
+        public bool IsReadonlyOnState
         {
-            string tooltip = "";
-            var list = ColumnControlMessageItems.Where(x => x.ControlOrLabel == controlOrLabel).ToList<BaseMessageItem>();
-            tooltip = GetTooltip(list);
+            get
+            {
+                return ControlReadonlyStateItems.Any();
+            }
+        }
+        // public bool IsReadonlyOnSHow { set; get; }
+
+
+
+        //public void AddColumnControlColor(InfoColor infoColor, ControlOrLabelAsTarget controlOrLabelAsTarget, ControlColorTarget controlColorTarget, string key, ControlItemPriority priority)
+        //{
+        //    if (!ColumnControlColorItems.Any(x => x.ControlOrLabel == controlOrLabelAsTarget && x.Key == key && x.ColorTarget == controlColorTarget))
+        //        ColumnControlColorItems.Add(new ColumnControlColorItem(infoColor, controlOrLabelAsTarget, controlColorTarget, key, priority));
+
+
+        //}
+        //public void RemoveColumnControlColor(ControlOrLabelAsTarget ControlOrLabel, string key)
+        //{
+        //    foreach (var item in ColumnControlColorItems.Where(x => x.ControlOrLabel == ControlOrLabel && x.Key == key).ToList())
+        //    {
+        //        ColumnControlColorItems.Remove(item);
+        //    }
+        //    SetItemColor(ControlOrLabel, ControlColorTarget.Background);
+        //    SetItemColor(ControlOrLabel, ControlColorTarget.Border);
+        //}
+
+
+        private void SetItemColor(List<ColumnControlColorItem> columnControlColorItems)
+        {
+            SetItemColor(ControlOrLabelAsTarget.Control, columnControlColorItems);
+            SetItemColor(ControlOrLabelAsTarget.Label, columnControlColorItems);
+        }
+        public void SetItemColor(ControlOrLabelAsTarget controlOrLabel, List<ColumnControlColorItem> columnControlColorItems)
+        {
+
+            InfoColor colorBackground = GetColor(controlOrLabel, ControlColorTarget.Background, columnControlColorItems);
+            InfoColor colorForeground = GetColor(controlOrLabel, ControlColorTarget.Foreground, columnControlColorItems);
+            InfoColor colorBorder = GetColor(controlOrLabel, ControlColorTarget.Border, columnControlColorItems);
+
 
             var controlManagers = GetColumnControlDataManagers(controlOrLabel);
 
+
+            foreach (var view in controlManagers)
+            {
+                view.SetBackgroundColor(colorBackground);
+                view.SetForegroundColor(colorForeground);
+                view.SetBorderColor(colorBorder);
+            }
+        }
+
+        private InfoColor GetColor(ControlOrLabelAsTarget controlOrLabel, ControlColorTarget colorTarget, List<ColumnControlColorItem> columnControlColorItems)
+        {
+            var color = columnControlColorItems.OrderByDescending(x => x.Priority).FirstOrDefault(x => x.ControlOrLabel == controlOrLabel && x.ColorTarget == colorTarget);
+            if (color != null)
+                return color.Color;
+            else
+                return InfoColor.Null;
+        }
+
+        //public void AddColumnControlMessage(string message, ControlOrLabelAsTarget controlOrLabelAsTarget, string key, ControlItemPriority priority)
+        //{
+        //    if (!ColumnControlMessageItems.Any(x => x.ControlOrLabel == controlOrLabelAsTarget && x.Key == key))
+        //        ColumnControlMessageItems.Add(new ColumnControlMessageItem(message, controlOrLabelAsTarget, key, priority));
+        //    SetItemMessage(controlOrLabelAsTarget);
+        //}
+        //public void RemoveColumnControlMessage(ControlOrLabelAsTarget ControlOrLabel, string key)
+        //{
+        //    foreach (var item in ColumnControlMessageItems.Where(x => x.ControlOrLabel == ControlOrLabel && x.Key == key).ToList())
+        //    {
+        //        ColumnControlMessageItems.Remove(item);
+        //    }
+        //    SetItemMessage(ControlOrLabel);
+        //}
+        private void SetItemMessage(List<ColumnControlMessageItem> columnControlMessageItems)
+        {
+            SetItemMessage(ControlOrLabelAsTarget.Control, columnControlMessageItems);
+            SetItemMessage(ControlOrLabelAsTarget.Label, columnControlMessageItems);
+        }
+        public void SetItemMessage(ControlOrLabelAsTarget controlOrLabel, List<ColumnControlMessageItem> columnControlMessageItems)
+        {
+            var tooltip = GetTooltip(controlOrLabel, columnControlMessageItems);
+            var controlManagers = GetColumnControlDataManagers(controlOrLabel);
             foreach (var view in controlManagers)
             {
                 view.SetTooltip(SourceData, tooltip);
             }
-
         }
-        private string GetTooltip(List<BaseMessageItem> MessageItems)
+        private string GetTooltip(ControlOrLabelAsTarget controlOrLabel, List<ColumnControlMessageItem> columnControlMessageItems)
         {
             var tooltip = "";
-            foreach (var item in MessageItems.OrderBy(x => x.Priority))
+            foreach (var item in columnControlMessageItems.Where(x => x.ControlOrLabel == controlOrLabel).OrderByDescending(x => x.Priority))
                 tooltip += (tooltip == "" ? "" : Environment.NewLine) + item.Message;
             return tooltip;
         }
-        private List<I_DataControlManager> GetColumnControlDataManagers(ControlOrLabelAsTarget controlOrLabelAsTarget)
-        {
-            List<I_DataControlManager> result = new List<I_DataControlManager>();
-            if (controlOrLabelAsTarget == ControlOrLabelAsTarget.Control)
-            {
-                if (BaseColumnControl is SimpleColumnControl)
-                {
-                    result.Add((BaseColumnControl as SimpleColumnControl).ControlManager);
-                }
-                else if (BaseColumnControl is RelationshipColumnControl)
-                {
-                    var relationshipControl = (BaseColumnControl as RelationshipColumnControl);
-                    result.Add((BaseColumnControl as RelationshipColumnControl).ControlManager);
+        //private List<I_UIElementManager> GetColumnControlDataManagers(ControlOrLabelAsTarget controlOrLabelAsTarget)
+        //{
+        //    List<I_UIElementManager> result = new List<I_UIElementManager>();
 
-                    bool hasTempView = (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
-          relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect ||
-           relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.Select);
-                    if (hasTempView)
-                    {
-                        if (relationshipControl.EditNdTypeArea.DataView != null)
-                            if (relationshipControl.EditNdTypeArea.DataView.IsOpenedTemporary)
-                                result.Add(relationshipControl.EditNdTypeArea.DataView);
-                    }
+        //    if (this is ChildRelationshipInfo)
+        //    {
+        //        if (controlOrLabelAsTarget == ControlOrLabelAsTarget.Control)
+        //        {
+        //            var relationshipControl = (BaseColumnControl as RelationshipColumnControlGeneral);
 
-                }
-            }
-            else
-            {
-                if (BaseColumnControl is SimpleColumnControl)
-                {
-                    result.Add((BaseColumnControl as SimpleColumnControl).ControlManager.LabelControlManager);
-                }
-                else if (BaseColumnControl is RelationshipColumnControl)
-                {
-                    result.Add((BaseColumnControl as RelationshipColumnControl).ControlManager.LabelControlManager);
-                }
-            }
-            return result;
-        }
-        private InfoColor GetColor(List<BaseColorItem> list)
-        {
-            var color = InfoColor.Null;
-            foreach (var item in list.Where(x => x.Color != InfoColor.Null).OrderByDescending(x => x.Priority))
-                color = item.Color;
-            return color;
-        }
+
+        //            if (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
+        //           relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+        //                result.Add(relationshipControl.RelationshipControlManager.GetDateView(SourceData));
+        //            else
+        //            {
+        //                result.Add(relationshipControl.RelationshipControlManager.GetTemporaryView(SourceData));
+
+        //                if (relationshipControl.EditNdTypeArea.DataView != null && relationshipControl.EditNdTypeArea.DataView.IsOpenedTemporary)
+
+
+        //            }
+        //            if (hasTempView)
+        //            {
+        //                if (relationshipControl.EditNdTypeArea.DataView != null)
+        //                    if (relationshipControl.EditNdTypeArea.DataView.IsOpenedTemporary)
+        //                        result.Add(relationshipControl.EditNdTypeArea.DataView);
+        //            }
+        //            result.Add((BaseColumnControl as RelationshipColumnControl).RelationshipControlManager.GetDateView);
+
+        //            //          bool hasTempView = (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
+        //            //relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect ||
+        //            // relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.Select);
+        //            //          if (hasTempView)
+        //            //          {
+        //            //              if (relationshipControl.EditNdTypeArea.DataView != null)
+        //            //                  if (relationshipControl.EditNdTypeArea.DataView.IsOpenedTemporary)
+        //            //                      result.Add(relationshipControl.EditNdTypeArea.DataView);
+        //            //          }
+
+
+        //        }
+        //        else
+        //        {
+        //            result.Add(LabelControlManager);
+        //        }
+        //    }
+        //    else if (this is ChildSimpleContorlProperty)
+        //    {
+        //        if (controlOrLabelAsTarget == ControlOrLabelAsTarget.Control)
+        //        {
+        //            result.Add((this as ChildSimpleContorlProperty).SimpleColumnControl.SimpleControlManager);
+        //        }
+        //        else
+        //        {
+        //            result.Add(LabelControlManager);
+        //        }
+        //    }
+
+
+
+        //    return result;
+        //}
+
         private List<DataColorItem> DataItemColorItems = new List<DataColorItem>();
         private List<DataMessageItem> DataItemMessageItems = new List<DataMessageItem>();
+
+    }
+    public class ControlStateItem
+    {
+        public ControlStateItem(string key, string message, bool permanent)
+        {
+            Key = key;
+            Message = message;
+            Permanent = permanent;
+        }
+        public bool Permanent { get; set; }
+        public string Key { get; set; }
+        public string Message { get; set; }
 
     }
 }

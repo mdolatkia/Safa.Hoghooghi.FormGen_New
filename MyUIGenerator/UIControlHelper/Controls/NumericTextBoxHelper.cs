@@ -17,12 +17,12 @@ using ProxyLibrary;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public class NumericTextBoxHelper : BaseControlHelper, I_ControlHelper
+    public class NumericTextBoxHelper : BaseControlHelper, I_UIControlManager
     {
         RadMaskedNumericInput textBox;
         ComboBox cmbOperators;
-        public FrameworkElement MainControl { get { return textBox; } }
-        public FrameworkElement WholeControl { get { return theGrid; } }
+        public override Control MainControl { get { return textBox; } }
+
         public NumericTextBoxHelper(ColumnDTO correspondingTypeProperty, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {
             theGrid = new Grid();
@@ -232,15 +232,15 @@ namespace MyUIGenerator.UIControlHelper
         {
             textBox.Background = UIManager.GetColorFromInfoColor(color);
         }
-
-        public bool HasOperator()
-        {
-            return cmbOperators != null;
-        }
         public void SetForegroundColor(InfoColor color)
         {
             textBox.Foreground = UIManager.GetColorFromInfoColor(color);
         }
+        public bool HasOperator()
+        {
+            return cmbOperators != null;
+        }
+       
         //public void ClearBorderColor()
         //{
         //    textBox.BorderBrush = new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Black));
@@ -255,6 +255,11 @@ namespace MyUIGenerator.UIControlHelper
             binding.Source = property;
             binding.Converter = new ConverterNumber();
             textBox.SetBinding(RadMaskedNumericInput.ValueProperty, binding);
+        }
+
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
+        {
+            throw new NotImplementedException();
         }
 
         //public void AddButtonMenu(ConrolPackageMenu menu)

@@ -17,13 +17,12 @@ using Telerik.Windows.Controls;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public class CheckBoxHelper : BaseControlHelper, I_ControlHelper
+    public class CheckBoxHelper : BaseControlHelper, I_UIControlManager
     {
 
      
         CheckBox checkbox;
-        public FrameworkElement MainControl { get { return checkbox; } }
-        public FrameworkElement WholeControl { get { return theGrid; } }
+        public override Control MainControl { get { return checkbox; } }
         public CheckBoxHelper(ColumnDTO correspondingTypeProperty, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {
             //UIControlPackage package = new UIControlPackage();
@@ -110,10 +109,7 @@ namespace MyUIGenerator.UIControlHelper
         {
             return checkbox.Visibility == Visibility.Visible;
         }
-        public void Visiblity( bool visible)
-        {
-            checkbox.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-        }
+      
         public void SetReadonly( bool isreadonly)
         {
             checkbox.IsEnabled = !isreadonly;
@@ -130,6 +126,21 @@ namespace MyUIGenerator.UIControlHelper
         {
             return false;
         }
+
+        public void SetBorderColor(InfoColor color)
+        {
+            checkbox.BorderBrush = UIManager.GetColorFromInfoColor(color);
+            checkbox.BorderThickness = new Thickness(1);
+        }
+        public void SetBackgroundColor(InfoColor color)
+        {
+            checkbox.Background = UIManager.GetColorFromInfoColor(color);
+        }
+        public void SetForegroundColor(InfoColor color)
+        {
+            checkbox.Foreground = UIManager.GetColorFromInfoColor(color);
+        }
+
         //public void SetTooltip( string tooltip)
         //{
         //    if (!string.IsNullOrEmpty(tooltip))
@@ -143,19 +154,7 @@ namespace MyUIGenerator.UIControlHelper
         //    ToolTipService.SetToolTip(checkbox, null);
         //}
 
-        public void SetBorderColor( InfoColor color)
-        {
-            checkbox.BorderBrush = UIManager.GetColorFromInfoColor(color);
-            checkbox.BorderThickness = new Thickness(1);
-        }
-        public void SetBackgroundColor( InfoColor color)
-        {
-            checkbox.Background = UIManager.GetColorFromInfoColor(color);
-        }
-        public void SetForegroundColor( InfoColor color)
-        {
-            checkbox.Foreground = UIManager.GetColorFromInfoColor(color);
-        }
+
 
         //public void ClearBorderColor()
         //{
@@ -168,6 +167,11 @@ namespace MyUIGenerator.UIControlHelper
             Binding binding = new Binding("Value");
             binding.Source = property;
             checkbox.SetBinding(CheckBox.IsCheckedProperty, binding);
+        }
+
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
+        {
+            throw new NotImplementedException();
         }
 
         //public void AddButtonMenu( ConrolPackageMenu menu)

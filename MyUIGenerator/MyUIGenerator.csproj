@@ -218,6 +218,7 @@
     <Compile Include="UIControlHelper\Controls\MyDateTimePicker.xaml.cs">
       <DependentUpon>MyDateTimePicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UIControlHelper\Controls\LabelHelper.cs" />
     <Compile Include="UIControlHelper\MenuHelper.cs" />
     <Compile Include="UIControlHelper\Temp.cs" />
     <Compile Include="UI\Archive\frmAddArchiveItems.xaml.cs">
@@ -250,7 +251,6 @@
     <Compile Include="UIControlHelper\ControlHelper.cs" />
     <Compile Include="UIControlHelper\DataGridHelper.cs" />
     <Compile Include="UIControlHelper\DataGridTextColumn.cs" />
-    <Compile Include="UIControlHelper\ControlManager\LabelControlManager.cs" />
     <Compile Include="UIControlHelper\Controls\TextBoxHelper.cs" />
     <Compile Include="UI\Archive\frmMultipleArchiveItemsInfo.xaml.cs">
       <DependentUpon>frmMultipleArchiveItemsInfo.xaml</DependentUpon>

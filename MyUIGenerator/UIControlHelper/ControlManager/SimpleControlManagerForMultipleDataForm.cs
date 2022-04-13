@@ -15,7 +15,7 @@ using System.Windows.Media;
 namespace MyUIGenerator.UIControlHelper
 {
 
-    public class SimpleControlManagerForMultipleDataForm : BaseControlManager, I_SimpleControlManager
+    public class SimpleControlManagerForMultipleDataForm : BaseControlManager, I_SimpleControlManagerMultiple
     {
         //private List<BaseMessageItem> ValidationItems = new List<BaseMessageItem>();
 
@@ -29,51 +29,55 @@ namespace MyUIGenerator.UIControlHelper
 
         //   public List<FrameworkElement> RelatedControl { set; get; }
 
-
-        public void EnableDisable(bool enable)
+        public I_UIControlManager GetUIControlManager(object dataItem)
         {
-            DataGridColumn.EnableDisable(enable);
-        }
-        public void EnableDisable(object dataItem, bool enable)
-        {
-            DataGridColumn.EnableDisable(dataItem, enable);
-        }
-        public void Visiblity(bool visible)
-        {
-
-            DataGridColumn.Visiblity(visible);
-        }
-        public void Visiblity(object dataItem, bool visible)
-        {
-
-            DataGridColumn.Visiblity(dataItem, visible);
-        }
-        public bool IsVisible
-        {
-            get
-            {
-                return DataGridColumn.IsVisible;
-            }
-
-
-        }
-        public object GetValue(object dataItem)
-        {
-            return DataGridColumn.GetValue(dataItem);
+            return DataGridColumn.GetUIControlManager(dataItem);
         }
 
-        public void SetReadonly(bool isreadonly)
-        {
-            DataGridColumn.SetReadonly(isreadonly);
-        }
-        public object GetUIControl(object dataItem)
-        {
-            return DataGridColumn.GetUIControl(dataItem);
-        }
-        public void SetReadonly(object dataItem, bool isreadonly)
-        {
-            DataGridColumn.SetReadonly(dataItem, isreadonly);
-        }
+        //public void EnableDisable(bool enable)
+        //{
+        //    DataGridColumn.EnableDisable(enable);
+        //}
+        //public void EnableDisable(object dataItem, bool enable)
+        //{
+        //    DataGridColumn.EnableDisable(dataItem, enable);
+        //}
+        //public void Visiblity(bool visible)
+        //{
+
+        //    DataGridColumn.Visiblity(visible);
+        //}
+        //public void Visiblity(object dataItem, bool visible)
+        //{
+
+        //    DataGridColumn.Visiblity(dataItem, visible);
+        //}
+        //public bool IsVisible
+        //{
+        //    get
+        //    {
+        //        return DataGridColumn.IsVisible;
+        //    }
+
+
+        //}
+        //public object GetValue(object dataItem)
+        //{
+        //    return DataGridColumn.GetValue(dataItem);
+        //}
+
+        //public void SetReadonly(bool isreadonly)
+        //{
+        //    DataGridColumn.SetReadonly(isreadonly);
+        //}
+        //public object GetUIControl(object dataItem)
+        //{
+        //    return DataGridColumn.GetUIControl(dataItem);
+        //}
+        //public void SetReadonly(object dataItem, bool isreadonly)
+        //{
+        //    DataGridColumn.SetReadonly(dataItem, isreadonly);
+        //}
 
 
         //public void AddMessage(BaseMessageItem item)
@@ -167,38 +171,38 @@ namespace MyUIGenerator.UIControlHelper
         //    else
         //        DataGridColumn.ClearColor(dataItem);
         //}
-        public bool SetValue(object dataItem, object value)
-        {
-            var dataRow = DataGridColumn.DataControl.GetRowForItem(dataItem);
-            return DataGridColumn.SetValue(dataItem, value);
-        }
+        //public bool SetValue(object dataItem, object value)
+        //{
+        //    var dataRow = DataGridColumn.DataControl.GetRowForItem(dataItem);
+        //    return DataGridColumn.SetValue(dataItem, value);
+        //}
 
 
 
-        public void AddButtonMenu(ConrolPackageMenu menu)
-        {
-            DataGridColumn.AddButtonMenu(menu);
-        }
+        //public void AddButtonMenu(ConrolPackageMenu menu)
+        //{
+        //    DataGridColumn.AddButtonMenu(menu);
+        //}
 
-        public void AddButtonMenu(object dataItem, ConrolPackageMenu menu)
-        {
-            DataGridColumn.AddButtonMenu(menu, dataItem);
-        }
+        //public void AddButtonMenu(object dataItem, ConrolPackageMenu menu)
+        //{
+        //    DataGridColumn.AddButtonMenu(menu, dataItem);
+        //}
 
-        public void RemoveButtonMenu(string name)
-        {
-            DataGridColumn.RemoveButtonMenu(name);
-        }
+        //public void RemoveButtonMenu(string name)
+        //{
+        //    DataGridColumn.RemoveButtonMenu(name);
+        //}
 
-        public void RemoveButtonMenu(object dataItem, string name)
-        {
-            DataGridColumn.RemoveButtonMenu(name, dataItem);
-        }
+        //public void RemoveButtonMenu(object dataItem, string name)
+        //{
+        //    DataGridColumn.RemoveButtonMenu(name, dataItem);
+        //}
 
-        public void SetBinding(object dataItem, EntityInstanceProperty property)
-        {
-            DataGridColumn.SetBinding(dataItem, property);
-        }
+        //public void SetBinding(object dataItem, EntityInstanceProperty property)
+        //{
+        //    DataGridColumn.SetBinding(dataItem, property);
+        //}
 
 
         //public void ClearAllValidations()
@@ -217,50 +221,52 @@ namespace MyUIGenerator.UIControlHelper
         //    }
         //}
 
-        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
-        {
-            DataGridColumn.SetColumnValueRange(details);
-        }
+        //public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
+        //{
+        //    DataGridColumn.SetColumnValueRange(details);
+        //}
 
-        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details, object data)
-        {
-            DataGridColumn.SetColumnValueRange(details, data);
-        }
+        //public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details, object data)
+        //{
+        //    DataGridColumn.SetColumnValueRange(details, data);
+        //}
 
-        public CommonOperator GetOperator()
-        {
-            throw new NotImplementedException();
-        }
+        //public CommonOperator GetOperator()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public bool HasOperator()
-        {
-            throw new NotImplementedException();
-        }
+        //public bool HasOperator()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public bool SetOperator(CommonOperator searchOperator)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool SetOperator(CommonOperator searchOperator)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void SetTooltip(object dataItem, string tooltip)
-        {
-            DataGridColumn.SetTooltip(dataItem, tooltip);
-        }
+        //public void SetTooltip(object dataItem, string tooltip)
+        //{
+        //    DataGridColumn.SetTooltip(dataItem, tooltip);
+        //}
 
-        public void SetBorderColor(object dataItem, InfoColor color)
-        {
-            DataGridColumn.SetBorderColor(dataItem, color);
-        }
+        //public void SetBorderColor(object dataItem, InfoColor color)
+        //{
+        //    DataGridColumn.SetBorderColor(dataItem, color);
+        //}
 
-        public void SetBackgroundColor(object dataItem, InfoColor color)
-        {
-            DataGridColumn.SetBackgroundColor(dataItem, color);
-        }
+        //public void SetBackgroundColor(object dataItem, InfoColor color)
+        //{
+        //    DataGridColumn.SetBackgroundColor(dataItem, color);
+        //}
 
-        public void SetForegroundColor(object dataItem, InfoColor color)
-        {
-            DataGridColumn.SetForegroundColor(dataItem, color);
-        }
+        //public void SetForegroundColor(object dataItem, InfoColor color)
+        //{
+        //    DataGridColumn.SetForegroundColor(dataItem, color);
+        //}
+
+
 
 
         //public void SetMandatoryState(bool isMandatory)

@@ -70,6 +70,8 @@ namespace MyUIGenerator.View
                 return grdArea;
             }
         }
+
+    
         //public override Grid expanderHeader
         //{
         //    get

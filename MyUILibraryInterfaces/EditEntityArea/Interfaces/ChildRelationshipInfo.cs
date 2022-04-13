@@ -13,9 +13,9 @@ namespace MyUILibrary.EntityArea
 {
     public class ChildRelationshipInfo : BaseChildProperty
     {
-        public RelationshipColumnControl RelationshipControl { set; get; }
+        public RelationshipColumnControlGeneral RelationshipControl { set; get; }
         public event EventHandler<System.Collections.Specialized.NotifyCollectionChangedEventArgs> CollectionChanged;
-        public ChildRelationshipInfo(RelationshipColumnControl relationshipControl, DP_FormDataRepository sourceData) : base(sourceData, relationshipControl)
+        public ChildRelationshipInfo(RelationshipColumnControlGeneral relationshipControl, DP_FormDataRepository sourceData) : base(sourceData, relationshipControl)
         {
             SourceData = sourceData;
             RelationshipControl = relationshipControl;
@@ -26,12 +26,42 @@ namespace MyUILibrary.EntityArea
             RemovedDataForUpdate = new ObservableCollection<DP_FormDataRepository>();
             //RemovedItems = new List<ProxyLibrary.DP_FormDataRepository>();
             ReadonlyStateFromTails = new List<string>();
-           // this.IsReadonlyChanged += ChildRelationshipInfo_IsReadonlyChanged;
+            // this.IsReadonlyChanged += ChildRelationshipInfo_IsReadonlyChanged;
 
 
-            if (RelationshipControl.Relationship.IsOtherSideMandatory)
-                AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal);
+
         }
+        I_UIElementManager GetUIControlManager
+        {
+            get
+            {
+                if (RelationshipControl is RelationshipColumnControlOne)
+                {
+                    return (RelationshipControl as RelationshipColumnControlOne).RelationshipControlManager.GetView();
+                }
+                else if (RelationshipControl is RelationshipColumnControlMultiple)
+                    return (RelationshipControl as RelationshipColumnControlMultiple).RelationshipControlManager.GetView(SourceData);
+                return null;
+            }
+
+        }
+
+        public override List<I_UIElementManager> GetColumnControlDataManagers(ControlOrLabelAsTarget controlOrLabelAsTarget)
+        {
+            List<I_UIElementManager> result = new List<I_UIElementManager>();
+
+
+            if (controlOrLabelAsTarget == ControlOrLabelAsTarget.Control)
+            {
+                result.Add(GetUIControlManager);
+            }
+            else
+            {
+                result.Add(RelationshipControl.LabelControlManager);
+            }
+            return result;
+        }
+
 
         //private void ChildRelationshipInfo_IsReadonlyChanged(object sender, EventArgs e)
         //{
@@ -231,7 +261,7 @@ namespace MyUILibrary.EntityArea
                 {
                     if (item.ShoudBeCounted)
                     {
-                        if (item.ParantChildRelationshipInfo.IsHidden || this.IsReadonlyOnState || item.IsReadonlyBecauseOfState)
+                        if (item.ParantChildRelationshipInfo.IsHidden || this.IsReadonlyOnState || item.IsReadonlyOnState)
                         {
                             if (!DataItemIsAdded(item))
                                 result.Add(item);
@@ -242,7 +272,7 @@ namespace MyUILibrary.EntityArea
                 }
                 foreach (var item in RemovedOriginalDatas)
                 {
-                    if (item.ParantChildRelationshipInfo.IsHidden || this.IsReadonlyOnState || item.IsReadonlyBecauseOfState)
+                    if (item.ParantChildRelationshipInfo.IsHidden || this.IsReadonlyOnState || item.IsReadonlyOnState)
                     {
                         result.Add(item);
                     }
@@ -269,7 +299,7 @@ namespace MyUILibrary.EntityArea
             get
             {
 
-                return Relationship.IsReadonly || IsReadonlyOnState || IsReadonlyOnSHow;
+                return Relationship.IsReadonly || IsReadonlyOnState;
 
                 //|| (Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary &&
                 //              (SourceData.EditEntityArea.DataEntryEntity.IsReadonly || SourceData.IsReadonlyBecauseOfState));
@@ -367,66 +397,37 @@ namespace MyUILibrary.EntityArea
 
 
 
-       
-        public void SetRelatoinsipColumnReadonlyFromState(string message, string key, bool OnShow)
+
+        public void SetRelatoinsipColumnReadonlyFromState(string message, string key, bool permanent)
         {
             if (SourceData.DataIsInEditMode())
             {
-                IsReadonlyOnState = true;
-                if (OnShow)
+                AddReadonlyState(key, message, permanent);
+                if (permanent)
                 {
-                    IsReadonlyOnSHow = IsReadonlyOnState;
                     RelationshipControl.EditNdTypeArea.SetChildRelationshipInfo(this);
                     RelationshipControl.EditNdTypeArea.DecideButtonsEnablity1();
                 }
-                AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, key, ControlItemPriority.High);
-                AddColumnControlMessage(message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
-              //  AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
-                //if (SourceData.EditEntityArea is I_EditEntityAreaOneData)
-                //{
-                //    AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Background, key, ControlItemPriority.High);
-                //    AddColumnControlColor(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Border, key, ControlItemPriority.High);
-                //    AddColumnControlMessage(message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
-                //}
-
-
             }
         }
         public void ResetColumnReadonlyFromState(string key)
         {
             if (SourceData.DataIsInEditMode())
             {
-                IsReadonlyOnState = false;
-                RemoveColumnControlColor(ControlOrLabelAsTarget.Label, key);
-                RemoveColumnControlMessage(ControlOrLabelAsTarget.Label, key);
-                RemoveColumnControlColor(ControlOrLabelAsTarget.Control, key);
-                RemoveColumnControlMessage(ControlOrLabelAsTarget.Control, key);
+                RemoveReadonlyState(key);
             }
         }
-        public void SetRelatoinsipColumnHiddenFromState(string message, string key, bool OnShow)
+        public void SetRelatoinsipColumnHiddenFromState(string message, string key, bool permanent)
         {
             if (SourceData.DataIsInEditMode())
             {
-                IsHiddenOnState = true;
-                if (OnShow)
+                AddHiddenState(key, message, permanent);
+                if (permanent)
                 {
-                    IsHiddenOnSHow = true;
                     RelationshipControl.EditNdTypeArea.SetChildRelationshipInfo(this);
-                    RelationshipControl.ControlManager.Visiblity(SourceData, false);
-                }
-                else
-                {
-
-                   // AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Background, key, ControlItemPriority.High);
-                    AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, key, ControlItemPriority.High);
-                    AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Control, key, ControlItemPriority.High);
-                    //if (SourceData.EditEntityArea is I_EditEntityAreaOneData)
-                    //{
-                    //    AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Background, key, ControlItemPriority.High);
-                    //    AddColumnControlColor(InfoColor.Red, ControlOrLabelAsTarget.Label, ControlColorTarget.Border, key, ControlItemPriority.High);
-                    //    AddColumnControlMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Label, key, ControlItemPriority.High);
-                    //}
-
+                    GetUIControlManager.Visiblity(false);
+                    if (!LableIsShared)
+                        RelationshipControl.LabelControlManager.Visiblity(false);
                 }
             }
         }
@@ -434,15 +435,11 @@ namespace MyUILibrary.EntityArea
         {
             if (SourceData.DataIsInEditMode())
             {
-                IsHiddenOnState = false;
-
                 RelationshipControl.EditNdTypeArea.SetChildRelationshipInfo(this);
-                RelationshipControl.ControlManager.Visiblity(SourceData, true);
-
-                RemoveColumnControlColor(ControlOrLabelAsTarget.Label, key);
-                RemoveColumnControlMessage(ControlOrLabelAsTarget.Label, key);
-                RemoveColumnControlColor(ControlOrLabelAsTarget.Control, key);
-                RemoveColumnControlMessage(ControlOrLabelAsTarget.Control, key);
+                GetUIControlManager.Visiblity(true);
+                if (!LableIsShared)
+                    RelationshipControl.LabelControlManager.Visiblity(true);
+                RemoveHiddenState(key);
             }
         }
 
@@ -452,7 +449,7 @@ namespace MyUILibrary.EntityArea
         {
             if (SourceData.DataIsInEditMode())
             {
-                if (!IsReadonly && !IsHidden)
+                if (!IsReadonly && !IsHiddenOnState)
                 {
                     RelationshipControl.EditNdTypeArea.SetChildRelationshipInfo(this);
 

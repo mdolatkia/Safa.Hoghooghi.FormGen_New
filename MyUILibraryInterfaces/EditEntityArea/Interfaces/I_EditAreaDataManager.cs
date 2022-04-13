@@ -10,8 +10,8 @@ namespace MyUILibrary.EntityArea
 {
     public interface I_EditAreaDataManager
     {
-        ChildRelationshipInfo SerachDataFromParentRelationForChildDataView(RelationshipDTO relationship, I_EditEntityAreaOneData sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControl relationshipColumnControl, DP_FormDataRepository parentRelationData);
-        ChildRelationshipInfo SerachDataFromParentRelationForChildTempView(RelationshipDTO relationship, I_EditEntityArea sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControl relationshipColumnControl, DP_FormDataRepository parentRelationData);
+        ChildRelationshipInfo SerachDataFromParentRelationForChildDataView(RelationshipDTO relationship, I_EditEntityAreaOneData sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControlGeneral relationshipColumnControl, DP_FormDataRepository parentRelationData);
+        ChildRelationshipInfo SerachDataFromParentRelationForChildTempView(RelationshipDTO relationship, I_EditEntityArea sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControlGeneral relationshipColumnControl, DP_FormDataRepository parentRelationData);
         DP_DataView GetDataView(DP_DataRepository data);
         bool ConvertDataViewToFullData(int entityID, DP_FormDataRepository searchViewData, I_EditEntityArea editEntityArea);
         DP_FormDataRepository GetFullDataFromDataViewSearch(int entityID, DP_DataView searchViewData, I_EditEntityArea editEntityArea);

@@ -45,7 +45,11 @@ namespace MyUIGenerator.View
             else
                 ToolTipService.SetToolTip(this, null);
         }
-
+        public void SetColor(InfoColor color)
+        {
+            this.BorderBrush = UIManager.GetColorFromInfoColor(color);
+            this.BorderThickness = new Thickness(1);
+        }
         public void SetBorderColor(object dataItem, InfoColor color)
         {
             this.BorderBrush = UIManager.GetColorFromInfoColor(color);
@@ -61,6 +65,8 @@ namespace MyUIGenerator.View
         {
             this.Foreground = UIManager.GetColorFromInfoColor(color);
         }
+
+     
 
         //public View_Container Container { set; get; }
 

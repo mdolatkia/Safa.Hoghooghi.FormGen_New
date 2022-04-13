@@ -24,7 +24,7 @@ namespace MyUILibrary.EntityArea
             //UISettings.FlowDirection = FlowDirection.RightToLeft;
             UISettings.Language = "farsi";
         }
-        public RelationshipColumnControl SourceRelationColumnControl { set; get; }
+        public RelationshipColumnControlGeneral SourceRelationColumnControl { set; get; }
      //   public RelationshipColumnControl SourceEditArea { set; get; }
         //public TableDrivedEntityDTO TemplateEntity { set; get; }
         public int EntityID { set; get; }

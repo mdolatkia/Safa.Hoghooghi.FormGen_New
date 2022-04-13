@@ -213,14 +213,14 @@ namespace MyUIGenerator.UIControlHelper
         //        dataGridHelper.ClearTooltip(dataItem);
         //}
 
-        public override void AddUIControlPackage(I_SimpleControlManager control, I_LabelControlManager labelControlManager)
+        public void AddUIControlPackage(I_SimpleControlManagerMultiple control, I_UIControlManager labelControlManager)
         {
             //if (!(control as LocalDataGridControlManager).RelatedControl.Any())
             //{
             // var labelControl = new DataGridUIControl();
             //var labelControl = LabelHelper.GenerateLabelControl(title, (control as SimpleControlManagerForMultipleDataForm).DataGridColumn.ColumnSetting);
             //////(control as SimpleControlManagerForMultipleDataForm).RelatedControl.Add(labelControl);
-            (control as SimpleControlManagerForMultipleDataForm).DataGridColumn.Header = (labelControlManager as LabelControlManager).WholeControl;
+            (control as SimpleControlManagerForMultipleDataForm).DataGridColumn.Header = (labelControlManager as LabelHelper).WholeControl;
             //   }
 
             dataGridHelper.dataGrid.Columns.Add((control as SimpleControlManagerForMultipleDataForm).DataGridColumn);
@@ -230,7 +230,7 @@ namespace MyUIGenerator.UIControlHelper
             dataGridHelper.dataGrid.Columns.Clear();
         }
 
-        public override void AddView(object view, I_LabelControlManager labelControlManager)
+        public void AddView(I_UIControlManager labelControlManager, I_RelationshipControlManagerMultiple view)
         {
             //if (!(view as LocalDataGridRelationshipControlManager).RelatedControl.Any())
             //{
@@ -238,11 +238,11 @@ namespace MyUIGenerator.UIControlHelper
             //if (!string.IsNullOrEmpty(title))
             //{
 
-       //     var labelControl = LabelHelper.GenerateLabelControl(title, new ColumnUISettingDTO());
+            //     var labelControl = LabelHelper.GenerateLabelControl(title, new ColumnUISettingDTO());
 
 
             //////(view as RelationshipControlManagerForMultipleDataForm).RelatedControl.Add(labelControl);
-            (view as RelationshipControlManagerForMultipleDataForm).DataGridColumn.Header = (labelControlManager as LabelControlManager).WholeControl;
+            (view as RelationshipControlManagerForMultipleDataForm).DataGridColumn.Header = (labelControlManager as LabelHelper).WholeControl;
             //}
             dataGridHelper.dataGrid.Columns.Add((view as RelationshipControlManagerForMultipleDataForm).DataGridColumn);
             //if (controlPackage.UIControl.Control is I_View_Container)
@@ -254,12 +254,12 @@ namespace MyUIGenerator.UIControlHelper
 
         }
 
-        public void RemoveUIControlPackage(I_SimpleControlManager controlManager)
+        public void RemoveUIControlPackage(I_SimpleControlManagerMultiple controlManager)
         {
             dataGridHelper.dataGrid.Columns.Add((controlManager as SimpleControlManagerForMultipleDataForm).DataGridColumn);
         }
 
-        public void RemoveView(I_RelationshipControlManager controlManager)
+        public void RemoveView(I_RelationshipControlManagerMultiple controlManager)
         {
             dataGridHelper.dataGrid.Columns.Add((controlManager as RelationshipControlManagerForMultipleDataForm).DataGridColumn);
         }
@@ -275,20 +275,20 @@ namespace MyUIGenerator.UIControlHelper
             dataGridHelper.SetTooltip(dataItem, tooltip);
         }
 
-        public void SetBorderColor(object dataItem, InfoColor color)
+        public void SetColor(object dataItem, InfoColor color)
         {
             dataGridHelper.SetBorderColor(dataItem, color);
         }
 
-        public void SetBackgroundColor(object dataItem, InfoColor color)
-        {
-            dataGridHelper.SetBackgroundColor(dataItem, color);
-        }
+        //public void SetBackgroundColor(object dataItem, InfoColor color)
+        //{
+        //    dataGridHelper.SetBackgroundColor(dataItem, color);
+        //}
 
-        public void SetForegroundColor(object dataItem, InfoColor color)
-        {
-            dataGridHelper.SetForegroundColor(dataItem, color);
-        }
+        //public void SetForegroundColor(object dataItem, InfoColor color)
+        //{
+        //    dataGridHelper.SetForegroundColor(dataItem, color);
+        //}
 
         public void Visiblity(object dataItem, bool visible)
         {
@@ -298,6 +298,16 @@ namespace MyUIGenerator.UIControlHelper
         {
             dataGridHelper.EnableDisable(dataItem, enable);
         }
+
+        //public override void SetTooltip(object dataItem, string tooltip)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public override void SetColor(object dataItem, InfoColor color)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 
 

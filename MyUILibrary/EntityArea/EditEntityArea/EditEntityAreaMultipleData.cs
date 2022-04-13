@@ -94,7 +94,7 @@ namespace MyUILibrary.EntityArea
             RemoveDataContainer(data);
 
         }
-      
+
         public override bool AddData(DP_FormDataRepository data, bool showDataInDataView)
         {
             if (base.BaseAddData(data))
@@ -193,7 +193,7 @@ namespace MyUILibrary.EntityArea
             foreach (var relationshipControl in RelationshipColumnControls)
             {
                 bool relationshipFirstSideHasValue = relationshipControl.Relationship.RelationshipColumns.Any()
-               && relationshipControl.Relationship.RelationshipColumns.All(x => specificDate.GetProperties().Any(y => y.Value!=null && !string.IsNullOrEmpty(y.Value.ToString()) && y.ColumnID == x.FirstSideColumnID));
+               && relationshipControl.Relationship.RelationshipColumns.All(x => specificDate.GetProperties().Any(y => y.Value != null && !string.IsNullOrEmpty(y.Value.ToString()) && y.ColumnID == x.FirstSideColumnID));
 
                 bool childLoadedBefore = specificDate.ChildRelationshipInfos.Any(x => x.Relationship.ID == relationshipControl.Relationship.ID);
                 ChildRelationshipInfo childData = null;
@@ -321,7 +321,7 @@ namespace MyUILibrary.EntityArea
                     var columnControl = SimpleColumnControls.FirstOrDefault(x => x.Column.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity));
                     if (columnControl != null)
                     {
-                        SpecializedDataView.AddUIControlPackage(columnControl.SimpleControlManager, columnControl.ControlManager.LabelControlManager);
+                        SpecializedDataView.AddUIControlPackage(columnControl.SimpleControlManager, columnControl.SimpleControlManager.LabelControlManager);
                         columnControl.Visited = true;
                     }
                 }
@@ -330,7 +330,7 @@ namespace MyUILibrary.EntityArea
                     var columnControl = RelationshipColumnControls.FirstOrDefault(x => x.Relationship != null && x.Relationship.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity));
                     if (columnControl != null)
                     {
-                        SpecializedDataView.AddView(columnControl.ControlManager, columnControl.ControlManager.LabelControlManager);
+                        SpecializedDataView.AddView(columnControl.RelationshipControlManagerGeneral.LabelControlManager, columnControl.RelationshipControlManagerGeneral);
                         columnControl.Visited = true;
                     }
                 }
@@ -382,7 +382,7 @@ namespace MyUILibrary.EntityArea
         }
         public override void DataItemVisiblity(object dataItem, bool visible)
         {
-            (DataView as I_View_EditEntityAreaMultiple).Visiblity(dataItem,visible);
+            (DataView as I_View_EditEntityAreaMultiple).Visiblity(dataItem, visible);
         }
         public override void DataItemEnablity(object dataItem, bool visible)
         {
@@ -410,12 +410,12 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        public void SetBinding(DP_FormDataRepository dataItem, SimpleColumnControl typePropertyControl, EntityInstanceProperty property)
+        public void SetBinding(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, EntityInstanceProperty property)
         {
-            typePropertyControl.SimpleControlManager.SetBinding(dataItem, property);
+            typePropertyControl.SimpleControlManager.GetUIControlManager(dataItem).SetBinding(property);
         }
 
-        public bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControl typePropertyControl, string value)
+        public bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, string value)
         {
 
             //ColumnSetting columnSetting = new ColumnSetting();
@@ -428,7 +428,7 @@ namespace MyUILibrary.EntityArea
             //    columnSetting.IsReadOnly = typePropertyControl.ColumnSetting.IsReadOnly;
             //بهتره جور دیگه نوشته بشه
             //if (typePropertyControl.ControlPackage != null)
-            return typePropertyControl.SimpleControlManager.SetValue(dataItem, value);
+            return typePropertyControl.SimpleControlManager.GetUIControlManager(dataItem).SetValue(value);
             //else
             //    return typePropertyControl.SetValue(value);
             //AgentUICoreMediator.UIManager.ShowControlValue(typePropertyControl.ControlPackage, typePropertyControl.Column, value, columnSetting);
@@ -437,10 +437,10 @@ namespace MyUILibrary.EntityArea
 
 
 
-        public object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControl SimpleColumnControlMultipleData)
+        public object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControlMultiple SimpleColumnControlMultipleData)
         {
             //if (AreaInitializer.DataMode == DataMode.Multiple)
-            return SimpleColumnControlMultipleData.SimpleControlManager.GetValue(dataRepository);
+            return SimpleColumnControlMultipleData.SimpleControlManager.GetUIControlManager(dataRepository).GetValue();
             //else
             //    return SimpleColumnControlMultipleData.GetValue();
 

@@ -32,6 +32,18 @@ namespace MyUILibrary.EntityArea
             //RelationshipColumnControls = new List<RelationshipColumnControl>();
         }
 
+        event EventHandler<EditAreaDataItemArg> I_EditEntityAreaOneData.DataItemSelected
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         public override bool AddData(DP_FormDataRepository data, bool showDataInDataView)
         {
@@ -217,9 +229,9 @@ namespace MyUILibrary.EntityArea
                     if (columnControl != null)
                     {
                         columnControl.UIControlPackageTreeItem = item;
-                        item.Item = columnControl.ControlManager;
-                        item.UIItem = columnControl.ControlManager.GetUIControl(null);
-                        (container as I_View_GridContainer).AddUIControlPackage(columnControl.SimpleControlManager, columnControl.ControlManager.LabelControlManager);
+                        item.Item = columnControl.SimpleControlManager;
+                        item.UIItem = columnControl.SimpleControlManager.GetUIControlManager(null).GetUIControl();
+                        (container as I_View_GridContainer).AddUIControlPackage(columnControl.SimpleControlManager, columnControl.SimpleControlManager.LabelControlManager);
                         parentList.Add(item);
                         columnControl.Visited = true;
                     }
@@ -232,10 +244,10 @@ namespace MyUILibrary.EntityArea
                         columnControl.UIControlPackageTreeItem = item;
                         if (UICompositions.Count == 1 && parentUIControlPackage != null && parentUIControlPackage.Item is I_TabPageContainer)
                         {
-                            (columnControl.ControlManager as I_RelationshipControlManager).TabPageContainer = parentUIControlPackage.Item as I_TabPageContainer;
+                            (columnControl.RelationshipControlManagerGeneral as I_RelationshipControlManager).TabPageContainer = parentUIControlPackage.Item as I_TabPageContainer;
                         }
-                        item.Item = columnControl.ControlManager;
-                        item.UIItem = columnControl.ControlManager.GetUIControl(null);
+                        item.Item = columnControl.RelationshipControlManagerGeneral;
+                        item.UIItem = columnControl.MainView;
                         (container as I_View_GridContainer).AddView(columnControl.ControlManager, columnControl.ControlManager.LabelControlManager);
                         parentList.Add(item);
                         columnControl.Visited = true;
@@ -320,6 +332,10 @@ namespace MyUILibrary.EntityArea
             }
         }
 
+        List<UIControlPackageTree> I_EditEntityAreaOneData.UIControlPackageTree { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        I_View_EditEntityAreaDataView I_EditEntityAreaOneData.SpecializedDataView => throw new NotImplementedException();
+
         public void CreateDefaultData()
         {
             bool shouldCreatData = true;
@@ -376,7 +392,7 @@ namespace MyUILibrary.EntityArea
             if (!specificDate.IsFullData)
                 throw new Exception("asdasd");
 
-            foreach (var propertyControl in SimpleColumnControls)
+            foreach (SimpleColumnControlOne propertyControl in SimpleColumnControls)
             {
                 var property = specificDate.GetProperty(propertyControl.Column.ID);
                 if (property != null)
@@ -482,16 +498,38 @@ namespace MyUILibrary.EntityArea
         //    return typePropertyControl.SetValue(value);
 
         //}
-        public void SetBinding(DP_FormDataRepository dataItem, SimpleColumnControl simpleColumnControl, EntityInstanceProperty property)
+        public void SetBinding(DP_FormDataRepository dataItem, SimpleColumnControlOne simpleColumnControl, EntityInstanceProperty property)
         {
             //اینجا 
             //بایندینگ های قبلی نمیمونن مثلا برای فرم های چندتایی که با یک تکی ارتباط دارد//
             //تکست را عوض کنیم بایند قبلی خصوصیت مقدارش تغییر کند
             dataItem.AddChildSimpleContorlProperty(simpleColumnControl, property);
-            simpleColumnControl.SimpleControlManager.SetBinding(dataItem, property);
+            simpleColumnControl.SimpleControlManager.GetUIControlManager().SetBinding(property);
         }
 
+        void I_EditEntityAreaOneData.CheckContainersVisiblity(List<BaseColumnControl> hiddenControls)
+        {
+            throw new NotImplementedException();
+        }
 
+        void I_EditEntityAreaOneData.ShowDataFromExternalSource(DP_DataView dataRepository)
+        {
+            throw new NotImplementedException();
+        }
+
+        void I_EditEntityAreaOneData.CreateDefaultData()
+        {
+            throw new NotImplementedException();
+        }
+
+        void I_EditEntityAreaOneData.TemporaryViewSearchTextChanged(I_View_TemporaryView view, Arg_TemporaryDisplaySerachText searchArg)
+        {
+            throw new NotImplementedException();
+        }
+
+      
+
+       
     }
 
 

@@ -81,11 +81,11 @@ namespace MyUIGenerator.UIControlHelper
         //        return TextboxHelper;
         //}
 
-        public static I_ControlHelper KeyValueControlHelper(ColumnDTO column)
+        public static I_UIControlManager KeyValueControlHelper(ColumnDTO column)
         {
             return new KeyValueControlHelper();
         }
-        public static I_ControlHelper GetControlHelper(ColumnDTO column, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
+        public static I_UIControlManager GetControlHelper(ColumnDTO column, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {
             if (column.ColumnType == Enum_ColumnType.String)
                 return new TextBoxHelper(column, columnSetting, operators);

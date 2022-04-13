@@ -16,13 +16,12 @@ using System.Windows.Media;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public class KeyValueControlHelper : BaseControlHelper, I_ControlHelper, I_ControlHelperValueRange
+    public class KeyValueControlHelper : BaseControlHelper, I_UIControlManager, I_ControlHelperValueRange
     {
         ComboBox combo;
         ComboBox cmbOperators;
 
-        public FrameworkElement MainControl { get { return combo; } }
-        public FrameworkElement WholeControl { get { return theGrid; } }
+        public override Control MainControl { get { return combo; } }
         public KeyValueControlHelper()
         {
         //    ValueIsTitleOrValue = valueIsTitleOrValue;
@@ -177,10 +176,7 @@ namespace MyUIGenerator.UIControlHelper
         {
             combo.IsEnabled = enable;
         }
-        public void Visiblity(bool visible)
-        {
-            combo.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-        }
+       
         public bool IsVisible()
         {
             return combo.Visibility == Visibility.Visible;
@@ -239,6 +235,7 @@ namespace MyUIGenerator.UIControlHelper
         //    combo.BorderBrush = new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Black));
         //    combo.BorderThickness = new Thickness(1);
         //}
+
         public void SetBinding(EntityInstanceProperty property)
         {
             Binding binding = new Binding("Value");

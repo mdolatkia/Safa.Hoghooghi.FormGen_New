@@ -43,7 +43,7 @@ namespace MyUILibrary.EntityArea
         {
 
         }
-        public I_SimpleControlManager ControlManager { set; get; }
+        public I_SimpleControlManagerOne ControlManager { set; get; }
         public EntityListViewColumnsDTO ListViewColumn { set; get; }
         //public ColumnDTO Column { set; get; }
         public string RelativeColumnName { set; get; }

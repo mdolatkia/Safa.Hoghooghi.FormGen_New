@@ -17,12 +17,18 @@ using Telerik.Windows.Controls;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public abstract class View_Container : UserControl, I_View_Container
+    public abstract class View_Container : UserControl, I_View_Area
     {
 
-        public abstract void AddView(object view, I_LabelControlManager labelControlManager);
-        public abstract void AddUIControlPackage(I_SimpleControlManager controlManager, I_LabelControlManager labelControlManager);
+    //    public abstract void AddView( I_UIControlManager labelControlManager, I_RelationshipControlManagerGeneral relationshipControlManag);
+   //     public abstract void AddUIControlPackage(I_SimpleControlManagerGeneral controlManager, I_UIControlManager labelControlManager);
         public abstract void ClearControls();
+
+        //public abstract void SetTooltip(object dataItem, string tooltip);
+
+        //public abstract void SetColor(object dataItem, InfoColor color);
+       
+
         public int ControlsCount { get; }
         public void EnableDisable(bool enable)
         {
@@ -362,7 +368,11 @@ namespace MyUIGenerator.UIControlHelper
             this.BorderBrush = UIManager.GetColorFromInfoColor(color);
             this.BorderThickness = new Thickness(1);
         }
-
+        public void SetColor(InfoColor color)
+        {
+            this.BorderBrush = UIManager.GetColorFromInfoColor(color);
+            this.BorderThickness = new Thickness(1);
+        }
         public void SetBackgroundColor(InfoColor color)
         {
             this.Background = UIManager.GetColorFromInfoColor(color);
@@ -372,6 +382,8 @@ namespace MyUIGenerator.UIControlHelper
         {
             this.Foreground = UIManager.GetColorFromInfoColor(color);
         }
+
+   
 
 
         //public void AddUIControlPackage(object controlPackage, string title, InfoColor titleColor, string tooltip = "")

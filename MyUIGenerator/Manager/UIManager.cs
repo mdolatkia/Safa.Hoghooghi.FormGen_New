@@ -231,36 +231,55 @@ namespace MyUIGenerator
         //}
 
 
+        public I_UIControlManager GenerateLabelControlManager(ColumnDTO column, ColumnUISettingDTO columnSetting, string labelText)
+        {
+            var controlManager = new LabelHelper(labelText, true);
+            //if (labelControlManager)
+            //{
+            //    controlManager.LabelControlManager = new LabelControlManager(labelText, true);
+            //}
+            return controlManager;
+        }
 
-        public I_SimpleControlManager GenerateSimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues, List<SimpleSearchOperator> operators, bool labelControlManager, string labelText)
+        public I_SimpleControlManagerOne GenerateSimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues, List<SimpleSearchOperator> operators, bool labelControlManager, string labelText)
         {
             var controlManager = new SimpleControlManagerForOneDataForm(column, columnSetting, hasRangeOfValues, operators);
-            if (labelControlManager)
-            {
-                controlManager.LabelControlManager = new LabelControlManager(labelText, true);
-            }
+            //if (labelControlManager)
+            //{
+            //    controlManager.LabelControlManager = new LabelControlManager(labelText, true);
+            //}
             return controlManager;
         }
-
-        public I_RelationshipControlManager GenerateRelationshipControlManagerForOneDataForm(object view, RelationshipUISettingDTO relationshipUISetting, bool labelControlManager, string labelText)
-        {
-            var controlManager = new RelationshipControlManagerForOneDataForm(view as FrameworkElement, relationshipUISetting);
-            if (labelControlManager)
-            {
-                controlManager.LabelControlManager = new LabelControlManager(labelText, true);
-            }
-            return controlManager;
-        }
-
-        public I_SimpleControlManager GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues, bool labelControlManager, string labelText)
+        public I_SimpleControlManagerMultiple GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues, bool labelControlManager, string labelText)
         {
             var controlManager = new SimpleControlManagerForMultipleDataForm(column, columnUISettingDTO, hasRangeOfValues);
-            if (labelControlManager)
-            {
-                controlManager.LabelControlManager = new LabelControlManager(labelText, false);
-            }
+            //if (labelControlManager)
+            //{
+            //    controlManager.LabelControlManager = new LabelControlManager(labelText, false);
+            //}
             return controlManager;
         }
+
+        public I_RelationshipControlManagerOne GenerateRelationshipControlManagerForOneDataForm(I_View_Area view, RelationshipUISettingDTO relationshipUISetting, bool labelControlManager, string labelText)
+        {
+            var controlManager = new RelationshipControlManagerForOneDataForm(view, relationshipUISetting);
+            //if (labelControlManager)
+            //{
+            //    controlManager.LabelControlManager = new LabelControlManager(labelText, true);
+            //}
+            return controlManager;
+        }
+
+        public I_RelationshipControlManagerMultiple GenerateRelationshipControlManagerForMultipleDataForm(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipUISetting, bool labelControlManager, string labelText)
+        {
+            var controlManager = new RelationshipControlManagerForMultipleDataForm(temporaryLinkState, relationshipUISetting);
+            //if (labelControlManager)
+            //{
+            //    controlManager.LabelControlManager = new LabelControlManager(labelText, false);
+            //}
+            return controlManager;
+        }
+
 
         internal void ShowDetail(string title, List<ResultDetail> details)
         {
@@ -268,17 +287,7 @@ namespace MyUIGenerator
             var window = GetDialogWindow();
             window.ShowDialog(view, title);
         }
-
-        public I_RelationshipControlManager GenerateRelationshipControlManagerForMultipleDataForm(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipUISetting, bool labelControlManager, string labelText)
-        {
-            var controlManager = new RelationshipControlManagerForMultipleDataForm(temporaryLinkState, relationshipUISetting);
-            if (labelControlManager)
-            {
-                controlManager.LabelControlManager = new LabelControlManager(labelText, false);
-            }
-            return controlManager;
-        }
-        //public I_LabelControlManager GenerateLabelControlManager()
+        //public I_UIControlManager GenerateLabelControlManager()
         //{
         //    return new LabelControlManager("");
         //}
@@ -1278,6 +1287,8 @@ namespace MyUIGenerator
 
 
         }
+
+
     }
 
 }

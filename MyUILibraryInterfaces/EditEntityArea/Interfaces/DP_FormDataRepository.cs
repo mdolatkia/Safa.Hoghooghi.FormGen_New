@@ -16,6 +16,11 @@ namespace MyUILibrary.EntityArea
         public ParentRelationshipInfo ParantChildRelationshipInfo { get; set; }
         //public event EventHandler<ChangeMonitor> RelatedDataCollectionChanged;
         //  public event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
+        public List<PropertyFormulaComment> PropertyFormulaCommentItems = new List<PropertyFormulaComment>();
+
+        public List<ControlStateItem> ReadonlyStateItems = new List<ControlStateItem>();
+        public List<ControlStateItem> ParentRelationshipReadonlyStateItems = new List<ControlStateItem>();
+        public List<ControlStateItem> ParentRelationshipHiddenStateItems = new List<ControlStateItem>();
         public I_EditEntityArea EditEntityArea { set; get; }
         //      public Dictionary<int, List<ColumnValueRangeDetailsDTO>> ColumnKeyValueRanges = new Dictionary<int, List<ColumnValueRangeDetailsDTO>>();
         public DP_FormDataRepository(DP_DataRepository baseData, I_EditEntityArea editEntityArea) : base(baseData.TargetEntityID, baseData.TargetEntityAlias)
@@ -46,28 +51,28 @@ namespace MyUILibrary.EntityArea
             ChildSimpleContorlProperties = new List<ChildSimpleContorlProperty>();
             ChangeMonitorItems = new List<ChangeMonitor>();
             //StateIds = new List<int>();
-            this.IsReadonlyBecauseOfStateChanged += DP_FormDataRepository_IsReadonlyBecauseOfStateChanged;
+            // this.IsReadonlyBecauseOfStateChanged += DP_FormDataRepository_IsReadonlyBecauseOfStateChanged;
             //    GUID = Guid.NewGuid();
 
             //    DataTypes = new List<DP_FormDataRepository>();
             //ViewEntityProperties = new List<Tuple<int, List<ProxyLibrary.EntityInstanceProperty>>>();
         }
 
-        private void DP_FormDataRepository_IsReadonlyBecauseOfStateChanged(object sender, EventArgs e)
-        {
-            if (DataIsInEditMode())
-            {
-                EditEntityArea.DecideButtonsEnablity1();
-                if (ParantChildRelationshipInfo != null)
-                {
-                    ParantChildRelationshipInfo.SourceData.EditEntityArea.DecideButtonsEnablity1();
-                }
-                foreach (var item in ChildRelationshipInfos)
-                {
-                    item.RelationshipControl.EditNdTypeArea.DecideButtonsEnablity1();
-                }
-            }
-        }
+        //private void DP_FormDataRepository_IsReadonlyBecauseOfStateChanged(object sender, EventArgs e)
+        //{
+        //    if (DataIsInEditMode())
+        //    {
+        //        EditEntityArea.DecideButtonsEnablity1();
+        //        if (ParantChildRelationshipInfo != null)
+        //        {
+        //            ParantChildRelationshipInfo.SourceData.EditEntityArea.DecideButtonsEnablity1();
+        //        }
+        //        foreach (var item in ChildRelationshipInfos)
+        //        {
+        //            item.RelationshipControl.EditNdTypeArea.DecideButtonsEnablity1();
+        //        }
+        //    }
+        //}
 
         private void DP_FormDataRepository_PropertyValueChanged(object sender, PropertyValueChangedArg e)
         {
@@ -143,7 +148,7 @@ namespace MyUILibrary.EntityArea
                 return ParantChildRelationshipInfo != null && (
                     (ParantChildRelationshipInfo.IsReadonly || ParantChildRelationshipInfo.ParantChildRelationshipInfo.IsReadonly)
                     || (ParantChildRelationshipInfo.ToRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary &&
-                                (EditEntityArea.DataEntryEntity.IsReadonly || IsReadonlyBecauseOfState)));
+                                (EditEntityArea.DataEntryEntity.IsReadonly || IsReadonlyOnState)));
 
             }
 
@@ -463,21 +468,16 @@ namespace MyUILibrary.EntityArea
         //public bool RelationshipIsAdded { get;  }
         //     public bool IsEdited { get; set; }
 
-        public event EventHandler IsReadonlyBecauseOfStateChanged;
-        bool _IsReadonlyBecauseOfState;
-        public bool IsReadonlyBecauseOfState
+        //  public event EventHandler IsReadonlyBecauseOfStateChanged;
+        //  bool _IsReadonlyBecauseOfState;
+        public bool IsReadonlyOnState
         {
-            get { return _IsReadonlyBecauseOfState; }
-            set
+            get
             {
-                if (_IsReadonlyBecauseOfState != value)
-                {
-                    _IsReadonlyBecauseOfState = value;
-                    if (IsReadonlyBecauseOfStateChanged != null)
-                        IsReadonlyBecauseOfStateChanged(this, null);
-                }
+                return ReadonlyStateItems.Any();
             }
         }
+
         // public bool IsReadonlyBecauseOfCreatorRelationshipOnState { get; set; }
         //   public bool IsReadonlyBecauseOfCreatorRelationshipOnShow { set; get; }
 
@@ -520,7 +520,6 @@ namespace MyUILibrary.EntityArea
         //}
 
         public List<ChangeMonitor> ChangeMonitorItems { set; get; }
-        public bool IsReadonlyBecauseOfStateOnShow { get; private set; }
 
 
         //public bool ShouldWriteUpdateQuery { get; set; }
@@ -531,7 +530,7 @@ namespace MyUILibrary.EntityArea
         //        Updated(this, null);
         //}
 
-        public ChildRelationshipInfo AddChildRelationshipInfo(RelationshipColumnControl relationshipColumnControl)
+        public ChildRelationshipInfo AddChildRelationshipInfo(RelationshipColumnControlGeneral relationshipColumnControl)
         {
             var childRelationshipInfo = new ChildRelationshipInfo(relationshipColumnControl, this);
             ChildRelationshipInfos.Add(childRelationshipInfo);
@@ -638,7 +637,7 @@ namespace MyUILibrary.EntityArea
             return false;
         }
 
-        public void AddChildSimpleContorlProperty(SimpleColumnControl simpleColumnControl, EntityInstanceProperty property)
+        public void AddChildSimpleContorlProperty(SimpleColumnControlGenerel simpleColumnControl, EntityInstanceProperty property)
         {
             if (!ChildSimpleContorlProperties.Any(x => x.SimpleColumnControl == simpleColumnControl))
             {
@@ -648,215 +647,393 @@ namespace MyUILibrary.EntityArea
                 ChildSimpleContorlProperties.First(x => x.SimpleColumnControl == simpleColumnControl).Binded();
         }
 
-        public void ChangeDataItemParentRelationshipVisiblity(bool hidden, string message, string key, bool skipUICheck, bool onShow)
+        //public void SetDataItemParentRelationshipVisiblity(string message, string key, bool permanent)
+        //{
+        //    bool dataIsInValidMode = DataIsInEditMode() || DataItemIsInTempViewMode();
+        //    if (dataIsInValidMode)
+        //    {
+        //        AddHiddenState(key, message, permanent);
+        //        //   var sKey = "needSave";
+        //        ParantChildRelationshipInfo.IsHiddenOnState = hidden;
+        //        if (permanent)
+        //            ParantChildRelationshipInfo.IsHiddenOnShow = hidden;
+
+        //        if (hidden)
+        //        {
+        //            AddDataItemMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", key, ControlItemPriority.High);
+        //            AddDataItemColor(InfoColor.Red, ControlColorTarget.Background, key, ControlItemPriority.High);
+        //            AddDataItemColor(InfoColor.Red, ControlColorTarget.Border, key, ControlItemPriority.High);
+        //        }
+        //        else
+        //        {
+        //            RemoveDataItemColor(key);
+        //            RemoveDataItemMessageByKey(key);
+        //        }
+        //        //}
+        //        //else if (dataItem.IsReadonlyBecauseOfCreatorRelationshipOnShow)
+        //        //{
+        //        //    AddDataItemMessage(new DataMessageItem() { CausingDataItem = dataItem, Message = message + Environment.NewLine + "این رابطه بصورت فقط خواندنی بارگذاری شده است، در صورت نیاز به حذف ابتدا عملیات ثبت انجام شود", Key = key, Priority = ControlItemPriority.High });
+        //        //}
+        //        //}
+        //    }
+        //    //}
+        //}
+        public void SetDataItemParentRelationshipVisiblity(string message, string key, bool permanent)
         {
-            if (skipUICheck)
+            //if (skipUICheck)
+            //{
+            //    ParantChildRelationshipInfo.IsHiddenOnState = hidden;
+            //    if (permanent)
+            //        ParantChildRelationshipInfo.IsHiddenOnShow = hidden;
+            //}
+            //else
+            //{
+            bool dataIsInValidMode = DataIsInEditMode() || DataItemIsInTempViewMode();
+            if (dataIsInValidMode)
             {
-                ParantChildRelationshipInfo.IsHiddenOnState = hidden;
-                if (onShow)
-                    ParantChildRelationshipInfo.IsHiddenOnShow = hidden;
-            }
-            else
-            {
-                bool dataIsInValidMode = DataIsInEditMode() || DataItemIsInTempViewMode();
-                if (dataIsInValidMode)
+                //   var sKey = "needSave";
+                AddParentRelationshipHiddenState(key, message, permanent);
+                if (permanent)
                 {
-                    //   var sKey = "needSave";
-                    ParantChildRelationshipInfo.IsHiddenOnState = hidden;
-                    if (onShow)
-                        ParantChildRelationshipInfo.IsHiddenOnShow = hidden;
-
-                    if (hidden)
-                    {
-                        AddDataItemMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", key, ControlItemPriority.High);
-                        AddDataItemColor(InfoColor.Red, ControlColorTarget.Background, key, ControlItemPriority.High);
-                        AddDataItemColor(InfoColor.Red, ControlColorTarget.Border, key, ControlItemPriority.High);
-                    }
-                    else
-                    {
-                        RemoveDataItemColor(key);
-                        RemoveDataItemMessageByKey(key);
-                    }
-                    //}
-                    //else if (dataItem.IsReadonlyBecauseOfCreatorRelationshipOnShow)
-                    //{
-                    //    AddDataItemMessage(new DataMessageItem() { CausingDataItem = dataItem, Message = message + Environment.NewLine + "این رابطه بصورت فقط خواندنی بارگذاری شده است، در صورت نیاز به حذف ابتدا عملیات ثبت انجام شود", Key = key, Priority = ControlItemPriority.High });
-                    //}
-                    //}
-                }
-            }
-        }
-
-        public void ChangeDataItemReadonlyFromState(bool isReadonly, string message, string key, bool skipUICheck, bool onShow)
-        {
-            if (!skipUICheck)
-            {
-                if (isReadonly)
-                {
-                    AddDataItemMessage(message, "DataReadonlyByState", ControlItemPriority.High);
-                    AddDataItemColor(Temp.InfoColor.Red, ControlColorTarget.Border, "DataReadonlyByState", ControlItemPriority.High);
-                }
-                else
-                {
-                    RemoveDataItemMessageByKey(key);
-                    RemoveDataItemColor(key);
-                }
-            }
-            IsReadonlyBecauseOfState = isReadonly;
-            if (onShow)
-                IsReadonlyBecauseOfStateOnShow = isReadonly;
-        }
-
-
-        public void ChangeDataItemParentRelationshipReadonly(bool isReadonly, string message, string key, bool skipUICheck, bool onShow)
-        {
-            if (skipUICheck)
-            {
-                ParantChildRelationshipInfo.IsReadonlyOnState = isReadonly;
-                if (onShow)
-                    ParantChildRelationshipInfo.IsHiddenOnShow = isReadonly;
-            }
-            else
-            {
-                bool dataIsInValidMode = DataIsInEditMode() || DataItemIsInTempViewMode();
-                if (dataIsInValidMode)
-                {
-                    //var sKey = "needSave";
-
-                    ParantChildRelationshipInfo.IsReadonlyOnState = isReadonly;
-                    if (onShow)
-                        ParantChildRelationshipInfo.IsHiddenOnShow = isReadonly;
-                    if (isReadonly)
-                    {
-                        AddDataItemMessage(message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", key, ControlItemPriority.High);
-                        //if (!dataItem.IsDBRelationship)
-                        //{
-                        AddDataItemColor(InfoColor.DarkRed, ControlColorTarget.Background, key, ControlItemPriority.High);
-                        AddDataItemColor(InfoColor.DarkRed, ControlColorTarget.Border, key, ControlItemPriority.High);
-
-                        //بعدا باید فانکشنی نوشت که اگر فرم یک داده ای بود دکمه های جستجو حذف غیر فعال بشوند                      
-                        //البته الان هم این دکمه ها در صورتی که ریدونلی باشد کار نمیکنند
-                    }
-                    else
-                    {
-                        RemoveDataItemColor(key);
-                        RemoveDataItemMessageByKey(key);
-                        if (ParantChildRelationshipInfo.IsReadonlyOnShow)
-                        {
-                            AddDataItemMessage(message + Environment.NewLine + "این رابطه بصورت فقط خواندنی بارگذاری شده است، در صورت نیاز به حذف ابتدا عملیات ثبت انجام شود", key, ControlItemPriority.High);
-                        }
-                    }
-
 
                 }
+
+                //if (hidden)
+                //{
+                //    AddDataItemMessage(message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", key, ControlItemPriority.High);
+                //    AddDataItemColor(InfoColor.Red, ControlColorTarget.Background, key, ControlItemPriority.High);
+                //    AddDataItemColor(InfoColor.Red, ControlColorTarget.Border, key, ControlItemPriority.High);
+                //}
+                //else
+                //{
+                //    RemoveDataItemColor(key);
+                //    RemoveDataItemMessageByKey(key);
+                //}
+                //}
+                //else if (dataItem.IsReadonlyBecauseOfCreatorRelationshipOnShow)
+                //{
+                //    AddDataItemMessage(new DataMessageItem() { CausingDataItem = dataItem, Message = message + Environment.NewLine + "این رابطه بصورت فقط خواندنی بارگذاری شده است، در صورت نیاز به حذف ابتدا عملیات ثبت انجام شود", Key = key, Priority = ControlItemPriority.High });
+                //}
+                //}
             }
+            //}
         }
-
-
-        private List<DataColorItem> DataItemColorItems = new List<DataColorItem>();
-        private List<DataMessageItem> DataItemMessageItems = new List<DataMessageItem>();
-        public void AddDataItemMessage(string message, string key, ControlItemPriority priority)
+        public void ResetDataItemParentRelationshipVisiblity(string key)
         {
-            //    baseMessageItem.MultipleDataControlManager = GetControlDataManagers(baseMessageItem.CausingDataItem);
-            if (!DataItemMessageItems.Any(x => x.Key == key))
-                DataItemMessageItems.Add(new DataMessageItem(message, key, priority));
-            SetItemMessage();
-        }
-
-        public void RemoveDataItemMessageByKey(string key)
-        {
-            List<DP_FormDataRepository> datas = new List<DP_FormDataRepository>();
-            foreach (var baseMessageItem in DataItemMessageItems.Where(x => x.Key == key).ToList())
+            if (DataIsInEditMode())
             {
-                DataItemMessageItems.Remove(baseMessageItem);
+                RemoveParentRelationshipHiddenState(key);
             }
-            SetItemMessage();
         }
-        public void SetItemMessage()
+
+        public void SetDataItemReadonlyFromState(string message, string key, bool permanent)
+        {
+            if (DataIsInEditMode())
+            {
+                AddReadonlyState(key, message, permanent);
+                if (permanent)
+                {
+                }
+
+            }
+        }
+        public void ResetDataItemReadonlyFromState(string key)
+        {
+            if (DataIsInEditMode())
+            {
+                RemoveReadonlyState(key);
+            }
+        }
+
+        public void SetDataItemParentRelationshipReadonly(string message, string key, bool permanent)
+        {
+            //if (skipUICheck)
+            //{
+            //    ParantChildRelationshipInfo.IsReadonlyOnState = isReadonly;
+            //    if (permanent)
+            //        ParantChildRelationshipInfo.IsHiddenOnShow = isReadonly;
+            //}
+            //else
+            //{
+            bool dataIsInValidMode = DataIsInEditMode() || DataItemIsInTempViewMode();
+            if (dataIsInValidMode)
+            {
+                //var sKey = "needSave";
+
+                AddParentRelationshipReadonlyState(key, message, permanent);
+                if (permanent)
+                {
+
+                }
+
+                //AddDataItemMessage(message + Environment.NewLine + "این رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", key, ControlItemPriority.High);
+                ////if (!dataItem.IsDBRelationship)
+                ////{
+                //AddDataItemColor(InfoColor.DarkRed, ControlColorTarget.Background, key, ControlItemPriority.High);
+                //AddDataItemColor(InfoColor.DarkRed, ControlColorTarget.Border, key, ControlItemPriority.High);
+
+                //بعدا باید فانکشنی نوشت که اگر فرم یک داده ای بود دکمه های جستجو حذف غیر فعال بشوند                      
+                //البته الان هم این دکمه ها در صورتی که ریدونلی باشد کار نمیکنند
+
+
+
+            }
+            //}
+        }
+        public void ResetDataItemParentRelationshipReadonly(string key)
+        {
+            //if (skipUICheck)
+            //{
+            //    ParantChildRelationshipInfo.IsReadonlyOnState = isReadonly;
+            //    if (permanent)
+            //        ParantChildRelationshipInfo.IsHiddenOnShow = isReadonly;
+            //}
+            //else
+            //{
+            if (DataIsInEditMode())
+            {
+                RemoveParentRelationshipReadonlyState(key);
+            }
+            //}
+        }
+        public void AddPropertyFormulaComment(string key, string message)
+        {
+            if (!PropertyFormulaCommentItems.Any(x => x.Key == key))
+                PropertyFormulaCommentItems.Add(new PropertyFormulaComment(key, message));
+
+            SetMessageAndColor();
+        }
+        public void RemovePropertyFormulaComment(string key)
+        {
+            if (PropertyFormulaCommentItems.Any(x => x.Key == key))
+                PropertyFormulaCommentItems.RemoveAll(x => x.Key == key);
+
+            SetMessageAndColor();
+        }
+        public void AddParentRelationshipReadonlyState(string key, string message, bool permanent)
+        {
+            if (!ParentRelationshipReadonlyStateItems.Any(x => x.Key == key))
+                ParentRelationshipReadonlyStateItems.Add(new ControlStateItem(key, message, permanent));
+
+            SetMessageAndColor();
+        }
+        public void RemoveParentRelationshipReadonlyState(string key)
+        {
+            if (ParentRelationshipReadonlyStateItems.Any(x => x.Key == key && x.Permanent == false))
+                ParentRelationshipReadonlyStateItems.RemoveAll(x => x.Key == key && x.Permanent == false);
+
+            SetMessageAndColor();
+        }
+        public void AddParentRelationshipHiddenState(string key, string message, bool permanent)
+        {
+            if (!ParentRelationshipHiddenStateItems.Any(x => x.Key == key))
+                ParentRelationshipHiddenStateItems.Add(new ControlStateItem(key, message, permanent));
+
+            SetMessageAndColor();
+        }
+        public void RemoveParentRelationshipHiddenState(string key)
+        {
+            if (ParentRelationshipHiddenStateItems.Any(x => x.Key == key && x.Permanent == false))
+                ParentRelationshipHiddenStateItems.RemoveAll(x => x.Key == key && x.Permanent == false);
+
+            SetMessageAndColor();
+        }
+
+        public void AddReadonlyState(string key, string message, bool permanent)
+        {
+            if (!ReadonlyStateItems.Any(x => x.Key == key))
+                ReadonlyStateItems.Add(new ControlStateItem(key, message, permanent));
+
+            SetMessageAndColor();
+        }
+        public void RemoveReadonlyState(string key)
+        {
+            if (ReadonlyStateItems.Any(x => x.Key == key && x.Permanent == false))
+                ReadonlyStateItems.RemoveAll(x => x.Key == key && x.Permanent == false);
+
+            SetMessageAndColor();
+        }
+
+        public void SetMessageAndColor()
+        {
+            List<BaseColorItem> columnControlColorItems = new List<BaseColorItem>();
+            List<BaseMessageItem> columnControlMessageItems = new List<BaseMessageItem>();
+            foreach (var item in ParentRelationshipHiddenStateItems)
+            {
+                columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
+                columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "رابطه داده غیر فعال می باشد و تغییرات اعمال نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
+            }
+            foreach (var item in ReadonlyStateItems)
+            {
+                columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
+                columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "این داده فقط خواندنی می باشد و تغییرات اعمال نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
+            }
+            foreach (var item in ParentRelationshipReadonlyStateItems)
+            {
+                columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
+                columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "رابطه داده فقط خواندنی می باشد و تغییرات اعمال نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
+            }
+            foreach (var item in PropertyFormulaCommentItems)
+            {
+                columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message, ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.Normal));
+            }
+            SetItemColor(columnControlColorItems);
+            SetItemMessage(columnControlMessageItems);
+
+        }
+        private void SetItemColor(List<BaseColorItem> columnControlColorItems)
+        {
+            SetItemColor(ControlOrLabelAsTarget.Control, columnControlColorItems);
+            SetItemColor(ControlOrLabelAsTarget.Label, columnControlColorItems);
+        }
+        public void SetItemColor(ControlOrLabelAsTarget controlOrLabel, List<BaseColorItem> columnControlColorItems)
         {
 
-            string tooltip = "";
+            InfoColor color = GetColor(controlOrLabel, columnControlColorItems);
 
-            var list = DataItemMessageItems.ToList<BaseMessageItem>();
-            tooltip = GetTooltip(list);
             var controlManagers = GetControlDataManagers();
+
 
             foreach (var view in controlManagers)
             {
-                view.SetTooltip(this, tooltip);
+                view.SetColor( color);
             }
-
         }
-        private string GetTooltip(List<BaseMessageItem> MessageItems)
+        private void SetItemMessage(List<BaseMessageItem> columnControlMessageItems)
+        {
+            SetItemMessage(ControlOrLabelAsTarget.Control, columnControlMessageItems);
+            SetItemMessage(ControlOrLabelAsTarget.Label, columnControlMessageItems);
+        }
+        public void SetItemMessage(ControlOrLabelAsTarget controlOrLabel, List<BaseMessageItem> columnControlMessageItems)
+        {
+            var tooltip = GetTooltip(controlOrLabel, columnControlMessageItems);
+            var controlManagers = GetControlDataManagers();
+            foreach (var view in controlManagers)
+            {
+                view.SetTooltip( tooltip);
+            }
+        }
+        private string GetTooltip(ControlOrLabelAsTarget controlOrLabel, List<BaseMessageItem> columnControlMessageItems)
         {
             var tooltip = "";
-            foreach (var item in MessageItems.OrderBy(x => x.Priority))
+            foreach (var item in columnControlMessageItems.OrderByDescending(x => x.Priority))
                 tooltip += (tooltip == "" ? "" : Environment.NewLine) + item.Message;
             return tooltip;
         }
-
-        public void AddDataItemColor(InfoColor infoColor, ControlColorTarget controlColorTarget, string key, ControlItemPriority priority)
+        private InfoColor GetColor(ControlOrLabelAsTarget controlOrLabel, List<BaseColorItem> columnControlColorItems)
         {
-            if (!DataItemColorItems.Any(x => x.Key == key && x.ColorTarget == controlColorTarget))
-                DataItemColorItems.Add(new DataColorItem(infoColor, controlColorTarget, key, priority));
-            SetItemColor(controlColorTarget);
-        }
-
-        public void RemoveDataItemColor(string key)
-        {
-            foreach (var baseColorItem in DataItemColorItems.Where(x => x.Key == key).ToList())
-            {
-                DataItemColorItems.Remove(baseColorItem);
-            }
-            SetItemColor(ControlColorTarget.Background);
-            SetItemColor(ControlColorTarget.Border);
-            //      SetItemColor(dataItem, ControlColorTarget.Foreground);
+            var color = columnControlColorItems.OrderByDescending(x => x.Priority).FirstOrDefault();
+            if (color != null)
+                return color.Color;
+            else
+                return InfoColor.Null;
         }
 
 
+        //private List<DataColorItem> DataItemColorItems = new List<DataColorItem>();
+        //private List<DataMessageItem> DataItemMessageItems = new List<DataMessageItem>();
+        //public void AddDataItemMessage(string message, string key, ControlItemPriority priority)
+        //{
+        //    //    baseMessageItem.MultipleDataControlManager = GetControlDataManagers(baseMessageItem.CausingDataItem);
+        //    if (!DataItemMessageItems.Any(x => x.Key == key))
+        //        DataItemMessageItems.Add(new DataMessageItem(message, key, priority));
+        //    SetItemMessage();
+        //}
 
-        private InfoColor GetColor(List<BaseColorItem> list)
+        //public void RemoveDataItemMessageByKey(string key)
+        //{
+        //    List<DP_FormDataRepository> datas = new List<DP_FormDataRepository>();
+        //    foreach (var baseMessageItem in DataItemMessageItems.Where(x => x.Key == key).ToList())
+        //    {
+        //        DataItemMessageItems.Remove(baseMessageItem);
+        //    }
+        //    SetItemMessage();
+        //}
+        //public void SetItemMessage()
+        //{
+
+        //    string tooltip = "";
+
+        //    var list = DataItemMessageItems.ToList<BaseMessageItem>();
+        //    tooltip = GetTooltip(list);
+        //    var controlManagers = GetControlDataManagers();
+
+        //    foreach (var view in controlManagers)
+        //    {
+        //        view.SetTooltip(this, tooltip);
+        //    }
+
+        //}
+        //private string GetTooltip(List<BaseMessageItem> MessageItems)
+        //{
+        //    var tooltip = "";
+        //    foreach (var item in MessageItems.OrderBy(x => x.Priority))
+        //        tooltip += (tooltip == "" ? "" : Environment.NewLine) + item.Message;
+        //    return tooltip;
+        //}
+
+        //public void AddDataItemColor(InfoColor infoColor, ControlColorTarget controlColorTarget, string key, ControlItemPriority priority)
+        //{
+        //    if (!DataItemColorItems.Any(x => x.Key == key && x.ColorTarget == controlColorTarget))
+        //        DataItemColorItems.Add(new DataColorItem(infoColor, controlColorTarget, key, priority));
+        //    SetItemColor(controlColorTarget);
+        //}
+
+        //public void RemoveDataItemColor(string key)
+        //{
+        //    foreach (var baseColorItem in DataItemColorItems.Where(x => x.Key == key).ToList())
+        //    {
+        //        DataItemColorItems.Remove(baseColorItem);
+        //    }
+        //    SetItemColor(ControlColorTarget.Background);
+        //    SetItemColor(ControlColorTarget.Border);
+        //    //      SetItemColor(dataItem, ControlColorTarget.Foreground);
+        //}
+
+
+
+        //private InfoColor GetColor(List<BaseColorItem> list)
+        //{
+        //    var color = InfoColor.Null;
+        //    foreach (var item in list.Where(x => x.Color != InfoColor.Null).OrderByDescending(x => x.Priority))
+        //        color = item.Color;
+        //    return color;
+        //}
+
+
+
+        //public void SetItemColor(ControlColorTarget controlColorTarget)
+        //{
+        //    InfoColor color = InfoColor.Null;
+        //    var list = DataItemColorItems.Where(x => x.ColorTarget == controlColorTarget).ToList<BaseColorItem>();
+        //    color = GetColor(list);
+        //    var controlManagers = GetControlDataManagers();
+
+        //    //     var list = ControlManagerColorItems.Where(x => x.CausingDataItem == baseColorItem.CausingDataItem && x.ColorTarget == baseColorItem.ColorTarget).ToList<BaseColorItem>();
+
+        //    foreach (var view in controlManagers)
+        //    {
+        //        if (controlColorTarget == ControlColorTarget.Background)
+        //        {
+        //            view.SetBackgroundColor(this, color);
+        //        }
+        //        else if (controlColorTarget == ControlColorTarget.Foreground)
+        //        {
+        //            view.SetForegroundColor(this, color);
+        //        }
+        //        if (controlColorTarget == ControlColorTarget.Border)
+        //        {
+        //            view.SetBorderColor(this, color);
+        //        }
+        //    }
+        //}
+
+        private List<I_UIElementManager> GetControlDataManagers()
         {
-            var color = InfoColor.Null;
-            foreach (var item in list.Where(x => x.Color != InfoColor.Null).OrderByDescending(x => x.Priority))
-                color = item.Color;
-            return color;
-        }
-
-
-
-        public void SetItemColor(ControlColorTarget controlColorTarget)
-        {
-            InfoColor color = InfoColor.Null;
-            var list = DataItemColorItems.Where(x => x.ColorTarget == controlColorTarget).ToList<BaseColorItem>();
-            color = GetColor(list);
-            var controlManagers = GetControlDataManagers();
-
-            //     var list = ControlManagerColorItems.Where(x => x.CausingDataItem == baseColorItem.CausingDataItem && x.ColorTarget == baseColorItem.ColorTarget).ToList<BaseColorItem>();
-
-            foreach (var view in controlManagers)
-            {
-                if (controlColorTarget == ControlColorTarget.Background)
-                {
-                    view.SetBackgroundColor(this, color);
-                }
-                else if (controlColorTarget == ControlColorTarget.Foreground)
-                {
-                    view.SetForegroundColor(this, color);
-                }
-                if (controlColorTarget == ControlColorTarget.Border)
-                {
-                    view.SetBorderColor(this, color);
-                }
-            }
-        }
-
-        private List<I_DataControlManager> GetControlDataManagers()
-        {
-            List<I_DataControlManager> result = new List<I_DataControlManager>();
+            List<I_UIElementManager> result = new List<I_UIElementManager>();
             if (DataIsInEditMode())
                 result.Add(EditEntityArea.DataView);
-
+           
             if (DataItemIsInTempViewMode())
             {
                 if (this is I_EditEntityAreaOneData)
@@ -868,7 +1045,7 @@ namespace MyUILibrary.EntityArea
                     else
                     {
                         var relationshipControl = EditEntityArea.AreaInitializer.SourceRelationColumnControl;
-                        result.Add(relationshipControl.RelationshipControlManager);
+                        result.Add(relationshipControl.RelationshipControlManagerGeneral);
                     }
                 }
             }
@@ -913,5 +1090,15 @@ namespace MyUILibrary.EntityArea
         //    }
         //}
     }
+    public class PropertyFormulaComment
+    {
+        public PropertyFormulaComment(string key, string message)
+        {
+            Key = key;
+            Message = message;
+        }
+        public string Key { get; set; }
+        public string Message { get; set; }
 
+    }
 }

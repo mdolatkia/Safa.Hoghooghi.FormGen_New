@@ -117,7 +117,7 @@ namespace MyUILibrary.EntityArea
         }
         public ColumnDTO Column { set; get; }
         public EntitySearchColumnsDTO EntitySearchColumn { get; set; }
-        public I_SimpleControlManager ControlManager { get; set; }
+        //public I_SimpleControlManagerGeneral ControlManager { get; set; }
         public List<SimpleSearchOperator> Operators { get; set; }
         //public SearchEnumerableType SearchEnumerableType { get; set; }
     }
@@ -135,7 +135,7 @@ namespace MyUILibrary.EntityArea
         }
         public EntitySearchColumnsDTO EntitySearchColumn { get; set; }
 
-        public I_RelationshipControlManager ControlManager { get; set; }
+        public I_RelationshipControlManagerGeneral ControlManager { get; set; }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }
     
         //public bool IsFake { set; get; }

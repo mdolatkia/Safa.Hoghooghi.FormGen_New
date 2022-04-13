@@ -14,7 +14,7 @@ namespace MyUILibraryInterfaces.EditEntityArea
     public class ColumnFormula
     {
         public FormulaDTO Formula { set; get; }
-        public SimpleColumnControl ResultColumnControl { set; get; }
+        public SimpleColumnControlGenerel ResultColumnControl { set; get; }
     }
     //public class FormAttributes
     //{

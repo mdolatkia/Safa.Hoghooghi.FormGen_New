@@ -14,34 +14,12 @@ using ProxyLibrary;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public interface I_BaseControlHelper
-    {
+    //public interface I_BaseControlHelper
+    //{
 
 
-    }
-    public interface I_ControlHelper
-    {
-        FrameworkElement MainControl { get; }
-        FrameworkElement WholeControl { get; }
-        void EnableDisable( bool enable);
-        void SetReadonly( bool isreadonly);
-        CommonOperator GetOperator();
-        bool SetOperator( CommonOperator searchOperator);
-        bool SetValue( object value);
-        object GetValue();
-        // void SetTooltip( string tooltip);
-        //void ClearTooltip();
-        void SetBorderColor( InfoColor color);
-        //void ClearBorderColor();
-        void SetBinding( EntityInstanceProperty property);
-        void AddButtonMenu( ConrolPackageMenu menu);
-        void Visiblity( bool visible);
-        bool IsVisible();
-        bool HasOperator();
-        void SetBackgroundColor( InfoColor color);
-        void SetForegroundColor( InfoColor color);
-        void RemoveButtonMenu(string name);
-    }
+    //}
+   
     public interface I_ControlHelperValueRange
     {
         void SetColumnValueRange( List<ColumnValueRangeDetailsDTO> candidates);

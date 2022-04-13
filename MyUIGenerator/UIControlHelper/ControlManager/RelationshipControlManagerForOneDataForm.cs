@@ -14,7 +14,7 @@ using System.Windows.Media;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public class RelationshipControlManagerForOneDataForm : BaseControlManager, I_RelationshipControlManager
+    public class RelationshipControlManagerForOneDataForm : BaseControlManager, I_RelationshipControlManagerOne
     {
         private List<DataMessageItem> MessageItems = new List<DataMessageItem>();
         //List<BaseMessageItem> ValidationItems = new List<BaseMessageItem>();
@@ -27,14 +27,14 @@ namespace MyUIGenerator.UIControlHelper
         //public InfoColor ValidationColor { set; get; }
         public RelationshipUISettingDTO RelationshipUISettingDTO { set; get; }
         public Expander Expander { set; get; }
-        public FrameworkElement View { set; get; }
-        public RelationshipControlManagerForOneDataForm(FrameworkElement view, RelationshipUISettingDTO relationshipSetting) : base()
+        public I_View_Area View { set; get; }
+        public RelationshipControlManagerForOneDataForm(I_View_Area view, RelationshipUISettingDTO relationshipSetting) : base()
         {
             RelationshipUISettingDTO = relationshipSetting;
             //    RelatedControl = new List<FrameworkElement>();
             View = view;
             if (relationshipSetting.Expander == false)
-                MainControl = view;
+                MainControl = view as FrameworkElement;
             else
             {
                 Expander = new Expander();
@@ -50,6 +50,15 @@ namespace MyUIGenerator.UIControlHelper
                 Expander.MouseEnter += Expander_MouseEnter;
             }
         }
+
+
+
+        public I_View_Area GetView()
+        {
+            return View;
+        }
+
+
 
         public bool HasExpander
         {
@@ -109,8 +118,8 @@ namespace MyUIGenerator.UIControlHelper
         public void Visiblity(object dataItem, bool visible)
         {
 
-            if (LabelControlManager != null)
-                LabelControlManager.Visiblity(visible);
+            //    if (LabelControlManager != null)
+            //      LabelControlManager.Visiblity(visible);
             View.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
         }
 
@@ -123,8 +132,8 @@ namespace MyUIGenerator.UIControlHelper
             //        LabelHelper.Visiblity(item, visible);
             //}
 
-            if (LabelControlManager != null)
-                LabelControlManager.Visiblity(visible);
+            //  if (LabelControlManager != null)
+            //       LabelControlManager.Visiblity(visible);
             View.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
         }
         public void EnableDisable(bool enable)
@@ -144,10 +153,10 @@ namespace MyUIGenerator.UIControlHelper
                 (MainControl as I_View_TemporaryView).DisableEnable(link, enable);
             }
         }
-        public object GetUIControl(object dataItem)
-        {
-            return MainControl;
-        }
+        //public object GetUIControl(object dataItem)
+        //{
+        //    return MainControl;
+        //}
         //public void AddValidation(BaseMessageItem item)
         //{
         //    ValidationItems.Add(item);
@@ -223,27 +232,12 @@ namespace MyUIGenerator.UIControlHelper
 
         public void SetTooltip(object dataItem, string tooltip)
         {
-            Control control = null;
-            if (RelationshipUISettingDTO.Expander == false)
-                control = View as Control;
-            else
-                control = Expander;
-            if (!string.IsNullOrEmpty(tooltip))
-                ToolTipService.SetToolTip(control, tooltip);
-            else
-                ToolTipService.SetToolTip(control, null);
+
         }
 
         public void SetBorderColor(object dataItem, InfoColor color)
         {
-            Control control = null;
-            if (RelationshipUISettingDTO.Expander == false)
-                control = View as Control;
-            else
-                control = Expander;
 
-            control.BorderBrush = UIManager.GetColorFromInfoColor(color);
-            control.BorderThickness = new Thickness(1);
         }
 
         public void SetBackgroundColor(object dataItem, InfoColor color)
@@ -289,10 +283,33 @@ namespace MyUIGenerator.UIControlHelper
             }
         }
 
-        public I_View_TemporaryView GetTemporaryView(object dataItem)
+        public void SetTooltip(string tooltip)
         {
-            throw new NotImplementedException();
+            Control control = null;
+            if (RelationshipUISettingDTO.Expander == false)
+                control = View as Control;
+            else
+                control = Expander;
+            if (!string.IsNullOrEmpty(tooltip))
+                ToolTipService.SetToolTip(control, tooltip);
+            else
+                ToolTipService.SetToolTip(control, null);
         }
+
+        public void SetColor(InfoColor color)
+        {
+            Control control = null;
+            if (RelationshipUISettingDTO.Expander == false)
+                control = View as Control;
+            else
+                control = Expander;
+
+            control.BorderBrush = UIManager.GetColorFromInfoColor(color);
+            control.BorderThickness = new Thickness(1);
+        }
+
+
+
         //public void SetMandatoryState(bool isMandatory)
         //{
         //    foreach (var item in RelatedControl)

@@ -183,9 +183,9 @@ namespace MyUILibrary.EntityArea
                     propertyControl.Alias = column.Column.Alias;
                 else
                     propertyControl.Alias = column.Alias;
-             //   propertyControl.ControlPackage = new UIControlPackageForSimpleColumn();
-           //     propertyControl.IsPermanentReadOnly = true;
-                propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column.Column, GetColumnUISetting(column.Column), false,true, propertyControl.Alias);
+                //   propertyControl.ControlPackage = new UIControlPackageForSimpleColumn();
+                //     propertyControl.IsPermanentReadOnly = true;
+                propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column.Column, GetColumnUISetting(column.Column), false, true, propertyControl.Alias);
                 //      if (propertyControl.IsPermanentReadOnly)
                 if (!string.IsNullOrEmpty(column.Tooltip))
                 {
@@ -531,7 +531,7 @@ namespace MyUILibrary.EntityArea
                 var columnControl = ViewColumnControls.FirstOrDefault(x => x.RelativeColumnName == property.RelativeName);
                 if (columnControl != null)
                 {
-                    columnControl.ControlManager.SetValue(dataRepository, property.Value);
+                    columnControl.ControlManager.GetUIControlManager(dataRepository).SetValue(property.Value);
                 }
             }
             //}
@@ -559,7 +559,7 @@ namespace MyUILibrary.EntityArea
                     var columnControl = ViewColumnControls.FirstOrDefault(x => x.RelativeColumnName == property.RelativeName);
                     if (columnControl != null)
                     {
-                        columnControl.ControlManager.SetValue(dataRepository, property.Value);
+                        columnControl.ControlManager.GetUIControlManager(dataRepository).SetValue(property.Value);
                     }
                 }
                 //}

@@ -193,7 +193,7 @@ namespace MyUILibrary.EntityArea
                     columnControl = SimpleColumnControls.FirstOrDefault(x => x.Column.ID == prop.ColumnID);
 
                 //برای عادی ها جواب میده اگر خودش کمنترل بود چی
-                columnControl.ControlManager.SetValue(null, prop.Value);
+                columnControl.ControlManager.GetUIControlManager(null).SetValue(prop.Value);
                 if (columnControl.ControlManager.HasOperator())
                     columnControl.ControlManager.SetOperator(prop.Operator);
 
@@ -276,7 +276,7 @@ namespace MyUILibrary.EntityArea
                     if (searchcolumn.RelationshipTail != null)
                     {
                         var relControl = RelationshipColumnControls.First(x => x.EntitySearchColumn == searchcolumn);
-                        SimpleSearchView.AddView(relControl.ControlManager, relControl.ControlManager.LabelControlManager);
+                        SimpleSearchView.AddView(relControl.ControlManager.LabelControlManager,relControl.ControlManager);
                     }
                 }
                 else
@@ -311,7 +311,7 @@ namespace MyUILibrary.EntityArea
             List<SimpleSearchOperator> result = new List<SimpleSearchOperator>();
             if (column.ID != 0)
             {
-                if (column.ColumnType == Enum_ColumnType.String )
+                if (column.ColumnType == Enum_ColumnType.String)
                 {
                     result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر" });
                     result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل" });
@@ -332,7 +332,7 @@ namespace MyUILibrary.EntityArea
                     result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل" });
                     result.Add(new SimpleSearchOperator() { Operator = CommonOperator.StartsWith, Title = "شروع شود با" });
                     result.Add(new SimpleSearchOperator() { Operator = CommonOperator.EndsWith, Title = "تمام شود با" });
-                   
+
                 }
             }
             return result;

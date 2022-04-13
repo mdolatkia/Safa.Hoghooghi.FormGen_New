@@ -55,12 +55,14 @@ namespace MyUILibrary
 
         //event EventHandler<Arg_NavigationTreeRequest> NavigationTreeRequested;
 
-        I_RelationshipControlManager GenerateRelationshipControlManagerForMultipleDataForm(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipUISetting, bool labelControlManager, string labelText);
-        I_RelationshipControlManager GenerateRelationshipControlManagerForOneDataForm(object view, RelationshipUISettingDTO relationshipUISetting, bool labelControlManager, string labelText);
+        I_RelationshipControlManagerMultiple GenerateRelationshipControlManagerForMultipleDataForm(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipUISetting, bool labelControlManager, string labelText);
+      //  I_RelationshipControlManagerOne GenerateRelationshipControlManagerForOneDataForm(I_View_DataContainer view, RelationshipUISettingDTO relationshipUISetting, bool labelControlManager, string labelText);
+        I_RelationshipControlManagerOne GenerateRelationshipControlManagerForOneDataForm(I_View_Area view, RelationshipUISettingDTO relationshipUISetting, bool labelControlManager, string labelText);
+
         I_View_EditLogReportDetails GenereateViewOfEditLogReportDetails();
         I_View_ArchiveLogReportDetails GenereateViewOfArchiveLogReportDetails();
-        I_SimpleControlManager GenerateSimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues, List<SimpleSearchOperator> operators, bool labelControlManager, string labelText);
-        I_SimpleControlManager GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues, bool labelControlManager, string labelText);
+        I_SimpleControlManagerOne GenerateSimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues, List<SimpleSearchOperator> operators, bool labelControlManager, string labelText);
+        I_SimpleControlManagerMultiple GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues, bool labelControlManager, string labelText);
 
         I_UICompositionContainer GenerateGroup(GroupUISettingDTO groupUISettingDTO);
 
@@ -206,7 +208,7 @@ namespace MyUILibrary
         //I_FormulaOptions GetFormulaOptionForm();
         //I_FormulaUsageParameters GetFormulaUsageParametersForm();
         I_DataTreeView GetViewOfDataTree();
-        //I_LabelControlManager GenerateLabelControlManager();
+        //I_UIControlManager GenerateLabelControlManager();
         I_View_LogReportArea GenerateViewOfLogReportArea();
         I_View_WorkflowReport GetWorkflowReportForm();
         void ClearNavigationTree();

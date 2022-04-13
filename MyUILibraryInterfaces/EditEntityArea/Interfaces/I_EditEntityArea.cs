@@ -41,19 +41,19 @@ namespace MyUILibrary.EntityArea
 
         EntityUICompositionCompositeDTO UICompositions { set; get; }
         ObservableCollection<DP_FormDataRepository> GetDataList();
-        I_View_DataContainer DataView { set; get; }
+        I_View_Area DataView { set; get; }
         //void RemoveData(ProxyLibrary.DP_FormDataRepository data);
         ChildRelationshipInfo ChildRelationshipInfo { get; }
         //void DecideButtons();
-   //     void RemoveDataItemMessageByKey(string v);
-     //   void RemoveDataItemColorByKey(string v);
+        //     void RemoveDataItemMessageByKey(string v);
+        //   void RemoveDataItemColorByKey(string v);
         void SetChildRelationshipInfo(ChildRelationshipInfo value);
         //event EventHandler<DataUpdatedArg> Updated;
         TableDrivedEntityDTO FullEntity { get; }
         //void ReadonlySimpleColumnControl(SimpleColumnControl column, bool readonlity);
         void DecideButtonsEnablity1();
-    //    void AddDataBusinessMessage(string message, InfoColor infoColor, string key, DP_FormDataRepository causingData, ControlItemPriority priority);
-     //   void RemoveDataBusinessMessage(DP_FormDataRepository dataItem, string key);
+        //    void AddDataBusinessMessage(string message, InfoColor infoColor, string key, DP_FormDataRepository causingData, ControlItemPriority priority);
+        //   void RemoveDataBusinessMessage(DP_FormDataRepository dataItem, string key);
         TableDrivedEntityDTO SimpleEntity { set; get; }
         TableDrivedEntityDTO EntityWithSimpleColumns { get; }
         void SetColumnValueFromState(DP_FormDataRepository dataItem, List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula, bool setFkRelColumns);
@@ -106,12 +106,12 @@ namespace MyUILibrary.EntityArea
         //void RemoveDataWithRelations(DP_FormDataRepository data);
         //void RemoveDataFromRelation(DP_FormDataRepository relationData);
 
-        List<RelationshipColumnControl> RelationshipColumnControls
+        List<RelationshipColumnControlGeneral> RelationshipColumnControls
         {
             get;
         }
 
-        List<SimpleColumnControl> SimpleColumnControls
+        List<SimpleColumnControlGenerel> SimpleColumnControls
         {
             get;
         }
@@ -156,7 +156,7 @@ namespace MyUILibrary.EntityArea
         //////IAG_View_TemporaryView ParentTemporaryView { get; set; }
 
         //DP_FormDataRepository ParentMultipleDataItem { set; get; }
-        void TemporaryViewActionRequestedFromMultipleEditor(I_View_TemporaryView TemporaryView, TemporaryLinkType linkType, RelationshipDTO relationship, DP_FormDataRepository parentData);
+        //  void TemporaryViewActionRequestedFromMultipleEditor(I_View_TemporaryView TemporaryView, TemporaryLinkType linkType, RelationshipDTO relationship, DP_FormDataRepository parentData);
 
         //void ShowValidationTips(UpdateValidationResult result);
         //I_View_Container DataView { set; get; }
@@ -225,7 +225,7 @@ namespace MyUILibrary.EntityArea
         //   void ApplyStatesBeforeUpdate();
 
         //void ResetActionActivities(DP_FormDataRepository dataItem);
-        void CheckAndImposeEntityStates(DP_FormDataRepository data, bool skipUICheck, ActionActivitySource actionActivitySource);
+        void CheckAndImposeEntityStates(DP_FormDataRepository data, ActionActivitySource actionActivitySource);
     }
     public enum ActionActivitySource
     {
@@ -298,8 +298,8 @@ namespace MyUILibrary.EntityArea
         bool ShowDatasInDataView(List<DP_FormDataRepository> dataItems);
 
         I_View_EditEntityAreaMultiple SpecializedDataView { get; }
-        object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControl typePropertyControl);
-        bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControl typePropertyControl, string value);
+        object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControlMultiple typePropertyControl);
+        bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, string value);
         List<DP_FormDataRepository> GetSelectedData();
     }
 
@@ -314,62 +314,62 @@ namespace MyUILibrary.EntityArea
         LeftToRight,
         RightToLeft
     }
-    public class EditAreaRelationSource
-    {
-        public event EventHandler<SourceRelatedDataChangedArg> SourceRelatedDataChanged;
-        public EditAreaRelationSource()
-        {
-            //RelationData = new List<DP_FormDataRepository>();
-            RelationshipColumns = new List<RelationshipColumnDTO>();
-            //   TargetRelationColumns = new List<ColumnDTO>();
-        }
-        //public Enum_DP_RelationSide SourceRelationSide { set; get; }
-        public RelationshipColumnControl RelationshipColumnControl { set; get; }
-        public int SourceEntityID { get { return RelationshipColumnControl.Relationship.EntityID1; } }
-        public int SourceTableID { get { return RelationshipColumnControl.Relationship.TableID1; } }
-        public List<RelationshipColumnDTO> RelationshipColumns { set; get; }
-        public RelationshipDTO Relationship { get { return DataEntryRelationshiRelationship.Relationship; } }
-        public DataEntryRelationshipDTO DataEntryRelationshiRelationship { set; get; }
-        public int TargetEntityID { set; get; }
-        public int TargetTableID { set; get; }
-        //   public List<ColumnDTO> TargetRelationColumns { set; get; }
+    //public class EditAreaRelationSource
+    //{
+    //    public event EventHandler<SourceRelatedDataChangedArg> SourceRelatedDataChanged;
+    //    public EditAreaRelationSource()
+    //    {
+    //        //RelationData = new List<DP_FormDataRepository>();
+    //        RelationshipColumns = new List<RelationshipColumnDTO>();
+    //        //   TargetRelationColumns = new List<ColumnDTO>();
+    //    }
+    //    //public Enum_DP_RelationSide SourceRelationSide { set; get; }
+    //    public RelationshipColumnControlGeneral RelationshipColumnControl { set; get; }
+    //    public int SourceEntityID { get { return RelationshipColumnControl.Relationship.EntityID1; } }
+    //    public int SourceTableID { get { return RelationshipColumnControl.Relationship.TableID1; } }
+    //    public List<RelationshipColumnDTO> RelationshipColumns { set; get; }
+    //    public RelationshipDTO Relationship { get { return DataEntryRelationshiRelationship.Relationship; } }
+    //    public DataEntryRelationshipDTO DataEntryRelationshiRelationship { set; get; }
+    //    public int TargetEntityID { set; get; }
+    //    public int TargetTableID { set; get; }
+    //    //   public List<ColumnDTO> TargetRelationColumns { set; get; }
 
-        public Enum_RelationshipType RelationshipType
-        {
-            get
-            {
-                return Relationship.TypeEnum;
-            }
-        }
+    //    public Enum_RelationshipType RelationshipType
+    //    {
+    //        get
+    //        {
+    //            return Relationship.TypeEnum;
+    //        }
+    //    }
 
-        public Enum_MasterRelationshipType MasterRelationshipType
-        {
-            get
-            {
-                return Relationship.MastertTypeEnum;
-            }
-        }
-        public I_EditEntityArea SourceEditArea { set; get; }
+    //    public Enum_MasterRelationshipType MasterRelationshipType
+    //    {
+    //        get
+    //        {
+    //            return Relationship.MastertTypeEnum;
+    //        }
+    //    }
+    //    public I_EditEntityArea SourceEditArea { set; get; }
 
-        //DP_FormDataRepository _RelatedData;
-        //public DP_FormDataRepository RelatedData
-        //{
+    //    //DP_FormDataRepository _RelatedData;
+    //    //public DP_FormDataRepository RelatedData
+    //    //{
 
-        //    set
-        //    {
-        //        var oldValue = _RelatedData;
-        //        _RelatedData = value;
-        //        if (oldValue != value)
-        //            if (SourceRelatedDataChanged != null)
-        //                SourceRelatedDataChanged(this, new SourceRelatedDataChangedArg() { OldValue = oldValue, NewValue = value });
-        //    }
-        //    get { return _RelatedData; }
-        //}
+    //    //    set
+    //    //    {
+    //    //        var oldValue = _RelatedData;
+    //    //        _RelatedData = value;
+    //    //        if (oldValue != value)
+    //    //            if (SourceRelatedDataChanged != null)
+    //    //                SourceRelatedDataChanged(this, new SourceRelatedDataChangedArg() { OldValue = oldValue, NewValue = value });
+    //    //    }
+    //    //    get { return _RelatedData; }
+    //    //}
 
-        public bool TargetSideIsMandatory { set; get; }
+    //    public bool TargetSideIsMandatory { set; get; }
 
-        //public bool SourceHoldsKeys { set; get; }
-    }
+    //    //public bool SourceHoldsKeys { set; get; }
+    //}
 
 
     //public class AG_MainNDTypeAndRelatedItems
@@ -659,55 +659,140 @@ namespace MyUILibrary.EntityArea
     //{
     //    public I_View_GridContainer Container { set; get; }
     //}
-    public interface I_LabelControlManager : I_DataControlManager
+
+    public interface I_UIElementManager
     {
-        string Text { set; get; }
+        void SetTooltip(string tooltip);
+        void SetColor(InfoColor color);
         void Visiblity(bool visible);
+
+        void SetBorderColor(InfoColor color);
+        void SetBackgroundColor(InfoColor color);
+        void SetForegroundColor(InfoColor color);
+    }
+    //public interface I_UIViewManager : I_UIElementManager
+    //{
+
+    //}
+    public interface I_UIControlManager : I_UIElementManager
+    {
+        void SetBinding(EntityInstanceProperty property);
+
+        //void SetBorderColor(InfoColor color);
+        //void SetBackgroundColor(InfoColor color);
+        //void SetForegroundColor(InfoColor color);
+        void AddButtonMenu(ConrolPackageMenu menu);
+        void SetReadonly(bool isreadonly);
+        void RemoveButtonMenu(string name);
+        bool SetValue(object value);
+        object GetValue();
+        object GetUIControl();
+        void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
         //void SetTooltip(string tooltip);
         //void SetBorderColor(InfoColor color);
         //void SetBackgroundColor(InfoColor color);
         //void SetForegroundColor(InfoColor color);
 
     }
-    public interface I_DataControlManager
+    //public interface I_UIControlManager : I_UIControlManager
+    //{
+    //    string Text { set; get; }
+    //    //void SetTooltip(string tooltip);
+    //    //void SetBorderColor(InfoColor color);
+    //    //void SetBackgroundColor(InfoColor color);
+    //    //void SetForegroundColor(InfoColor color);
+
+    //}
+    //public interface I_DataControlManager
+    //{
+
+    //}
+    //public interface I_ControlManager : I_DataControlManager
+    //{
+
+    //}
+
+    //public interface I_ControlHelper
+    //{
+
+    //    void EnableDisable(bool enable);
+    //    void SetReadonly(bool isreadonly);
+    //    CommonOperator GetOperator();
+    //    bool SetOperator(CommonOperator searchOperator);
+    //    bool SetValue(object value);
+    //    object GetValue();
+    //    // void SetTooltip( string tooltip);
+    //    //void ClearTooltip();
+    //    void SetBorderColor(InfoColor color);
+    //    //void ClearBorderColor();
+    //    void SetBinding(EntityInstanceProperty property);
+    //    void AddButtonMenu(ConrolPackageMenu menu);
+    //    void Visiblity(bool visible);
+    //    bool IsVisible();
+    //    bool HasOperator();
+    //    void SetBackgroundColor(InfoColor color);
+    //    void SetForegroundColor(InfoColor color);
+    //    void RemoveButtonMenu(string name);
+    //}
+
+    //public interface I_SimpleControlManagerGeneral
+    //{
+    //    //  object MainControl { get; }
+    //    //  object WholeControl { get; }
+    //    ////  bool IsVisible { get; }
+    //    //  CommonOperator GetOperator();
+    //    //  bool HasOperator();
+    //    //  bool SetOperator(CommonOperator searchOperator);
+
+    //    //  void SetReadonly(bool isreadonly);
+    //    //  void AddButtonMenu(ConrolPackageMenu menu);
+    //    //  void RemoveButtonMenu(string name);
+    //    //  void SetBinding(EntityInstanceProperty property);
+    //    //  void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
+
+    //    //  //void AddMessage(BaseMessageItem baseMessageItem);
+    //    //  //void RemoveMessage(BaseMessageItem baseMessageItem);
+
+    //    //  //  void EnableDisable(object dataItem, bool enable);
+    //    //  // void Visiblity(object dataItem, bool visible);
+    //    //  void EnableDisable(bool enable);
+    //    //  void Visiblity(bool visible);
+    //    // 
+
+    //    //  void SetBorderColor(object dataItem, InfoColor color);
+    //    //  void SetBackgroundColor(object dataItem, InfoColor color);
+    //    // void SetForegroundColor(object dataItem, InfoColor color);
+
+    //    //   I_UIControlManager LabelControlManager { set; get; }
+
+    //    void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
+    //}
+
+    public interface I_SimpleControlManagerOne //: I_SimpleControlManagerGeneral
     {
-        void SetTooltip(object dataItem, string tooltip);
-        void SetBorderColor(object dataItem, InfoColor color);
-        void SetBackgroundColor(object dataItem, InfoColor color);
-        void SetForegroundColor(object dataItem, InfoColor color);
+
+        I_UIControlManager GetUIControlManager();
+
+        // 
+
+        //  void SetBorderColor(object dataItem, InfoColor color);
+        //  void SetBackgroundColor(object dataItem, InfoColor color);
+        // void SetForegroundColor(object dataItem, InfoColor color);
+
+
+
+
     }
-    public interface I_ControlManager : I_DataControlManager
+    public interface I_SimpleControlManagerMultiple //: I_SimpleControlManagerGeneral
     {
-        void EnableDisable(object dataItem, bool enable);
-        void Visiblity(object dataItem, bool visible);
-        void EnableDisable(bool enable);
-        void Visiblity(bool visible);
-        object GetUIControl(object dataItem);
+        I_UIControlManager GetUIControlManager(object dataItem);
+        // 
+
+        //  void SetBorderColor(object dataItem, InfoColor color);
+        //  void SetBackgroundColor(object dataItem, InfoColor color);
+        // void SetForegroundColor(object dataItem, InfoColor color);
 
 
-        I_LabelControlManager LabelControlManager { set; get; }
-    }
-    public interface I_SimpleControlManager : I_ControlManager
-    {
-        bool IsVisible { get; }
-        CommonOperator GetOperator();
-        bool HasOperator();
-        bool SetOperator(CommonOperator searchOperator);
-        void SetReadonly(object dataItem, bool isreadonly);
-        void SetReadonly(bool isreadonly);
-        bool SetValue(object dataItem, object value);
-        object GetValue(object dataItem);
-        void AddButtonMenu(ConrolPackageMenu menu);
-        void AddButtonMenu(object dataItem, ConrolPackageMenu menu);
-
-        void RemoveButtonMenu(string name);
-        void RemoveButtonMenu(object dataItem, string name);
-
-        void SetBinding(object dataItem, EntityInstanceProperty property);
-        void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
-        void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details, object data);
-        //void AddMessage(BaseMessageItem baseMessageItem);
-        //void RemoveMessage(BaseMessageItem baseMessageItem);
 
 
     }
@@ -715,23 +800,21 @@ namespace MyUILibrary.EntityArea
     {
 
     }
-    public interface I_RelationshipControlManager : I_ControlManager
+    public interface I_RelationshipControlManagerGeneral
     {
-
+        //    I_UIControlManager LabelControlManager { set; get; }
         I_TabPageContainer TabPageContainer { get; set; }
-        bool HasExpander { get; }
-        event EventHandler<Arg_MultipleTemporaryDisplayLoaded> TemporaryViewLoaded;
-        event EventHandler<Arg_MultipleTemporaryDisplayViewRequested> TemporaryViewRequested;
-        event EventHandler<Arg_TemporaryDisplaySerachText> TemporaryViewSerchTextChanged;
-        event EventHandler FocusLost;
-        void SetTemporaryViewText(object relatedData, string text);
-        void EnableDisable(object dataItem, TemporaryLinkType link, bool enable);
-        I_View_TemporaryView GetTemporaryView(object dataItem);
-        void SetQuickSearchVisibility(object parentData, bool v);
-        //void AddMessage(BaseMessageItem baseMessageItem);
-        //void RemoveMessage(BaseMessageItem baseMessageItem);
     }
-
+    public interface I_RelationshipControlManagerOne : I_RelationshipControlManagerGeneral
+    {
+        I_View_Area GetView();
+    }
+    public interface I_RelationshipControlManagerMultiple : I_RelationshipControlManagerGeneral
+    {
+        //     I_UIElementManager GetDataViewUIElement();
+        I_View_Area GetView(object dataItem);
+        //I_View_TemporaryView GetTemporaryView(object dataItem);
+    }
     //public class UIControlPackageForRelationshipColumn
     //{
 
@@ -807,81 +890,80 @@ namespace MyUILibrary.EntityArea
         //public ColumnSetting ColumnSetting { set; get; }
         public bool Visited { set; get; }
         public string Alias { set; get; }
-        public I_ControlManager ControlManager { get; set; }
+        //public I_ControlManager ControlManager
+        //{
+        //    get
+        //    {
+        //        {
+
+        //        }
+        //    }
         public SecurityAction Permission { get; set; }
         public UIControlPackageTree UIControlPackageTreeItem { set; get; }
 
     }
-    public class SimpleColumnControl : BaseColumnControl
+    public abstract class SimpleColumnControlGenerel : BaseColumnControl
     {
-
-        //public Dictionary<DP_FormDataRepository, bool> BusinessReadOnly = new Dictionary<DP_FormDataRepository, bool>();
-        //public Dictionary<DP_FormDataRepository, bool> BusinessHidden = new Dictionary<DP_FormDataRepository, bool>();
-        //    public override I_SimpleControlManager ControlManager { set; get; }
-        //public bool SecurityNoAccess { get; set; }
-        // public bool SecurityReadOnly { get; set; }
-        //public bool SecurityEdit { get; set; }
+        public I_UIControlManager LabelControlManager { get; set; }
         public ColumnDTO Column { set; get; }
-        public I_SimpleControlManager SimpleControlManager { get { return ControlManager as I_SimpleControlManager; } }
-
-        //  public bool IsReadonly { get; set; }
-
-        //    public List<ColumnValueRangeDetailsDTO> CurrentItemsSource { get; set; }
-
-        //public event EventHandler<ColumnValueChangeArg> ValueChanged;
-        public SimpleColumnControl()
-        {
-            //ColumnSetting = new ColumnSetting();
-        }
+        //public I_SimpleControlManagerGeneral SimpleControlManagerGeneral
+        //{
+        //    get
+        //    {
 
 
 
-
-
-
-
-        //public ColumnDTO Column { set; get; }
-        //public List<AG_RelatedConttol> RelatedUIControls { set; get; }
+        //    }
+        //}
     }
-    public class RelationshipColumnControl : BaseColumnControl
+    public class SimpleColumnControlOne : SimpleColumnControlGenerel
     {
+        public I_SimpleControlManagerOne SimpleControlManager { get; set; }
+
+    }
+    public class SimpleColumnControlMultiple : SimpleColumnControlGenerel
+    {
+        public I_SimpleControlManagerMultiple SimpleControlManager { get; set; }
+
+    }
+    public class RelationshipColumnControlGeneral : BaseColumnControl
+    {
+        public I_UIControlManager LabelControlManager { get; set; }
         public event EventHandler<ChildRelationshipInfo> DataViewForTemporaryViewShown;
         public I_EditEntityArea ParentEditArea { set; get; }
-        public I_EditEntityArea EditNdTypeArea { set; get; }
+       
+
         public RelationshipDTO Relationship { get { return DataEntryRelationship.Relationship; } }
         //    public List<ColumnDTO> RelationshipColumns { set; get; }
         public DataEntryRelationshipDTO DataEntryRelationship { set; get; }
-        //public Dictionary<DP_FormDataRepository, bool> BusinessHidden = new Dictionary<DP_FormDataRepository, bool>();
-        public I_RelationshipControlManager RelationshipControlManager { get { return ControlManager as I_RelationshipControlManager; } }
-
-        //public bool SecurityNoAccess { get; set; }
-        //public bool SecurityReadOnly { get; set; }
-        //public bool SecurityEdit { get; set; }
-
-        //public event EventHandler<ColumnValueChangeArg> ValueChanged;
-        public RelationshipColumnControl()
-        {
-            //    RelationshipColumns = new List<ColumnDTO>();
-        }
-
         public void OnDataViewForTemporaryViewShown(ChildRelationshipInfo childRelationshipInfo)
         {
             if (DataViewForTemporaryViewShown != null)
                 DataViewForTemporaryViewShown(this, childRelationshipInfo);
         }
-        //public List<ColumnDTO> Columns { set; get; }
-
-        //public RelationshipDTO Relationship { set; get; }
-        //public I_EditEntityArea EditNdTypeArea { set; get; }
-
-        //public List<AG_RelatedConttol> RelatedUIControls { set; get; }
+        //   public I_RelationshipControlManagerGeneral RelationshipControlManagerGeneral { set; get; }
     }
+    public class RelationshipColumnControlOne : RelationshipColumnControlGeneral
+    {
+        public I_RelationshipControlManagerOne RelationshipControlManager
+        {
+            set; get;
+        }
+        public I_EditEntityAreaOneData EditNdTypeArea { set; get; }
 
+    }
+    public class RelationshipColumnControlMultiple : RelationshipColumnControlGeneral
+    {
+        public I_RelationshipControlManagerMultiple RelationshipControlManager
+        {
+            set; get;
+        }
+
+        public I_EditEntityAreaMultipleData EditNdTypeArea { set; get; }
+    }
 
     public class ColumnValueChangeArg : EventArgs
     {
-
-
         public ColumnValueChangeArg()
         {
             //   DataItems = new List<DP_FormDataRepository>();
@@ -1239,7 +1321,7 @@ namespace MyUILibrary.EntityArea
         {
             ParantChildRelationshipInfo = parantChildRelationshipInfo;
         }
-        public RelationshipColumnControl RelationshipColumnControl { get { return ParantChildRelationshipInfo.RelationshipControl; } }
+        public RelationshipColumnControlGeneral RelationshipColumnControl { get { return ParantChildRelationshipInfo.RelationshipControl; } }
         public ChildRelationshipInfo ParantChildRelationshipInfo { set; get; }
         public int RelationshipID { get { return ParantChildRelationshipInfo.Relationship.PairRelationshipID; } }
         public RelationshipDTO ToRelationship { get { return ParantChildRelationshipInfo.Relationship.PairRelationship; } }

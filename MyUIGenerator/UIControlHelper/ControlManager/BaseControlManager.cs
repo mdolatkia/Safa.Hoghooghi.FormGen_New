@@ -19,10 +19,10 @@ namespace MyUIGenerator.UIControlHelper
             //    RelatedControl = new List<FrameworkElement>();
         }
 
-        public I_LabelControlManager LabelControlManager
-        {
-            set; get;
-        }
+        //public I_UIControlManager LabelControlManager
+        //{
+        //    set; get;
+        //}
 
         //public void EnableDisable(object dataItem, bool enable)
         //{

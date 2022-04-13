@@ -19,13 +19,12 @@ using WpfPersianDatePicker.Views;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public class DateTimePickerHelper : BaseControlHelper, I_ControlHelper
+    public class DateTimePickerHelper : BaseControlHelper, I_UIControlManager
     {
         Control textBox;
         ComboBox cmbOperators;
 
-        public FrameworkElement MainControl { get { return textBox; } }
-        public FrameworkElement WholeControl { get { return theGrid; } }
+        public override Control MainControl { get { return textBox; } }
 
         bool stringDateIsMiladi;
         bool stringTimeIsMiladi;
@@ -221,7 +220,7 @@ namespace MyUIGenerator.UIControlHelper
 
         public object GetValue()
         {
-             return ReadValueFromControl((textBox as MyDateTimePicker).SelectedDateTime, GetConverterParameter());
+            return ReadValueFromControl((textBox as MyDateTimePicker).SelectedDateTime, GetConverterParameter());
 
         }
 
@@ -287,10 +286,7 @@ namespace MyUIGenerator.UIControlHelper
         {
             textBox.IsEnabled = enable;
         }
-        public void Visiblity(bool visible)
-        {
-            textBox.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-        }
+      
         public bool IsVisible()
         {
             return textBox.Visibility == Visibility.Visible;
@@ -313,24 +309,7 @@ namespace MyUIGenerator.UIControlHelper
         //    ToolTipService.SetToolTip(textBox, null);
         //}
 
-        public void SetBorderColor(InfoColor color)
-        {
-            textBox.BorderBrush = UIManager.GetColorFromInfoColor(color);
-            textBox.BorderThickness = new Thickness(1);
-        }
-        public void SetBackgroundColor(InfoColor color)
-        {
-            textBox.Background = UIManager.GetColorFromInfoColor(color);
-        }
-        public void SetForegroundColor(InfoColor color)
-        {
-            textBox.Foreground = UIManager.GetColorFromInfoColor(color);
-        }
-        //public void ClearBorderColor()
-        //{
-        //    textBox.BorderBrush = new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Black));
-        //    textBox.BorderThickness = new Thickness(1);
-        //}
+      
         public void SetBinding(EntityInstanceProperty property)
         {
             Binding binding = new Binding("Value");
@@ -390,6 +369,26 @@ namespace MyUIGenerator.UIControlHelper
             param.stringTimeIsMiladi = stringTimeIsMiladi;
             param.valueIsString = valueIsString;
             return param;
+        }
+
+
+        public void SetBorderColor(InfoColor color)
+        {
+            textBox.BorderBrush = UIManager.GetColorFromInfoColor(color);
+            textBox.BorderThickness = new Thickness(1);
+        }
+        public void SetBackgroundColor(InfoColor color)
+        {
+            textBox.Background = UIManager.GetColorFromInfoColor(color);
+        }
+        public void SetForegroundColor(InfoColor color)
+        {
+            textBox.Foreground = UIManager.GetColorFromInfoColor(color);
+        }
+
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
+        {
+            throw new NotImplementedException();
         }
 
         //public void AddButtonMenu(ConrolPackageMenu menu)

@@ -65,7 +65,10 @@ namespace MyUIGenerator.View
             timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             timer.Tick += Timer_Tick;
         }
-
+        public void Visiblity(bool visible)
+        {
+            this.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        }
         private void UC_TemporaryDataSearchLink_LostFocus(object sender, RoutedEventArgs e)
         {
             var aa = Keyboard.FocusedElement;
@@ -155,21 +158,21 @@ namespace MyUIGenerator.View
                 ToolTipService.SetToolTip(this, null);
         }
 
-        public void SetBorderColor(object dataItem, InfoColor color)
+        public void SetColor(object dataItem, InfoColor color)
         {
             this.BorderBrush = UIManager.GetColorFromInfoColor(color);
             this.BorderThickness = new Thickness(1);
         }
 
-        public void SetBackgroundColor(object dataItem, InfoColor color)
-        {
-            this.Background = UIManager.GetColorFromInfoColor(color);
-        }
+        //public void SetBackgroundColor(object dataItem, InfoColor color)
+        //{
+        //    this.Background = UIManager.GetColorFromInfoColor(color);
+        //}
 
-        public void SetForegroundColor(object dataItem, InfoColor color)
-        {
-            this.Foreground = UIManager.GetColorFromInfoColor(color);
-        }
+        //public void SetForegroundColor(object dataItem, InfoColor color)
+        //{
+        //    this.Foreground = UIManager.GetColorFromInfoColor(color);
+        //}
         //public object SearchDataItem
         //{
         //    set;
@@ -304,7 +307,33 @@ namespace MyUIGenerator.View
                 txtSearch.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
             }
         }
+        public void SetTooltip(string tooltip)
+        {
+            if (!string.IsNullOrEmpty(tooltip))
+                ToolTipService.SetToolTip(this, tooltip);
+            else
+                ToolTipService.SetToolTip(this, null);
+        }
+        public void SetBorderColor(InfoColor color)
+        {
+            this.BorderBrush = UIManager.GetColorFromInfoColor(color);
+            this.BorderThickness = new Thickness(1);
+        }
+        public void SetColor(InfoColor color)
+        {
+            this.BorderBrush = UIManager.GetColorFromInfoColor(color);
+            this.BorderThickness = new Thickness(1);
+        }
+        public void SetBackgroundColor(InfoColor color)
+        {
+            this.Background = UIManager.GetColorFromInfoColor(color);
+        }
 
+        public void SetForegroundColor(InfoColor color)
+        {
+            this.Foreground = UIManager.GetColorFromInfoColor(color);
+        }
+      
         public void AddPopupView(I_View_ViewEntityArea viewView)
         {
             popup1.Child = viewView as UIElement;
@@ -337,5 +366,25 @@ namespace MyUIGenerator.View
         {
             txtSearch.Text = "";
         }
+
+        public void DeHighlightCommands()
+        {
+            
+        }
+
+        public void AddCommand(I_CommandManager command, bool indirect = false)
+        {
+          
+        }
+        public void EnableDisable(bool enable)
+        {
+            this.IsEnabled = enable;
+        }
+        //public void SetBackgroundColor(string color)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+
     }
 }

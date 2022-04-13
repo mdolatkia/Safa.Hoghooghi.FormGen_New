@@ -15,7 +15,7 @@ using System.Windows.Media;
 namespace MyUIGenerator.UIControlHelper
 {
 
-    public class RelationshipControlManagerForMultipleDataForm : BaseControlManager, I_RelationshipControlManager
+    public class RelationshipControlManagerForMultipleDataForm : BaseControlManager, I_RelationshipControlManagerMultiple
     {
         //private List<BaseMessageItem> ValidationItems = new List<BaseMessageItem>();
         private List<DataMessageItem> MessageItems = new List<DataMessageItem>();
@@ -57,6 +57,10 @@ namespace MyUIGenerator.UIControlHelper
                 TemporaryViewSerchTextChanged(sender, e);
         }
 
+        public I_View_Area GetView(object dataItem)
+        {
+            return DataGridColumn.GenerateTemporaryView(dataItem);
+        }
 
         private void DataGridColumn_TemporaryViewLoaded(object sender, Arg_MultipleTemporaryDisplayLoaded e)
         {
@@ -92,9 +96,9 @@ namespace MyUIGenerator.UIControlHelper
         {
             DataGridColumn.SetQuickSearchVisibility(relatedData, visible);
         }
-        public void EnableDisable( bool enable)
+        public void EnableDisable(bool enable)
         {
-            DataGridColumn.EnableDisable( enable);
+            DataGridColumn.EnableDisable(enable);
         }
         public void EnableDisable(object dataItem, bool enable)
         {
