@@ -41,7 +41,7 @@ namespace MyUILibrary.EntityArea
 
         EntityUICompositionCompositeDTO UICompositions { set; get; }
         ObservableCollection<DP_FormDataRepository> GetDataList();
-        I_View_Area DataView { set; get; }
+        I_View_Area DataViewGeneric { get; }
         //void RemoveData(ProxyLibrary.DP_FormDataRepository data);
         ChildRelationshipInfo ChildRelationshipInfo { get; }
         //void DecideButtons();
@@ -284,6 +284,8 @@ namespace MyUILibrary.EntityArea
         void CreateDefaultData();
         void TemporaryViewSearchTextChanged(I_View_TemporaryView view, Arg_TemporaryDisplaySerachText searchArg);
         I_View_EditEntityAreaDataView SpecializedDataView { get; }
+        I_View_EditEntityAreaDataView DataView { get; set; }
+
         void OnDataItemSelected(DP_FormDataRepository DP_FormDataRepository);
         void CheckContainerVisiblity(UIControlPackageTree container);
     }
@@ -298,6 +300,8 @@ namespace MyUILibrary.EntityArea
         bool ShowDatasInDataView(List<DP_FormDataRepository> dataItems);
 
         I_View_EditEntityAreaMultiple SpecializedDataView { get; }
+        I_View_EditEntityAreaMultiple DataView { get; set; }
+
         object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControlMultiple typePropertyControl);
         bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, string value);
         List<DP_FormDataRepository> GetSelectedData();
@@ -812,7 +816,7 @@ namespace MyUILibrary.EntityArea
     public interface I_RelationshipControlManagerMultiple : I_RelationshipControlManagerGeneral
     {
         //     I_UIElementManager GetDataViewUIElement();
-        I_View_Area GetView(object dataItem);
+        I_View_TemporaryView GetView(object dataItem);
         //I_View_TemporaryView GetTemporaryView(object dataItem);
     }
     //public class UIControlPackageForRelationshipColumn
@@ -882,6 +886,8 @@ namespace MyUILibrary.EntityArea
     //}
     public class BaseColumnControl
     {
+        public I_UIControlManager LabelControlManager { get; set; }
+
         public BaseColumnControl()
         {
             //   ColumnSetting = new ColumnSetting();
@@ -926,16 +932,16 @@ namespace MyUILibrary.EntityArea
         public I_SimpleControlManagerMultiple SimpleControlManager { get; set; }
 
     }
-    public class RelationshipColumnControlGeneral : BaseColumnControl
+    public abstract class RelationshipColumnControlGeneral : BaseColumnControl
     {
         public I_UIControlManager LabelControlManager { get; set; }
         public event EventHandler<ChildRelationshipInfo> DataViewForTemporaryViewShown;
         public I_EditEntityArea ParentEditArea { set; get; }
-       
-
         public RelationshipDTO Relationship { get { return DataEntryRelationship.Relationship; } }
         //    public List<ColumnDTO> RelationshipColumns { set; get; }
         public DataEntryRelationshipDTO DataEntryRelationship { set; get; }
+        public abstract I_EditEntityArea GenericEditNdTypeArea { get; }
+
         public void OnDataViewForTemporaryViewShown(ChildRelationshipInfo childRelationshipInfo)
         {
             if (DataViewForTemporaryViewShown != null)
@@ -949,7 +955,11 @@ namespace MyUILibrary.EntityArea
         {
             set; get;
         }
+
         public I_EditEntityAreaOneData EditNdTypeArea { set; get; }
+
+        public override I_EditEntityArea GenericEditNdTypeArea { get { return EditNdTypeArea; } }
+
 
     }
     public class RelationshipColumnControlMultiple : RelationshipColumnControlGeneral
@@ -960,6 +970,8 @@ namespace MyUILibrary.EntityArea
         }
 
         public I_EditEntityAreaMultipleData EditNdTypeArea { set; get; }
+        public override I_EditEntityArea GenericEditNdTypeArea { get { return EditNdTypeArea; } }
+
     }
 
     public class ColumnValueChangeArg : EventArgs

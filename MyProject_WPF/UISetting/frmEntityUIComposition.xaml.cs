@@ -959,7 +959,7 @@ namespace MyProject_WPF
                     EditEntityArea.UICompositions = GetEntityUICompositionComposite();
                     EditEntityArea.GenerateDataView();
                 }
-                brdView.Child = (EditEntityArea as I_EditEntityAreaOneData).DataView as UIElement;
+                brdView.Child = (EditEntityArea as I_EditEntityAreaOneData).DataViewGeneric as UIElement;
 
             }
             else
@@ -979,7 +979,7 @@ namespace MyProject_WPF
                     MultipleEditEntityArea.UICompositions = GetEntityUICompositionComposite();
                     MultipleEditEntityArea.GenerateDataView();
                 }
-                brdView.Child = (MultipleEditEntityArea as I_EditEntityAreaMultipleData).DataView as UIElement;
+                brdView.Child = (MultipleEditEntityArea as I_EditEntityAreaMultipleData).DataViewGeneric as UIElement;
 
             }
         }

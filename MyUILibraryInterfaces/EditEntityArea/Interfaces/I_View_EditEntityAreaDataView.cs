@@ -108,17 +108,17 @@ namespace MyUILibrary.EntityArea
      //   void Visiblity(bool visible);
         void EnableDisable(bool enable);
 
-
+        bool IsOpenedTemporary { get; set; }
         //void ClearControls();
         //int ControlsCount { get; }
         //void SetTooltip(string tooltip);
         //void SetBorderColor(InfoColor color);
         //void SetBackgroundColor(InfoColor color);
         //void SetForegroundColor(InfoColor color);
-      //  bool IsOpenedTemporary { get; set; }
+        //  bool IsOpenedTemporary { get; set; }
         //event EventHandler<Arg_CommandExecuted> CommandExecuted;
         //void AddCommands(List<I_Command> Commands, TemplateEntityUISettings templateEntityUISettings);
-      //  UIControlPackageTree UIControlPackageTreeItem { get; set; }
+        //  UIControlPackageTree UIControlPackageTreeItem { get; set; }
 
 
     }

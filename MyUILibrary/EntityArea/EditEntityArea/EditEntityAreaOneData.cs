@@ -318,23 +318,29 @@ namespace MyUILibrary.EntityArea
         }
         public override void DataItemVisiblity(object dataItem, bool visible)
         {
-            (DataView as I_View_EditEntityAreaDataView).Visiblity(visible);
+            (DataViewGeneric as I_View_EditEntityAreaDataView).Visiblity(visible);
         }
         public override void DataItemEnablity(object dataItem, bool visible)
         {
-            (DataView as I_View_EditEntityAreaDataView).Visiblity(visible);
+            (DataViewGeneric as I_View_EditEntityAreaDataView).Visiblity(visible);
         }
         public I_View_EditEntityAreaDataView SpecializedDataView
         {
             get
             {
-                return base.DataView as I_View_EditEntityAreaDataView;
+                return base.DataViewGeneric as I_View_EditEntityAreaDataView;
             }
         }
 
         List<UIControlPackageTree> I_EditEntityAreaOneData.UIControlPackageTree { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         I_View_EditEntityAreaDataView I_EditEntityAreaOneData.SpecializedDataView => throw new NotImplementedException();
+
+        public I_View_EditEntityAreaDataView DataView { set; get; }
+        public override I_View_Area DataViewGeneric
+        {
+            get { return DataView; }
+        }
 
         public void CreateDefaultData()
         {
@@ -382,7 +388,7 @@ namespace MyUILibrary.EntityArea
             bool enablity = true;
             if (data.Any(x => x.IsUseLessBecauseNewAndReadonly))
                 enablity = false;
-            DataView.DisableEnableDataSection(enablity);
+            DataViewGeneric.DisableEnableDataSection(enablity);
         }
 
         //صدا زده میشود RelationData تنها بوسیله ShowData برای نمایش داده های اضافه شده در آن صدا زده میشود.در مابقی موارد ShowData که AddData فقط یکجا مشخص میشود و آنهم در specificDate
@@ -507,29 +513,11 @@ namespace MyUILibrary.EntityArea
             simpleColumnControl.SimpleControlManager.GetUIControlManager().SetBinding(property);
         }
 
-        void I_EditEntityAreaOneData.CheckContainersVisiblity(List<BaseColumnControl> hiddenControls)
-        {
-            throw new NotImplementedException();
-        }
 
-        void I_EditEntityAreaOneData.ShowDataFromExternalSource(DP_DataView dataRepository)
-        {
-            throw new NotImplementedException();
-        }
 
-        void I_EditEntityAreaOneData.CreateDefaultData()
-        {
-            throw new NotImplementedException();
-        }
 
-        void I_EditEntityAreaOneData.TemporaryViewSearchTextChanged(I_View_TemporaryView view, Arg_TemporaryDisplaySerachText searchArg)
-        {
-            throw new NotImplementedException();
-        }
 
-      
 
-       
     }
 
 

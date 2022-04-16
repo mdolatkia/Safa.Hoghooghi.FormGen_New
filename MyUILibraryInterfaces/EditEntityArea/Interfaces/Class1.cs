@@ -220,7 +220,7 @@ namespace MyUILibrary.EntityArea
             var controlManagers = GetColumnControlDataManagers(controlOrLabel);
             foreach (var view in controlManagers)
             {
-                view.SetTooltip(SourceData, tooltip);
+                view.SetTooltip( tooltip);
             }
         }
         private string GetTooltip(ControlOrLabelAsTarget controlOrLabel, List<ColumnControlMessageItem> columnControlMessageItems)

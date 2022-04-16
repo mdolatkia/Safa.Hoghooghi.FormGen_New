@@ -36,9 +36,9 @@ namespace MyUILibrary.EntityArea.Commands
                 || EditArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect)
             {
                 if (EditArea is I_EditEntityAreaOneData)
-                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog((EditArea as I_EditEntityAreaOneData).DataView);
+                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog((EditArea as I_EditEntityAreaOneData).DataViewGeneric);
                 else if (EditArea is I_EditEntityAreaMultipleData)
-                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog((EditArea as EditEntityAreaMultipleData).DataView);
+                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog((EditArea as EditEntityAreaMultipleData).DataViewGeneric);
             }
 
         }

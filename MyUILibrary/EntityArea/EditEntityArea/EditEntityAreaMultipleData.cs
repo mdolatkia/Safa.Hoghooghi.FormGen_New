@@ -116,9 +116,9 @@ namespace MyUILibrary.EntityArea
         }
         public void RemoveDataContainers()
         {
-            if (DataView != null)
+            if (DataViewGeneric != null)
             {
-                var list = (DataView as I_View_EditEntityAreaMultiple).RemoveDataContainers();
+                var list = (DataViewGeneric as I_View_EditEntityAreaMultiple).RemoveDataContainers();
                 if (DataItemRemoved != null)
                 {
                     foreach (var item in list)
@@ -128,7 +128,7 @@ namespace MyUILibrary.EntityArea
         }
         private void RemoveDataContainer(DP_FormDataRepository dataItem)
         {
-            (DataView as I_View_EditEntityAreaMultiple).RemoveDataContainer(dataItem);
+            (DataViewGeneric as I_View_EditEntityAreaMultiple).RemoveDataContainer(dataItem);
             if (DataItemRemoved != null)
                 DataItemRemoved(this, new EditAreaDataItemArg() { DataItem = dataItem });
         }
@@ -145,7 +145,7 @@ namespace MyUILibrary.EntityArea
         }
         public override bool ShowDataInDataView(DP_FormDataRepository dataItem)
         {
-            (DataView as I_View_EditEntityAreaMultiple).AddDataContainer(dataItem);
+            (DataViewGeneric as I_View_EditEntityAreaMultiple).AddDataContainer(dataItem);
             return InternalShowDataInDataView(dataItem);
         }
         //بعدا بررسی شود
@@ -294,7 +294,11 @@ namespace MyUILibrary.EntityArea
             //        AgentUICoreMediator.UIManager.ShowPane(TemporaryDisplayView, SimpleEntity.Alias);
             //}
         }
-
+        public I_View_EditEntityAreaMultiple DataView { set; get; }
+        public override I_View_Area DataViewGeneric
+        {
+            get { return DataView; }
+        }
         public override void GenerateUIComposition(List<EntityUICompositionDTO> UICompositions)
         {
 
@@ -377,16 +381,16 @@ namespace MyUILibrary.EntityArea
         {
             get
             {
-                return base.DataView as I_View_EditEntityAreaMultiple;
+                return base.DataViewGeneric as I_View_EditEntityAreaMultiple;
             }
         }
         public override void DataItemVisiblity(object dataItem, bool visible)
         {
-            (DataView as I_View_EditEntityAreaMultiple).Visiblity(dataItem, visible);
+            (DataViewGeneric as I_View_EditEntityAreaMultiple).Visiblity(dataItem, visible);
         }
         public override void DataItemEnablity(object dataItem, bool visible)
         {
-            (DataView as I_View_EditEntityAreaMultiple).EnableDisable(dataItem, visible);
+            (DataViewGeneric as I_View_EditEntityAreaMultiple).EnableDisable(dataItem, visible);
         }
         //private I_SearchViewEntityArea GenerateSearchViewArea()
         //{
@@ -405,7 +409,7 @@ namespace MyUILibrary.EntityArea
 
         public List<DP_FormDataRepository> GetSelectedData()
         {
-            List<DP_FormDataRepository> selectedData = (DataView as I_View_EditEntityAreaMultiple).GetSelectedData().Cast<DP_FormDataRepository>().ToList();
+            List<DP_FormDataRepository> selectedData = (DataViewGeneric as I_View_EditEntityAreaMultiple).GetSelectedData().Cast<DP_FormDataRepository>().ToList();
             return selectedData;
         }
 

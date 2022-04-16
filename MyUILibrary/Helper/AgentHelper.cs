@@ -127,7 +127,7 @@ namespace MyUILibrary
         //        else if (!string.IsNullOrEmpty(propertyControl.Column.Name))
         //            propertyControl.Alias = propertyControl.Column.Name;
         //}
-        public static void SetPropertyTitle(SimpleColumnControl propertyControl)
+        public static void SetPropertyTitle(SimpleColumnControlGenerel propertyControl)
         {
 
             if (propertyControl.Column != null)
@@ -193,7 +193,7 @@ namespace MyUILibrary
         //        return color;
         //    }
         //}
-        internal static Temp.InfoColor GetPropertyColor(RelationshipColumnControl propertyControl)
+        internal static Temp.InfoColor GetPropertyColor(RelationshipColumnControlGeneral propertyControl)
         {
             Temp.InfoColor color = Temp.InfoColor.Black;
             //title += (title == "" ? "" : " > ") + (propertyControl as RelationSourceControl).EditNdTypeArea.AreaInitializer.TemplateEntity.Name + "." + (propertyControl as RelationSourceControl).EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType.ToString();

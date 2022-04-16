@@ -405,8 +405,8 @@ namespace MyUILibrary.EntityArea
                 AddReadonlyState(key, message, permanent);
                 if (permanent)
                 {
-                    RelationshipControl.EditNdTypeArea.SetChildRelationshipInfo(this);
-                    RelationshipControl.EditNdTypeArea.DecideButtonsEnablity1();
+                    RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(this);
+                    RelationshipControl.GenericEditNdTypeArea.DecideButtonsEnablity1();
                 }
             }
         }
@@ -424,7 +424,7 @@ namespace MyUILibrary.EntityArea
                 AddHiddenState(key, message, permanent);
                 if (permanent)
                 {
-                    RelationshipControl.EditNdTypeArea.SetChildRelationshipInfo(this);
+                    RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(this);
                     GetUIControlManager.Visiblity(false);
                     if (!LableIsShared)
                         RelationshipControl.LabelControlManager.Visiblity(false);
@@ -435,7 +435,7 @@ namespace MyUILibrary.EntityArea
         {
             if (SourceData.DataIsInEditMode())
             {
-                RelationshipControl.EditNdTypeArea.SetChildRelationshipInfo(this);
+                RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(this);
                 GetUIControlManager.Visiblity(true);
                 if (!LableIsShared)
                     RelationshipControl.LabelControlManager.Visiblity(true);
@@ -451,11 +451,11 @@ namespace MyUILibrary.EntityArea
             {
                 if (!IsReadonly && !IsHiddenOnState)
                 {
-                    RelationshipControl.EditNdTypeArea.SetChildRelationshipInfo(this);
+                    RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(this);
 
-                    bool fromDataview = (RelationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-                               RelationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
-                    RelationshipControl.EditNdTypeArea.SearchViewEntityArea.SelectFromParent(fromDataview, Relationship, SourceData, colAndValues);
+                    bool fromDataview = (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
+                               RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
+                    RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.SelectFromParent(fromDataview, Relationship, SourceData, colAndValues);
                 }
             }
         }

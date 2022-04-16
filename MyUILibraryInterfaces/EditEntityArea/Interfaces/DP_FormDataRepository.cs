@@ -595,7 +595,7 @@ namespace MyUILibrary.EntityArea
            EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.Select);
                 if (hasTempView)
                 {
-                    if (EditEntityArea.DataView != null && EditEntityArea.DataView.IsOpenedTemporary)
+                    if (EditEntityArea.DataViewGeneric != null && EditEntityArea.DataViewGeneric.IsOpenedTemporary)
                         return true;
                     else
                         return false;
@@ -1032,21 +1032,22 @@ namespace MyUILibrary.EntityArea
         {
             List<I_UIElementManager> result = new List<I_UIElementManager>();
             if (DataIsInEditMode())
-                result.Add(EditEntityArea.DataView);
+                result.Add(EditEntityArea.DataViewGeneric);
            
+            //اینجا
             if (DataItemIsInTempViewMode())
             {
-                if (this is I_EditEntityAreaOneData)
+                if (EditEntityArea is I_EditEntityAreaOneData)
                 {
-                    if (EditEntityArea.AreaInitializer.SourceRelationColumnControl == null || EditEntityArea.AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
-                    {
-                        result.Add(EditEntityArea.TemporaryDisplayView);
-                    }
-                    else
-                    {
-                        var relationshipControl = EditEntityArea.AreaInitializer.SourceRelationColumnControl;
-                        result.Add(relationshipControl.RelationshipControlManagerGeneral);
-                    }
+                    //if (EditEntityArea.AreaInitializer.SourceRelationColumnControl == null || EditEntityArea.AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
+                    //{
+                    //    result.Add(EditEntityArea.TemporaryDisplayView);
+                    //}
+                    //else
+                    //{
+                    //    var relationshipControl = EditEntityArea.AreaInitializer.SourceRelationColumnControl as RelationshipColumnControlMultiple;
+                    //    result.Add(relationshipControl.RelationshipControlManager.GetView(this));
+                    //}
                 }
             }
             return result;

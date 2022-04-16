@@ -1100,7 +1100,7 @@ namespace MyUILibrary
             {
                 if (MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
                         MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                    view = (MainEntityArea as I_EditEntityAreaOneData).DataView;
+                    view = (MainEntityArea as I_EditEntityAreaOneData).DataViewGeneric;
                 else if (MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
                         MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect
                         || MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.Select)
@@ -1111,7 +1111,7 @@ namespace MyUILibrary
             {
                 if (MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
                     MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                    view = (MainEntityArea as I_EditEntityAreaMultipleData).DataView;
+                    view = (MainEntityArea as I_EditEntityAreaMultipleData).DataViewGeneric;
                 else if (MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
                         MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect
                         || MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.Select)
