@@ -33,7 +33,10 @@ namespace MyUIGenerator.UIControlHelper
         {
             return DataGridColumn.GetUIControlManager(dataItem);
         }
-
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates)
+        {
+            DataGridColumn.SetColumnValueRange(candidates);
+        }
         //public void EnableDisable(bool enable)
         //{
         //    DataGridColumn.EnableDisable(enable);

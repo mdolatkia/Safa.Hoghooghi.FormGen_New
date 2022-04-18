@@ -739,40 +739,40 @@ namespace MyUILibrary.EntityArea
     //    void RemoveButtonMenu(string name);
     //}
 
-    //public interface I_SimpleControlManagerGeneral
-    //{
-    //    //  object MainControl { get; }
-    //    //  object WholeControl { get; }
-    //    ////  bool IsVisible { get; }
-    //    //  CommonOperator GetOperator();
-    //    //  bool HasOperator();
-    //    //  bool SetOperator(CommonOperator searchOperator);
+    public interface I_SimpleControlManagerGeneral
+    {
+        //  object MainControl { get; }
+        //  object WholeControl { get; }
+        ////  bool IsVisible { get; }
+        //  CommonOperator GetOperator();
+        //  bool HasOperator();
+        //  bool SetOperator(CommonOperator searchOperator);
 
-    //    //  void SetReadonly(bool isreadonly);
-    //    //  void AddButtonMenu(ConrolPackageMenu menu);
-    //    //  void RemoveButtonMenu(string name);
-    //    //  void SetBinding(EntityInstanceProperty property);
-    //    //  void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
+        //  void SetReadonly(bool isreadonly);
+        //  void AddButtonMenu(ConrolPackageMenu menu);
+        //  void RemoveButtonMenu(string name);
+        //  void SetBinding(EntityInstanceProperty property);
+        void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
 
-    //    //  //void AddMessage(BaseMessageItem baseMessageItem);
-    //    //  //void RemoveMessage(BaseMessageItem baseMessageItem);
+        //  //void AddMessage(BaseMessageItem baseMessageItem);
+        //  //void RemoveMessage(BaseMessageItem baseMessageItem);
 
-    //    //  //  void EnableDisable(object dataItem, bool enable);
-    //    //  // void Visiblity(object dataItem, bool visible);
-    //    //  void EnableDisable(bool enable);
-    //    //  void Visiblity(bool visible);
-    //    // 
+        //  //  void EnableDisable(object dataItem, bool enable);
+        //  // void Visiblity(object dataItem, bool visible);
+        //  void EnableDisable(bool enable);
+        //  void Visiblity(bool visible);
+        // 
 
-    //    //  void SetBorderColor(object dataItem, InfoColor color);
-    //    //  void SetBackgroundColor(object dataItem, InfoColor color);
-    //    // void SetForegroundColor(object dataItem, InfoColor color);
+        //  void SetBorderColor(object dataItem, InfoColor color);
+        //  void SetBackgroundColor(object dataItem, InfoColor color);
+        // void SetForegroundColor(object dataItem, InfoColor color);
 
-    //    //   I_UIControlManager LabelControlManager { set; get; }
+        //   I_UIControlManager LabelControlManager { set; get; }
 
-    //    void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
-    //}
+       // void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
+    }
 
-    public interface I_SimpleControlManagerOne //: I_SimpleControlManagerGeneral
+    public interface I_SimpleControlManagerOne : I_SimpleControlManagerGeneral
     {
 
         I_UIControlManager GetUIControlManager();
@@ -787,7 +787,7 @@ namespace MyUILibrary.EntityArea
 
 
     }
-    public interface I_SimpleControlManagerMultiple //: I_SimpleControlManagerGeneral
+    public interface I_SimpleControlManagerMultiple : I_SimpleControlManagerGeneral
     {
         I_UIControlManager GetUIControlManager(object dataItem);
         // 
@@ -910,26 +910,29 @@ namespace MyUILibrary.EntityArea
     }
     public abstract class SimpleColumnControlGenerel : BaseColumnControl
     {
-        public I_UIControlManager LabelControlManager { get; set; }
+       // public I_UIControlManager LabelControlManager { get; set; }
         public ColumnDTO Column { set; get; }
-        //public I_SimpleControlManagerGeneral SimpleControlManagerGeneral
-        //{
-        //    get
-        //    {
-
-
-
-        //    }
-        //}
+        public abstract I_SimpleControlManagerGeneral SimpleControlManagerGeneral
+        {
+            get;
+        }
     }
     public class SimpleColumnControlOne : SimpleColumnControlGenerel
     {
         public I_SimpleControlManagerOne SimpleControlManager { get; set; }
+        public override I_SimpleControlManagerGeneral SimpleControlManagerGeneral
+        {
+            get { return SimpleControlManager; }
+        }
 
     }
     public class SimpleColumnControlMultiple : SimpleColumnControlGenerel
     {
         public I_SimpleControlManagerMultiple SimpleControlManager { get; set; }
+        public override I_SimpleControlManagerGeneral SimpleControlManagerGeneral
+        {
+            get { return SimpleControlManager; }
+        }
 
     }
     public abstract class RelationshipColumnControlGeneral : BaseColumnControl

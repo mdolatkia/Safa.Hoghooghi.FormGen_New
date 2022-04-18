@@ -30,7 +30,7 @@ namespace MyUILibrary.EntityArea
         /// <param name="editEntityArea"></param>
         /// <param name="parentRelationData"></param>
         /// <returns></returns>
-        public ChildRelationshipInfo SerachDataFromParentRelationForChildDataView(RelationshipDTO relationship, I_EditEntityAreaOneData sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControl relationshipColumnControl, DP_FormDataRepository parentRelationData)
+        public ChildRelationshipInfo SerachDataFromParentRelationForChildDataView(RelationshipDTO relationship, I_EditEntityAreaOneData sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControlGeneral relationshipColumnControl, DP_FormDataRepository parentRelationData)
         {
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
 
@@ -99,7 +99,7 @@ namespace MyUILibrary.EntityArea
             else
                 return null;
         }
-        public ChildRelationshipInfo SerachDataFromParentRelationForChildTempView(RelationshipDTO relationship, I_EditEntityArea sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControl relationshipColumnControl, DP_FormDataRepository parentRelationData)
+        public ChildRelationshipInfo SerachDataFromParentRelationForChildTempView(RelationshipDTO relationship, I_EditEntityArea sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControlGeneral relationshipColumnControl, DP_FormDataRepository parentRelationData)
         {
 
             //List<DP_FormDataRepository> re = null;

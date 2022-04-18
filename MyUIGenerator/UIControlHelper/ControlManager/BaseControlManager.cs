@@ -1,4 +1,5 @@
-﻿using MyUILibrary.EntityArea;
+﻿using ModelEntites;
+using MyUILibrary.EntityArea;
 using MyUILibrary.Temp;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace MyUIGenerator.UIControlHelper
         {
             //    RelatedControl = new List<FrameworkElement>();
         }
+
+        
 
         //public I_UIControlManager LabelControlManager
         //{

@@ -2723,13 +2723,13 @@ namespace MyUILibrary.EntityArea
                     var parentData = ChildRelationshipInfo.SourceData;
 
 
-                    parentRelationshipControl.RelationshipControlManagerGeneral.EnableDisable(parentData, TemporaryLinkType.Clear, clearCommandEnablity);
-                    parentRelationshipControl.RelationshipControlManagerGeneral.EnableDisable(parentData, TemporaryLinkType.SerachView, searchCommandEnablity);
-                    parentRelationshipControl.RelationshipControlManagerGeneral.EnableDisable(parentData, TemporaryLinkType.Popup, searchCommandEnablity);
+                    (parentRelationshipControl as RelationshipColumnControlMultiple).RelationshipControlManager.GetView(parentData).DisableEnable(TemporaryLinkType.Clear, clearCommandEnablity);
+                    (parentRelationshipControl as RelationshipColumnControlMultiple).RelationshipControlManager.GetView(parentData).DisableEnable( TemporaryLinkType.SerachView, searchCommandEnablity);
+                    (parentRelationshipControl as RelationshipColumnControlMultiple).RelationshipControlManager.GetView(parentData).DisableEnable( TemporaryLinkType.Popup, searchCommandEnablity);
 
 
-                    parentRelationshipControl.RelationshipControlManagerGeneral.EnableDisable(parentData, TemporaryLinkType.QuickSearch, quickSearchEnablity);
-                    parentRelationshipControl.RelationshipControlManagerGeneral.EnableDisable(parentData, TemporaryLinkType.DataView, dataViewEnablity);
+                    (parentRelationshipControl as RelationshipColumnControlMultiple).RelationshipControlManager.GetView(parentData).DisableEnable( TemporaryLinkType.QuickSearch, quickSearchEnablity);
+                    (parentRelationshipControl as RelationshipColumnControlMultiple).RelationshipControlManager.GetView(parentData).DisableEnable( TemporaryLinkType.DataView, dataViewEnablity);
 
 
                     //if (isReadonly)
@@ -2870,7 +2870,7 @@ namespace MyUILibrary.EntityArea
                     }
 
                     List<Tuple<ChildSimpleContorlProperty, string>> simpleColumnValues = new List<Tuple<ChildSimpleContorlProperty, string>>();
-                    List<Tuple<DP_FormDataRepository, RelationshipColumnControl, Dictionary<int, string>>> relationshipColumnValues = new List<Tuple<DP_FormDataRepository, RelationshipColumnControl, Dictionary<int, string>>>();
+                    List<Tuple<DP_FormDataRepository, RelationshipColumnControlGeneral, Dictionary<int, string>>> relationshipColumnValues = new List<Tuple<DP_FormDataRepository, RelationshipColumnControlGeneral, Dictionary<int, string>>>();
 
                     foreach (var columnValue in uIColumnValue)
                     {
@@ -2897,7 +2897,7 @@ namespace MyUILibrary.EntityArea
                                         {
                                             listColumns.Add(relCol.FirstSideColumnID, uIColumnValue.First(x => x.ColumnID == relCol.FirstSideColumnID).ExactValue);
                                         }
-                                        relationshipColumnValues.Add(new Tuple<DP_FormDataRepository, RelationshipColumnControl, Dictionary<int, string>>(dataItem, relationshipColumn, listColumns));
+                                        relationshipColumnValues.Add(new Tuple<DP_FormDataRepository, RelationshipColumnControlGeneral, Dictionary<int, string>>(dataItem, relationshipColumn, listColumns));
 
                                     }
                                 }
@@ -2966,7 +2966,8 @@ namespace MyUILibrary.EntityArea
 
         public void SetColumnValueRange(SimpleColumnControlGenerel propertyControl, List<ColumnValueRangeDetailsDTO> details)
         {
-            propertyControl.SimpleControlManager.SetColumnValueRange(details);
+            inja es;AgentHelper beshe khode property control kone
+            propertyControl.SimpleControlManagerGeneral.SetColumnValueRange(details);
         }
 
 

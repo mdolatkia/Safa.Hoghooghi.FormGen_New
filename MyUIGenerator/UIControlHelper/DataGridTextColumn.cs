@@ -89,21 +89,21 @@ namespace MyUIGenerator.UIControlHelper
             return MyControlHelper.GetUIControl() as FrameworkElement;
         }
 
-        internal object GetUIControl(object dataItem)
-        {
-            var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //internal object GetUIControl(object dataItem)
+        //{
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
 
-            if (dataRow != null)
-            {
-                var cell = dataRow.GetCell(this);
+        //    if (dataRow != null)
+        //    {
+        //        var cell = dataRow.GetCell(this);
 
-                if (cell != null)
-                {
-                    return (cell.Tag as I_UIControlManager).MainControl;
-                }
-            }
-            return null;
-        }
+        //        if (cell != null)
+        //        {
+        //            return (cell.Tag as I_UIControlManager).MainControl;
+        //        }
+        //    }
+        //    return null;
+        //}
         public I_UIControlManager GetUIControlManager(object dataItem)
         {
             var dataRow = this.DataControl.GetRowForItem(dataItem);
@@ -329,7 +329,7 @@ namespace MyUIGenerator.UIControlHelper
         //   }));
         //}
         List<ColumnValueRangeDetailsDTO> ColumnValueRange { set; get; }
-        internal void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
         {
             ColumnValueRange = details;
         }

@@ -37,6 +37,10 @@ namespace MyUIGenerator.UIControlHelper
             return MyControlHelper;
         }
         public I_UIControlManager MyControlHelper { set; get; }
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates)
+        {
+            (MyControlHelper as I_ControlHelperValueRange).SetColumnValueRange(candidates);
+        }
 
         //public bool IsVisible
         //{
@@ -184,10 +188,7 @@ namespace MyUIGenerator.UIControlHelper
         //{
         //    MyControlHelper.EnableDisable(enable);
         //}
-        //public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates)
-        //{
-        //    (MyControlHelper as I_ControlHelperValueRange).SetColumnValueRange(candidates);
-        //}
+
         //public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates, object dataItem)
         //{
         //    (MyControlHelper as I_ControlHelperValueRange).SetColumnValueRange(candidates);

@@ -21,7 +21,7 @@ namespace MyUILibrary.EntityArea
             EditArea = editArea;
             editArea.DataViewGenerated += EditArea_DataViewGenerated;
         }
-        List<SimpleColumnControl> FormulaColumns = new List<SimpleColumnControl>();
+        List<SimpleColumnControlGenerel> FormulaColumns = new List<SimpleColumnControlGenerel>();
         private void EditArea_DataViewGenerated(object sender, EventArgs e)
         {
             foreach (var columnControl in EditArea.SimpleColumnControls)
@@ -213,7 +213,7 @@ namespace MyUILibrary.EntityArea
                 cpMenuFormulaCalculation.Name = "mnuFormulaCalculation";
                 cpMenuFormulaCalculation.Title = "محاسبه فرمول";
                 cpMenuFormulaCalculation.Tooltip = columnControl.Column.ColumnCustomFormula.Formula.Tooltip;
-                columnControl.SimpleControlManager.AddButtonMenu(cpMenuFormulaCalculation);
+                columnControl.SimpleControlManagerGeneral.AddButtonMenu(cpMenuFormulaCalculation);
                 cpMenuFormulaCalculation.MenuClicked += (sender1, e1) => CpMenuFormulaCalculation_MenuClicked(sender1, e1, columnControl as SimpleColumnControl);
             }
         }
