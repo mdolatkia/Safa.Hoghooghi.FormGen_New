@@ -90,9 +90,35 @@ namespace MyUIGenerator.View
         //    set;
         //    get;
         //}
+        public bool IsOpenedTemporary { set; get; }
+        public UIControlPackageTree UIControlPackageTreeItem { set; get; }
 
+        public void SetTooltip(string tooltip)
+        {
+            if (!string.IsNullOrEmpty(tooltip))
+                ToolTipService.SetToolTip(this, tooltip);
+            else
+                ToolTipService.SetToolTip(this, null);
+        }
+        public void SetBorderColor(InfoColor color)
+        {
+            this.BorderBrush = UIManager.GetColorFromInfoColor(color);
+            this.BorderThickness = new Thickness(1);
+        }
+        public void SetColor(InfoColor color)
+        {
+            this.BorderBrush = UIManager.GetColorFromInfoColor(color);
+            this.BorderThickness = new Thickness(1);
+        }
+        public void SetBackgroundColor(InfoColor color)
+        {
+            this.Background = UIManager.GetColorFromInfoColor(color);
+        }
 
-
+        public void SetForegroundColor(InfoColor color)
+        {
+            this.Foreground = UIManager.GetColorFromInfoColor(color);
+        }
         public void DeHighlightCommands()
         {
             toolbar.Background = null;

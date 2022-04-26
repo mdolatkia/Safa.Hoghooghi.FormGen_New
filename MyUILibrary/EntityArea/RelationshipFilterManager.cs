@@ -111,7 +111,7 @@ namespace MyUILibrary.EntityArea
             if (SearchInitialyAreas == null)
             {
                 SearchInitialyAreas = new List<Tuple<I_EditEntityArea, List<RelationshipFilterDTO>>>();
-                List<RelationshipColumnControl> relationships = new List<RelationshipColumnControl>();
+                List<RelationshipColumnControlGeneral> relationships = new List<RelationshipColumnControlGeneral>();
                 if (EditArea is I_EditEntityAreaOneData)
                 {
                     foreach (var item in (EditArea as I_EditEntityAreaOneData).RelationshipColumnControls)
@@ -124,13 +124,13 @@ namespace MyUILibrary.EntityArea
                 }
                 foreach (var item in relationships.ToList())
                 {
-                    if (item.EditNdTypeArea.SimpleEntity.SearchInitially == true || (item.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl != null && item.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.SearchInitially))
+                    if (item.GenericEditNdTypeArea.SimpleEntity.SearchInitially == true || (item.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl != null && item.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.SearchInitially))
                     {
                         var relFilters = AgentUICoreMediator.GetAgentUICoreMediator.relationshipFilterManagerService.GetRelationshipFilters(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), item.Relationship.ID);
                         //if (relFilters.Any())
                         //{
-                        item.EditNdTypeArea.SearchViewEntityArea.RelationshipFilters = relFilters;
-                        SearchInitialyAreas.Add(new Tuple<I_EditEntityArea, List<RelationshipFilterDTO>>(item.EditNdTypeArea, relFilters));
+                        item.GenericEditNdTypeArea.SearchViewEntityArea.RelationshipFilters = relFilters;
+                        SearchInitialyAreas.Add(new Tuple<I_EditEntityArea, List<RelationshipFilterDTO>>(item.GenericEditNdTypeArea, relFilters));
                         //}
                     }
                 }

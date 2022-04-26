@@ -110,7 +110,7 @@ namespace MyUIGenerator.UIControlHelper
             var tabItem = (view as TabPageContainerManager).TabItem;
             if (!skipTitle)
             {
-                var headerControl = new LabelControlManager(title, false);
+                var headerControl = new LabelHelper(title, false);
                 tabItem.Header = headerControl.WholeControl;
             }
             TabControl.Items.Add(tabItem);

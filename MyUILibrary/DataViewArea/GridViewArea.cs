@@ -90,15 +90,15 @@ namespace MyUILibrary.DataViewArea
                     //      if (propertyControl.IsPermanentReadOnly)
                     if (!string.IsNullOrEmpty(column.Tooltip))
                     {
-                        propertyControl.ControlManager.LabelControlManager.SetTooltip(null, column.Tooltip);
+                        propertyControl.LabelControlManager.SetTooltip( column.Tooltip);
                     }
-                    propertyControl.ControlManager.SetReadonly(true);
+                //    propertyControl.ControlManager.GetUIControlManager.SetReadonly(true);
                     ViewColumnControls.Add(propertyControl);
                 }
                 foreach (var columnControl in ViewColumnControls)
                 {
                     columnControl.Visited = true;
-                    View.AddUIControlPackage(columnControl.ControlManager, columnControl.ControlManager.LabelControlManager);
+                    View.AddUIControlPackage(columnControl.ControlManager, columnControl.LabelControlManager);
                 }
             }
         }

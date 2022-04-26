@@ -16,7 +16,6 @@ namespace MyUILibrary.EntityArea
         public ParentRelationshipInfo ParantChildRelationshipInfo { get; set; }
         //public event EventHandler<ChangeMonitor> RelatedDataCollectionChanged;
         //  public event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
-        public List<PropertyFormulaComment> PropertyFormulaCommentItems = new List<PropertyFormulaComment>();
 
         public List<ControlStateItem> ReadonlyStateItems = new List<ControlStateItem>();
         public List<ControlStateItem> ParentRelationshipReadonlyStateItems = new List<ControlStateItem>();
@@ -796,20 +795,7 @@ namespace MyUILibrary.EntityArea
             }
             //}
         }
-        public void AddPropertyFormulaComment(string key, string message)
-        {
-            if (!PropertyFormulaCommentItems.Any(x => x.Key == key))
-                PropertyFormulaCommentItems.Add(new PropertyFormulaComment(key, message));
-
-            SetMessageAndColor();
-        }
-        public void RemovePropertyFormulaComment(string key)
-        {
-            if (PropertyFormulaCommentItems.Any(x => x.Key == key))
-                PropertyFormulaCommentItems.RemoveAll(x => x.Key == key);
-
-            SetMessageAndColor();
-        }
+     
         public void AddParentRelationshipReadonlyState(string key, string message, bool permanent)
         {
             if (!ParentRelationshipReadonlyStateItems.Any(x => x.Key == key))
@@ -873,10 +859,7 @@ namespace MyUILibrary.EntityArea
                 columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
                 columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "رابطه داده فقط خواندنی می باشد و تغییرات اعمال نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
             }
-            foreach (var item in PropertyFormulaCommentItems)
-            {
-                columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message, ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.Normal));
-            }
+            
             SetItemColor(columnControlColorItems);
             SetItemMessage(columnControlMessageItems);
 

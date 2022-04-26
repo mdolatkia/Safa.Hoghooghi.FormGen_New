@@ -57,10 +57,7 @@ namespace MyUIGenerator.UIControlHelper
                 TemporaryViewSerchTextChanged(sender, e);
         }
 
-        public I_View_Area GetView(object dataItem)
-        {
-            return DataGridColumn.GenerateTemporaryView(dataItem);
-        }
+      
 
         private void DataGridColumn_TemporaryViewLoaded(object sender, Arg_MultipleTemporaryDisplayLoaded e)
         {
@@ -108,10 +105,14 @@ namespace MyUIGenerator.UIControlHelper
         {
             DataGridColumn.DisableEnable(dataItem, link, enable);
         }
-        public I_View_TemporaryView GetTemporaryView(object dataItem)
+        public I_View_TemporaryView GetView(object dataItem)
         {
-            return DataGridColumn.GetTemporaryView(dataItem);
+            return DataGridColumn.GenerateTemporaryView(dataItem);
         }
+        //public I_View_TemporaryView GetTemporaryView(object dataItem)
+        //{
+        //    return DataGridColumn.GetTemporaryView(dataItem);
+        //}
         public object GetUIControl(object dataItem)
         {
             return DataGridColumn.GetTemporaryView(dataItem);

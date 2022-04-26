@@ -118,9 +118,9 @@ namespace MyUIGenerator.UIControlHelper
         {
             return CommonOperator.Equals;
         }
-        public bool SetOperator( CommonOperator searchOperator)
+        public void SetOperator( CommonOperator searchOperator)
         {
-            return false;
+          //  return false;
         }
         public bool HasOperator()
         {

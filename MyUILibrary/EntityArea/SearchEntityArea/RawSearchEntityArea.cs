@@ -128,8 +128,8 @@ namespace MyUILibrary.EntityArea
                 columnControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(columnControl.Column, GetColumnUISetting(columnControl.Column), false, columnControl.Operators, true, columnControl.Column.Alias);
                 var operator1 = columnControl.Operators.FirstOrDefault(x => x.Operator == GetDefaultOperator(columnControl.Column));
                 if (operator1 != null)
-                    columnControl.ControlManager.SetOperator(operator1.Operator);
-                RawSearchView.AddUIControlPackage(columnControl.ControlManager, columnControl.ControlManager.LabelControlManager);
+                    columnControl.ControlManager.GetUIControlManager().SetOperator(operator1.Operator);
+                RawSearchView.AddUIControlPackage(columnControl.ControlManager, columnControl.LabelControlManager);
             }
            
 
@@ -210,7 +210,7 @@ namespace MyUILibrary.EntityArea
             List<SearchProperty> result = new List<SearchProperty>();
             foreach (var property in SimpleColumnControls)
             {
-                var value = property.ControlManager.GetValue(null);
+                var value = property.ControlManager.GetUIControlManager().GetValue();
                 if (PropertyHasValue(property, value))
                 {
 
@@ -218,7 +218,7 @@ namespace MyUILibrary.EntityArea
                     searchProperty.ColumnID = property.Column.ID;
                     searchProperty.IsKey = property.Column.PrimaryKey;
                     searchProperty.Value = value;
-                    searchProperty.Operator = property.ControlManager.GetOperator();
+                    searchProperty.Operator = property.ControlManager.GetUIControlManager().GetOperator();
                     result.Add(searchProperty);
                 }
             }

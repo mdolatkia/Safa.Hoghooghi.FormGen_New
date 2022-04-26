@@ -236,8 +236,10 @@ namespace MyUILibrary.EntityArea
     public interface I_UIFomulaManager
     {
         void UpdateFromulas();
-        void CalculateProperty(EntityInstanceProperty dataProperty, ColumnCustomFormulaDTO columnCustomFormula, DP_FormDataRepository dataItem, bool asDefault);
-        void UpdateFromulas(List<CalculatedPropertyTree> result, RelationshipDTO relationship = null);
+        void CalculateProperty(ChildSimpleContorlProperty childSimpleContorlProperty);
+        void CalculateProperty(DP_DataRepository dataItem, EntityInstanceProperty dataProperty);
+
+        //   void UpdateFromulas();
     }
     public interface I_UIValidationManager
     {
@@ -692,6 +694,12 @@ namespace MyUILibrary.EntityArea
         object GetValue();
         object GetUIControl();
         void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
+
+        void SetOperator(CommonOperator operatorValue);
+        CommonOperator GetOperator();
+        //    {
+        //        ControlManager.SetOperator(operatorValue);
+        //    }
         //void SetTooltip(string tooltip);
         //void SetBorderColor(InfoColor color);
         //void SetBackgroundColor(InfoColor color);
@@ -752,7 +760,7 @@ namespace MyUILibrary.EntityArea
         //  void AddButtonMenu(ConrolPackageMenu menu);
         //  void RemoveButtonMenu(string name);
         //  void SetBinding(EntityInstanceProperty property);
-        void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
+        //  void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
 
         //  //void AddMessage(BaseMessageItem baseMessageItem);
         //  //void RemoveMessage(BaseMessageItem baseMessageItem);
@@ -769,7 +777,7 @@ namespace MyUILibrary.EntityArea
 
         //   I_UIControlManager LabelControlManager { set; get; }
 
-       // void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
+        // void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
     }
 
     public interface I_SimpleControlManagerOne : I_SimpleControlManagerGeneral
@@ -910,7 +918,7 @@ namespace MyUILibrary.EntityArea
     }
     public abstract class SimpleColumnControlGenerel : BaseColumnControl
     {
-       // public I_UIControlManager LabelControlManager { get; set; }
+        // public I_UIControlManager LabelControlManager { get; set; }
         public ColumnDTO Column { set; get; }
         public abstract I_SimpleControlManagerGeneral SimpleControlManagerGeneral
         {

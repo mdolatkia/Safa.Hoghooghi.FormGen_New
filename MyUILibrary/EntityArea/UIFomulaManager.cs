@@ -33,7 +33,7 @@ namespace MyUILibrary.EntityArea
             }
             if (FormulaColumns.Any())
             {
-                AddMenu();
+                //  AddMenu();
                 EditArea.DataItemShown += EditArea_DataItemLoaded;
                 // EditArea.DataItemUnShown += EditArea_DataItemUnShown;
             }
@@ -45,6 +45,14 @@ namespace MyUILibrary.EntityArea
             {
                 foreach (var columnControl in FormulaColumns)
                 {
+                    var childSimpleContorlProperties = e.DataItem.ChildSimpleContorlProperties.First(x => x.SimpleColumnControl.Column.ID == columnControl.Column.ID);
+                    var cpMenuFormulaCalculation = new ConrolPackageMenu();
+                    cpMenuFormulaCalculation.Name = "mnuFormulaCalculation";
+                    cpMenuFormulaCalculation.Title = "محاسبه فرمول";
+                    cpMenuFormulaCalculation.Tooltip = columnControl.Column.ColumnCustomFormula.Formula.Tooltip;
+                    childSimpleContorlProperties.GetUIControlManager.AddButtonMenu(cpMenuFormulaCalculation);
+                    cpMenuFormulaCalculation.MenuClicked += (sender1, e1) => CpMenuFormulaCalculation_MenuClicked(sender1, e1, childSimpleContorlProperties);
+
                     string generalKey = "formulaColumn" + AgentHelper.GetUniqueDataPostfix(e.DataItem);
                     string usageKey = columnControl.Column.ID.ToString();
                     if (e.DataItem.ChangeMonitorExists(generalKey, usageKey))
@@ -52,7 +60,7 @@ namespace MyUILibrary.EntityArea
                     var fullFormula = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetFormula(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), columnControl.Column.ColumnCustomFormula.FormulaID);
                     if (fullFormula.FormulaItems.Any(x => x.ItemType == FormuaItemType.Column || !string.IsNullOrEmpty(x.RelationshipIDTail)))
                     {
-                        e.DataItem.RelatedDataTailOrColumnChanged += DataItem_RelatedDataTailOrColumnChanged;
+                        e.DataItem.RelatedDataTailOrColumnChanged += (sender1, e1) => DataItem_RelatedDataTailOrColumnChanged(sender1, e1, childSimpleContorlProperties);
                     }
                     var columnItems = fullFormula.FormulaItems.Where(x => x.ItemType == FormuaItemType.Column);
                     if (columnItems.Any())
@@ -91,7 +99,7 @@ namespace MyUILibrary.EntityArea
 
         //}
 
-        private void DataItem_RelatedDataTailOrColumnChanged(object sender, ChangeMonitor e)
+        private void DataItem_RelatedDataTailOrColumnChanged(object sender, ChangeMonitor e, ChildSimpleContorlProperty childSimpleContorlProperty)
         {
             if (e.GeneralKey.StartsWith("formulaColumn"))
             {
@@ -103,7 +111,7 @@ namespace MyUILibrary.EntityArea
                         var dataProperty = e.DataToCall.GetProperty(columnControl.Column.ID);
                         if (dataProperty != null)
                         {
-                            CalculateProperty(dataProperty, formulaColumn, e.DataToCall, false);
+                            CalculateProperty(childSimpleContorlProperty);
                         }
                     }
                 }
@@ -119,16 +127,18 @@ namespace MyUILibrary.EntityArea
         //}
 
 
-        public void CalculateProperty(EntityInstanceProperty dataProperty, ColumnCustomFormulaDTO columnCustomFormula, DP_FormDataRepository dataItem, bool asDefault)
+        public void CalculateProperty(ChildSimpleContorlProperty childSimpleContorlProperty)
         {
-            var key = "formulaCalculated" + "_" + dataProperty.ColumnID;
-            dataItem.RemovePropertyFormulaComment(key);
-
+            var columnCustomFormula = childSimpleContorlProperty.SimpleColumnControl.Column.ColumnCustomFormula;
+            var dataItem = childSimpleContorlProperty.SourceData;
+            var dataProperty = childSimpleContorlProperty.Property;
+            var key = "formulaCalculated" + "_" + columnCustomFormula.ID;
+            childSimpleContorlProperty.RemovePropertyFormulaComment(key);
             if (columnCustomFormula.OnlyOnNewData)
             {
                 if (!dataItem.IsNewItem)
                 {
-                    dataItem.AddPropertyFormulaComment("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی داده موجود اعمال نمی شود", key);
+                    childSimpleContorlProperty.AddPropertyFormulaComment("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی داده موجود اعمال نمی شود", key);
                     return;
                 }
             }
@@ -136,7 +146,7 @@ namespace MyUILibrary.EntityArea
             {
                 if (dataProperty.Value != null && !string.IsNullOrEmpty(dataProperty.Value.ToString()))
                 {
-                    dataItem.AddPropertyFormulaComment("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی خصوصیت دارای مقدار اعمال نمی شود", key);
+                    childSimpleContorlProperty.AddPropertyFormulaComment("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی خصوصیت دارای مقدار اعمال نمی شود", key);
                     return;
                 }
             }
@@ -162,26 +172,73 @@ namespace MyUILibrary.EntityArea
                 //  dataProperty.Value = "";
 
                 //اینجا خطا روی ستون یا رابطه بدهد
-                dataItem.AddPropertyFormulaComment( "خطا در محاسبه فرمول" + " " + columnCustomFormula.Formula.Title + ":" + " " + dataProperty.FormulaException, key);
+                childSimpleContorlProperty.AddPropertyFormulaComment("خطا در محاسبه فرمول" + " " + columnCustomFormula.Formula.Title + ":" + " " + dataProperty.FormulaException, key);
             }
 
-            if (asDefault)
+
+            var uiColumnValue = new UIColumnValueDTO();
+            uiColumnValue.ColumnID = columnCustomFormula.ID;
+            //ابجکت نشه؟ExactValue
+            uiColumnValue.ExactValue = result.Result.ToString();
+            uiColumnValue.EvenHasValue = !columnCustomFormula.OnlyOnEmptyValue;
+            uiColumnValue.EvenIsNotNew = !columnCustomFormula.OnlyOnNewData;
+            List<UIColumnValueDTO> uIColumnValues = new List<UIColumnValueDTO>() { uiColumnValue };
+            EditArea.SetColumnValueFromState(dataItem, uIColumnValues, null, columnCustomFormula.Formula, false);
+
+        }
+        public void CalculateProperty(DP_DataRepository dataItem, EntityInstanceProperty dataProperty)
+        {
+            var columnCustomFormula = dataProperty.Column.ColumnCustomFormula;
+            //   dataItem = childSimpleContorlProperty.SourceData;
+            //  dataProperty = childSimpleContorlProperty.Property;
+            // var key = "formulaCalculated" + "_" + columnCustomFormula.ID;
+            //  childSimpleContorlProperty.RemovePropertyFormulaComment(key);
+            if (columnCustomFormula.OnlyOnNewData)
             {
-                dataProperty.Value = result.Result;
+                if (!dataItem.IsNewItem)
+                {
+                    //  childSimpleContorlProperty.AddPropertyFormulaComment("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی داده موجود اعمال نمی شود", key);
+                    return;
+                }
+            }
+            if (columnCustomFormula.OnlyOnEmptyValue)
+            {
+                if (dataProperty.Value != null && !string.IsNullOrEmpty(dataProperty.Value.ToString()))
+                {
+                    //  childSimpleContorlProperty.AddPropertyFormulaComment("فرمول" + " " + columnCustomFormula.Formula.Name + " " + "بروی خصوصیت دارای مقدار اعمال نمی شود", key);
+                    return;
+                }
+            }
+
+
+            var result = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.CalculateFormula(columnCustomFormula.Formula.ID, dataItem, AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
+            dataProperty.FormulaID = columnCustomFormula.Formula.ID;
+            dataProperty.FormulaException = null;
+            dataProperty.FormulaUsageParemeters = result.FormulaUsageParemeters;
+
+
+            if (result.Exception == null)
+            {
+                //dataProperty.Value = result.Result;
+
+                //    AddDataMessageItem(dataItem, key, ControlItemPriority.Normal, "محاسبه شده توسط فرمول" + " " + columnCustomFormula.Formula.Title);
+
+
             }
             else
             {
-                var uiColumnValue = new UIColumnValueDTO();
-                uiColumnValue.ColumnID = columnCustomFormula.ID;
-                //ابجکت نشه؟ExactValue
-                uiColumnValue.ExactValue = result.Result.ToString();
-                uiColumnValue.EvenHasValue = !columnCustomFormula.OnlyOnEmptyValue;
-                uiColumnValue.EvenIsNotNew = !columnCustomFormula.OnlyOnNewData;
-                List<UIColumnValueDTO> uIColumnValues = new List<UIColumnValueDTO>() { uiColumnValue };
-                EditArea.SetColumnValueFromState(dataItem, uIColumnValues, null, columnCustomFormula.Formula, false);
-            }
-        }
+                dataProperty.FormulaException = result.Exception.Message;
+                //  dataProperty.Value = "";
 
+                //اینجا خطا روی ستون یا رابطه بدهد
+                //     childSimpleContorlProperty.AddPropertyFormulaComment("خطا در محاسبه فرمول" + " " + columnCustomFormula.Formula.Title + ":" + " " + dataProperty.FormulaException, key);
+            }
+
+
+            dataProperty.Value = result.Result;
+
+
+        }
         //private void AddDataMessageItem(DP_FormDataRepository dataItem, string key, ControlItemPriority priority, string message)
         //{
         //    DataMessageItem baseMessageItem = new DataMessageItem();
@@ -205,31 +262,18 @@ namespace MyUILibrary.EntityArea
         //    return result;
         //}
 
-        private void AddMenu()
-        {
-            foreach (var columnControl in FormulaColumns)
-            {
-                var cpMenuFormulaCalculation = new ConrolPackageMenu();
-                cpMenuFormulaCalculation.Name = "mnuFormulaCalculation";
-                cpMenuFormulaCalculation.Title = "محاسبه فرمول";
-                cpMenuFormulaCalculation.Tooltip = columnControl.Column.ColumnCustomFormula.Formula.Tooltip;
-                columnControl.SimpleControlManagerGeneral.AddButtonMenu(cpMenuFormulaCalculation);
-                cpMenuFormulaCalculation.MenuClicked += (sender1, e1) => CpMenuFormulaCalculation_MenuClicked(sender1, e1, columnControl as SimpleColumnControl);
-            }
-        }
+        //private void AddMenu()
+        //{
 
-        private void CpMenuFormulaCalculation_MenuClicked(object sender, ConrolPackageMenuArg e, SimpleColumnControl columnControl)
+        //}
+
+        private void CpMenuFormulaCalculation_MenuClicked(object sender, ConrolPackageMenuArg e, ChildSimpleContorlProperty childSimpleContorlProperty)
         {
-            DP_FormDataRepository dataItem = null;
-            if (EditArea is I_EditEntityAreaOneData)
-                dataItem = EditArea.GetDataList().First();
-            else
-                dataItem = e.data as DP_FormDataRepository;
             FormulaCalculationAreaInitializer initializer = new FormulaCalculationAreaInitializer();
-            initializer.DataItem = dataItem;
+            initializer.ChildSimpleContorlProperty = childSimpleContorlProperty;
             initializer.FomulaManager = this;
-            initializer.ColumnCustomFormula = columnControl.Column.ColumnCustomFormula;
-            initializer.ColumnControl = columnControl;
+            initializer.ColumnCustomFormula = childSimpleContorlProperty.SimpleColumnControl.Column.ColumnCustomFormula;
+            //initializer.ColumnControl = columnControl;
             var formulaCalculationArea = new FormulaCalculationArea(initializer);
             if (formulaCalculationArea.View != null)
             {
@@ -239,26 +283,26 @@ namespace MyUILibrary.EntityArea
         }
 
         bool? decided = null;
-        public void UpdateFromulas()
-        {
-            List<CalculatedPropertyTree> calculatedColumns = new List<EntityArea.CalculatedPropertyTree>();
-            UpdateFromulas(calculatedColumns);
-            //RemoveRedundantData(calculatedColumns);
-            //if (calculatedColumns.Any())
-            //{
-            //    decided = null;
-            //    I_FormulaDataTree formulaTree = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetViewOdFormulaTree();
-            //    formulaTree.YesClicked += FormulaTree_YesClicked;
-            //    formulaTree.NoClicked += FormulaTree_NoClicked; ;
-            //    formulaTree.AddTitle("برای داده های مورد تایید فرمولهای زیر محاسبه شده اند");
-            //    AddFormulaNode(formulaTree, calculatedColumns, null);
-            //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(formulaTree, "تایید", Enum_WindowSize.Big, true);
-            //    return decided == true;
-            //}
-            //else
-            //    return true;
+        //public void UpdateFromulas()
+        //{
+        //   // List<CalculatedPropertyTree> calculatedColumns = new List<EntityArea.CalculatedPropertyTree>();
+        // //   UpdateFromulas();
+        //    //RemoveRedundantData(calculatedColumns);
+        //    //if (calculatedColumns.Any())
+        //    //{
+        //    //    decided = null;
+        //    //    I_FormulaDataTree formulaTree = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetViewOdFormulaTree();
+        //    //    formulaTree.YesClicked += FormulaTree_YesClicked;
+        //    //    formulaTree.NoClicked += FormulaTree_NoClicked; ;
+        //    //    formulaTree.AddTitle("برای داده های مورد تایید فرمولهای زیر محاسبه شده اند");
+        //    //    AddFormulaNode(formulaTree, calculatedColumns, null);
+        //    //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(formulaTree, "تایید", Enum_WindowSize.Big, true);
+        //    //    return decided == true;
+        //    //}
+        //    //else
+        //    //    return true;
 
-        }
+        //}
 
         //private void FormulaTree_NoClicked(object sender, EventArgs e)
         //{
@@ -319,10 +363,8 @@ namespace MyUILibrary.EntityArea
         //    }
         //    return childIsValid;
         //}
-        public void UpdateFromulas(List<CalculatedPropertyTree> result, RelationshipDTO relationship = null)
+        public void UpdateFromulas()
         {
-
-
             var datalist = EditArea.GetDataList().Where(x => x.ShoudBeCounted).ToList();
             foreach (var data in datalist)
             {
@@ -330,35 +372,37 @@ namespace MyUILibrary.EntityArea
                 //بعدا حذف بشه
                 CalculatedPropertyTree calculatedPropertyTree = new CalculatedPropertyTree();
                 calculatedPropertyTree.DataItem = data;
-                if (relationship != null)
-                    calculatedPropertyTree.RelationshipInfo = relationship.Alias;
-                result.Add(calculatedPropertyTree);
+                //if (relationship != null)
+                //   //    calculatedPropertyTree.RelationshipInfo = relationship.Alias;
+                //  result.Add(calculatedPropertyTree);
                 foreach (var columnControl in EditArea.SimpleColumnControls.Where(x => x.Column.ColumnCustomFormula != null && x.Column.ColumnCustomFormula.Formula != null))
                 {
-                    var dataProperty = data.GetProperty(columnControl.Column.ID);
-                    if (dataProperty != null)
-                    {
-                        calculatedPropertyTree.Properties.Add(dataProperty);
-                        CalculateProperty(dataProperty, columnControl.Column.ColumnCustomFormula, data, false);
-                    }
-                    else
-                    {
-                        throw new Exception("asdasdF");
-                    }
+                    var childSimpleContorlProperties = data.ChildSimpleContorlProperties.First(x => x.SimpleColumnControl.Column.ID == columnControl.Column.ID);
+
+                    //var dataProperty = data.GetProperty(columnControl.Column.ID);
+                    //if (dataProperty != null)
+                    //{
+                    // calculatedPropertyTree.Properties.Add(dataProperty);
+                    CalculateProperty(childSimpleContorlProperties);
+                    //}
+                    //else
+                    //{
+                    //    throw new Exception("asdasdF");
+                    //}
                 }
-                foreach (var relationshipControl in EditArea.RelationshipColumnControls)
-                {
-                    var childRelInfo = data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship);
-                    if (!childRelInfo.IsHiddenOnState)
-                    {
-                        relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
-                        if (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
-                           || relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                        {
-                            relationshipControl.EditNdTypeArea.AreaInitializer.UIFomulaManager.UpdateFromulas(calculatedPropertyTree.ChildItems, relationshipControl.Relationship);
-                        }
-                    }
-                }
+                //foreach (var relationshipControl in EditArea.RelationshipColumnControls)
+                //{
+                //    var childRelInfo = data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship);
+                //    if (!childRelInfo.IsHiddenOnState)
+                //    {
+                //        relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
+                //        if (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
+                //           || relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+                //        {
+                //            relationshipControl.EditNdTypeArea.AreaInitializer.UIFomulaManager.UpdateFromulas(calculatedPropertyTree.ChildItems, relationshipControl.Relationship);
+                //        }
+                //    }
+                //}
             }
         }
     }

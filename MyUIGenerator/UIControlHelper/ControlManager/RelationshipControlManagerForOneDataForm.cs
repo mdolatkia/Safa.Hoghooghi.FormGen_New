@@ -115,27 +115,27 @@ namespace MyUIGenerator.UIControlHelper
 
 
 
-        public void Visiblity(object dataItem, bool visible)
-        {
+        //public void Visiblity(object dataItem, bool visible)
+        //{
 
-            //    if (LabelControlManager != null)
-            //      LabelControlManager.Visiblity(visible);
-            View.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-        }
+        //    //    if (LabelControlManager != null)
+        //    //      LabelControlManager.Visiblity(visible);
+        //    View.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        //}
 
-        public void Visiblity(bool visible)
-        {
-            //foreach (var item in RelatedControl)
-            //{
-            //    //بهتر شود
-            //    if (item is TextBlock)
-            //        LabelHelper.Visiblity(item, visible);
-            //}
+        //public void Visiblity(bool visible)
+        //{
+        //    //foreach (var item in RelatedControl)
+        //    //{
+        //    //    //بهتر شود
+        //    //    if (item is TextBlock)
+        //    //        LabelHelper.Visiblity(item, visible);
+        //    //}
 
-            //  if (LabelControlManager != null)
-            //       LabelControlManager.Visiblity(visible);
-            View.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-        }
+        //    //  if (LabelControlManager != null)
+        //    //       LabelControlManager.Visiblity(visible);
+        //    View.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        //}
         public void EnableDisable(bool enable)
         {
             MainControl.IsEnabled = enable;

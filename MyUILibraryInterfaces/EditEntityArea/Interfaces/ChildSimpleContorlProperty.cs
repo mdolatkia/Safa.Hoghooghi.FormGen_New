@@ -14,7 +14,7 @@ namespace MyUILibrary.EntityArea
         public SimpleColumnControlGenerel SimpleColumnControl { set; get; }
         public EntityInstanceProperty Property { set; get; }
 
-        I_UIControlManager GetUIControlManager
+        public I_UIControlManager GetUIControlManager
         {
             get
             {
@@ -41,8 +41,10 @@ namespace MyUILibrary.EntityArea
             SourceData = sourceData;
             SimpleColumnControl = simpleColumnControl;
             Property = property;
-
-
+            if (SimpleColumnControl.Column.ColumnValueRange != null && SimpleColumnControl.Column.ColumnValueRange.Details.Any())
+            {
+                GetUIControlManager.SetColumnValueRange(SimpleColumnControl.Column.ColumnValueRange.Details);
+            }
             CheckColumnReadonly();
         }
         public void Binded()
@@ -146,7 +148,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-       
+
         public override List<I_UIElementManager> GetColumnControlDataManagers(ControlOrLabelAsTarget controlOrLabelAsTarget)
         {
             List<I_UIElementManager> result = new List<I_UIElementManager>();
@@ -160,6 +162,6 @@ namespace MyUILibrary.EntityArea
             }
             return result;
         }
-
+       
     }
 }

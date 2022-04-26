@@ -147,10 +147,10 @@ namespace MyUIGenerator.UIControlHelper
             else
                 return CommonOperator.Equals;
         }
-        public bool SetOperator(CommonOperator searchOperator)
+        public void SetOperator(CommonOperator searchOperator)
         {
             cmbOperators.SelectedValue = searchOperator;
-            return false;
+            //return false;
         }
 
         public bool SetValue(object value)

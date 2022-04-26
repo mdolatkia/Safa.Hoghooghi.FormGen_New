@@ -307,6 +307,10 @@ namespace MyUIGenerator.View
                 txtSearch.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
             }
         }
+
+        public bool IsOpenedTemporary { set; get; }
+        public UIControlPackageTree UIControlPackageTreeItem { set; get; }
+
         public void SetTooltip(string tooltip)
         {
             if (!string.IsNullOrEmpty(tooltip))
@@ -333,7 +337,7 @@ namespace MyUIGenerator.View
         {
             this.Foreground = UIManager.GetColorFromInfoColor(color);
         }
-      
+
         public void AddPopupView(I_View_ViewEntityArea viewView)
         {
             popup1.Child = viewView as UIElement;
@@ -369,12 +373,12 @@ namespace MyUIGenerator.View
 
         public void DeHighlightCommands()
         {
-            
+
         }
 
         public void AddCommand(I_CommandManager command, bool indirect = false)
         {
-          
+
         }
         public void EnableDisable(bool enable)
         {

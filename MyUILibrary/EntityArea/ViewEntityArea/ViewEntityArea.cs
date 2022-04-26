@@ -189,9 +189,9 @@ namespace MyUILibrary.EntityArea
                 //      if (propertyControl.IsPermanentReadOnly)
                 if (!string.IsNullOrEmpty(column.Tooltip))
                 {
-                    propertyControl.ControlManager.LabelControlManager.SetTooltip(null, column.Tooltip);
+                    propertyControl.LabelControlManager.SetTooltip( column.Tooltip);
                 }
-                propertyControl.ControlManager.SetReadonly(true);
+             //   propertyControl.ControlManager.GetUIControlManager().SetReadonly(true);
 
                 ViewColumnControls.Add(propertyControl);
 
@@ -202,7 +202,7 @@ namespace MyUILibrary.EntityArea
 
                 columnControl.Visited = true;
                 var simpleColumn = (columnControl as SimpleViewColumnControl);
-                ViewView.AddUIControlPackage(simpleColumn.ControlManager, simpleColumn.ControlManager.LabelControlManager);
+                ViewView.AddUIControlPackage(simpleColumn.ControlManager, simpleColumn.LabelControlManager);
             }
         }
 

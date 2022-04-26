@@ -225,30 +225,30 @@ namespace MyUILibrary.EntityArea
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Column)
                 {
-                    var columnControl = SimpleColumnControls.FirstOrDefault(x => x.Column.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity));
+                    var columnControl = SimpleColumnControls.FirstOrDefault(x => x.Column.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity)) as SimpleColumnControlOne;
                     if (columnControl != null)
                     {
                         columnControl.UIControlPackageTreeItem = item;
                         item.Item = columnControl.SimpleControlManager;
-                        item.UIItem = columnControl.SimpleControlManager.GetUIControlManager(null).GetUIControl();
-                        (container as I_View_GridContainer).AddUIControlPackage(columnControl.SimpleControlManager, columnControl.SimpleControlManager.LabelControlManager);
+                        item.UIItem = columnControl.SimpleControlManager.GetUIControlManager().GetUIControl();
+                        (container as I_View_GridContainer).AddUIControlPackage(columnControl.SimpleControlManager, columnControl.LabelControlManager);
                         parentList.Add(item);
                         columnControl.Visited = true;
                     }
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Relationship)
                 {
-                    var columnControl = RelationshipColumnControls.FirstOrDefault(x => x.Relationship != null && x.Relationship.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity));
+                    var columnControl = RelationshipColumnControls.FirstOrDefault(x => x.Relationship != null && x.Relationship.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity)) as RelationshipColumnControlOne;
                     if (columnControl != null)
                     {
                         columnControl.UIControlPackageTreeItem = item;
                         if (UICompositions.Count == 1 && parentUIControlPackage != null && parentUIControlPackage.Item is I_TabPageContainer)
                         {
-                            (columnControl.RelationshipControlManagerGeneral as I_RelationshipControlManager).TabPageContainer = parentUIControlPackage.Item as I_TabPageContainer;
+                            columnControl.RelationshipControlManager.TabPageContainer = parentUIControlPackage.Item as I_TabPageContainer;
                         }
-                        item.Item = columnControl.RelationshipControlManagerGeneral;
-                        item.UIItem = columnControl.MainView;
-                        (container as I_View_GridContainer).AddView(columnControl.ControlManager, columnControl.ControlManager.LabelControlManager);
+                        item.Item = columnControl.RelationshipControlManager;
+                        item.UIItem = columnControl.RelationshipControlManager.GetView();
+                        (container as I_View_GridContainer).AddView(columnControl.LabelControlManager, columnControl.RelationshipControlManager);
                         parentList.Add(item);
                         columnControl.Visited = true;
                     }
@@ -328,7 +328,7 @@ namespace MyUILibrary.EntityArea
         {
             get
             {
-                return base.DataViewGeneric as I_View_EditEntityAreaDataView;
+                return DataViewGeneric as I_View_EditEntityAreaDataView;
             }
         }
 
@@ -382,14 +382,14 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        private void DecideDataSectionEnablity()
-        {
-            var data = GetDataList();
-            bool enablity = true;
-            if (data.Any(x => x.IsUseLessBecauseNewAndReadonly))
-                enablity = false;
-            DataViewGeneric.DisableEnableDataSection(enablity);
-        }
+        //private void DecideDataSectionEnablity()
+        //{
+        //    var data = GetDataList();
+        //    bool enablity = true;
+        //    if (data.Any(x => x.IsUseLessBecauseNewAndReadonly))
+        //        enablity = false;
+        //    DataViewGeneric.DisableEnableDataSection(enablity);
+        //}
 
         //صدا زده میشود RelationData تنها بوسیله ShowData برای نمایش داده های اضافه شده در آن صدا زده میشود.در مابقی موارد ShowData که AddData فقط یکجا مشخص میشود و آنهم در specificDate
         public override bool ShowDataInDataView(DP_FormDataRepository specificDate)
@@ -441,12 +441,12 @@ namespace MyUILibrary.EntityArea
                     }
                     else
                     {
-                        bool childIsDataView = (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-                                               relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
+                        bool childIsDataView = (relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
+                                               relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
                         if (childIsDataView)
-                            childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildDataView(relationshipControl.Relationship, this, relationshipControl.EditNdTypeArea, relationshipControl, specificDate);
+                            childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildDataView(relationshipControl.Relationship, this, relationshipControl.GenericEditNdTypeArea, relationshipControl, specificDate);
                         else
-                            childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildTempView(relationshipControl.Relationship, this, relationshipControl.EditNdTypeArea, relationshipControl, specificDate);
+                            childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildTempView(relationshipControl.Relationship, this, relationshipControl.GenericEditNdTypeArea, relationshipControl, specificDate);
                     }
                 }
                 if (childData.SecurityIssue == false)
@@ -473,7 +473,7 @@ namespace MyUILibrary.EntityArea
                     //        }
                     //    }
 
-                    var childResult = relationshipControl.EditNdTypeArea.SetChildRelationshipInfoAndShow(childData);
+                    var childResult = relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfoAndShow(childData);
                     if (!childResult)
                         result = false;
                 }
@@ -484,7 +484,7 @@ namespace MyUILibrary.EntityArea
                 OnDataItemShown(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
             //    CheckRelationshipReadonlyEnablity();
 
-            DecideDataSectionEnablity();
+            //DecideDataSectionEnablity();
 
             return result;
 

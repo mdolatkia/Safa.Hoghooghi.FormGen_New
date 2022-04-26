@@ -33,44 +33,43 @@ namespace MyUILibrary.FormulaArea
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetViewOfFormulaCalculationArea();
             View.CloseRequested += View_CloseRequested;
             View.FromulaExpression = initializer.ColumnCustomFormula.Formula.Tooltip;
-            var dataProperty = initializer.DataItem.GetProperty(initializer.ColumnControl.Column.ID);
-            if (dataProperty != null)
+           // var dataProperty = initializer.DataItem.GetProperty(initializer.ColumnControl.Column.ID);
+
+            AreaInitializer.FomulaManager.CalculateProperty(initializer.ChildSimpleContorlProperty);
+            if (string.IsNullOrEmpty(initializer.ChildSimpleContorlProperty.Property.FormulaException))
             {
-                AreaInitializer.FomulaManager.CalculateProperty(dataProperty, AreaInitializer.ColumnCustomFormula, AreaInitializer.DataItem,false);
-                if (string.IsNullOrEmpty(dataProperty.FormulaException))
-                {
-                    View.ResultString = dataProperty.Value;
-                }
-                else
-                {
-                    View.ResultString = "Error";
-                    View.AddException(dataProperty.FormulaException);
-                    View.ExceptionTabSelect();
-                }
-
-                if (dataProperty.FormulaUsageParemeters.Any())
-                {
-                    View.ClearTree();
-                    foreach (var item in dataProperty.FormulaUsageParemeters)
-                    {
-                        AddFormulaParameteNode(null, item);
-                    }
-                }
-
-                //if (FormulaOption == null)
-                //{
-                //    //همون اول اگر پراپرتی دیتیل یا خطا داره لود بشه
-                //    //FormulaOption = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetFormulaOptionForm();
-                //    //FormulaOption.ClaculateRequested += (sender1, e1) => FormulaOption_ClaculateRequested(sender1, e1, e.data as DP_DataRepository);
-                //    //FormulaOption.ErrorDetailRequested += (sender1, e1) => FormulaOption_ErrorDetailRequested(sender1, e1, e.data as DP_DataRepository);
-                //    //FormulaOption.ClaculationDetailsRequested += (sender1, e1) => FormulaOption_ClaculationDetailsRequested(sender1, e1, e.data as DP_DataRepository);
-                //}
-                //SetCalculatoinButtons(dataProperty);
+                View.ResultString = initializer.ChildSimpleContorlProperty.Property.Value;
             }
             else
             {
-                throw new Exception("asdasdF");
+                View.ResultString = "Error";
+                View.AddException(initializer.ChildSimpleContorlProperty.Property.FormulaException);
+                View.ExceptionTabSelect();
             }
+
+            if (initializer.ChildSimpleContorlProperty.Property.FormulaUsageParemeters.Any())
+            {
+                View.ClearTree();
+                foreach (var item in initializer.ChildSimpleContorlProperty.Property.FormulaUsageParemeters)
+                {
+                    AddFormulaParameteNode(null, item);
+                }
+            }
+
+            //if (FormulaOption == null)
+            //{
+            //    //همون اول اگر پراپرتی دیتیل یا خطا داره لود بشه
+            //    //FormulaOption = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetFormulaOptionForm();
+            //    //FormulaOption.ClaculateRequested += (sender1, e1) => FormulaOption_ClaculateRequested(sender1, e1, e.data as DP_DataRepository);
+            //    //FormulaOption.ErrorDetailRequested += (sender1, e1) => FormulaOption_ErrorDetailRequested(sender1, e1, e.data as DP_DataRepository);
+            //    //FormulaOption.ClaculationDetailsRequested += (sender1, e1) => FormulaOption_ClaculationDetailsRequested(sender1, e1, e.data as DP_DataRepository);
+            //}
+            //SetCalculatoinButtons(dataProperty);
+            //}
+            //else
+            //{
+            //    throw new Exception("asdasdF");
+            //}
 
         }
 

@@ -628,10 +628,10 @@ namespace MyUILibrary.EntityArea
 
                     SimpleColumnControls.Add(propertyControl);
                     sortedListOfColumnControls.Add(propertyControl);
-                    if (hasRangeOfValues)
-                    {
-                        SetColumnValueRange(propertyControl, propertyControl.Column.ColumnValueRange.Details);
-                    }
+                    //if (hasRangeOfValues)
+                    //{
+                    //    SetColumnValueRange(propertyControl, propertyControl.Column.ColumnValueRange.Details);
+                    //}
 
                 }
             }
@@ -2964,11 +2964,10 @@ namespace MyUILibrary.EntityArea
         //    }
         //}
 
-        public void SetColumnValueRange(SimpleColumnControlGenerel propertyControl, List<ColumnValueRangeDetailsDTO> details)
-        {
-            inja es;AgentHelper beshe khode property control kone
-            propertyControl.SimpleControlManagerGeneral.SetColumnValueRange(details);
-        }
+        //public void SetColumnValueRange(SimpleColumnControlGenerel propertyControl, List<ColumnValueRangeDetailsDTO> details)
+        //{
+        //    propertyControl.SimpleControlManagerGeneral.SetColumnValueRange(details);
+        //}
 
 
 

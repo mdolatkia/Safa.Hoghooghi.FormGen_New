@@ -11,6 +11,7 @@ namespace MyUILibrary.EntityArea
 
     public abstract class BaseChildProperty
     {
+        public List<PropertyFormulaComment> PropertyFormulaCommentItems = new List<PropertyFormulaComment>();
         public DP_FormDataRepository SourceData { set; get; }
         public abstract List<I_UIElementManager> GetColumnControlDataManagers(ControlOrLabelAsTarget controlOrLabelAsTarget);
         public BaseColumnControl BaseColumnControl { set; get; }
@@ -107,6 +108,12 @@ namespace MyUILibrary.EntityArea
                     columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
                     columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات اعمال نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
                 }
+
+                foreach (var item in PropertyFormulaCommentItems)
+                {
+                    columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message, ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.Normal));
+                }
+
                 SetItemColor(columnControlColorItems);
                 SetItemMessage(columnControlMessageItems);
             }
@@ -293,6 +300,21 @@ namespace MyUILibrary.EntityArea
 
         //    return result;
         //}
+        public void AddPropertyFormulaComment(string key, string message)
+        {
+            if (!PropertyFormulaCommentItems.Any(x => x.Key == key))
+                PropertyFormulaCommentItems.Add(new PropertyFormulaComment(key, message));
+
+            SetMessageAndColor();
+        }
+        public void RemovePropertyFormulaComment(string key)
+        {
+            if (PropertyFormulaCommentItems.Any(x => x.Key == key))
+                PropertyFormulaCommentItems.RemoveAll(x => x.Key == key);
+
+            SetMessageAndColor();
+        }
+
 
         private List<DataColorItem> DataItemColorItems = new List<DataColorItem>();
         private List<DataMessageItem> DataItemMessageItems = new List<DataMessageItem>();

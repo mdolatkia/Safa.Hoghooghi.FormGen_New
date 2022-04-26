@@ -193,9 +193,9 @@ namespace MyUILibrary.EntityArea
                     columnControl = SimpleColumnControls.FirstOrDefault(x => x.Column.ID == prop.ColumnID);
 
                 //برای عادی ها جواب میده اگر خودش کمنترل بود چی
-                columnControl.ControlManager.GetUIControlManager(null).SetValue(prop.Value);
-                if (columnControl.ControlManager.HasOperator())
-                    columnControl.ControlManager.SetOperator(prop.Operator);
+                columnControl.ControlManager.GetUIControlManager().SetValue(prop.Value);
+                //  if (columnControl.ControlManager.HasOperator())
+                columnControl.ControlManager.GetUIControlManager().SetOperator(prop.Operator);
 
             }
             return true;
@@ -241,7 +241,7 @@ namespace MyUILibrary.EntityArea
                             //         propertyControl.ControlPackage = new UIControlPackageForRelationshipColumn();
                             propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelationshipControlManagerForOneDataForm(propertyControl.EditNdTypeArea.TemporaryDisplayView, GetRelationshipUISetting(), true, propertyControl.EntitySearchColumn.Alias);
                             if (!string.IsNullOrEmpty(propertyControl.EntitySearchColumn.Tooltip))
-                                propertyControl.ControlManager.LabelControlManager.SetTooltip(null, propertyControl.EntitySearchColumn.Tooltip);
+                                propertyControl.LabelControlManager.SetTooltip( propertyControl.EntitySearchColumn.Tooltip);
                         }
                         RelationshipColumnControls.Add(propertyControl);
 
@@ -261,10 +261,10 @@ namespace MyUILibrary.EntityArea
                     //        propertyControl.ControlPackage = new UIControlPackageForSimpleColumn();
                     propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(propertyControl.Column, GetColumnUISetting(propertyControl.Column), false, propertyControl.Operators, true, propertyControl.EntitySearchColumn.Alias);
                     if (!string.IsNullOrEmpty(propertyControl.EntitySearchColumn.Tooltip))
-                        propertyControl.ControlManager.LabelControlManager.SetTooltip(null, propertyControl.EntitySearchColumn.Tooltip);
+                        propertyControl.LabelControlManager.SetTooltip( propertyControl.EntitySearchColumn.Tooltip);
 
                     if (propertyControl.Operators.Any())
-                        propertyControl.ControlManager.SetOperator(propertyControl.Operators.First(x => x.Operator == GetDefaultOperator(propertyControl.Column)).Operator);
+                        propertyControl.ControlManager.GetUIControlManager().SetOperator(propertyControl.Operators.First(x => x.Operator == GetDefaultOperator(propertyControl.Column)).Operator);
                     SimpleColumnControls.Add(propertyControl);
                 }
             }
@@ -276,13 +276,13 @@ namespace MyUILibrary.EntityArea
                     if (searchcolumn.RelationshipTail != null)
                     {
                         var relControl = RelationshipColumnControls.First(x => x.EntitySearchColumn == searchcolumn);
-                        SimpleSearchView.AddView(relControl.ControlManager.LabelControlManager,relControl.ControlManager);
+                        SimpleSearchView.AddView(relControl.LabelControlManager, relControl.ControlManager);
                     }
                 }
                 else
                 {
                     var simpleControl = SimpleColumnControls.First(x => x.EntitySearchColumn == searchcolumn);
-                    SimpleSearchView.AddUIControlPackage(simpleControl.ControlManager, simpleControl.ControlManager.LabelControlManager);
+                    SimpleSearchView.AddUIControlPackage(simpleControl.ControlManager, simpleControl.LabelControlManager);
                 }
             }
         }
@@ -408,7 +408,7 @@ namespace MyUILibrary.EntityArea
             firstRepository.EntitySearchID = EntitySearch == null ? 0 : EntitySearch.ID;
             foreach (var property in SimpleColumnControls)
             {
-                var value = property.ControlManager.GetValue(null);
+                var value = property.ControlManager.GetUIControlManager().GetValue();
                 if (PropertyHasValue(property, value))
                 {
                     LogicPhraseDTO logic = null;
@@ -422,7 +422,7 @@ namespace MyUILibrary.EntityArea
                     searchProperty.ColumnID = property.Column.ID;
                     searchProperty.IsKey = property.Column.PrimaryKey;
                     searchProperty.Value = value;
-                    searchProperty.Operator = property.ControlManager.GetOperator();
+                    searchProperty.Operator = property.ControlManager.GetUIControlManager().GetOperator();
                     logic.Phrases.Add(searchProperty);
                 }
             }

@@ -119,13 +119,14 @@ namespace MyUILibrary.EntityArea
         //event EventHandler<Arg_CommandExecuted> CommandExecuted;
         //void AddCommands(List<I_Command> Commands, TemplateEntityUISettings templateEntityUISettings);
         //  UIControlPackageTree UIControlPackageTreeItem { get; set; }
+        UIControlPackageTree UIControlPackageTreeItem { get; set; }
 
 
     }
     //public interface I_View_ControlContainer : I_View_Area
     //{
 
-      
+
 
     //    //bool AllowExpand { set; get; }
     //    //void SetExpanderInfo(object header);

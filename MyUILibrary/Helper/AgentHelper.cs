@@ -523,7 +523,7 @@ namespace MyUILibrary
             //فرض بر اینه که تنها ستونهایی که کنترل دارند اضافه شود.تازه برای روابط فارن به اصلی بهتر است ستونها کلید خارجی نیز اضافه شوند
             if (editEntityArea is I_EditEntityAreaOneData)
             {
-                columns = (editEntityArea as I_EditEntityAreaOneData).SimpleColumnControls.Cast<SimpleColumnControl>().Select(x => x.Column).ToList();
+                columns = (editEntityArea as I_EditEntityAreaOneData).SimpleColumnControls.Cast<SimpleColumnControlOne>().Select(x => x.Column).ToList();
                 foreach (var relationshipControl in (editEntityArea as I_EditEntityAreaOneData).RelationshipColumnControls.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
                 {
                     foreach (var col in relationshipControl.Relationship.RelationshipColumns)
@@ -543,7 +543,7 @@ namespace MyUILibrary
             }
             else if (editEntityArea is I_EditEntityAreaMultipleData)
             {
-                columns = (editEntityArea as I_EditEntityAreaMultipleData).SimpleColumnControls.Cast<SimpleColumnControl>().Select(x => x.Column).ToList();
+                columns = (editEntityArea as I_EditEntityAreaMultipleData).SimpleColumnControls.Cast<SimpleColumnControlMultiple>().Select(x => x.Column).ToList();
                 foreach (var relationshipControl in (editEntityArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
                 {
                     foreach (var col in relationshipControl.Relationship.RelationshipColumns)
@@ -596,7 +596,7 @@ namespace MyUILibrary
                 if (column.ColumnCustomFormula != null && column.ColumnCustomFormula.CalculateFormulaAsDefault == true)
                 {
                     var property = result.GetProperty(column.ID);
-                    editEntityArea.AreaInitializer.UIFomulaManager.CalculateProperty(property, column.ColumnCustomFormula, result, true);
+                    editEntityArea.AreaInitializer.UIFomulaManager.CalculateProperty(result, property);
                     //    var res = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.CalculateFormula(column.ColumnCustomFormula.FormulaID, result, AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
                     //if (res.Exception == null)
                     //    value = res.Result;

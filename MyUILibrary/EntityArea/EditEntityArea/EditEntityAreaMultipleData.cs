@@ -180,7 +180,7 @@ namespace MyUILibrary.EntityArea
                     //    }
                     //}
 
-                    SetBinding(specificDate, propertyControl, property);
+                    SetBinding(specificDate, propertyControl as SimpleColumnControlMultiple, property);
                     //ShowTypePropertyControlValue(specificDate, propertyControl, property.Value);
                     //}
                 }
@@ -204,12 +204,12 @@ namespace MyUILibrary.EntityArea
                     if (!relationshipFirstSideHasValue)
                         childData = specificDate.AddChildRelationshipInfo(relationshipControl);
                     else
-                        childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildTempView(relationshipControl.Relationship, this, relationshipControl.EditNdTypeArea, relationshipControl, specificDate);
+                        childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildTempView(relationshipControl.Relationship, this, relationshipControl.GenericEditNdTypeArea, relationshipControl, specificDate);
 
                 }
                 if (childData.SecurityIssue == false)
                 {
-                    relationshipControl.EditNdTypeArea.SetChildRelationshipInfoAndShow(childData);
+                    relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfoAndShow(childData);
 
                     //if (relationshipControl.EditNdTypeArea.SecurityReadOnlyByParent || relationshipControl.EditNdTypeArea.AreaInitializer.SecurityReadOnly)
                     //    if (!childData.RelatedData.Any())
@@ -322,19 +322,19 @@ namespace MyUILibrary.EntityArea
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Column)
                 {
-                    var columnControl = SimpleColumnControls.FirstOrDefault(x => x.Column.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity));
+                    var columnControl = SimpleColumnControls.FirstOrDefault(x => x.Column.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity)) as SimpleColumnControlMultiple;
                     if (columnControl != null)
                     {
-                        SpecializedDataView.AddUIControlPackage(columnControl.SimpleControlManager, columnControl.SimpleControlManager.LabelControlManager);
+                        SpecializedDataView.AddUIControlPackage(columnControl.SimpleControlManager, columnControl.LabelControlManager);
                         columnControl.Visited = true;
                     }
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Relationship)
                 {
-                    var columnControl = RelationshipColumnControls.FirstOrDefault(x => x.Relationship != null && x.Relationship.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity));
+                    var columnControl = RelationshipColumnControls.FirstOrDefault(x => x.Relationship != null && x.Relationship.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity)) as RelationshipColumnControlMultiple;
                     if (columnControl != null)
                     {
-                        SpecializedDataView.AddView(columnControl.RelationshipControlManagerGeneral.LabelControlManager, columnControl.RelationshipControlManagerGeneral);
+                        SpecializedDataView.AddView(columnControl.LabelControlManager, columnControl.RelationshipControlManager);
                         columnControl.Visited = true;
                     }
                 }
@@ -381,7 +381,7 @@ namespace MyUILibrary.EntityArea
         {
             get
             {
-                return base.DataViewGeneric as I_View_EditEntityAreaMultiple;
+                return DataViewGeneric as I_View_EditEntityAreaMultiple;
             }
         }
         public override void DataItemVisiblity(object dataItem, bool visible)

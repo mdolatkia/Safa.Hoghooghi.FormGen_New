@@ -46,17 +46,17 @@ namespace MyUILibrary.EntityArea
                 {
                     foreach (var relationshipControl in EditArea.RelationshipColumnControls)
                     {
-                        if (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
-                                 || relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+                        if (relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
+                                 || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
                         {
                             var childRelInfo = data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship);
                             if (!childRelInfo.IsHiddenOnState)
                             {
-                                relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
+                                relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
 
                                 if (fromUpdate && EditArea.AreaInitializer.SourceRelationColumnControl == null)
                                 {
-                                    if (!relationshipControl.EditNdTypeArea.AreaInitializer.UIValidationManager.ValidateData(false))
+                                    if (!relationshipControl.GenericEditNdTypeArea.AreaInitializer.UIValidationManager.ValidateData(false))
                                         result = false;
                                 }
                             }
@@ -105,7 +105,7 @@ namespace MyUILibrary.EntityArea
 
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
-                relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship));
+                relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship));
 
                 ValidateRelationshipColumn(data, data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship), relationshipControl);
             }
@@ -217,7 +217,7 @@ namespace MyUILibrary.EntityArea
                             {//اگر فول باشد در خود فرمش بررسی خواهد شد
                                 if (!superDataItem.IsFullData)
                                 {
-                                    var superEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetFullEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), relationshipControl.EditNdTypeArea.AreaInitializer.EntityID);
+                                    var superEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetFullEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), relationshipControl.GenericEditNdTypeArea.AreaInitializer.EntityID);
                                     var otherSuperToSubRelationships = superEntity.Relationships.Where(x => x is SuperToSubRelationshipDTO && (x as SuperToSubRelationshipDTO).ISARelationship.ID == isaRelationship.ID
                                     && (x as SuperToSubRelationshipDTO).ID != relationshipControl.Relationship.PairRelationshipID);
                                     bool moreThanOneData = false;
@@ -268,7 +268,7 @@ namespace MyUILibrary.EntityArea
                 parentSubToSuperName = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).Entity1;
                 parentISARelationshipID = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.ID;
             }
-            List<Tuple<ISARelationshipDTO, List<RelationshipColumnControl>>> isaRelationships = new List<Tuple<ISARelationshipDTO, List<RelationshipColumnControl>>>();
+            List<Tuple<ISARelationshipDTO, List<RelationshipColumnControlGeneral>>> isaRelationships = new List<Tuple<ISARelationshipDTO, List<RelationshipColumnControlGeneral>>>();
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
                 var childRel = data.ChildRelationshipInfos.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
@@ -277,10 +277,10 @@ namespace MyUILibrary.EntityArea
                     if (relationshipControl.Relationship.TypeEnum == Enum_RelationshipType.SuperToSub)
                     {
                         var isaID = (relationshipControl.Relationship as SuperToSubRelationshipDTO).ISARelationship.ID;
-                        Tuple<ISARelationshipDTO, List<RelationshipColumnControl>> isaRelationship = null;
+                        Tuple<ISARelationshipDTO, List<RelationshipColumnControlGeneral>> isaRelationship = null;
                         if (!isaRelationships.Any(x => x.Item1.ID == isaID))
                         {
-                            isaRelationship = new Tuple<ISARelationshipDTO, List<RelationshipColumnControl>>((relationshipControl.Relationship as SuperToSubRelationshipDTO).ISARelationship, new List<RelationshipColumnControl>());
+                            isaRelationship = new Tuple<ISARelationshipDTO, List<RelationshipColumnControlGeneral>>((relationshipControl.Relationship as SuperToSubRelationshipDTO).ISARelationship, new List<RelationshipColumnControlGeneral>());
                             isaRelationships.Add(isaRelationship);
                         }
                         else
@@ -380,7 +380,7 @@ namespace MyUILibrary.EntityArea
                         {
                             if (!superDataItem.IsFullData)
                             {
-                                var superEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetFullEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), relationshipControl.EditNdTypeArea.AreaInitializer.EntityID);
+                                var superEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetFullEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), relationshipControl.GenericEditNdTypeArea.AreaInitializer.EntityID);
                                 var otherSuperToSubRelationships = superEntity.Relationships.Where(x => x is SuperToSubRelationshipDTO && (x as SuperToSubRelationshipDTO).ISARelationship.ID == unionRelationship.ID
                                 && (x as SuperToSubRelationshipDTO).ID != relationshipControl.Relationship.PairRelationshipID);
                                 bool moreThanOneData = false;
@@ -427,7 +427,7 @@ namespace MyUILibrary.EntityArea
                 parentSubToSuperName = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).Entity1;
                 parentUnionRelationshipID = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship.ID;
             }
-            List<Tuple<UnionRelationshipDTO, List<RelationshipColumnControl>>> unionRelationships = new List<Tuple<UnionRelationshipDTO, List<RelationshipColumnControl>>>();
+            List<Tuple<UnionRelationshipDTO, List<RelationshipColumnControlGeneral>>> unionRelationships = new List<Tuple<UnionRelationshipDTO, List<RelationshipColumnControlGeneral>>>();
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
                 var childRel = data.ChildRelationshipInfos.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
@@ -436,10 +436,10 @@ namespace MyUILibrary.EntityArea
                     if (relationshipControl.Relationship.TypeEnum == Enum_RelationshipType.UnionToSubUnion)
                     {
                         var unionID = (relationshipControl.Relationship as UnionToSubUnionRelationshipDTO).UnionRelationship.ID;
-                        Tuple<UnionRelationshipDTO, List<RelationshipColumnControl>> unionRelationship = null;
+                        Tuple<UnionRelationshipDTO, List<RelationshipColumnControlGeneral>> unionRelationship = null;
                         if (!unionRelationships.Any(x => x.Item1.ID == unionID))
                         {
-                            unionRelationship = new Tuple<UnionRelationshipDTO, List<RelationshipColumnControl>>((relationshipControl.Relationship as UnionToSubUnionRelationshipDTO).UnionRelationship, new List<RelationshipColumnControl>());
+                            unionRelationship = new Tuple<UnionRelationshipDTO, List<RelationshipColumnControlGeneral>>((relationshipControl.Relationship as UnionToSubUnionRelationshipDTO).UnionRelationship, new List<RelationshipColumnControlGeneral>());
                             unionRelationships.Add(unionRelationship);
                         }
                         else
@@ -498,7 +498,7 @@ namespace MyUILibrary.EntityArea
 
 
         }
-        private void ValidateRelationshipColumn(DP_FormDataRepository dataItem, ChildRelationshipInfo childRelationshipInfo, RelationshipColumnControl relationshipControl)
+        private void ValidateRelationshipColumn(DP_FormDataRepository dataItem, ChildRelationshipInfo childRelationshipInfo, RelationshipColumnControlGeneral relationshipControl)
         {
             if (!childRelationshipInfo.IsHiddenOnState)
             {
@@ -521,15 +521,15 @@ namespace MyUILibrary.EntityArea
                 var childRel = data.ChildRelationshipInfos.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
                 if (!childRel.IsHiddenOnState)
                 {
-                    if (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect
-                    || relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect
-                    || relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.Select)
+                    if (relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect
+                    || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect
+                    || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.Select)
                     {
-                        if (relationshipControl.EditNdTypeArea.SearchViewEntityArea != null)
+                        if (relationshipControl.GenericEditNdTypeArea.SearchViewEntityArea != null)
                         {
-                            if (relationshipControl.EditNdTypeArea.SearchViewEntityArea.RelationshipFilters.Any())
+                            if (relationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.RelationshipFilters.Any())
                             {
-                                foreach (var filter in relationshipControl.EditNdTypeArea.SearchViewEntityArea.RelationshipFilters)
+                                foreach (var filter in relationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.RelationshipFilters)
                                 {
                                     if (data.ChildRelationshipInfos.Any(x => x.Relationship.ID == filter.RelationshipID && x.RelatedData.Any()))
                                     {
@@ -578,7 +578,7 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        private void ValidateSimpleColumn(DP_FormDataRepository dataItem, EntityInstanceProperty dataColumn, SimpleColumnControl simplePropertyControl)
+        private void ValidateSimpleColumn(DP_FormDataRepository dataItem, EntityInstanceProperty dataColumn, SimpleColumnControlGenerel simplePropertyControl)
         {
             if (simplePropertyControl.Column.IsMandatory == true)
             {

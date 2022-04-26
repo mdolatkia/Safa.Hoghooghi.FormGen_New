@@ -1058,7 +1058,7 @@ namespace MyUILibrary.EntityArea
         private static EditEntityAreaByRelationshipTail GetEditEntityAreaByRelationshipTail(I_EditEntityArea editEntityArea, EntityRelationshipTailDTO entityRelationshipTail)
         {
             //اگر مالتی پل بود و ...
-            RelationshipColumnControl relatedEntityArea = null;
+            RelationshipColumnControlGeneral relatedEntityArea = null;
             if (editEntityArea is I_EditEntityAreaOneData)
                 relatedEntityArea = (editEntityArea as I_EditEntityAreaOneData).RelationshipColumnControls.FirstOrDefault(x => x.Relationship.ID == entityRelationshipTail.Relationship.ID);
             else if (editEntityArea is I_EditEntityAreaMultipleData)
@@ -1070,12 +1070,12 @@ namespace MyUILibrary.EntityArea
                 {
                     EditEntityAreaByRelationshipTail result = new MyUILibrary.EditEntityAreaByRelationshipTail();
                     result.EditEntityAreaFound = true;
-                    result.FoundEditEntityArea = relatedEntityArea.EditNdTypeArea;
+                    result.FoundEditEntityArea = relatedEntityArea.GenericEditNdTypeArea;
                     return result;
                 }
                 else
                 {
-                    return GetEditEntityAreaByRelationshipTail(relatedEntityArea.EditNdTypeArea, entityRelationshipTail.ChildTail);
+                    return GetEditEntityAreaByRelationshipTail(relatedEntityArea.GenericEditNdTypeArea, entityRelationshipTail.ChildTail);
                 }
             }
             else
