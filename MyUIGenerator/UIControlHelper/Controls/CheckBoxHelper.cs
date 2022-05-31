@@ -22,7 +22,10 @@ namespace MyUIGenerator.UIControlHelper
 
      
         CheckBox checkbox;
-        public override Control MainControl { get { return checkbox; } }
+        public override FrameworkElement MainControl { get { return checkbox; } }
+
+        public Brush DefaultBackground { get; private set; }
+
         public CheckBoxHelper(ColumnDTO correspondingTypeProperty, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {
             //UIControlPackage package = new UIControlPackage();
@@ -40,6 +43,8 @@ namespace MyUIGenerator.UIControlHelper
             if (correspondingTypeProperty.IsNull)
                 checkbox.IsThreeState = true;
             theGrid.Children.Add(checkbox);
+
+
             //textBox.Mask = "###";
 
             //  textBox.FormatString = "";
@@ -54,8 +59,14 @@ namespace MyUIGenerator.UIControlHelper
             //control.Margin = new System.Windows.Thickness(5);
             checkbox.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             //     checkbox.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-           
+
+            DefaultBackground = checkbox.Background;
             //return package;
+
+            DefaultBorderBrush = checkbox.BorderBrush;
+            DefaultBorderThickness = checkbox.BorderThickness;
+            DefaultBackground = checkbox.Background;
+            DefaultForeground = checkbox.Foreground;
         }
 
 
@@ -127,41 +138,42 @@ namespace MyUIGenerator.UIControlHelper
             return false;
         }
 
+
         public void SetBorderColor(InfoColor color)
         {
-            checkbox.BorderBrush = UIManager.GetColorFromInfoColor(color);
-            checkbox.BorderThickness = new Thickness(1);
+            if (color != InfoColor.Default)
+            {
+                checkbox.BorderBrush = UIManager.GetColorFromInfoColor(color);
+                checkbox.BorderThickness = new Thickness(1);
+            }
+            else
+            {
+                checkbox.BorderBrush = DefaultBorderBrush;
+                checkbox.BorderThickness = DefaultBorderThickness;
+            }
         }
         public void SetBackgroundColor(InfoColor color)
         {
-            checkbox.Background = UIManager.GetColorFromInfoColor(color);
+            if (color != InfoColor.Default)
+            {
+                checkbox.Background = UIManager.GetColorFromInfoColor(color);
+            }
+            else
+            {
+                checkbox.Background = DefaultBackground;
+            }
         }
         public void SetForegroundColor(InfoColor color)
         {
-            checkbox.Foreground = UIManager.GetColorFromInfoColor(color);
+            if (color != InfoColor.Default)
+            {
+                checkbox.Foreground = UIManager.GetColorFromInfoColor(color);
+            }
+            else
+            {
+                checkbox.Foreground = DefaultForeground;
+            }
         }
-
-        //public void SetTooltip( string tooltip)
-        //{
-        //    if (!string.IsNullOrEmpty(tooltip))
-        //        ToolTipService.SetToolTip(checkbox, tooltip);
-        //    else
-        //        ToolTipService.SetToolTip(checkbox, null);
-        //}
-
-        //public void ClearTooltip()
-        //{
-        //    ToolTipService.SetToolTip(checkbox, null);
-        //}
-
-
-
-        //public void ClearBorderColor()
-        //{
-        //    checkbox.BorderBrush = new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Black));
-        //    checkbox.BorderThickness = new Thickness(1);
-        //}
-
         public void SetBinding( EntityInstanceProperty property)
         {
             Binding binding = new Binding("Value");
@@ -173,6 +185,8 @@ namespace MyUIGenerator.UIControlHelper
         {
             throw new NotImplementedException();
         }
+
+     
 
         //public void AddButtonMenu( ConrolPackageMenu menu)
         //{

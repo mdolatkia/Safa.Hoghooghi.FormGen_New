@@ -29,7 +29,10 @@ namespace MyUIGenerator.View
     public partial class UC_AdvancedSearchEntityArea : UserControl, I_View_AdvancedSearchEntityArea
     {
 
-
+        public Brush DefaultBorderBrush { get; }
+        public Thickness DefaultBorderThickness { get; }
+        public Brush DefaultBackground { get; }
+        public Brush DefaultForeground { get; }
         //View_Container View_Container { set; get; }
         public UC_AdvancedSearchEntityArea()
 
@@ -42,7 +45,10 @@ namespace MyUIGenerator.View
             //grdArea.Children.Add(View_Container.Grid);
 
 
-
+            DefaultBorderBrush = this.BorderBrush;
+            DefaultBorderThickness = this.BorderThickness;
+            DefaultBackground = this.Background;
+            DefaultForeground = this.Foreground;
 
         }
 
@@ -118,6 +124,21 @@ namespace MyUIGenerator.View
         public void SetForegroundColor(InfoColor color)
         {
             this.Foreground = UIManager.GetColorFromInfoColor(color);
+        }
+        public void SetBorderColorDefault()
+        {
+            this.BorderBrush = DefaultBorderBrush;
+            this.BorderThickness = DefaultBorderThickness;
+        }
+
+        public void SetBackgroundColorDefault()
+        {
+            this.Background = DefaultBackground;
+        }
+
+        public void SetForegroundColorDefault()
+        {
+            this.Background = DefaultForeground;
         }
         public void DeHighlightCommands()
         {

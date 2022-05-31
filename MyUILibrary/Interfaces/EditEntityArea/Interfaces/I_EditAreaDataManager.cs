@@ -10,13 +10,13 @@ namespace MyUILibrary.EntityArea
 {
     public interface I_EditAreaDataManager
     {
-        ChildRelationshipInfo SerachDataFromParentRelationForChildDataView(RelationshipDTO relationship, I_EditEntityAreaOneData sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControlGeneral relationshipColumnControl, DP_FormDataRepository parentRelationData);
-        ChildRelationshipInfo SerachDataFromParentRelationForChildTempView(RelationshipDTO relationship, I_EditEntityArea sourceEditEntityArea, I_EditEntityArea targetEditEntityArea, RelationshipColumnControlGeneral relationshipColumnControl, DP_FormDataRepository parentRelationData);
+      //  void SerachDataFromParentRelationForChildDataView(ChildRelationshipInfo ChildRelationshipInfo);
+     //   void SerachDataFromParentRelationForChildTempView(ChildRelationshipInfo ChildRelationshipInfo);
         DP_DataView GetDataView(DP_DataRepository data);
         bool ConvertDataViewToFullData(int entityID, DP_FormDataRepository searchViewData, I_EditEntityArea editEntityArea);
         DP_FormDataRepository GetFullDataFromDataViewSearch(int entityID, DP_DataView searchViewData, I_EditEntityArea editEntityArea);
-        DP_DataRepository SearchDataForEditFromExternalSource(int entityID, DP_BaseData searchViewData, I_EditEntityArea editEntityArea);
-        DP_DataView SearchDataForViewFromExternalSource(int entityID, DP_BaseData searchViewData, I_EditEntityArea editEntityArea);
+        DP_FormDataRepository SearchDataForEditFromExternalSource(int entityID, DP_BaseData searchViewData, I_EditEntityArea editEntityArea);
+        DP_FormDataRepository SearchDataForViewFromExternalSource(int entityID, DP_BaseData searchViewData, I_EditEntityArea editEntityArea);
         DP_FormDataRepository ConvertDP_DataViewToDP_DataRepository(DP_DataView searechedData, I_EditEntityArea editEntityArea);
         //List<DP_DataRepository> SerachDataViewFromParentRelation(int relationshipID, DP_DataRepository parentRelationData);
 

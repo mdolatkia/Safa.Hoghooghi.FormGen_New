@@ -46,7 +46,12 @@ namespace MyUILibrary.EntityArea.Commands
             //{
             //    EditArea.ChildRelationshipInfo.RelatedData.Add(newData);
             //}
-            EditArea.AddData(newData, true);
+            if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
+                EditArea.AddData(newData);
+            else
+            {
+                EditArea.ChildRelationshipInfoBinded.AddDataToChildRelationshipInfo(newData, true);
+            }
             //EditArea.ShowDataInDataView(list, false);
         }
 

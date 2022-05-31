@@ -61,6 +61,7 @@ namespace MyCacheManager
     public enum CacheItemType
     {
         Entity,
+        PermissionedEntity,
         EntityUICompositionTree,
         Column,
         Relationship,
@@ -70,7 +71,9 @@ namespace MyCacheManager
         EntityGeneralDirectSecurity,
         DataItems,
         Validation,
-        Command
+        Command,
+        EntityListView,
+        RelationshipTail
 
 
     }

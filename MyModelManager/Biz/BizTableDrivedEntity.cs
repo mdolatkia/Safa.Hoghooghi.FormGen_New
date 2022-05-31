@@ -240,6 +240,7 @@ namespace MyModelManager
 
         public DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, DataEntryRelationshipDTO parentRelationship = null)
         {
+
             var entity = GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships);
             var finalEntity = CheckDataEntryPermission(requester, entity, true, parentRelationship);
             return ToDataEntryEntityDTO(requester, finalEntity, parentRelationship);
@@ -445,12 +446,18 @@ namespace MyModelManager
         }
         public TableDrivedEntityDTO GetPermissionedEntity(DR_Requester requester, int entityID)
         {
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.PermissionedEntity, entityID.ToString(),requester.Identity.ToString());
+            if (cachedItem != null)
+                return (cachedItem as TableDrivedEntityDTO);
             var entity = GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships);
-            return CheckDataEntryPermission(requester, entity, false);
+            var result= CheckDataEntryPermission(requester, entity, false);
+            CacheManager.GetCacheManager().AddCacheItem(result,CacheItemType.PermissionedEntity, entityID.ToString(), requester.Identity.ToString());
+            return result;
         }
 
         private TableDrivedEntityDTO CheckDataEntryPermission(DR_Requester requester, TableDrivedEntityDTO entity, bool dataEntry, DataEntryRelationshipDTO parentRelationship = null)
         {
+
             //باید روابط اجباری همه برای ورود اطلاعلات فعال باشند. بعداً این کنترلها چک شود
             BizColumn bizColumn = new MyModelManager.BizColumn();
             BizRelationship bizRelationship = new BizRelationship();
@@ -954,9 +961,9 @@ namespace MyModelManager
             // ستونهای disable از لیست ستونها حذف میشوند
 
 
-            //var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Entity, item.ID.ToString(), columnInfoType.ToString(), relationshipInfoType.ToString());
-            //if (cachedItem != null)
-            //    return (cachedItem as TableDrivedEntityDTO);
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Entity, item.ID.ToString(), columnInfoType.ToString(), relationshipInfoType.ToString());
+            if (cachedItem != null)
+                return (cachedItem as TableDrivedEntityDTO);
 
 
             TableDrivedEntityDTO result = new TableDrivedEntityDTO();

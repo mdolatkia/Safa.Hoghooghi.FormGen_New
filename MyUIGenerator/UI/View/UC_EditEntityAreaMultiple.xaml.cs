@@ -44,7 +44,7 @@ namespace MyUIGenerator.View
             InitializeComponent();
 
 
-            grdArea.Children.Add(dataGridHelper.dataGrid);
+            grdArea.Children.Add(dataGrid);
         }
 
     

@@ -127,7 +127,7 @@ namespace MyUILibrary.EntitySelectArea
             //    if (childViewData.ResultDataItems.Count == 1)
             //    {
 
-            SelectDataArea.ClearData(false);
+            SelectDataArea.ClearData();
             SelectDataArea.ShowDataFromExternalSource(dataInstance);
             //    }
             //}

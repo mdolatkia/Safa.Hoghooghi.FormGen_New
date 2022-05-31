@@ -35,7 +35,7 @@ namespace MyUIGenerator.View
         public UC_ViewEntityArea()
         {
             InitializeComponent();
-            grdArea.Children.Add(dataGridHelper.dataGrid);
+            grdArea.Children.Add(dataGrid);
             //dataGridHelper = new DataGridHelper();
             //grdArea.Children.Add(dataGridHelper.dataGrid);
             //dataGridHelper.dataGrid.MouseDoubleClick += LayoutDataGrid_MouseDoubleClick;

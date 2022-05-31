@@ -39,37 +39,48 @@ namespace MyUILibrary.EntityArea
         {
             SourceData = sourceData;
             BaseColumnControl = baseColumnControl;
-            SetMessageAndColor();
+      //      SetMessageAndColor();
         }
 
-        public void AddReadonlyState(string key, string message, bool onShow)
+        public void AddReadonlyState(string key, string message, bool permanent)
         {
-            if (!ControlReadonlyStateItems.Any(x => x.Key == key))
-                ControlReadonlyStateItems.Add(new ControlStateItem(key, message, onShow));
-
+            if (ControlReadonlyStateItems.Any(x => x.Key == key))
+                ControlReadonlyStateItems.Remove(ControlReadonlyStateItems.First(x => x.Key == key));
+            ControlReadonlyStateItems.Add(new ControlStateItem(key, message, permanent));
+          
             SetMessageAndColor();
         }
+
+
+
         public void RemoveReadonlyState(string key)
         {
             if (ControlReadonlyStateItems.Any(x => x.Key == key && x.Permanent == false))
                 ControlReadonlyStateItems.RemoveAll(x => x.Key == key && x.Permanent == false);
-
+           
             SetMessageAndColor();
         }
-        public void AddHiddenState(string key, string message, bool onShow)
-        {
-            if (!ControlHiddenStateItems.Any(x => x.Key == key))
-                ControlHiddenStateItems.Add(new ControlStateItem(key, message, onShow));
 
+       
+        public void AddHiddenState(string key, string message, bool permanent)
+        {
+            if (ControlHiddenStateItems.Any(x => x.Key == key))
+                ControlHiddenStateItems.Remove(ControlHiddenStateItems.First(x => x.Key == key));
+            ControlHiddenStateItems.Add(new ControlStateItem(key, message, permanent));
+
+       
             SetMessageAndColor();
         }
         public void RemoveHiddenState(string key)
         {
-            if (ControlHiddenStateItems.Any(x => x.Key == key && x.Permanent == false))
-                ControlHiddenStateItems.RemoveAll(x => x.Key == key && x.Permanent == false);
+            if (ControlHiddenStateItems.Any(x => x.Key == key))
+                ControlHiddenStateItems.RemoveAll(x => x.Key == key);
 
+            
             SetMessageAndColor();
         }
+
+      
         public void SetMessageAndColor()
         {
             List<ColumnControlColorItem> columnControlColorItems = new List<ColumnControlColorItem>();
@@ -77,7 +88,7 @@ namespace MyUILibrary.EntityArea
 
             if (this is ChildRelationshipInfo)
             {
-                if ((this as ChildRelationshipInfo).RelationshipControl.Relationship.IsOtherSideMandatory)
+                if ((BaseColumnControl as RelationshipColumnControlGeneral).Relationship.IsOtherSideMandatory)
                     columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
 
                 foreach (var item in ControlHiddenStateItems)
@@ -95,7 +106,7 @@ namespace MyUILibrary.EntityArea
             }
             else if (this is ChildSimpleContorlProperty)
             {
-                if ((this as ChildSimpleContorlProperty).SimpleColumnControl.Column.IsMandatory)
+                if ((BaseColumnControl as SimpleColumnControlGenerel).Column.IsMandatory)
                     columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
 
                 foreach (var item in ControlHiddenStateItems)
@@ -177,19 +188,19 @@ namespace MyUILibrary.EntityArea
         public void SetItemColor(ControlOrLabelAsTarget controlOrLabel, List<ColumnControlColorItem> columnControlColorItems)
         {
 
-            InfoColor colorBackground = GetColor(controlOrLabel, ControlColorTarget.Background, columnControlColorItems);
-            InfoColor colorForeground = GetColor(controlOrLabel, ControlColorTarget.Foreground, columnControlColorItems);
-            InfoColor colorBorder = GetColor(controlOrLabel, ControlColorTarget.Border, columnControlColorItems);
+            var colorBackground = GetColor(controlOrLabel, ControlColorTarget.Background, columnControlColorItems);
+            var colorForeground = GetColor(controlOrLabel, ControlColorTarget.Foreground, columnControlColorItems);
+            var colorBorder = GetColor(controlOrLabel, ControlColorTarget.Border, columnControlColorItems);
 
 
             var controlManagers = GetColumnControlDataManagers(controlOrLabel);
 
 
-            foreach (var view in controlManagers)
+            foreach (var controlManager in controlManagers)
             {
-                view.SetBackgroundColor(colorBackground);
-                view.SetForegroundColor(colorForeground);
-                view.SetBorderColor(colorBorder);
+                controlManager.SetBackgroundColor(colorBackground);
+                controlManager.SetForegroundColor(colorForeground);
+                controlManager.SetBorderColor(colorBorder);
             }
         }
 
@@ -199,7 +210,7 @@ namespace MyUILibrary.EntityArea
             if (color != null)
                 return color.Color;
             else
-                return InfoColor.Null;
+                return InfoColor.Default;
         }
 
         //public void AddColumnControlMessage(string message, ControlOrLabelAsTarget controlOrLabelAsTarget, string key, ControlItemPriority priority)
@@ -227,7 +238,7 @@ namespace MyUILibrary.EntityArea
             var controlManagers = GetColumnControlDataManagers(controlOrLabel);
             foreach (var view in controlManagers)
             {
-                view.SetTooltip( tooltip);
+                view.SetTooltip(tooltip);
             }
         }
         private string GetTooltip(ControlOrLabelAsTarget controlOrLabel, List<ColumnControlMessageItem> columnControlMessageItems)
@@ -322,6 +333,11 @@ namespace MyUILibrary.EntityArea
     }
     public class ControlStateItem
     {
+        //public ControlStateItem(string key, string message)
+        //{
+        //    Key = key;
+        //    Message = message;
+        //}
         public ControlStateItem(string key, string message, bool permanent)
         {
             Key = key;

@@ -17,28 +17,40 @@ namespace MyUIGenerator
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
-            //////    var rs = new UriReportSource() { Uri = "aa" };
+            try
+            {
+                base.OnStartup(e);
+                //////    var rs = new UriReportSource() { Uri = "aa" };
 
-            //////    var frm = new UI.View.frmReportViewer1("engine=RestService;uri=http://localhost:25667/api/myreport;useDefaultCredentials=False", rs);
-            ////////    var frm = new UI.View.frmReportViewer1("engine=RestService;uri=  http://localhost:58083/api/reports;useDefaultCredentials=False", rs);
-            //////  frm.ShowDialog();
+                //////    var frm = new UI.View.frmReportViewer1("engine=RestService;uri=http://localhost:25667/api/myreport;useDefaultCredentials=False", rs);
+                ////////    var frm = new UI.View.frmReportViewer1("engine=RestService;uri=  http://localhost:58083/api/reports;useDefaultCredentials=False", rs);
+                //////  frm.ShowDialog();
 
-            //RadWindow window = new RadWindow();
-            //var frm = new frmTest(new CommonDefinitions.BasicUISettings.GridSetting());
-            //window.Content = frm;
-            //window.Show();
-            //ReportViewerWindow2 window = new ReportViewerWindow2();
-            //window.ShowDialog();
-            //Test tt = new Test();
-            //tt.ShowDialog();
-            //return;
-
-
-            var UIManager = UIManagerGenerator.GetUIManager();
-            UIManager.StartApp();
+                //RadWindow window = new RadWindow();
+                //var frm = new frmTest(new CommonDefinitions.BasicUISettings.GridSetting());
+                //window.Content = frm;
+                //window.Show();
+                //ReportViewerWindow2 window = new ReportViewerWindow2();
+                //window.ShowDialog();
+                //Test tt = new Test();
+                //tt.ShowDialog();
+                //return;
 
 
+                var UIManager = UIManagerGenerator.GetUIManager();
+                UIManager.StartApp();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+
+        }
+
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

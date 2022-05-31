@@ -57,10 +57,6 @@
       <Project>{c85c5486-ca1a-4963-8594-c85e441cebc2}</Project>
       <Name>MyModelManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MyUILibraryInterfaces\MyUILibraryInterfaces.csproj">
-      <Project>{5C85873C-C376-4899-8806-FE8544419B18}</Project>
-      <Name>MyUILibraryInterfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ProxyLibrary\ProxyLibrary.csproj">
       <Project>{2AD586DD-C9BE-42D3-8EF7-E9657F992503}</Project>
       <Name>ProxyLibrary</Name>

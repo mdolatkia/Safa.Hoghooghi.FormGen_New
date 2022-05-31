@@ -116,12 +116,9 @@ namespace MyUILibrary.EntityArea.Commands
 
                     if (reuslt.Result == Enum_DR_ResultType.SeccessfullyDone)
                     {
-                        if (EditArea.AreaInitializer.DataMode == DataMode.One)
-                            (EditArea as I_EditEntityAreaOneData).ClearData(true);
-                        else if (EditArea.AreaInitializer.DataMode == DataMode.Multiple)
-                        {
-                            (EditArea as I_EditEntityAreaMultipleData).ClearData(false);
-                        }
+                   
+                            EditArea.ClearData();
+                       
                     }
                     //if (reuslt.ResultItems.All(x => x.Result == Enum_DR_ResultType.SeccessfullyDone))
                     //{

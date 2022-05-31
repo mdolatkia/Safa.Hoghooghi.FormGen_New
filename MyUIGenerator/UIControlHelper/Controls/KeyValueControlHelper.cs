@@ -21,7 +21,7 @@ namespace MyUIGenerator.UIControlHelper
         ComboBox combo;
         ComboBox cmbOperators;
 
-        public override Control MainControl { get { return combo; } }
+        public override FrameworkElement MainControl { get { return combo; } }
         public KeyValueControlHelper()
         {
         //    ValueIsTitleOrValue = valueIsTitleOrValue;
@@ -62,7 +62,10 @@ namespace MyUIGenerator.UIControlHelper
             //    theGrid.Children.Add(cmbOperators);
             //}
             //}
-
+            DefaultBorderBrush = combo.BorderBrush;
+            DefaultBorderThickness = combo.BorderThickness;
+            DefaultBackground = combo.Background;
+            DefaultForeground = combo.Foreground;
         }
         //bool ValueIsTitleOrValue { set; get; }
         //public List<ColumnKeyValueRangeDetailsDTO> KeyValues { get; private set; }
@@ -219,22 +222,39 @@ namespace MyUIGenerator.UIControlHelper
 
         public void SetBorderColor(InfoColor color)
         {
-            combo.BorderBrush = UIManager.GetColorFromInfoColor(color);
-            combo.BorderThickness = new Thickness(1);
+            if (color != InfoColor.Default)
+            {
+                combo.BorderBrush = UIManager.GetColorFromInfoColor(color);
+                combo.BorderThickness = new Thickness(1);
+            }
+            else
+            {
+                combo.BorderBrush = DefaultBorderBrush;
+                combo.BorderThickness = DefaultBorderThickness;
+            }
         }
         public void SetBackgroundColor(InfoColor color)
         {
-            combo.Background = UIManager.GetColorFromInfoColor(color);
+            if (color != InfoColor.Default)
+            {
+                combo.Background = UIManager.GetColorFromInfoColor(color);
+            }
+            else
+            {
+                combo.Background = DefaultBackground;
+            }
         }
         public void SetForegroundColor(InfoColor color)
         {
-            combo.Foreground = UIManager.GetColorFromInfoColor(color);
+            if (color != InfoColor.Default)
+            {
+                combo.Foreground = UIManager.GetColorFromInfoColor(color);
+            }
+            else
+            {
+                combo.Foreground = DefaultForeground;
+            }
         }
-        //public void ClearBorderColor()
-        //{
-        //    combo.BorderBrush = new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Black));
-        //    combo.BorderThickness = new Thickness(1);
-        //}
 
         public void SetBinding(EntityInstanceProperty property)
         {

@@ -94,6 +94,10 @@
     <Compile Include="Core\AG_InternalTaskResult.cs" />
     <Compile Include="Core\AG_RequestManager.cs" />
     <Compile Include="Core\BaseCommand.cs" />
+    <Compile Include="EntityArea\EditEntityArea\BaseChildProperty.cs" />
+    <Compile Include="EntityArea\EditEntityArea\ChildRelationshipInfo.cs" />
+    <Compile Include="EntityArea\EditEntityArea\ChildSimpleContorlProperty.cs" />
+    <Compile Include="EntityArea\EditEntityArea\DP_FormDataRepository.cs" />
     <Compile Include="Graph\GraphArea.cs" />
     <Compile Include="DataLinkArea\DataLinkArea.cs" />
     <Compile Include="DataMenu\DataMenuArea.cs" />
@@ -120,6 +124,64 @@
     <Compile Include="EntityArea\EditEntityArea\EntityAreaLogManager.cs" />
     <Compile Include="EntityArea\EntityCommand.cs" />
     <Compile Include="EntityArea\FormulaCalculationArea.cs" />
+    <Compile Include="Interfaces\ChartReportArea\I_ChartReportArea.cs" />
+    <Compile Include="Interfaces\ContextMenu\ContextMenuArg.cs" />
+    <Compile Include="Interfaces\DataLink\I_DataLinkArea.cs" />
+    <Compile Include="Interfaces\DataMenu\I_DataMenuArea.cs" />
+    <Compile Include="Interfaces\DataReportArea\I_DataReportArea.cs" />
+    <Compile Include="Interfaces\DataTreeArea\I_DataTree.cs" />
+    <Compile Include="Interfaces\DataViewArea\I_DataViewArea.cs" />
+    <Compile Include="Interfaces\EditEntityArea\CommandFunctionParam.cs" />
+    <Compile Include="Interfaces\EditEntityArea\EditEntityAreaInfo.cs" />
+    <Compile Include="Interfaces\EditEntityArea\EditEntityAreaInitializer.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\IAG_View_TemporaryDisplayView.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\IAG_View_TemporarySearchView.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\IAG_View_TemporaryView.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\I_EditAreaDataManager.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\I_EditEntityArchiveArea.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\I_EditEntityArea.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\I_EditEntityLetterArea.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\I_EntityAreaCommand.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\I_FormulaCalculationArea.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\I_View_DataDependentControl.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\I_View_EditEntityAreaDataView.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Interfaces\I_View_EditEntityAreaInfo.cs" />
+    <Compile Include="Interfaces\EditEntityArea\Temp.cs" />
+    <Compile Include="Interfaces\EditPackageArea\EditPackageAreaInitializer.cs" />
+    <Compile Include="Interfaces\EntitySelectArea\I_EntitySelectArea.cs" />
+    <Compile Include="Interfaces\GeneralEntitySearchArea\I_GeneralEntitySearchArea.cs" />
+    <Compile Include="Interfaces\GridViewArea\I_GridViewArea.cs" />
+    <Compile Include="Interfaces\LogReportArea\I_LogReportArea.cs" />
+    <Compile Include="Interfaces\ReportArea\I_ExternalReportArea.cs" />
+    <Compile Include="Interfaces\ReportArea\I_InternalReportArea.cs" />
+    <Compile Include="Interfaces\ReportArea\I_View_ReportArea.cs" />
+    <Compile Include="Interfaces\ReportArea\I_View_ReportList.cs" />
+    <Compile Include="Interfaces\ReportArea\ReportAreaInitializer.cs" />
+    <Compile Include="Interfaces\SearchEntityArea\Interfaces\I_SearchAreaCommand.cs" />
+    <Compile Include="Interfaces\SearchEntityArea\Interfaces\I_SearchEntityArea.cs" />
+    <Compile Include="Interfaces\SearchEntityArea\Interfaces\I_View_SearchEntityArea.cs" />
+    <Compile Include="Interfaces\SearchEntityArea\SearchEntityAreaInitializer.cs" />
+    <Compile Include="Interfaces\SearchEntityArea\Temp.cs" />
+    <Compile Include="Interfaces\SearchViewEntityArea\Interfaces\I_SearchViewEntityArea.cs" />
+    <Compile Include="Interfaces\SearchViewEntityArea\Interfaces\I_View_SearchViewEntityArea.cs" />
+    <Compile Include="Interfaces\SearchViewEntityArea\SearchViewAreaInitializer.cs" />
+    <Compile Include="Interfaces\Temp\AG_CommandExecutionRequest.cs" />
+    <Compile Include="Interfaces\Temp\Arg_PackageSelected.cs" />
+    <Compile Include="Interfaces\Temp\Class1.cs" />
+    <Compile Include="Interfaces\Temp\ColumnSetting.cs" />
+    <Compile Include="Interfaces\Temp\Enum_UI_PropertyType.cs" />
+    <Compile Include="Interfaces\Temp\IAgentUIManager.cs" />
+    <Compile Include="Interfaces\Temp\I_Command.cs" />
+    <Compile Include="Interfaces\Temp\I_Control.cs" />
+    <Compile Include="Interfaces\Temp\I_DeleteCommand.cs" />
+    <Compile Include="Interfaces\Temp\I_Login.cs" />
+    <Compile Include="Interfaces\Temp\I_SaveCommand.cs" />
+    <Compile Include="Interfaces\Temp\I_SecuritySetting.cs" />
+    <Compile Include="Interfaces\ViewEntityArea\Interface\I_ViewAreaCommand.cs" />
+    <Compile Include="Interfaces\ViewEntityArea\Interface\I_ViewEntityArea.cs" />
+    <Compile Include="Interfaces\ViewEntityArea\Interface\I_View_ViewEntityArea.cs" />
+    <Compile Include="Interfaces\ViewEntityArea\ViewEntityAreaInitializer.cs" />
+    <Compile Include="Interfaces\WorkflowArea\Class1.cs" />
     <Compile Include="ReportArea\DirectReportArea.cs" />
     <Compile Include="LetterArea\EntityLettersArea.cs" />
     <Compile Include="LetterArea\EditLetterArea.cs" />
@@ -203,10 +265,6 @@
       <Project>{A1FD0583-17CC-4C81-90CD-047EB8950511}</Project>
       <Name>MyReportManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MyUILibraryInterfaces\MyUILibraryInterfaces.csproj">
-      <Project>{5C85873C-C376-4899-8806-FE8544419B18}</Project>
-      <Name>MyUILibraryInterfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ProxyLibrary\ProxyLibrary.csproj">
       <Project>{2ad586dd-c9be-42d3-8ef7-e9657f992503}</Project>
       <Name>ProxyLibrary</Name>
@@ -216,6 +274,7 @@
     <Folder Include="ExternalReportArea\" />
     <Folder Include="GridView\" />
     <Folder Include="Images\" />
+    <Folder Include="Interfaces\EditPackageArea\Interfaces\" />
     <Folder Include="MainViews\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

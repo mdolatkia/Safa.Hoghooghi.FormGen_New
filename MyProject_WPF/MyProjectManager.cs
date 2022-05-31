@@ -150,7 +150,7 @@ namespace MyProject_WPF
                     window.Height = 500;
                 }
                 window.Header = title;
-                window.ShowDialog();
+                window.Show();
                 return window;
             }
             return null;

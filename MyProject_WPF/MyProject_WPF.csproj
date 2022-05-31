@@ -1169,10 +1169,6 @@
       <Project>{FE03E933-B20F-4560-ACA1-A38DE76FF8EE}</Project>
       <Name>MyUIGenerator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MyUILibraryInterfaces\MyUILibraryInterfaces.csproj">
-      <Project>{5c85873c-c376-4899-8806-fe8544419b18}</Project>
-      <Name>MyUILibraryInterfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MyUILibrary\MyUILibrary.csproj">
       <Project>{3175eafa-138c-4b2b-8ea6-4c09d8c0fa81}</Project>
       <Name>MyUILibrary</Name>

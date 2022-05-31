@@ -190,6 +190,10 @@ namespace MyModelManager
         }
         private EntityListViewDTO ToEntityListViewDTO(DR_Requester requester, EntityListView item, bool withDetails)
         {
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.EntityListView, item.ID.ToString(), withDetails.ToString());
+            if (cachedItem != null)
+                return (cachedItem as EntityListViewDTO);
+
             EntityListViewDTO result = new EntityListViewDTO();
             result.TableDrivedEntityID = item.TableDrivedEntityID;
             result.ID = item.ID;
@@ -239,6 +243,9 @@ namespace MyModelManager
             }
 
             ImposeSecurity(requester, result, item.TableDrivedEntity);
+
+            CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.EntityListView, item.ID.ToString(), withDetails.ToString());
+
             return result;
         }
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();

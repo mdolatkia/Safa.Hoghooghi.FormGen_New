@@ -19,15 +19,25 @@ namespace MyUIGenerator.UIControlHelper
 {
     public abstract class View_Container : UserControl, I_View_Area
     {
-
-    //    public abstract void AddView( I_UIControlManager labelControlManager, I_RelationshipControlManagerGeneral relationshipControlManag);
-   //     public abstract void AddUIControlPackage(I_SimpleControlManagerGeneral controlManager, I_UIControlManager labelControlManager);
+        public Brush DefaultBorderBrush { get; }
+        public Thickness DefaultBorderThickness { get; }
+        public Brush DefaultBackground { get; }
+        public Brush DefaultForeground { get; }
+        public View_Container()
+        {
+            DefaultBorderBrush = this.BorderBrush;
+            DefaultBorderThickness = this.BorderThickness;
+            DefaultBackground = this.Background;
+            DefaultForeground = this.Foreground;
+        }
+        //    public abstract void AddView( I_UIControlManager labelControlManager, I_RelationshipControlManagerGeneral relationshipControlManag);
+        //     public abstract void AddUIControlPackage(I_SimpleControlManagerGeneral controlManager, I_UIControlManager labelControlManager);
         public abstract void ClearControls();
 
         //public abstract void SetTooltip(object dataItem, string tooltip);
 
         //public abstract void SetColor(object dataItem, InfoColor color);
-       
+
 
         public int ControlsCount { get; }
         public void EnableDisable(bool enable)
@@ -307,7 +317,7 @@ namespace MyUIGenerator.UIControlHelper
                     dropDownButton.DropDownContent = listBox;
                     Image img = new Image();
                     img.Width = 15;
-                    Uri uriSource =  new Uri("../../Images/report.png", UriKind.Relative);
+                    Uri uriSource = new Uri("../../Images/report.png", UriKind.Relative);
                     img.Source = new BitmapImage(uriSource);
                     dropDownButton.Content = img;
                     var listitem = new ListBoxItem();
@@ -383,7 +393,23 @@ namespace MyUIGenerator.UIControlHelper
             this.Foreground = UIManager.GetColorFromInfoColor(color);
         }
 
-   
+        public void SetBorderColorDefault()
+        {
+            this.BorderBrush = DefaultBorderBrush;
+            this.BorderThickness = DefaultBorderThickness;
+        }
+
+        public void SetBackgroundColorDefault()
+        {
+            this.Background = DefaultBackground;
+        }
+
+        public void SetForegroundColorDefault()
+        {
+            this.Background = DefaultForeground;
+        }
+
+
 
 
         //public void AddUIControlPackage(object controlPackage, string title, InfoColor titleColor, string tooltip = "")

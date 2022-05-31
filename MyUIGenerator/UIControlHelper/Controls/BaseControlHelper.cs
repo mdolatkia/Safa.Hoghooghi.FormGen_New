@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Telerik.Windows.Controls;
 
 namespace MyUIGenerator.UIControlHelper
@@ -14,10 +15,27 @@ namespace MyUIGenerator.UIControlHelper
     public abstract class BaseControlHelper
     {
         public Grid theGrid;
-        public abstract Control MainControl { get; }
+        public abstract FrameworkElement MainControl { get; }
         public FrameworkElement WholeControl { get { return theGrid; } }
         RadDropDownButton dropDownButton { set; get; }
         ListBox listBox { set; get; }
+        public Brush DefaultBorderBrush { set; get; }
+        public Thickness DefaultBorderThickness { set; get; }
+        public Brush DefaultBackground { set; get; }
+        public Brush DefaultForeground { set; get; }
+
+        public BaseControlHelper()
+        {
+            if (MainControl is Control)
+            {
+            
+            }
+            else if (MainControl is TextBlock)
+            {
+                DefaultBackground = (MainControl as TextBlock).Background;
+                DefaultForeground = (MainControl as TextBlock).Foreground;
+            }
+        }
         public void AddButtonMenu(ConrolPackageMenu menu)
         {
             if (dropDownButton == null)
@@ -101,6 +119,10 @@ namespace MyUIGenerator.UIControlHelper
         //    (MainControl as Control).Foreground = UIManager.GetColorFromInfoColor(color);
         //}
 
+
+     
+     
+
         public object GetUIControl()
         {
             return WholeControl;
@@ -115,10 +137,10 @@ namespace MyUIGenerator.UIControlHelper
 
         }
 
-        public void SetColor(InfoColor color)
-        {
-            (MainControl as Control).BorderBrush = UIManager.GetColorFromInfoColor(color);
-            (MainControl as Control).BorderThickness = new Thickness(1);
-        }
+        //public void SetColor(InfoColor color)
+        //{
+        //    (MainControl as Control).BorderBrush = UIManager.GetColorFromInfoColor(color);
+        //    (MainControl as Control).BorderThickness = new Thickness(1);
+        //}
     }
 }

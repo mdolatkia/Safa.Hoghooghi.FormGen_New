@@ -1,7 +1,9 @@
-﻿using ModelEntites;
+﻿
+using ModelEntites;
+using MyUIGenerator;
+using MyUIGenerator.UIControlHelper;
 using MyUILibrary;
 using MyUILibrary.EntityArea;
-using MyUILibrary.Temp;
 using ProxyLibrary;
 using System;
 using System.Collections.Generic;
@@ -10,298 +12,637 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Telerik.Windows.Controls;
+using Telerik.Windows.Controls.GridView;
+using Telerik.Windows;
+using System.Windows.Threading;
+using MyUILibrary.Temp;
 using System.Windows.Media;
 
 namespace MyUIGenerator.UIControlHelper
 {
-
-    public class SimpleControlManagerForMultipleDataForm : BaseControlManager, I_SimpleControlManagerMultiple
+    public class SimpleControlManagerForMultipleDataForm : Telerik.Windows.Controls.GridViewColumn, I_SimpleControlManagerMultiple
     {
-        //private List<BaseMessageItem> ValidationItems = new List<BaseMessageItem>();
+        public event EventHandler<ColumnValueChangeArg> ValueChanged;
+        // DataMaster.EntityDefinition.ND_Type_Property TypeProperty { set; get; }
+        public ColumnDTO Column { set; get; }
+        public ColumnUISettingDTO ColumnSetting { set; get; }
 
-        private List<DataMessageItem> MessageItems = new List<DataMessageItem>();
-        public DataGridTextColumn DataGridColumn;
-        public SimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues) : base()
+        bool HasRangeOfValues;
+        //   bool ValueIsTitleOrValue;
+
+        ConrolPackageMenu CPMenu { set; get; }
+        internal void GenerateMenu(ConrolPackageMenu cpMenu)
         {
-            //  RelatedControl = new List<FrameworkElement>();
-            DataGridColumn = new DataGridTextColumn(column, columnUISettingDTO, hasRangeOfValues);
+            CPMenu = cpMenu;
+
+
         }
 
-        //   public List<FrameworkElement> RelatedControl { set; get; }
+
+        public SimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues)
+        {
+
+            ColumnSetting = columnSetting;
+
+            Column = column;
+            HasRangeOfValues = hasRangeOfValues;
+            //     ValueIsTitleOrValue = valueIsTitleOrValue;
+            if (columnSetting != null)
+            {
+                if (columnSetting.UIColumnsType == Enum_UIColumnsType.Full)
+                    Width = 200;
+                else if (columnSetting.UIColumnsType == Enum_UIColumnsType.Half)
+                    Width = 140;
+                else
+                    Width = 80;
+            }
+
+        }
+
+
+        public override FrameworkElement CreateCellElement(GridViewCell cell, object dataItem)
+        {
+            //I_UIControlManager MyControlHelper = null;
+            //if (HasRangeOfValues)
+            //    MyControlHelper = ControlHelper.KeyValueControlHelper(Column);
+            //else
+            //    MyControlHelper = ControlHelper.GetControlHelper(Column, ColumnSetting, null);
+            //MyControlHelper.SetReadonly(IsReadOnly);
+            //if (MyControlHelper is I_ControlHelperValueRange)
+            //{
+            //    if (ColumnValueRange != null)
+            //    {
+            //        (MyControlHelper as I_ControlHelperValueRange).SetColumnValueRange(ColumnValueRange);
+            //    }
+            //}
+            //cell.Tag = MyControlHelper;
+            //if (ButtonMenus.Any())
+            //{
+            //    foreach (var item in ButtonMenus)
+            //    {
+            //        var newMenu = new ConrolPackageMenu();
+            //        newMenu.Name = item.Name;
+            //        newMenu.Title = item.Title;
+            //        newMenu.MenuClicked += (sender, e) => Item_MenuClicked(sender, e, item, dataItem);
+            //        MyControlHelper.AddButtonMenu(newMenu);
+            //    }
+            //}
+            //return MyControlHelper.GetUIControl() as FrameworkElement;
+
+            var ui = GetUIControlManager(dataItem);
+            if (ui != null)
+                return ui.GetUIControl() as FrameworkElement;
+            else
+                return null;
+        }
+
+        //internal object GetUIControl(object dataItem)
+        //{
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+
+        //    if (dataRow != null)
+        //    {
+        //        var cell = dataRow.GetCell(this);
+
+        //        if (cell != null)
+        //        {
+        //            return (cell.Tag as I_UIControlManager).MainControl;
+        //        }
+        //    }
+        //    return null;
+        //}
 
         public I_UIControlManager GetUIControlManager(object dataItem)
         {
-            return DataGridColumn.GetUIControlManager(dataItem);
+            if (listControls.Any(x => x.Item1 == dataItem))
+                return listControls.First(x => x.Item1 == dataItem).Item2;
+            else
+                return null;
         }
-        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates)
+        public List<Tuple<object, I_UIControlManager>> listControls = new List<Tuple<object, I_UIControlManager>>();
+
+        internal void AddDataItem(object dataItem)
         {
-            DataGridColumn.SetColumnValueRange(candidates);
+            I_UIControlManager MyControlHelper = null;
+            if (HasRangeOfValues)
+                MyControlHelper = ControlHelper.KeyValueControlHelper(Column);
+            else
+                MyControlHelper = ControlHelper.GetControlHelper(Column, ColumnSetting, null);
+            MyControlHelper.SetReadonly(IsReadOnly);
+            if (MyControlHelper is I_ControlHelperValueRange)
+            {
+                if (ColumnValueRange != null)
+                {
+                    (MyControlHelper as I_ControlHelperValueRange).SetColumnValueRange(ColumnValueRange);
+                }
+            }
+            // cell.Tag = MyControlHelper;
+            if (ButtonMenus.Any())
+            {
+                foreach (var item in ButtonMenus)
+                {
+                    var newMenu = new ConrolPackageMenu();
+                    newMenu.Name = item.Name;
+                    newMenu.Title = item.Title;
+                    newMenu.MenuClicked += (sender, e) => Item_MenuClicked(sender, e, item, dataItem);
+                    MyControlHelper.AddButtonMenu(newMenu);
+                }
+            }
+            //  return MyControlHelper.GetUIControl() as FrameworkElement;
+            listControls.Add(new Tuple<object, I_UIControlManager>(dataItem, MyControlHelper));
         }
-        //public void EnableDisable(bool enable)
-        //{
-        //    DataGridColumn.EnableDisable(enable);
-        //}
-        //public void EnableDisable(object dataItem, bool enable)
-        //{
-        //    DataGridColumn.EnableDisable(dataItem, enable);
-        //}
-        //public void Visiblity(bool visible)
-        //{
 
-        //    DataGridColumn.Visiblity(visible);
-        //}
-        //public void Visiblity(object dataItem, bool visible)
-        //{
+        private void Item_MenuClicked(object sender, ConrolPackageMenuArg e, ConrolPackageMenu mainMenu, object dataItem)
+        {
+            e.data = dataItem;
+            mainMenu.OnMenuClicked(sender, e);
 
-        //    DataGridColumn.Visiblity(dataItem, visible);
-        //}
-        //public bool IsVisible
+        }
+
+        internal void RemoveDataItem(object dataItem)
+        {
+            if (listControls.Any(x => x.Item1 == dataItem))
+                listControls.Remove(listControls.First(x => x.Item1 == dataItem));
+        }
+
+        internal void RemoveDataItems()
+        {
+            listControls.Clear();
+        }
+
+        //internal void SetReadonly(bool isreadonly)
         //{
-        //    get
+        //    this.IsReadOnly = isreadonly;
+        //}
+
+        //internal void SetReadonly(object dataItem, bool isreadonly)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
         //    {
-        //        return DataGridColumn.IsVisible;
-        //    }
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
 
-
-        //}
-        //public object GetValue(object dataItem)
-        //{
-        //    return DataGridColumn.GetValue(dataItem);
-        //}
-
-        //public void SetReadonly(bool isreadonly)
-        //{
-        //    DataGridColumn.SetReadonly(isreadonly);
-        //}
-        //public object GetUIControl(object dataItem)
-        //{
-        //    return DataGridColumn.GetUIControl(dataItem);
-        //}
-        //public void SetReadonly(object dataItem, bool isreadonly)
-        //{
-        //    DataGridColumn.SetReadonly(dataItem, isreadonly);
-        //}
-
-
-        //public void AddMessage(BaseMessageItem item)
-        //{
-        //    if (item.CausingDataItem != null || item.IsPermanentMessage == true)
-        //    {
-        //        MessageItems.Add(item);
-        //        if (item.IsPermanentMessage == true)
+        //        if (dataRow != null)
         //        {
-        //            SetPermanentTooltip();
-        //            SetPermanentColor();
-        //        }
-        //        else
-        //        {
-        //            SetDataTooltip(item.CausingDataItem);
-        //            SetDataColor(item.CausingDataItem);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("asdasd");
-        //    }
-        //}
+        //            var cell = dataRow.GetCell(this);
 
-        //public void RemoveMessage(BaseMessageItem baseMessageItemem)
-        //{
-        //    if (baseMessageItemem.CausingDataItem != null || baseMessageItemem.IsPermanentMessage == true)
-        //    {
-        //        if (baseMessageItemem.IsPermanentMessage)
-        //        {
-        //            foreach (var item in MessageItems.Where(x => x.IsPermanentMessage && x.Key == baseMessageItemem.Key).ToList())
-        //                MessageItems.Remove(item);
-        //            SetPermanentTooltip();
-        //            SetPermanentColor();
-        //        }
-        //        else
-        //        {
-        //            foreach (var item in MessageItems.Where(x => x.CausingDataItem == baseMessageItemem.CausingDataItem && x.Key == baseMessageItemem.Key).ToList())
-        //                MessageItems.Remove(item);
-        //            SetDataTooltip(baseMessageItemem.CausingDataItem);
-        //            SetDataColor(baseMessageItemem.CausingDataItem);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("asdasd");
-        //    }
-        //}
-
-
-
-        //private void SetPermanentTooltip()
-        //{
-        //    var tooltip = "";
-        //    foreach (var item in MessageItems.Where(x => x.IsPermanentMessage))
-        //        tooltip += (tooltip == "" ? "" : Environment.NewLine) + item.Message;
-        //    if (tooltip != "")
-        //        DataGridColumn.SetTooltip(tooltip);
-        //    else
-        //        DataGridColumn.ClearTooltip();
-        //}
-        //private void SetDataTooltip(object dataItem)
-        //{
-        //    var tooltip = "";
-        //    foreach (var item in MessageItems.Where(x => !x.IsPermanentMessage))
-        //        tooltip += (tooltip == "" ? "" : Environment.NewLine) + item.Message;
-        //    if (tooltip != "")
-        //        DataGridColumn.SetTooltip(dataItem, tooltip);
-        //    else
-        //        DataGridColumn.ClearTooltip(dataItem);
-        //}
-        //private void SetPermanentColor()
-        //{
-        //    var color = InfoColor.Default;
-        //    if (MessageItems.Any(x => x.IsPermanentMessage && x.Color != InfoColor.Default))
-        //        color = MessageItems.First(x => x.Color != InfoColor.Default).Color;
-
-        //    if (color != InfoColor.Default)
-        //        DataGridColumn.SetColor(color);
-        //    else
-        //        DataGridColumn.ClearColor();
-        //}
-        //private void SetDataColor(object dataItem)
-        //{
-        //    var color = InfoColor.Default;
-        //    if (MessageItems.Any(x => !x.IsPermanentMessage && x.Color != InfoColor.Default))
-        //        color = MessageItems.First(x => x.Color != InfoColor.Default).Color;
-
-        //    if (color != InfoColor.Default)
-        //        DataGridColumn.SetColor(dataItem, color);
-        //    else
-        //        DataGridColumn.ClearColor(dataItem);
-        //}
-        //public bool SetValue(object dataItem, object value)
-        //{
-        //    var dataRow = DataGridColumn.DataControl.GetRowForItem(dataItem);
-        //    return DataGridColumn.SetValue(dataItem, value);
-        //}
-
-
-
-        //public void AddButtonMenu(ConrolPackageMenu menu)
-        //{
-        //    DataGridColumn.AddButtonMenu(menu);
-        //}
-
-        //public void AddButtonMenu(object dataItem, ConrolPackageMenu menu)
-        //{
-        //    DataGridColumn.AddButtonMenu(menu, dataItem);
-        //}
-
-        //public void RemoveButtonMenu(string name)
-        //{
-        //    DataGridColumn.RemoveButtonMenu(name);
-        //}
-
-        //public void RemoveButtonMenu(object dataItem, string name)
-        //{
-        //    DataGridColumn.RemoveButtonMenu(name, dataItem);
-        //}
-
-        //public void SetBinding(object dataItem, EntityInstanceProperty property)
-        //{
-        //    DataGridColumn.SetBinding(dataItem, property);
-        //}
-
-
-        //public void ClearAllValidations()
-        //{
-        //    List<object> dataItems = new List<object>();
-        //    //var validationMessage = cellValidationMessages.Where(x => x.CausingDataItem == dataItem).ToList();
-        //    foreach (var item in cellValidationMessages)
-        //    {
-        //        dataItems.Add(item.CausingDataItem);
-        //    }
-        //    cellValidationMessages.Clear();
-        //    foreach (var item in dataItems)
-        //    {
-        //        SetTooltip(item);
-        //        SetColor(item);
-        //    }
-        //}
-
-        //public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
-        //{
-        //    DataGridColumn.SetColumnValueRange(details);
-        //}
-
-        //public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details, object data)
-        //{
-        //    DataGridColumn.SetColumnValueRange(details, data);
-        //}
-
-        //public CommonOperator GetOperator()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public bool HasOperator()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public bool SetOperator(CommonOperator searchOperator)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public void SetTooltip(object dataItem, string tooltip)
-        //{
-        //    DataGridColumn.SetTooltip(dataItem, tooltip);
-        //}
-
-        //public void SetBorderColor(object dataItem, InfoColor color)
-        //{
-        //    DataGridColumn.SetBorderColor(dataItem, color);
-        //}
-
-        //public void SetBackgroundColor(object dataItem, InfoColor color)
-        //{
-        //    DataGridColumn.SetBackgroundColor(dataItem, color);
-        //}
-
-        //public void SetForegroundColor(object dataItem, InfoColor color)
-        //{
-        //    DataGridColumn.SetForegroundColor(dataItem, color);
-        //}
-
-
-
-
-        //public void SetMandatoryState(bool isMandatory)
-        //{
-        //    foreach (var item in RelatedControl)
-        //    {
-
-        //        if (item is TextBlock)
-        //        {
-        //            var textblock = (item as TextBlock);
-
-        //            if (isMandatory)
+        //            if (cell != null)
         //            {
-        //                if (!textblock.Text.StartsWith("*"))
-        //                {
-        //                    textblock.Text = "*" + textblock.Text;
-        //                }
-        //                textblock.Foreground = new SolidColorBrush(Colors.DarkRed);
-        //            }
-        //            else
-        //            {
-        //                if (textblock.Text.StartsWith("*"))
-        //                {
-        //                    textblock.Text = textblock.Text.Substring(1, textblock.Text.Length - 1);
-        //                }
-        //                textblock.Foreground = new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Default));
+        //                (cell.Tag as I_ControlHelper).SetReadonly(isreadonly);
         //            }
         //        }
+        //    }));
+        //}
+        //internal void EnableDisable(bool enable)
+        //{
+        //    this.IsEnabled = enable;
+        //}
+        //internal void EnableDisable(object dataItem, bool enable)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        if (dataRow != null)
+        //        {
+        //            var cell = dataRow.GetCell(this);
+
+        //            if (cell != null)
+        //            {
+        //                (cell.Tag as I_ControlHelper).EnableDisable(enable);
+
+        //            }
+        //        }
+        //    }));
+        //}
+        //internal void Visiblity(bool visible)
+        //{
+        //    this.IsVisible = visible;
+        //}
+        //internal void Visiblity(object dataItem, bool visible)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        if (dataRow != null)
+        //        {
+        //            var cell = dataRow.GetCell(this);
+
+        //            if (cell != null)
+        //            {
+        //                (cell.Tag as I_ControlHelper).Visiblity(visible);
+
+        //            }
+        //        }
+        //    }));
+        //}
+        private void MenuItem_Click(object sender, RadRoutedEventArgs e, ConrolPackageMenu cpMenu, Tuple<object, string> cellItem)
+        {
+            if (cpMenu != null)
+            {
+                ConrolPackageMenuArg arg = new ConrolPackageMenuArg();
+                arg.data = cellItem;
+                cpMenu.OnMenuClicked(sender, arg);
+            }
+        }
+
+
+        void control_ValueChanged(object sender, ColumnValueChangeArg e, object dataItem)
+        {
+            e.DataItem = dataItem;
+            if (ValueChanged != null)
+                ValueChanged(sender, e);
+        }
+
+
+
+        //void control_TemporaryDisplayViewRequested(object sender, Arg_TemporaryDisplayViewRequested e)
+        //{
+        //    TemporaryArg.OnTemporaryViewRequested(sender, e);
+        //}
+
+
+        //public override FrameworkElement CreateCellEditElement(GridViewCell cell, object dataItem)
+        //{
+
+        //    I_UIControlManager MyControlHelper = null;
+        //    if (HasRangeOfValues)
+        //        MyControlHelper = ControlHelper.KeyValueControlHelper(Column);
+        //    else
+        //        MyControlHelper = ControlHelper.GetControlHelper(Column, ColumnSetting, null);
+
+        //    if (MyControlHelper is I_ControlHelperValueRange)
+        //    {
+        //        if (ColumnValueRange != null)
+        //        {
+        //            (MyControlHelper as I_ControlHelperValueRange).SetColumnValueRange(ColumnValueRange);
+        //        }
         //    }
+
+        //    return MyControlHelper.GetUIControl() as FrameworkElement;
+        //}
+
+        //internal void RemoveButtonMenu(string name, object dataItem)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null)
+        //        {
+        //            if (cell.Content != null)
+        //            {
+        //                (cell.Tag as I_ControlHelper).RemoveButtonMenu(name);
+        //            }
+        //        }
+        //    }));
+        //}
+
+        //internal void RemoveButtonMenu(string name)
+        //{
+        //    ButtonMenus.Remove(ButtonMenus.FirstOrDefault(x => x.Name == "name"));
+        //}
+        //internal void AddButtonMenu(ConrolPackageMenu menu)
+        //{
+        //    ButtonMenus.Add(menu);
+        //}
+        //internal void AddButtonMenu(ConrolPackageMenu menu, object dataItem)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null)
+        //        {
+        //            if (cell.Content != null)
+        //            {
+        //                (cell.Tag as I_UIControlManager).AddButtonMenu(menu);
+        //            }
+        //        }
+        //    }));
+        //}
+
+        //internal bool SetValue(object dataItem, object value)
+        //{
+
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null && cell.Content != null)
+        //            (cell.Tag as I_UIControlManager).SetValue(value);
+        //    }));
+
+
+        //    return true;
+
+        //}
+
+
+
+        //internal void SetBinding(object dataItem, EntityInstanceProperty property)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null)
+        //        {
+        //            if (cell.Content != null)
+        //            {
+        //                (cell.Tag as I_UIControlManager).SetBinding(property);
+        //                if (property.Name == "Name")
+        //                    (cell.Tag as I_UIControlManager).SetBackgroundColor(InfoColor.Blue);
+
+        //            }
+        //        }
+        //    }));
+        //}
+
+        //internal void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details, object dataItem)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //   {
+        //       var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //       var cell = dataRow.GetCell(this);
+        //       if (cell != null)
+        //       {
+        //           if ((cell.Tag as I_UIControlManager) is I_ControlHelperValueRange)
+        //           {
+        //               ((cell.Tag as I_UIControlManager) as I_ControlHelperValueRange).SetColumnValueRange(details);
+        //           }
+        //       }
+        //   }));
+        //}
+        List<ColumnValueRangeDetailsDTO> ColumnValueRange { set; get; }
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
+        {
+            ColumnValueRange = details;
+        }
+
+
+        List<ConrolPackageMenu> ButtonMenus = new List<ConrolPackageMenu>();
+
+        //internal void SetTooltip(string tooltip)
+        //{
+        //    ToolTipService.SetToolTip(this, tooltip);
+        //}
+        //internal void ClearTooltip()
+        //{
+        //    ToolTipService.SetToolTip(this, null);
+        //}
+
+
+        //internal void SetTooltip(object dataItem, string tooltip)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null)
+        //        {
+        //            if (cell.Content != null)
+        //            {
+        //                if (!string.IsNullOrEmpty(tooltip))
+        //                    ToolTipService.SetToolTip(cell.Content as FrameworkElement, tooltip);
+        //                else
+        //                    ToolTipService.SetToolTip(cell.Content as FrameworkElement, null);
+        //            }
+        //        }
+        //    }));
+        //}
+        //internal void ClearTooltip(object dataItem)
+        //{
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    var cell = dataRow.GetCell(this);
+        //    if (cell != null)
+        //    {
+        //        if (cell.Content != null)
+        //            ToolTipService.SetToolTip(cell.Content as FrameworkElement, null);
+        //    }
+        //}
+
+        //internal void SetColor(InfoColor color)
+        //{
+        //    this.Background = UIManager.GetColorFromInfoColor(color);
+        //}
+        //internal void ClearColor()
+        //{
+        //    this.Background = null;
+        //}
+        //internal void SetBorderColor(object dataItem, InfoColor color)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null)
+        //        {
+        //            if (cell.Content != null)
+        //            {
+        //                cell.BorderBrush = UIManager.GetColorFromInfoColor(color);
+        //                cell.BorderThickness = new Thickness(1);
+        //            }
+        //        }
+        //    }));
+        //}
+        //internal void SetBackgroundColor(object dataItem, InfoColor color)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null)
+        //        {
+        //            if (cell.Content != null)
+        //            {
+        //                cell.Background = UIManager.GetColorFromInfoColor(color);
+        //            }
+        //        }
+        //    }));
+        //}
+        //internal void SetForegroundColor(object dataItem, InfoColor color)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null)
+        //        {
+        //            if (cell.Content != null)
+        //            {
+        //                cell.Foreground = UIManager.GetColorFromInfoColor(color);
+        //            }
+        //        }
+        //    }));
+        //}
+        //internal void ClearColor(object dataItem)
+        //{
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    var cell = dataRow.GetCell(this);
+        //    if (cell != null)
+        //    {
+        //        if (cell.Content != null)
+        //        {
+        //            (cell.Content as Grid).Background = null;// new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Black));
+        //                                                     // (cell.Content as Control).BorderThickness = new Thickness(1);
+        //        }
+        //    }
+        //}
+        //internal object GetValue(object dataItem)
+        //{
+        //    //var dataRow = GetDataRow(dataGrid, dataItem);
+        //    //var dataRow = this.DataControl.GetRowForItem(dataItem);
+
+        //    //if (dataRow != null)
+        //    //{
+        //    //    var cell = dataRow.GetCell(this);
+
+        //    //    if (cell != null)
+        //    //    {
+        //    //        //////return (cell.Tag as UIControlPackage).BaseControlHelper.GetValue( cell.Tag as UIControlPackage);
+
+        //    //    }
+        //    //}
+        //    //return "";
+
+
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    var cell = dataRow.GetCell(this);
+        //    if (cell.Content != null)
+        //        return (cell.Tag as I_UIControlManager).GetValue();
+        //    return "";
+
+        //}
+
+        //internal void DisableEnableCell(object dataItem, bool enable)
+        //{
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+
+        //    if (dataRow != null)
+        //    {
+        //        var cell = dataRow.GetCell(this);
+
+        //        if (cell != null)
+        //        {
+        //            cell.IsEnabled = enable;
+
+        //        }
+        //    }
+
+        //}
+        //internal void SetReadonlyCell(object dataItem, bool isreadonly)
+        //{
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+
+        //    if (dataRow != null)
+        //    {
+        //        var cell = dataRow.GetCell(this);
+
+        //        if (cell != null)
+        //        {//درست شود
+        //            cell.IsEnabled = !isreadonly;
+
+        //        }
+        //    }
+
+        //}
+
+
+
+        //public IAG_View_TemporaryView GenerateTemporaryView()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+
+        //public TemporaryLinkType LinkType
+        //{
+        //    set;
+        //    get;
+        //}
+
+        //public void OnTemporaryViewRequested(object sender, Arg_TemporaryDisplayViewRequested arg)
+        //{
+        //    throw new NotImplementedException();
         //}
     }
 
+    public class tempMutipleUIManager : I_UIControlManager
+    {
+        public void AddButtonMenu(ConrolPackageMenu menu)
+        {
+            throw new NotImplementedException();
+        }
 
+        public CommonOperator GetOperator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public object GetUIControl()
+        {
+            throw new NotImplementedException();
+        }
+
+        public object GetValue()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveButtonMenu(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetBackgroundColor(InfoColor color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetBinding(EntityInstanceProperty property)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetBorderColor(InfoColor color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetForegroundColor(InfoColor color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetOperator(CommonOperator operatorValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetReadonly(bool isreadonly)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetTooltip(string tooltip)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SetValue(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Visiblity(bool visible)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 }

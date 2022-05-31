@@ -37,22 +37,22 @@ namespace MyUIGenerator.UIControlHelper
             //dataGrid.AddingNewDataItem += dataGrid_AddingNewDataItem;
             //     dataGrid.
             dataGrid.RowLoaded += dataGrid_RowLoaded;
-            dataGrid.AddingNewDataItem += DataGrid_AddingNewDataItem;
-            dataGrid.RowActivated += DataGrid_RowActivated;
+            //dataGrid.AddingNewDataItem += DataGrid_AddingNewDataItem;
+            //dataGrid.RowActivated += DataGrid_RowActivated;
 
             //dataGrid.CellLoaded+=dataGrid_CellLoaded;
 
         }
 
-        private void DataGrid_RowActivated(object sender, Telerik.Windows.Controls.GridView.RowEventArgs e)
-        {
+        //private void DataGrid_RowActivated(object sender, Telerik.Windows.Controls.GridView.RowEventArgs e)
+        //{
 
-        }
+        //}
 
-        private void DataGrid_AddingNewDataItem(object sender, Telerik.Windows.Controls.GridView.GridViewAddingNewEventArgs e)
-        {
+        //private void DataGrid_AddingNewDataItem(object sender, Telerik.Windows.Controls.GridView.GridViewAddingNewEventArgs e)
+        //{
 
-        }
+        //}
 
         void dataGrid_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
         {
@@ -61,32 +61,32 @@ namespace MyUIGenerator.UIControlHelper
                     DataContainerLoaded(this, new DataContainerLoadedArg() { DataItem = e.DataElement });
         }
 
-        internal void SetColor(object dataItem, InfoColor color)
-        {
-            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
-            {
-                GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
-                                                  .ContainerFromItem(dataItem);
-                if (row != null)
-                {
-                    row.BorderBrush = UIManager.GetColorFromInfoColor(color);
-                    row.BorderThickness = new Thickness(1);
-                }
-            }));
-        }
-        internal void ClearColor(object dataItem)
-        {
-            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
-            {
-                GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
-                                                  .ContainerFromItem(dataItem);
-            if (row != null)
-            {
-                row.BorderBrush = null;// new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Black));
-                row.BorderThickness = new Thickness(1);
-                }
-            }));
-        }
+        //internal void SetColor(object dataItem, InfoColor color)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
+        //                                          .ContainerFromItem(dataItem);
+        //        if (row != null)
+        //        {
+        //            row.BorderBrush = UIManager.GetColorFromInfoColor(color);
+        //            row.BorderThickness = new Thickness(1);
+        //        }
+        //    }));
+        //}
+        //internal void ClearColor(object dataItem)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
+        //                                          .ContainerFromItem(dataItem);
+        //    if (row != null)
+        //    {
+        //        row.BorderBrush = null;// new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Black));
+        //        row.BorderThickness = new Thickness(1);
+        //        }
+        //    }));
+        //}
         //static void dataGrid_AddingNewDataItem(object sender, Telerik.Windows.Controls.GridView.GridViewAddingNewEventArgs e)
         //{
         //    if (e.NewObject is DP_DataRepository)
@@ -172,83 +172,88 @@ namespace MyUIGenerator.UIControlHelper
         {
 
             if (!dataGrid.Items.Contains(dataItem))
+            {
                 dataGrid.Items.Add(dataItem);
+
+       //         System.Windows.Threading.Dispatcher.CurrentDispatcher.Thread.Resume();
+
+            }
             else
                 throw (new Exception("zzdfdxf"));
             //     dataGrid.BeginInsert();
             //dataGrid.ItemsSource = dataItems;
         }
-        internal void AddDataContainers(List<object> dataItems)
-        {
-            foreach (var item in dataItems)
-                AddDataContainer(item);
-            //     dataGrid.BeginInsert();
-            //dataGrid.ItemsSource = dataItems;
-        }
+        //internal void AddDataContainers(List<object> dataItems)
+        //{
+        //    foreach (var item in dataItems)
+        //        AddDataContainer(item);
+        //    //     dataGrid.BeginInsert();
+        //    //dataGrid.ItemsSource = dataItems;
+        //}
 
-        internal void ClearTooltip(object dataItem)
-        {
-            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
-            {
-                GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
-                                                  .ContainerFromItem(dataItem);
-            if (row != null)
-                ToolTipService.SetToolTip(row, null);
-            }));
-        }
+        //internal void ClearTooltip(object dataItem)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
+        //                                          .ContainerFromItem(dataItem);
+        //    if (row != null)
+        //        ToolTipService.SetToolTip(row, null);
+        //    }));
+        //}
 
-        internal void SetTooltip(object dataItem, string tooltip)
-        {
-            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
-            {
-                GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
-                                                    .ContainerFromItem(dataItem);
-            if (row != null)
-            {
-                if (!string.IsNullOrEmpty(tooltip))
-                    ToolTipService.SetToolTip(row, tooltip);
-                else
-                    ToolTipService.SetToolTip(row, null);
-            }
-            }));
-        }
-        internal void SetBorderColor(object dataItem, InfoColor color)
-        {
-            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
-            {
-                GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
-                                                     .ContainerFromItem(dataItem);
-            if (row != null)
-            {
-                row.BorderBrush = UIManager.GetColorFromInfoColor(color);
-                row.BorderThickness = new Thickness(1);
-                }
-            }));
-        }
-        internal void SetBackgroundColor(object dataItem, InfoColor color)
-        {
-            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
-            {
-                GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
-                                                     .ContainerFromItem(dataItem);
-            if (row != null)
-            {
-                row.Background = UIManager.GetColorFromInfoColor(color);
-            }
-            }));
-        }
-        internal void SetForegroundColor(object dataItem, InfoColor color)
-        {
-            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
-            {
-                GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
-                                                     .ContainerFromItem(dataItem);
-            if (row != null)
-            {
-                row.Foreground = UIManager.GetColorFromInfoColor(color);
-            }
-            }));
-        }
+        //internal void SetTooltip(object dataItem, string tooltip)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
+        //                                            .ContainerFromItem(dataItem);
+        //    if (row != null)
+        //    {
+        //        if (!string.IsNullOrEmpty(tooltip))
+        //            ToolTipService.SetToolTip(row, tooltip);
+        //        else
+        //            ToolTipService.SetToolTip(row, null);
+        //    }
+        //    }));
+        //}
+        //internal void SetBorderColor(object dataItem, InfoColor color)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
+        //                                             .ContainerFromItem(dataItem);
+        //    if (row != null)
+        //    {
+        //        row.BorderBrush = UIManager.GetColorFromInfoColor(color);
+        //        row.BorderThickness = new Thickness(1);
+        //        }
+        //    }));
+        //}
+        //internal void SetBackgroundColor(object dataItem, InfoColor color)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
+        //                                             .ContainerFromItem(dataItem);
+        //    if (row != null)
+        //    {
+        //        row.Background = UIManager.GetColorFromInfoColor(color);
+        //    }
+        //    }));
+        //}
+        //internal void SetForegroundColor(object dataItem, InfoColor color)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
+        //                                             .ContainerFromItem(dataItem);
+        //    if (row != null)
+        //    {
+        //        row.Foreground = UIManager.GetColorFromInfoColor(color);
+        //    }
+        //    }));
+        //}
         internal void Visiblity(object dataItem, bool visible)
         {
             System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
@@ -294,12 +299,12 @@ namespace MyUIGenerator.UIControlHelper
         //        RemoveDataContainer(item);
         //    //dataGrid.Items.Remove(item);
         //}
-        internal void RemoveSelectedDataContainers()
-        {
-            var selectedItems = GetSelectedData();
-            foreach (var item in selectedItems)
-                dataGrid.Items.Remove(item);
-        }
+        //internal void RemoveSelectedDataContainers()
+        //{
+        //    var selectedItems = GetSelectedData();
+        //    foreach (var item in selectedItems)
+        //        dataGrid.Items.Remove(item);
+        //}
 
         internal List<object> GetSelectedData()
         {

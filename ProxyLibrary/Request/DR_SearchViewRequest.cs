@@ -8,8 +8,9 @@ namespace ProxyLibrary
         public DR_SearchViewRequest(DR_Requester Requester, DP_SearchRepository searchDataItems) : base(Requester)
         {
             SearchDataItems = searchDataItems;
-          //  
+            //  
         }
+      //  public bool CheckStates { set; get; }
         public DP_SearchRepository SearchDataItems;
         //public int EntityID;
         public int EntityViewID { set; get; }
@@ -19,6 +20,15 @@ namespace ProxyLibrary
         public int MaxDataItems { set; get; }
     }
 
+    public class DR_SearchEditViewRequest : DR_SearchViewRequest
+    {
+        public DR_SearchEditViewRequest(DR_Requester Requester, DP_SearchRepository searchDataItems, int toParentRelationshipID) : base(Requester, searchDataItems)
+        {
+            ToParentRelationshipID = toParentRelationshipID;
+            //  
+        }
+        public int ToParentRelationshipID { get; set; }
+    }
     //public class DR_SearchViewByRelationshipTailRequest : BaseRequest
     //{
     //    public DR_SearchViewByRelationshipTailRequest(DR_Requester Requester) : base(Requester)
@@ -43,7 +53,7 @@ namespace ProxyLibrary
     {
         public DR_SearchCountRequest(DR_Requester Requester) : base(Requester)
         {
-            
+
         }
         public DP_SearchRepository SearchDataItems;
         public int EntityID;
@@ -63,13 +73,18 @@ namespace ProxyLibrary
         public DR_SearchEditRequest(DR_Requester Requester, DP_SearchRepository searchDataItem) : base(Requester)
         {
             SearchDataItem = searchDataItem;
+            //CheckStates = checkStates;
+            //ToParentRelationshipID = toParentRelationshipID;
             //if (viewMode)
             //    
             //else
             //    SecurityMode = SecurityMode.Edit;
-       //     WithDataView = withDataView;
+            //     WithDataView = withDataView;
         }
         public bool WithDataView { set; get; }
+        //public bool CheckStates { get; set; }
+        //public int ToParentRelationshipID { get; set; }
+
         //public DR_SearchEditRequest()
         //{
 
@@ -82,7 +97,7 @@ namespace ProxyLibrary
     {
         public DR_SearchFullDataRequest(DR_Requester Requester, DP_SearchRepository searchDataItem) : base(Requester)
         {
-            
+
             SearchDataItem = searchDataItem;
         }
         //public DR_SearchEditRequest()
@@ -97,7 +112,7 @@ namespace ProxyLibrary
     {
         public DR_SearchKeysOnlyRequest(DR_Requester Requester, DP_SearchRepository searchDataItem) : base(Requester)
         {
-            
+
             SearchDataItem = searchDataItem;
         }
         public DP_SearchRepository SearchDataItem;

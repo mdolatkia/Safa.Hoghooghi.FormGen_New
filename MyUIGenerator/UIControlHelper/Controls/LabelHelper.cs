@@ -21,14 +21,16 @@ namespace MyUIGenerator.UIControlHelper
 
         TextBlock textBox;
         ComboBox cmbOperators;
-        public override Control MainControl { get { return null; } }
+        public override FrameworkElement MainControl { get { return textBox; } }
 
         public LabelHelper(string text, bool rightAlignment)
         {
-            theGrid = new Grid();
+          
+               theGrid = new Grid();
             theGrid.ColumnDefinitions.Add(new ColumnDefinition());
             theGrid.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             textBox = new TextBlock();
+            textBox.Text = text;
             textBox.Name = "lblControl";
             textBox.GotFocus += TextBox_GotFocus;
             //  textBox.TextChanged += (sender, e) => textBox_TextChanged(sender, e);
@@ -55,7 +57,9 @@ namespace MyUIGenerator.UIControlHelper
             //    Grid.SetColumn(cmbOperators, 1);
             //    theGrid.Children.Add(cmbOperators);
             //}
-
+          
+            DefaultBackground = textBox.Background;
+            DefaultForeground = textBox.Foreground;
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -118,17 +122,31 @@ namespace MyUIGenerator.UIControlHelper
 
         public void SetBorderColor(InfoColor color)
         {
-            //textBox.BorderBrush = UIManager.GetColorFromInfoColor(color);
-            //textBox.BorderThickness = new Thickness(1);
+          
         }
         public void SetBackgroundColor(InfoColor color)
         {
-            textBox.Background = UIManager.GetColorFromInfoColor(color);
+            if (color != InfoColor.Default)
+            {
+                textBox.Background = UIManager.GetColorFromInfoColor(color);
+            }
+            else
+            {
+                textBox.Background = DefaultBackground;
+            }
         }
         public void SetForegroundColor(InfoColor color)
         {
-            textBox.Foreground = UIManager.GetColorFromInfoColor(color);
+            if (color != InfoColor.Default)
+            {
+                textBox.Foreground = UIManager.GetColorFromInfoColor(color);
+            }
+            else
+            {
+                textBox.Foreground = DefaultForeground;
+            }
         }
+
         public void SetBinding(EntityInstanceProperty property)
         {
             var bindinga = textBox.GetBindingExpression(TextBlock.TextProperty);

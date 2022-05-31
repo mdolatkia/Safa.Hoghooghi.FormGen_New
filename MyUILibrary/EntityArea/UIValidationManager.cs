@@ -44,19 +44,19 @@ namespace MyUILibrary.EntityArea
                     result = false;
                 if (resultData)
                 {
-                    foreach (var relationshipControl in EditArea.RelationshipColumnControls)
+                    foreach (var relationshipControl in data.ChildRelationshipInfos)
                     {
-                        if (relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
-                                 || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+                        if (relationshipControl.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
+                                 || relationshipControl.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
                         {
-                            var childRelInfo = data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship);
-                            if (!childRelInfo.IsHiddenOnState)
+                          //  var childRelInfo = data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship);
+                            if (!relationshipControl.IsHiddenOnState)
                             {
-                                relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
+                              //  relationshipControl.RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
 
                                 if (fromUpdate && EditArea.AreaInitializer.SourceRelationColumnControl == null)
                                 {
-                                    if (!relationshipControl.GenericEditNdTypeArea.AreaInitializer.UIValidationManager.ValidateData(false))
+                                    if (!relationshipControl.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.UIValidationManager.ValidateData(false))
                                         result = false;
                                 }
                             }
@@ -103,11 +103,11 @@ namespace MyUILibrary.EntityArea
                     ValidateSimpleColumn(data, dataProperty, simplePropertyControl);
             }
 
-            foreach (var relationshipControl in EditArea.RelationshipColumnControls)
+            foreach (var childRel in data.ChildRelationshipInfos)
             {
-                relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship));
+               // relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship));
 
-                ValidateRelationshipColumn(data, data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship), relationshipControl);
+                ValidateRelationshipColumn(data, childRel, childRel.RelationshipControl);
             }
             ValidateRelationshipFilters(data);
             ValidateISARelationships(data);

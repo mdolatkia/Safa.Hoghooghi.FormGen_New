@@ -20,7 +20,7 @@ namespace MyModelManager
             var objectCategory = (DatabaseObjectCategory)securityObject.Type;
             var possibleActionTree = GetActionsByCategory(objectCategory);
             //////////////////////////////// فعلا برای سرعت بیشتر
-            //return GetAllActions();
+            return GetAllActions();
 
             List<List<SecurityAction>> AllPostAccess = new List<List<SecurityAction>>();
             foreach (var post in posts)
@@ -56,7 +56,7 @@ namespace MyModelManager
                         else
                         {
                             //ادغام نوع سازمان و نوع نقش
-
+                            var aa =7;
                             var organizationTypeActions = GetPersmissionByPost(context, post.OrganizationType_RoleType.OrganizationType.SecuritySubject, securityObject, 0, goUpward);
                             var finalOrganizationTypeActions = GetPossibleActions(organizationTypeActions, GetActionsByCategory(objectCategory));
                             postAccess = Combination(new List<List<SecurityAction>>() { finalRoleTypeActions, finalOrganizationTypeActions }, possibleActionTree);
@@ -521,9 +521,9 @@ namespace MyModelManager
         public AssignedPermissionDTO GetAssignedPermissions(DR_Requester requester, int securityObjectID, bool withChildObjects)
         {
             AssignedPermissionDTO result = new AssignedPermissionDTO();
-            //var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Permission, requester.Identity.ToString(), securityObjectID.ToString(), withChildObjects.ToString());
-            //if (cachedItem != null)
-            //    return (cachedItem as AssignedPermissionDTO);
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Permission, requester.Identity.ToString(), securityObjectID.ToString(), withChildObjects.ToString());
+            if (cachedItem != null)
+                return (cachedItem as AssignedPermissionDTO);
             using (var context = new MyProjectEntities())
             {
                 SecurityObject securityObject = context.SecurityObject.First(x => x.ID == securityObjectID);

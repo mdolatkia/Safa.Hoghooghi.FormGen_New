@@ -1055,35 +1055,36 @@ namespace MyUILibrary
             }
             var MainEntityArea = editAreaResult.Item1;
             MainEntityArea.SetAreaInitializer(editEntityAreaInitializer);
-            if (initializeData != null && initializeData.Any())
-            {
-                var result = initializeData;
-                if (result.Count > 0)
-                {
-                    if (MainEntityArea is I_EditEntityAreaOneData)
-                    {
-                        var lastData = result.Last();
-                        (MainEntityArea as I_EditEntityAreaOneData).ShowDataFromExternalSource(lastData);
 
-                    }
-                    else
-                    {
-                        (MainEntityArea as I_EditEntityAreaMultipleData).ShowDataFromExternalSource(result);
-                    }
-                }
-            }
-            else
-            {
-                if (MainEntityArea is I_EditEntityAreaOneData)
-                {
-                    (MainEntityArea as I_EditEntityAreaOneData).ShowDataFromExternalSource(null);
+            MainEntityArea.ShowDataFromExternalSource(initializeData);
+            //if (initializeData != null && initializeData.Any())
+            //{
+            //    var result = initializeData;
+            //    if (result.Count > 0)
+            //    {
+                   
+            //            var lastData = result.Last();
+            //            MainEntityArea.ShowDataFromExternalSource(lastData);
 
-                }
-                else
-                {
-                    (MainEntityArea as I_EditEntityAreaMultipleData).ShowDataFromExternalSource(null);
-                }
-            }
+            //        }
+            //        else
+            //        {
+            //            MainEntityArea.ShowDataFromExternalSource(result);
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    if (MainEntityArea is I_EditEntityAreaOneData)
+            //    {
+            //        (MainEntityArea as I_EditEntityAreaOneData).ShowDataFromExternalSource(null);
+
+            //    }
+            //    else
+            //    {
+            //        (MainEntityArea as I_EditEntityAreaMultipleData).ShowDataFromExternalSource(null);
+            //    }
+            //}
 
             //if (dialog)
             //{

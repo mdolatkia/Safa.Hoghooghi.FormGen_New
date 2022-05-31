@@ -28,7 +28,10 @@ namespace MyUIGenerator.View
     public partial class UC_TemporaryDataSearchLink : UserControl, I_View_TemporaryView
     {
         DispatcherTimer timer = new DispatcherTimer();
-
+        public Brush DefaultBorderBrush { get; }
+        public Thickness DefaultBorderThickness { get; }
+        public Brush DefaultBackground { get; }
+        public Brush DefaultForeground { get; }
         public UC_TemporaryDataSearchLink(TemporaryLinkState temporaryLinkState)
         {
             InitializeComponent();
@@ -64,6 +67,11 @@ namespace MyUIGenerator.View
             txtSearch.TextChanged += TxtSearch_TextChanged;
             timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             timer.Tick += Timer_Tick;
+
+            DefaultBorderBrush = this.BorderBrush;
+            DefaultBorderThickness = this.BorderThickness;
+            DefaultBackground = this.Background;
+            DefaultForeground = this.Foreground;
         }
         public void Visiblity(bool visible)
         {
@@ -337,7 +345,21 @@ namespace MyUIGenerator.View
         {
             this.Foreground = UIManager.GetColorFromInfoColor(color);
         }
+        public void SetBorderColorDefault()
+        {
+            this.BorderBrush = DefaultBorderBrush;
+            this.BorderThickness = DefaultBorderThickness;
+        }
 
+        public void SetBackgroundColorDefault()
+        {
+            this.Background = DefaultBackground;
+        }
+
+        public void SetForegroundColorDefault()
+        {
+            this.Background = DefaultForeground;
+        }
         public void AddPopupView(I_View_ViewEntityArea viewView)
         {
             popup1.Child = viewView as UIElement;

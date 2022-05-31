@@ -31,8 +31,8 @@ namespace MyUIGenerator.View
         public frmGridView()
         {
             InitializeComponent();
-            grdArea.Children.Add(dataGridHelper.dataGrid);
-            dataGridHelper.dataGrid.MouseDoubleClick += DataGrid_MouseDoubleClick;
+            grdArea.Children.Add(dataGrid);
+            dataGrid.MouseDoubleClick += DataGrid_MouseDoubleClick;
             cmbListViews.SelectionChanged += CmbListViews_SelectionChanged;
             cmbOrderColumns.SelectionChanged += CmbOrderColumns_SelectionChanged;
             cmbSort.SelectionChanged += CmbSort_SelectionChanged;

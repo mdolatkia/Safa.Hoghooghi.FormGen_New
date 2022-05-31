@@ -239,7 +239,11 @@ namespace MyUILibrary.EntityArea
                             propertyControl.EditNdTypeArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
                             propertyControl.EditNdTypeArea.SetAreaInitializer(editEntityAreaInitializer1);
                             //         propertyControl.ControlPackage = new UIControlPackageForRelationshipColumn();
-                            propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelationshipControlManagerForOneDataForm(propertyControl.EditNdTypeArea.TemporaryDisplayView, GetRelationshipUISetting(), true, propertyControl.EntitySearchColumn.Alias);
+                            propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelationshipControlManagerForOneDataForm(propertyControl.EditNdTypeArea.TemporaryDisplayView, GetRelationshipUISetting());
+                            propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.EntitySearchColumn.Alias);
+
+                         
+
                             if (!string.IsNullOrEmpty(propertyControl.EntitySearchColumn.Tooltip))
                                 propertyControl.LabelControlManager.SetTooltip( propertyControl.EntitySearchColumn.Tooltip);
                         }
@@ -259,7 +263,9 @@ namespace MyUILibrary.EntityArea
                     propertyControl.EntitySearchColumn = searchcolumn;
                     propertyControl.Operators = GetSimpleColumnOperators(propertyControl.Column);
                     //        propertyControl.ControlPackage = new UIControlPackageForSimpleColumn();
-                    propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(propertyControl.Column, GetColumnUISetting(propertyControl.Column), false, propertyControl.Operators, true, propertyControl.EntitySearchColumn.Alias);
+                    propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(propertyControl.Column, GetColumnUISetting(propertyControl.Column), false, propertyControl.Operators);
+                    propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.EntitySearchColumn.Alias);
+
                     if (!string.IsNullOrEmpty(propertyControl.EntitySearchColumn.Tooltip))
                         propertyControl.LabelControlManager.SetTooltip( propertyControl.EntitySearchColumn.Tooltip);
 

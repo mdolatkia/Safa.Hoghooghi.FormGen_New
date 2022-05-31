@@ -231,7 +231,7 @@ namespace MyUIGenerator
         //}
 
 
-        public I_UIControlManager GenerateLabelControlManager(ColumnDTO column, ColumnUISettingDTO columnSetting, string labelText)
+        public I_UIControlManager GenerateLabelControlManager(string labelText)
         {
             var controlManager = new LabelHelper(labelText, true);
             //if (labelControlManager)
@@ -241,7 +241,7 @@ namespace MyUIGenerator
             return controlManager;
         }
 
-        public I_SimpleControlManagerOne GenerateSimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues, List<SimpleSearchOperator> operators, bool labelControlManager, string labelText)
+        public I_SimpleControlManagerOne GenerateSimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues, List<SimpleSearchOperator> operators)
         {
             var controlManager = new SimpleControlManagerForOneDataForm(column, columnSetting, hasRangeOfValues, operators);
             //if (labelControlManager)
@@ -250,7 +250,7 @@ namespace MyUIGenerator
             //}
             return controlManager;
         }
-        public I_SimpleControlManagerMultiple GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues, bool labelControlManager, string labelText)
+        public I_SimpleControlManagerMultiple GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues)
         {
             var controlManager = new SimpleControlManagerForMultipleDataForm(column, columnUISettingDTO, hasRangeOfValues);
             //if (labelControlManager)
@@ -260,7 +260,7 @@ namespace MyUIGenerator
             return controlManager;
         }
 
-        public I_RelationshipControlManagerOne GenerateRelationshipControlManagerForOneDataForm(I_View_Area view, RelationshipUISettingDTO relationshipUISetting, bool labelControlManager, string labelText)
+        public I_RelationshipControlManagerOne GenerateRelationshipControlManagerForOneDataForm(I_View_Area view, RelationshipUISettingDTO relationshipUISetting)
         {
             var controlManager = new RelationshipControlManagerForOneDataForm(view, relationshipUISetting);
             //if (labelControlManager)
@@ -270,7 +270,7 @@ namespace MyUIGenerator
             return controlManager;
         }
 
-        public I_RelationshipControlManagerMultiple GenerateRelationshipControlManagerForMultipleDataForm(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipUISetting, bool labelControlManager, string labelText)
+        public I_RelationshipControlManagerMultiple GenerateRelationshipControlManagerForMultipleDataForm(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipUISetting)
         {
             var controlManager = new RelationshipControlManagerForMultipleDataForm(temporaryLinkState, relationshipUISetting);
             //if (labelControlManager)
@@ -643,8 +643,9 @@ namespace MyUIGenerator
         }
         public static SolidColorBrush GetColorFromInfoColor(MyUILibrary.Temp.InfoColor infoColor)
         {
-            if (infoColor == MyUILibrary.Temp.InfoColor.Null)
+            if (infoColor == MyUILibrary.Temp.InfoColor.Default)
             {
+                //Color color = Colors.Black;
                 return null;
             }
             else

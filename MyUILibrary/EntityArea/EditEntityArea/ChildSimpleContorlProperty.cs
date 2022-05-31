@@ -11,7 +11,7 @@ namespace MyUILibrary.EntityArea
 {
     public class ChildSimpleContorlProperty : BaseChildProperty
     {
-        public SimpleColumnControlGenerel SimpleColumnControl { set; get; }
+        public SimpleColumnControlGenerel SimpleColumnControl { get { return BaseColumnControl as SimpleColumnControlGenerel; } }
         public EntityInstanceProperty Property { set; get; }
 
         public I_UIControlManager GetUIControlManager
@@ -39,7 +39,7 @@ namespace MyUILibrary.EntityArea
         public ChildSimpleContorlProperty(SimpleColumnControlGenerel simpleColumnControl, DP_FormDataRepository sourceData, EntityInstanceProperty property) : base(sourceData, simpleColumnControl)
         {
             SourceData = sourceData;
-            SimpleColumnControl = simpleColumnControl;
+            //    SimpleColumnControl = simpleColumnControl;
             Property = property;
             if (SimpleColumnControl.Column.ColumnValueRange != null && SimpleColumnControl.Column.ColumnValueRange.Details.Any())
             {
@@ -47,14 +47,11 @@ namespace MyUILibrary.EntityArea
             }
             CheckColumnReadonly();
         }
-        public void Binded()
+
+        public void SetBinding()
         {
             CheckColumnReadonly();
-        }
-        private void CheckColumnReadonly()
-        {
-            if (SourceData.DataIsInEditMode())
-                GetUIControlManager.SetReadonly(SimpleColumnControl.Column.IsReadonly);
+            GetUIControlManager.SetBinding(this.Property);
         }
 
         public bool IsReadonly
@@ -69,20 +66,40 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        public void SetSimpleColumnHiddenFromState(string message, string key, bool permanent)//, ImposeControlState hiddenControlState)
+        public void SetSimpleColumnHiddenFromState(string message, string key, bool permanent, bool checkInUI)//, ImposeControlState hiddenControlState)
         {
-            if (SourceData.DataIsInEditMode())
+            if (checkInUI)
             {
-                //اگر کلیذد اصلی باشه چک میشه؟ خطا باید بده
-                AddHiddenState(key, message, permanent);
-
-                if (permanent)
+                if (SourceData.DataIsInEditMode())
                 {
-                    GetUIControlManager.Visiblity(false);
-                    if (!LableIsShared)
-                        SimpleColumnControl.LabelControlManager.Visiblity(true);
-                }
+                    //اگر کلیذد اصلی باشه چک میشه؟ خطا باید بده
+                    AddHiddenState(key, message, permanent);
+                    DecideVisiblity();
+                    //if (permanent)
+                    //{
 
+                    //}
+
+                }
+            }
+            else
+            {
+                AddHiddenState(key, message, permanent);
+            }
+        }
+        private void DecideVisiblity()
+        {
+            if (ControlHiddenStateItems.Any())
+            {
+                GetUIControlManager.Visiblity(false);
+                if (!LableIsShared)
+                    SimpleColumnControl.LabelControlManager.Visiblity(false);
+            }
+            else
+            {
+                GetUIControlManager.Visiblity(true);
+                if (!LableIsShared)
+                    SimpleColumnControl.LabelControlManager.Visiblity(true);
             }
         }
         public void ResetSimpleColumnVisiblityFromState(string key)//, ImposeControlState hiddenControlState)
@@ -90,25 +107,35 @@ namespace MyUILibrary.EntityArea
             if (SourceData.DataIsInEditMode())
             {
                 //اگر کلیذد اصلی باشه چک میشه؟ خطا باید بده
-                GetUIControlManager.Visiblity(true);
-                if (!LableIsShared)
-                    SimpleColumnControl.LabelControlManager.Visiblity(true);
-
                 RemoveHiddenState(key);
+                DecideVisiblity();
             }
         }
-        public void SetSimpleColumnReadonlyFromState(string message, string key, bool permanent)//, ImposeControlState hiddenControlState)
+        public void SetSimpleColumnReadonlyFromState(string message, string key, bool permanent, bool checkInUI)//, ImposeControlState hiddenControlState)
         {
-            if (SourceData.DataIsInEditMode())
+            if (checkInUI)
+            {
+                if (SourceData.DataIsInEditMode())
+                {
+                    AddReadonlyState(key, message, permanent);
+                    //if (permanent)
+                    //{
+                    CheckColumnReadonly();
+                    //}
+
+                }
+            }
+            else
             {
                 AddReadonlyState(key, message, permanent);
-                if (permanent)
-                {
-                    CheckColumnReadonly();
-                }
-
             }
         }
+        private void CheckColumnReadonly()
+        {
+            if (SourceData.DataIsInEditMode())
+                GetUIControlManager.SetReadonly(SimpleColumnControl.Column.IsReadonly);
+        }
+
         public void ResetSimpleColumnReadonlyFromState(string key)//, ImposeControlState hiddenControlState)
         {
             if (SourceData.DataIsInEditMode())
@@ -162,6 +189,7 @@ namespace MyUILibrary.EntityArea
             }
             return result;
         }
-       
+
+
     }
 }

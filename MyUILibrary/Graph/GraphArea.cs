@@ -210,7 +210,7 @@ namespace MyUILibrary.GraphArea
                 {
                     if (SelectedGraph.TableDrivedEntityID == FirstData.TargetEntityID)
                     {
-                        FirstSideEditEntityArea.ClearData(false);
+                        FirstSideEditEntityArea.ClearData();
                         FirstSideEditEntityArea.ShowDataFromExternalSource(FirstData);
                     }
                 }

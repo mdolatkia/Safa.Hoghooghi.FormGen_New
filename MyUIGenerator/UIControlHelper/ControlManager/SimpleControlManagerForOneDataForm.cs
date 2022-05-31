@@ -14,7 +14,7 @@ using System.Windows.Media;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public class SimpleControlManagerForOneDataForm : BaseControlManager, I_SimpleControlManagerOne
+    public class SimpleControlManagerForOneDataForm :  I_SimpleControlManagerOne
     {
         //public string ValidationMessage { set; get; }
         //public InfoColor ValidationColor { set; get; }

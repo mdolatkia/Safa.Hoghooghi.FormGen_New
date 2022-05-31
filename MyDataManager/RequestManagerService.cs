@@ -44,6 +44,7 @@ namespace MyDataManager
             SearchRequestManager editProcessor = new SearchRequestManager();
             return editProcessor.Process(request as DR_SearchViewRequest);
         }
+     
         public DR_ResultSearchExists SendSearchExistsRequest(DR_SearchExistsRequest request)
         {
             SearchRequestManager editProcessor = new SearchRequestManager();
@@ -54,6 +55,13 @@ namespace MyDataManager
             SearchRequestManager editProcessor = new SearchRequestManager();
             return editProcessor.Process(request as DR_SearchCountRequest);
         }
+
+        public DR_ResultSearchView SendSearchEditViewRequest(DR_SearchEditViewRequest request)
+        {
+            SearchRequestManager editProcessor = new SearchRequestManager();
+            return editProcessor.Process(request);
+        }
+
         public DR_ResultSearchFullData SendSearchEditRequest(DR_SearchEditRequest request)
         {
             SearchRequestManager editProcessor = new SearchRequestManager();

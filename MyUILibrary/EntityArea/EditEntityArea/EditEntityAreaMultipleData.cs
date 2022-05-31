@@ -53,10 +53,10 @@ namespace MyUILibrary.EntityArea
                     var existingdatas = datas.Where(x => x.IsDBRelationship);
                     foreach (var item in existingdatas)
                     {
-                        if (ChildRelationshipInfo != null)
-                        {
-                            //SetRemovedItem(ChildRelationshipInfo, item, shouldDeleteFromDB);
-                        }
+                        //if (ChildRelationshipInfo != null)
+                        //{
+                        //    //SetRemovedItem(ChildRelationshipInfo, item, shouldDeleteFromDB);
+                        //}
                         RemoveData(item, true);
                     }
                 }
@@ -95,25 +95,25 @@ namespace MyUILibrary.EntityArea
 
         }
 
-        public override bool AddData(DP_FormDataRepository data, bool showDataInDataView)
-        {
-            if (base.BaseAddData(data))
-            {
-                if (showDataInDataView)
-                {
-                    if (ShowDataInDataView(data))
-                        return true;
-                    else
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            else
-                return false;
-            //ManageDataSecurity();
-        }
+        //public override bool AddData(DP_FormDataRepository data, bool showDataInDataView)
+        //{
+        //    if (base.BaseAddData(data))
+        //    {
+        //        if (showDataInDataView)
+        //        {
+        //            if (ShowDataInDataView(data))
+        //                return true;
+        //            else
+        //            {
+        //                return false;
+        //            }
+        //        }
+        //        return true;
+        //    }
+        //    else
+        //        return false;
+        //    //ManageDataSecurity();
+        //}
         public void RemoveDataContainers()
         {
             if (DataViewGeneric != null)
@@ -132,168 +132,131 @@ namespace MyUILibrary.EntityArea
             if (DataItemRemoved != null)
                 DataItemRemoved(this, new EditAreaDataItemArg() { DataItem = dataItem });
         }
-        public bool ShowDatasInDataView(List<DP_FormDataRepository> dataItems)
-        {
-            bool result = true;
-            foreach (var item in dataItems)
-            {
-                var itemResult = ShowDataInDataView(item);
-                if (!itemResult)
-                    result = false;
-            }
-            return result;
-        }
-        public override bool ShowDataInDataView(DP_FormDataRepository dataItem)
-        {
-            (DataViewGeneric as I_View_EditEntityAreaMultiple).AddDataContainer(dataItem);
-            return InternalShowDataInDataView(dataItem);
-        }
+        //public bool ShowDatasInDataView(List<DP_FormDataRepository> dataItems)
+        //{
+        //    bool result = true;
+        //    foreach (var item in dataItems)
+        //    {
+        //        var itemResult = ShowDataInDataView(item);
+        //        if (!itemResult)
+        //            result = false;
+        //    }
+        //    return result;
+        //}
+        //public override bool ShowDataInDataView(DP_FormDataRepository specificDate)
+        //{
+        //    (DataViewGeneric as I_View_EditEntityAreaMultiple).AddDataContainer(specificDate);
+        //    //  return InternalShowDataInDataView(dataItem);
+
+        //    if (!specificDate.IsFullData)
+        //        throw new Exception("asdasd");
+
+        //    foreach (var propertyControl in specificDate.ChildSimpleContorlProperties)
+        //    {
+        //        propertyControl.SetBinding();
+        //    }
+        //    //foreach (var propertyControl in SimpleColumnControls)
+        //    //{
+        //    //    var property = specificDate.GetProperty(propertyControl.Column.ID);
+        //    //    if (property != null)
+        //    //    {
+        //    //        //if (AreaInitializer.IntracionMode == IntracionMode.Create
+        //    //        //                           || AreaInitializer.IntracionMode == IntracionMode.CreateSelect)
+        //    //        //{
+
+        //    //        //if (propertyControl.Column.ColumnValueRange != null && propertyControl.Column.ColumnValueRange.Details.Any())
+        //    //        //{
+        //    //        //    var columnKeyValue = propertyControl.Column.ColumnValueRange;
+        //    //        //    if (!string.IsNullOrEmpty(property.Value))
+        //    //        //    {
+        //    //        //        if (columnKeyValue.ValueFromTitleOrValue)
+        //    //        //        {
+        //    //        //            if (!columnKeyValue.Details.Any(x => x.KeyTitle == property.Value))
+        //    //        //                property.Value = "";
+        //    //        //        }
+        //    //        //        else
+        //    //        //        {
+        //    //        //            if (!columnKeyValue.Details.Any(x => x.Value == property.Value))
+        //    //        //                property.Value = "";
+        //    //        //        }
+        //    //        //    }
+        //    //        //}
+
+        //    //        SetBinding(specificDate, propertyControl as SimpleColumnControlMultiple, property);
+        //    //        //ShowTypePropertyControlValue(specificDate, propertyControl, property.Value);
+        //    //        //}
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        //????
+        //    //    }
+        //    //}
+        //    bool result = true;
+        //    foreach (var relationshipControl in specificDate.ChildRelationshipInfos)
+        //    {
+        //        relationshipControl.SetBinding();
+        //        // bool relationshipFirstSideHasValue = relationshipControl.Relationship.RelationshipColumns.Any()
+        //        //&& relationshipControl.Relationship.RelationshipColumns.All(x => specificDate.GetProperties().Any(y => y.Value != null && !string.IsNullOrEmpty(y.Value.ToString()) && y.ColumnID == x.FirstSideColumnID));
+
+        //        // bool childLoadedBefore = specificDate.ChildRelationshipInfos.Any(x => x.Relationship.ID == relationshipControl.Relationship.ID);
+        //        // ChildRelationshipInfo childData = null;
+        //        // if (childLoadedBefore)
+        //        //     childData = specificDate.ChildRelationshipInfos.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
+        //        // else
+        //        // {
+        //        //     if (!relationshipFirstSideHasValue)
+        //        //         childData = specificDate.AddChildRelationshipInfo(relationshipControl);
+        //        //     else
+        //        //         childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildTempView(relationshipControl.Relationship, this, relationshipControl.GenericEditNdTypeArea, relationshipControl, specificDate);
+
+        //        // }
+        //        // if (childData.SecurityIssue == false)
+        //        // {
+        //        //     relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfoAndShow(childData);
+
+        //        //     //if (relationshipControl.EditNdTypeArea.SecurityReadOnlyByParent || relationshipControl.EditNdTypeArea.AreaInitializer.SecurityReadOnly)
+        //        //     //    if (!childData.RelatedData.Any())
+        //        //     //    {
+        //        //     //        relationshipControl.View.DisableEnable(specificDate, TemporaryLinkType.DataView, false);
+        //        //     //    }
+        //        // }
+        //        // else
+        //        // {
+        //        //     result = false;
+        //        // }
+        //    }
+        //    if (result)
+        //        OnDataItemShown(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
+        //    //    OnDataItemLoaded(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
+        //    return result;
+
+        //}
         //بعدا بررسی شود
-        private bool InternalShowDataInDataView(DP_FormDataRepository specificDate)
-        {
-            if (!specificDate.IsFullData)
-                throw new Exception("asdasd");
-            foreach (var propertyControl in SimpleColumnControls)
-            {
-                var property = specificDate.GetProperty(propertyControl.Column.ID);
-                if (property != null)
-                {
-                    //if (AreaInitializer.IntracionMode == IntracionMode.Create
-                    //                           || AreaInitializer.IntracionMode == IntracionMode.CreateSelect)
-                    //{
+        //private bool InternalShowDataInDataView(DP_FormDataRepository specificDate)
+        //{
 
-                    //if (propertyControl.Column.ColumnValueRange != null && propertyControl.Column.ColumnValueRange.Details.Any())
-                    //{
-                    //    var columnKeyValue = propertyControl.Column.ColumnValueRange;
-                    //    if (!string.IsNullOrEmpty(property.Value))
-                    //    {
-                    //        if (columnKeyValue.ValueFromTitleOrValue)
-                    //        {
-                    //            if (!columnKeyValue.Details.Any(x => x.KeyTitle == property.Value))
-                    //                property.Value = "";
-                    //        }
-                    //        else
-                    //        {
-                    //            if (!columnKeyValue.Details.Any(x => x.Value == property.Value))
-                    //                property.Value = "";
-                    //        }
-                    //    }
-                    //}
-
-                    SetBinding(specificDate, propertyControl as SimpleColumnControlMultiple, property);
-                    //ShowTypePropertyControlValue(specificDate, propertyControl, property.Value);
-                    //}
-                }
-                else
-                {
-                    //????
-                }
-            }
-            bool result = true;
-            foreach (var relationshipControl in RelationshipColumnControls)
-            {
-                bool relationshipFirstSideHasValue = relationshipControl.Relationship.RelationshipColumns.Any()
-               && relationshipControl.Relationship.RelationshipColumns.All(x => specificDate.GetProperties().Any(y => y.Value != null && !string.IsNullOrEmpty(y.Value.ToString()) && y.ColumnID == x.FirstSideColumnID));
-
-                bool childLoadedBefore = specificDate.ChildRelationshipInfos.Any(x => x.Relationship.ID == relationshipControl.Relationship.ID);
-                ChildRelationshipInfo childData = null;
-                if (childLoadedBefore)
-                    childData = specificDate.ChildRelationshipInfos.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
-                else
-                {
-                    if (!relationshipFirstSideHasValue)
-                        childData = specificDate.AddChildRelationshipInfo(relationshipControl);
-                    else
-                        childData = AreaInitializer.EditAreaDataManager.SerachDataFromParentRelationForChildTempView(relationshipControl.Relationship, this, relationshipControl.GenericEditNdTypeArea, relationshipControl, specificDate);
-
-                }
-                if (childData.SecurityIssue == false)
-                {
-                    relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfoAndShow(childData);
-
-                    //if (relationshipControl.EditNdTypeArea.SecurityReadOnlyByParent || relationshipControl.EditNdTypeArea.AreaInitializer.SecurityReadOnly)
-                    //    if (!childData.RelatedData.Any())
-                    //    {
-                    //        relationshipControl.View.DisableEnable(specificDate, TemporaryLinkType.DataView, false);
-                    //    }
-                }
-                else
-                {
-                    result = false;
-                }
-            }
-            if (result)
-                OnDataItemShown(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
-            //    OnDataItemLoaded(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
-            return result;
-        }
+        //}
         //باشد Direct صدا زده میشود ، اگر LoadTemplate یکبار در
         //.باشد AreaInitializer.FormComposed == false کلیک میشود و اگر Data زمانی که لینک ShowTemporaryDataView یکبار هم در
-        public void ShowDataFromExternalSource(List<DP_DataView> dataRepositories)
-        {
+        //public void ShowDataFromExternalSource(List<DP_DataView> dataRepositories)
+        //{
 
-            bool dataView = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-                  AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
-            if (dataRepositories != null && dataRepositories.Count > 0)
-            {
-                foreach (var dataRepository in dataRepositories)
-                {
-                    if (!dataRepository.KeyProperties.Any())
-                        throw new Exception("asdad");
-                }
-                if (dataView)
-                {
-                    foreach (var dataRepository in dataRepositories)
-                    {
-                        var result = AreaInitializer.EditAreaDataManager.SearchDataForEditFromExternalSource(AreaInitializer.EntityID, dataRepository, this);
-                        if (result != null)
-                        {
-                            var addResult = AddData(result, true);
-                            if (!addResult)
-                                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", dataRepository.ViewInfo, Temp.InfoColor.Red);
-                        }
-                        else
-                        {
-                            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", dataRepository.ViewInfo, Temp.InfoColor.Red);
-                        }
 
-                    }
-                }
-                else
-                {
-                    foreach (var dataRepository in dataRepositories)
-                    {
-                        var viewData = AreaInitializer.EditAreaDataManager.SearchDataForViewFromExternalSource(AreaInitializer.EntityID, dataRepository, this);
-                        if (viewData != null)
-                        {
-                            var result = AreaInitializer.EditAreaDataManager.ConvertDP_DataViewToDP_DataRepository(viewData, this);
-                            var addResult = AddData(result, false);
-                            if (!addResult)
-                                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", dataRepository.ViewInfo, Temp.InfoColor.Red);
-                        }
-                        else
-                        {
-                            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", dataRepository.ViewInfo, Temp.InfoColor.Red);
-                        }
-                    }
-                }
-                //ShowDataInDataView(result, true);
-            }
-            //if (dialog)
-            //{
-            //    if (dataView)
-            //        AgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(DataView, SimpleEntity.Alias, Enum_WindowSize.Big);
-            //    else
-            //        AgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(TemporaryDisplayView, SimpleEntity.Alias, Enum_WindowSize.Big);
-            //}
-            //else
-            //{
-            //    if (dataView)
-            //        AgentUICoreMediator.UIManager.ShowPane(DataView, SimpleEntity.Alias);
-            //    else
-            //        AgentUICoreMediator.UIManager.ShowPane(TemporaryDisplayView, SimpleEntity.Alias);
-            //}
-        }
+        //    //if (dialog)
+        //    //{
+        //    //    if (dataView)
+        //    //        AgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(DataView, SimpleEntity.Alias, Enum_WindowSize.Big);
+        //    //    else
+        //    //        AgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(TemporaryDisplayView, SimpleEntity.Alias, Enum_WindowSize.Big);
+        //    //}
+        //    //else
+        //    //{
+        //    //    if (dataView)
+        //    //        AgentUICoreMediator.UIManager.ShowPane(DataView, SimpleEntity.Alias);
+        //    //    else
+        //    //        AgentUICoreMediator.UIManager.ShowPane(TemporaryDisplayView, SimpleEntity.Alias);
+        //    //}
+        //}
         public I_View_EditEntityAreaMultiple DataView { set; get; }
         public override I_View_Area DataViewGeneric
         {
@@ -384,14 +347,14 @@ namespace MyUILibrary.EntityArea
                 return DataViewGeneric as I_View_EditEntityAreaMultiple;
             }
         }
-        public override void DataItemVisiblity(object dataItem, bool visible)
-        {
-            (DataViewGeneric as I_View_EditEntityAreaMultiple).Visiblity(dataItem, visible);
-        }
-        public override void DataItemEnablity(object dataItem, bool visible)
-        {
-            (DataViewGeneric as I_View_EditEntityAreaMultiple).EnableDisable(dataItem, visible);
-        }
+        //public override void DataItemVisiblity(object dataItem, bool visible)
+        //{
+        //    (DataViewGeneric as I_View_EditEntityAreaMultiple).Visiblity(dataItem, visible);
+        //}
+        //public override void DataItemEnablity(object dataItem, bool visible)
+        //{
+        //    (DataViewGeneric as I_View_EditEntityAreaMultiple).EnableDisable(dataItem, visible);
+        //}
         //private I_SearchViewEntityArea GenerateSearchViewArea()
         //{
         //    if (AreaInitializer.SourceRelationColumnControl != null)
@@ -414,10 +377,12 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        public void SetBinding(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, EntityInstanceProperty property)
-        {
-            typePropertyControl.SimpleControlManager.GetUIControlManager(dataItem).SetBinding(property);
-        }
+        //public void SetBinding(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, EntityInstanceProperty property)
+        //{
+        //    var uiControl = typePropertyControl.SimpleControlManager.GetUIControlManager(dataItem);
+        //    if (uiControl != null)
+        //        typePropertyControl.SimpleControlManager.GetUIControlManager(dataItem).SetBinding(property);
+        //}
 
         public bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, string value)
         {

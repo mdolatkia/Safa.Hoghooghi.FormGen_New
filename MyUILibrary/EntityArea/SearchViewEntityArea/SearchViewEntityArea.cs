@@ -209,18 +209,18 @@ namespace MyUILibrary.EntityArea
         {
             get
             {
-                if (_RelationshipFilters == null)
-                {
-                    if (AreaInitializer.SourceEditArea.ChildRelationshipInfo != null)
-                    {
-                        if (AreaInitializer.SourceEditArea.AreaInitializer.SourceRelationColumnControl != null)
-                        {
-                            _RelationshipFilters = AgentUICoreMediator.GetAgentUICoreMediator.relationshipFilterManagerService.GetRelationshipFilters(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.SourceEditArea.AreaInitializer.SourceRelationColumnControl.Relationship.ID);
-                        }
-                    }
-                    else
-                        return null;
-                }
+                //////if (_RelationshipFilters == null)
+                //////{
+                //////    if (AreaInitializer.SourceEditArea.ChildRelationshipInfo != null)
+                //////    {
+                //////        if (AreaInitializer.SourceEditArea.AreaInitializer.SourceRelationColumnControl != null)
+                //////        {
+                //////            _RelationshipFilters = AgentUICoreMediator.GetAgentUICoreMediator.relationshipFilterManagerService.GetRelationshipFilters(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.SourceEditArea.AreaInitializer.SourceRelationColumnControl.Relationship.ID);
+                //////        }
+                //////    }
+                //////    else
+                //////        return null;
+                //////}
                 return _RelationshipFilters;
             }
             set
@@ -299,20 +299,20 @@ namespace MyUILibrary.EntityArea
             CurrentValues.Clear();
             try
             {
-                if (AreaInitializer.SourceEditArea.ChildRelationshipInfo != null)
-                {
-                    if (RelationshipFilters != null && RelationshipFilters.Any())
-                    {
-                        foreach (var filter in RelationshipFilters)
-                        {
-                            var value = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetValueSomeHow(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.SourceEditArea.ChildRelationshipInfo.SourceData, filter.ValueRelationshipTail, filter.ValueColumnID);
-                            if (value != null && !string.IsNullOrEmpty(value.ToString()))
-                            {
-                                CurrentValues.Add(new Tuple<int, object>(filter.ID, value));
-                            }
-                        }
-                    }
-                }
+                //////if (AreaInitializer.SourceEditArea.ChildRelationshipInfo != null)
+                //////{
+                //////    if (RelationshipFilters != null && RelationshipFilters.Any())
+                //////    {
+                //////        foreach (var filter in RelationshipFilters)
+                //////        {
+                //////            var value = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetValueSomeHow(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.SourceEditArea.ChildRelationshipInfo.SourceData, filter.ValueRelationshipTail, filter.ValueColumnID);
+                //////            if (value != null && !string.IsNullOrEmpty(value.ToString()))
+                //////            {
+                //////                CurrentValues.Add(new Tuple<int, object>(filter.ID, value));
+                //////            }
+                //////        }
+                //////    }
+                //////}
             }
             catch (Exception ex)
             {

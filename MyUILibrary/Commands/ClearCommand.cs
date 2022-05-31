@@ -24,15 +24,17 @@ namespace MyUILibrary.EntityArea.Commands
         {
             //if (EditArea is I_EditEntityArea)
             //{
+            EditArea.ClearData();
 
-            if (EditArea is I_EditEntityAreaOneData)
-            {
-                (EditArea as I_EditEntityAreaOneData).ClearData(true);
-            }
-            else if (EditArea is I_EditEntityAreaMultipleData)
-            {
-                (EditArea as I_EditEntityAreaMultipleData).ClearData(false);
-            }
+            تو رابطه فرق میکنه
+            //if (EditArea is I_EditEntityAreaOneData)
+            //{
+            //    (EditArea as I_EditEntityAreaOneData).ClearData(true);
+            //}
+            //else if (EditArea is I_EditEntityAreaMultipleData)
+            //{
+            //    (EditArea as I_EditEntityAreaMultipleData).ClearData(false);
+            //}
 
             //if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
             //    EditArea.AreaInitializer.Datas.Clear();

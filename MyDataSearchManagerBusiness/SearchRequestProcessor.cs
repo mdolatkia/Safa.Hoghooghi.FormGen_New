@@ -93,6 +93,28 @@ namespace MyDataSearchManagerBusiness
         //{
         //    //TableDrivedEntityDTO entity = bizTableDrivedEntity.GetTableDrivedEntity(entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
         //}
+
+        //public DR_ResultSearchView Process(DR_SearchEditViewRequest request)
+        //{
+        //    var result = Process(request as DR_SearchViewRequest);
+        //    DataSearchStateManager dataSearchStateManager = new DataSearchStateManager();
+        //    if (request.ToParentRelationshipID != 0)
+        //    {
+        //        foreach (var item in result.ResultDataItems)
+        //        {
+        //            item.
+        //            }
+        //    }
+        //    return result;
+        //}
+        //catch (Exception ex)
+        //{
+        //    result.Result = Enum_DR_ResultType.ExceptionThrown;
+        //    result.Message = "خطا در جستجو" + Environment.NewLine + ex.Message;
+        //}
+
+
+
         public DR_ResultSearchView Process(DR_SearchViewRequest request)
         {
             DR_ResultSearchView result = new DR_ResultSearchView();
@@ -112,7 +134,14 @@ namespace MyDataSearchManagerBusiness
             result.ResultDataItems = DataTableToDP_ViewRepository(dataTable.Item1, dataTable.Item2, dataTable.Item3);
             result.Result = Enum_DR_ResultType.SeccessfullyDone;
 
-
+            //if(request.CheckStates)
+            //{
+            //    DataSearchStateManager dataSearchStateManager = new DataSearchStateManager(request.SearchDataItems.TargetEntityID);
+            //    foreach (var item in result.ResultDataItems)
+            //    {
+            //        dataSearchStateManager.
+            //    }
+            //}
             //}
             //catch (Exception ex)
             //{

@@ -164,10 +164,6 @@
       <Project>{878D3665-BE5E-401F-A859-C81D3406E5C7}</Project>
       <Name>MySecurity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MyUILibraryInterfaces\MyUILibraryInterfaces.csproj">
-      <Project>{5c85873c-c376-4899-8806-fe8544419b18}</Project>
-      <Name>MyUILibraryInterfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MyWorkflowRequestManager\MyWorkflowRequestManager.csproj">
       <Project>{8E642D79-DCC3-4BB1-968A-A949FB58149C}</Project>
       <Name>MyWorkflowRequestManager</Name>

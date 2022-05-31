@@ -21,11 +21,12 @@ namespace MyUIGenerator.UIControlHelper
 
         TextBox textBox;
         ComboBox cmbOperators;
-        public override Control MainControl { get { return textBox; } }
-      
+        public override FrameworkElement MainControl { get { return textBox; } }
+
         public TextBoxHelper(ColumnDTO correspondingTypeProperty, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {
-            theGrid = new Grid();
+            
+               theGrid = new Grid();
             theGrid.ColumnDefinitions.Add(new ColumnDefinition());
             theGrid.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             textBox = new TextBox();
@@ -52,7 +53,10 @@ namespace MyUIGenerator.UIControlHelper
                 Grid.SetColumn(cmbOperators, 1);
                 theGrid.Children.Add(cmbOperators);
             }
-
+            DefaultBorderBrush = textBox.BorderBrush;
+            DefaultBorderThickness = textBox.BorderThickness;
+            DefaultBackground = textBox.Background;
+            DefaultForeground = textBox.Foreground;
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -112,7 +116,7 @@ namespace MyUIGenerator.UIControlHelper
             textBox.IsReadOnly = isreadonly;
         }
 
-        
+
         public void SetBinding(EntityInstanceProperty property)
         {
             var bindinga = textBox.GetBindingExpression(TextBox.TextProperty);
@@ -128,24 +132,48 @@ namespace MyUIGenerator.UIControlHelper
         //    ConrolPackageMenuArg arg = new ConrolPackageMenuArg();
         //    menu.OnMenuClicked(sender, arg);
         //}
-       
+
 
         public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
         {
             throw new NotImplementedException();
         }
+
         public void SetBorderColor(InfoColor color)
         {
-            textBox.BorderBrush = UIManager.GetColorFromInfoColor(color);
-            textBox.BorderThickness = new Thickness(1);
+            if (color != InfoColor.Default)
+            {
+                textBox.BorderBrush = UIManager.GetColorFromInfoColor(color);
+                textBox.BorderThickness = new Thickness(1);
+            }
+            else
+            {
+                textBox.BorderBrush = DefaultBorderBrush;
+                textBox.BorderThickness = DefaultBorderThickness;
+            }
         }
         public void SetBackgroundColor(InfoColor color)
         {
-            textBox.Background = UIManager.GetColorFromInfoColor(color);
+            if (color != InfoColor.Default)
+            {
+                textBox.Background = UIManager.GetColorFromInfoColor(color);
+            }
+            else
+            {
+                textBox.Background = DefaultBackground;
+            }
         }
         public void SetForegroundColor(InfoColor color)
         {
-            textBox.Foreground = UIManager.GetColorFromInfoColor(color);
+            if (color != InfoColor.Default)
+            {
+                textBox.Foreground = UIManager.GetColorFromInfoColor(color);
+            }
+            else
+            {
+                textBox.Foreground = DefaultForeground;
+            }
         }
+
     }
 }

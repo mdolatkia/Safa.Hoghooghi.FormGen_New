@@ -96,10 +96,6 @@
       <Project>{EEC1267E-372F-46B9-A4D1-22E03743A8E3}</Project>
       <Name>MyRelationshipTailDataManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MyUILibraryInterfaces\MyUILibraryInterfaces.csproj">
-      <Project>{5c85873c-c376-4899-8806-fe8544419b18}</Project>
-      <Name>MyUILibraryInterfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ProxyLibrary\ProxyLibrary.csproj">
       <Project>{2ad586dd-c9be-42d3-8ef7-e9657f992503}</Project>
       <Name>ProxyLibrary</Name>

@@ -21,7 +21,7 @@ namespace MyUIGenerator.UIControlHelper
     {
         RadMaskedNumericInput textBox;
         ComboBox cmbOperators;
-        public override Control MainControl { get { return textBox; } }
+        public override FrameworkElement MainControl { get { return textBox; } }
 
         public NumericTextBoxHelper(ColumnDTO correspondingTypeProperty, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {
@@ -78,6 +78,11 @@ namespace MyUIGenerator.UIControlHelper
 
                 // سه رقم سه رقم جدا نمیکند  
                 // textBox.FormatString = "";
+
+                DefaultBorderBrush = textBox.BorderBrush;
+                DefaultBorderThickness = textBox.BorderThickness;
+                DefaultBackground = textBox.Background;
+                DefaultForeground = textBox.Foreground;
 
             }
             //}
@@ -223,24 +228,60 @@ namespace MyUIGenerator.UIControlHelper
         //    ToolTipService.SetToolTip(textBox, null);
         //}
 
+        //public void SetBorderColor(InfoColor color)
+        //{
+        //    textBox.BorderBrush = UIManager.GetColorFromInfoColor(color);
+        //    textBox.BorderThickness = new Thickness(1);
+        //}
+        //public void SetBackgroundColor(InfoColor color)
+        //{
+        //    textBox.Background = UIManager.GetColorFromInfoColor(color);
+        //}
+        //public void SetForegroundColor(InfoColor color)
+        //{
+        //    textBox.Foreground = UIManager.GetColorFromInfoColor(color);
+        //}
+
         public void SetBorderColor(InfoColor color)
         {
-            textBox.BorderBrush = UIManager.GetColorFromInfoColor(color);
-            textBox.BorderThickness = new Thickness(1);
+            if (color != InfoColor.Default)
+            {
+                textBox.BorderBrush = UIManager.GetColorFromInfoColor(color);
+                textBox.BorderThickness = new Thickness(1);
+            }
+            else
+            {
+                textBox.BorderBrush = DefaultBorderBrush;
+                textBox.BorderThickness = DefaultBorderThickness;
+            }
         }
         public void SetBackgroundColor(InfoColor color)
         {
-            textBox.Background = UIManager.GetColorFromInfoColor(color);
+            if (color != InfoColor.Default)
+            {
+                textBox.Background = UIManager.GetColorFromInfoColor(color);
+            }
+            else
+            {
+                textBox.Background = DefaultBackground;
+            }
         }
         public void SetForegroundColor(InfoColor color)
         {
-            textBox.Foreground = UIManager.GetColorFromInfoColor(color);
+            if (color != InfoColor.Default)
+            {
+                textBox.Foreground = UIManager.GetColorFromInfoColor(color);
+            }
+            else
+            {
+                textBox.Foreground = DefaultForeground;
+            }
         }
         public bool HasOperator()
         {
             return cmbOperators != null;
         }
-       
+
         //public void ClearBorderColor()
         //{
         //    textBox.BorderBrush = new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Black));

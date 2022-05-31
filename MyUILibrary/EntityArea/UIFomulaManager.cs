@@ -45,7 +45,9 @@ namespace MyUILibrary.EntityArea
             {
                 foreach (var columnControl in FormulaColumns)
                 {
-                    var childSimpleContorlProperties = e.DataItem.ChildSimpleContorlProperties.First(x => x.SimpleColumnControl.Column.ID == columnControl.Column.ID);
+                    var childSimpleContorlProperties = e.DataItem.ChildSimpleContorlProperties.FirstOrDefault(x => x.SimpleColumnControl.Column.ID == columnControl.Column.ID);
+                    if (childSimpleContorlProperties == null)
+                        continue;//حذف شود
                     var cpMenuFormulaCalculation = new ConrolPackageMenu();
                     cpMenuFormulaCalculation.Name = "mnuFormulaCalculation";
                     cpMenuFormulaCalculation.Title = "محاسبه فرمول";
@@ -183,7 +185,7 @@ namespace MyUILibrary.EntityArea
             uiColumnValue.EvenHasValue = !columnCustomFormula.OnlyOnEmptyValue;
             uiColumnValue.EvenIsNotNew = !columnCustomFormula.OnlyOnNewData;
             List<UIColumnValueDTO> uIColumnValues = new List<UIColumnValueDTO>() { uiColumnValue };
-            EditArea.SetColumnValueFromState(dataItem, uIColumnValues, null, columnCustomFormula.Formula, false);
+            dataItem.SetColumnValueFromState(uIColumnValues, null, columnCustomFormula.Formula, false);
 
         }
         public void CalculateProperty(DP_DataRepository dataItem, EntityInstanceProperty dataProperty)

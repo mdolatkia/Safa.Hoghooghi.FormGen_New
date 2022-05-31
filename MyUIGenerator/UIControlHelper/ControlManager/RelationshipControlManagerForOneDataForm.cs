@@ -14,7 +14,7 @@ using System.Windows.Media;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public class RelationshipControlManagerForOneDataForm : BaseControlManager, I_RelationshipControlManagerOne
+    public class RelationshipControlManagerForOneDataForm :  I_RelationshipControlManagerOne
     {
         private List<DataMessageItem> MessageItems = new List<DataMessageItem>();
         //List<BaseMessageItem> ValidationItems = new List<BaseMessageItem>();

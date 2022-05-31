@@ -8,19 +8,23 @@ using MyUILibrary.Temp;
 using ProxyLibrary;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
 
 namespace MyUIGenerator.UIControlHelper
 {
     public class View_MultipleDataContainer : View_Container, I_View_MultipleDataContainer
     {
-        public DataGridHelper dataGridHelper;
+        //  public DataGridHelper dataGridHelper;
+        public RadGridView dataGrid;
+        public event EventHandler<DataContainerLoadedArg> DataContainerLoaded;
 
         bool _MultipleSelection;
         public bool MultipleSelection
@@ -34,33 +38,45 @@ namespace MyUIGenerator.UIControlHelper
             {
                 _MultipleSelection = value;
                 if (_MultipleSelection)
-                    dataGridHelper.dataGrid.SelectionMode = SelectionMode.Extended;
+                    dataGrid.SelectionMode = SelectionMode.Extended;
                 else
-                    dataGridHelper.dataGrid.SelectionMode = SelectionMode.Single;
+                    dataGrid.SelectionMode = SelectionMode.Single;
             }
         }
 
         public View_MultipleDataContainer()
         {
-            dataGridHelper = new DataGridHelper();
-            dataGridHelper.DataContainerLoaded += DataGridHelper_DataContainerLoaded;
-            dataGridHelper.dataGrid.MouseDoubleClick += DataGrid_MouseDoubleClick;
+            dataGrid = new RadGridView();
+            dataGrid.EnableColumnVirtualization = false;
+            dataGrid.EnableRowVirtualization = false;
+            dataGrid.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            dataGrid.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+            dataGrid.AutoGenerateColumns = false;
+            dataGrid.ShowGroupPanel = false;
+            //dataGrid.AddingNewDataItem += dataGrid_AddingNewDataItem;
+            //     dataGrid.
+            dataGrid.RowLoaded += dataGrid_RowLoaded;
+
+            //dataGridHelper = new DataGridHelper();
+            //dataGridHelper.DataContainerLoaded += DataGridHelper_DataContainerLoaded;
+            dataGrid.MouseDoubleClick += DataGrid_MouseDoubleClick;
+        }
+        void dataGrid_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
+        {
+            if (e.DataElement != null)
+                if (DataContainerLoaded != null)
+                    DataContainerLoaded(this, new DataContainerLoadedArg() { DataItem = e.DataElement });
         }
 
         private void DataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (dataGridHelper.dataGrid.SelectedItem != null)
+            if (dataGrid.SelectedItem != null)
             {
                 if (ItemDoubleClicked != null)
-                    ItemDoubleClicked(this, new DataContainerLoadedArg() { DataItem = dataGridHelper.dataGrid.SelectedItem });
+                    ItemDoubleClicked(this, new DataContainerLoadedArg() { DataItem = dataGrid.SelectedItem });
             }
         }
 
-        private void DataGridHelper_DataContainerLoaded(object sender, DataContainerLoadedArg e)
-        {
-            if (DataContainerLoaded != null)
-                DataContainerLoaded(this, e);
-        }
 
         //public CommonDefinitions.BasicUISettings.GridSetting GridSetting
         //{
@@ -102,18 +118,10 @@ namespace MyUIGenerator.UIControlHelper
 
 
 
-        public void AddDataContainer(object data)
-        {
-            //if (AgentHelper.GetDataEntryMode(EditTemplate) == DataMode.Multiple)
-            //{
-            dataGridHelper.AddDataContainer(data);
-            //}
-        }
 
 
 
         public event EventHandler<Arg_DataContainer> DataCotainerIsReady;
-        public event EventHandler<DataContainerLoadedArg> DataContainerLoaded;
         public event EventHandler<DataContainerLoadedArg> ItemDoubleClicked;
 
 
@@ -129,27 +137,130 @@ namespace MyUIGenerator.UIControlHelper
         {
             //if (AgentHelper.GetDataEntryMode(EditTemplate) == DataMode.Multiple)
             //{
-            return dataGridHelper.GetSelectedData();
+            List<object> result = new List<object>();
+            foreach (var item in dataGrid.SelectedItems)
+                result.Add(item as object);
+            return result;
             //}
             //else
             //    return null;
         }
         public void SetSelectedData(List<object> dataItems)
         {
-            dataGridHelper.SetSelectedData(dataItems);
+            if (dataItems != null)
+            {
+                ObservableCollection<object> items = new ObservableCollection<object>();
+                dataItems.ForEach(x => items.Add(x));
+                dataGrid.SelectedItem = items.FirstOrDefault();
+            }
+            else
+                dataGrid.SelectedItem = null;
 
         }
+
+        public void AddDataContainer(object dataItem)
+        {
+            if (!dataGrid.Items.Contains(dataItem))
+            {
+                dataGrid.Items.Add(dataItem);
+
+                foreach (var item in dataGrid.Columns)
+                {
+                    if (item is SimpleControlManagerForMultipleDataForm)
+                        (item as SimpleControlManagerForMultipleDataForm).AddDataItem(dataItem);
+                    else if (item is RelationshipControlManagerForMultipleDataForm)
+                        (item as RelationshipControlManagerForMultipleDataForm).AddDataItem(dataItem);
+                }
+
+            }
+            else
+                throw (new Exception("zzdfdxf"));
+        }
+
+
         public List<object> RemoveDataContainers()
         {
             //if (Controller.EditTemplate.Template.TableDrivedEntity.Table.BatchDataEntry == true)
             //{
-            return dataGridHelper.RemoveDataContainers();
+            List<object> result = new List<object>();
+            foreach (var item in dataGrid.Items)
+                result.Add(item);
+            dataGrid.Items.Clear();
+            foreach (var item in dataGrid.Columns)
+            {
+                if (item is SimpleControlManagerForMultipleDataForm)
+                    (item as SimpleControlManagerForMultipleDataForm).RemoveDataItems();
+                else if (item is RelationshipControlManagerForMultipleDataForm)
+                    (item as RelationshipControlManagerForMultipleDataForm).RemoveDataItems();
+
+
+            }
+            return result;
             //}
         }
-        public void RemoveDataContainer(object data)
+        public void RemoveDataContainer(object dataItem)
         {
-            dataGridHelper.RemoveDataContainer(data);
+            dataGrid.Items.Remove(dataItem);
+            foreach (var item in dataGrid.Columns)
+            {
+                if (item is SimpleControlManagerForMultipleDataForm)
+                    (item as SimpleControlManagerForMultipleDataForm).RemoveDataItem(dataItem);
+                else if (item is RelationshipControlManagerForMultipleDataForm)
+                    (item as RelationshipControlManagerForMultipleDataForm).RemoveDataItem(dataItem);
+
+            }
         }
+
+
+        public void AddUIControlPackage(I_SimpleControlManagerMultiple control, I_UIControlManager labelControlManager)
+        {
+            (control as SimpleControlManagerForMultipleDataForm).Header = (labelControlManager as LabelHelper).WholeControl;
+            dataGrid.Columns.Add((control as SimpleControlManagerForMultipleDataForm));
+        }
+        public void CleraUIControlPackages()
+        {
+            dataGrid.Columns.Clear();
+        }
+
+        public void AddView(I_UIControlManager labelControlManager, I_RelationshipControlManagerMultiple view)
+        {
+            //if (!(view as LocalDataGridRelationshipControlManager).RelatedControl.Any())
+            //{
+            //   DataGridUIControl labelControl = new DataGridUIControl();
+            //if (!string.IsNullOrEmpty(title))
+            //{
+
+            //     var labelControl = LabelHelper.GenerateLabelControl(title, new ColumnUISettingDTO());
+
+
+            //////(view as RelationshipControlManagerForMultipleDataForm).RelatedControl.Add(labelControl);
+            (view as RelationshipControlManagerForMultipleDataForm).Header = (labelControlManager as LabelHelper).WholeControl;
+            //}
+            dataGrid.Columns.Add((view as RelationshipControlManagerForMultipleDataForm));
+            //if (controlPackage.UIControl.Control is I_View_Container)
+            //    (controlPackage.UIControl.Control as I_View_Container).SetExpanderInfo(labelControl.Control);
+            //else
+            //AddControlToGrid(labelControl);
+            //}
+            //var uiControl = controlPackage.UIControl;
+
+        }
+
+        public void RemoveUIControlPackage(I_SimpleControlManagerMultiple controlManager)
+        {
+            dataGrid.Columns.Add((controlManager as SimpleControlManagerForMultipleDataForm));
+        }
+
+        public void RemoveView(I_RelationshipControlManagerMultiple controlManager)
+        {
+            dataGrid.Columns.Add((controlManager as RelationshipControlManagerForMultipleDataForm));
+        }
+
+        public override void ClearControls()
+        {
+            dataGrid.Columns.Clear();
+        }
+        public int ControlsCount { get { return dataGrid.Columns.Count; } }
 
         //public void RemoveSelectedDataContainers()
         //{
@@ -213,72 +324,17 @@ namespace MyUIGenerator.UIControlHelper
         //        dataGridHelper.ClearTooltip(dataItem);
         //}
 
-        public void AddUIControlPackage(I_SimpleControlManagerMultiple control, I_UIControlManager labelControlManager)
-        {
-            //if (!(control as LocalDataGridControlManager).RelatedControl.Any())
-            //{
-            // var labelControl = new DataGridUIControl();
-            //var labelControl = LabelHelper.GenerateLabelControl(title, (control as SimpleControlManagerForMultipleDataForm).DataGridColumn.ColumnSetting);
-            //////(control as SimpleControlManagerForMultipleDataForm).RelatedControl.Add(labelControl);
-            (control as SimpleControlManagerForMultipleDataForm).DataGridColumn.Header = (labelControlManager as LabelHelper).WholeControl;
-            //   }
-
-            dataGridHelper.dataGrid.Columns.Add((control as SimpleControlManagerForMultipleDataForm).DataGridColumn);
-        }
-        public void CleraUIControlPackages()
-        {
-            dataGridHelper.dataGrid.Columns.Clear();
-        }
-
-        public void AddView(I_UIControlManager labelControlManager, I_RelationshipControlManagerMultiple view)
-        {
-            //if (!(view as LocalDataGridRelationshipControlManager).RelatedControl.Any())
-            //{
-            //   DataGridUIControl labelControl = new DataGridUIControl();
-            //if (!string.IsNullOrEmpty(title))
-            //{
-
-            //     var labelControl = LabelHelper.GenerateLabelControl(title, new ColumnUISettingDTO());
 
 
-            //////(view as RelationshipControlManagerForMultipleDataForm).RelatedControl.Add(labelControl);
-            (view as RelationshipControlManagerForMultipleDataForm).DataGridColumn.Header = (labelControlManager as LabelHelper).WholeControl;
-            //}
-            dataGridHelper.dataGrid.Columns.Add((view as RelationshipControlManagerForMultipleDataForm).DataGridColumn);
-            //if (controlPackage.UIControl.Control is I_View_Container)
-            //    (controlPackage.UIControl.Control as I_View_Container).SetExpanderInfo(labelControl.Control);
-            //else
-            //AddControlToGrid(labelControl);
-            //}
-            //var uiControl = controlPackage.UIControl;
+        //public void SetTooltip(object dataItem, string tooltip)
+        //{
+        //    dataGridHelper.SetTooltip(dataItem, tooltip);
+        //}
 
-        }
-
-        public void RemoveUIControlPackage(I_SimpleControlManagerMultiple controlManager)
-        {
-            dataGridHelper.dataGrid.Columns.Add((controlManager as SimpleControlManagerForMultipleDataForm).DataGridColumn);
-        }
-
-        public void RemoveView(I_RelationshipControlManagerMultiple controlManager)
-        {
-            dataGridHelper.dataGrid.Columns.Add((controlManager as RelationshipControlManagerForMultipleDataForm).DataGridColumn);
-        }
-
-        public override void ClearControls()
-        {
-            dataGridHelper.dataGrid.Columns.Clear();
-        }
-        public int ControlsCount { get { return dataGridHelper.dataGrid.Columns.Count; } }
-
-        public void SetTooltip(object dataItem, string tooltip)
-        {
-            dataGridHelper.SetTooltip(dataItem, tooltip);
-        }
-
-        public void SetColor(object dataItem, InfoColor color)
-        {
-            dataGridHelper.SetBorderColor(dataItem, color);
-        }
+        //public void SetColor(object dataItem, InfoColor color)
+        //{
+        //    dataGridHelper.SetBorderColor(dataItem, color);
+        //}
 
         //public void SetBackgroundColor(object dataItem, InfoColor color)
         //{
@@ -290,25 +346,25 @@ namespace MyUIGenerator.UIControlHelper
         //    dataGridHelper.SetForegroundColor(dataItem, color);
         //}
 
-        public void Visiblity(object dataItem, bool visible)
-        {
-            dataGridHelper.Visiblity(dataItem, visible);
-        }
-        public void EnableDisable(object dataItem, bool enable)
-        {
-            dataGridHelper.EnableDisable(dataItem, enable);
-        }
-
-        //public override void SetTooltip(object dataItem, string tooltip)
+        //public void Visiblity(object dataItem, bool visible)
         //{
-        //    throw new NotImplementedException();
+        //    dataGridHelper.Visiblity(dataItem, visible);
         //}
-
-        //public override void SetColor(object dataItem, InfoColor color)
+        //public void EnableDisable(object dataItem, bool enable)
         //{
-        //    throw new NotImplementedException();
-        //}
+        //    dataGridHelper.EnableDisable(dataItem, enable);
     }
+
+    //public override void SetTooltip(object dataItem, string tooltip)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    //public override void SetColor(object dataItem, InfoColor color)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
 
 
     public class DataGridUIControl

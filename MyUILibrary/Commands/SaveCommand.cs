@@ -87,7 +87,7 @@ namespace MyUILibrary.EntityArea.Commands
             {
                 var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
                 DR_EditRequest request = new DR_EditRequest(requester);
-             //اینجا
+                //اینجا
                 //request.EditPackages = Datas;
 
                 var reuslt = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendEditRequest(request);
@@ -116,32 +116,34 @@ namespace MyUILibrary.EntityArea.Commands
                     var results = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit);
                     if (results.ResultDataItems.Count > 0)
                     {
-                        if (EditArea is I_EditEntityAreaOneData)
-                        {
-                            (EditArea as I_EditEntityAreaOneData).ClearData(false);
+                        //if (EditArea is I_EditEntityAreaOneData)
+                        //{
+                        //    (EditArea as I_EditEntityAreaOneData).ClearData(false);
 
-                            var data = results.ResultDataItems[0];
+                        //    var data = results.ResultDataItems[0];
+                        //    data.DataView = EditArea.AreaInitializer.EditAreaDataManager.GetDataView(data);
+                        //    DP_FormDataRepository orgData = new DP_FormDataRepository(data, EditArea);
+                        //    var addResult = (EditArea as I_EditEntityAreaOneData).AddData(orgData, true);
+                        //    if (!addResult)
+                        //        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", results.ResultDataItems[0].ViewInfo, Temp.InfoColor.Red);
+                        //}
+                        //else if (EditArea is I_EditEntityAreaMultipleData)
+                        //{
+                        EditArea.ClearData();
+                        foreach (var data in results.ResultDataItems)
+                        {
                             data.DataView = EditArea.AreaInitializer.EditAreaDataManager.GetDataView(data);
-                            var addResult = (EditArea as I_EditEntityAreaOneData).AddData(data, true);
+                            DP_FormDataRepository orgData = new DP_FormDataRepository(data, EditArea);
+                            var addResult = (EditArea as I_EditEntityAreaMultipleData).AddData(orgData);
                             if (!addResult)
                                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", results.ResultDataItems[0].ViewInfo, Temp.InfoColor.Red);
                         }
-                        else if (EditArea is I_EditEntityAreaMultipleData)
-                        {
-                            (EditArea as I_EditEntityAreaMultipleData).ClearData(false);
-                            foreach (var data in results.ResultDataItems)
-                            {
-                                data.DataView = EditArea.AreaInitializer.EditAreaDataManager.GetDataView(data);
-                                var addResult = (EditArea as I_EditEntityAreaMultipleData).AddData(data, true);
-                                if (!addResult)
-                                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", results.ResultDataItems[0].ViewInfo, Temp.InfoColor.Red);
-                            }
-                        }
+                        //}
                     }
                     else
                     {
                         AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", "", Temp.InfoColor.Red);
-                        (EditArea as BaseEditEntityArea).ClearData(true);
+                        EditArea.ClearData();
                     }
                 }
             }
@@ -192,7 +194,7 @@ namespace MyUILibrary.EntityArea.Commands
             }
 
             //انیجا
-          //  RemoveUnwantedItems(result);
+            //  RemoveUnwantedItems(result);
             return result;
 
         }

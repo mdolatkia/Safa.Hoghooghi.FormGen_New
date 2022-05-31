@@ -269,9 +269,20 @@ namespace ModelEntites
         public int RelationshipID { set; get; }
         public bool? Hidden { set; get; }
         public bool? Readonly { set; get; }
+        public bool EvenInTempView { get; set; }
+        public bool Permanent { get; set; }
+      //  public List<ActionActivitySource> AllowedSteps { get; set; }
+        public bool OnLoadOnly { get; set; }
         //    public int UICompositionID { set; get; }
 
 
+    }
+    public enum ActionActivitySource
+    {
+     //   OnFirstShowData,
+        OnShowData,
+        TailOrPropertyChange,
+        BeforeUpdate
     }
     //public class ColumnValue_RelationshipDTO
     //{
@@ -2511,6 +2522,7 @@ namespace ModelEntites
         public Enum_ActionActivityType Type { set; get; }
         public List<UIColumnValueRangeDTO> UIColumnValueRange { set; get; }
         public List<UIColumnValueRangeResetDTO> UIColumnValueRangeReset { set; get; }
+    //    public bool OnlyOnLoad { get; set; }
     }
     public class UIColumnValueRangeDTO
     {
@@ -2842,8 +2854,8 @@ namespace ModelEntites
 
         public ObservableCollection<UIActionActivityDTO> ActionActivities { set; get; }
         public ObservableCollection<EntityStateConditionDTO> StateConditions { set; get; }
-
-
+        public bool HasOnLoadOnlyAction { get; set; }
+        public bool HasDynamicAction { get; set; }
     }
     public class EntityStateConditionDTO
     {

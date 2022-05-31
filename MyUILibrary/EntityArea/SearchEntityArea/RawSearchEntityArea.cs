@@ -125,7 +125,8 @@ namespace MyUILibrary.EntityArea
             {
                 columnControl.Operators = GetSimpleColumnOperators(columnControl.Column);
               //  columnControl.ControlPackage = new UIControlPackageForSimpleColumn();
-                columnControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(columnControl.Column, GetColumnUISetting(columnControl.Column), false, columnControl.Operators, true, columnControl.Column.Alias);
+                columnControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(columnControl.Column, GetColumnUISetting(columnControl.Column), false, columnControl.Operators);
+                columnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(columnControl.Column.Alias);
                 var operator1 = columnControl.Operators.FirstOrDefault(x => x.Operator == GetDefaultOperator(columnControl.Column));
                 if (operator1 != null)
                     columnControl.ControlManager.GetUIControlManager().SetOperator(operator1.Operator);

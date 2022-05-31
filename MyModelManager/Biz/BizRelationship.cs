@@ -1527,9 +1527,9 @@ namespace MyModelManager
         }
         public RelationshipDTO ToRelationshipDTO(DataAccess.Relationship item, bool withPair = false)
         {
-            //var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Relationship, item.ID.ToString());
-            //if (cachedItem != null)
-            //    return (cachedItem as RelationshipDTO);
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Relationship, item.ID.ToString());
+            if (cachedItem != null)
+                return (cachedItem as RelationshipDTO);
 
             RelationshipDTO result = new RelationshipDTO();
             result.Name = item.Name;

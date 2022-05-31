@@ -185,13 +185,15 @@ namespace MyUILibrary.EntityArea
                     propertyControl.Alias = column.Alias;
                 //   propertyControl.ControlPackage = new UIControlPackageForSimpleColumn();
                 //     propertyControl.IsPermanentReadOnly = true;
-                propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column.Column, GetColumnUISetting(column.Column), false, true, propertyControl.Alias);
+                propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column.Column, GetColumnUISetting(column.Column), false);
+                propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Alias);
+
                 //      if (propertyControl.IsPermanentReadOnly)
                 if (!string.IsNullOrEmpty(column.Tooltip))
                 {
-                    propertyControl.LabelControlManager.SetTooltip( column.Tooltip);
+                    propertyControl.LabelControlManager.SetTooltip(column.Tooltip);
                 }
-             //   propertyControl.ControlManager.GetUIControlManager().SetReadonly(true);
+                //   propertyControl.ControlManager.GetUIControlManager().SetReadonly(true);
 
                 ViewColumnControls.Add(propertyControl);
 
@@ -531,7 +533,9 @@ namespace MyUILibrary.EntityArea
                 var columnControl = ViewColumnControls.FirstOrDefault(x => x.RelativeColumnName == property.RelativeName);
                 if (columnControl != null)
                 {
-                    columnControl.ControlManager.GetUIControlManager(dataRepository).SetValue(property.Value);
+                    var uiControl = columnControl.ControlManager.GetUIControlManager(dataRepository);
+                    if (uiControl != null)
+                        uiControl.SetValue(property.Value);
                 }
             }
             //}
@@ -548,34 +552,36 @@ namespace MyUILibrary.EntityArea
             //}
 
         }
-        private void ShowTypePropertyData(List<DP_DataView> specificDate)
-        {
-            foreach (var dataRepository in specificDate)
-            {
-                //foreach (var viewItem in dataRepository.DataViewItems)
-                //{
-                foreach (var property in dataRepository.Properties)
-                {
-                    var columnControl = ViewColumnControls.FirstOrDefault(x => x.RelativeColumnName == property.RelativeName);
-                    if (columnControl != null)
-                    {
-                        columnControl.ControlManager.GetUIControlManager(dataRepository).SetValue(property.Value);
-                    }
-                }
-                //}
-                //else if (property.Name.Contains("#"))
-                //{
-                //    foreach (var typePropertyControl in ViewColumnControls.Where(x => x.RelationshipColumnName == property.Name))
-                //        if (typePropertyControl != null)
-                //        {
-                //            //if (!typePropertyControl.ControlPackage.IsDataDependentControl)
+        //private void ShowTypePropertyData(List<DP_DataView> specificDate)
+        //{
+        //    foreach (var dataRepository in specificDate)
+        //    {
+        //        //foreach (var viewItem in dataRepository.DataViewItems)
+        //        //{
+        //        foreach (var property in dataRepository.Properties)
+        //        {
+        //            var columnControl = ViewColumnControls.FirstOrDefault(x => x.RelativeColumnName == property.RelativeName);
+        //            if (columnControl != null)
+        //            {
+        //                var uiControl = columnControl.ControlManager.GetUIControlManager(dataRepository);
+        //                if (uiControl != null)
+        //                    uiControl.SetValue(property.Value);
+        //            }
+        //        }
+        //        //}
+        //        //else if (property.Name.Contains("#"))
+        //        //{
+        //        //    foreach (var typePropertyControl in ViewColumnControls.Where(x => x.RelationshipColumnName == property.Name))
+        //        //        if (typePropertyControl != null)
+        //        //        {
+        //        //            //if (!typePropertyControl.ControlPackage.IsDataDependentControl)
 
-                //            ShowTypePropertyControlValue(dataRepository, typePropertyControl, property.Value);
+        //        //            ShowTypePropertyControlValue(dataRepository, typePropertyControl, property.Value);
 
-                //        }
-                //}
-            }
-        }
+        //        //        }
+        //        //}
+        //    }
+        //}
 
 
         //private bool ShowTypePropertyControlValue(DP_DataRepository dataItem, SimpleViewColumnControl typePropertyControl, string value)

@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace MyUILibrary
 {
-    public class AgentHelper
+    public static class AgentHelper
     {
 
         internal static byte[] GetBytesFromFilePath(string path)

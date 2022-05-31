@@ -10,15 +10,15 @@ namespace MyUILibrary.Temp
     {
         No = 0,
         Yes = 1,
-        Unknown=2
+        Unknown = 2
     }
 
     public enum InfoColor
     {
-        Null,
+        Default,
         Black,
         Blue,
-        Green ,
+        Green,
         LightGray,
         Red,
         DarkRed

@@ -32,7 +32,7 @@ namespace MyUIGenerator.View
 
         public object AddTreeNode(object parentNode, string title, bool expand, InfoColor color)
         {
-            if (color == InfoColor.Null)
+            if (color == InfoColor.Default)
                 color = InfoColor.Black;
             ItemCollection collection = null;
             if (parentNode != null)

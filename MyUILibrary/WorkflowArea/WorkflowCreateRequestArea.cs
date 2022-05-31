@@ -169,7 +169,7 @@ namespace MyUILibrary.WorkflowArea
             {
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage("جریان کار ایجاد شد");
                 if (SearchEditEntityArea != null)
-                    SearchEditEntityArea.ClearData(false);
+                    SearchEditEntityArea.ClearData();
                 View.Title = "";
             }
             else

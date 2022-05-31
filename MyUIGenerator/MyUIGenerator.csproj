@@ -207,12 +207,10 @@
       <DependentUpon>UC_InfoDetails.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIControlHelper\CommandHelper.cs" />
-    <Compile Include="UIControlHelper\ControlManager\BaseControlManager.cs" />
+    <Compile Include="UIControlHelper\ControlManager\BaseGridUIColumn.cs" />
     <Compile Include="UIControlHelper\ControlManager\RelationshipControlManagerForOneDataForm.cs" />
-    <Compile Include="UIControlHelper\ControlManager\RelationshipControlManagerForMultipleDataForm.cs" />
     <Compile Include="UIControlHelper\ControlManager\ContainerManager.cs" />
     <Compile Include="UIControlHelper\ControlManager\SimpleControlManagerForOneDataForm.cs" />
-    <Compile Include="UIControlHelper\ControlManager\SimpleControlManagerForMultipleDataForm.cs" />
     <Compile Include="UIControlHelper\Controls\BaseControlHelper.cs" />
     <Compile Include="UIControlHelper\Controls\DateTimePickerHelper.cs" />
     <Compile Include="UIControlHelper\Controls\MyDateTimePicker.xaml.cs">
@@ -243,14 +241,13 @@
     <Compile Include="UIControlHelper\View_GridContainer.cs" />
     <Compile Include="UIControlHelper\View_Container.cs" />
     <Compile Include="UIControlHelper\GridHelper.cs" />
-    <Compile Include="UIControlHelper\DataGridViewColumn.cs" />
+    <Compile Include="UIControlHelper\ControlManager\RelationshipControlManagerForMultipleDataForm.cs" />
     <Compile Include="UIControlHelper\TabHelper.cs" />
     <Compile Include="UIControlHelper\Controls\NumericTextBoxHelper.cs" />
     <Compile Include="UIControlHelper\Controls\KeyValueControlHelper.cs" />
     <Compile Include="UIHelper.cs" />
     <Compile Include="UIControlHelper\ControlHelper.cs" />
-    <Compile Include="UIControlHelper\DataGridHelper.cs" />
-    <Compile Include="UIControlHelper\DataGridTextColumn.cs" />
+    <Compile Include="UIControlHelper\ControlManager\SimpleControlManagerForMultipleDataForm.cs" />
     <Compile Include="UIControlHelper\Controls\TextBoxHelper.cs" />
     <Compile Include="UI\Archive\frmMultipleArchiveItemsInfo.xaml.cs">
       <DependentUpon>frmMultipleArchiveItemsInfo.xaml</DependentUpon>
@@ -736,10 +733,6 @@
     <ProjectReference Include="..\MyReportRestServices\MyReportRestServices.csproj">
       <Project>{6B751E3F-9199-41BB-B997-9170DEC243E8}</Project>
       <Name>MyReportRestServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MyUILibraryInterfaces\MyUILibraryInterfaces.csproj">
-      <Project>{5c85873c-c376-4899-8806-fe8544419b18}</Project>
-      <Name>MyUILibraryInterfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyUILibrary\MyUILibrary.csproj">
       <Project>{3175eafa-138c-4b2b-8ea6-4c09d8c0fa81}</Project>

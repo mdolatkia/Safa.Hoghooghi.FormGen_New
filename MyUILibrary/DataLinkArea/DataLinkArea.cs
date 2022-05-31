@@ -224,13 +224,13 @@ namespace MyUILibrary.DataLinkArea
                 {
                     if (SelectedDataLink.TableDrivedEntityID == FirstData.TargetEntityID)
                     {
-                        FirstSideEditEntityArea.ClearData(false);
+                        FirstSideEditEntityArea.ClearData();
                         FirstSideEditEntityArea.ShowDataFromExternalSource(FirstData);
                         firstDataSetToFirst = true;
                     }
                     else if (SelectedDataLink.SecondSideEntityID == FirstData.TargetEntityID)
                     {
-                        SecondSideEditEntityArea.ClearData(false);
+                        SecondSideEditEntityArea.ClearData();
                         SecondSideEditEntityArea.ShowDataFromExternalSource(FirstData);
                         firstDataSetToSecond = true;
                     }
@@ -239,12 +239,12 @@ namespace MyUILibrary.DataLinkArea
                 {
                     if (!firstDataSetToFirst && SelectedDataLink.TableDrivedEntityID == OtherData.TargetEntityID)
                     {
-                        FirstSideEditEntityArea.ClearData(false);
+                        FirstSideEditEntityArea.ClearData();
                         FirstSideEditEntityArea.ShowDataFromExternalSource(OtherData);
                     }
                     else if (!firstDataSetToSecond && SelectedDataLink.SecondSideEntityID == OtherData.TargetEntityID)
                     {
-                        SecondSideEditEntityArea.ClearData(false);
+                        SecondSideEditEntityArea.ClearData();
                         SecondSideEditEntityArea.ShowDataFromExternalSource(OtherData);
                     }
                 }

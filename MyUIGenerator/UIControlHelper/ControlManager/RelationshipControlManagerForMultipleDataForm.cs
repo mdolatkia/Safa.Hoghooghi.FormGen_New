@@ -1,4 +1,8 @@
-﻿using ModelEntites;
+﻿
+using ModelEntites;
+using MyUIGenerator;
+using MyUIGenerator.UIControlHelper;
+using MyUIGenerator.View;
 using MyUILibrary;
 using MyUILibrary.EntityArea;
 using MyUILibrary.Temp;
@@ -11,285 +15,482 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
+using Telerik.Windows.Controls;
+using Telerik.Windows.Controls.GridView;
 
 namespace MyUIGenerator.UIControlHelper
 {
-
-    public class RelationshipControlManagerForMultipleDataForm : BaseControlManager, I_RelationshipControlManagerMultiple
+    public class RelationshipControlManagerForMultipleDataForm : Telerik.Windows.Controls.GridViewColumn, I_RelationshipControlManagerMultiple
     {
-        //private List<BaseMessageItem> ValidationItems = new List<BaseMessageItem>();
-        private List<DataMessageItem> MessageItems = new List<DataMessageItem>();
+        public event EventHandler<Arg_MultipleTemporaryDisplayLoaded> TemporaryViewLoaded;
+        public event EventHandler FocusLost;
 
+        public event EventHandler<Arg_MultipleTemporaryDisplayViewRequested> TemporaryViewRequested;
+        public event EventHandler<Arg_TemporaryDisplaySerachText> TemporaryViewSerchTextChanged;
+        // DataMaster.EntityDefinition.ND_Type_Property TypeProperty { set; get; }
+        //public ColumnDTO Column { set; get; }
+        //public ColumnUISettingDTO ColumnSetting { set; get; }
 
-        public DataGridViewColumn DataGridColumn;
+        //I_View_EditEntityAreaDataView ViewEditNDTypeArea { set; get; }
+        //public event EventHandler<Arg_TemporaryDisplayViewRequested> TemporaryViewRequested;
+        //public event EventHandler<Arg_TemporaryDisplayViewRequested> TemporarySearchViewRequested;
+        //I_View_DataDependentControl TemporaryArg { set; get; }
 
         public I_TabPageContainer TabPageContainer
         {
             set; get;
         }
 
-        public bool HasExpander
+        //public DataGridTextColumn(IAG_View_TemporaryDisplayView temporaryViewLink)
+        //{
+        //    // TypeProperty = correspondingTypeProperty;
+
+        //    TemporaryViewLink = temporaryViewLink;
+        //}
+        TemporaryLinkState TemporaryLinkState { set; get; }
+        //    TemporaryLinkType LinkType { set; get; }
+        RelationshipUISettingDTO RelationshipSetting { set; get; }
+        public RelationshipControlManagerForMultipleDataForm(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipSetting)
         {
-            get
-            {
-                return false;
-            }
+            //ColumnSetting = columnSetting;
+            //   LinkType = linkType;
+            RelationshipSetting = relationshipSetting;
+            TemporaryLinkState = temporaryLinkState;
+            // TypeProperty = correspondingTypeProperty;
+            //   Column = column;
+            //UnSetValue = null;
+            //this.Loaded += DataGridTextColumn_Loaded;
         }
 
-        public RelationshipControlManagerForMultipleDataForm(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipSetting) : base()
+
+        //void DataGridTextColumn_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    throw new NotImplementedException();
+        //}
+        List<Tuple<object, string>> dataItems = new List<Tuple<object, string>>();
+        //string UnSetValue { set; get; }
+        public override FrameworkElement CreateCellElement(GridViewCell cell, object dataItem)
         {
-            // RelatedControl = new List<FrameworkElement>();
-            DataGridColumn = new UIControlHelper.DataGridViewColumn(temporaryLinkState, relationshipSetting);
-            DataGridColumn.TemporaryViewRequested += DataGridColumn_TemporaryViewRequested;
-            DataGridColumn.TemporaryViewLoaded += DataGridColumn_TemporaryViewLoaded;
-            DataGridColumn.TemporaryViewSerchTextChanged += DataGridColumn_TemporaryViewSerchTextChanged1;
-            DataGridColumn.FocusLost += DataGridColumn_FocusLost;
+            //var control = GenerateTemporaryView(dataItem);
+            ////control.Column = Column;
+            //control.SearchTextChanged += Control_SearchTextChanged1;
+            //control.TemporaryDisplayViewRequested += (sender, e) => control_TemporaryDisplayViewRequested(sender, e, dataItem);
+            //control.FocusLost += Control_FocusLost;
+            //return control as FrameworkElement;
+
+            var ui = GetView(dataItem);
+            if (ui != null)
+                return ui as FrameworkElement;
+            else
+                return null;
+
         }
 
-        private void DataGridColumn_FocusLost(object sender, EventArgs e)
+        private void Control_FocusLost(object sender, EventArgs e)
         {
             if (FocusLost != null)
                 FocusLost(sender, e);
         }
-        private void DataGridColumn_TemporaryViewSerchTextChanged1(object sender, Arg_TemporaryDisplaySerachText e)
+
+        private void Control_SearchTextChanged1(object sender, Arg_TemporaryDisplaySerachText e)
         {
             if (TemporaryViewSerchTextChanged != null)
-                TemporaryViewSerchTextChanged(sender, e);
+            {
+                TemporaryViewSerchTextChanged(sender, new Arg_TemporaryDisplaySerachText() { Text = e.Text });
+
+            }
         }
 
-      
-
-        private void DataGridColumn_TemporaryViewLoaded(object sender, Arg_MultipleTemporaryDisplayLoaded e)
-        {
-            if (TemporaryViewLoaded != null)
-                TemporaryViewLoaded(sender, e);
-        }
-
-        private void DataGridColumn_TemporaryViewRequested(object sender, Arg_MultipleTemporaryDisplayViewRequested e)
+        void control_TemporaryDisplayViewRequested(object sender, Arg_TemporaryDisplayViewRequested e, object dataItem)
         {
             if (TemporaryViewRequested != null)
-                TemporaryViewRequested(sender, e);
-        }
-        public void Visiblity(bool visible)
-        {
-            DataGridColumn.Visiblity(visible);
-        }
-        public void Visiblity(object dataItem, bool visible)
-        {
-            DataGridColumn.Visiblity(dataItem, visible);
-        }
-        //  public List<FrameworkElement> RelatedControl { set; get; }
+            {
+                TemporaryViewRequested(sender, new Arg_MultipleTemporaryDisplayViewRequested() { LinkType = e.LinkType, DataItem = dataItem });
 
-        public event EventHandler<Arg_MultipleTemporaryDisplayViewRequested> TemporaryViewRequested;
-        public event EventHandler<Arg_MultipleTemporaryDisplayLoaded> TemporaryViewLoaded;
-        public event EventHandler<Arg_TemporaryDisplaySerachText> TemporaryViewSerchTextChanged;
-        public event EventHandler FocusLost;
+            }
+            //OnTemporaryViewRequested(sender, e);
+        }
 
-        public void SetTemporaryViewText(object relatedData, string text)
+
+        //public override FrameworkElement CreateCellEditElement(GridViewCell cell, object dataItem)
+        //{
+        //    //cell.Loaded += cell_Loaded;
+
+        //    var control = GenerateTemporaryView(dataItem);
+        //    //control.ParentDataItem = dataItem as object;
+        //    //control.Column = Column;
+        //    control.TemporaryDisplayViewRequested += (sender, e) => control_TemporaryDisplayViewRequested(sender, e, dataItem);
+        //    control.SearchTextChanged += Control_SearchTextChanged;
+        //    control.FocusLost += Control_FocusLost;
+
+        //    return control as FrameworkElement;
+
+        //}
+
+        private void Control_SearchTextChanged(object sender, Arg_TemporaryDisplaySerachText e)
         {
-            DataGridColumn.SetTemporaryViewText(relatedData, text);
-        }
-        public void SetQuickSearchVisibility(object relatedData, bool visible)
-        {
-            DataGridColumn.SetQuickSearchVisibility(relatedData, visible);
-        }
-        public void EnableDisable(bool enable)
-        {
-            DataGridColumn.EnableDisable(enable);
-        }
-        public void EnableDisable(object dataItem, bool enable)
-        {
-            DataGridColumn.EnableDisable(dataItem, enable);
-        }
-        public void EnableDisable(object dataItem, TemporaryLinkType link, bool enable)
-        {
-            DataGridColumn.DisableEnable(dataItem, link, enable);
+
         }
         public I_View_TemporaryView GetView(object dataItem)
         {
-            return DataGridColumn.GenerateTemporaryView(dataItem);
+            if (listControls.Any(x => x.Item1 == dataItem))
+                return listControls.First(x => x.Item1 == dataItem).Item2;
+            else
+                return null;
         }
+        //////void cell_Loaded(object sender, RoutedEventArgs e)
+        //////{
+        //////    var cell = (e.Source as GridViewCell);
+        //////    var dataItem = cell.DataContext;
+        //////    if (dataItem != null)
+        //////    {
+        //////        var cellItem = dataItems.Where(x => x.Item1 == dataItem).FirstOrDefault();
+        //////        if (cellItem != null)
+        //////        {
+        //////            ControlHelper.SetValue(Column, cell.Tag as UIControlPackage, cellItem.Item2);
+        //////        }
+        //////    }
+
+        //////}
+
+
+
+        //internal bool SetValue(object dataItem, string value, ColumnSetting columnSetting)
+        //{
+        //    //UnSetValue = null;
+        //    //var dataRow = GetDataRow(dataGrid, dataItem);
+
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    //  var dataRow = this.DataControl.ItemContainerGenerator.ContainerFromItem(dataItem) as GridViewRow;
+        //    var cell = dataRow.GetCell(this);
+        //    if (dataRow != null)
+        //    {
+        //        if (cell != null)
+        //        {
+        //            return ControlHelper.SetValue(Column, cell.Tag as UIControlPackage, value, columnSetting);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (dataItems.Any(x => x.Item1 == dataItem))
+        //        {
+        //            var fitem = dataItems.First(x => x.Item1 == dataItem);
+        //            dataItems.Remove(fitem);
+        //        }
+        //        dataItems.Add(new Tuple<object, string>(dataItem, value));
+        //        return true;
+        //    }
+
+        //    //dataItems.Add(new Tuple<object, string>(dataItem, value));
+
+        //    //var cellItem = dataItems.Where(x => x.Item1 == dataItem).FirstOrDefault();
+        //    //if (cellItem != null)
+        //    //{
+        //    //    ControlHelper.SetValue(Column, control, cellItem.Item2);
+        //    //}
+        //    //else
+        //    //    dataItems.Add(new Tuple<object, string>(dataItem, value));
+        //    return true;
+
+        //}
+        //internal string GetValue(object dataItem)
+        //{
+        //    //var dataRow = GetDataRow(dataGrid, dataItem);
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+
+        //    if (dataRow != null)
+        //    {
+        //        var cell = dataRow.GetCell(this);
+
+        //        if (cell != null)
+        //        {
+        //            return ControlHelper.GetValue(Column, cell.Tag as UIControlPackage);
+
+        //        }
+        //    }
+        //    return "";
+        //}
+
+
+        //public IAG_View_TemporaryView GenerateTemporaryView()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //internal void SetTooltip(string tooltip)
+        //{
+        //    ToolTipService.SetToolTip(this, tooltip);
+        //}
+        //internal void ClearTooltip()
+        //{
+        //    ToolTipService.SetToolTip(this, null);
+        //}
+        //internal void SetTooltip(object dataItem, string tooltip)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    var cell = dataRow.GetCell(this);
+        //    if (cell != null)
+        //    {
+        //        if (!string.IsNullOrEmpty(tooltip))
+        //            ToolTipService.SetToolTip(cell.Content as FrameworkElement, tooltip);
+        //        else
+        //            ToolTipService.SetToolTip(cell.Content as FrameworkElement, null);
+        //        }
+        //    }));
+        //}
+        //internal void ClearTooltip(object dataItem)
+        //{
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    var cell = dataRow.GetCell(this);
+        //    if (cell != null)
+        //    {
+        //        if (cell.Content != null)
+        //            ToolTipService.SetToolTip(cell.Content as Control, null);
+        //    }
+        //}
+
+        //internal void SetColor(InfoColor color)
+        //{
+        //    this.Background = UIManager.GetColorFromInfoColor(color);
+        //}
+        //internal void ClearColor()
+        //{
+        //    this.Background = null;
+        //}
+        //internal void SetColor(object dataItem, InfoColor color)
+        //{
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    var cell = dataRow.GetCell(this);
+        //    if (cell != null)
+        //    {
+        //        if (cell.Content != null)
+        //        {
+        //            (cell.Content as Control).BorderBrush = UIManager.GetColorFromInfoColor(color);
+        //            (cell.Content as Control).BorderThickness = new Thickness(1);
+        //        }
+        //    }
+        //}
+        //internal void ClearColor(object dataItem)
+        //{
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    var cell = dataRow.GetCell(this);
+        //    if (cell != null)
+        //    {
+        //        if (cell.Content != null)
+        //        {
+        //            (cell.Content as Control).BorderBrush = null;// new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Black));
+        //            (cell.Content as Control).BorderThickness = new Thickness(1);
+        //        }
+        //    }
+        //}
+        //internal void SetBorderColor(object dataItem, InfoColor color)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    var cell = dataRow.GetCell(this);
+        //    if (cell != null)
+        //    {
+        //        if (cell.Content != null)
+        //        {
+        //            cell.BorderBrush = UIManager.GetColorFromInfoColor(color);
+        //            cell.BorderThickness = new Thickness(1);
+        //        }
+        //        }
+        //    }));
+        //}
+        //internal void SetBackgroundColor(object dataItem, InfoColor color)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    var cell = dataRow.GetCell(this);
+        //    if (cell != null)
+        //    {
+        //        if (cell.Content != null)
+        //        {
+        //            cell.Background = UIManager.GetColorFromInfoColor(color);
+        //        }
+        //        }
+        //    }));
+        //}
+        //internal void SetForegroundColor(object dataItem, InfoColor color)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    var cell = dataRow.GetCell(this);
+        //    if (cell != null)
+        //    {
+        //        if (cell.Content != null)
+        //        {
+        //            cell.Foreground = UIManager.GetColorFromInfoColor(color);
+        //        }
+        //        }
+        //    }));
+        //}
+
+
+
+
+        //public TemporaryLinkType LinkType
+        //{
+        //    set;
+        //    get;
+        //}
+
+        //public void OnTemporaryViewRequested(object sender, Arg_TemporaryDisplayViewRequested arg)
+        //{
+        //    throw new NotImplementedException();
+        //}
+        public List<Tuple<object, I_View_TemporaryView>> listControls = new List<Tuple<object, I_View_TemporaryView>>();
+
+        internal void AddDataItem(object dataItem)
+        {
+            UC_TemporaryDataSearchLink control = new UC_TemporaryDataSearchLink(TemporaryLinkState);
+            // if (TemporaryViewLoaded != null)
+            //      this.TemporaryViewLoaded(this, new Arg_MultipleTemporaryDisplayLoaded() { DataItem = dataItem });
+
+            //control.Column = Column;
+            control.SearchTextChanged += Control_SearchTextChanged1;
+            control.TemporaryDisplayViewRequested += (sender, e) => control_TemporaryDisplayViewRequested(sender, e, dataItem);
+            control.FocusLost += Control_FocusLost;
+            listControls.Add(new Tuple<object, I_View_TemporaryView>(dataItem, control));
+
+        }
+        internal void RemoveDataItem(object dataItem)
+        {
+            if (listControls.Any(x => x.Item1 == dataItem))
+                listControls.Remove(listControls.First(x => x.Item1 == dataItem));
+        }
+
+        internal void RemoveDataItems()
+        {
+            listControls.Clear();
+        }
+
+        //public I_View_TemporaryView GenerateTemporaryView(object dataItem)
+        //{
+
+        //}
+
         //public I_View_TemporaryView GetTemporaryView(object dataItem)
         //{
-        //    return DataGridColumn.GetTemporaryView(dataItem);
-        //}
-        public object GetUIControl(object dataItem)
-        {
-            return DataGridColumn.GetTemporaryView(dataItem);
-        }
-        //public void AddValidation(BaseMessageItem item)
-        //{
-        //    ValidationItems.Add(item);
-        //    SetTooltip(item.CausingDataItem);
-        //    SetColor(item.CausingDataItem);
+        //    //I_View_TemporaryView control = null;
+        //    //System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    //{
+        //    //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    //    var cell = dataRow.GetCell(this);
+        //    //    if (cell != null && cell.Content != null)
+        //    //    {
+        //    //        control=(cell.Content as I_View_TemporaryView);
+        //    //    }
+
+        //    //}));
+        //    //return control;
         //}
 
-        //public void RemoveValidation(object dataItem, string key)
+
+        //public void SetTemporaryViewText(object dataItem, string text)
         //{
-        //    foreach (var item in ValidationItems.Where(x => x.CausingDataItem == dataItem && x.Key == key).ToList())
-        //        ValidationItems.Remove(item);
-        //    SetTooltip(dataItem);
-        //    SetColor(dataItem);
-        //}
-        //public void AddMessage(BaseMessageItem item)
-        //{
-        //    if (item.CausingDataItem != null || item.IsPermanentMessage == true)
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
         //    {
-        //        MessageItems.Add(item);
-        //        if (item.IsPermanentMessage == true)
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null && cell.Content != null)
         //        {
-        //            SetPermanentTooltip();
-        //            SetPermanentColor();
+        //            if (cell.Content is I_View_TemporaryView)
+        //                (cell.Content as I_View_TemporaryView).SetLinkText(text);
         //        }
-        //        else
+        //    }));
+        //}
+        //public void EnableDisable( bool enable)
+        //{
+        //    this.IsEnabled = enable;
+        //}
+        //public void EnableDisable(object dataItem, bool enable)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null && cell.Content != null)
         //        {
-        //            SetDataTooltip(item.CausingDataItem);
-        //            SetDataColor(item.CausingDataItem);
+        //            if (cell.Content is I_View_TemporaryView)
+        //                (cell.Content as I_View_TemporaryView).DisableEnable(enable);
         //        }
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("asdasd");
-        //    }
+        //    }));
         //}
-
-        //public void RemoveMessage(BaseMessageItem baseMessageItemem)
+        ////public void DisableEnable(object dataItem, TemporaryLinkType link, bool enable)
+        ////{
+        ////    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        ////    {
+        ////        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        ////        var cell = dataRow.GetCell(this);
+        ////        if (cell != null && cell.Content != null)
+        ////        {
+        ////            if (cell.Content is I_View_TemporaryView)
+        ////                (cell.Content as I_View_TemporaryView).DisableEnable(link, enable);
+        ////        }
+        ////    }));
+        ////}
+        ////internal void Visiblity(bool visible)
+        ////{
+        ////    this.IsVisible = visible;
+        ////}
+        //internal void Visiblity(object dataItem, bool visible)
         //{
-        //    if (baseMessageItemem.CausingDataItem != null || baseMessageItemem.IsPermanentMessage == true)
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
         //    {
-        //        if (baseMessageItemem.IsPermanentMessage)
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null && cell.Content != null)
         //        {
-        //            foreach (var item in MessageItems.Where(x => x.IsPermanentMessage && x.Key == baseMessageItemem.Key).ToList())
-        //                MessageItems.Remove(item);
-        //            SetPermanentTooltip();
-        //            SetPermanentColor();
+        //            if (cell.Content is FrameworkElement)
+        //                (cell.Content as FrameworkElement).Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
         //        }
-        //        else
+        //    }));
+        //}
+
+        //internal void SetQuickSearchVisibility(object dataItem, bool visible)
+        //{
+        //    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        //    {
+        //        var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //        var cell = dataRow.GetCell(this);
+        //        if (cell != null && cell.Content != null)
         //        {
-        //            foreach (var item in MessageItems.Where(x => x.CausingDataItem == baseMessageItemem.CausingDataItem && x.Key == baseMessageItemem.Key).ToList())
-        //                MessageItems.Remove(item);
-        //            SetDataTooltip(baseMessageItemem.CausingDataItem);
-        //            SetDataColor(baseMessageItemem.CausingDataItem);
+        //            if (cell.Content is I_View_TemporaryView)
+        //                (cell.Content as I_View_TemporaryView).QuickSearchVisibility = visible;
         //        }
-        //    }
-        //    else
+        //    }));
+        //}
+        //public I_View_TemporaryView GetTemporaryView(object dataItem)
+        //{
+        //    var dataRow = this.DataControl.GetRowForItem(dataItem);
+        //    var cell = dataRow.GetCell(this);
+        //    if (cell != null && cell.Content != null)
         //    {
-        //        throw new Exception("asdasd");
+        //        return (cell.Content as I_View_TemporaryView);
         //    }
+        //    return null;
         //}
-        //private void SetPermanentTooltip()
+
+        //public void OnTemporaryViewRequested(object sender, Arg_TemporaryDisplayViewRequested arg)
         //{
-        //    var tooltip = "";
-        //    foreach (var item in MessageItems.Where(x => x.IsPermanentMessage))
-        //        tooltip += (tooltip == "" ? "" : Environment.NewLine) + item.Message;
-        //    if (tooltip != "")
-        //        DataGridColumn.SetTooltip(tooltip);
-        //    else
-        //        DataGridColumn.ClearTooltip();
+
         //}
-        //private void SetDataTooltip(object dataItem)
+
+        //public TemporaryLinkType LinkType
         //{
-        //    var tooltip = "";
-        //    foreach (var item in MessageItems.Where(x => !x.IsPermanentMessage))
-        //        tooltip += (tooltip == "" ? "" : Environment.NewLine) + item.Message;
-        //    if (tooltip != "")
-        //        DataGridColumn.SetTooltip(dataItem, tooltip);
-        //    else
-        //        DataGridColumn.ClearTooltip(dataItem);
+        //    set;
+        //    get;
         //}
-        //private void SetPermanentColor()
-        //{
-        //    var color = InfoColor.Default;
-        //    if (MessageItems.Any(x => x.IsPermanentMessage && x.Color != InfoColor.Default))
-        //        color = MessageItems.First(x => x.Color != InfoColor.Default).Color;
-
-        //    if (color != InfoColor.Default)
-        //        DataGridColumn.SetColor(color);
-        //    else
-        //        DataGridColumn.ClearColor();
-        //}
-        //private void SetDataColor(object dataItem)
-        //{
-        //    var color = InfoColor.Default;
-        //    if (MessageItems.Any(x => !x.IsPermanentMessage && x.Color != InfoColor.Default))
-        //        color = MessageItems.First(x => x.Color != InfoColor.Default).Color;
-
-        //    if (color != InfoColor.Default)
-        //        DataGridColumn.SetColor(dataItem, color);
-        //    else
-        //        DataGridColumn.ClearColor(dataItem);
-        //}
-
-        public void SetTooltip(object dataItem, string tooltip)
-        {
-            DataGridColumn.SetTooltip(dataItem, tooltip);
-        }
-
-        public void SetBorderColor(object dataItem, InfoColor color)
-        {
-            DataGridColumn.SetBorderColor(dataItem, color);
-        }
-
-        public void SetBackgroundColor(object dataItem, InfoColor color)
-        {
-            DataGridColumn.SetBackgroundColor(dataItem, color);
-        }
-
-        public void SetForegroundColor(object dataItem, InfoColor color)
-        {
-            DataGridColumn.SetForegroundColor(dataItem, color);
-        }
-
-        //public bool SetValue(object dataItem, string value)
-        //{
-        //    var dataRow = DataGridColumn.DataControl.GetRowForItem(dataItem);
-        //    return DataGridColumn.SetValue(dataItem, value);
-        //}
-
-
-        //public void ClearAllValidations()
-        //{
-        //    List<object> dataItems = new List<object>();
-        //    foreach (var item in cellValidationMessages)
-        //    {
-        //        dataItems.Add(item.CausingDataItem);
-        //    }
-        //    cellValidationMessages.Clear();
-        //    foreach (var item in cellValidationMessages)
-        //    {
-        //        SetTooltip(item.CausingDataItem);
-        //        SetColor(item.CausingDataItem);
-        //    }
-        //}
-        //public void SetMandatoryState(bool isMandatory)
-        //{
-        //    foreach (var item in RelatedControl)
-        //    {
-
-        //        if (item is TextBlock)
-        //        {
-        //            var textblock = (item as TextBlock);
-
-        //            if (isMandatory)
-        //            {
-        //                if (!textblock.Text.StartsWith("*"))
-        //                {
-        //                    textblock.Text = "*" + textblock.Text;
-        //                }
-        //                textblock.Foreground = new SolidColorBrush(Colors.DarkRed);
-        //            }
-        //            else
-        //            {
-        //                if (textblock.Text.StartsWith("*"))
-        //                {
-        //                    textblock.Text = textblock.Text.Substring(1, textblock.Text.Length - 1);
-        //                }
-        //                textblock.Foreground = new SolidColorBrush(UIManager.GetColorFromInfoColor(InfoColor.Default));
-        //            }
-        //        }
-        //    }
-        //}
-
     }
+
+
 
 }

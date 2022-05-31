@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using ModelEntites;
+using MyCacheManager;
 using MyGeneralLibrary;
 
 using ProxyLibrary;
@@ -155,6 +156,11 @@ namespace MyModelManager
             (MyProjectEntities projectContext, string relationshipPath, int initialiEntityID, string initialiEntityAlias, int targetEntityID, string targetEntityAlias
             , EntityRelationshipTailDTO reverseRelationshipTail, bool withEntitiesAndRelationships, List<TableDrivedEntity> entities = null, List<Relationship> relationships = null)
         {
+
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.RelationshipTail, initialiEntityID.ToString(), relationshipPath.ToString(), withEntitiesAndRelationships.ToString());
+            if (cachedItem != null)
+                return (cachedItem as Tuple<EntityRelationshipTailDTO, List<TableDrivedEntity>, List<Relationship>>);
+
             if (entities == null)
             {
                 entities = new List<TableDrivedEntity>();
@@ -224,7 +230,11 @@ namespace MyModelManager
                 result.ReverseRelationshipTail = reverseRelationshipTail;
             //if (result.ReverseRelationshipTail.ChildTail != null)
             //    result.ReverseRelationshipTail.LastRelationship = result.ReverseRelationshipTail.ChildTail.LastRelationship;
-            return new Tuple<EntityRelationshipTailDTO, List<TableDrivedEntity>, List<Relationship>>(result, entities, relationships);
+
+            var resultTuple= new Tuple<EntityRelationshipTailDTO, List<TableDrivedEntity>, List<Relationship>>(result, entities, relationships);
+            CacheManager.GetCacheManager().AddCacheItem(resultTuple,CacheItemType.RelationshipTail, initialiEntityID.ToString(), relationshipPath.ToString(), withEntitiesAndRelationships.ToString());
+
+            return resultTuple;
             //if (item.ReverseRelationshipTailID != null)
             //    result.ReverseRelationshipTailID = item.ReverseRelationshipTailID.Value;
             //result.TargetEntityAlias = item.TableDrivedEntity1.Alias;
