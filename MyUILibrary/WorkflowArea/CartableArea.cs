@@ -130,7 +130,7 @@ namespace MyUILibrary.WorkflowArea
             foreach (var tuple in tuples)
             {
                 var tooltip = "";
-               foreach(var item in tuple.Item2)
+                foreach (var item in tuple.Item2)
                 {
                     tooltip += (tooltip == "" ? "" : ",") + item.OrganizationPost.Name;
                 }
@@ -206,10 +206,10 @@ namespace MyUILibrary.WorkflowArea
                 {
                     //   var title = entityGroupRelationship.Name;
 
-                    List<DP_DataView> initializeData = null;
+                    List<DP_BaseData> initializeData = null;
                     if (entityGroupRelationship.RelationshipTail == null)
                     {
-                        initializeData = new List<DP_DataView>();
+                        initializeData = new List<DP_BaseData>();
                         initializeData.Add(wfRequest.DataItem);
                         AgentUICoreMediator.GetAgentUICoreMediator.ShowEditEntityArea(wfRequest.DataItem.TargetEntityID, true, CommonDefinitions.UISettings.DataMode.One, initializeData);
 
@@ -233,7 +233,7 @@ namespace MyUILibrary.WorkflowArea
                         DR_SearchKeysOnlyRequest request = new DR_SearchKeysOnlyRequest(requester, searchItem);
                         var searchResult = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchKeysOnlyRequest(request);
                         if (searchResult.Result == Enum_DR_ResultType.SeccessfullyDone)
-                            initializeData = searchResult.ResultDataItems;
+                            initializeData = searchResult.ResultDataItems.Cast<DP_BaseData>().ToList();
                         else if (searchResult.Result == Enum_DR_ResultType.ExceptionThrown)
                         {
                             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage(searchResult.Message);

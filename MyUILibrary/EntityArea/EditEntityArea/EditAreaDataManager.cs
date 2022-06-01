@@ -30,60 +30,60 @@ namespace MyUILibrary.EntityArea
         /// <param name="editEntityArea"></param>
         /// <param name="parentRelationData"></param>
         /// <returns></returns>
-        public void SerachDataFromParentRelationForChildDataView(ChildRelationshipInfo childRelationshipInfo)
-        {
-            var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
+        //public void SerachDataFromParentRelationForChildDataView(ChildRelationshipInfo childRelationshipInfo)
+        //{
+        //    var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
 
-            //ChildRelationshipInfo childRelationshipInfo = null;
-            //childRelationshipInfo = parentRelationData.ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationship.ID);
-            //if (childRelationshipInfo == null)
-            //{
-            //    childRelationshipInfo = parentRelationData.AddChildRelationshipInfo(relationshipColumnControl);
-            //}
-            //else
-            //{
-            //    throw new Exception("Asd");
-            //}
+        //    //ChildRelationshipInfo childRelationshipInfo = null;
+        //    //childRelationshipInfo = parentRelationData.ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationship.ID);
+        //    //if (childRelationshipInfo == null)
+        //    //{
+        //    //    childRelationshipInfo = parentRelationData.AddChildRelationshipInfo(relationshipColumnControl);
+        //    //}
+        //    //else
+        //    //{
+        //    //    throw new Exception("Asd");
+        //    //}
 
-            //سکوریتی داده اعمال میشود
+        //    //سکوریتی داده اعمال میشود
 
-            var searchDataItem = relationshipManager.GetSecondSideSearchDataItemByRelationship(childRelationshipInfo.SourceData, childRelationshipInfo.Relationship.ID);
-            if (searchDataItem != null)
-            {
-                // DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem, targetEditEntityArea.AreaInitializer.SecurityReadOnly, true);
-                DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem);
+        //    var searchDataItem = relationshipManager.GetSecondSideSearchDataItemByRelationship(childRelationshipInfo.SourceData, childRelationshipInfo.Relationship.ID);
+        //    if (searchDataItem != null)
+        //    {
+        //        // DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem, targetEditEntityArea.AreaInitializer.SecurityReadOnly, true);
+        //        DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem);
 
-                var childFullData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(request).ResultDataItems;
-                var countRequest = new DR_SearchCountRequest(requester);
-                countRequest.SearchDataItems = searchDataItem;
-                countRequest.Requester.SkipSecurity = true;
-                var count = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchCountRequest(countRequest);
-                bool secutrityImposed = false;
-                if (count.ResultCount != childFullData.Count)
-                    secutrityImposed = true;
+        //        var childFullData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(request).ResultDataItems;
+        //        var countRequest = new DR_SearchCountRequest(requester);
+        //        countRequest.SearchDataItems = searchDataItem;
+        //        countRequest.Requester.SkipSecurity = true;
+        //        var count = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchCountRequest(countRequest);
+        //        bool secutrityImposed = false;
+        //        if (count.ResultCount != childFullData.Count)
+        //            secutrityImposed = true;
 
 
-                if (!secutrityImposed)
-                {
-                    foreach (var data in childFullData)
-                    {
-                        data.IsDBRelationship = true;
-                        data.DataView = GetDataView(data);
+        //        if (!secutrityImposed)
+        //        {
+        //            foreach (var data in childFullData)
+        //            {
+        //                data.IsDBRelationship = true;
+        //                data.DataView = GetDataView(data);
 
-                        DP_FormDataRepository formData = new DP_FormDataRepository(data, childRelationshipInfo.RelationshipControl.GenericEditNdTypeArea);
-                        childRelationshipInfo.AddDataToChildRelationshipInfo(formData, true);
-                    }
+        //                DP_FormDataRepository formData = new DP_FormDataRepository(data, childRelationshipInfo.RelationshipControl.GenericEditNdTypeArea);
+        //                childRelationshipInfo.AddDataToChildRelationshipInfo(formData, true);
+        //            }
 
-                }
-                else
-                    childRelationshipInfo.SecurityIssue = true;
-            }
-            //return childRelationshipInfo;
-            //foreach (var item in childFullData)
-            //    searchedData.Add(new Tuple<DP_FormDataRepository, DP_DataView>(item, null));
+        //        }
+        //        else
+        //            childRelationshipInfo.SecurityIssue = true;
+        //    }
+        //    //return childRelationshipInfo;
+        //    //foreach (var item in childFullData)
+        //    //    searchedData.Add(new Tuple<DP_FormDataRepository, DP_DataView>(item, null));
 
-            //return AddEditSearchData(searchedData, editEntityArea);
-        }
+        //    //return AddEditSearchData(searchedData, editEntityArea);
+        //}
 
         //void SerachDataFromParentRelationForChildTempView(ChildRelationshipInfo childRelationshipInfo)
         //{
@@ -151,70 +151,23 @@ namespace MyUILibrary.EntityArea
         //            }
         //    }
         //}
-        public DP_FormDataRepository ConvertDP_DataViewToDP_DataRepository(DP_DataView item, I_EditEntityArea editEntityArea)
-        {
-            DP_DataRepository dataRepository = new DP_DataRepository(item.TargetEntityID, item.TargetEntityAlias);
-            if (dataRepository.EntityListView == null)
-                dataRepository.EntityListView = editEntityArea.DefaultEntityListViewDTO;
-            dataRepository.DataView = item;
-            foreach (var key in item.Properties.Where(x => x.IsKey))
-            {
-                dataRepository.AddProperty(editEntityArea.EntityWithSimpleColumns.Columns.First(x => x.ID == key.ColumnID), key.Value);
-            }
+        //public DP_FormDataRepository ConvertDP_DataViewToDP_DataRepository(DP_DataView item, I_EditEntityArea editEntityArea)
+        //{
+        //    //DP_DataRepository dataRepository = new DP_DataRepository(item.TargetEntityID, item.TargetEntityAlias);
+        //    //if (dataRepository.EntityListView == null)
+        //    //    dataRepository.EntityListView = editEntityArea.DefaultEntityListViewDTO;
+        //    //dataRepository.DataView = item;
+        //    //foreach (var key in item.Properties.Where(x => x.IsKey))
+        //    //{
+        //    //    dataRepository.AddProperty(editEntityArea.EntityWithSimpleColumns.Columns.First(x => x.ID == key.ColumnID), key.Value);
+        //    //}
 
-            return new DP_FormDataRepository(dataRepository, editEntityArea);
-        }
+          
+        //}
 
-        public bool ConvertDataViewToFullData(int entityID, DP_FormDataRepository dataITem, I_EditEntityArea editEntityArea)
-        {
-            //اوکی نشده
-            DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
-            foreach (var col in dataITem.KeyProperties)
-            {
-                SearchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
-            }
-            var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
+   
 
-            // var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem, editEntityArea.AreaInitializer.SecurityReadOnly, false);
-
-            //int toRelationsipID = 0;
-            //if (editEntityArea.AreaInitializer.SourceRelationColumnControl != null)
-            //    editEntityArea.AreaInitializer.SourceRelationColumnControl
-            var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem);
-            var foundItem = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
-            if (foundItem.Any())
-            {
-                dataITem.ClearProperties();
-                dataITem.SetProperties(foundItem[0].GetProperties());
-                dataITem.IsFullData = true;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public DP_FormDataRepository SearchDataForEditFromExternalSource(int entityID, DP_BaseData searchViewData, I_EditEntityArea editEntityArea)
-        {
-            DP_SearchRepository searchDataItem = new DP_SearchRepository(entityID);
-            foreach (var col in searchViewData.KeyProperties)
-            {
-                searchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
-            }
-            var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
-
-            //   var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem, editEntityArea.AreaInitializer.SecurityReadOnly, true);
-            var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem);
-            var foundItem = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
-            if (foundItem.Any())
-            {
-                foundItem[0].DataView = GetDataView(foundItem[0]);
-                return new DP_FormDataRepository(foundItem[0], editEntityArea);
-            }
-            else
-                return null;
-        }
+      
         //public List<DP_FormDataRepository> SearchDataForEditFromExternalSource(int entityID, List<DP_FormDataRepository> searchViewData, I_EditEntityArea editEntityArea)
         //{
 
@@ -239,26 +192,7 @@ namespace MyUILibrary.EntityArea
         //    }
         //    return result;
         //}
-        public DP_FormDataRepository SearchDataForViewFromExternalSource(int entityID, DP_BaseData searchViewData, I_EditEntityArea editEntityArea)
-        {
-            DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
-            foreach (var col in searchViewData.KeyProperties)
-            {
-                SearchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
-            }
-            var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
-
-            var requestSearchView = new DR_SearchViewRequest(requester, SearchDataItem);
-            var foundItem = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(requestSearchView).ResultDataItems;
-            if (foundItem.Any())
-            {
-                var result = ConvertDP_DataViewToDP_DataRepository(foundItem[0], editEntityArea);
-                return result;
-
-            }
-            else
-                return null;
-        }
+       
 
         //public List<DP_DataView> SearchDataForViewFromExternalSource(int entityID, List<DP_FormDataRepository> searchViewData, I_EditEntityArea editEntityArea)
         //{
@@ -283,31 +217,7 @@ namespace MyUILibrary.EntityArea
         //    }
         //    return result;
         //}
-        public DP_FormDataRepository GetFullDataFromDataViewSearch(int entityID, DP_DataView searchViewData, I_EditEntityArea editEntityArea)
-        {
-            //سکوریتی داده اعمال میشود
-            DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
-            foreach (var col in searchViewData.Properties.Where(x => x.IsKey))
-            {
-                SearchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
-            }
-            var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
-            // var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem, editEntityArea.AreaInitializer.SecurityReadOnly, false);
-            var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem);
-            var res = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
-            if (res.Any())
-            {
-                var froundItem = res[0];
-                froundItem.DataView = searchViewData;
-                return new DP_FormDataRepository(froundItem, editEntityArea);
-            }
-
-            else
-            {
-
-                return null;
-            }
-        }
+        
 
         //public List<DP_FormDataRepository> GetFullDataFromDataViewSearch(int entityID, List<DP_DataView> searchViewData, I_EditEntityArea editEntityArea)
         //{

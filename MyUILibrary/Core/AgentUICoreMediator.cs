@@ -1022,7 +1022,7 @@ namespace MyUILibrary
                     UIManager.GetDialogWindow().ShowDialog(editArchiveArea.View, title, Enum_WindowSize.Maximized);
             }
         }
-        public void ShowEditEntityArea(int entityId, bool dialog, DataMode dataMode = DataMode.None, List<DP_DataView> initializeData = null, Tuple<DP_DataView, EntityRelationshipTailDTO> tailDataValidation = null)
+        public void ShowEditEntityArea(int entityId, bool dialog, DataMode dataMode = DataMode.None, List<DP_BaseData> initializeData = null, Tuple<DP_DataView, EntityRelationshipTailDTO> tailDataValidation = null)
         {
             //var request = new DP_EntityRequest();
             //request.EntityID = entityId;

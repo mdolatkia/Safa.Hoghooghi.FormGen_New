@@ -46,6 +46,9 @@ namespace MyUILibrary.EntityArea
             }
 
         }
+
+
+
         I_UIElementManager GetUIControlManager
         {
             get
@@ -198,9 +201,9 @@ namespace MyUILibrary.EntityArea
             var parentRelationshipInfo = new ParentRelationshipInfo(this);
             dataItem.ParantChildRelationshipInfo = parentRelationshipInfo;
             RelatedData.Add(dataItem);
-            if (dataItem.FromDB)
+            if (dataItem.IsDBRelationship)
             {
-                DP_FormDataRepository orgData = new DP_FormDataRepository(dataItem, dataItem.EditEntityArea);
+                DP_FormDataRepository orgData = new DP_FormDataRepository(dataItem, dataItem.EditEntityArea, dataItem.IsDBRelationship, dataItem.IsNewItem);
                 //         orgData.ParantChildRelationshipInfo = parentRelationshipInfo;
                 foreach (var item in dataItem.KeyProperties)
                     orgData.AddCopyProperty(item);
@@ -314,23 +317,124 @@ namespace MyUILibrary.EntityArea
             return RelatedData.ToList();
             //    else return new List<ProxyLibrary.DP_FormDataRepository>();
         }
-        public void RemoveRelatedData(DP_FormDataRepository DP_FormDataRepository)
+        public bool RemoveRelatedData(DP_FormDataRepository DP_FormDataRepository)
         {
             //var childRelationshipInfo = ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationshipID);
             //if (childRelationshipInfo != null)
 
             //اینجا باید کنترل بشه که میشه حذف بشه اصلا یا نه
-            RelatedData.Remove(DP_FormDataRepository);
+            var clearIsOk = CheckRemoveData(DP_FormDataRepository);
 
+            if (clearIsOk)
+            {
+                RelatedData.Remove(DP_FormDataRepository);
 
+                bool isDirect = (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
+                         RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
+
+                if (isDirect)
+                {
+                }
+                else
+                {
+                    SetTempText();
+                }
+
+                return true;
+            }
+            else
+                return false;
         }
-        public void RemoveRelatedData()
+        public bool CheckRemoveData(DP_FormDataRepository data)
+        {
+            bool clearIsOk = true;
+            if (data.IsDBRelationship)
+            {
+                //برای روابط پرایمری به فارن که وضعیت اعمال میشه
+                if (data.ParantChildRelationshipInfo.IsHidden || data.IsReadonlyOnState)
+                    return false;
+
+                //برای روابط فارن به پرایمری که وضعیت اعمال میشه
+                if (data.ParantChildRelationshipInfo.IsHidden || data.ParantChildRelationshipInfo.IsReadonly)
+                    return false;
+            }
+            bool shouldDeleteFromDB = false;
+            //   var existingdatas = datas.Where(x => x.IsDBRelationship);
+            ///   if (existingdatas.Count() != 0)
+            //   {
+            if (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl != null)
+            {
+
+                if (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
+                {
+                    if (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.DeleteOption == RelationshipDeleteOption.DeleteCascade || RelationshipControl.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(x => !x.SecondSideColumn.IsNull))
+                    {
+                        shouldDeleteFromDB = true;
+                    }
+                }
+                //بعدا به این فکر شود
+                //var relationship = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipManager.GetRelationship(AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID);
+                //if (relationship.IsOtherSideMandatory)
+                //    shouldDeleteFromDB = true;
+            }
+            //  }
+
+            if (shouldDeleteFromDB)
+            {
+                //////if (AreaInitializer.SecurityEditAndDelete == false)
+                //////{
+                //////    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage("پیام", "به علت رابطه اجباری داده نیاز به حذف شدن دارد اما دسترسی حذف وجود ندارد");
+                //////    clearIsOk = false;
+                //////}
+                // var deleteList = existingdatas.ToList();
+                var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
+                DR_DeleteInquiryRequest request = new DR_DeleteInquiryRequest(requester);
+                request.DataItems = new List<DP_BaseData>() { data };
+                var reuslt = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendDeleteInquiryRequest(request);
+                I_ViewDeleteInquiry view = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDeleteInquiryView();
+                view.SetTreeItems(reuslt.DataTreeItems);
+                if (reuslt.Loop == true)
+                {
+                    clearIsOk = false;
+                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage("بعلت وجود حلقه وابستگی بین داده ها امکان حذف داده (داده های) انتخاب شده وجود ندارد");
+                }
+                else
+                {
+                    view.SetUserConfirmMode(UserDialogMode.YesNo);
+                    if (reuslt.DataTreeItems.Any(x => x.ChildRelationshipDatas.Any(y => y.RelationshipDeleteOption == ModelEntites.RelationshipDeleteOption.DeleteCascade && y.RelatedData.Any())))
+                        view.SetMessage("داده های وابسته نمایش داده شده نیز حذف خواهند شد. آیا مطمئن هستید؟");
+                    else
+                        view.SetMessage("داده نمایش داده شده حذف خواهد شد. آیا مطمئن هستید؟");
+                    var result = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowPromptDialog(view, "");
+                    if (result == UserDialogResult.Ok || result == UserDialogResult.No)
+                    {
+                        clearIsOk = false;
+                    }
+                    else if (result == UserDialogResult.Yes)
+                    {
+                        clearIsOk = true;
+                    }
+                }
+            }
+
+            return clearIsOk;
+        }
+        internal void RemoveRelatedData(List<DP_FormDataRepository> datas)
+        {
+            foreach (var item in datas)
+                RemoveRelatedData(datas);
+        }
+        public bool RemoveRelatedData()
         {
             //var childRelationshipInfo = ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationshipID);
             //if (childRelationshipInfo != null)
-
+            bool result = true;
             foreach (var item in RelatedData.ToList())
-                RemoveRelatedData(item);
+            {
+                if (!RemoveRelatedData(item))
+                    result = false;
+            }
+            return result;
         }
 
 
@@ -559,6 +663,7 @@ namespace MyUILibrary.EntityArea
         bool dataLoaded = false;
         public bool SetBinding()
         {
+
             RelationshipControl.GenericEditNdTypeArea.ChildRelationshipInfoBinded = this;
             bool isDirect = (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
                        RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
@@ -566,8 +671,8 @@ namespace MyUILibrary.EntityArea
             {
                 RelationshipControl.GenericEditNdTypeArea.ClearUIData();
             }
-            bool SecurityIssue = false;
-            bool result = true;
+            //bool SecurityIssue = false;
+            //bool result = true;
             List<DP_FormDataRepository> childItems = null;
             if (dataLoaded)
             {
@@ -621,8 +726,18 @@ namespace MyUILibrary.EntityArea
             {
                 SetTempText();
             }
-            return false;
 
+            if (RelationshipControl is RelationshipColumnControlMultiple)
+            {
+                GetTempView.TemporaryDisplayViewRequested += GetTempView_TemporaryDisplayViewRequested;
+            }
+            return true;
+
+        }
+
+        private void GetTempView_TemporaryDisplayViewRequested(object sender, Arg_TemporaryDisplayViewRequested e)
+        {
+            TemporaryViewActionRequested(sender as I_View_TemporaryView, e.LinkType);
         }
 
         RelationshipDataManager relationshipManager = new RelationshipDataManager();
@@ -646,7 +761,7 @@ namespace MyUILibrary.EntityArea
             countRequest.SearchDataItems = searchDataItem;
             countRequest.Requester.SkipSecurity = true;
             var count = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchCountRequest(countRequest);
-            bool secutrityImposed = false;
+            //     bool secutrityImposed = false;
             if (count.ResultCount != childViewData.Count)
                 return new Tuple<bool, List<DP_FormDataRepository>>(true, null);
             //if (!secutrityImposed)
@@ -656,9 +771,9 @@ namespace MyUILibrary.EntityArea
             EditAreaDataManager EditAreaDataManager = new EditAreaDataManager();
             foreach (var item in childViewData)
             {
-                var dpItem = EditAreaDataManager.ConvertDP_DataViewToDP_DataRepository(item, RelationshipControl.GenericEditNdTypeArea);
-                dpItem.IsDBRelationship = true;
-                dpItem.FromDB = true;
+                var dpItem = new DP_FormDataRepository(item, RelationshipControl.GenericEditNdTypeArea, true, false);
+                //dpItem.IsDBRelationship = true;
+
                 list.Add(dpItem);
             }
             // }
@@ -710,11 +825,11 @@ namespace MyUILibrary.EntityArea
             EditAreaDataManager EditAreaDataManager = new EditAreaDataManager();
             foreach (var data in childFullData)
             {
-                data.IsDBRelationship = true;
+                //  data.IsDBRelationship = true;
                 data.DataView = EditAreaDataManager.GetDataView(data);
 
-                DP_FormDataRepository formData = new DP_FormDataRepository(data, RelationshipControl.GenericEditNdTypeArea);
-                formData.FromDB = true;
+                DP_FormDataRepository formData = new DP_FormDataRepository(data, RelationshipControl.GenericEditNdTypeArea, true, false);
+                //   formData.IsDBRelationship = true;
                 list.Add(formData);
             }
 
@@ -790,5 +905,160 @@ namespace MyUILibrary.EntityArea
             }
         }
 
+        internal void DataSelected(DP_FormDataRepository result)
+        {
+            if (RemoveRelatedData())
+                AddDataToChildRelationshipInfo(result, true);
+        }
+
+        internal void DataViewRequested()
+        {
+            //   ObservableCollection<DP_FormDataRepository> existingData = RealData;
+
+            if (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.FormComposed == false)
+            {
+                RelationshipControl.GenericEditNdTypeArea.GenerateDataView();
+            }
+
+            RelationshipControl.GenericEditNdTypeArea.DataViewGeneric.IsOpenedTemporary = true;
+
+            //////if (AreaInitializer.SourceRelationColumnControl != null)
+            //////{
+            //////    AreaInitializer.SourceRelationColumnControl.OnDataViewForTemporaryViewShown(ChildRelationshipInfo);
+            //////}
+            if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData && RelatedData.Count == 0)
+            {
+
+                //اینجا باید فقط برای فرم اصلی باشد
+                //(this as I_EditEntityAreaOneData).CreateDefaultData();
+
+                var newData = AgentHelper.CreateAreaInitializerNewData(RelationshipControl.GenericEditNdTypeArea);
+                AddDataToChildRelationshipInfo(newData, true);
+
+            }
+            else
+            {
+                //if (this is I_EditEntityAreaMultipleData)
+                //    (this as I_EditEntityAreaMultipleData).RemoveDataContainers();
+
+                RelationshipControl.GenericEditNdTypeArea.ClearUIData();
+
+                foreach (var data in RelatedData)
+                {
+                    if (!data.IsFullData)
+                    {
+                        //if (!data.KeyProperties.Any())
+                        //    throw new Exception("asdad");
+                        var resConvert = ConvertDataViewToFullData(RelationshipControl.GenericEditNdTypeArea.AreaInitializer.EntityID, data, RelationshipControl.GenericEditNdTypeArea);
+                        if (!resConvert)
+                        {
+                            //ممکن است اینجا داده وابسته فول شود اما در نمایش فرم بعلت عدم دسترسی به داده  وابسته برای داده وابسته جاری فرم نمایش داده نشود
+                            //بنابراین هر فولی به معنی اصلاح شدن داده نیست و باید خصوصیت دیگری در نظر گرفت
+                            RelationshipControl.GenericEditNdTypeArea.DataViewGeneric.IsOpenedTemporary = false;
+
+                            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", data.ViewInfo, Temp.InfoColor.Red);
+                            return;
+                        }
+                    }
+                    RelationshipControl.GenericEditNdTypeArea.ShowDataInDataView(data);
+                }
+            }
+            var dialogManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow();
+            dialogManager.WindowClosed += DialogManager_WindowClosed;
+            dialogManager.ShowDialog(RelationshipControl.GenericEditNdTypeArea.DataViewGeneric, RelationshipControl.GenericEditNdTypeArea.SimpleEntity.Alias, Enum_WindowSize.Big);
+        }
+        private void DialogManager_WindowClosed(object sender, EventArgs e)
+        {
+            RelationshipControl.GenericEditNdTypeArea.DataViewGeneric.IsOpenedTemporary = false;
+            //   SetTempText(GetDataList());
+            //   CheckRelationshipLabel();
+            //foreach (var item in GetDataList())
+            //{
+            //    OnDataItemUnShown(new EditAreaDataItemArg() { DataItem = item });
+            //}
+        }
+        private bool ConvertDataViewToFullData(int entityID, DP_FormDataRepository dataITem, I_EditEntityArea editEntityArea)
+        {
+            //اوکی نشده
+            DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
+            foreach (var col in dataITem.KeyProperties)
+            {
+                SearchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
+            }
+            var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
+
+            // var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem, editEntityArea.AreaInitializer.SecurityReadOnly, false);
+
+            //int toRelationsipID = 0;
+            //if (editEntityArea.AreaInitializer.SourceRelationColumnControl != null)
+            //    editEntityArea.AreaInitializer.SourceRelationColumnControl
+            var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem);
+            var foundItem = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
+            if (foundItem.Any())
+            {
+                dataITem.ClearProperties();
+                dataITem.SetProperties(foundItem[0].GetProperties());
+                dataITem.IsFullData = true;
+                dataITem.SetProperties();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public I_View_TemporaryView LastTemporaryView { set; get; }
+
+        public void TemporaryViewActionRequested(I_View_TemporaryView TemporaryView, TemporaryLinkType linkType)
+        {
+            RelationshipControl.GenericEditNdTypeArea.ChildRelationshipInfoBinded = this;
+            if (LastTemporaryView != null)
+            {
+                if (LastTemporaryView.HasPopupView)
+                    LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.ViewEntityArea.ViewView);
+            }
+            LastTemporaryView = TemporaryView;
+            if (linkType == TemporaryLinkType.DataView)
+            {
+                DataViewRequested();
+            }
+            else if (linkType == TemporaryLinkType.SerachView)
+            {
+                ShowSearchView(false);
+            }
+            else if (linkType == TemporaryLinkType.QuickSearch)
+            {
+
+                TemporaryView.QuickSearchVisibility = !TemporaryView.QuickSearchVisibility;
+                if (TemporaryView.QuickSearchVisibility)
+                    TemporaryView.QuickSearchSelectAll();
+            }
+            else if (linkType == TemporaryLinkType.Popup)
+            {
+                if (!TemporaryView.PopupVisibility)
+                {
+                    RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.RemoveViewEntityAreaView();
+                    if (!TemporaryView.HasPopupView)
+                        TemporaryView.AddPopupView(RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.ViewEntityArea.ViewView);
+                }
+                TemporaryView.PopupVisibility = !TemporaryView.PopupVisibility;
+            }
+            else if (linkType == TemporaryLinkType.Clear)
+            {
+                RemoveRelatedData();
+            }
+            else if (linkType == TemporaryLinkType.Info)
+            {
+
+                AgentHelper.ShowEditEntityAreaInfo(RelationshipControl.GenericEditNdTypeArea);
+            }
+        }
+
+        public void ShowSearchView(bool fromDataView)
+        {
+            if (LastTemporaryView != null)
+                LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.ViewEntityArea.ViewView);
+            RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.ShowSearchView(fromDataView);
+        }
     }
 }

@@ -24,13 +24,13 @@ namespace MyUILibrary.EntityArea
         void SearchInitialy();
         I_SearchEntityArea SearchEntityArea { set; get; }
         I_ViewEntityArea ViewEntityArea { set; get; }
-        bool IsCalledFromDataView { get; set; }
+    //    bool IsCalledFromDataView { get; set; }
         bool SearchInitialyDone { get; set; }
 
         //void SearchAsComboBox();
 
         void SearchConfirmed(DP_SearchRepository searchItems, bool select);
-        void ShowTemporarySearchView();
+        void ShowSearchView(bool fromDataView);
         void SelectFromParent(bool isCalledFromDataView, RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, string> colAndValues);
         void SearchTextBox(string text);
         void RemoveViewEntityAreaView();

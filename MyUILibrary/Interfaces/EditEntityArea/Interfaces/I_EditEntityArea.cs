@@ -51,7 +51,7 @@ namespace MyUILibrary.EntityArea
         //event EventHandler<DataUpdatedArg> Updated;
         TableDrivedEntityDTO FullEntity { get; }
         //void ReadonlySimpleColumnControl(SimpleColumnControl column, bool readonlity);
-        void DecideButtonsEnablity1();
+      //  void DecideButtonsEnablity1();
         //    void AddDataBusinessMessage(string message, InfoColor infoColor, string key, DP_FormDataRepository causingData, ControlItemPriority priority);
         //   void RemoveDataBusinessMessage(DP_FormDataRepository dataItem, string key);
         TableDrivedEntityDTO SimpleEntity { set; get; }
@@ -61,9 +61,9 @@ namespace MyUILibrary.EntityArea
 
         event EventHandler<DisableEnableChangedArg> DisableEnableChanged;
         //event EventHandler<DisableEnableCommandByTypeChangedArg> DisableEnableCommandByTypeChanged;
-        TemporaryLinkState TemporaryLinkState { get; }
+    //    TemporaryLinkState TemporaryLinkState { get; }
         I_View_TemporaryView TemporaryDisplayView { set; get; }
-        void SetTempText(ObservableCollection<DP_FormDataRepository> relatedData);
+        void SetTempText();
         List<EntityStateDTO> EntityStates1 { get; }
         //   List<EntityStateGroupDTO> EntityStateGroups { get; }
         //I_View_SearchEntityArea SearchView { set; get; }
@@ -76,8 +76,8 @@ namespace MyUILibrary.EntityArea
         I_DataListReportAreaContainer DataListReportAreaContainer { set; get; }
         I_EntityLettersArea EntityLettersArea { set; get; }
         //I_ViewEntityArea ViewEntityArea { set; get; }
-        void ShowDataFromExternalSource(DP_DataView dataRepository = null);
-        void ShowDataFromExternalSource(List<DP_DataView> specificDate);
+        void ShowDataFromExternalSource(DP_BaseData dataRepository = null);
+        void ShowDataFromExternalSource(List<DP_BaseData> specificDate);
         //List<I_EntityAreaCommand> Commands
         //{
         //    get;
@@ -147,7 +147,7 @@ namespace MyUILibrary.EntityArea
         //void ClearTemporaryLinkTitle();
         //void ShowTemporaryDataView(DP_FormDataRepository parenttData);
 
-        void ShowTemporarySearchView(bool fromDataView);
+        void ShowSearchView(bool fromDataView);
 
         //   void DataSelected(List<DP_FormDataRepository> selectedData, I_ViewEntityArea packageArea);
 
@@ -296,8 +296,8 @@ namespace MyUILibrary.EntityArea
         //void GenerateUIComposition(List<EntityUICompositionDTO> UICompositions);
         event EventHandler<EditAreaDataItemArg> DataItemRemoved;
         void RemoveDataContainers();
-        void RemoveData(List<DP_FormDataRepository> datas, bool fromDataView);
-        void RemoveData(DP_FormDataRepository data, bool fromDataView);
+        void RemoveData(List<DP_FormDataRepository> datas);
+   //     void RemoveData(DP_FormDataRepository data);
       
   //      bool ShowDatasInDataView(List<DP_FormDataRepository> dataItems);
 
@@ -826,6 +826,8 @@ namespace MyUILibrary.EntityArea
         //     I_UIElementManager GetDataViewUIElement();
         I_View_TemporaryView GetView(object dataItem);
         //I_View_TemporaryView GetTemporaryView(object dataItem);
+
+   //     event EventHandler<Arg_MultipleTemporaryDisplayViewRequested> TemporaryViewRequested;
     }
     //public class UIControlPackageForRelationshipColumn
     //{
@@ -945,18 +947,18 @@ namespace MyUILibrary.EntityArea
     }
     public abstract class RelationshipColumnControlGeneral : BaseColumnControl
     {
-        public event EventHandler<ChildRelationshipInfo> DataViewForTemporaryViewShown;
+        //public event EventHandler<ChildRelationshipInfo> DataViewForTemporaryViewShown;
         public I_EditEntityArea ParentEditArea { set; get; }
         public RelationshipDTO Relationship { get { return DataEntryRelationship.Relationship; } }
         //    public List<ColumnDTO> RelationshipColumns { set; get; }
         public DataEntryRelationshipDTO DataEntryRelationship { set; get; }
         public I_EditEntityArea GenericEditNdTypeArea { set; get; }
 
-        public void OnDataViewForTemporaryViewShown(ChildRelationshipInfo ChildRelationshipInfo)
-        {
-            if (DataViewForTemporaryViewShown != null)
-                DataViewForTemporaryViewShown(this, ChildRelationshipInfo);
-        }
+        //public void OnDataViewForTemporaryViewShown(ChildRelationshipInfo ChildRelationshipInfo)
+        //{
+        //    if (DataViewForTemporaryViewShown != null)
+        //        DataViewForTemporaryViewShown(this, ChildRelationshipInfo);
+        //}
         //   public I_RelationshipControlManagerGeneral RelationshipControlManagerGeneral { set; get; }
     }
     public class RelationshipColumnControlOne : RelationshipColumnControlGeneral

@@ -66,14 +66,13 @@ namespace MyUILibrary.EntityArea
 
         //}
 
-        private void ViewEntityArea_DataSelected(object sender, DataSelectedEventArg e)
+        private void ViewEntityArea_DataSelected(object sender, DataViewDataSelectedEventArg e)
         {
-
             if (DataSelected != null)
             {
                 if (View.HaseViewAreaView)
                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(View);
-                DataSelected(this, new DataSelectedEventArg() { DataItem = e.DataItem });
+                DataSelected(this, new DataSelectedEventArg(e.DataItem, IsCalledFromDataView));
             }
         }
 
@@ -150,7 +149,7 @@ namespace MyUILibrary.EntityArea
                     {
                         if (DataSelected != null)
                         {
-                            DataSelected(this, new DataSelectedEventArg() { DataItem = result.ResultDataItems });
+                            DataSelected(this, new DataSelectedEventArg(result.ResultDataItems, IsCalledFromDataView));
                         }
                     }
                 }
@@ -229,7 +228,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        public bool IsCalledFromDataView
+        private bool IsCalledFromDataView
         {
             set; get;
         }
@@ -239,7 +238,7 @@ namespace MyUILibrary.EntityArea
         public event EventHandler<DataSelectedEventArg> DataSelected;
 
         public bool SearchInitialyDone { get; set; }
-        public void ShowTemporarySearchView()
+        public void ShowSearchView(bool fromDataView)
         {
             //CalculateFilterValues();
             //bool filtersChanged = false;
@@ -264,7 +263,7 @@ namespace MyUILibrary.EntityArea
             //            sarchInitially = false;
             //    }
             //}
-
+            IsCalledFromDataView = fromDataView;
             View.RemoveViewAreaView(ViewEntityArea.ViewView);
             if (!View.HaseViewAreaView)
                 View.AddViewAreaView(ViewEntityArea.ViewView);

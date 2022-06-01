@@ -18,7 +18,7 @@ namespace MyUILibrary.EntityArea.Commands
             //if (AgentHelper.GetAppMode() == AppMode.Paper)
             //    CommandManager.SetTitle("Remove");
             //else
-                CommandManager.SetTitle("حذف");
+            CommandManager.SetTitle("حذف");
             CommandManager.ImagePath = "Images//remove.png";
             CommandManager.Clicked += CommandManager_Clicked;
         }
@@ -34,14 +34,21 @@ namespace MyUILibrary.EntityArea.Commands
             //}
 
             //(EditArea as I_EditEntityAreaMultipleData).RemoveSelectedData();
-            var datas = EditArea.GetSelectedData();
-            EditArea.RemoveData(datas, true);
-
+            if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
+            {
+                var datas = EditArea.GetSelectedData();
+                EditArea.RemoveData(datas);
+            }
+            else
+            {
+                var datas = EditArea.GetSelectedData();
+                EditArea.ChildRelationshipInfoBinded.RemoveRelatedData(datas);
+            }
 
         }
 
 
-      
+
 
 
     }

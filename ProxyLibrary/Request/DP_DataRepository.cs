@@ -83,7 +83,7 @@ namespace ProxyLibrary
         {
             Properties.Clear();
         }
-      
+
         public EntityListViewDTO EntityListView { set; get; }
         public void SetProperties(List<EntityInstanceProperty> list)
         {
@@ -95,7 +95,7 @@ namespace ProxyLibrary
 
         //public int TargetEntityID;
         //public bool Edited { set; get; }
-     //   public bool RecentlyEdited { set; get; }
+        //   public bool RecentlyEdited { set; get; }
         public List<EntityInstanceProperty> OriginalProperties;
 
         public string ViewInfo
@@ -404,9 +404,9 @@ namespace ProxyLibrary
             EntityInstanceProperty property = new ProxyLibrary.EntityInstanceProperty(currrentProperty.Column);
             //property.Name = currrentProperty.Name;
             property.Value = currrentProperty.Value;
-        //    property.IsHidden = currrentProperty.IsHidden;
+            //    property.IsHidden = currrentProperty.IsHidden;
             property.ISFK = currrentProperty.ISFK;
-      //      property.IsReadonlyFromState = currrentProperty.IsReadonlyFromState;
+            //      property.IsReadonlyFromState = currrentProperty.IsReadonlyFromState;
             property.PropertyValueChanged += Property_PropertyValueChanged;
             property.FormulaID = currrentProperty.FormulaID;
             property.FormulaException = currrentProperty.FormulaException;
@@ -504,8 +504,8 @@ namespace ProxyLibrary
 
         public string Error { get; set; }
         public ParentRelationshipData ParantChildRelationshipData { get; set; }
-    //    public bool ShouldWriteSimpleColumnsQuery { get; set; }
-     //   public bool ISValid { get; set; }
+        //    public bool ShouldWriteSimpleColumnsQuery { get; set; }
+        //   public bool ISValid { get; set; }
 
         //bool _HasDirectData;
         //public bool HasDirectData
@@ -533,11 +533,12 @@ namespace ProxyLibrary
         //}
 
         //باید تو این شرط زیر هم چک شود
-         //!item.KeyProperties.All(y => OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value))
-         //که اگر داده دوباره انتخاب شد
+        //!item.KeyProperties.All(y => OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value))
+        //که اگر داده دوباره انتخاب شد
+
         public bool IsDBRelationship { get; set; }
-     //   public bool IsEmptyOneDirectData { get; set; }
-      //  public bool? DataOrRelatedDataIsChanged { get; set; }
+        //   public bool IsEmptyOneDirectData { get; set; }
+        //  public bool? DataOrRelatedDataIsChanged { get; set; }
         //public bool RelationshipIsRemoved { get
 
         //    {
@@ -545,12 +546,12 @@ namespace ProxyLibrary
         //    }
         //}
 
-        
+
         //public bool RelationshipIsAdded { get;  }
         public bool IsEdited { get; set; }
-      //  public bool IsReadonlyBecauseOfState { get; set; }
-     //   public bool IsReadonlyBecauseOfCreatorRelationshipOnState { get; set; }
-     //   public bool IsReadonlyBecauseOfCreatorRelationshipOnShow { set; get; }
+        //  public bool IsReadonlyBecauseOfState { get; set; }
+        //   public bool IsReadonlyBecauseOfCreatorRelationshipOnState { get; set; }
+        //   public bool IsReadonlyBecauseOfCreatorRelationshipOnShow { set; get; }
 
         //public bool IsReadonlySomeHow
         //{
@@ -579,7 +580,7 @@ namespace ProxyLibrary
         //    }
         //}
 
-    //    public bool IsUseLessBecauseNewAndReadonly { get; set; }
+        //    public bool IsUseLessBecauseNewAndReadonly { get; set; }
 
         //public bool IsHiddenBecauseOfCreatorRelationshipOnShow { set; get; }
         //public bool IsHidden
@@ -590,7 +591,7 @@ namespace ProxyLibrary
         //    }
         //}
 
-       // List<ChangeMonitor> ChangeMonitorItems = new List<ChangeMonitor>();
+        // List<ChangeMonitor> ChangeMonitorItems = new List<ChangeMonitor>();
 
 
         //public bool ShouldWriteUpdateQuery { get; set; }
@@ -836,7 +837,7 @@ namespace ProxyLibrary
         //public int ListViewColumnID { set; get; }
         public string RelationshipIDTailPath { get; set; }
         public bool HasForeignKeyData { get; set; }
-     
+
         public bool ISFK { get; set; }
         public EntityListViewColumnsDTO ListViewColumn { get; set; }
         //public int EntityListViewColumnsID { get; set; }
@@ -988,7 +989,7 @@ namespace ProxyLibrary
     //    public int ChangingColumnID { set; get; }
     //}
 
-    
+
 
 
     //public class RelatedDataTailChangedArg : EventArgs
@@ -1018,7 +1019,7 @@ namespace ProxyLibrary
             OriginalRelatedData = new ObservableCollection<ProxyLibrary.DP_DataRepository>();
             RemovedDataForUpdate = new ObservableCollection<ProxyLibrary.DP_DataRepository>();
             //RemovedItems = new List<ProxyLibrary.DP_DataRepository>();
-           // ReadonlyStateFromTails = new List<string>();
+            // ReadonlyStateFromTails = new List<string>();
         }
 
 
@@ -1097,7 +1098,7 @@ namespace ProxyLibrary
         //}
         public bool RelationshipIsChangedForUpdate
         {
-            set;get;
+            set; get;
         }
         //public List<DP_DataRepository> GetRelatedData(int relationshipID)
         //{
@@ -1157,7 +1158,7 @@ namespace ProxyLibrary
         //}
         public RelationshipDTO Relationship { set; get; }
 
-      public ObservableCollection<DP_DataRepository> RemovedDataForUpdate { set; get; }
+        public ObservableCollection<DP_DataRepository> RemovedDataForUpdate { set; get; }
         public ObservableCollection<DP_DataRepository> RelatedData { set; get; }
         //public ObservableCollection<DP_DataRepository> RealData
         //{
@@ -1188,7 +1189,7 @@ namespace ProxyLibrary
         //    }
         //}
 
-       // public bool SecurityIssue { get; set; }
+        // public bool SecurityIssue { get; set; }
         public ObservableCollection<DP_DataRepository> OriginalRelatedData { get; private set; }
         //public List<DP_DataRepository> RemovedOriginalDatas
         //{
@@ -1197,14 +1198,14 @@ namespace ProxyLibrary
         //        return OriginalRelatedData.Where(x => !x.KeyProperties.All(y => RelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value.Equals(y.Value))))).ToList();
         //    }
         //}
-    //    public List<string> ReadonlyStateFromTails { set; get; }
-     //   public bool IsHidden { get; set; }
+        //    public List<string> ReadonlyStateFromTails { set; get; }
+        //   public bool IsHidden { get; set; }
 
         //میشه ریدونلی بودن ریلیشنشیپ رو هم داخل این گذاشت یا لازم نیست؟
-    //    public bool IsReadonly { get; set; }
+        //    public bool IsReadonly { get; set; }
         //این باید خود رابطه را چک کنه همچنین اینکه رابطه کریتورش فقط خواندنی هست یا نه؟ خود موجودیت طرفین هم فکر بشه
 
-       // List<ChangeMonitor> ChangeMonitorItems = new List<ChangeMonitor>();
+        // List<ChangeMonitor> ChangeMonitorItems = new List<ChangeMonitor>();
 
         //اینجا وظیفه چک کردن هم داده ها و هم ستونهای داده را دارد
         //internal void AddChangeMonitor(string generalKey, string usageKey, string restTail, int columnID, DP_DataRepository dataToCall)
@@ -1293,7 +1294,7 @@ namespace ProxyLibrary
     public class ParentRelationshipData
 
     {
-        public ParentRelationshipData(ChildRelationshipData parantChildRelationshipdata )
+        public ParentRelationshipData(ChildRelationshipData parantChildRelationshipdata)
         {
             ParantChildRelationshipData = parantChildRelationshipdata;
         }
@@ -1301,8 +1302,8 @@ namespace ProxyLibrary
         public int RelationshipID { get { return ParantChildRelationshipData.Relationship.PairRelationshipID; } }
         public RelationshipDTO ToRelationship { get { return ParantChildRelationshipData.Relationship.PairRelationship; } }
         public DP_DataRepository SourceData { get { return ParantChildRelationshipData.SourceData; } }
-     //   public bool IsHidden { get; set; }
-     //   public bool IsReadonly { get; set; }
+        //   public bool IsHidden { get; set; }
+        //   public bool IsReadonly { get; set; }
         public bool IsAdded { get; set; }
     }
 

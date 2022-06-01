@@ -32,38 +32,22 @@ namespace MyUILibrary.EntityArea
             //SimpleColumnControls = new List<SimpleColumnControl>();
             //RelationshipColumnControls = new List<RelationshipColumnControl>();
         }
-        public void RemoveData(List<DP_FormDataRepository> datas, bool fromDataView)
+        public void RemoveData(List<DP_FormDataRepository> datas)
         {
-            //DataChangedFromDataView = fromDataView;
-            if (AreaInitializer.SourceRelationColumnControl == null)
+            foreach (var data in datas)
             {
-                foreach (var item in datas)
-                    RemoveData(item, true);
-            }
-            else
-            {
-                var removeList = datas.Where(x => x.IsNewItem);
-                foreach (var item in removeList)
-                    RemoveData(item, true);
-
-                var clearIsOk = CheckRemoveData(datas);
-
-                if (clearIsOk)
-                {
-                    var existingdatas = datas.Where(x => x.IsDBRelationship);
-                    foreach (var item in existingdatas)
-                    {
-                        //if (ChildRelationshipInfo != null)
-                        //{
-                        //    //SetRemovedItem(ChildRelationshipInfo, item, shouldDeleteFromDB);
-                        //}
-                        RemoveData(item, true);
-                    }
-                }
-
+                GetDataList().Remove(data);
+                RemoveDataContainer(data);
             }
 
+            bool isDirect = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
+                    AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
+            if (!isDirect)
+                SetTempText();
+
+            DecideButtonsEnablity1();
         }
+       
         //private void View_ButtonClicked(object sender, ConfirmModeClickedArg e, List<DP_FormDataRepository> deleteDataList)
         //{
         //    I_ViewDeleteInquiry view = sender as I_ViewDeleteInquiry;
@@ -87,13 +71,7 @@ namespace MyUILibrary.EntityArea
         //        }
         //    }
         //}
-        public void RemoveData(DP_FormDataRepository data, bool fromDataView)
-        {
-            //DataChangedFromDataView = fromDataView;
-            GetDataList().Remove(data);
-            RemoveDataContainer(data);
 
-        }
 
         //public override bool AddData(DP_FormDataRepository data, bool showDataInDataView)
         //{

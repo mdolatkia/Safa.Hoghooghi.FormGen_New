@@ -389,7 +389,7 @@ namespace MyUILibrary.EntityArea
         //}
 
         public event EventHandler<Arg_PackageSelected> DataPackageSelected;
-        public event EventHandler<DataSelectedEventArg> DataSelected;
+        public event EventHandler<DataViewDataSelectedEventArg> DataSelected;
 
 
 
@@ -719,9 +719,8 @@ namespace MyUILibrary.EntityArea
 
         public void OnDataSelected(List<DP_DataView> dataItems)
         {
-
             if (DataSelected != null)
-                DataSelected(this, new EntityArea.DataSelectedEventArg() { DataItem = dataItems });
+                DataSelected(this, new DataViewDataSelectedEventArg(dataItems));
 
         }
     }

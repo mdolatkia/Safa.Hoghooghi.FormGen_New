@@ -8,11 +8,11 @@ namespace MyUILibrary.EntityArea
 {
     public interface I_ViewEntityArea
     {
-        event EventHandler<DataSelectedEventArg> DataSelected;
+        event EventHandler<DataViewDataSelectedEventArg> DataSelected;
         ViewEntityAreaInitializer ViewInitializer { set; get; }
         List<SimpleViewColumnControl> ViewColumnControls { set; get; }
         I_View_ViewEntityArea ViewView { set; get; }
-        EntityListViewDTO EntityListView {  get; }
+        EntityListViewDTO EntityListView { get; }
         List<I_ViewAreaCommand> ViewCommands
         {
             get;
@@ -28,14 +28,23 @@ namespace MyUILibrary.EntityArea
     }
     public class DataSelectedEventArg : EventArgs
     {
-        public DataSelectedEventArg()
+        public DataSelectedEventArg(List<DP_DataView> dataItem, bool fromDataView )
         {
-            DataItem = new List<DP_DataView>();
+            DataItem = dataItem;
+            FromDataView = fromDataView;
         }
         public List<DP_DataView> DataItem { set; get; }
-        //public bool FromDataView { set; get; }
+        public bool FromDataView { set; get; }
     }
 
+    public class DataViewDataSelectedEventArg : EventArgs
+    {
+        public DataViewDataSelectedEventArg(List<DP_DataView> dataItem)
+        {
+            DataItem = dataItem;
+        }
+        public List<DP_DataView> DataItem { set; get; }
+    }
     public class SimpleViewColumnControl : BaseColumnControl
     {
         //public event EventHandler<ColumnValueChangeArg> ValueChanged;

@@ -101,50 +101,58 @@ namespace MyUILibrary.EntityArea.Commands
                 if (reuslt.Result == Enum_DR_ResultType.SeccessfullyDone
                     || reuslt.Result == Enum_DR_ResultType.JustMajorFunctionDone)
                 {
-                    DP_SearchRepository searchDataItem = new DP_SearchRepository(EditArea.AreaInitializer.EntityID);
-                    foreach (var item in reuslt.UpdatedItems)
-                    {
-                        var listProperties = new List<EntityInstanceProperty>();
-                        LogicPhraseDTO logicPhrase = new LogicPhraseDTO();
-                        foreach (var keyProperty in item.KeyProperties)
-                            logicPhrase.Phrases.Add(new SearchProperty() { ColumnID = keyProperty.ColumnID, Value = keyProperty.Value });
-                        searchDataItem.AndOrType = AndOREqualType.Or;
-                        searchDataItem.Phrases.Add(logicPhrase);
-                    }
-                    ///   var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem, EditArea.AreaInitializer.SecurityReadOnly, true);
-                    var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem);
-                    var results = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit);
-                    if (results.ResultDataItems.Count > 0)
-                    {
-                        //if (EditArea is I_EditEntityAreaOneData)
-                        //{
-                        //    (EditArea as I_EditEntityAreaOneData).ClearData(false);
+                    //List<DP_DataView> list = new List<DP_DataView>();
+                    //foreach (var item in reuslt.UpdatedItems)
+                    //{
+                    //    list.Add(new DP_DataView() { })
+                    //}
+                    EditArea.ClearData();
+                    EditArea.ShowDataFromExternalSource(reuslt.UpdatedItems);
 
-                        //    var data = results.ResultDataItems[0];
-                        //    data.DataView = EditArea.AreaInitializer.EditAreaDataManager.GetDataView(data);
-                        //    DP_FormDataRepository orgData = new DP_FormDataRepository(data, EditArea);
-                        //    var addResult = (EditArea as I_EditEntityAreaOneData).AddData(orgData, true);
-                        //    if (!addResult)
-                        //        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", results.ResultDataItems[0].ViewInfo, Temp.InfoColor.Red);
-                        //}
-                        //else if (EditArea is I_EditEntityAreaMultipleData)
-                        //{
-                        EditArea.ClearData();
-                        foreach (var data in results.ResultDataItems)
-                        {
-                            data.DataView = EditArea.AreaInitializer.EditAreaDataManager.GetDataView(data);
-                            DP_FormDataRepository orgData = new DP_FormDataRepository(data, EditArea);
-                            var addResult = (EditArea as I_EditEntityAreaMultipleData).AddData(orgData);
-                            if (!addResult)
-                                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", results.ResultDataItems[0].ViewInfo, Temp.InfoColor.Red);
-                        }
-                        //}
-                    }
-                    else
-                    {
-                        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", "", Temp.InfoColor.Red);
-                        EditArea.ClearData();
-                    }
+                    //DP_SearchRepository searchDataItem = new DP_SearchRepository(EditArea.AreaInitializer.EntityID);
+                    //foreach (var item in reuslt.UpdatedItems)
+                    //{
+                    //    var listProperties = new List<EntityInstanceProperty>();
+                    //    LogicPhraseDTO logicPhrase = new LogicPhraseDTO();
+                    //    foreach (var keyProperty in item.KeyProperties)
+                    //        logicPhrase.Phrases.Add(new SearchProperty() { ColumnID = keyProperty.ColumnID, Value = keyProperty.Value });
+                    //    searchDataItem.AndOrType = AndOREqualType.Or;
+                    //    searchDataItem.Phrases.Add(logicPhrase);
+                    //}
+                    /////   var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem, EditArea.AreaInitializer.SecurityReadOnly, true);
+                    //var requestSearchEdit = new DR_SearchEditRequest(requester, searchDataItem);
+                    //var results = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit);
+                    //if (results.ResultDataItems.Count > 0)
+                    //{
+                    //    //if (EditArea is I_EditEntityAreaOneData)
+                    //    //{
+                    //    //    (EditArea as I_EditEntityAreaOneData).ClearData(false);
+
+                    //    //    var data = results.ResultDataItems[0];
+                    //    //    data.DataView = EditArea.AreaInitializer.EditAreaDataManager.GetDataView(data);
+                    //    //    DP_FormDataRepository orgData = new DP_FormDataRepository(data, EditArea);
+                    //    //    var addResult = (EditArea as I_EditEntityAreaOneData).AddData(orgData, true);
+                    //    //    if (!addResult)
+                    //    //        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", results.ResultDataItems[0].ViewInfo, Temp.InfoColor.Red);
+                    //    //}
+                    //    //else if (EditArea is I_EditEntityAreaMultipleData)
+                    //    //{
+                    //    EditArea.ClearData();
+                    //    foreach (var data in results.ResultDataItems)
+                    //    {
+                    //        data.DataView = EditArea.AreaInitializer.EditAreaDataManager.GetDataView(data);
+                    //        DP_FormDataRepository orgData = new DP_FormDataRepository(data, EditArea, false, false);
+                    //        var addResult = (EditArea as I_EditEntityAreaMultipleData).AddData(orgData);
+                    //        if (!addResult)
+                    //            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", results.ResultDataItems[0].ViewInfo, Temp.InfoColor.Red);
+                    //    }
+                    //}
+                    //}
+                    //else
+                    //{
+                    //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", "", Temp.InfoColor.Red);
+                    //    EditArea.ClearData();
+                    //}
                 }
             }
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(sender);

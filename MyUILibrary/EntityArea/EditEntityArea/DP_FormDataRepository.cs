@@ -22,18 +22,21 @@ namespace MyUILibrary.EntityArea
         public List<ControlStateItem> ParentRelationshipHiddenStateItems = new List<ControlStateItem>();
         public I_EditEntityArea EditEntityArea { set; get; }
         //      public Dictionary<int, List<ColumnValueRangeDetailsDTO>> ColumnKeyValueRanges = new Dictionary<int, List<ColumnValueRangeDetailsDTO>>();
-        public DP_FormDataRepository(DP_DataRepository baseData, I_EditEntityArea editEntityArea) : base(baseData.TargetEntityID, baseData.TargetEntityAlias)
+
+        public DP_FormDataRepository(DP_DataView baseData, I_EditEntityArea editEntityArea, bool isDBRelationship, bool isNewItem) : base(baseData.TargetEntityID, baseData.TargetEntityAlias)
         {
             base.PropertyValueChanged += DP_FormDataRepository_PropertyValueChanged;
 
             _TargetEntityID = baseData.TargetEntityID;
             _TargetEntityAlias = baseData.TargetEntityAlias;
             Properties = baseData.Properties;
-            DataView = baseData.DataView;
+            DataView = baseData;
             GUID = baseData.GUID;
-            IsFullData = baseData.IsFullData;
-            IsNewItem = baseData.IsNewItem;
-            IsDBRelationship = baseData.IsDBRelationship;
+            IsNewItem = isNewItem;
+            IsDBRelationship = isDBRelationship;
+            //     IsFullData = baseData.IsFullData;
+            //       IsNewItem = baseData.IsNewItem;
+            //         IsDBRelationship = baseData.IsDBRelationship;
 
             //if (childRelationshipInfo != null)
             //    ParantChildRelationshipInfo = new ParentRelationshipInfo(childRelationshipInfo);
@@ -50,48 +53,93 @@ namespace MyUILibrary.EntityArea
             ChildSimpleContorlProperties = new List<ChildSimpleContorlProperty>();
             ChangeMonitorItems = new List<ChangeMonitor>();
 
-            foreach (var simpleColumn in editEntityArea.SimpleColumnControls)
-            {
-                //var childProperty = ChildSimpleContorlProperties.FirstOrDefault(x => x.SimpleColumnControl == simpleColumnControl);
-                //if (childProperty == null)
-                //{
-                //    childProperty = new ChildSimpleContorlProperty(simpleColumnControl, this, property);
-                //    ChildSimpleContorlProperties.Add(childProperty);
-                //}
-
-                //childProperty.Binded();
-
-                var property = baseData.Properties.FirstOrDefault(x => x.ColumnID == simpleColumn.Column.ID);
-                if (property != null)
-                    ChildSimpleContorlProperties.Add(new ChildSimpleContorlProperty(simpleColumn, this, property));
-            }
-
-            foreach (var relationshipColumnControl in editEntityArea.RelationshipColumnControls)
-            {
-                //var childProperty = ChildSimpleContorlProperties.FirstOrDefault(x => x.SimpleColumnControl == simpleColumnControl);
-                //if (childProperty == null)
-                //{
-                //    childProperty = new ChildSimpleContorlProperty(simpleColumnControl, this, property);
-                //    ChildSimpleContorlProperties.Add(childProperty);
-                //}
-
-                //childProperty.Binded();
-
-                var childRelationshipInfo = new ChildRelationshipInfo(relationshipColumnControl, this);
-                ChildRelationshipInfos.Add(childRelationshipInfo);
-                CheckChildRelationshipInfoChangeMonitor();
-                //  return childRelationshipInfo;
-
-                //var property = baseData.Properties.FirstOrDefault(x => x.ColumnID == simpleColumn.Column.ID);
-                //if (property != null)
-                //    ChildSimpleContorlProperties.Add(new ChildSimpleContorlProperty(simpleColumn, this, property));
-            }
+            //   SetProperties();
             //StateIds = new List<int>();
             // this.IsReadonlyBecauseOfStateChanged += DP_FormDataRepository_IsReadonlyBecauseOfStateChanged;
             //    GUID = Guid.NewGuid();
 
             //    DataTypes = new List<DP_FormDataRepository>();
             //ViewEntityProperties = new List<Tuple<int, List<ProxyLibrary.EntityInstanceProperty>>>();
+        }
+
+        public DP_FormDataRepository(DP_DataRepository baseData, I_EditEntityArea editEntityArea, bool isDBRelationship, bool isNewItem) : base(baseData.TargetEntityID, baseData.TargetEntityAlias)
+        {
+            base.PropertyValueChanged += DP_FormDataRepository_PropertyValueChanged;
+
+            _TargetEntityID = baseData.TargetEntityID;
+            _TargetEntityAlias = baseData.TargetEntityAlias;
+            Properties = baseData.Properties;
+            DataView = baseData.DataView;
+            GUID = baseData.GUID;
+            IsFullData = true;
+            IsNewItem = isNewItem;
+            IsDBRelationship = isDBRelationship;
+
+            //if (childRelationshipInfo != null)
+            //    ParantChildRelationshipInfo = new ParentRelationshipInfo(childRelationshipInfo);
+
+
+            EditEntityArea = editEntityArea;
+
+            OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
+            //SourceRelatedData = new List<DP_FormDataRepository>();
+            //DataInstance = new EntityInstance();
+            //DataInstance.Properties = new List<EntityInstanceProperty>();
+            //RelationshipColumns = new List<ModelEntites.RelationshipColumnDTO>();
+            ChildRelationshipInfos = new List<ChildRelationshipInfo>();
+            ChildSimpleContorlProperties = new List<ChildSimpleContorlProperty>();
+            ChangeMonitorItems = new List<ChangeMonitor>();
+
+            SetProperties();
+            //StateIds = new List<int>();
+            // this.IsReadonlyBecauseOfStateChanged += DP_FormDataRepository_IsReadonlyBecauseOfStateChanged;
+            //    GUID = Guid.NewGuid();
+
+            //    DataTypes = new List<DP_FormDataRepository>();
+            //ViewEntityProperties = new List<Tuple<int, List<ProxyLibrary.EntityInstanceProperty>>>();
+        }
+
+        public void SetProperties()
+        {
+            if (IsFullData)
+            {
+                foreach (var simpleColumn in EditEntityArea.SimpleColumnControls)
+                {
+                    //var childProperty = ChildSimpleContorlProperties.FirstOrDefault(x => x.SimpleColumnControl == simpleColumnControl);
+                    //if (childProperty == null)
+                    //{
+                    //    childProperty = new ChildSimpleContorlProperty(simpleColumnControl, this, property);
+                    //    ChildSimpleContorlProperties.Add(childProperty);
+                    //}
+
+                    //childProperty.Binded();
+
+                    var property = Properties.FirstOrDefault(x => x.ColumnID == simpleColumn.Column.ID);
+                    if (property != null)
+                        ChildSimpleContorlProperties.Add(new ChildSimpleContorlProperty(simpleColumn, this, property));
+                }
+
+                foreach (var relationshipColumnControl in EditEntityArea.RelationshipColumnControls)
+                {
+                    //var childProperty = ChildSimpleContorlProperties.FirstOrDefault(x => x.SimpleColumnControl == simpleColumnControl);
+                    //if (childProperty == null)
+                    //{
+                    //    childProperty = new ChildSimpleContorlProperty(simpleColumnControl, this, property);
+                    //    ChildSimpleContorlProperties.Add(childProperty);
+                    //}
+
+                    //childProperty.Binded();
+
+                    var childRelationshipInfo = new ChildRelationshipInfo(relationshipColumnControl, this);
+                    ChildRelationshipInfos.Add(childRelationshipInfo);
+                    CheckChildRelationshipInfoChangeMonitor();
+                    //  return childRelationshipInfo;
+
+                    //var property = baseData.Properties.FirstOrDefault(x => x.ColumnID == simpleColumn.Column.ID);
+                    //if (property != null)
+                    //    ChildSimpleContorlProperties.Add(new ChildSimpleContorlProperty(simpleColumn, this, property));
+                }
+            }
         }
 
         //private void DP_FormDataRepository_IsReadonlyBecauseOfStateChanged(object sender, EventArgs e)
@@ -556,7 +604,7 @@ namespace MyUILibrary.EntityArea
         //}
 
         public List<ChangeMonitor> ChangeMonitorItems { set; get; }
-        public bool FromDB { get; internal set; }
+        // public bool FromDB { get; internal set; }
 
 
         //public bool ShouldWriteUpdateQuery { get; set; }

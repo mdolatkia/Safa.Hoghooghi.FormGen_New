@@ -18,18 +18,23 @@ namespace MyUILibrary.EntityArea.Commands
             //if (AgentHelper.GetAppMode() == AppMode.Paper)
             //    CommandManager.SetTitle("Search");
             //else
-                CommandManager.SetTitle("جستجو");
+            CommandManager.SetTitle("جستجو");
             CommandManager.ImagePath = "Images//search.png";
             CommandManager.Clicked += CommandManager_Clicked;
         }
 
         private void CommandManager_Clicked(object sender, EventArgs e)
         {
-            if (EditArea.SearchViewEntityArea != null)
-            {
-                //AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(packageArea.SearchViewEntityArea.View, packageArea.AreaInitializer.Title);
-                EditArea.ShowTemporarySearchView(true);
-            }
+
+            //if (EditArea.SearchViewEntityArea != null)
+            //{
+            //AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(packageArea.SearchViewEntityArea.View, packageArea.AreaInitializer.Title);
+            if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
+                EditArea.ShowSearchView(true);
+            else
+                EditArea.ChildRelationshipInfoBinded.ShowSearchView(true);
+
+            // }
         }
 
     }

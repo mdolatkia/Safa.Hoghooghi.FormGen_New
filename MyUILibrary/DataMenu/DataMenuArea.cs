@@ -96,7 +96,7 @@ namespace MyUILibrary.DataMenuArea
                 //}
                 else if (dataMenu.Type == DataMenuType.Form)
                 {
-                    AgentUICoreMediator.GetAgentUICoreMediator.ShowEditEntityArea(dataMenu.DataItem.TargetEntityID, true, CommonDefinitions.UISettings.DataMode.None, new List<DP_DataView>() { dataMenu.DataItem });
+                    AgentUICoreMediator.GetAgentUICoreMediator.ShowEditEntityArea(dataMenu.DataItem.TargetEntityID, true, CommonDefinitions.UISettings.DataMode.None, new List<DP_BaseData>() { dataMenu.DataItem });
                 }
                 else if (dataMenu.Type == DataMenuType.Letter)
                 {

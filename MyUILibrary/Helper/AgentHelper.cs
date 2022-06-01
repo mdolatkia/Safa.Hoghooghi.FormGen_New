@@ -10,6 +10,7 @@ using ProxyLibrary;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -505,7 +506,7 @@ namespace MyUILibrary
                 }
             }
 
-            var result = new DP_FormDataRepository(new DP_DataRepository(editEntityArea.AreaInitializer.EntityID, editEntityArea.SimpleEntity.Alias), editEntityArea);
+            var result = new DP_FormDataRepository(new DP_DataRepository(editEntityArea.AreaInitializer.EntityID, editEntityArea.SimpleEntity.Alias), editEntityArea, false, true);
 
             if (editEntityArea.DataEntryEntity.IsReadonly
                || (editEntityArea.AreaInitializer.SourceRelationColumnControl != null && editEntityArea.AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly))
@@ -946,7 +947,13 @@ namespace MyUILibrary
             List<ColumnDTO> columnsSource = null;
             if (editArea.AreaInitializer.SourceRelationColumnControl != null)
                 columnsSource = editArea.AreaInitializer.SourceRelationColumnControl.ParentEditArea.EntityWithSimpleColumns.Columns;
-            foreach (var item in editArea.GetDataList().Take(100))
+
+            ObservableCollection<DP_FormDataRepository> dataList = null;
+            if (editArea.AreaInitializer.SourceRelationColumnControl != null)
+                dataList = editArea.ChildRelationshipInfoBinded.RelatedData;
+            else
+                dataList = editArea.GetDataList();
+            foreach (var item in dataList.Take(100))
             {
                 EditEntityAreaDataInfo rItem = new EditEntityAreaDataInfo();
                 rItem.ColumnWithValues = "";
