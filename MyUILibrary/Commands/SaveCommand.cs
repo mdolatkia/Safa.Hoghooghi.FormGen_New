@@ -168,7 +168,7 @@ namespace MyUILibrary.EntityArea.Commands
                 sourceList = parentChildRelationshipInfo.RelatedData.ToList();
             foreach (var dataItem in sourceList)
             {
-                foreach (var childRel in dataItem.ChildRelationshipInfos.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
+                foreach (var childRel in dataItem.ChildRelationshipDatas.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
                 {
                     foreach (var fkprop in childRel.Relationship.RelationshipColumns.Select(x => x.FirstSideColumnID))
                     {
@@ -186,7 +186,7 @@ namespace MyUILibrary.EntityArea.Commands
                             prop.ISFK = true;
                     }
                 }
-                foreach (var child in dataItem.ChildRelationshipInfos)
+                foreach (var child in dataItem.ChildRelationshipDatas)
                     SetFKProperties(child);
             }
         }
@@ -234,7 +234,7 @@ namespace MyUILibrary.EntityArea.Commands
             newItem.IsNewItem = item.IsNewItem;
             // newItem.ParantChildRelationshipInfo = newParentChildRelationshipInfo;
 
-            foreach (var childItem in item.ChildRelationshipInfos)
+            foreach (var childItem in item.ChildRelationshipDatas)
             {
                 //مطمئنن رابطه فارن به پرایمری هست وقتی که هیدن یا ریدونلی ترو باشه
                 // bool skipChildRel = false;
@@ -247,8 +247,7 @@ namespace MyUILibrary.EntityArea.Commands
                 //}
                 if (!childItem.IsHiddenOnState)
                 {
-                    var newChildItems = new ChildRelationshipData();
-                    newChildItems.Relationship = childItem.Relationship;
+                    var newChildItems = new ChildRelationshipData(childItem.SourceData, childItem.Relationship);
 
                     newChildItems.RelationshipDeleteOption = childItem.RelationshipDeleteOption;
                     foreach (var orginalData in childItem.OriginalRelatedData)
@@ -266,7 +265,7 @@ namespace MyUILibrary.EntityArea.Commands
                         //bool skipOriginalData = false;
 
                         //برای وقتی که شرط داده اجازه حذف میداده و داده حذف شده اما قبل از آپد یت دیگه شرط اجازه حذف را به علت هیدن یا ریدونلی بودن نمیده
-                        if ((orginalData.ParantChildRelationshipInfo != null && orginalData.ParantChildRelationshipInfo.IsHidden) || childItem.IsReadonlyOnState || orginalData.IsReadonlyOnState)
+                        if ((orginalData.ParantChildRelationshipData != null /*&& orginalData.ToParantChildRelationshipData.IsHidden*/) || childItem.IsReadonlyOnState)// || orginalData.IsReadonlyOnState)
                         {
                         }
                         else
@@ -314,7 +313,7 @@ namespace MyUILibrary.EntityArea.Commands
         //    throw new NotImplementedException();
         //}
 
-        private void RemoveUnwantedItems(ObservableCollection<DP_FormDataRepository> result)
+        private void RemoveUnwantedItems(List<DP_FormDataRepository> result)
         {
 
             //  SetDataOrRelatedDataIsChangedToNull(result);
@@ -334,7 +333,7 @@ namespace MyUILibrary.EntityArea.Commands
 
 
 
-        private void SetChangedProperties(ObservableCollection<DP_FormDataRepository> result)
+        private void SetChangedProperties(List<DP_FormDataRepository> result)
         {
             //foreach (var data in result)
             //{
@@ -343,13 +342,13 @@ namespace MyUILibrary.EntityArea.Commands
             //    {
             //        property.ValueIsChanged = data.PropertyValueIsChanged(property);
             //    }
-            //    foreach (var child in data.ChildRelationshipInfos)
+            //    foreach (var child in data.ChildRelationshipDatas)
             //    {
             //        SetChangedProperties(child.RelatedData);
             //    }
             //}
         }
-        private void SetDataOrRelatedDataIsChanged(ObservableCollection<DP_FormDataRepository> result)
+        private void SetDataOrRelatedDataIsChanged(List<DP_FormDataRepository> result)
         {
             foreach (var data in result)
             {
@@ -369,20 +368,20 @@ namespace MyUILibrary.EntityArea.Commands
                 {
                     if (data.GetProperties().Any(x => x.ValueIsChanged))
                         data.IsEdited = true;
-                    if (data.ChildRelationshipInfos.Any(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary
+                    if (data.ChildRelationshipDatas.Any(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary
                      && x.RelationshipIsChangedForUpdate))
                     {
                         data.IsEdited = true;
                     }
-                    if (data.ParantChildRelationshipInfo != null && data.ParantChildRelationshipInfo.ToRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary
+                    if (data.ParantChildRelationshipData != null && data.ParantChildRelationshipData.ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary
                    && !data.IsDBRelationship)
                     {
                         data.IsEdited = true;
                     }
                 }
-                if (data.IsEdited || data.ChildRelationshipInfos.Any(x => x.RelationshipIsChangedForUpdate))
+                if (data.IsEdited || data.ChildRelationshipDatas.Any(x => x.RelationshipIsChangedForUpdate))
                     data.DataOrRelatedDataIsChanged = true;
-                foreach (var child in data.ChildRelationshipInfos)
+                foreach (var child in data.ChildRelationshipDatas)
                 {
                     foreach (var childData in child.RelatedData)
                     {
@@ -397,7 +396,7 @@ namespace MyUILibrary.EntityArea.Commands
             }
         }
 
-        private void RemoveUnchangedProperties(ObservableCollection<DP_FormDataRepository> result)
+        private void RemoveUnchangedProperties(List<DP_FormDataRepository> result)
         {
             foreach (var data in result)
             {
@@ -413,7 +412,7 @@ namespace MyUILibrary.EntityArea.Commands
                         }
                     }
                 }
-                foreach (var child in data.ChildRelationshipInfos)
+                foreach (var child in data.ChildRelationshipDatas)
                 {
                     RemoveUnchangedProperties(child.RelatedData);
                 }
@@ -424,7 +423,7 @@ namespace MyUILibrary.EntityArea.Commands
             }
         }
 
-        private void RemoveAllUnchangedDatas(ObservableCollection<DP_FormDataRepository> result, ChildRelationshipInfo childRelationshipInfo)
+        private void RemoveAllUnchangedDatas(List<DP_FormDataRepository> result, ChildRelationshipInfo childRelationshipInfo)
         {
             List<DP_FormDataRepository> removeItems = new List<DP_FormDataRepository>();
 
@@ -448,7 +447,7 @@ namespace MyUILibrary.EntityArea.Commands
                     }
 
                 }
-                foreach (var child in data.ChildRelationshipInfos)
+                foreach (var child in data.ChildRelationshipDatas)
                 {
                     RemoveAllUnchangedDatas(child.RelatedData, child);
                 }
@@ -460,13 +459,13 @@ namespace MyUILibrary.EntityArea.Commands
             }
 
         }
-        private void RemoveAllUnChangedChildRelInfos(ObservableCollection<DP_FormDataRepository> result)
+        private void RemoveAllUnChangedChildRelInfos(List<DP_FormDataRepository> result)
         {
 
             foreach (var data in result)
             {
                 List<ChildRelationshipInfo> removeRels = new List<ChildRelationshipInfo>();
-                foreach (var child in data.ChildRelationshipInfos)
+                foreach (var child in data.ChildRelationshipDatas)
                 {
                     if (!child.RelatedData.Any() && !child.RelationshipIsChangedForUpdate)
                         removeRels.Add(child);
@@ -474,7 +473,7 @@ namespace MyUILibrary.EntityArea.Commands
                 }
                 foreach (var child in removeRels)
                 {
-                    data.ChildRelationshipInfos.Remove(child);
+                    data.ChildRelationshipDatas.Remove(child);
                     //این تیکه جدید اضافه شد
                     if (child.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary)
                     {
@@ -495,7 +494,7 @@ namespace MyUILibrary.EntityArea.Commands
         //    foreach (var data in result)
         //    {
         //        data.DataOrRelatedDataIsChanged = null;
-        //        foreach (var child in data.ChildRelationshipInfos)
+        //        foreach (var child in data.ChildRelationshipDatas)
         //        {
         //            SetDataOrRelatedDataIsChangedToNull(child.RelatedData);
         //        }
@@ -511,7 +510,7 @@ namespace MyUILibrary.EntityArea.Commands
         //    if (AgentHelper.DataHasValue(item))
         //        return false;
         //    bool childHasData = false;
-        //    foreach (var child in item.ChildRelationshipInfos)
+        //    foreach (var child in item.ChildRelationshipDatas)
         //    {
         //        foreach (var childData in child.RelatedData)
         //        {

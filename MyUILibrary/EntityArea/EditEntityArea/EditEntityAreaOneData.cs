@@ -45,13 +45,13 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-       
+
         public void OnDataItemSelected(DP_FormDataRepository DP_FormDataRepository)
         {
             if (DataItemSelected != null)
                 DataItemSelected(this, new EditAreaDataItemArg() { DataItem = DP_FormDataRepository });
         }
-     
+
         public override void GenerateUIComposition(List<EntityUICompositionDTO> UICompositions)
         {
             I_View_GridContainer container = SpecializedDataView;
@@ -298,6 +298,22 @@ namespace MyUILibrary.EntityArea
             if (shouldCreatData)
             {
                 var newData = AgentHelper.CreateAreaInitializerNewData(this);
+                newData.IsDefaultData = true;
+
+                if (DataEntryEntity.IsReadonly)
+                {
+                    newData.IsUseLessBecauseNewAndReadonly = true;
+
+                    foreach (var property in newData.ChildSimpleContorlProperties)
+                    {
+                        property.AddReadonlyState("", "DataNewAndReadonly", true, false);
+                    }
+                    foreach (var rel in newData.ChildRelationshipDatas)
+                    {
+                        rel.AddReadonlyState("", "DataNewAndReadonly", true, false);
+                    }
+                }
+
                 var addResult = AddData(newData);
                 if (!addResult)
                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده پیش فرض و یا داده های وابسته", newData.ViewInfo, Temp.InfoColor.Red);
@@ -359,7 +375,7 @@ namespace MyUILibrary.EntityArea
         //    }
         //    bool result = true;
         //    //جدید--دقت شود که اگر نمایش مستقیم نیست داخل فرم رابطه ای نباید همه کنترلها مقداردهی شوند
-        //    foreach (var relationshipControl in specificDate.ChildRelationshipInfos)
+        //    foreach (var relationshipControl in specificDate.ChildRelationshipDatas)
         //    {
         //        relationshipControl.SetBinding();
         //    }
@@ -371,11 +387,11 @@ namespace MyUILibrary.EntityArea
         //   //     //relationshipControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelatedData = specificDate;
         //   //     //اینجا یکارایی بشه دسترسی موقت
 
-        //   ////     bool childLoadedBefore = specificDate.ChildRelationshipInfos.Any(x => x.Relationship.ID == relationshipControl.Relationship.ID);
+        //   ////     bool childLoadedBefore = specificDate.ChildRelationshipDatas.Any(x => x.Relationship.ID == relationshipControl.Relationship.ID);
 
         //   //     ChildRelationshipInfo childData = null;
         //   //     if (childLoadedBefore)
-        //   //         childData = specificDate.ChildRelationshipInfos.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
+        //   //         childData = specificDate.ChildRelationshipDatas.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
         //   //     else
         //   //     {
         //   //         if (!relationshipFirstSideHasValue)

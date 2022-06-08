@@ -1527,7 +1527,7 @@ namespace MyModelManager
         }
         public RelationshipDTO ToRelationshipDTO(DataAccess.Relationship item, bool withPair = false)
         {
-            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Relationship, item.ID.ToString());
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Relationship, item.ID.ToString(), withPair.ToString());
             if (cachedItem != null)
                 return (cachedItem as RelationshipDTO);
 
@@ -1652,7 +1652,7 @@ namespace MyModelManager
             if (withPair)
                 result.PairRelationship = ToRelationshipDTO(item.Relationship2, false);
 
-            CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.Relationship, item.ID.ToString());
+            CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.Relationship, item.ID.ToString(), withPair.ToString());
             return result;
         }
 

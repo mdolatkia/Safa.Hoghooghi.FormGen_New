@@ -303,9 +303,9 @@ namespace MyFormulaFunctionStateFunctionLibrary
                     //اگر داده پرنت بصورت بازگشتی صدا زده شده باشد از پایگاه داده نمی خواند و سعی میکند از همان داده پرنت هر چه که هست استفاده کند
 
                     //چون غیر از چند به یک همه داده های رابطه موجودند
-                    if (dataItem.ParantChildRelationshipData.ToRelationship.TypeEnum != Enum_RelationshipType.OneToMany)
+                    if (dataItem.ParantChildRelationshipData.ToParentRelationship.TypeEnum != Enum_RelationshipType.OneToMany)
                     {
-                        if (dataItem.ParantChildRelationshipData.RelationshipID == relationship.ID)
+                        if (dataItem.ParantChildRelationshipData.ToParentRelationshipID == relationship.ID)
                         {
                             result.Add(dataItem.ParantChildRelationshipData.SourceData);
                             gotFromParant = true;

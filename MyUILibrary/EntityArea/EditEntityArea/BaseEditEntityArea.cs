@@ -486,7 +486,7 @@ namespace MyUILibrary.EntityArea
                 return _Permission;
             }
         }
-        public ObservableCollection<DP_FormDataRepository> GetDataList()
+        public List<DP_FormDataRepository> GetDataList()
         {
             if (AreaInitializer.SourceRelationColumnControl == null)
             {
@@ -619,31 +619,31 @@ namespace MyUILibrary.EntityArea
             if (UIGenerated != null)
                 UIGenerated(this, null);
         }
-
+        public TemporaryLinkState TemporaryLinkState { set; get; }
         private void GenerateTempView()
         {
-            var temporaryLinkState = new TemporaryLinkState();
-            temporaryLinkState.info = true;
-            temporaryLinkState.clear = true;
+            TemporaryLinkState = new TemporaryLinkState();
+            TemporaryLinkState.info = true;
+            TemporaryLinkState.clear = true;
             if (AreaInitializer.IntracionMode == IntracionMode.Select || AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect)
             {
-                temporaryLinkState.searchView = true;
-                temporaryLinkState.popup = true;
+                TemporaryLinkState.searchView = true;
+                TemporaryLinkState.popup = true;
                 //if (!SimpleEntity.SearchInitially == true && !(AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.SearchInitially))
-                temporaryLinkState.quickSearch = true;
+                TemporaryLinkState.quickSearch = true;
             }
             if (AreaInitializer.IntracionMode == IntracionMode.CreateInDirect || AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect)
             {
-                temporaryLinkState.edit = true;
+                TemporaryLinkState.edit = true;
             }
             if (AreaInitializer.SourceRelationColumnControl == null || !(AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaMultipleData))
             {
-                TemporaryDisplayView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateTemporaryLinkUI(temporaryLinkState);
-                if (temporaryLinkState.quickSearch)
+                TemporaryDisplayView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateTemporaryLinkUI(TemporaryLinkState);
+                if (TemporaryLinkState.quickSearch)
                 {
                     TemporaryDisplayView.SearchTextChanged += TemporaryDisplayView_TextChanged;
                 }
-                if (temporaryLinkState.popup)
+                if (TemporaryLinkState.popup)
                     TemporaryDisplayView.FocusLost += TemporaryDisplayView_FocusLost;
                 TemporaryDisplayView.TemporaryDisplayViewRequested += TemporaryDisplayView_TemporaryDisplayViewRequested;
             }
@@ -686,7 +686,8 @@ namespace MyUILibrary.EntityArea
             if (AreaInitializer.Preview)
                 return;
             GenerateCommands();
-            DecideButtonsEnablity1();
+            if (AreaInitializer.SourceRelationColumnControl == null)
+                DecideButtonsEnablity1();
             //////ImposeDataViewSecurity();
         }
         public abstract I_View_Area DataViewGeneric
@@ -907,9 +908,10 @@ namespace MyUILibrary.EntityArea
 
                 if (DataViewGenerated != null)
                     DataViewGenerated(this, null);
-                AreaInitializer.FormComposed = true;
 
             }
+            AreaInitializer.FormComposed = true;
+
         }
 
 
@@ -1514,6 +1516,10 @@ namespace MyUILibrary.EntityArea
                 Commands.Add(letterCommand);
                 DataViewGeneric.AddCommand(letterCommand.CommandManager, true);
             }
+            var clearCommand = new ClearCommand(this);
+            Commands.Add(clearCommand);
+            DataViewGeneric.AddCommand(clearCommand.CommandManager);//, (!(this is I_EditEntityAreaMultipleData) && AreaInitializer.SourceRelationColumnControl != null));
+
             if (AreaInitializer.SourceRelationColumnControl == null)
             {
                 var saveCommand = new SaveCommand(this);
@@ -1522,9 +1528,7 @@ namespace MyUILibrary.EntityArea
                 //if (DataEntryEntity.IsReadonly)
                 //saveCommand.CommandManager.SetEnabled(false);
 
-                var clearCommand = new ClearCommand(this);
-                Commands.Add(clearCommand);
-                DataViewGeneric.AddCommand(clearCommand.CommandManager, (!(this is I_EditEntityAreaMultipleData) && AreaInitializer.SourceRelationColumnControl != null));
+
 
                 var deleteCommand = new DeleteCommand(this);
                 Commands.Add(deleteCommand);
@@ -1579,7 +1583,7 @@ namespace MyUILibrary.EntityArea
             {
                 var searchCommand = new SearchCommand(this);
                 Commands.Add(searchCommand);
-                DataViewGeneric.AddCommand(searchCommand.CommandManager, AreaInitializer.SourceRelationColumnControl != null);
+                DataViewGeneric.AddCommand(searchCommand.CommandManager);//, AreaInitializer.SourceRelationColumnControl != null);
                 //if (this.AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
                 //    searchCommand.CommandManager.SetEnabled(false);
             }
@@ -1723,9 +1727,9 @@ namespace MyUILibrary.EntityArea
 
                 if (shouldCheckChilds)
                 {
-                    foreach (var childRelInfo in data.ChildRelationshipInfos)
+                    foreach (var childRelInfo in data.ChildRelationshipDatas)
                     {
-                        //   var childRelInfo = data.ChildRelationshipInfos.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
+                        //   var childRelInfo = data.ChildRelationshipDatas.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
                         //   relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
 
                         if (childRelInfo.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
@@ -1858,7 +1862,7 @@ namespace MyUILibrary.EntityArea
         //    data.HasDirectData = true;
         //    foreach (var relationshipControl in RelationshipColumnControls)
         //    {
-        //        relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship));
+        //        relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(data.ChildRelationshipDatas.First(x => x.Relationship == relationshipControl.Relationship));
         //        if (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
         //           || relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
         //        {
@@ -1913,7 +1917,7 @@ namespace MyUILibrary.EntityArea
 
         //public void TemporaryViewActionRequestedFromMultipleEditor(I_View_TemporaryView TemporaryView, TemporaryLinkType linkType, RelationshipDTO relationship, DP_FormDataRepository parentData)
         //{
-        //    SetChildRelationshipInfo(parentData.ChildRelationshipInfos.First(x => x.Relationship == relationship));
+        //    SetChildRelationshipInfo(parentData.ChildRelationshipDatas.First(x => x.Relationship == relationship));
         //    TemporaryViewActionRequestedInternal(TemporaryView, linkType);
         //}
         //public void ReadonlySimpleColumnControl(SimpleColumnControl column, bool readonlity)
@@ -2033,6 +2037,7 @@ namespace MyUILibrary.EntityArea
             searchViewInit.SourceEditArea = this as I_EditEntityArea;
             //  searchViewInit.TempEntity = FullEntity;
             searchViewInit.EntityID = AreaInitializer.EntityID;
+            searchViewInit.MultipleSelection = this is EditEntityAreaMultipleData;
             searchViewEntityArea.SetAreaInitializer(searchViewInit);
 
             searchViewEntityArea.DataSelected += SearchViewEntityArea_DataSelected;
@@ -2040,81 +2045,92 @@ namespace MyUILibrary.EntityArea
         }
         private void SearchViewEntityArea_DataSelected(object sender, DataSelectedEventArg e)
         {
-            if (e.DataItem.Count > 1)
+            if (e.DataItem.Count > 1 && AreaInitializer.SourceRelationColumnControl != null)
             {
                 throw new Exception("asdasd");
             }
             //اینجا منطقش عوض شه برای رابطه هم جدا بشه
-            DP_FormDataRepository result = null;
+            List<DP_FormDataRepository> result = new List<DP_FormDataRepository>();
             if (e.FromDataView)
             {
-                //سکوریتی داده اعمال میشود
-                DP_SearchRepository SearchDataItem = new DP_SearchRepository(AreaInitializer.EntityID);
-                foreach (var col in e.DataItem.First().Properties.Where(x => x.IsKey))
+                foreach (var dataItem in e.DataItem)
                 {
-                    SearchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
-                }
-                var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
-                // var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem, editEntityArea.AreaInitializer.SecurityReadOnly, false);
-                var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem);
-                var res = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
-                if (res.Any())
-                {
-                    var froundItem = res[0];
-                    froundItem.DataView = e.DataItem.First();
-                    result = new DP_FormDataRepository(froundItem, this, false, false);
-                }
-                else
-                {
-                    result = null;
+                    //سکوریتی داده اعمال میشود
+                    DP_SearchRepository SearchDataItem = new DP_SearchRepository(AreaInitializer.EntityID);
+                    foreach (var col in dataItem.Properties.Where(x => x.IsKey))
+                    {
+                        SearchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
+                    }
+                    var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
+                    // var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem, editEntityArea.AreaInitializer.SecurityReadOnly, false);
+                    var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem);
+                    var res = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
+                    if (res.Any())
+                    {
+                        var froundItem = res[0];
+                        froundItem.DataView = dataItem;
+                        result.Add(new DP_FormDataRepository(froundItem, this, false, false));
+                    }
+                    else
+                    {
+                        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به برخی داده ها", dataItem.ViewInfo, Temp.InfoColor.Red);
+                    }
                 }
             }
             else
             {
-                result = new DP_FormDataRepository(e.DataItem.First(), this, false, false);
+                foreach (var dataItem in e.DataItem)
+                    result.Add(new DP_FormDataRepository(dataItem, this, false, false));
             }
             //بهتره چک شه اگر دادهی ای موجود بود بعد کلیر بشه
             //بعدا بررسی شود که آیا لازم است ابتدا کلیر شود
             //   ClearData(false);
 
-            if (result != null)
+
+
+            //اینجا تست شود
+            //bool dataCleared = true;
+            //if (AreaInitializer.SourceRelationColumnControl != null)
+            //{
+            //    if (GetDataList().Any())
+            //    {
+            //        //وقتی داده هنوز موجود باشد یعنی کلیر انجام نشده است
+            //        //چون ممکنه داده باید دیلیت بشه و کاربر موافقت نکنه
+            //        dataCleared = false;
+            //    }
+            //}
+            //if (dataCleared)
+            //{
+
+            //   bool addResult = false;
+
+
+            if (AreaInitializer.SourceRelationColumnControl == null)
             {
-
-                //اینجا تست شود
-                //bool dataCleared = true;
-                //if (AreaInitializer.SourceRelationColumnControl != null)
-                //{
-                //    if (GetDataList().Any())
-                //    {
-                //        //وقتی داده هنوز موجود باشد یعنی کلیر انجام نشده است
-                //        //چون ممکنه داده باید دیلیت بشه و کاربر موافقت نکنه
-                //        dataCleared = false;
-                //    }
-                //}
-                //if (dataCleared)
-                //{
-
-                //   bool addResult = false;
-
-                if (AreaInitializer.SourceRelationColumnControl == null)
+                //ClearWithoutDefaultData();
+                foreach (var dataItem in GetDataList().ToList())
                 {
-                    ClearWithoutDefaultData();
-                    AddData(result);
-                }
-                else
-                {
-                    ChildRelationshipInfoBinded.DataSelected(result);
-
+                    GetDataList().Remove(dataItem);
+                    ClearUIData(dataItem);
                 }
 
-                //   if (!addResult)
-                // AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", result.ViewInfo, Temp.InfoColor.Red);
-                //}
+                foreach (var data in result)
+                    AddData(data);
             }
             else
             {
-                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", e.DataItem.First().ViewInfo, Temp.InfoColor.Red);
+                foreach (var data in result)
+                    ChildRelationshipInfoBinded.DataSelected(data);
             }
+
+            //   if (!addResult)
+            // AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", result.ViewInfo, Temp.InfoColor.Red);
+            //}
+            //}
+            //else
+            //{
+            //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", e.DataItem.First().ViewInfo, Temp.InfoColor.Red);
+            //}
             //}
         }
 
@@ -2172,43 +2188,63 @@ namespace MyUILibrary.EntityArea
 
         //    DecideButtonsEnablity1();
         //}
-      
+
+
+
+
+
+
+
         public bool ClearData()
         {
             if (this.AreaInitializer.SourceRelationColumnControl != null)
                 throw new Exception("asvvvb");
             //  var datas = GetDataList();
-
-            ClearWithoutDefaultData();
-            if (this is I_EditEntityAreaOneData)
-            {
-                //   if (createDefaultData)
-
-                bool createDefault = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-                       AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
-                if (createDefault)
-                    (this as I_EditEntityAreaOneData).CreateDefaultData();
-
-
-            }
             bool isDirect = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-                         AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
-            if (!isDirect)
-                SetTempText();
+                      AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
 
-            DecideButtonsEnablity1();
+            foreach (var dataItem in GetDataList().ToList())
+            {
+                RemoveData(dataItem);
+            }
+
             return true;
 
             //}
             //else
             //    return false;
         }
-        private void ClearWithoutDefaultData()
+
+        public void RemoveData(DP_FormDataRepository dataItem)
         {
-            GetDataList().Clear();
-            ClearUIData();
+            GetDataList().Remove(dataItem);
+            bool isDirect = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
+                    AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
+            if (!isDirect)
+            {
+                SetTempText();
+            }
+            if (isDirect ||
+                   (DataViewGeneric != null && DataViewGeneric.IsOpenedTemporary)
+                   )
+            {
+                ClearUIData(dataItem);
+                if (GetDataList().Count == 0 && this is I_EditEntityAreaOneData)
+                {
+                    (this as I_EditEntityAreaOneData).CreateDefaultData();
+                }
+            }
+
+            DecideButtonsEnablity1();
         }
-        public void ClearUIData()
+        public void RemoveDatas(List<DP_FormDataRepository> datas)
+        {
+            foreach (var item in datas)
+                RemoveData(item);
+        }
+
+
+        public void ClearUIData(DP_FormDataRepository dataItem)
         {
             if (this is I_EditEntityAreaOneData)
             {
@@ -2216,7 +2252,7 @@ namespace MyUILibrary.EntityArea
             }
             else if (this is I_EditEntityAreaMultipleData)
             {
-                (this as I_EditEntityAreaMultipleData).RemoveDataContainers();
+                (this as I_EditEntityAreaMultipleData).RemoveDataContainer(dataItem);
             }
         }
 
@@ -2265,8 +2301,12 @@ namespace MyUILibrary.EntityArea
 
         public bool AddData(DP_FormDataRepository data)
         {
+            var result = true;
             if (this.AreaInitializer.SourceRelationColumnControl != null)
                 throw new Exception("asvvvb");
+
+            if (DataEntryEntity.IsReadonly && data.IsNewItem && !data.IsDefaultData)
+                throw new Exception();
 
             if (data.EntityListView == null)
                 data.EntityListView = DefaultEntityListViewDTO;
@@ -2279,16 +2319,14 @@ namespace MyUILibrary.EntityArea
                           AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
             if (isDirect)
             {
-                if (ShowDataInDataView(data))
-                    return true;
-                else
+                if (!ShowDataInDataView(data))
                 {
                     //نمایش ناموفق!!
                     if (this is I_EditEntityAreaOneData)
                     {
                         ClearData();
                     }
-                    return false;
+                    result = false;
                 }
             }
             else
@@ -2296,7 +2334,7 @@ namespace MyUILibrary.EntityArea
 
             DecideButtonsEnablity1();
 
-            return true;
+            return result;
         }
         public bool ShowDataInDataView(DP_FormDataRepository specificDate)
         {
@@ -2309,17 +2347,20 @@ namespace MyUILibrary.EntityArea
                 propertyControl.SetBinding();
             }
             bool result = true;
-            foreach (var childRelationshipInfo in specificDate.ChildRelationshipInfos)
+            foreach (var childRelationshipInfo in specificDate.ChildRelationshipDatas)
             {
                 childRelationshipInfo.SetBinding();
 
             }
+
+          
+
             if (result)
                 OnDataItemShown(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
             return result;
 
         }
-
+     
         //   List<ChildRelationshipInfo> RegisteredParentDataItems = new List<ChildRelationshipInfo>();
         //public void SetChildRelationshipInfo(ChildRelationshipInfo value)
         //{
@@ -2609,115 +2650,67 @@ namespace MyUILibrary.EntityArea
         //}
         public void DecideButtonsEnablity1()
         {
+            if (AreaInitializer.SourceRelationColumnControl != null)
+                throw new Exception("asdsdf");
 
-            //var dataEntryEntityIsReadonly = DataEntryEntity.IsReadonly;
+
+            //  var dataEntryEntityIsReadonly = DataEntryEntity.IsReadonly;
 
             //var sourceRelationshipIsReadonly = false;// ChildRelationshipInfo != null && ChildRelationshipInfo.IsReadonly;
-            //var dataList = GetDataList();
+            var dataList = GetDataList();
 
-            //bool saveCommandEnablity = true;
-            //var saveCommand = GetCommand(typeof(SaveCommand));
-            //if (saveCommand != null)
-            //{
-            //    if (dataEntryEntityIsReadonly && dataList.Any(x => x.IsNewItem))
-            //        saveCommandEnablity = false;
-            //    else
-            //        saveCommandEnablity = dataList.Any(x => !x.IsReadonlyOnState);
+            bool saveCommandEnablity = true;
+            var saveCommand = GetCommand(typeof(SaveCommand));
+            if (saveCommand != null)
+            {
+                if (!dataList.Any() || (DataEntryEntity.IsReadonly && dataList.All(x => x.IsNewItem)))
+                    saveCommandEnablity = false;
 
-            //    saveCommand.CommandManager.SetEnabled(saveCommandEnablity);
-            //}
-            //bool deleteCommandEnablity = true;
-            //var deleteCommand = GetCommand(typeof(DeleteCommand));
-            //if (deleteCommand != null)
-            //{
-            //    if (dataEntryEntityIsReadonly)
-            //        deleteCommandEnablity = false;
-            //    else
-            //    {
-            //        deleteCommandEnablity = dataList.Any(x => !x.IsReadonlyOnState);
-            //    }
-            //    deleteCommand.CommandManager.SetEnabled(deleteCommandEnablity);
-            //}
+                saveCommand.CommandManager.SetEnabled(saveCommandEnablity);
+            }
 
-            //bool addCommandEnablity = true;
-            //var addCommand = GetCommand(typeof(AddCommand));
-            //if (addCommand != null)
-            //{
-            //    if (dataEntryEntityIsReadonly)
-            //        //|| sourceRelationshipIsReadonly)
-            //        addCommandEnablity = false;
-            //    else
-            //        addCommandEnablity = true;
-            //    addCommand.CommandManager.SetEnabled(addCommandEnablity);
-            //}
+            var hasNotDeleteAccess = DataEntryEntity.HasNotDeleteAccess;
+            bool deleteCommandEnablity = true;
+            var deleteCommand = GetCommand(typeof(DeleteCommand));
+            if (deleteCommand != null)
+            {
+                if (hasNotDeleteAccess || !dataList.Any())// || dataList.All(x => x.IsReadonlyOnState))
+                    deleteCommandEnablity = false;
+                deleteCommand.CommandManager.SetEnabled(deleteCommandEnablity);
+            }
 
-            //bool removeCommandEnablity = true;
-            //var removeCommand = GetCommand(typeof(RemoveCommand));
-            //if (removeCommand != null)
-            //{
-            //    if (dataList.Any())
-            //    {
-            //        if (AreaInitializer.SourceRelationColumnControl != null)
-            //        {
-            //            //در دل خودش 
-            //            if (dataList.Any(x => !x.IsDBRelationship))
-            //            {
-            //                // باید رو ریمو خود داده کنترل شودIsDBRelationship ها
-            //                removeCommandEnablity = true;
-            //            }
-            //            else
-            //            {
-            //                //  if ((AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign
-            //                //      && (dataEntryEntityIsReadonly || dataList.All(x => x.IsReadonlyBecauseOfState)))
-            //                //      || dataList.All(x => x.ParantChildRelationshipInfo.IsReadonly)
-            //                //      || sourceRelationshipIsReadonly
-            //                //)
+            bool addCommandEnablity = true;
+            var addCommand = GetCommand(typeof(AddCommand));
+            if (addCommand != null)
+            {
+                if (DataEntryEntity.IsReadonly)
+                    addCommandEnablity = false;
+                else
+                    addCommandEnablity = true;
+                addCommand.CommandManager.SetEnabled(addCommandEnablity);
+            }
 
-            //                //همشون IsDBRelationship هستند
-            //                if (sourceRelationshipIsReadonly || dataList.All(x => x.DataRelationshipIsReadonly))
-            //                    removeCommandEnablity = false;
-            //                else
-            //                {
-            //                    //باید IsReadonlySomeHow رو خود داده هم موقع ریمو کردن چک شود
-            //                    removeCommandEnablity = true;
-            //                }
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        removeCommandEnablity = false;
-            //    }
-            //    removeCommand.CommandManager.SetEnabled(removeCommandEnablity);
-            //}
+            bool removeCommandEnablity = true;
+            var removeCommand = GetCommand(typeof(RemoveCommand));
+            if (removeCommand != null)
+            {
+                if (!dataList.Any())
+                {
+                    removeCommandEnablity = false;
+                }
+                removeCommand.CommandManager.SetEnabled(removeCommandEnablity);
+            }
 
-            //bool searchCommandEnablity = true;
-            //if (AreaInitializer.SourceRelationColumnControl != null)
-            //{
-            //    if (sourceRelationshipIsReadonly || dataList.All(x => x.IsDBRelationship && x.DataRelationshipIsReadonly))
-            //        searchCommandEnablity = false;
-            //    // باید رو ریمو خود داده کنترل شودIsDBRelationshipغیر  بقیه
-
-            //    //شرط آخر مثلا برای رابطه پدر یک به یک اصلی به فرعی بود و داده موجود فقط خواندنی باشد
-            //}
-            //var searchCommand = GetCommand(typeof(SearchCommand));
-            //if (searchCommand != null)
-            //    searchCommand.CommandManager.SetEnabled(searchCommandEnablity);
-
-            //bool clearCommandEnablity = true;
-            //if (AreaInitializer.SourceRelationColumnControl != null)
-            //{
-            //    if (sourceRelationshipIsReadonly || dataList.All(x => x.IsDBRelationship && x.DataRelationshipIsReadonly))
-            //        clearCommandEnablity = false;
-
-            //    //شرط آخر مثلا برای رابطه پدر یک به یک اصلی به فرعی بود و داده موجود فقط خواندنی باشد
-            //}
-
-            //var clearCommand = GetCommand(typeof(ClearCommand));
-            //if (clearCommand != null)
-            //{
-            //    clearCommand.CommandManager.SetEnabled(clearCommandEnablity);
-            //}
+            bool clearCommandEnablity = true;
+            var clearCommand = GetCommand(typeof(ClearCommand));
+            if (clearCommand != null)
+            {
+                if (!dataList.Any())
+                {
+                    clearCommandEnablity = false;
+                }
+                clearCommand.CommandManager.SetEnabled(clearCommandEnablity);
+            }
 
             //if (TemporaryDisplayView != null && AreaInitializer.SourceRelationColumnControl != null)
             //{
@@ -2864,7 +2857,7 @@ namespace MyUILibrary.EntityArea
         //}
 
 
-        private I_Command GetCommand(Type type)
+        public I_Command GetCommand(Type type)
         {
             return Commands.FirstOrDefault(x => x.GetType() == type);
         }

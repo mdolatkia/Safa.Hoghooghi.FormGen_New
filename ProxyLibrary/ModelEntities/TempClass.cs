@@ -272,7 +272,7 @@ namespace ModelEntites
         public bool EvenInTempView { get; set; }
         public bool Permanent { get; set; }
       //  public List<ActionActivitySource> AllowedSteps { get; set; }
-        public bool OnLoadOnly { get; set; }
+     //   public bool OnLoadOnly { get; set; }
         //    public int UICompositionID { set; get; }
 
 
@@ -1027,6 +1027,7 @@ namespace ModelEntites
         public bool Reviewed { get; set; }
         public bool ColumnsReviewed { get; set; }
         public SuperToSubRelationshipDTO InternalSuperToSubRelationship { get; set; }
+        public bool HasNotDeleteAccess { get; set; }
         //public bool ColumnsAdded { get; set; }
     }
 
@@ -1045,6 +1046,7 @@ namespace ModelEntites
 
         public List<RelationshipDTO> SkippedRelationships { set; get; }
         public string Info { set; get; }
+        public bool HasNotDeleteAccess { get; set; }
     }
     public class DataEntryRelationshipDTO
     {
@@ -2854,8 +2856,8 @@ namespace ModelEntites
 
         public ObservableCollection<UIActionActivityDTO> ActionActivities { set; get; }
         public ObservableCollection<EntityStateConditionDTO> StateConditions { set; get; }
-        public bool HasOnLoadOnlyAction { get; set; }
-        public bool HasDynamicAction { get; set; }
+   //     public bool HasOnLoadOnlyAction { get; set; }
+    //    public bool HasDynamicAction { get; set; }
     }
     public class EntityStateConditionDTO
     {

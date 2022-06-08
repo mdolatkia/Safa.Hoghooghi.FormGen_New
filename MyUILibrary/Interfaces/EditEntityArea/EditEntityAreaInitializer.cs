@@ -15,7 +15,7 @@ namespace MyUILibrary.EntityArea
     {
         public EditEntityAreaInitializer()
         {
-            Datas = new ObservableCollection<DP_FormDataRepository>();
+            Datas = new List<DP_FormDataRepository>();
             UISettings = new TemplateEntityUISettings();
             //FormAttributes = new FormAttributes();
             //DataItemAttributes = new List<DataItemAttributes>();
@@ -39,8 +39,8 @@ namespace MyUILibrary.EntityArea
         public I_UIActionActivityManager ActionActivityManager { set; get; }
         public I_RelationshipFilterManager RelationshipFilterManager { get; set; }
 
-        ObservableCollection<DP_FormDataRepository> _Datas;
-        public ObservableCollection<DP_FormDataRepository> Datas
+        List<DP_FormDataRepository> _Datas;
+        public List<DP_FormDataRepository> Datas
         {
             set { _Datas = value; }
             get

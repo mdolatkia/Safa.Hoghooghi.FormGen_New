@@ -50,8 +50,8 @@ namespace MyUILibrary
             if (result == "")
                 result = "_";
 
-            if (dataItem.ParantChildRelationshipInfo != null)
-                return result += "&" + dataItem.ParantChildRelationshipInfo.RelationshipID + GetUniqueDataPostfix(dataItem.ParantChildRelationshipInfo.SourceData, result, dataItem.ParantChildRelationshipInfo.ToRelationship);
+            if (dataItem.ParantChildRelationshipData != null)
+                return result += "&" + dataItem.ParantChildRelationshipData.ToParentRelationshipID + GetUniqueDataPostfix(dataItem.ParantChildRelationshipData.SourceData, result, dataItem.ParantChildRelationshipData.ToParentRelationship);
             else
                 return "";
         }
@@ -506,20 +506,17 @@ namespace MyUILibrary
                 }
             }
 
-            var result = new DP_FormDataRepository(new DP_DataRepository(editEntityArea.AreaInitializer.EntityID, editEntityArea.SimpleEntity.Alias), editEntityArea, false, true);
+            var innerItem = new DP_DataRepository(editEntityArea.AreaInitializer.EntityID, editEntityArea.SimpleEntity.Alias);
 
-            if (editEntityArea.DataEntryEntity.IsReadonly
-               || (editEntityArea.AreaInitializer.SourceRelationColumnControl != null && editEntityArea.AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly))
-                result.IsUseLessBecauseNewAndReadonly = true;
-
-
-            result.EntityListView = editEntityArea.DefaultEntityListViewDTO;
-            //result.TargetEntityID = editEntityArea.AreaInitializer.EntityID;
-            // result.DataInstance = new EntityInstance();// Clone<TableDrivedEntityDTO>(AreaInitializer.Template);
-            result.IsFullData = true;
+            innerItem.IsFullData = true;
 
             //result.Properties = new List<EntityInstanceProperty>();
-            result.IsNewItem = true;
+            innerItem.IsNewItem = true;
+
+            innerItem.EntityListView = editEntityArea.DefaultEntityListViewDTO;
+            //result.TargetEntityID = editEntityArea.AreaInitializer.EntityID;
+            // result.DataInstance = new EntityInstance();// Clone<TableDrivedEntityDTO>(AreaInitializer.Template);
+           
             List<ColumnDTO> columns = null;
             //فرض بر اینه که تنها ستونهایی که کنترل دارند اضافه شود.تازه برای روابط فارن به اصلی بهتر است ستونها کلید خارجی نیز اضافه شوند
             if (editEntityArea is I_EditEntityAreaOneData)
@@ -587,7 +584,7 @@ namespace MyUILibrary
                 else
                     value = MyGeneralLibrary.ReflectionHelper.GetDefaultValue(column.DotNetType);// (column.IsNull == true ? null : "");
 
-                result.AddProperty(column, value);
+                innerItem.AddProperty(column, value);
             }
             //یکبار بالا دیفالت ولیوو ها ساخته میشوند و یکبار هم فرمولهای پیش فرض محاسبه میشوند
             //برای اینکه دیتاآیتم را با بیشترین مقادیر داشته باشیم
@@ -596,18 +593,25 @@ namespace MyUILibrary
                 //object value = null;
                 if (column.ColumnCustomFormula != null && column.ColumnCustomFormula.CalculateFormulaAsDefault == true)
                 {
-                    var property = result.GetProperty(column.ID);
-                    editEntityArea.AreaInitializer.UIFomulaManager.CalculateProperty(result, property);
+                    var property = innerItem.GetProperty(column.ID);
+                    editEntityArea.AreaInitializer.UIFomulaManager.CalculateProperty(innerItem, property);
                     //    var res = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.CalculateFormula(column.ColumnCustomFormula.FormulaID, result, AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
                     //if (res.Exception == null)
                     //    value = res.Result;
                     //else
                     //    value = MyGeneralLibrary.ReflectionHelper.GetDefaultValue(column.DotNetType);
                     //result.GetProperty(column.ID).Value = value;
-                    result.GetOriginalProperty(column.ID).Value = property.Value;
+                    innerItem.GetOriginalProperty(column.ID).Value = property.Value;
                 }
 
             }
+            var result = new DP_FormDataRepository(innerItem, editEntityArea, false, true);
+           // if (editEntityArea.DataEntryEntity.IsReadonly
+           //|| (editEntityArea.AreaInitializer.SourceRelationColumnControl != null && editEntityArea.AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly))
+           //     result.IsUseLessBecauseNewAndReadonly = true;
+
+            
+
             return result;
         }
         //public static Tuple<List<ColumnDTO>, List<RelationshipDTO>> GetValidColumnsAndRelationships(TableDrivedEntityDTO entity, AssignedPermissionDTO permission)
@@ -868,7 +872,7 @@ namespace MyUILibrary
                     return true;
 
 
-            foreach (var childRel in dataItem.ChildRelationshipInfos)
+            foreach (var childRel in dataItem.ChildRelationshipDatas)
                 foreach (var data in childRel.RelatedData)
                 {
                     if (DataOrRelatedChildDataHasValue(data, childRel.Relationship))
@@ -892,7 +896,7 @@ namespace MyUILibrary
         //    if (AgentHelper.DataHasValue(data))
         //        return true;
 
-        //    if (data.ChildRelationshipInfos.Any(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary
+        //    if (data.ChildRelationshipDatas.Any(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary
         //      && x.RelatedData.Any(y => AgentHelper.DataShouldBeCounted(y))))
         //        return true;
 
@@ -948,7 +952,7 @@ namespace MyUILibrary
             if (editArea.AreaInitializer.SourceRelationColumnControl != null)
                 columnsSource = editArea.AreaInitializer.SourceRelationColumnControl.ParentEditArea.EntityWithSimpleColumns.Columns;
 
-            ObservableCollection<DP_FormDataRepository> dataList = null;
+            List<DP_FormDataRepository> dataList = null;
             if (editArea.AreaInitializer.SourceRelationColumnControl != null)
                 dataList = editArea.ChildRelationshipInfoBinded.RelatedData;
             else
@@ -1272,18 +1276,18 @@ namespace MyUILibrary
             {
                 foreach (var sentdata in lastFoundItems)
                 {
-                    if ((sentdata.ParantChildRelationshipInfo != null && sentdata.ParantChildRelationshipInfo.RelationshipID == valueRelationshipTail.Relationship.ID)
-                        || (sentdata.ChildRelationshipInfos.Any(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID)))
+                    if ((sentdata.ParantChildRelationshipData != null && sentdata.ParantChildRelationshipData.ToParentRelationshipID == valueRelationshipTail.Relationship.ID)
+                        || (sentdata.ChildRelationshipDatas.Any(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID)))
                     {
                         List<DP_FormDataRepository> relatedData = new List<DP_FormDataRepository>();
 
-                        if (sentdata.ParantChildRelationshipInfo != null && sentdata.ParantChildRelationshipInfo.RelationshipID == valueRelationshipTail.Relationship.ID)
+                        if (sentdata.ParantChildRelationshipData != null && sentdata.ParantChildRelationshipData.ToParentRelationshipID == valueRelationshipTail.Relationship.ID)
                         {
-                            relatedData.Add(sentdata.ParantChildRelationshipInfo.SourceData);
+                            relatedData.Add(sentdata.ParantChildRelationshipData.SourceData);
                         }
-                        else if (sentdata.ChildRelationshipInfos.Any(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID))
+                        else if (sentdata.ChildRelationshipDatas.Any(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID))
                         {
-                            var childInfo = sentdata.ChildRelationshipInfos.First(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID);
+                            var childInfo = sentdata.ChildRelationshipDatas.First(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID);
                             relatedData.AddRange(childInfo.RelatedData);
                         }
                         if (valueRelationshipTail.ChildTail == null)

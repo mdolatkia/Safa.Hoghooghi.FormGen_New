@@ -146,24 +146,26 @@ namespace MyProject_WPF
                 }
                 if (rel.AnyForeignKeyIsPrimaryKey)
                 {
-                    cell = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "IsDisabled");
-                    if (cell != null)
-                        cell.IsEnabled = false;
-
                     if (rel.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary)
                     {
+                        cell = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "IsDisabled");
+                        if (cell != null)
+                            cell.IsEnabled = false;
+
+
                         cell = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "DataEntryEnabled");
                         if (cell != null)
                             cell.IsEnabled = false;
+
+
+                        cell = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "IsReadonly");
+                        if (cell != null)
+                            cell.IsEnabled = false;
+
+                        cell = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "IsNotTransferable");
+                        if (cell != null)
+                            cell.IsEnabled = false;
                     }
-
-                    cell = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "IsReadonly");
-                    if (cell != null)
-                        cell.IsEnabled = false;
-
-                    cell = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "IsNotTransferable");
-                    if (cell != null)
-                        cell.IsEnabled = false;
                 }
             }
         }
@@ -189,25 +191,25 @@ namespace MyProject_WPF
             if (dataGrid == dtgRelationships)
             {
 
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ID", "شناسه", true,null, GridViewColumnType.Text));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Name", "نام", false,null, GridViewColumnType.Text));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ID", "شناسه", true, null, GridViewColumnType.Text));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Name", "نام", false, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("PairRelationshipID", "شناسه رابطه قرینه", true, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("PairRelationship", "رابطه قرینه", true, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Alias", "عنوان", false, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Entity1", "موجودیت طرف اول", true, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Entity2", "موجودیت طرف دوم", true, null, GridViewColumnType.Text));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("RelationshipColumns", "ستونهای رابطه", true,null, GridViewColumnType.Text));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("TypeStr", "نوع رابطه", true,null, GridViewColumnType.Text));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("RelationshipColumns", "ستونهای رابطه", true, null, GridViewColumnType.Text));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("TypeStr", "نوع رابطه", true, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsNotSkippable", "غیر قابل صرف نظر", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsNotTransferable", "غیر قابل انتقال", false,null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsOtherSideMandatory", "طرف دیگر اجباری", false,null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsOtherSideCreatable", "قابلیت ایجاد طرف دیگر", false,null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsOtherSideDirectlyCreatable", "قابلیت ایجاد مستقیم طرف یک", false,null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DataEntryEnabled", "قابلیت ورود اطلاعات", false,null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsReadonly", "فقط خواندنی", false,null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsDisabled", "غیر فعال", false,null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DeleteOption", "حذف", false,null, GridViewColumnType.Enum, GetDeleteOptionAsItemsSource()));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("SearchInitially", "جستجوی خودکار", false,null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsNotTransferable", "غیر قابل انتقال", false, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsOtherSideMandatory", "طرف دیگر اجباری", false, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsOtherSideCreatable", "قابلیت ایجاد طرف دیگر", false, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsOtherSideDirectlyCreatable", "قابلیت ایجاد مستقیم طرف یک", false, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DataEntryEnabled", "قابلیت ورود اطلاعات", false, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsReadonly", "فقط خواندنی", false, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsDisabled", "غیر فعال", false, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DeleteOption", "حذف", false, null, GridViewColumnType.Enum, GetDeleteOptionAsItemsSource()));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("SearchInitially", "جستجوی خودکار", false, null, GridViewColumnType.CheckBox));
 
                 dataGrid.CanUserDeleteRows = false;
             }

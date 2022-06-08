@@ -94,7 +94,6 @@
     <Compile Include="Core\AG_InternalTaskResult.cs" />
     <Compile Include="Core\AG_RequestManager.cs" />
     <Compile Include="Core\BaseCommand.cs" />
-    <Compile Include="EntityArea\EditEntityArea\BaseChildProperty.cs" />
     <Compile Include="EntityArea\EditEntityArea\ChildRelationshipInfo.cs" />
     <Compile Include="EntityArea\EditEntityArea\ChildSimpleContorlProperty.cs" />
     <Compile Include="EntityArea\EditEntityArea\DP_FormDataRepository.cs" />

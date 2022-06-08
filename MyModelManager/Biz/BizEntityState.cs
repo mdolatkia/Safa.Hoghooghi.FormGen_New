@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using ModelEntites;
+using MyCacheManager;
 using MyGeneralLibrary;
 using ProxyLibrary;
 using System;
@@ -107,6 +108,10 @@ namespace MyModelManager
 
         public EntityStateDTO ToEntityStateDTO(DR_Requester requester, TableDrivedEntityState item, bool withDetails)
         {
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.EntityState, item.ID.ToString(), withDetails.ToString());
+            if (cachedItem != null)
+                return (cachedItem as EntityStateDTO);
+
             EntityStateDTO result = new EntityStateDTO();
 
             result.TableDrivedEntityID = item.TableDrivedEntityID;
@@ -132,6 +137,9 @@ namespace MyModelManager
             {
                 result.StateConditions.Add(ToEntityStateConditionDTO(requester, dbCondition, withDetails));
             }
+
+            CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.EntityState, item.ID.ToString(), withDetails.ToString());
+
 
             return result;
         }
@@ -231,25 +239,25 @@ namespace MyModelManager
                 //}
 
 
-                foreach (var condition in EntityState.StateConditions)
-                {
-                    if (condition.RelationshipTailID == 0 && condition.ColumnID != 0)
-                    {
-                        foreach (var actionActivity in EntityState.ActionActivities)
-                        {
-                            var actionActivityEntity = projectContext.UIActionActivity.First(x => x.ID == actionActivity.ID);
-                            if (actionActivityEntity.UIEnablityDetails.Any(x => x.ColumnID == condition.ColumnID))
-                            {
-                                var actionItem = actionActivityEntity.UIEnablityDetails.First(x => x.ColumnID == condition.ColumnID);
-                                var columnAlias = actionItem.Column.Alias;
-                                throw new Exception("امکان استفاده از ستون" + " " + columnAlias + " " + "در اقدام" + " "
-                                    + actionItem.UIActionActivity.Title + " " + "به علت همسان بودن با ستون تعیین وضعیت وجود ندارد");
-                                //ستون تعیین وضعیت نمیتواند خود مخفی یا فقط خواندنی باشد زیرا دیگر نمی تواند مقدار بگیرد
-                                // باید دسترسی مخصوص در صورت نیاز برای این ستون تعریف شود
-                            }
-                        }
-                    }
-                }
+                //foreach (var condition in EntityState.StateConditions)
+                //{
+                //    if (condition.RelationshipTailID == 0 && condition.ColumnID != 0)
+                //    {
+                //        foreach (var actionActivity in EntityState.ActionActivities)
+                //        {
+                //            var actionActivityEntity = projectContext.UIActionActivity.First(x => x.ID == actionActivity.ID);
+                //            if (actionActivityEntity.UIEnablityDetails.Any(x => x.ColumnID == condition.ColumnID))
+                //            {
+                //                var actionItem = actionActivityEntity.UIEnablityDetails.First(x => x.ColumnID == condition.ColumnID);
+                //                var columnAlias = actionItem.Column.Alias;
+                //                throw new Exception("امکان استفاده از ستون" + " " + columnAlias + " " + "در اقدام" + " "
+                //                    + actionItem.UIActionActivity.Title + " " + "به علت همسان بودن با ستون تعیین وضعیت وجود ندارد");
+                //                //ستون تعیین وضعیت نمیتواند خود مخفی یا فقط خواندنی باشد زیرا دیگر نمی تواند مقدار بگیرد
+                //                // باید دسترسی مخصوص در صورت نیاز برای این ستون تعریف شود
+                //            }
+                //        }
+                //    }
+                //}
                 var dbEntityState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.ID == EntityState.ID);
                 if (dbEntityState == null)
                     dbEntityState = new DataAccess.TableDrivedEntityState();

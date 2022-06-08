@@ -172,7 +172,31 @@ namespace MyModelManager
                 }
             }
         }
-
+        public bool DataHasNotDeleteAccess(DR_Requester requester, int entityID)
+        {
+            using (var projectContext = new DataAccess.MyProjectEntities())
+            {
+                var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
+                return DataHasNotDeleteAccess(requester, entity);
+            }
+        }
+        public bool DataHasNotDeleteAccess(DR_Requester requester, TableDrivedEntity entity)
+        {
+            if (entity.IsReadonly)
+                return true;
+            else
+            {
+                if (requester.SkipSecurity)
+                    return false;
+                var permission = GetEntityAssignedPermissions(requester, entity.ID, false);
+                if (permission.GrantedActions.Any(y => y == SecurityAction.EditAndDelete))
+                    return true;
+                else
+                {
+                    return false;
+                }
+            }
+        }
         private IQueryable<TableDrivedEntity> GetEntities(MyProjectEntities projectContext, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType, bool? isView, int ID = 0)
         {
             //بعدا بررسی شود که اینکلود رو میشه یکبار به کوئری اضافه کرد؟
@@ -251,6 +275,7 @@ namespace MyModelManager
             DataEntryEntityDTO result = new DataEntryEntityDTO();
             result.ParentDataEntryRelationship = parentRelationship;
             result.IsReadonly = finalEntity.IsReadonly;
+            result.HasNotDeleteAccess = finalEntity.HasNotDeleteAccess;
             foreach (var column in finalEntity.Columns)
                 result.Columns.Add(column);
             foreach (var relationship in finalEntity.Relationships)
@@ -465,6 +490,7 @@ namespace MyModelManager
             List<RelationshipDTO> InValidRelationships = new List<RelationshipDTO>();
 
             entity.IsReadonly = DataIsReadonly(requester, entity.ID);
+            entity.HasNotDeleteAccess = DataHasNotDeleteAccess(requester, entity.ID);
 
             foreach (var rel in entity.Relationships)
             {

@@ -52,6 +52,10 @@ namespace MyModelManager
         //}
         public EntityListViewDTO GetEntityDefaultListView(DR_Requester requester, int entityID)
         {
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.EntityListViewDefault, entityID.ToString());
+            if (cachedItem != null)
+                return (cachedItem as EntityListViewDTO);
+
             EntityListViewDTO result = null;
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
@@ -83,6 +87,8 @@ namespace MyModelManager
                 }
 
             }
+            CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.EntityListViewDefault, entityID.ToString());
+
             return result;
         }
 
@@ -127,6 +133,8 @@ namespace MyModelManager
         }
         public EntityListViewDTO GetEntityListView(DR_Requester requester, int EntityListViewsID)
         {
+         
+
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var EntityListViews = projectContext.EntityListView.First(x => x.ID == EntityListViewsID);

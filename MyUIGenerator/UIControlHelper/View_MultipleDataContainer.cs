@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
 
@@ -262,6 +263,38 @@ namespace MyUIGenerator.UIControlHelper
         }
         public int ControlsCount { get { return dataGrid.Columns.Count; } }
 
+
+        public void SetTooltip(object dataItem, string tooltip)
+        {
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+             {
+                 GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
+                                                     .ContainerFromItem(dataItem);
+                 if (row != null)
+                 {
+                     if (!string.IsNullOrEmpty(tooltip))
+                         ToolTipService.SetToolTip(row, tooltip);
+                     else
+                         ToolTipService.SetToolTip(row, null);
+                 }
+             }));
+
+            //dataGrid.SetTooltip(dataItem, tooltip);
+        }
+        public void EnableDisable(object dataItem, bool enable)
+        {
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+            {
+                GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
+                                                    .ContainerFromItem(dataItem);
+                if (row != null)
+                {
+                    row.IsEnabled = enable;
+                }
+            }));
+            //   dataGrid.EnableDisable(dataItem, enable);
+        }
+
         //public void RemoveSelectedDataContainers()
         //{
         //    //if (AgentHelper.GetDataEntryMode( EditTemplate) == DataMode.Multiple)
@@ -326,10 +359,6 @@ namespace MyUIGenerator.UIControlHelper
 
 
 
-        //public void SetTooltip(object dataItem, string tooltip)
-        //{
-        //    dataGridHelper.SetTooltip(dataItem, tooltip);
-        //}
 
         //public void SetColor(object dataItem, InfoColor color)
         //{
@@ -350,9 +379,7 @@ namespace MyUIGenerator.UIControlHelper
         //{
         //    dataGridHelper.Visiblity(dataItem, visible);
         //}
-        //public void EnableDisable(object dataItem, bool enable)
-        //{
-        //    dataGridHelper.EnableDisable(dataItem, enable);
+
     }
 
     //public override void SetTooltip(object dataItem, string tooltip)

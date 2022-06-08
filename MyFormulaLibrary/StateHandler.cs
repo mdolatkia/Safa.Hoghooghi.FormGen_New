@@ -117,7 +117,10 @@ namespace MyFormulaFunctionStateFunctionLibrary
                 }
                 else
                 {
-                    result = securitySubjectIsOk;
+                    if (condition.SecuritySubjects.Any())
+                        result = securitySubjectIsOk;
+                    else
+                        result = false;
                 }
             }
             return result;

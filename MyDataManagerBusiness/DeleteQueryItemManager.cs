@@ -45,7 +45,7 @@ namespace MyDataEditManagerBusiness
             bool loop = false;
             //   DP_DataRepository resultItem = item;
             var entity = bizTableDrivedEntity.GetTableDrivedEntity(requester, deleteDataItem.TargetEntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
-            foreach (var relationship in entity.Relationships.Where(x=>x.MastertTypeEnum==Enum_MasterRelationshipType.FromPrimartyToForeign))
+            foreach (var relationship in entity.Relationships.Where(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
             {
                 if (!loop)
 
@@ -57,11 +57,9 @@ namespace MyDataEditManagerBusiness
                     var searchViewResult = SearchRequestManager.Process(searchViewRequest);
                     if (searchViewResult.ResultDataItems.Any())
                     {
-                     
 
-                        var ChildRelationshipData = new ChildRelationshipData();
-                        ChildRelationshipData.SourceData = deleteDataItem;
-                        ChildRelationshipData.Relationship = relationship;
+
+                        var ChildRelationshipData = new ChildRelationshipData(deleteDataItem, relationship);
                         result.Add(ChildRelationshipData);
                         ChildRelationshipData.RelationshipDeleteOption = relationship.DeleteOption;
                         deleteDataItem.ChildRelationshipDatas.Add(ChildRelationshipData);
@@ -204,7 +202,7 @@ namespace MyDataEditManagerBusiness
                     }
                     else if (queryItem.QueryType == Enum_QueryItemType.Update)
                     {
-                        EditQueryItemManager editQueryItemManage=new EditQueryItemManager();
+                        EditQueryItemManager editQueryItemManage = new EditQueryItemManager();
                         queryItem.Query = editQueryItemManage.GetUpdateQuery(queryItem);
                     }
                 }
@@ -215,7 +213,7 @@ namespace MyDataEditManagerBusiness
 
         private string GetDeleteQueryQueue(DR_Requester requester, QueryItem queryItem)
         {
-            if (queryItem.TargetEntity.InternalSuperToSubRelationship ==null)
+            if (queryItem.TargetEntity.InternalSuperToSubRelationship == null)
             {
                 string keyWhere = "";
                 foreach (var column in queryItem.DataItem.KeyProperties)
@@ -242,12 +240,12 @@ namespace MyDataEditManagerBusiness
         }
         private string GetPropertyValue(object value)
         {
-            if (value == null )
+            if (value == null)
                 return "NULL";
             else
                 return "'" + value + "'";
         }
-        private List<QueryItem> GetDeleteQueryQueue(DR_Requester requester, DP_DataRepository item, ChildRelationshipData  parentChildRelatoinshipInfo = null, List<QueryItem> result = null)
+        private List<QueryItem> GetDeleteQueryQueue(DR_Requester requester, DP_DataRepository item, ChildRelationshipData parentChildRelatoinshipInfo = null, List<QueryItem> result = null)
         {
             //اینجا کوئری آیتمها بصورت درختی ست نمیشوند چون لازم نیست همینکه بترتیب می آیند کافی است
             if (result == null)

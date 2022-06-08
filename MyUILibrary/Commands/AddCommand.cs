@@ -50,7 +50,7 @@ namespace MyUILibrary.EntityArea.Commands
                 EditArea.AddData(newData);
             else
             {
-                EditArea.ChildRelationshipInfoBinded.AddDataToChildRelationshipInfo(newData, true);
+                EditArea.ChildRelationshipInfoBinded.AddDataToChildRelationshipInfo(newData);
             }
             //EditArea.ShowDataInDataView(list, false);
         }

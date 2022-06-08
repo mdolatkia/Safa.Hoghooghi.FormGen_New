@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProxyLibrary;
+using MyCacheManager;
+using AutoMapper;
 
 namespace MyModelManager
 {
@@ -34,8 +36,11 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var dbFormula = projectContext.Formula.First(x => x.ID == FormulaID);
-                LinearFormulaDTO result = new LinearFormulaDTO();
-                ToFormulaDTO(dbFormula, result, withDetails);
+                //     LinearFormulaDTO result = new LinearFormulaDTO();
+                     Mapper.Initialize(cfg => cfg.CreateMap<FormulaDTO, LinearFormulaDTO>());
+                var formula = ToFormulaDTO(dbFormula, withDetails);
+
+                var result = AutoMapper.Mapper.Map<FormulaDTO, LinearFormulaDTO>(formula);
 
                 result.FormulaText = dbFormula.LinearFormula.FormulaText;
                 result.Version = dbFormula.LinearFormula.Version;
@@ -102,19 +107,23 @@ namespace MyModelManager
                 var Formula = projectContext.Formula.First(x => x.ID == FormulaID);
 
                 FormulaDTO result = new FormulaDTO();
-                ToFormulaDTO(Formula, result, withDetails);
-                return result;
+                return ToFormulaDTO(Formula, withDetails);
+
 
             }
         }
+        //public FormulaDTO ToFormulaDTO(DataAccess.Formula item, bool withDetails)
+        //{
+        //    FormulaDTO result = new FormulaDTO();
+        //    ToFormulaDTO(item, result, withDetails);
+        //    return result;
+        //}
         public FormulaDTO ToFormulaDTO(DataAccess.Formula item, bool withDetails)
         {
-            FormulaDTO result = new FormulaDTO();
-            ToFormulaDTO(item, result, withDetails);
-            return result;
-        }
-        public void ToFormulaDTO(DataAccess.Formula item, FormulaDTO result, bool withDetails)
-        {
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Formula, item.ID.ToString(), withDetails.ToString());
+            if (cachedItem != null)
+                return (cachedItem as FormulaDTO);
+            var result = new FormulaDTO();
             result.Name = item.Name;
             result.ID = item.ID;
             result.EntityID = item.TableDrivedEntityID ?? 0;
@@ -153,6 +162,9 @@ namespace MyModelManager
                     result.FormulaItems.Add(ToFormualaItemDTO(item.TableDrivedEntityID ?? 0, dbFormulaItem));
                 }
             }
+
+            CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.Formula, item.ID.ToString(), withDetails.ToString());
+            return result;
         }
         public List<FormulaDTO> GetFormulas(int entityID, bool generalFormulas)
         {
@@ -168,8 +180,8 @@ namespace MyModelManager
                 }
                 foreach (var item in formulas)
                 {
-                    FormulaDTO rItem = new FormulaDTO();
-                    ToFormulaDTO(item, rItem, false);
+                    //  FormulaDTO rItem = new FormulaDTO();
+                    var rItem = ToFormulaDTO(item, false);
                     result.Add(rItem);
                 }
                 return result;

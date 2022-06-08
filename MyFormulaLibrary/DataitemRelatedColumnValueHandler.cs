@@ -22,9 +22,9 @@ namespace MyFormulaFunctionStateFunctionLibrary
             else
             {
                 DP_DataRepository relatedData = null;
-                if (sentdata.ParantChildRelationshipData != null && sentdata.ParantChildRelationshipData.RelationshipID == valueRelationshipTail.Relationship.ID)
+                if (sentdata.ParantChildRelationshipData != null && sentdata.ParantChildRelationshipData.ToParentRelationshipID == valueRelationshipTail.Relationship.ID)
                 {
-                    if (sentdata.ParantChildRelationshipData.RelationshipID == valueRelationshipTail.Relationship.ID)
+                    if (sentdata.ParantChildRelationshipData.ToParentRelationshipID == valueRelationshipTail.Relationship.ID)
                         relatedData = sentdata.ParantChildRelationshipData.SourceData;
                 }
                 else if (sentdata.ChildRelationshipDatas.Any(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID))

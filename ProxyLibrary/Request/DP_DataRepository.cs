@@ -64,6 +64,11 @@ namespace ProxyLibrary
         //public event EventHandler<ChangeMonitor> RelatedDataCollectionChanged;
         //public event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
         //public Dictionary<int, List<ColumnValueRangeDetailsDTO>> ColumnKeyValueRanges = new Dictionary<int, List<ColumnValueRangeDetailsDTO>>();
+
+        public virtual List<ChildRelationshipData> ChildRelationshipDatas { set; get; }
+
+        public virtual ParentRelationshipData ParantChildRelationshipData { get; set; }
+
         public DP_DataRepository(int TargetEntityID, string TargetEntityAlias) : base(TargetEntityID, TargetEntityAlias)
         {
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
@@ -103,7 +108,11 @@ namespace ProxyLibrary
             get
             {
                 string text = "";
-                if (IsFullData)
+                if (DataView != null)
+                {
+                    return DataView.ViewInfo;
+                }
+                else if (IsFullData)
                 {
                     if (IsNewItem)
                         text = "داده جدید";
@@ -120,10 +129,6 @@ namespace ProxyLibrary
                     }
                     else
                         throw new Exception("asdasdad");
-                }
-                else if (DataView != null)
-                {
-                    return DataView.ViewInfo;
                 }
                 else
                 {
@@ -193,7 +198,7 @@ namespace ProxyLibrary
             else
             {
                 DP_DataRepository relatedData = null;
-                if (ParantChildRelationshipData != null && ParantChildRelationshipData.RelationshipID == valueRelationshipTail.Relationship.ID)
+                if (ParantChildRelationshipData != null && ParantChildRelationshipData.ToParentRelationshipID == valueRelationshipTail.Relationship.ID)
                 {
                     relatedData = ParantChildRelationshipData.SourceData;
                 }
@@ -241,6 +246,25 @@ namespace ProxyLibrary
         {
             return OriginalProperties.FirstOrDefault(x => x.ColumnID == columnID);
         }
+
+        public string Error { get; set; }
+        public bool IsFullData { set; get; }
+        //public List<int> ViewEntityColumns { set; get; }
+        public DP_DataView DataView { set; get; }
+
+        //public DP_DataRepository PairData { set; get; }
+
+
+
+        public Guid GUID;
+        public bool IsNewItem;
+
+
+     
+        public bool IsDBRelationship { get; set; }
+        //public bool RelationshipIsAdded { get;  }
+        public bool IsEdited { get; set; }
+
 
 
         //internal void OnRelatedDataOrColumnChanged(ChangeMonitor item)
@@ -407,7 +431,7 @@ namespace ProxyLibrary
             //    property.IsHidden = currrentProperty.IsHidden;
             property.ISFK = currrentProperty.ISFK;
             //      property.IsReadonlyFromState = currrentProperty.IsReadonlyFromState;
-            property.PropertyValueChanged += Property_PropertyValueChanged;
+            //      property.PropertyValueChanged += Property_PropertyValueChanged;
             property.FormulaID = currrentProperty.FormulaID;
             property.FormulaException = currrentProperty.FormulaException;
             property.FormulaUsageParemeters = currrentProperty.FormulaUsageParemeters;
@@ -467,19 +491,7 @@ namespace ProxyLibrary
         //public List<int> StateIds { set; get; }
 
         //public bool ExcludeFromDataEntry { set; get; }
-        public bool IsFullData { set; get; }
-        //public List<int> ViewEntityColumns { set; get; }
-        public DP_DataView DataView { set; get; }
-        public List<ChildRelationshipData> ChildRelationshipDatas { set; get; }
-
-        //public DP_DataRepository PairData { set; get; }
-
-
-
-        public Guid GUID;
-        public bool IsNewItem;
-
-
+      
 
         //public EntityInstance DataInstance;
 
@@ -502,8 +514,7 @@ namespace ProxyLibrary
 
 
 
-        public string Error { get; set; }
-        public ParentRelationshipData ParantChildRelationshipData { get; set; }
+
         //    public bool ShouldWriteSimpleColumnsQuery { get; set; }
         //   public bool ISValid { get; set; }
 
@@ -536,7 +547,6 @@ namespace ProxyLibrary
         //!item.KeyProperties.All(y => OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value))
         //که اگر داده دوباره انتخاب شد
 
-        public bool IsDBRelationship { get; set; }
         //   public bool IsEmptyOneDirectData { get; set; }
         //  public bool? DataOrRelatedDataIsChanged { get; set; }
         //public bool RelationshipIsRemoved { get
@@ -546,9 +556,7 @@ namespace ProxyLibrary
         //    }
         //}
 
-
-        //public bool RelationshipIsAdded { get;  }
-        public bool IsEdited { get; set; }
+       
         //  public bool IsReadonlyBecauseOfState { get; set; }
         //   public bool IsReadonlyBecauseOfCreatorRelationshipOnState { get; set; }
         //   public bool IsReadonlyBecauseOfCreatorRelationshipOnShow { set; get; }
@@ -1010,303 +1018,297 @@ namespace ProxyLibrary
 
 
 
-    public class ChildRelationshipData
-    {
-
-        public ChildRelationshipData()
-        {
-            RelatedData = new ObservableCollection<ProxyLibrary.DP_DataRepository>();
-            OriginalRelatedData = new ObservableCollection<ProxyLibrary.DP_DataRepository>();
-            RemovedDataForUpdate = new ObservableCollection<ProxyLibrary.DP_DataRepository>();
-            //RemovedItems = new List<ProxyLibrary.DP_DataRepository>();
-            // ReadonlyStateFromTails = new List<string>();
-        }
-
-
-        //    RelationshipDeleteOption RelationshipDeleteOption { set; get; }
-        public RelationshipDeleteOption RelationshipDeleteOption { set; get; }
-        public ProxyLibrary.DP_DataRepository SourceData { set; get; }
-
-        //public void AddDataToChildRelationshipInfo(DP_DataRepository dataItem, bool fromDB)
-        //{
-        //    var parentRelationshipInfo = new ParentRelationshipInfo() { ParantChildRelationshipInfo = this };
-        //    dataItem.ParantChildRelationshipInfo = parentRelationshipInfo;
-        //    RelatedData.Add(dataItem);
-        //    if (fromDB)
-        //    {
-        //        ProxyLibrary.DP_DataRepository orgData = new ProxyLibrary.DP_DataRepository(dataItem.TargetEntityID, dataItem.TargetEntityAlias);
-        //        orgData.ParantChildRelationshipInfo = parentRelationshipInfo;
-        //        foreach (var item in dataItem.KeyProperties)
-        //            orgData.AddCopyProperty(item);
-        //        OriginalRelatedData.Add(orgData);
-        //    }
-        //}
-        //public bool CheckRelationshipIsChanged(ChildRelationshipInfo relation)
-        //{
-        //    if (OriginalRelatedData.Any(x => x.KeyProperties.All(y => !RelatedData.Any(z => z.IsNewItem == false && z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
-        //    {
-        //        //داده ای حذف شده است
-        //        return true;
-        //    }
-        //    if (RelatedData.Any(x => x.KeyProperties.All(y => !OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
-        //    {
-        //        //داده ای اضافه شده است
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
-        //public bool CheckRelationshipIsChanged()
-        //{
-        //    foreach (var deleted in OriginalRelatedData.Where(x => !x.KeyProperties.All(y => RelatedData.Any(z => z.IsNewItem == false && z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
-        //    {
-        //        return true;
-        //    }
-        //    foreach (var added in RelatedData.Where(x => !x.KeyProperties.All(y => OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
-        //    {
-        //        return true;
-        //    }
-        //    return false;
-        //}
-        //public bool DataItemIsAdded(DP_DataRepository item)
-        //{
-        //    return item.IsNewItem || !item.KeyProperties.All(y => OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)));
-        //}
-        //public bool OriginalDataItemIsRemoved(DP_DataRepository originalData)
-        //{
-        //}
-        //public void CheckAddedRemovedRelationships()
-        //{
-        //    //if (IsReadonly)
-        //    //    return;
-        //    foreach (var deleted in OriginalRelatedData.Where(x => !x.KeyProperties.All(y => RelatedData.Any(z => z.IsNewItem == false && z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
-        //    {
-        //        if (deleted.IsHidden)
-        //        {
-        //            throw (new Exception("داده غیر فعال امکان حذف شدن را ندارد"));
-        //        }
-        //        deleted.RelationshipIsRemoved = true;
-        //    }
-        //    foreach (var added in RelatedData.Where(x => !x.KeyProperties.All(y => OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
-        //    {
-        //        added.RelationshipIsAdded = true;
-        //        if (added.IsHidden)
-        //        {
-        //            throw (new Exception("داده غیر فعال امکان اضافه شدن را ندارد"));
-        //        }
-        //    }
-        //}
-        public bool RelationshipIsChangedForUpdate
-        {
-            set; get;
-        }
-        //public List<DP_DataRepository> GetRelatedData(int relationshipID)
-        //{
-        //    return RelatedData.ToList();
-        //    //    else return new List<ProxyLibrary.DP_DataRepository>();
-        //}
-        //public void RemoveRelatedData(DP_DataRepository dP_DataRepository)
-        //{
-        //    //var childRelationshipInfo = ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationshipID);
-        //    //if (childRelationshipInfo != null)
-        //    RelatedData.Remove(dP_DataRepository);
-
-        //}
-        //public void RemoveRelatedData()
-        //{
-        //    //var childRelationshipInfo = ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationshipID);
-        //    //if (childRelationshipInfo != null)
-        //    RelatedData.Clear();
-
-        //}
-
-
-        //internal void AddDataObserver(string key, string restTail, int columnID, DP_DataRepository targetDataItem, bool setSourceOrChilds)
-        //{
-        //    ObserverListForColumn.Add(new ObserverData()
-        //    {
-        //        Key = key,
-        //        ColumnID = columnID,
-        //        TargetDataItem = targetDataItem,
-        //        SourceRalationshipTail = restTail
-        //    });
-
-        //    if (setSourceOrChilds)
-        //    {
-        //        SourceData.AddDataObserver(key, restTail, columnID, targetDataItem);
-        //    }
-        //    else
-        //    {
-        //        foreach (var relatedData in RelatedData)
-        //        {
-        //            relatedData.AddDataObserver(key, restTail, columnID, targetDataItem);
-        //        }
-        //    }
-        //}
-
-
-        //internal void RemoveDataObserver(string key, string restTail, DP_DataRepository targetDataItem)
-        //{
-        //    foreach (var item in ObserverList.ToList())
-        //    {
-        //        if (key == item.Key && item.TargetDataItem == targetDataItem)
-        //        {
-        //            ObserverList.Remove(item);
-        //        }
-        //    }
-
-        //}
-        public RelationshipDTO Relationship { set; get; }
-
-        public ObservableCollection<DP_DataRepository> RemovedDataForUpdate { set; get; }
-        public ObservableCollection<DP_DataRepository> RelatedData { set; get; }
-        //public ObservableCollection<DP_DataRepository> RealData
-        //{
-        //    get
-        //    {
-        //        ObservableCollection<DP_DataRepository> result = new ObservableCollection<DP_DataRepository>();
-        //        foreach (var item in RelatedData)
-        //        {
-        //            if (item.ShoudBeCounted)
-        //            {
-        //                if (item.IsHiddenBecauseOfCreatorRelationshipOnState || this.IsReadonly || item.IsReadonlySomeHow)
-        //                {
-        //                    if (!DataItemIsAdded(item))
-        //                        result.Add(item);
-        //                }
-        //                else
-        //                    result.Add(item);
-        //            }
-        //        }
-        //        foreach (var item in RemovedOriginalDatas)
-        //        {
-        //            if (item.IsHiddenBecauseOfCreatorRelationshipOnState || this.IsReadonly || item.IsReadonlySomeHow)
-        //            {
-        //                result.Add(item);
-        //            }
-        //        }
-        //        return result;
-        //    }
-        //}
-
-        // public bool SecurityIssue { get; set; }
-        public ObservableCollection<DP_DataRepository> OriginalRelatedData { get; private set; }
-        //public List<DP_DataRepository> RemovedOriginalDatas
-        //{
-        //    get
-        //    {
-        //        return OriginalRelatedData.Where(x => !x.KeyProperties.All(y => RelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value.Equals(y.Value))))).ToList();
-        //    }
-        //}
-        //    public List<string> ReadonlyStateFromTails { set; get; }
-        //   public bool IsHidden { get; set; }
-
-        //میشه ریدونلی بودن ریلیشنشیپ رو هم داخل این گذاشت یا لازم نیست؟
-        //    public bool IsReadonly { get; set; }
-        //این باید خود رابطه را چک کنه همچنین اینکه رابطه کریتورش فقط خواندنی هست یا نه؟ خود موجودیت طرفین هم فکر بشه
-
-        // List<ChangeMonitor> ChangeMonitorItems = new List<ChangeMonitor>();
-
-        //اینجا وظیفه چک کردن هم داده ها و هم ستونهای داده را دارد
-        //internal void AddChangeMonitor(string generalKey, string usageKey, string restTail, int columnID, DP_DataRepository dataToCall)
-        //{
-        //    ChangeMonitorItems.Add(new ChangeMonitor()
-        //    {
-        //        GeneralKey = generalKey,
-        //        UsageKey = usageKey,
-        //        DataToCall = dataToCall,
-        //        columnID = columnID,
-        //        RestTail = restTail
-
-        //    });
-
-        //    //if (!string.IsNullOrEmpty(restTail))
-        //    //{
-        //    foreach (var relatedData in RelatedData)
-        //    {
-        //        relatedData.AddChangeMonitor(generalKey, usageKey, restTail, columnID, dataToCall);
-        //    }
-        //    //}
-        //}
-
-
-
-        //internal void RemoveChangeMonitorByGenaralKey(string key)
-        //{
-        //    foreach (var item in ChangeMonitorItems.Where(x => x.GeneralKey == key).ToList())
-        //    {
-        //        ChangeMonitorItems.Remove(item);
-        //        foreach (var data in RelatedData)
-        //        {
-        //            data.RemoveChangeMonitorByGenaralKey(key);
-        //        }
-        //    }
-        //}
-
-        //public bool OriginalDataHasBecomeHidden(DP_DataRepository orginalData)
-        //{
-        //    var currentData = RelatedData.FirstOrDefault(z => z.IsNewItem == false && orginalData.KeyProperties.All(x => z.KeyProperties.Any(u => x.ColumnID == u.ColumnID && x.Value == u.Value)));
-        //    if (currentData != null && currentData.IsHidden)
-        //        return true;
-        //    else
-        //        return false;
-        //}
-
-        //public DP_DataRepository GetOroginalDataOfOriginalData(DP_DataRepository data)
-        //{
-        //    return OriginalRelatedData.First(z => data.KeyProperties.All(y => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)));
-        //}
-
-        //public DP_DataRepository GetRelatedDataOfOriginalData(DP_DataRepository orginalData)
-        //{
-        //    return RelatedData.First(z => orginalData.KeyProperties.All(y => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)));
-        //}
-
-
-        //public ObservableCollection<DP_DataRepository> HiddenData { set; get; }
-        //public void AddHiddenDataRelationship(DP_DataRepository dataItem)
-        //{
-        //    if (!HiddenData.Any(x => x == dataItem))
-        //        HiddenData.Add(dataItem);
-        //}
-        //public void RemoveHiddenDataRelationship(DP_DataRepository dataItem)
-        //{
-        //    if (HiddenData.Any(x => x == dataItem))
-        //    {
-        //        HiddenData.Remove(HiddenData.First(x => x == dataItem));
-        //    }
-        //}
 
 
 
 
-        //public bool OriginalDataHasBecomeReadonlyAndNotExists(DP_DataRepository orginalRelationships)
-        //{
-        //    var currentData = RelatedData.FirstOrDefault(z => z.IsNewItem == false && orginalRelationships.KeyProperties.All(x => z.KeyProperties.Any(u => x.ColumnID == u.ColumnID && x.Value == u.Value)));
-        //    if (currentData != null && currentData.IsReadonly)
-        //        return true;
-        //    else
-        //        return false;
-        //}
-        //   public bool RelationshipIsChanged { get; set; }
-    }
 
-    public class ParentRelationshipData
 
-    {
-        public ParentRelationshipData(ChildRelationshipData parantChildRelationshipdata)
-        {
-            ParantChildRelationshipData = parantChildRelationshipdata;
-        }
-        public ChildRelationshipData ParantChildRelationshipData { set; get; }
-        public int RelationshipID { get { return ParantChildRelationshipData.Relationship.PairRelationshipID; } }
-        public RelationshipDTO ToRelationship { get { return ParantChildRelationshipData.Relationship.PairRelationship; } }
-        public DP_DataRepository SourceData { get { return ParantChildRelationshipData.SourceData; } }
-        //   public bool IsHidden { get; set; }
-        //   public bool IsReadonly { get; set; }
-        public bool IsAdded { get; set; }
-    }
+    //        It is not possible the way you want it, exactly.
 
+    //You can create a "new" property with the same name:
+
+    //public new SunData Data
+    //        {
+    //            get { return (SunData)base.Data; }
+    //            set { base.Data = value; }
+    //        }
+    //        It's not quite the same thing, but it's probably as close as you're going to get.
+
+
+
+    //Another possible approach would be:
+
+    //public SunData SunData { get; set; }
+
+    //        public override OuterSpaceData Data
+    //        {
+    //            get { return SunData; }
+    //            set { SunData = (SunData)value; }
+    //        }
+    //        The advantage of this approach is that it does guarantee that it's impossible to put something in your Data property that is not a SunData. The downside is that your Data property is not strongly typed and you have to use the SunData property if you want it statically typed to SunData.
+
+
+
+
+
+
+    //public void AddDataToChildRelationshipInfo(DP_DataRepository dataItem, bool fromDB)
+    //{
+    //    var parentRelationshipInfo = new ParentRelationshipInfo() { ParantChildRelationshipInfo = this };
+    //    dataItem.ParantChildRelationshipInfo = parentRelationshipInfo;
+    //    RelatedData.Add(dataItem);
+    //    if (fromDB)
+    //    {
+    //        ProxyLibrary.DP_DataRepository orgData = new ProxyLibrary.DP_DataRepository(dataItem.TargetEntityID, dataItem.TargetEntityAlias);
+    //        orgData.ParantChildRelationshipInfo = parentRelationshipInfo;
+    //        foreach (var item in dataItem.KeyProperties)
+    //            orgData.AddCopyProperty(item);
+    //        OriginalRelatedData.Add(orgData);
+    //    }
+    //}
+    //public bool CheckRelationshipIsChanged(ChildRelationshipInfo relation)
+    //{
+    //    if (OriginalRelatedData.Any(x => x.KeyProperties.All(y => !RelatedData.Any(z => z.IsNewItem == false && z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
+    //    {
+    //        //داده ای حذف شده است
+    //        return true;
+    //    }
+    //    if (RelatedData.Any(x => x.KeyProperties.All(y => !OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
+    //    {
+    //        //داده ای اضافه شده است
+    //        return true;
+    //    }
+    //    return false;
+    //}
+
+    //public bool CheckRelationshipIsChanged()
+    //{
+    //    foreach (var deleted in OriginalRelatedData.Where(x => !x.KeyProperties.All(y => RelatedData.Any(z => z.IsNewItem == false && z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
+    //    {
+    //        return true;
+    //    }
+    //    foreach (var added in RelatedData.Where(x => !x.KeyProperties.All(y => OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
+    //    {
+    //        return true;
+    //    }
+    //    return false;
+    //}
+    //public bool DataItemIsAdded(DP_DataRepository item)
+    //{
+    //    return item.IsNewItem || !item.KeyProperties.All(y => OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)));
+    //}
+    //public bool OriginalDataItemIsRemoved(DP_DataRepository originalData)
+    //{
+    //}
+    //public void CheckAddedRemovedRelationships()
+    //{
+    //    //if (IsReadonly)
+    //    //    return;
+    //    foreach (var deleted in OriginalRelatedData.Where(x => !x.KeyProperties.All(y => RelatedData.Any(z => z.IsNewItem == false && z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
+    //    {
+    //        if (deleted.IsHidden)
+    //        {
+    //            throw (new Exception("داده غیر فعال امکان حذف شدن را ندارد"));
+    //        }
+    //        deleted.RelationshipIsRemoved = true;
+    //    }
+    //    foreach (var added in RelatedData.Where(x => !x.KeyProperties.All(y => OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)))))
+    //    {
+    //        added.RelationshipIsAdded = true;
+    //        if (added.IsHidden)
+    //        {
+    //            throw (new Exception("داده غیر فعال امکان اضافه شدن را ندارد"));
+    //        }
+    //    }
+    //}
+
+    //public List<DP_DataRepository> GetRelatedData(int relationshipID)
+    //{
+    //    return RelatedData.ToList();
+    //    //    else return new List<ProxyLibrary.DP_DataRepository>();
+    //}
+    //public void RemoveRelatedData(DP_DataRepository dP_DataRepository)
+    //{
+    //    //var childRelationshipInfo = ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationshipID);
+    //    //if (childRelationshipInfo != null)
+    //    RelatedData.Remove(dP_DataRepository);
+
+    //}
+    //public void RemoveRelatedData()
+    //{
+    //    //var childRelationshipInfo = ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationshipID);
+    //    //if (childRelationshipInfo != null)
+    //    RelatedData.Clear();
+
+    //}
+
+
+    //internal void AddDataObserver(string key, string restTail, int columnID, DP_DataRepository targetDataItem, bool setSourceOrChilds)
+    //{
+    //    ObserverListForColumn.Add(new ObserverData()
+    //    {
+    //        Key = key,
+    //        ColumnID = columnID,
+    //        TargetDataItem = targetDataItem,
+    //        SourceRalationshipTail = restTail
+    //    });
+
+    //    if (setSourceOrChilds)
+    //    {
+    //        SourceData.AddDataObserver(key, restTail, columnID, targetDataItem);
+    //    }
+    //    else
+    //    {
+    //        foreach (var relatedData in RelatedData)
+    //        {
+    //            relatedData.AddDataObserver(key, restTail, columnID, targetDataItem);
+    //        }
+    //    }
+    //}
+
+
+    //internal void RemoveDataObserver(string key, string restTail, DP_DataRepository targetDataItem)
+    //{
+    //    foreach (var item in ObserverList.ToList())
+    //    {
+    //        if (key == item.Key && item.TargetDataItem == targetDataItem)
+    //        {
+    //            ObserverList.Remove(item);
+    //        }
+    //    }
+
+    //}
+
+    //public ObservableCollection<DP_DataRepository> RealData
+    //{
+    //    get
+    //    {
+    //        ObservableCollection<DP_DataRepository> result = new ObservableCollection<DP_DataRepository>();
+    //        foreach (var item in RelatedData)
+    //        {
+    //            if (item.ShoudBeCounted)
+    //            {
+    //                if (item.IsHiddenBecauseOfCreatorRelationshipOnState || this.IsReadonly || item.IsReadonlySomeHow)
+    //                {
+    //                    if (!DataItemIsAdded(item))
+    //                        result.Add(item);
+    //                }
+    //                else
+    //                    result.Add(item);
+    //            }
+    //        }
+    //        foreach (var item in RemovedOriginalDatas)
+    //        {
+    //            if (item.IsHiddenBecauseOfCreatorRelationshipOnState || this.IsReadonly || item.IsReadonlySomeHow)
+    //            {
+    //                result.Add(item);
+    //            }
+    //        }
+    //        return result;
+    //    }
+    //}
+
+    // public bool SecurityIssue { get; set; }
+    //public List<DP_DataRepository> RemovedOriginalDatas
+    //{
+    //    get
+    //    {
+    //        return OriginalRelatedData.Where(x => !x.KeyProperties.All(y => RelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value.Equals(y.Value))))).ToList();
+    //    }
+    //}
+    //    public List<string> ReadonlyStateFromTails { set; get; }
+    //   public bool IsHidden { get; set; }
+
+    //میشه ریدونلی بودن ریلیشنشیپ رو هم داخل این گذاشت یا لازم نیست؟
+    //    public bool IsReadonly { get; set; }
+    //این باید خود رابطه را چک کنه همچنین اینکه رابطه کریتورش فقط خواندنی هست یا نه؟ خود موجودیت طرفین هم فکر بشه
+
+    // List<ChangeMonitor> ChangeMonitorItems = new List<ChangeMonitor>();
+
+    //اینجا وظیفه چک کردن هم داده ها و هم ستونهای داده را دارد
+    //internal void AddChangeMonitor(string generalKey, string usageKey, string restTail, int columnID, DP_DataRepository dataToCall)
+    //{
+    //    ChangeMonitorItems.Add(new ChangeMonitor()
+    //    {
+    //        GeneralKey = generalKey,
+    //        UsageKey = usageKey,
+    //        DataToCall = dataToCall,
+    //        columnID = columnID,
+    //        RestTail = restTail
+
+    //    });
+
+    //    //if (!string.IsNullOrEmpty(restTail))
+    //    //{
+    //    foreach (var relatedData in RelatedData)
+    //    {
+    //        relatedData.AddChangeMonitor(generalKey, usageKey, restTail, columnID, dataToCall);
+    //    }
+    //    //}
+    //}
+
+
+
+    //internal void RemoveChangeMonitorByGenaralKey(string key)
+    //{
+    //    foreach (var item in ChangeMonitorItems.Where(x => x.GeneralKey == key).ToList())
+    //    {
+    //        ChangeMonitorItems.Remove(item);
+    //        foreach (var data in RelatedData)
+    //        {
+    //            data.RemoveChangeMonitorByGenaralKey(key);
+    //        }
+    //    }
+    //}
+
+    //public bool OriginalDataHasBecomeHidden(DP_DataRepository orginalData)
+    //{
+    //    var currentData = RelatedData.FirstOrDefault(z => z.IsNewItem == false && orginalData.KeyProperties.All(x => z.KeyProperties.Any(u => x.ColumnID == u.ColumnID && x.Value == u.Value)));
+    //    if (currentData != null && currentData.IsHidden)
+    //        return true;
+    //    else
+    //        return false;
+    //}
+
+    //public DP_DataRepository GetOroginalDataOfOriginalData(DP_DataRepository data)
+    //{
+    //    return OriginalRelatedData.First(z => data.KeyProperties.All(y => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)));
+    //}
+
+    //public DP_DataRepository GetRelatedDataOfOriginalData(DP_DataRepository orginalData)
+    //{
+    //    return RelatedData.First(z => orginalData.KeyProperties.All(y => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value)));
+    //}
+
+
+    //public ObservableCollection<DP_DataRepository> HiddenData { set; get; }
+    //public void AddHiddenDataRelationship(DP_DataRepository dataItem)
+    //{
+    //    if (!HiddenData.Any(x => x == dataItem))
+    //        HiddenData.Add(dataItem);
+    //}
+    //public void RemoveHiddenDataRelationship(DP_DataRepository dataItem)
+    //{
+    //    if (HiddenData.Any(x => x == dataItem))
+    //    {
+    //        HiddenData.Remove(HiddenData.First(x => x == dataItem));
+    //    }
+    //}
+
+
+
+
+    //public bool OriginalDataHasBecomeReadonlyAndNotExists(DP_DataRepository orginalRelationships)
+    //{
+    //    var currentData = RelatedData.FirstOrDefault(z => z.IsNewItem == false && orginalRelationships.KeyProperties.All(x => z.KeyProperties.Any(u => x.ColumnID == u.ColumnID && x.Value == u.Value)));
+    //    if (currentData != null && currentData.IsReadonly)
+    //        return true;
+    //    else
+    //        return false;
+    //}
+    //   public bool RelationshipIsChanged { get; set; }
+   
 
     //public class ParentRelationshipInfo
 

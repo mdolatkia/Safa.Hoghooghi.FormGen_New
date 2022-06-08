@@ -32,22 +32,8 @@ namespace MyUILibrary.EntityArea
             //SimpleColumnControls = new List<SimpleColumnControl>();
             //RelationshipColumnControls = new List<RelationshipColumnControl>();
         }
-        public void RemoveData(List<DP_FormDataRepository> datas)
-        {
-            foreach (var data in datas)
-            {
-                GetDataList().Remove(data);
-                RemoveDataContainer(data);
-            }
 
-            bool isDirect = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-                    AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
-            if (!isDirect)
-                SetTempText();
 
-            DecideButtonsEnablity1();
-        }
-       
         //private void View_ButtonClicked(object sender, ConfirmModeClickedArg e, List<DP_FormDataRepository> deleteDataList)
         //{
         //    I_ViewDeleteInquiry view = sender as I_ViewDeleteInquiry;
@@ -92,23 +78,23 @@ namespace MyUILibrary.EntityArea
         //        return false;
         //    //ManageDataSecurity();
         //}
+        public void RemoveDataContainer(DP_FormDataRepository dataItem)
+        {
+            (DataViewGeneric as I_View_EditEntityAreaMultiple).RemoveDataContainer(dataItem);
+            //if (DataItemRemoved != null)
+            //    DataItemRemoved(this, new EditAreaDataItemArg() { DataItem = dataItem });
+        }
         public void RemoveDataContainers()
         {
             if (DataViewGeneric != null)
             {
                 var list = (DataViewGeneric as I_View_EditEntityAreaMultiple).RemoveDataContainers();
-                if (DataItemRemoved != null)
-                {
-                    foreach (var item in list)
-                        DataItemRemoved(this, new EditAreaDataItemArg() { DataItem = item as DP_FormDataRepository });
-                }
+                //if (DataItemRemoved != null)
+                //{
+                //    foreach (var item in list)
+                //        DataItemRemoved(this, new EditAreaDataItemArg() { DataItem = item as DP_FormDataRepository });
+                //}
             }
-        }
-        private void RemoveDataContainer(DP_FormDataRepository dataItem)
-        {
-            (DataViewGeneric as I_View_EditEntityAreaMultiple).RemoveDataContainer(dataItem);
-            if (DataItemRemoved != null)
-                DataItemRemoved(this, new EditAreaDataItemArg() { DataItem = dataItem });
         }
         //public bool ShowDatasInDataView(List<DP_FormDataRepository> dataItems)
         //{

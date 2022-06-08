@@ -73,8 +73,9 @@ namespace MyCacheManager
         Validation,
         Command,
         EntityListView,
-        RelationshipTail
-
-
+        RelationshipTail,
+        Formula,
+        EntityListViewDefault,
+        EntityState
     }
 }
