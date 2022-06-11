@@ -2299,27 +2299,28 @@ namespace MyUILibrary.EntityArea
         //    return true;
         //}
 
-        public bool AddData(DP_FormDataRepository data)
+        public bool AddData(DP_FormDataRepository dataItem)
         {
             var result = true;
             if (this.AreaInitializer.SourceRelationColumnControl != null)
                 throw new Exception("asvvvb");
 
-            if (DataEntryEntity.IsReadonly && data.IsNewItem && !data.IsDefaultData)
+            if (DataEntryEntity.IsReadonly && dataItem.IsNewItem && !dataItem.IsDefaultData)
                 throw new Exception();
 
-            if (data.EntityListView == null)
-                data.EntityListView = DefaultEntityListViewDTO;
+            if (dataItem.EntityListView == null)
+                dataItem.EntityListView = DefaultEntityListViewDTO;
 
-
-            AreaInitializer.ActionActivityManager.DataAdded(data);
-            AreaInitializer.Datas.Add(data);
+            if (!dataItem.IsNewItem)
+                AreaInitializer.ActionActivityManager.DataAdded(dataItem);
+          
+            AreaInitializer.Datas.Add(dataItem);
 
             bool isDirect = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
                           AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
             if (isDirect)
             {
-                if (!ShowDataInDataView(data))
+                if (!ShowDataInDataView(dataItem))
                 {
                     //نمایش ناموفق!!
                     if (this is I_EditEntityAreaOneData)
@@ -2353,14 +2354,14 @@ namespace MyUILibrary.EntityArea
 
             }
 
-          
+
 
             if (result)
                 OnDataItemShown(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
             return result;
 
         }
-     
+
         //   List<ChildRelationshipInfo> RegisteredParentDataItems = new List<ChildRelationshipInfo>();
         //public void SetChildRelationshipInfo(ChildRelationshipInfo value)
         //{

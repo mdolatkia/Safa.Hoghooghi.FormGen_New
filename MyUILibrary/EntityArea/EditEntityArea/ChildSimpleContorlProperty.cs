@@ -163,32 +163,32 @@ namespace MyUILibrary.EntityArea
         //    }
         //}
 
-        public void AddReadonlyState(string key, string message, bool permanent, bool checkInUI)
+        public void AddReadonlyState(string key, string message, bool permanent)
         {
             if (ControlReadonlyStateItems.Any(x => x.Key == key))
                 ControlReadonlyStateItems.Remove(ControlReadonlyStateItems.First(x => x.Key == key));
             ControlReadonlyStateItems.Add(new ControlStateItem(key, message, permanent));
 
-            if (checkInUI)
-            {
-                CheckColumnReadonly();
-                SetMessageAndColor();
-            }
+            //if (checkInUI)
+            //{
+            //    CheckColumnReadonly();
+            //    SetMessageAndColor();
+            //}
         }
 
 
 
-        public void RemoveReadonlyState(string key, bool checkInUI)
-        {
-            if (ControlReadonlyStateItems.Any(x => x.Key == key && x.Permanent == false))
-                ControlReadonlyStateItems.RemoveAll(x => x.Key == key && x.Permanent == false);
+        //public void RemoveReadonlyState(string key, bool checkInUI)
+        //{
+        //    if (ControlReadonlyStateItems.Any(x => x.Key == key && x.Permanent == false))
+        //        ControlReadonlyStateItems.RemoveAll(x => x.Key == key && x.Permanent == false);
 
-            if (checkInUI)
-            {
-                CheckColumnReadonly();
-                SetMessageAndColor();
-            }
-        }
+        //    if (checkInUI)
+        //    {
+        //        CheckColumnReadonly();
+        //        SetMessageAndColor();
+        //    }
+        //}
 
         private void CheckColumnReadonly()
         {

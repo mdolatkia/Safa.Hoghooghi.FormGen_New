@@ -50,7 +50,7 @@ namespace MyUILibrary.EntityArea
                                  || relationshipControl.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
                         {
                           //  var childRelInfo = data.ChildRelationshipDatas.First(x => x.Relationship == relationshipControl.Relationship);
-                            if (!relationshipControl.IsHiddenOnState)
+                            if (!relationshipControl.IsHidden)
                             {
                               //  relationshipControl.RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
 
@@ -204,7 +204,7 @@ namespace MyUILibrary.EntityArea
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
                 var childRel = data.ChildRelationshipDatas.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
-                if (!childRel.IsHiddenOnState)
+                if (!childRel.IsHidden)
                 {
                     if (relationshipControl.Relationship.TypeEnum == Enum_RelationshipType.SubToSuper)
                     {
@@ -272,7 +272,7 @@ namespace MyUILibrary.EntityArea
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
                 var childRel = data.ChildRelationshipDatas.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
-                if (!childRel.IsHiddenOnState)
+                if (!childRel.IsHidden)
                 {
                     if (relationshipControl.Relationship.TypeEnum == Enum_RelationshipType.SuperToSub)
                     {
@@ -371,7 +371,7 @@ namespace MyUILibrary.EntityArea
                 if (relationshipControl.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion)
                 {
                     var childRel = data.ChildRelationshipDatas.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
-                    if (!childRel.IsHiddenOnState)
+                    if (!childRel.IsHidden)
                     {
                         var unionRelationship = (relationshipControl.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship;
                         //چک کردن دیسجوینت بودن
@@ -431,7 +431,7 @@ namespace MyUILibrary.EntityArea
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
                 var childRel = data.ChildRelationshipDatas.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
-                if (!childRel.IsHiddenOnState)
+                if (!childRel.IsHidden)
                 {
                     if (relationshipControl.Relationship.TypeEnum == Enum_RelationshipType.UnionToSubUnion)
                     {
@@ -500,7 +500,7 @@ namespace MyUILibrary.EntityArea
         }
         private void ValidateRelationshipColumn(DP_FormDataRepository dataItem, ChildRelationshipInfo childRelationshipInfo, RelationshipColumnControlGeneral relationshipControl)
         {
-            if (!childRelationshipInfo.IsHiddenOnState)
+            if (!childRelationshipInfo.IsHidden)
             {
                 if (relationshipControl.Relationship.IsOtherSideMandatory == true)
                 {
@@ -519,7 +519,7 @@ namespace MyUILibrary.EntityArea
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
                 var childRel = data.ChildRelationshipDatas.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
-                if (!childRel.IsHiddenOnState)
+                if (!childRel.IsHidden)
                 {
                     if (relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect
                     || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect

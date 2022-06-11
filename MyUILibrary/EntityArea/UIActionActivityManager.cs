@@ -511,7 +511,10 @@ namespace MyUILibrary.EntityArea
 
         public void DataAdded(DP_FormDataRepository dataItem)
         {
-            List<BaseColumnControl> hiddenControls = new List<BaseColumnControl>();
+            //DataAddedResult result = new DataAddedResult();
+
+            if (dataItem.IsNewItem)
+                return;
 
             foreach (var state in EditArea.EntityStates1.Where(x => StateHasOnLoadAction(x)))
             {
@@ -528,11 +531,39 @@ namespace MyUILibrary.EntityArea
                                 {
                                     if (type == ActionType.OnLoadParentRelationship)
                                     {
-                                        ParentRelationshipAction(state, detail, dataItem);
+                                        if (detail.Hidden == true)
+                                        {
+                                            dataItem.AddParentRelationshipHiddenState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
+                                                                                                                               //    result.parentRelationshipIsHidden = true;
+                                        }
+                                        else if (detail.Readonly == true)
+                                        {
+                                            dataItem.AddParentRelationshipReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
+                                                                                                                                 //  result.parentRelationshipIsReadonly = true;
+                                        }
                                     }
                                     else if (type == ActionType.OnLoadChildReadonly)
                                     {
-                                        ChildItemReadonly(state, detail, dataItem);
+                                        if (detail.RelationshipID != 0)
+                                        {
+                                            if (dataItem.ChildRelationshipDatas.Any(x => x.Relationship.ID == detail.RelationshipID))
+                                            {
+                                                var childRelationshipInfo = dataItem.ChildRelationshipDatas.First(x => x.Relationship.ID == detail.RelationshipID);
+                                                childRelationshipInfo.AddReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
+                                            }
+                                            else
+                                                dataItem.AddTempRelationshipPropertyReadonly(detail.RelationshipID,detail.ID.ToString(), state.Title, true);
+                                        }
+                                        else if (detail.ColumnID != 0)
+                                        {
+                                            var simpleColumn = GetChildSimpleContorlProperty(dataItem, detail.ColumnID);
+                                            if (simpleColumn != null)
+                                            {
+                                                simpleColumn.AddReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);//, ImposeControlState.Impose);// GetColumnReadonlyControlState(state, dataItem, detail.ColumnID, actionActivitySource));
+                                            }
+                                            else
+                                                dataItem.AddTempSimplePropertyReadonly(detail.ColumnID,detail.ID.ToString(), state.Title, true);
+                                        }
                                     }
                                 }
                             }
@@ -540,24 +571,27 @@ namespace MyUILibrary.EntityArea
                     }
                 }
             }
-
+            //   return result;
             //if (EditArea is I_EditEntityAreaOneData && hiddenControls.Any())
             //{
             //    (EditArea as I_EditEntityAreaOneData).CheckContainersVisiblity(hiddenControls);
             //}
         }
+        public void DataShown(DP_FormDataRepository dataItem)
+        {
 
+        }
         private ActionType IsOnLoadOnlyAction(UIEnablityDetailsDTO uiEnablity)
         {
             if (uiEnablity.RelationshipID != 0 && EditArea.AreaInitializer.SourceRelationColumnControl != null &&
              uiEnablity.RelationshipID == EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID)
                 return ActionType.OnLoadParentRelationship;
+            else if (uiEnablity.Hidden == true)
+                return ActionType.DynamicChildVisiblity;
             else if (uiEnablity.Readonly == true)
             {
                 return ActionType.OnLoadChildReadonly;
             }
-            else if (uiEnablity.Hidden == true)
-                return ActionType.DynamicChildVisiblity;
             else
                 return ActionType.Unknown;
             //   fItems.Add(uiEnablity);
@@ -569,79 +603,59 @@ namespace MyUILibrary.EntityArea
 
         private BaseColumnControl ChildItemVisiblity(EntityStateDTO state, UIEnablityDetailsDTO detail, DP_FormDataRepository dataItem, bool hidden)
         {
-            if (detail.RelationshipID != 0)
+            if (dataItem.DataIsInEditMode())
             {
-                if (dataItem.ChildRelationshipDatas.Any(x => x.Relationship.ID == detail.RelationshipID))
+                if (detail.RelationshipID != 0)
                 {
-                    var childRelationshipInfo = dataItem.ChildRelationshipDatas.First(x => x.Relationship.ID == detail.RelationshipID);
-
-                    if ((childRelationshipInfo.SourceData as DP_FormDataRepository).DataIsInEditMode())
+                    if (dataItem.ChildRelationshipDatas.Any(x => x.Relationship.ID == detail.RelationshipID))
                     {
+                        var childRelationshipInfo = dataItem.ChildRelationshipDatas.First(x => x.Relationship.ID == detail.RelationshipID);
+
                         if (hidden)
-                            childRelationshipInfo.AddHiddenState(detail.ID.ToString(), "غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, false, true);
+                            childRelationshipInfo.AddHiddenState(detail.ID.ToString(), "غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, false);
                         else
-                            childRelationshipInfo.RemoveHiddenState(detail.ID.ToString(), true);
+                            childRelationshipInfo.RemoveHiddenState(detail.ID.ToString());
+                        return childRelationshipInfo.RelationshipControl;
                     }
-                    return childRelationshipInfo.RelationshipControl;
                 }
-            }
-            else if (detail.ColumnID != 0)
-            {
-                var simpleColumn = GetChildSimpleContorlProperty(dataItem, detail.ColumnID);
-                if (simpleColumn != null)
+                else if (detail.ColumnID != 0)
                 {
-                    if (hidden)
-                        simpleColumn.AddHiddenState(detail.ID.ToString(), "غیر فعال سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, false, true);
-                    else
-                        simpleColumn.RemoveHiddenState(detail.ID.ToString(), true);
-                    return (simpleColumn.SimpleColumnControl);
-                }
-            }
-            return null;
-        }
-
-        private BaseColumnControl ParentRelationshipAction(EntityStateDTO state, UIEnablityDetailsDTO detail, DP_FormDataRepository dataItem)
-        {
-            if (detail.RelationshipID != 0)
-            {
-                if (EditArea.AreaInitializer.SourceRelationColumnControl != null && 
-                    detail.RelationshipID == EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID)
-                {
-                    if (detail.Hidden == true)
+                    var simpleColumn = GetChildSimpleContorlProperty(dataItem, detail.ColumnID);
+                    if (simpleColumn != null)
                     {
-                        dataItem.AddParentRelationshipHiddenState("غیر فعال سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
+               //         if (dataItem.DataIsInEditMode())
 
-                    }
-                    else if (detail.Readonly == true)
-                    {
-                        dataItem.AddParentRelationshipReadonlyState("فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, detail.ID.ToString(), true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
+                            if (hidden)
+                                simpleColumn.AddHiddenState(detail.ID.ToString(), "غیر فعال سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, false, true);
+                            else
+                                simpleColumn.RemoveHiddenState(detail.ID.ToString(), true);
+                        return (simpleColumn.SimpleColumnControl);
                     }
                 }
-
             }
+
+            دوتا کار باید انجام شه
+
+                پراپرتی ستونها هم مثل روابط یکی شود پیام و مخفی شدن
+
+                دوم اینکه اگر رابطه مخفی شد دیگه دیتا و بایندینگش انجام نشه.
             return null;
         }
-        private BaseColumnControl ChildItemReadonly(EntityStateDTO state, UIEnablityDetailsDTO detail, DP_FormDataRepository dataItem)
-        {
-            if (detail.RelationshipID != 0)
-            {
-                if (dataItem.ChildRelationshipDatas.Any(x => x.Relationship.ID == detail.RelationshipID))
-                {
-                    var childRelationshipInfo = dataItem.ChildRelationshipDatas.First(x => x.Relationship.ID == detail.RelationshipID);
-                    childRelationshipInfo.AddReadonlyState(detail.ID.ToString(), "فقط خواندنی سازی رابطه" + " " + "بر اساس وضعیت" + " " + state.Title, true, false);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
-                                                                                                                                                                    //حتما داده باید در یو آی حاضر باشد
-                }
-            }
-            else if (detail.ColumnID != 0)
-            {
-                var simpleColumn = GetChildSimpleContorlProperty(dataItem, detail.ColumnID);
-                if (simpleColumn != null)
-                {
-                    simpleColumn.AddReadonlyState(detail.ID.ToString(), "فقط خواندنی سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, true, false);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);//, ImposeControlState.Impose);// GetColumnReadonlyControlState(state, dataItem, detail.ColumnID, actionActivitySource));
-                }
-            }
-            return null;
-        }
+
+        //private bool ParentRelationshipAction(EntityStateDTO state, UIEnablityDetailsDTO detail, DP_FormDataRepository dataItem)
+        //{
+        //    if (detail.RelationshipID != 0)
+        //    {
+
+
+        //    }
+        //    return false;
+        //}
+        //private BaseColumnControl ChildItemReadonly(EntityStateDTO state, UIEnablityDetailsDTO detail, DP_FormDataRepository dataItem)
+        //{
+
+        //    return null;
+        //}
         private bool CheckEntityState(DP_FormDataRepository dataItem, EntityStateDTO state)
         {
             bool stateIsValid = false;
@@ -1105,6 +1119,11 @@ namespace MyUILibrary.EntityArea
         OnLoadParentRelationship,
         DynamicChildVisiblity,
         Unknown
+    }
+    public class DataAddedResult
+    {
+        public bool parentRelationshipIsHidden { set; get; }
+        public bool parentRelationshipIsReadonly { set; get; }
     }
     //private void DoUIEnablity(EntityStateDTO state, UIEnablityDetailsDTO detail, bool v)
     //{

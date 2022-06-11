@@ -144,7 +144,7 @@ namespace MyUILibrary.EntityArea
         {
             get
             {
-                return ToParentRelationshipReadonlyStateItems.Any();
+                return ToParentRelationshipHiddenStateItems.Any();
             }
         }
         //private void Property_PropertyValueChanged(object sender, PropertyValueChangedArg e)
@@ -179,9 +179,14 @@ namespace MyUILibrary.EntityArea
 
                     //childProperty.Binded();
 
-                    var property = Properties.FirstOrDefault(x => x.ColumnID == simpleColumn.Column.ID);
-                    if (property != null)
-                        ChildSimpleContorlProperties.Add(new ChildSimpleContorlProperty(simpleColumn, this, property));
+                    var property = Properties.First(x => x.ColumnID == simpleColumn.Column.ID);
+                    var simpleProperty = new ChildSimpleContorlProperty(simpleColumn, this, property);
+                    ChildSimpleContorlProperties.Add(simpleProperty);
+                    if (ListTempSimplePropertyReadonly.Any(x => x.Item1 == simpleColumn.Column.ID))
+                    {
+                        var item = ListTempSimplePropertyReadonly.First(x => x.Item1 == simpleColumn.Column.ID);
+                        simpleProperty.AddReadonlyState(item.Item2, item.Item3, item.Item4);
+                    }
                 }
 
                 foreach (var relationshipColumnControl in EditEntityArea.RelationshipColumnControls)
@@ -197,6 +202,11 @@ namespace MyUILibrary.EntityArea
 
                     var childRelationshipInfo = new ChildRelationshipInfo(relationshipColumnControl, this);
                     base.ChildRelationshipDatas.Add(childRelationshipInfo);
+                    if (ListTempRelationshipPropertyReadonly.Any(x => x.Item1 == relationshipColumnControl.Relationship.ID))
+                    {
+                        var item = ListTempRelationshipPropertyReadonly.First(x => x.Item1 == relationshipColumnControl.Relationship.ID);
+                        childRelationshipInfo.AddReadonlyState(item.Item2, item.Item3, item.Item4);
+                    }
                     //     ChildRelationshipDatas.Add(childRelationshipInfo);
                     CheckChildRelationshipInfoChangeMonitor();
                     //  return childRelationshipInfo;
@@ -765,8 +775,16 @@ namespace MyUILibrary.EntityArea
             //    }
             //return false;
         }
-
-
+        List<Tuple<int, string, string, bool>> ListTempSimplePropertyReadonly = new List<Tuple<int, string, string, bool>>();
+        internal void AddTempSimplePropertyReadonly(int id, string key, string title, bool permanent)
+        {
+            ListTempSimplePropertyReadonly.Add(new Tuple<int, string, string, bool>(id, key, title, permanent));
+        }
+        List<Tuple<int, string, string, bool>> ListTempRelationshipPropertyReadonly = new List<Tuple<int, string, string, bool>>();
+        internal void AddTempRelationshipPropertyReadonly(int id, string key, string title, bool permanent)
+        {
+            ListTempRelationshipPropertyReadonly.Add(new Tuple<int, string, string, bool>(id, key, title, permanent));
+        }
         public bool DataItemIsInViewMode()
         {
             return DataIsInEditMode() || DataItemIsInTempViewMode();
@@ -887,13 +905,13 @@ namespace MyUILibrary.EntityArea
                 ToParentRelationshipHiddenStateItems.Remove(ToParentRelationshipHiddenStateItems.First(x => x.Key == key));
             ToParentRelationshipHiddenStateItems.Add(new ControlStateItem(key, message, permanent));
         }
-        public void RemoveParentRelationshipHiddenState(string key)
-        {
-            if (ToParentRelationshipHiddenStateItems.Any(x => x.Key == key && x.Permanent == false))
-                ToParentRelationshipHiddenStateItems.RemoveAll(x => x.Key == key && x.Permanent == false);
-            //DecideVisiblity();
-            //SetMessageAndColor();
-        }
+        //public void RemoveParentRelationshipHiddenState(string key)
+        //{
+        //    if (ToParentRelationshipHiddenStateItems.Any(x => x.Key == key && x.Permanent == false))
+        //        ToParentRelationshipHiddenStateItems.RemoveAll(x => x.Key == key && x.Permanent == false);
+        //    //DecideVisiblity();
+        //    //SetMessageAndColor();
+        //}
         //private void DecideVisiblity()
         //{
 
@@ -1115,7 +1133,7 @@ namespace MyUILibrary.EntityArea
                         var childInfo = ChildRelationshipDatas.FirstOrDefault(x => x.Relationship.ID == item.Item2.Relationship.ID);
                         if (childInfo != null)
                         {
-                            if (!childInfo.Relationship.IsReadonly && !childInfo.IsReadonlyOnState && !childInfo.IsHiddenOnState)
+                            if (!childInfo.Relationship.IsReadonly && !childInfo.IsReadonlyOnState && !childInfo.IsHidden)
                             {
                                 childInfo.SelectFromParent(item.Item3);
                             }
@@ -1252,12 +1270,12 @@ namespace MyUILibrary.EntityArea
             Key = key;
             Message = message;
             Permanent = permanent;
-        //    ImposeInUI = imposeInUI;
+            //    ImposeInUI = imposeInUI;
         }
         public bool Permanent { get; set; }
         public string Key { get; set; }
         public string Message { get; set; }
-      //  public bool ImposeInUI { get; set; }
+        //  public bool ImposeInUI { get; set; }
     }
 
 }

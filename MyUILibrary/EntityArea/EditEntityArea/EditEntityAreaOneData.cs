@@ -306,11 +306,11 @@ namespace MyUILibrary.EntityArea
 
                     foreach (var property in newData.ChildSimpleContorlProperties)
                     {
-                        property.AddReadonlyState("", "DataNewAndReadonly", true, false);
+                        property.AddReadonlyState("", "DataNewAndReadonly", true);
                     }
                     foreach (var rel in newData.ChildRelationshipDatas)
                     {
-                        rel.AddReadonlyState("", "DataNewAndReadonly", true, false);
+                        rel.AddReadonlyState("", "DataNewAndReadonly", true);
                     }
                 }
 
