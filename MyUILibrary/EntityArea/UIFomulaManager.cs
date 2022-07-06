@@ -69,7 +69,7 @@ namespace MyUILibrary.EntityArea
                     {
                         foreach (var item in columnItems)
                         {
-                            e.DataItem.AddChangeMonitor(generalKey, usageKey, item.RelationshipIDTail, item.ItemID);
+                            e.DataItem.AddChangeMonitorIfNotExists(generalKey, usageKey, item.RelationshipIDTail, item.ItemID);
                         }
                     }
                     var relationshipItems = fullFormula.FormulaItems.Where(x => !string.IsNullOrEmpty(x.RelationshipIDTail)).GroupBy(x => x.RelationshipIDTail);
@@ -77,7 +77,7 @@ namespace MyUILibrary.EntityArea
                     {
                         foreach (var item in relationshipItems)
                         {
-                            e.DataItem.AddChangeMonitor(generalKey, usageKey, item.Key, 0);
+                            e.DataItem.AddChangeMonitorIfNotExists(generalKey, usageKey, item.Key, 0);
                         }
                     }
                 }
@@ -185,7 +185,7 @@ namespace MyUILibrary.EntityArea
             uiColumnValue.EvenHasValue = !columnCustomFormula.OnlyOnEmptyValue;
             uiColumnValue.EvenIsNotNew = !columnCustomFormula.OnlyOnNewData;
             List<UIColumnValueDTO> uIColumnValues = new List<UIColumnValueDTO>() { uiColumnValue };
-            dataItem.SetColumnValueFromState(uIColumnValues, null, columnCustomFormula.Formula, false);
+            dataItem.SetColumnValue(uIColumnValues, null, columnCustomFormula.Formula, false);
 
         }
         public void CalculateProperty(DP_DataRepository dataItem, EntityInstanceProperty dataProperty)
@@ -368,44 +368,7 @@ namespace MyUILibrary.EntityArea
         public void UpdateFromulas()
         {
             var datalist = EditArea.GetDataList().Where(x => x.ShoudBeCounted).ToList();
-            foreach (var data in datalist)
-            {
-                //اینم دیگه بیخوده چوم فقط محاسبه فرمول برای هر پراپرتی رو میخوایمcalculatedPropertyTree
-                //بعدا حذف بشه
-                CalculatedPropertyTree calculatedPropertyTree = new CalculatedPropertyTree();
-                calculatedPropertyTree.DataItem = data;
-                //if (relationship != null)
-                //   //    calculatedPropertyTree.RelationshipInfo = relationship.Alias;
-                //  result.Add(calculatedPropertyTree);
-                foreach (var columnControl in EditArea.SimpleColumnControls.Where(x => x.Column.ColumnCustomFormula != null && x.Column.ColumnCustomFormula.Formula != null))
-                {
-                    var childSimpleContorlProperties = data.ChildSimpleContorlProperties.First(x => x.SimpleColumnControl.Column.ID == columnControl.Column.ID);
-
-                    //var dataProperty = data.GetProperty(columnControl.Column.ID);
-                    //if (dataProperty != null)
-                    //{
-                    // calculatedPropertyTree.Properties.Add(dataProperty);
-                    CalculateProperty(childSimpleContorlProperties);
-                    //}
-                    //else
-                    //{
-                    //    throw new Exception("asdasdF");
-                    //}
-                }
-                //foreach (var relationshipControl in EditArea.RelationshipColumnControls)
-                //{
-                //    var childRelInfo = data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship);
-                //    if (!childRelInfo.IsHiddenOnState)
-                //    {
-                //        relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
-                //        if (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
-                //           || relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                //        {
-                //            relationshipControl.EditNdTypeArea.AreaInitializer.UIFomulaManager.UpdateFromulas(calculatedPropertyTree.ChildItems, relationshipControl.Relationship);
-                //        }
-                //    }
-                //}
-            }
+          
         }
     }
 }

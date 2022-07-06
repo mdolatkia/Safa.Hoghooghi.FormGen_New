@@ -305,6 +305,7 @@ namespace MyModelManager
 
         private void AddColumnUICompositionItem(EntityUICompositionDTO parentItem, List<EntityUICompositionDTO> result, ColumnDTO column, int index)
         {
+            //**ad8db1ea-07d5-481a-95fd-5c93e6562e87
             var childItem = new EntityUICompositionDTO();
             childItem.ObjectCategory = DatabaseObjectCategory.Column;
             childItem.ObjectIdentity = column.ID.ToString();
@@ -312,6 +313,7 @@ namespace MyModelManager
             childItem.Title = column.Alias;
             childItem.ParentItem = parentItem;
             childItem.ColumnUISetting = new ColumnUISettingDTO();
+
             if (column.ColumnType != Enum_ColumnType.String)
             {
                 childItem.ColumnUISetting.UIColumnsType = Enum_UIColumnsType.Normal;
@@ -327,9 +329,9 @@ namespace MyModelManager
                 {
                     if (column.StringColumnType.MaxLength <= 64)
                         childItem.ColumnUISetting.UIColumnsType = Enum_UIColumnsType.Normal;
-                    else if (column.StringColumnType.MaxLength > 64 && column.StringColumnType.MaxLength <= 512)
+                    else if (column.StringColumnType.MaxLength > 64 && column.StringColumnType.MaxLength <= 256)
                         childItem.ColumnUISetting.UIColumnsType = Enum_UIColumnsType.Half;
-                    else if (column.StringColumnType.MaxLength > 512 && column.StringColumnType.MaxLength <= 1024)
+                    else if (column.StringColumnType.MaxLength > 256 && column.StringColumnType.MaxLength <= 1024)
                         childItem.ColumnUISetting.UIColumnsType = Enum_UIColumnsType.Full;
                     else if (column.StringColumnType.MaxLength > 1024)
                     {

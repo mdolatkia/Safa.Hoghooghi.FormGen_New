@@ -15,7 +15,7 @@ namespace DataAccess
     public partial class DateTimeColumnType
     {
         public int ColumnID { get; set; }
-        public bool ShowMiladiDateInUI { get; set; }
+        public Nullable<bool> ShowMiladiDateInUI { get; set; }
         public bool HideTimePicker { get; set; }
         public bool ShowAMPMFormat { get; set; }
         public Nullable<bool> StringDateIsMiladi { get; set; }

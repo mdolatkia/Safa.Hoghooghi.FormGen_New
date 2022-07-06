@@ -144,7 +144,7 @@ namespace MyProject_WPF
                     foreach (var column in item.Entity.Columns)
                     {
                         WizardHelper.SetColumnAliasAnadDescription(column, columnTags.Item1, columnTags.Item2);
-                        CheckNewColumnPersianDate(column);
+                        //CheckNewColumnPersianDate(column);
                     }
                     item.Tooltip = GetNewItemTooltip(item);
                 }
@@ -159,7 +159,7 @@ namespace MyProject_WPF
                         foreach (var column in item.Entity.Columns.Where(x => x.ColumnsAdded))
                         {
                             WizardHelper.SetColumnAliasAnadDescription(column, tags.Item1, tags.Item2);
-                            CheckNewColumnPersianDate(column);
+                            //CheckNewColumnPersianDate(column);
                         }
                     }
                 }
@@ -221,64 +221,7 @@ namespace MyProject_WPF
 
         }
 
-        private void CheckNewColumnPersianDate(ColumnDTO column)
-        {
-            if (column.OriginalColumnType == Enum_ColumnType.String)
-            {
-                if (column.StringColumnType.MaxLength <= 50 &&
-                    (column.Name.ToLower().StartsWith("datetime") ||
-                    column.Name.ToLower().EndsWith("datetime"))
-                      )
-                {
-                    column.ColumnType = Enum_ColumnType.DateTime;
-                    column.DateTimeColumnType = new DateTimeColumnTypeDTO();
-                }
-                else if (column.StringColumnType.MaxLength <= 50 &&
-                    (column.Name.ToLower().StartsWith("date") ||
-                    column.Name.ToLower().EndsWith("date") ||
-                     column.Name.ToLower().StartsWith("tarikh") ||
-                      column.Name.ToLower().EndsWith("tarikh"))
-                      )
-                {
-                    column.ColumnType = Enum_ColumnType.Date;
-                    column.DateColumnType = new DateColumnTypeDTO();
-
-                }
-                else if (column.StringColumnType.MaxLength <= 20 &&
-                   (column.Name.ToLower().StartsWith("time") ||
-                   column.Name.ToLower().EndsWith("time") ||
-                   column.Name.ToLower().StartsWith("time") ||
-                   column.Name.ToLower().EndsWith("time") ||
-                    column.Name.ToLower().StartsWith("zaman") ||
-                     column.Name.ToLower().EndsWith("zaman"))
-                     )
-                {
-                    column.ColumnType = Enum_ColumnType.Time;
-                    column.TimeColumnType = new TimeColumnTypeDTO();
-                }
-            }
-            if (column.ColumnType == Enum_ColumnType.DateTime)
-            {
-                var database = bizDatabase.GetDatabase(Database.ID, true);
-                column.DateTimeColumnType.ShowMiladiDateInUI = database.DatabaseSetting != null ? database.DatabaseSetting.ShowMiladiDateInUI : false;
-            }
-            else if (column.ColumnType == Enum_ColumnType.Date)
-            {
-                var database = bizDatabase.GetDatabase(Database.ID, true);
-                column.DateColumnType.ShowMiladiDateInUI = database.DatabaseSetting != null ? database.DatabaseSetting.ShowMiladiDateInUI : false;
-                if (column.OriginalColumnType == Enum_ColumnType.String)
-                    column.DateColumnType.StringDateIsMiladi = database.DatabaseSetting != null ? database.DatabaseSetting.StringDateColumnIsMiladi : false;
-            }
-            else if (column.ColumnType == Enum_ColumnType.Time)
-            {
-                var database = bizDatabase.GetDatabase(Database.ID, true);
-                column.TimeColumnType.ShowMiladiTime = database.DatabaseSetting != null ? database.DatabaseSetting.ShowMiladiDateInUI : false;
-                if (column.OriginalColumnType == Enum_ColumnType.String)
-                {
-                    column.TimeColumnType.StringTimeIsMiladi = database.DatabaseSetting != null ? database.DatabaseSetting.StringDateColumnIsMiladi : false;
-                }
-            }
-        }
+       
 
         private string GetNewItemTooltip(TableImportItem item)
         {

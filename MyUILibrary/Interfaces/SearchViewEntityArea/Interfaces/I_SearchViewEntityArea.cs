@@ -31,7 +31,7 @@ namespace MyUILibrary.EntityArea
 
         void SearchConfirmed(DP_SearchRepository searchItems, bool select);
         void ShowSearchView(bool fromDataView);
-        void SelectFromParent(bool isCalledFromDataView, RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, string> colAndValues);
+        void SelectFromParent(bool isCalledFromDataView, RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues);
         void SearchTextBox(string text);
         void RemoveViewEntityAreaView();
     }

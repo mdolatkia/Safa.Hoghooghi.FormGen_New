@@ -173,7 +173,8 @@ namespace MyModelManager
                         var dbColumnValue = new UIColumnValue();
                         dbColumnValue.ColumnID = item.ColumnID;
 
-                        dbColumnValue.ExactValue = item.ExactValue;
+                        
+                        dbColumnValue.ExactValue = item.ExactValue.ToString();
                         dbColumnValue.EvenIsNotNew = item.EvenIsNotNew;
                         dbColumnValue.EvenHasValue = item.EvenHasValue;
 

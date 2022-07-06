@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="84bc6a464cdf489191fdd2ec5ce7d5f4" Name="Diagram1" ZoomLevel="152">
+      <Diagram DiagramId="84bc6a464cdf489191fdd2ec5ce7d5f4" Name="Diagram1" ZoomLevel="86">
         <EntityTypeShape EntityType="MyProjectModel.ArchiveFolder" Width="1.5" PointX="18.75" PointY="224" />
         <EntityTypeShape EntityType="MyProjectModel.ArchiveTag" Width="1.5" PointX="18.75" PointY="112.5" />
         <EntityTypeShape EntityType="MyProjectModel.EntityArchiveRelationshipTails" Width="1.5" PointX="21" PointY="180.25" />
@@ -43,7 +43,6 @@
         <EntityTypeShape EntityType="MyProjectModel.DataMenuGridViewRelationship" Width="1.5" PointX="26.25" PointY="195.625" />
         <EntityTypeShape EntityType="MyProjectModel.DataMenuSearchableReportRelationship" Width="1.5" PointX="28.5" PointY="185.75" />
         <EntityTypeShape EntityType="MyProjectModel.DataMenuSetting" Width="1.5" PointX="21" PointY="160.5" />
-        <EntityTypeShape EntityType="MyProjectModel.DateColumnType" Width="1.5" PointX="11.25" PointY="158.25" />
         <EntityTypeShape EntityType="MyProjectModel.DateTimeColumnType" Width="1.5" PointX="11.25" PointY="163.875" />
         <EntityTypeShape EntityType="MyProjectModel.DBSchema" Width="1.5" PointX="5.25" PointY="153" />
         <EntityTypeShape EntityType="MyProjectModel.DBServer" Width="1.5" PointX="0.75" PointY="146" />
@@ -205,7 +204,6 @@
         <AssociationConnector Association="MyProjectModel.FKColumnPhra124715" />
         <AssociationConnector Association="MyProjectModel.FKColumnValu491864" />
         <AssociationConnector Association="MyProjectModel.FKDatabaseFu304987" />
-        <AssociationConnector Association="MyProjectModel.FKDateColumn74546" />
         <AssociationConnector Association="MyProjectModel.FKEntityList404590" />
         <AssociationConnector Association="MyProjectModel.FKEntitySear524417" />
         <AssociationConnector Association="MyProjectModel.FKFormulaIte729281" />
@@ -436,6 +434,8 @@
         <AssociationConnector Association="MyProjectModel.FKTransition612866" />
         <AssociationConnector Association="MyProjectModel.FKTransition636993" />
         <AssociationConnector Association="MyProjectModel.UniqueConstraint_Column" />
+        <EntityTypeShape EntityType="MyProjectModel.DateColumnType" Width="1.5" PointX="11.25" PointY="158.375" />
+        <AssociationConnector Association="MyProjectModel.FKDateColumn74546" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -40,7 +40,7 @@ namespace MyUILibrary.EntityArea
         public string ColumnWithValues { set; get; }
         public bool ExcludeFromDataEntry { set; get; }
 
-        public bool HasData { set; get; }
+        //public bool HasData { set; get; }
 
         public List<EditEntityAreaDataInfo> RelatedDataInfo { set; get; }
     }

@@ -26,20 +26,20 @@ namespace MyUILibrary.EntityArea.Commands
 
         private void CommandManager_Clicked(object sender, EventArgs e)
         {
-            var result = EditArea.UpdateData();
+            var result = EditArea.UpdateDataAndValidate(EditArea.ChildRelationshipInfoBinded.RelatedData);
             if (!result.IsValid)
             {
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage("پیام", result.Message);
                 return;
             }
-            if (EditArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect
-                || EditArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect)
-            {
-                if (EditArea is I_EditEntityAreaOneData)
-                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog((EditArea as I_EditEntityAreaOneData).DataViewGeneric);
-                else if (EditArea is I_EditEntityAreaMultipleData)
-                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog((EditArea as EditEntityAreaMultipleData).DataViewGeneric);
-            }
+            //if (EditArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect
+            //    || EditArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect)
+            //{
+            //    if (EditArea is I_EditEntityAreaOneData)
+            //        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog((EditArea as I_EditEntityAreaOneData).DataViewGeneric);
+            //    else if (EditArea is I_EditEntityAreaMultipleData)
+            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(EditArea.DataViewGeneric);
+            //}
 
         }
 

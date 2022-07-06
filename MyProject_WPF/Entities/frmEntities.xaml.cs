@@ -203,6 +203,8 @@ namespace MyProject_WPF
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Scale", "رقم اعشار", false, null, GridViewColumnType.Numeric));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("MinValue", "مقدار کمینه", false, null, GridViewColumnType.Numeric));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("MaxValue", "مقدار بیشینه", false, null, GridViewColumnType.Numeric));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Delimiter", "جداکننده 3 رقمی", false, null, GridViewColumnType.CheckBox));
+
             }
             else if (dataGrid == dtgDateColumnType)
             {
@@ -376,23 +378,23 @@ namespace MyProject_WPF
                 {
                     if (column.ColumnType == Enum_ColumnType.String)
                     {
-                        dtgStringColumnType.ItemsSource = bizColumn.GetStringColumType(column.ID);
+                        dtgStringColumnType.ItemsSource = new List<StringColumnTypeDTO>() { bizColumn.GetStringColumType(column.ID) };
                     }
                     else if (column.ColumnType == Enum_ColumnType.Numeric)
                     {
-                        dtgNumericColumnType.ItemsSource = bizColumn.GetNumericColumType(column.ID);
+                        dtgNumericColumnType.ItemsSource = new List<NumericColumnTypeDTO>() { bizColumn.GetNumericColumType(column.ID) };
                     }
                     else if (column.ColumnType == Enum_ColumnType.Date)
                     {
-                        dtgDateColumnType.ItemsSource = bizColumn.GetDateColumType(column.ID);
+                        dtgDateColumnType.ItemsSource = new List<DateColumnTypeDTO>() { bizColumn.GetDateColumType(column.ID) };
                     }
                     else if (column.ColumnType == Enum_ColumnType.Time)
                     {
-                        dtgTimeColumnType.ItemsSource = bizColumn.GetTimeColumType(column.ID);
+                        dtgTimeColumnType.ItemsSource = new List<TimeColumnTypeDTO>() { bizColumn.GetTimeColumType(column.ID) };
                     }
                     else if (column.ColumnType == Enum_ColumnType.DateTime)
                     {
-                        dtgDateTimeColumnType.ItemsSource = bizColumn.GetDateTimeColumType(column.ID);
+                        dtgDateTimeColumnType.ItemsSource = new List<DateTimeColumnTypeDTO>() { bizColumn.GetDateTimeColumType(column.ID) };
                     }
                     //var columnKeyValue = bizColumn.GetColumnKeyValue(column.ID);
                     //var formulaDTO = bizColumn.GetCustomCalculationFormula(column.ID);
@@ -416,6 +418,7 @@ namespace MyProject_WPF
                 tabNumericColumnType.Visibility = System.Windows.Visibility.Collapsed;
                 tabDateColumnType.Visibility = System.Windows.Visibility.Collapsed;
                 tabTimeColumnType.Visibility = System.Windows.Visibility.Collapsed;
+                tabDateTimeColumnType.Visibility = System.Windows.Visibility.Collapsed;
                 var column = dtgColumns.SelectedItem as ColumnDTO;
 
 

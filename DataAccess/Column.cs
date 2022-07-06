@@ -76,7 +76,6 @@ namespace DataAccess
         public virtual ICollection<ColumnPhrase> ColumnPhrase { get; set; }
         public virtual ICollection<UIColumnValue> UIColumnValue { get; set; }
         public virtual ICollection<DatabaseFunction_TableDrivedEntity_Columns> DatabaseFunction_TableDrivedEntity_Columns { get; set; }
-        public virtual DateColumnType DateColumnType { get; set; }
         public virtual ICollection<EntityListViewColumns> EntityListViewColumns { get; set; }
         public virtual ICollection<EntitySearchColumns> EntitySearchColumns { get; set; }
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
@@ -87,5 +86,6 @@ namespace DataAccess
         public virtual ICollection<RelationshipColumns> RelationshipColumns { get; set; }
         public virtual ICollection<RelationshipColumns> RelationshipColumns1 { get; set; }
         public virtual ICollection<UniqueConstraint> UniqueConstraint { get; set; }
+        public virtual DateColumnType DateColumnType { get; set; }
     }
 }

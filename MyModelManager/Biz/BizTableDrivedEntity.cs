@@ -471,12 +471,12 @@ namespace MyModelManager
         }
         public TableDrivedEntityDTO GetPermissionedEntity(DR_Requester requester, int entityID)
         {
-            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.PermissionedEntity, entityID.ToString(),requester.Identity.ToString());
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.PermissionedEntity, entityID.ToString(), requester.Identity.ToString());
             if (cachedItem != null)
                 return (cachedItem as TableDrivedEntityDTO);
             var entity = GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships);
-            var result= CheckDataEntryPermission(requester, entity, false);
-            CacheManager.GetCacheManager().AddCacheItem(result,CacheItemType.PermissionedEntity, entityID.ToString(), requester.Identity.ToString());
+            var result = CheckDataEntryPermission(requester, entity, false);
+            CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.PermissionedEntity, entityID.ToString(), requester.Identity.ToString());
             return result;
         }
 
@@ -1157,7 +1157,7 @@ namespace MyModelManager
 
         private void UpdateEntityInModel(MyProjectEntities projectContext, int databaseID, TableDrivedEntityDTO entity, List<DBSchema> listAddedSchema)
         {
-
+            //**6c99db26-bb1b-40df-ba63-1e9a8bbe5eff
             DBSchema dbSchema = null;
             dbSchema = listAddedSchema.FirstOrDefault(x => x.DatabaseInformationID == databaseID && x.Name == entity.RelatedSchema);
             if (dbSchema == null)
@@ -1272,18 +1272,18 @@ namespace MyModelManager
                 {
                     if (dbColumn.DateColumnType == null)
                         dbColumn.DateColumnType = new DateColumnType();
-                    dbColumn.DateColumnType.ShowMiladiDateInUI = column.DateColumnType.ShowMiladiDateInUI;
-                    dbColumn.DateColumnType.StringDateIsMiladi = column.DateColumnType.StringDateIsMiladi;
-                    if (column.OriginalColumnType == Enum_ColumnType.String)
-                    {
-                        if (dbColumn.StringColumnType == null)
-                            dbColumn.StringColumnType = new StringColumnType();
-                        dbColumn.StringColumnType.MaxLength = column.StringColumnType.MaxLength;
-                        RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Date, Enum_ColumnType.String });
+                    //dbColumn.DateColumnType.ShowMiladiDateInUI = column.DateColumnType.ShowMiladiDateInUI;
+                    //dbColumn.DateColumnType.StringDateIsMiladi = column.DateColumnType.StringDateIsMiladi;
+                    //if (column.OriginalColumnType == Enum_ColumnType.String)
+                    //{
+                    //    if (dbColumn.StringColumnType == null)
+                    //        dbColumn.StringColumnType = new StringColumnType();
+                    //    dbColumn.StringColumnType.MaxLength = column.StringColumnType.MaxLength;
+                    //    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Date, Enum_ColumnType.String });
 
-                    }
-                    else
-                        RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Date });
+                    //}
+                    //else
+                    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Date });
                 }
                 else if (column.ColumnType == Enum_ColumnType.String)
                 {
@@ -1300,15 +1300,15 @@ namespace MyModelManager
                     dbColumn.TimeColumnType.ShowAMPMFormat = column.TimeColumnType.ShowAMPMFormat;
                     dbColumn.TimeColumnType.StringTimeIsMiladi = column.TimeColumnType.StringTimeIsMiladi;
                     dbColumn.TimeColumnType.StringTimeISAMPMFormat = column.TimeColumnType.StringTimeISAMPMFormat;
-                    if (column.OriginalColumnType == Enum_ColumnType.String)
-                    {
-                        if (dbColumn.StringColumnType == null)
-                            dbColumn.StringColumnType = new StringColumnType();
-                        dbColumn.StringColumnType.MaxLength = column.StringColumnType.MaxLength;
-                        RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Time, Enum_ColumnType.String });
-                    }
-                    else
-                        RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Time });
+                    //if (column.OriginalColumnType == Enum_ColumnType.String)
+                    //{
+                    //    if (dbColumn.StringColumnType == null)
+                    //        dbColumn.StringColumnType = new StringColumnType();
+                    //    dbColumn.StringColumnType.MaxLength = column.StringColumnType.MaxLength;
+                    //    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Time, Enum_ColumnType.String });
+                    //}
+                    //else
+                    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Time });
                 }
                 else if (column.ColumnType == Enum_ColumnType.DateTime)
                 {
@@ -1320,15 +1320,15 @@ namespace MyModelManager
                     dbColumn.DateTimeColumnType.StringDateIsMiladi = column.DateTimeColumnType.StringDateIsMiladi;
                     dbColumn.DateTimeColumnType.StringTimeIsMiladi = column.DateTimeColumnType.StringTimeIsMiladi;
                     dbColumn.DateTimeColumnType.StringTimeISAMPMFormat = column.DateTimeColumnType.StringTimeISAMPMFormat;
-                    if (column.OriginalColumnType == Enum_ColumnType.String)
-                    {
-                        if (dbColumn.StringColumnType == null)
-                            dbColumn.StringColumnType = new StringColumnType();
-                        dbColumn.StringColumnType.MaxLength = column.StringColumnType.MaxLength;
-                        RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.DateTime, Enum_ColumnType.String });
-                    }
-                    else
-                        RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.DateTime });
+                    //if (column.OriginalColumnType == Enum_ColumnType.String)
+                    //{
+                    //    if (dbColumn.StringColumnType == null)
+                    //        dbColumn.StringColumnType = new StringColumnType();
+                    //    dbColumn.StringColumnType.MaxLength = column.StringColumnType.MaxLength;
+                    //    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.DateTime, Enum_ColumnType.String });
+                    //}
+                    //else
+                    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.DateTime });
                 }
                 else if (column.ColumnType == Enum_ColumnType.Numeric)
                 {
@@ -1337,6 +1337,8 @@ namespace MyModelManager
 
                     dbColumn.NumericColumnType.Precision = column.NumericColumnType.Precision;
                     dbColumn.NumericColumnType.Scale = column.NumericColumnType.Scale;
+
+
                     RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Numeric });
                 }
 

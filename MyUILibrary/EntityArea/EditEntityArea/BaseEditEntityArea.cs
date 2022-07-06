@@ -19,6 +19,7 @@ namespace MyUILibrary.EntityArea
     public abstract class BaseEditEntityArea : I_EditEntityArea
     {
         public List<UIControlPackageTree> UIControlPackageTree { set; get; }
+        public event EventHandler<EditAreaDataItemArg> DataItemSelected;
 
         public event EventHandler<EditAreaGeneratedArg> RelationshipAreaGenerated;
         //public event EventHandler<EditAreaDataItemLoadedArg> DataItemLoaded;
@@ -1680,115 +1681,192 @@ namespace MyUILibrary.EntityArea
         //////        }
         //////    }
         //////}
-        public UpdateResult UpdateData()
+        public UpdateResult UpdateDataAndValidate(List<DP_FormDataRepository> datas)
         {
-            //SetDataShouldBeCounted();
             UpdateResult result = new UpdateResult();
-            //if (editEntityArea == this)
-            //{
-            ApplyStatesBeforeUpdate();
-            AreaInitializer.UIFomulaManager.UpdateFromulas();
-            CheckEmptyOneDirectData(this);
-            //if (!formulaResult)
-            //{
-            //    result.IsValid = false;
-            //    result.Message = "نتیجه فرمولهای محاسبه شده مورد تایید نمی باشد";
-            //}
-            //else
-            //{
-
-            //var dataList = GetData();
-
-            bool validationResult = AreaInitializer.UIValidationManager.ValidateData(true);
-            if (!validationResult)
-            {
-                result.IsValid = false;
-                result.Message = "اعتبارسنجی: مقادیر وارد شده در برخی از فرمها معتبر نمی باشند";
-            }
+            UpdateData(datas);
+            result.IsValid = ValidateData(datas);
+            if (!result.IsValid)
+                result.Message = "اعتبارسنجی: برخی از داده های معتبر نمی باشند";
             else
-                result.IsValid = true;
-            //}
-            //}
-            //باید اینجا شوال پرسده شود که اصلا کاربر میخواد با فرمولهای خطادار ادامه دهد
-
-
-
-            return result;
-        }
-
-
-        public void ApplyStatesBeforeUpdate(bool shouldCheckChilds = true, ChildRelationshipInfo parentChildRelInfo = null)
-        {
-            var dataList = GetDataList().ToList();
-            foreach (var data in dataList)
             {
-                if (EntityStates1 != null && EntityStates1.Count != 0)
-                    AreaInitializer.ActionActivityManager.CheckAndImposeEntityStates(data, ActionActivitySource.BeforeUpdate);
+                SetDataIsUpdated(datas);
+            }
+            return result;
 
-                if (shouldCheckChilds)
+        }
+        public void UpdateData(List<DP_FormDataRepository> datas)
+        {
+            foreach (var data in datas.Where(x => x.ShoudBeCounted))
+            {
+                foreach (var childSimpleContorlProperty in data.ChildSimpleContorlProperties.Where(x => x.SimpleColumnControl.Column.ColumnCustomFormula != null && x.SimpleColumnControl.Column.ColumnCustomFormula.Formula != null))
+                    AreaInitializer.UIFomulaManager.CalculateProperty(childSimpleContorlProperty);
+                AreaInitializer.ActionActivityManager.CheckAndImposeEntityStates(data, ActionActivitySource.BeforeUpdate);
+                foreach (var childRelInfo in data.ChildRelationshipDatas)
                 {
-                    foreach (var childRelInfo in data.ChildRelationshipDatas)
+                    if (childRelInfo.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
+                             || childRelInfo.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
                     {
-                        //   var childRelInfo = data.ChildRelationshipDatas.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
-                        //   relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
-
-                        if (childRelInfo.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
-                                 || childRelInfo.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                            childRelInfo.RelationshipControl.GenericEditNdTypeArea.ApplyStatesBeforeUpdate(true, childRelInfo);
-                        else
-                            childRelInfo.RelationshipControl.GenericEditNdTypeArea.ApplyStatesBeforeUpdate(false, childRelInfo);
-
-                        //اگر مستقیم نباشه فقط خود داده ها چک میشوند زیرا حضور دارند در تمپ ویو و در مخفی بودن یا ریدونلی بودن اثر داردند
-
+                        childRelInfo.RelationshipControl.GenericEditNdTypeArea.UpdateData(childRelInfo.RelatedData.Cast<DP_FormDataRepository>().ToList());
                     }
                 }
             }
-            if (parentChildRelInfo != null)
-            {
-                foreach (var removedData in parentChildRelInfo.RemovedOriginalDatas)
-                    AreaInitializer.ActionActivityManager.CheckAndImposeEntityStates(removedData, ActionActivitySource.BeforeUpdate);
-            }
         }
-        public void CheckEmptyOneDirectData(I_EditEntityArea editEntityArea)
+
+        public bool ValidateData(List<DP_FormDataRepository> datas)
         {
-            if (this is I_EditEntityAreaMultipleData)
-                return;
-            var dataList = GetDataList();
-
-            if (editEntityArea != this)
+            bool result = true;
+            //   result.IsValid = true;
+            foreach (var data in datas.Where(x => x.ShoudBeCounted))
             {
-                foreach (var dataItem in dataList)
+                bool validationResult = AreaInitializer.UIValidationManager.ValidateData(data);
+                if (!validationResult)
                 {
-                    dataItem.IsEmptyOneDirectData = !AgentHelper.DataOrRelatedChildDataHasValue(dataItem, null);
-                }
-            }
-            foreach (var relationshipControl in RelationshipColumnControls)
-            {
-                if (relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
-                   || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                {
-                    relationshipControl.GenericEditNdTypeArea.CheckEmptyOneDirectData(editEntityArea);
+                    result = false;
                 }
 
+                foreach (var childRelInfo in data.ChildRelationshipDatas)
+                {
+                    if (childRelInfo.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
+                             || childRelInfo.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+                    {
+                        var childResult = childRelInfo.RelationshipControl.GenericEditNdTypeArea.ValidateData(childRelInfo.RelatedData.Cast< DP_FormDataRepository>().ToList());
+                        if (!childResult)
+                            result = false;
+                    }
+                }
             }
-            //}
-            //else
-            //{
-            //    foreach (var item in dataList)
-            //        item.ShouldBeSkipped = true;
-
-            //    //به نظر میاد اینجا بیخوده
-            //    //foreach (var relationshipControl in RelationshipColumnControls)
-            //    //{
-            //    //    if (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
-            //    //       || relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-            //    //    {
-            //    //        relationshipControl.EditNdTypeArea.CheckRedundantData(editEntityArea);
-            //    //    }
-
-            //    //}
-            //}
+            return result;
         }
+
+        public void SetDataIsUpdated(List<DP_FormDataRepository> datas)
+        {
+            foreach (var data in datas.Where(x => x.ShoudBeCounted))
+            {
+                data.IsUpdated = true;
+                foreach (var childRelInfo in data.ChildRelationshipDatas)
+                {
+                    if (childRelInfo.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
+                             || childRelInfo.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+                    {
+                        childRelInfo.RelationshipControl.GenericEditNdTypeArea.SetDataIsUpdated(childRelInfo.RelatedData.Cast<DP_FormDataRepository>().ToList());
+                    }
+                }
+            }
+        }
+
+        //اینم دیگه بیخوده چوم فقط محاسبه فرمول برای هر پراپرتی رو میخوایمcalculatedPropertyTree
+        //بعدا حذف بشه
+        //  CalculatedPropertyTree calculatedPropertyTree = new CalculatedPropertyTree();
+        // calculatedPropertyTree.DataItem = data;
+        //if (relationship != null)
+        //   //    calculatedPropertyTree.RelationshipInfo = relationship.Alias;
+        //  result.Add(calculatedPropertyTree);
+
+
+
+        //foreach (var relationshipControl in EditArea.RelationshipColumnControls)
+        //{
+        //    var childRelInfo = data.ChildRelationshipInfos.First(x => x.Relationship == relationshipControl.Relationship);
+        //    if (!childRelInfo.IsHiddenOnState)
+        //    {
+        //        relationshipControl.EditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
+        //        if (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
+        //           || relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+        //        {
+        //            relationshipControl.EditNdTypeArea.AreaInitializer.UIFomulaManager.UpdateFromulas(calculatedPropertyTree.ChildItems, relationshipControl.Relationship);
+        //        }
+        //    }
+        //}
+
+
+
+        //اگر مستقیم نباشه فقط خود داده ها چک میشوند زیرا حضور دارند در تمپ ویو و در مخفی بودن یا ریدونلی بودن اثر داردند
+
+
+
+        //AreaInitializer.UIFomulaManager.UpdateFromulas();
+        //CheckEmptyOneDirectData(this);
+        //if (!formulaResult)
+        //{
+        //    result.IsValid = false;
+        //    result.Message = "نتیجه فرمولهای محاسبه شده مورد تایید نمی باشد";
+        //}
+        //else
+        //{
+
+        //var dataList = GetData();
+
+
+
+
+
+        //}
+        //}
+        //باید اینجا شوال پرسده شود که اصلا کاربر میخواد با فرمولهای خطادار ادامه دهد
+
+
+
+        //     return result;
+        // }
+
+
+        //public void ApplyStatesBeforeUpdate(DP_FormDataRepository data)
+        //{
+        //    var dataList = GetDataList().ToList();
+        //    foreach (var data in dataList)
+        //    {
+        //        //if (shouldCheckChilds)
+        //        //{
+
+        //        //}
+        //    }
+        //    //if (parentChildRelInfo != null)
+        //    //{
+        //    //    foreach (var removedData in parentChildRelInfo.RemovedOriginalDatas)
+        //    //        AreaInitializer.ActionActivityManager.CheckAndImposeEntityStates(removedData, ActionActivitySource.BeforeUpdate);
+        //    //}
+        //}
+        //public void CheckEmptyOneDirectData(I_EditEntityArea editEntityArea)
+        //{
+        //    if (this is I_EditEntityAreaMultipleData)
+        //        return;
+        //    var dataList = GetDataList();
+
+        //    if (editEntityArea != this)
+        //    {
+        //        foreach (var dataItem in dataList)
+        //        {
+        //            dataItem.IsEmptyOneDirectData = !AgentHelper.DataOrRelatedChildDataHasValue(dataItem, null);
+        //        }
+        //    }
+        //    foreach (var relationshipControl in RelationshipColumnControls)
+        //    {
+        //        if (relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
+        //           || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+        //        {
+        //            relationshipControl.GenericEditNdTypeArea.CheckEmptyOneDirectData(editEntityArea);
+        //        }
+
+        //    }
+        //    //}
+        //    //else
+        //    //{
+        //    //    foreach (var item in dataList)
+        //    //        item.ShouldBeSkipped = true;
+
+        //    //    //به نظر میاد اینجا بیخوده
+        //    //    //foreach (var relationshipControl in RelationshipColumnControls)
+        //    //    //{
+        //    //    //    if (relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
+        //    //    //       || relationshipControl.EditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+        //    //    //    {
+        //    //    //        relationshipControl.EditNdTypeArea.CheckRedundantData(editEntityArea);
+        //    //    //    }
+
+        //    //    //}
+        //    //}
+        //}
 
 
 
@@ -2115,7 +2193,16 @@ namespace MyUILibrary.EntityArea
                 }
 
                 foreach (var data in result)
-                    AddData(data);
+                {
+                    var addResult = AddData(data);
+                    if (!addResult)
+                        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", data.ViewInfo, Temp.InfoColor.Red);
+                    else
+                    {
+                        if (DataItemSelected != null)
+                            DataItemSelected(this, new EditAreaDataItemArg() { DataItem = data });
+                    }
+                }
             }
             else
             {
@@ -2312,8 +2399,8 @@ namespace MyUILibrary.EntityArea
                 dataItem.EntityListView = DefaultEntityListViewDTO;
 
             if (!dataItem.IsNewItem)
-                AreaInitializer.ActionActivityManager.DataAdded(dataItem);
-          
+                AreaInitializer.ActionActivityManager.SetExistingDataFirstLoadStates(dataItem);
+
             AreaInitializer.Datas.Add(dataItem);
 
             bool isDirect = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
@@ -2339,25 +2426,30 @@ namespace MyUILibrary.EntityArea
         }
         public bool ShowDataInDataView(DP_FormDataRepository specificDate)
         {
+            bool result = true;
             if (!specificDate.IsFullData)
                 throw new Exception("asdasd");
             if (this is I_EditEntityAreaMultipleData)
                 (DataViewGeneric as I_View_EditEntityAreaMultiple).AddDataContainer(specificDate);
+
+            AreaInitializer.ActionActivityManager.DataToShowInDataview(specificDate);
+
+
             foreach (var propertyControl in specificDate.ChildSimpleContorlProperties)
             {
                 propertyControl.SetBinding();
             }
-            bool result = true;
+
             foreach (var childRelationshipInfo in specificDate.ChildRelationshipDatas)
             {
                 childRelationshipInfo.SetBinding();
 
             }
-
-
-
             if (result)
                 OnDataItemShown(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
+
+
+
             return result;
 
         }

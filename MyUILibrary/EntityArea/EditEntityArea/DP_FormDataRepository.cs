@@ -17,7 +17,15 @@ namespace MyUILibrary.EntityArea
         public event EventHandler<ChangeMonitor> RelatedDataTailOrColumnChanged;
         public new ParentRelationshipInfo ParantChildRelationshipData
         {
-            set { base.ParantChildRelationshipData = value; }
+            set
+            {
+                base.ParantChildRelationshipData = value;
+                if (!IsDBRelationship)
+                {
+
+                }
+
+            }
             get { return base.ParantChildRelationshipData as ParentRelationshipInfo; }
         }
 
@@ -208,7 +216,7 @@ namespace MyUILibrary.EntityArea
                         childRelationshipInfo.AddReadonlyState(item.Item2, item.Item3, item.Item4);
                     }
                     //     ChildRelationshipDatas.Add(childRelationshipInfo);
-                    CheckChildRelationshipInfoChangeMonitor();
+                    //CheckChildRelationshipInfoChangeMonitor();
                     //  return childRelationshipInfo;
 
                     //var property = baseData.Properties.FirstOrDefault(x => x.ColumnID == simpleColumn.Column.ID);
@@ -236,14 +244,13 @@ namespace MyUILibrary.EntityArea
 
         private void DP_FormDataRepository_PropertyValueChanged(object sender, PropertyValueChangedArg e)
         {
-            if (ChangeMonitorItems.Any(x => x.columnID != 0 && string.IsNullOrEmpty(x.RestTail)))
+
+            foreach (var item in ChangeMonitorItems.Where(x => x.columnID != 0 && string.IsNullOrEmpty(x.RestTail)))
             {
-                foreach (var item in ChangeMonitorItems.Where(x => x.columnID != 0 && string.IsNullOrEmpty(x.RestTail)))
-                {
-                    if (e.ColumnID == item.columnID)
-                        item.DataToCall.OnRelatedDataOrColumnChanged(item);
-                }
+                if (e.ColumnID == item.columnID)
+                    item.DataToCall.OnRelatedDataOrColumnChanged(item);
             }
+
             //if (PropertyValueChanged != null)
             //{
             //    e.DataItem = this;
@@ -255,24 +262,53 @@ namespace MyUILibrary.EntityArea
             return ChangeMonitorItems.Any(x => x.GeneralKey == generalKey && x.UsageKey == usageKey);
         }
 
-        public void AddChangeMonitor(string generalKey, string usageKey, string restTail, int columnID = 0, DP_FormDataRepository dataToCall = null)
+        public void AddChangeMonitorIfNotExists(string generalKey, string usageKey, string restTail, int columnID = 0, DP_FormDataRepository dataToCall = null)
         {
-            if (string.IsNullOrEmpty(restTail) && columnID == 0)
-                return;
+            if (!IsFullData)
+                throw new Exception("asdasdasd");
             if (dataToCall == null)
                 dataToCall = this;
+            if (string.IsNullOrEmpty(restTail) && columnID == 0)
+                return;
 
-            ChangeMonitorItems.Add(new ChangeMonitor()
+            if (ChangeMonitorItems.Any(x => x.GeneralKey == generalKey && x.UsageKey == usageKey && x.RestTail == restTail && x.columnID == columnID && x.DataToCall == dataToCall))
+                return;
+
+            if (string.IsNullOrEmpty(restTail))
             {
-                GeneralKey = generalKey,
-                UsageKey = usageKey,
-                DataToCall = dataToCall,
-                columnID = columnID,
-                RestTail = restTail
-            });
-            if (!string.IsNullOrEmpty(restTail))
-                CheckChildRelationshipInfoChangeMonitor();
+                var item = new ChangeMonitor()
+                {
+                    SourceData = this,
+                    GeneralKey = generalKey,
+                    UsageKey = usageKey,
+                    DataToCall = dataToCall,
+                    columnID = columnID,
+                    RestTail = restTail
+                };
+                ChangeMonitorItems.Add(item);
+            }
+            else
+            {
+                string firstRel = "", Rest = "";
+                SplitRelationshipTail(restTail, ref firstRel, ref Rest);
+                foreach (var childRelationshipInfo in ChildRelationshipDatas)
+                {
+                    if (childRelationshipInfo.Relationship.ID.ToString() == firstRel)
+                    {
+                        childRelationshipInfo.AddChangeMonitor(generalKey, usageKey, Rest, columnID, dataToCall);
+                        return;
+                    }
+                }
+                if (ParantChildRelationshipData != null)
+                {
+                    if (ParantChildRelationshipData.ToParentRelationshipID.ToString() == firstRel)
+                    {
+                        ParantChildRelationshipData.SourceData.AddChangeMonitorIfNotExists(generalKey, usageKey, Rest, columnID, dataToCall);
+                    }
+                }
+            }
         }
+
 
 
         public void RemoveChangeMonitorByGenaralKey(string key)
@@ -335,7 +371,7 @@ namespace MyUILibrary.EntityArea
                         throw new Exception("asav");
                     }
                     else
-                        relatedData = childInfo.RelatedData.First();
+                        relatedData = childInfo.RelatedData.First() as DP_FormDataRepository;
                 }
                 if (relatedData != null)
                     return relatedData.GetValueSomeHow(valueRelationshipTail.ChildTail, valueColumnID);
@@ -612,7 +648,61 @@ namespace MyUILibrary.EntityArea
         //!item.KeyProperties.All(y => OriginalRelatedData.Any(z => z.KeyProperties.Any(u => u.ColumnID == y.ColumnID && u.Value == y.Value))
         //که اگر داده دوباره انتخاب شد
         //  public bool IsDBRelationship { get; set; }
-        public bool IsEmptyOneDirectData { get; set; }
+        //public bool IsEmptyOneDirectData
+        //{
+        //    get
+
+        //    {
+
+
+        //    }
+        //}
+
+        //internal bool IsEmptyOneDirectData(RelationshipDTO relationship = null)
+        //{
+        //    List<int> excludeColumns = new List<int>();
+        //    //if (relationship != null)
+        //    //    if (relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
+        //    //        excludeColumns = relationship.RelationshipColumns.Select(x => x.SecondSideColumnID).ToList();
+
+        //    if (IsDefaultData)
+        //    {
+        //        bool isDirect = false;
+        //        if (EditEntityArea is I_EditEntityAreaOneData)
+        //        {
+        //            if (EditEntityArea.AreaInitializer.SourceRelationColumnControl == null)
+        //            {
+        //                isDirect = (EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
+        //                    EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
+        //            }
+        //            else
+        //            {
+
+        //            }
+        //        }
+        //    }
+        //    foreach (var item in ChildSimpleContorlProperties)
+        //        if (!excludeColumns.Contains(item.SimpleColumnControl.Column.ID) && !ValueIsEmpty(item))
+        //            return true;
+
+
+        //    foreach (var childRel in dataItem.ChildRelationshipDatas)
+        //        foreach (var data in childRel.RelatedData)
+        //        {
+        //            if (DataOrRelatedChildDataHasValue(data, childRel.Relationship))
+        //                return true;
+        //        }
+
+        //    return false;
+        //}
+        //internal bool DataHasValue()
+        //{
+        //    foreach (var item in GetProperties())
+        //        if (!ValueIsEmpty(item))
+        //            return true;
+
+        //    return false;
+        //}
         public bool? DataOrRelatedDataIsChanged { get; set; }
         //public bool RelationshipIsRemoved { get
 
@@ -650,14 +740,15 @@ namespace MyUILibrary.EntityArea
         {
             get
             {
-                if (IsEmptyOneDirectData)
-                    return false;
-                else if (IsUseLessBecauseNewAndReadonly)
+                //if (IsEmptyOneDirectData)
+                //    return false;
+                //else
+                if (IsUseLessBecauseNewAndReadonly)
                     return false;
                 else if (ParantChildRelationshipData != null && ToParentRelationshipIsHidden)
                     return false;
-                else if (ParantChildRelationshipData != null && ToParentRelationshipIsReadonly && !IsDBRelationship)
-                    return false;
+                //else if (ParantChildRelationshipData != null && ToParentRelationshipIsReadonly && !IsDBRelationship)
+                //    return false;
                 //else if (IsReadonly && !IsDBRelationship)
                 //    return false;
                 return true;
@@ -677,6 +768,8 @@ namespace MyUILibrary.EntityArea
 
         public List<ChangeMonitor> ChangeMonitorItems { set; get; }
         public bool IsDefaultData { get; internal set; }
+        public bool IsUpdated { get; internal set; }
+
         //public int ToParentRelationshipID { get; internal set; }
 
         // public bool FromDB { get; internal set; }
@@ -695,53 +788,14 @@ namespace MyUILibrary.EntityArea
 
         //}
 
-        private void CheckChildRelationshipInfoChangeMonitor()
-        {
-            if (ChangeMonitorItems != null)
-            {
-                foreach (var item in ChangeMonitorItems.ToList())
-                {
-                    if (!string.IsNullOrEmpty(item.RestTail))
-                    {
-                        string firstRel = "", Rest = "";
-                        SplitRelationshipTail(item.RestTail, ref firstRel, ref Rest);
-                        bool observerSet = false;
-                        foreach (var childRelationshipInfo in ChildRelationshipDatas)
-                        {
-
-                            if (childRelationshipInfo.Relationship.ID.ToString() == firstRel)
-                            {
-                                childRelationshipInfo.AddChangeMonitor(item.GeneralKey, item.UsageKey, Rest, item.columnID, item.DataToCall);
-                                ChangeMonitorItems.Remove(item);
-                                observerSet = true;
-                            }
-                        }
-                        if (!observerSet)
-                        {
-                            if (ParantChildRelationshipData != null)
-                            {
-                                //مطمئن نیستم این چک ستون درست باشه بعداً اضافه شده. بیشتر بررسی شود و چون وقتی ستون مدنظر نباشد
-                                // و تغییر رابطه بخواد مونیتور بشه چم کردن پرنتها بیهوده است. چون پرنت عوض شه کلا همه چی عوض میشه
-                                //if (item.columnID != 0)
-                                //{
-                                if (ParantChildRelationshipData.ToParentRelationshipID.ToString() == firstRel)
-                                {
-                                    ParantChildRelationshipData.SourceData.AddChangeMonitor(item.GeneralKey, item.UsageKey, Rest, item.columnID, item.DataToCall);
-                                    ChangeMonitorItems.Remove(item);
-                                    observerSet = true;
-
-                                }
-                                //}
-                            }
-                        }
-                    }
-                }
-            }
+        //private void CheckChildRelationshipInfoChangeMonitor()
+        //{
 
 
 
 
-        }
+
+        //}
 
         public bool DataIsInEditMode()
         {
@@ -1061,12 +1115,11 @@ namespace MyUILibrary.EntityArea
         //        color = item.Color;
         //    return color;
         //}
-        public void SetColumnValueFromState(List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula, bool setFkRelColumns)
+        public void SetColumnValue(List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula, bool fromSetFkRelColumns)
         {
             if (DataIsInEditMode())
             {
-
-                if (setFkRelColumns == false)
+                if (fromSetFkRelColumns == false)
                 {
                     string title = "";
                     string key = "";
@@ -1081,8 +1134,8 @@ namespace MyUILibrary.EntityArea
                         title = "بر اساس فرمول" + " " + formula.Title;
                     }
 
-                    List<Tuple<ChildSimpleContorlProperty, string>> simpleColumnValues = new List<Tuple<ChildSimpleContorlProperty, string>>();
-                    List<Tuple<DP_FormDataRepository, RelationshipColumnControlGeneral, Dictionary<int, string>>> relationshipColumnValues = new List<Tuple<DP_FormDataRepository, RelationshipColumnControlGeneral, Dictionary<int, string>>>();
+                    List<Tuple<ChildSimpleContorlProperty, object>> simpleColumnValues = new List<Tuple<ChildSimpleContorlProperty, object>>();
+                    List<Tuple<DP_FormDataRepository, RelationshipColumnControlGeneral, Dictionary<int, object>>> relationshipColumnValues = new List<Tuple<DP_FormDataRepository, RelationshipColumnControlGeneral, Dictionary<int, object>>>();
 
                     foreach (var columnValue in uIColumnValue)
                     {
@@ -1104,12 +1157,12 @@ namespace MyUILibrary.EntityArea
                                 {
                                     if (relationshipColumn.Relationship.RelationshipColumns.All(x => uIColumnValue.Any(z => z.ColumnID == x.FirstSideColumnID)))
                                     {
-                                        Dictionary<int, string> listColumns = new Dictionary<int, string>();
+                                        Dictionary<int, object> listColumns = new Dictionary<int, object>();
                                         foreach (var relCol in relationshipColumn.Relationship.RelationshipColumns)
                                         {
                                             listColumns.Add(relCol.FirstSideColumnID, uIColumnValue.First(x => x.ColumnID == relCol.FirstSideColumnID).ExactValue);
                                         }
-                                        relationshipColumnValues.Add(new Tuple<DP_FormDataRepository, RelationshipColumnControlGeneral, Dictionary<int, string>>(this, relationshipColumn.RelationshipControl, listColumns));
+                                        relationshipColumnValues.Add(new Tuple<DP_FormDataRepository, RelationshipColumnControlGeneral, Dictionary<int, object>>(this, relationshipColumn.RelationshipControl, listColumns));
 
                                     }
                                 }
@@ -1118,7 +1171,7 @@ namespace MyUILibrary.EntityArea
                             {
                                 //اینجا باید بیزینسی ریدونلی شدن داده هم تست شود
                                 var simpleColumn = ChildSimpleContorlProperties.First(x => x.SimpleColumnControl.Column.ID == column.ColumnID);
-                                simpleColumnValues.Add(new Tuple<ChildSimpleContorlProperty, string>(simpleColumn, columnValue.ExactValue));
+                                simpleColumnValues.Add(new Tuple<ChildSimpleContorlProperty, object>(simpleColumn, columnValue.ExactValue));
                             }
                         }
                     }

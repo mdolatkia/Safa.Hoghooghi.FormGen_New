@@ -19,7 +19,7 @@ namespace MyUILibrary.EntityArea
         {
             EditArea = editArea;
             //EditArea.DataItemLoaded += EditArea_DataItemLoaded;
-            EditArea.DataItemShown += EditArea_DataItemShown;
+         //   EditArea.DataItemShown += EditArea_DataItemShown;
             EditArea.UIGenerated += EditArea_UIGenerated;
             //     EditArea.DataItemUnShown += EditArea_DataItemUnShown;
 
@@ -205,28 +205,23 @@ namespace MyUILibrary.EntityArea
 
         }
 
-        private void EditArea_DataItemShown(object sender, EditAreaDataItemLoadedArg e)
+        //private void EditArea_DataItemShown(object sender, EditAreaDataItemLoadedArg e)
+        //{
+
+
+        //}
+        public void DataToShowInDataview(DP_FormDataRepository dataItem)
         {
-            //////if (EditArea.AreaInitializer.SourceRelationColumnControl != null && e.InEditMode)
-            //////    CheckParentReadonlyTail(e.DataItem);
-            //حتمکا اینجا چک شود مخصوصا برای تمپ ویو ها که تک داده ای نیز باشند
             if ((EditArea.EntityStates1 == null || EditArea.EntityStates1.Count == 0))
-                //&&
-                //(EditArea.EntityStateGroups == null || EditArea.EntityStateGroups.Count == 0))
                 return;
-
-
             foreach (var state in GetChangeMoniStates(EditArea))
             {
-                CheckDataItemChangeMonitors(e.DataItem, state);
+                CheckDataItemChangeMonitors(dataItem, state);
             }
             var actionActivitySource = ActionActivitySource.OnShowData;
-            //   if (!ListDataAndStates.Any(x => x.DataItem == e.DataItem))
-            //       actionActivitySource = ActionActivitySource.OnFirstShowData;
-            CheckAndImposeEntityStates(e.DataItem, actionActivitySource);
-
+         
+            CheckAndImposeEntityStates(dataItem, actionActivitySource);
         }
-
         private UIActionActivityDTO GetReadonlyActionActivity()
         {
             var newActionActivity = new UIActionActivityDTO();
@@ -424,9 +419,9 @@ namespace MyUILibrary.EntityArea
                 dataItem.RelatedDataTailOrColumnChanged += DataItem_RelatedDataTailOrColumnChanged;
             }
             foreach (var item in columns)
-                dataItem.AddChangeMonitor(generalKey, usageKey, item.Item1, item.Item2);
+                dataItem.AddChangeMonitorIfNotExists(generalKey, usageKey, item.Item1, item.Item2);
             foreach (var item in rels)
-                dataItem.AddChangeMonitor(generalKey, usageKey, item.Item1, 0);
+                dataItem.AddChangeMonitorIfNotExists(generalKey, usageKey, item.Item1, 0);
 
         }
 
@@ -509,7 +504,7 @@ namespace MyUILibrary.EntityArea
         //    return result;
         //}
 
-        public void DataAdded(DP_FormDataRepository dataItem)
+        public void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem)
         {
             //DataAddedResult result = new DataAddedResult();
 
@@ -626,19 +621,19 @@ namespace MyUILibrary.EntityArea
                //         if (dataItem.DataIsInEditMode())
 
                             if (hidden)
-                                simpleColumn.AddHiddenState(detail.ID.ToString(), "غیر فعال سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, false, true);
+                                simpleColumn.AddHiddenState(detail.ID.ToString(), "غیر فعال سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, false);
                             else
-                                simpleColumn.RemoveHiddenState(detail.ID.ToString(), true);
+                                simpleColumn.RemoveHiddenState(detail.ID.ToString());
                         return (simpleColumn.SimpleColumnControl);
                     }
                 }
             }
 
-            دوتا کار باید انجام شه
+            //دوتا کار باید انجام شه
 
-                پراپرتی ستونها هم مثل روابط یکی شود پیام و مخفی شدن
+            //    پراپرتی ستونها هم مثل روابط یکی شود پیام و مخفی شدن
 
-                دوم اینکه اگر رابطه مخفی شد دیگه دیتا و بایندینگش انجام نشه.
+            //    دوم اینکه اگر رابطه مخفی شد دیگه دیتا و بایندینگش انجام نشه.
             return null;
         }
 
@@ -725,7 +720,7 @@ namespace MyUILibrary.EntityArea
                         if (actionActivity.UIColumnValue.Any())
                         {
                             //در واقع مقادیر پیش فرض را ست میکند
-                            dataItem.SetColumnValueFromState(actionActivity.UIColumnValue, state, null, false);
+                            dataItem.SetColumnValue(actionActivity.UIColumnValue, state, null, false);
                         }
                     }
                 }
@@ -1111,7 +1106,7 @@ namespace MyUILibrary.EntityArea
             return dataItem.ChildSimpleContorlProperties.FirstOrDefault(x => x.SimpleColumnControl.Column.ID == columnID);
         }
 
-
+     
     }
     public enum ActionType
     {

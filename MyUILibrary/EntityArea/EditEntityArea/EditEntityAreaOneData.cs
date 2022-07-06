@@ -24,7 +24,6 @@ namespace MyUILibrary.EntityArea
     {
 
         //StateHelper stateHelper = new StateHelper();
-        public event EventHandler<EditAreaDataItemArg> DataItemSelected;
         public EditEntityAreaOneData(TableDrivedEntityDTO simpleEntity) : base(simpleEntity)
         {
             UIControlPackageTree = new List<UIControlPackageTree>();
@@ -32,25 +31,24 @@ namespace MyUILibrary.EntityArea
             //RelationshipColumnControls = new List<RelationshipColumnControl>();
         }
 
-        event EventHandler<EditAreaDataItemArg> I_EditEntityAreaOneData.DataItemSelected
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
+        //event EventHandler<EditAreaDataItemArg> I_EditEntityAreaOneData.DataItemSelected
+        //{
+        //    add
+        //    {
+        //        throw new NotImplementedException();
+        //    }
 
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //    remove
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
 
 
-        public void OnDataItemSelected(DP_FormDataRepository DP_FormDataRepository)
-        {
-            if (DataItemSelected != null)
-                DataItemSelected(this, new EditAreaDataItemArg() { DataItem = DP_FormDataRepository });
-        }
+        //public void OnDataItemSelected(DP_FormDataRepository DP_FormDataRepository)
+        //{
+          
+        //}
 
         public override void GenerateUIComposition(List<EntityUICompositionDTO> UICompositions)
         {

@@ -18,12 +18,12 @@ namespace MyGeneralLibrary
         {
             return new Tuple<string, string>(catalog.Split('\\')[0], catalog.Split('\\')[1]);
         }
-        public static List<T> CreateListFromSingleObject<T>(T item)
-        {
-            List<T> list = new List<T>();
-            list.Add(item);
-            return list;
-        }
+        //public static List<T> CreateListFromSingleObject<T>(T item)
+        //{
+        //    List<T> list = new List<T>();
+        //    list.Add(item);
+        //    return list;
+        //}
 
 
         public static string GetSQLConnectionString(string serverName, string dbName, string userName, string password)

@@ -479,8 +479,16 @@ namespace MyModelCustomSetting
                     }
                 }
             }
-            Column ConclusionTotalPriceColumn = null;
-            var serviceConclusion = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceConclusion" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+            var serviceConclusionVariable = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceConclusionVariable" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+            if (serviceConclusionVariable != null)
+            {
+                var priceColumn = serviceConclusionVariable.Table.Column.FirstOrDefault(x => x.Name == "Price");
+                if (priceColumn != null)
+                {
+                    priceColumn.NumericColumnType.Delimiter = true;
+                }
+            }
+                var serviceConclusion = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceConclusion" && x.Table.DBSchema.DatabaseInformationID == databaseID);
             if (serviceConclusion != null)
             {
                 var userRateColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "UserRate");
@@ -501,6 +509,7 @@ namespace MyModelCustomSetting
                     stringUpdateDateTime.DateTimeColumnType.StringTimeISAMPMFormat = true;
                     stringUpdateDateTime.DateTimeColumnType.ShowAMPMFormat = true;
                 }
+                var ConclusionTotalPriceColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "TotalPrice");
                 if (serviceConclusionItem != null)
                 {
                     Formula serviceConclusionPriceFormula = projectContext.Formula.FirstOrDefault(x => x.TableDrivedEntityID == serviceConclusion.ID && x.Name == "SumItems");
@@ -524,7 +533,6 @@ namespace MyModelCustomSetting
                                 serviceConclusionPriceFormula.FormulaItems1.Add(new FormulaItems() { ColumnID = ConclusionItemPriceColumn.ID, ItemTitle = "cl_Price", RelationshipIDTail = relationshipToConclusionItem.ID.ToString(), RelationshipNameTail = "OTM_ServiceConclusionItem" });
                         }
                     }
-                    ConclusionTotalPriceColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "TotalPrice");
                     if (ConclusionTotalPriceColumn != null)
                     {
                         if (ConclusionTotalPriceColumn.ColumnCustomFormula == null)

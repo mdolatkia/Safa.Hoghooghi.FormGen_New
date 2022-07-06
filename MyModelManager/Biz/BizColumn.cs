@@ -192,14 +192,14 @@ namespace MyModelManager
             }
         }
 
-        public List<StringColumnTypeDTO> GetStringColumType(int columnID)
+        public StringColumnTypeDTO GetStringColumType(int columnID)
         {
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var column = projectContext.Column.First(x => x.ID == columnID);
                 if (column.StringColumnType != null)
-                    return GeneralHelper.CreateListFromSingleObject<StringColumnTypeDTO>(ToStringColumTypeDTO(column.StringColumnType));
+                    return ToStringColumTypeDTO(column.StringColumnType);
             }
             return null;
         }
@@ -225,14 +225,14 @@ namespace MyModelManager
             result.MinLength = item.MinLength;
             return result;
         }
-        public List<NumericColumnTypeDTO> GetNumericColumType(int columnID)
+        public NumericColumnTypeDTO GetNumericColumType(int columnID)
         {
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var column = projectContext.Column.First(x => x.ID == columnID);
                 if (column.NumericColumnType != null)
-                    return GeneralHelper.CreateListFromSingleObject<NumericColumnTypeDTO>(ToNumericColumTypeDTO(column.NumericColumnType));
+                    return ToNumericColumTypeDTO(column.NumericColumnType);
             }
             return null;
         }
@@ -244,16 +244,36 @@ namespace MyModelManager
             result.MinValue = item.MinValue;
             result.Precision = (item.Precision == null ? 0 : item.Precision.Value);
             result.Scale = (item.Scale == null ? 0 : item.Scale.Value);
+            result.Delimiter = item.Delimiter;
+            if (result.Delimiter == null)
+            {
+                result.Delimiter = CheckDelimiter(item);
+            }
             return result;
         }
-        public List<DateColumnTypeDTO> GetDateColumType(int columnID)
+
+        private bool? CheckDelimiter(NumericColumnType item)
+        {
+            //**9d5217f1-8a54-49a1-a1d2-0ff4dad8df1a
+            if (item.Column.Name.ToLower().Contains("price"))
+                return true;
+            if (item.Column.Alias != null)
+            {
+                if (item.Column.Alias.ToLower().Contains("price") ||
+                         item.Column.Alias.ToLower().Contains("مبلغ"))
+                    return true;
+            }
+            return null;
+        }
+
+        public DateColumnTypeDTO GetDateColumType(int columnID)
         {
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var column = projectContext.Column.First(x => x.ID == columnID);
                 if (column.DateColumnType != null)
-                    return GeneralHelper.CreateListFromSingleObject<DateColumnTypeDTO>(ToDateColumTypeDTO(column.DateColumnType));
+                    return ToDateColumTypeDTO(column.DateColumnType);
             }
             return null;
         }
@@ -261,19 +281,32 @@ namespace MyModelManager
         {
             DateColumnTypeDTO result = new DateColumnTypeDTO();
             result.ColumnID = item.ColumnID;
-            result.ShowMiladiDateInUI = item.ShowMiladiDateInUI;
-            result.StringDateIsMiladi = item.StringDateIsMiladi == true;
-            //     result.ValueIsPersianDate = item.ValueIsPersianDate;
+            این هم همینطور بشه
+            result.StringDateIsMiladi = item.StringDateIsMiladi;
+            if (item.ShowMiladiDateInUI != null)
+                result.ShowMiladiDateInUI = item.ShowMiladiDateInUI.Value;
+            else
+            {
+                if (item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting != null)
+                {
+                    result.ShowMiladiDateInUI = item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.ShowMiladiDateInUI;
+                }
+            }
+            if ((Enum_ColumnType)item.Column.OriginalTypeEnum == Enum_ColumnType.String && result.StringDateIsMiladi == null
+                && item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting != null)
+            {
+                result.StringDateIsMiladi = item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringDateColumnIsMiladi;
+            }
             return result;
         }
-        public List<TimeColumnTypeDTO> GetTimeColumType(int columnID)
+        public TimeColumnTypeDTO GetTimeColumType(int columnID)
         {
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var column = projectContext.Column.First(x => x.ID == columnID);
                 if (column.TimeColumnType != null)
-                    return GeneralHelper.CreateListFromSingleObject<TimeColumnTypeDTO>(ToTimeColumTypeDTO(column.TimeColumnType));
+                    return ToTimeColumTypeDTO(column.TimeColumnType);
             }
             return null;
         }
@@ -288,14 +321,14 @@ namespace MyModelManager
             //     result.ValueIsPersianDate = item.ValueIsPersianDate;
             return result;
         }
-        public List<DateTimeColumnTypeDTO> GetDateTimeColumType(int columnID)
+        public DateTimeColumnTypeDTO GetDateTimeColumType(int columnID)
         {
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var column = projectContext.Column.First(x => x.ID == columnID);
                 if (column.DateTimeColumnType != null)
-                    return GeneralHelper.CreateListFromSingleObject<DateTimeColumnTypeDTO>(ToDateTimeColumTypeDTO(column.DateTimeColumnType));
+                    return ToDateTimeColumTypeDTO(column.DateTimeColumnType);
             }
             return null;
         }
@@ -733,6 +766,7 @@ namespace MyModelManager
                     var dbColumn = projectContext.NumericColumnType.First(x => x.ColumnID == column.ColumnID);
                     dbColumn.MaxValue = column.MaxValue;
                     dbColumn.MinValue = column.MinValue;
+                    dbColumn.Delimiter = column.Delimiter;
                     dbColumn.Precision = column.Precision;
                     dbColumn.Scale = column.Scale;
                 }

@@ -25,6 +25,7 @@ namespace MyUIGenerator.UIControlHelper
 
         public NumericTextBoxHelper(ColumnDTO correspondingTypeProperty, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {
+            //**f8981e30-c94d-44be-80e0-0ba321de6d67
             theGrid = new Grid();
             theGrid.ColumnDefinitions.Add(new ColumnDefinition());
             theGrid.VerticalAlignment = System.Windows.VerticalAlignment.Center;
@@ -52,39 +53,46 @@ namespace MyUIGenerator.UIControlHelper
                 textBox.FormatString = "";
 
             }
+
             else
             {
-
-
+                //اگر اعشار خواست از پرسیجن و اسکیل استفاده شود
                 textBox.Mask = "";
-                if (correspondingTypeProperty.DataType.Contains("float")
-                    || correspondingTypeProperty.DataType.Contains("decimal")
-                    || correspondingTypeProperty.DataType.Contains("double"))
-                {
-                    //بطور پیش فرض دو رقم اعشار میگذارد و سه رقم سه رقم جدا میکند
-                    //textBox.FormatString = "n";
-
-                    //اگر اعشار خواست از پرسیجن و اسکیل استفاده شود
-                    textBox.FormatString = "n0";
-                }
-                else
-                {
-
-                    //رقم اعشار نمیگذارد و سه رقم سه رقم جدا میکند
-                    textBox.FormatString = "n0";
-                }
-                //بیشتر تست شود از نوع خود مقدار بایند شده به این کنترل
-                //بعدا یک خصوصیت اضافه شود که جدا نکند مثل شماره شناسنامه
-
-                // سه رقم سه رقم جدا نمیکند  
-                // textBox.FormatString = "";
-
-                DefaultBorderBrush = textBox.BorderBrush;
-                DefaultBorderThickness = textBox.BorderThickness;
-                DefaultBackground = textBox.Background;
-                DefaultForeground = textBox.Foreground;
-
             }
+            //    //////if (correspondingTypeProperty.DataType.Contains("float")
+            //    //////    || correspondingTypeProperty.DataType.Contains("decimal")
+            //    //////    || correspondingTypeProperty.DataType.Contains("double"))
+            //    //////{
+            //    //////    //بطور پیش فرض دو رقم اعشار میگذارد و سه رقم سه رقم جدا میکند
+            //    //////    //textBox.FormatString = "n";
+
+            //    //////    textBox.FormatString = "n0";
+            //    //////}
+            //    //////else
+            //    //////{
+
+            //    //////    //رقم اعشار نمیگذارد و سه رقم سه رقم جدا میکند
+            //    //////    textBox.FormatString = "n0";
+            //    //////}
+            //    //بیشتر تست شود از نوع خود مقدار بایند شده به این کنترل
+            //    //بعدا یک خصوصیت اضافه شود که جدا نکند مثل شماره شناسنامه
+
+
+            //    // سه رقم سه رقم جدا نمیکند  
+            //    // textBox.FormatString = "";
+
+
+
+            //}
+            if (correspondingTypeProperty.NumericColumnType.Delimiter == true)
+            {
+                textBox.FormatString = "n0";
+            }
+            DefaultBorderBrush = textBox.BorderBrush;
+            DefaultBorderThickness = textBox.BorderThickness;
+            DefaultBackground = textBox.Background;
+            DefaultForeground = textBox.Foreground;
+
             //}
 
 

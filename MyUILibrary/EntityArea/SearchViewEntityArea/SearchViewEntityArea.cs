@@ -319,7 +319,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        public void SelectFromParent(bool isCalledFromDataView, RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, string> colAndValues)
+        public void SelectFromParent(bool isCalledFromDataView, RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues)
         {
             IsCalledFromDataView = isCalledFromDataView;
             DP_SearchRepository searchItems = new DP_SearchRepository(AreaInitializer.EntityID);

@@ -47,7 +47,13 @@ namespace MyUILibrary.EntityArea.Commands
             //    EditArea.ChildRelationshipInfo.RelatedData.Add(newData);
             //}
             if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
-                EditArea.AddData(newData);
+            {
+                var addResult = EditArea.AddData(newData);
+                if (!addResult)
+                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", newData.ViewInfo, Temp.InfoColor.Red);
+               
+
+            }
             else
             {
                 EditArea.ChildRelationshipInfoBinded.AddDataToChildRelationshipInfo(newData);

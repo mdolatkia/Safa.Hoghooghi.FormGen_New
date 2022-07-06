@@ -15,7 +15,7 @@ namespace DataAccess
     public partial class DateColumnType
     {
         public int ColumnID { get; set; }
-        public bool ShowMiladiDateInUI { get; set; }
+        public Nullable<bool> ShowMiladiDateInUI { get; set; }
         public Nullable<bool> StringDateIsMiladi { get; set; }
     
         public virtual Column Column { get; set; }

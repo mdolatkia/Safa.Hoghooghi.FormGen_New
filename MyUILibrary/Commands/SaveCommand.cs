@@ -32,14 +32,14 @@ namespace MyUILibrary.EntityArea.Commands
             //Enabled = false;
             //try
             //{
-            var updateresult = EditArea.UpdateData();
+            var updateresult = EditArea.UpdateDataAndValidate(EditArea.GetDataList());
             if (!updateresult.IsValid)
             {
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo(updateresult.Message, "", MyUILibrary.Temp.InfoColor.Red);
                 return;
             }
-            SetFKProperties();
-            Datas = GetData().ToList();
+            //SetFKProperties();
+            Datas = GetDatas().ToList();
             if (Datas.Count > 0)
             {
                 if (ConfirmUpdateForm == null)
@@ -158,40 +158,40 @@ namespace MyUILibrary.EntityArea.Commands
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(sender);
         }
 
-        private void SetFKProperties(ChildRelationshipInfo parentChildRelationshipInfo = null)
-        {
-            List<DP_FormDataRepository> sourceList = null;
+        //private void SetFKProperties(ChildRelationshipInfo parentChildRelationshipInfo = null)
+        //{
+        //    List<DP_FormDataRepository> sourceList = null;
 
-            if (parentChildRelationshipInfo == null)
-                sourceList = EditArea.GetDataList().ToList();
-            else
-                sourceList = parentChildRelationshipInfo.RelatedData.ToList();
-            foreach (var dataItem in sourceList)
-            {
-                foreach (var childRel in dataItem.ChildRelationshipDatas.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
-                {
-                    foreach (var fkprop in childRel.Relationship.RelationshipColumns.Select(x => x.FirstSideColumnID))
-                    {
-                        var prop = dataItem.GetProperty(fkprop);
-                        if (prop != null)
-                            prop.ISFK = true;
-                    }
-                }
-                if (parentChildRelationshipInfo != null && parentChildRelationshipInfo.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
-                {
-                    foreach (var fkprop in parentChildRelationshipInfo.Relationship.RelationshipColumns.Select(x => x.SecondSideColumnID))
-                    {
-                        var prop = dataItem.GetProperty(fkprop);
-                        if (prop != null)
-                            prop.ISFK = true;
-                    }
-                }
-                foreach (var child in dataItem.ChildRelationshipDatas)
-                    SetFKProperties(child);
-            }
-        }
+        //    if (parentChildRelationshipInfo == null)
+        //        sourceList = EditArea.GetDataList().ToList();
+        //    else
+        //        sourceList = parentChildRelationshipInfo.RelatedData.ToList();
+        //    foreach (var dataItem in sourceList)
+        //    {
+        //        foreach (var childRel in dataItem.ChildRelationshipDatas.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
+        //        {
+        //            foreach (var fkprop in childRel.Relationship.RelationshipColumns.Select(x => x.FirstSideColumnID))
+        //            {
+        //                var prop = dataItem.GetProperty(fkprop);
+        //                if (prop != null)
+        //                    prop.ISFK = true;
+        //            }
+        //        }
+        //        if (parentChildRelationshipInfo != null && parentChildRelationshipInfo.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
+        //        {
+        //            foreach (var fkprop in parentChildRelationshipInfo.Relationship.RelationshipColumns.Select(x => x.SecondSideColumnID))
+        //            {
+        //                var prop = dataItem.GetProperty(fkprop);
+        //                if (prop != null)
+        //                    prop.ISFK = true;
+        //            }
+        //        }
+        //        foreach (var child in dataItem.ChildRelationshipDatas)
+        //            SetFKProperties(child);
+        //    }
+        //}
 
-        private ObservableCollection<DP_DataRepository> GetData()
+        private ObservableCollection<DP_DataRepository> GetDatas()
         {
             List<DP_FormDataRepository> sourceList = EditArea.GetDataList().ToList();
             ObservableCollection<DP_DataRepository> result = new ObservableCollection<DP_DataRepository>();
@@ -232,6 +232,7 @@ namespace MyUILibrary.EntityArea.Commands
             //newItem.IsReadonlyBecauseOfState = item.IsReadonlyBecauseOfState;
             newItem.EntityListView = item.EntityListView;
             newItem.IsNewItem = item.IsNewItem;
+
             // newItem.ParantChildRelationshipInfo = newParentChildRelationshipInfo;
 
             foreach (var childItem in item.ChildRelationshipDatas)
@@ -265,11 +266,12 @@ namespace MyUILibrary.EntityArea.Commands
                         //bool skipOriginalData = false;
 
                         //برای وقتی که شرط داده اجازه حذف میداده و داده حذف شده اما قبل از آپد یت دیگه شرط اجازه حذف را به علت هیدن یا ریدونلی بودن نمیده
-                        if ((orginalData.ParantChildRelationshipData != null /*&& orginalData.ToParantChildRelationshipData.IsHidden*/) || childItem.IsReadonlyOnState)// || orginalData.IsReadonlyOnState)
-                        {
-                        }
-                        else
-                            newChildItems.RemovedDataForUpdate.Add(orginalData);
+                        //if ((orginalData.ParantChildRelationshipData != null /*&& orginalData.ToParantChildRelationshipData.IsHidden*/) || childItem.IsReadonlyOnState)// || orginalData.IsReadonlyOnState)
+                        //{
+                        //}
+                        //else
+                        newChildItems.RemovedDataForUpdate.Add(orginalData);
+                        //اد و ریمو به این اصلی ها کنترل شود   از کلاسه پایه dp_data.. ریمو بشن
 
                         //else
                         //{

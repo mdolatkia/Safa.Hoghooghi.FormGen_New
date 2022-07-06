@@ -43,10 +43,10 @@ namespace MyUILibrary.EntityArea
         //    }
         //}
 
-        public ChildSimpleContorlProperty(SimpleColumnControlGenerel simpleColumnControl, DP_FormDataRepository sourceData, EntityInstanceProperty property) 
+        public ChildSimpleContorlProperty(SimpleColumnControlGenerel simpleColumnControl, DP_FormDataRepository sourceData, EntityInstanceProperty property)
         {
             SourceData = sourceData;
-               SimpleColumnControl = simpleColumnControl;
+            SimpleColumnControl = simpleColumnControl;
             Property = property;
             if (SimpleColumnControl.Column.ColumnValueRange != null && SimpleColumnControl.Column.ColumnValueRange.Details.Any())
             {
@@ -60,10 +60,10 @@ namespace MyUILibrary.EntityArea
             GetUIControlManager.SetBinding(this.Property);
 
             //این اضافیه چون تو وضعیها بصورت داینامیک فقط تعیین میشه و اونجا هم ریست میشه اما جهت محکم کاری بد نیست
-            DecideVisiblity();
+            DecideControl();
 
-            CheckColumnReadonly();
-            SetMessageAndColor();
+            //CheckColumnReadonly();
+            //SetMessageAndColor();
         }
         public bool IsHiddenOnState
         {
@@ -107,38 +107,74 @@ namespace MyUILibrary.EntityArea
 
         //}
 
-        public void AddHiddenState(string key, string message, bool permanent, bool checkInUI)
+        public void AddHiddenState(string key, string message, bool permanent)
         {
             if (ControlHiddenStateItems.Any(x => x.Key == key))
                 ControlHiddenStateItems.Remove(ControlHiddenStateItems.First(x => x.Key == key));
             ControlHiddenStateItems.Add(new ControlStateItem(key, message, permanent));
 
-
-            if (checkInUI)
-            {
-                DecideVisiblity();
-                SetMessageAndColor();
-            }
+            DecideControl();
         }
-        public void RemoveHiddenState(string key, bool checkInUI)
+
+        private void DecideControl()
+        {
+            if (IsHiddenOnState)
+            {
+                GetUIControlManager.Visiblity(false);
+                if (!LableIsShared)
+                    SimpleColumnControl.LabelControlManager.Visiblity(false);
+            }
+            else
+            {
+                GetUIControlManager.Visiblity(true);
+                if (!LableIsShared)
+                    SimpleColumnControl.LabelControlManager.Visiblity(true);
+
+                GetUIControlManager.SetReadonly(false);
+
+                List<ColumnControlColorItem> columnControlColorItems = new List<ColumnControlColorItem>();
+                List<ColumnControlMessageItem> columnControlMessageItems = new List<ColumnControlMessageItem>();
+
+
+                if (SimpleColumnControl.Column.IsMandatory)
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
+                if (SimpleColumnControl.Column.IsReadonly)
+                {
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, "columnReadonly", ControlItemPriority.Normal));
+                    columnControlMessageItems.Add(new ColumnControlMessageItem("این فیلد فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, "columnReadonly", ControlItemPriority.Normal));
+                }
+                foreach (var item in ControlHiddenStateItems)
+                {
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
+                    columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
+                }
+                foreach (var item in ControlReadonlyStateItems)
+                {
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
+                    columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات اعمال نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
+                }
+
+                foreach (var item in PropertyFormulaCommentItems)
+                {
+                    columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message, ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.Normal));
+                }
+
+                SetItemColor(columnControlColorItems);
+                SetItemMessage(columnControlMessageItems);
+            }
+
+        }
+
+        public void RemoveHiddenState(string key)
         {
             if (ControlHiddenStateItems.Any(x => x.Key == key))
                 ControlHiddenStateItems.RemoveAll(x => x.Key == key);
 
-            if (checkInUI)
-            {
-                DecideVisiblity();
-                SetMessageAndColor();
-            }
+            DecideControl();
+           // SetMessageAndColor();
         }
 
-        private void DecideVisiblity()
-        {
-            GetUIControlManager.Visiblity(!IsHiddenOnState);
-            if (!LableIsShared)
-                SimpleColumnControl.LabelControlManager.Visiblity(!IsHiddenOnState);
 
-        }
         //public void ResetSimpleColumnVisiblityFromState(string key)//, ImposeControlState hiddenControlState)
         //{
         //    if (SourceData.DataIsInEditMode())
@@ -190,10 +226,9 @@ namespace MyUILibrary.EntityArea
         //    }
         //}
 
-        private void CheckColumnReadonly()
-        {
-            GetUIControlManager.SetReadonly(IsReadonly);
-        }
+        //private void CheckColumnReadonly()
+        //{
+        //}
 
         //public void ResetSimpleColumnReadonlyFromState(string key)//, ImposeControlState hiddenControlState)
         //{
@@ -250,38 +285,10 @@ namespace MyUILibrary.EntityArea
             }
             return result;
         }
-        public void SetMessageAndColor()
-        {
-            List<ColumnControlColorItem> columnControlColorItems = new List<ColumnControlColorItem>();
-            List<ColumnControlMessageItem> columnControlMessageItems = new List<ColumnControlMessageItem>();
-
-
-            if (SimpleColumnControl.Column.IsMandatory)
-                columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
-            if (SimpleColumnControl.Column.IsReadonly)
-            {
-                columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, "columnReadonly", ControlItemPriority.Normal));
-                columnControlMessageItems.Add(new ColumnControlMessageItem("این فیلد فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, "columnReadonly", ControlItemPriority.Normal));
-            }
-            foreach (var item in ControlHiddenStateItems)
-            {
-                columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
-                columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
-            }
-            foreach (var item in ControlReadonlyStateItems)
-            {
-                columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
-                columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات اعمال نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
-            }
-
-            foreach (var item in PropertyFormulaCommentItems)
-            {
-                columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message, ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.Normal));
-            }
-
-            SetItemColor(columnControlColorItems);
-            SetItemMessage(columnControlMessageItems);
-        }
+        //public void SetMessageAndColor()
+        //{
+          
+        //}
 
 
 
@@ -346,14 +353,16 @@ namespace MyUILibrary.EntityArea
             if (!PropertyFormulaCommentItems.Any(x => x.Key == key))
                 PropertyFormulaCommentItems.Add(new PropertyFormulaComment(key, message));
 
-            SetMessageAndColor();
+            DecideControl();
+
         }
         public void RemovePropertyFormulaComment(string key)
         {
             if (PropertyFormulaCommentItems.Any(x => x.Key == key))
                 PropertyFormulaCommentItems.RemoveAll(x => x.Key == key);
 
-            SetMessageAndColor();
+            DecideControl();
+
         }
 
 

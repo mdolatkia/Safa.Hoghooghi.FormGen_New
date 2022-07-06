@@ -19,6 +19,7 @@ namespace DataAccess
         public Nullable<int> Scale { get; set; }
         public Nullable<double> MinValue { get; set; }
         public Nullable<double> MaxValue { get; set; }
+        public Nullable<bool> Delimiter { get; set; }
     
         public virtual Column Column { get; set; }
     }

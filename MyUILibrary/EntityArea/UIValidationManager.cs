@@ -21,53 +21,53 @@ namespace MyUILibrary.EntityArea
         {
             EditArea = editArea;
         }
-        public bool ValidateData(bool fromUpdate)
-        {
-            //var datas = EditArea.GetDataList();
-            //if (datas == null)
-            //    return true;
+        //public bool ValidateData(bool fromUpdate)
+        //{
+        //    //var datas = EditArea.GetDataList();
+        //    //if (datas == null)
+        //    //    return true;
 
-            //اگر از دکمه آپدیت اومده باشه چک میشه حتی اگر داده مخفی باشد زیرا اونموقع یعنی برای یک تمپ هستش که در فرم پدرش ممکنه
-            //وضعیتش تغییر کنه و از حالت هیدن خارج بشه
-            //اما برای کنترل داده های چایلد مستقیم هم خود داده باید ولید باشه وهم دادهی های چایلد غیر فعال نباشند
-            List<DP_FormDataRepository> dataList = null;
-            if (fromUpdate)
-                dataList = EditArea.GetDataList().ToList();
-            else
-                dataList = EditArea.GetDataList().Where(x => x.ShoudBeCounted).ToList();
-            bool result = true;
-            RemoveValidationMessages();
-            foreach (var data in dataList)
-            {
-                bool resultData = ValidateData(data);
-                if (!resultData)
-                    result = false;
-                if (resultData)
-                {
-                    foreach (var relationshipControl in data.ChildRelationshipDatas)
-                    {
-                        if (relationshipControl.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
-                                 || relationshipControl.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                        {
-                          //  var childRelInfo = data.ChildRelationshipDatas.First(x => x.Relationship == relationshipControl.Relationship);
-                            if (!relationshipControl.IsHidden)
-                            {
-                              //  relationshipControl.RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
+        //    //اگر از دکمه آپدیت اومده باشه چک میشه حتی اگر داده مخفی باشد زیرا اونموقع یعنی برای یک تمپ هستش که در فرم پدرش ممکنه
+        //    //وضعیتش تغییر کنه و از حالت هیدن خارج بشه
+        //    //اما برای کنترل داده های چایلد مستقیم هم خود داده باید ولید باشه وهم دادهی های چایلد غیر فعال نباشند
+        //    List<DP_FormDataRepository> dataList = null;
+        //    if (fromUpdate)
+        //        dataList = EditArea.GetDataList().ToList();
+        //    else
+        //        dataList = EditArea.GetDataList().Where(x => x.ShoudBeCounted).ToList();
+        //    bool result = true;
+        //    RemoveValidationMessages();
+        //    foreach (var data in dataList)
+        //    {
+        //        bool resultData = ValidateData(data);
+        //        if (!resultData)
+        //            result = false;
+        //        if (resultData)
+        //        {
+        //            foreach (var relationshipControl in data.ChildRelationshipDatas)
+        //            {
+        //                if (relationshipControl.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect
+        //                         || relationshipControl.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
+        //                {
+        //                  //  var childRelInfo = data.ChildRelationshipDatas.First(x => x.Relationship == relationshipControl.Relationship);
+        //                    if (!relationshipControl.IsHidden)
+        //                    {
+        //                      //  relationshipControl.RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
 
-                                if (fromUpdate && EditArea.AreaInitializer.SourceRelationColumnControl == null)
-                                {
-                                    if (!relationshipControl.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.UIValidationManager.ValidateData(false))
-                                        result = false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        //                        if (fromUpdate && EditArea.AreaInitializer.SourceRelationColumnControl == null)
+        //                        {
+        //                            if (!relationshipControl.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.UIValidationManager.ValidateData(false))
+        //                                result = false;
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
 
-            return result;
+        //    return result;
 
-        }
+        //}
         public void RemoveValidationMessages()
         {
             //اینجا
@@ -88,7 +88,7 @@ namespace MyUILibrary.EntityArea
 
         }
 
-        private bool ValidateData(DP_FormDataRepository data)
+        public bool ValidateData(DP_FormDataRepository data)
         {
             bool result = true;
             data.ISValid = true;

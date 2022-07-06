@@ -169,16 +169,59 @@ namespace MyModelGenerator
                             column.DefaultValue = (columnRow["COLUMN_DEFAULT"] == null ? null : columnRow["COLUMN_DEFAULT"].ToString());
                             if (IsStringType(column))
                             {
+
                                 //column. = Convert.ToByte(Enum_ColumnType.String);
                                 //if (column.DateColumnType != null)
                                 //    column.DateColumnType = null;
                                 //if (column.NumericColumnType != null)
                                 //    column.NumericColumnType = null;
+
+                                var maxLength = (columnRow["CHARACTER_MAXIMUM_LENGTH"] == null || columnRow["CHARACTER_MAXIMUM_LENGTH"] == DBNull.Value ? 0 : Convert.ToInt32(columnRow["CHARACTER_MAXIMUM_LENGTH"]));
                                 column.OriginalColumnType = Enum_ColumnType.String;
-                                column.ColumnType = Enum_ColumnType.String;
-                                if (column.StringColumnType == null)
-                                    column.StringColumnType = new StringColumnTypeDTO();
-                                column.StringColumnType.MaxLength = (columnRow["CHARACTER_MAXIMUM_LENGTH"] == null || columnRow["CHARACTER_MAXIMUM_LENGTH"] == DBNull.Value ? 0 : Convert.ToInt32(columnRow["CHARACTER_MAXIMUM_LENGTH"]));
+
+                                if (maxLength <= 50 &&
+                                    (column.Name.ToLower().StartsWith("datetime") ||
+                                    column.Name.ToLower().EndsWith("datetime"))
+                                      )
+                                {
+                                    column.ColumnType = Enum_ColumnType.DateTime;
+                                    if (column.DateTimeColumnType == null)
+                                        column.DateTimeColumnType = new DateTimeColumnTypeDTO();
+                                }
+                                else if (maxLength <= 50 &&
+                                    (column.Name.ToLower().StartsWith("date") ||
+                                    column.Name.ToLower().EndsWith("date") ||
+                                     column.Name.ToLower().StartsWith("tarikh") ||
+                                      column.Name.ToLower().EndsWith("tarikh"))
+                                      )
+                                {
+                                    column.ColumnType = Enum_ColumnType.Date;
+                                    if (column.DateColumnType == null)
+                                        column.DateColumnType = new DateColumnTypeDTO();
+
+                                }
+                                else if (maxLength <= 20 &&
+                                   (column.Name.ToLower().StartsWith("time") ||
+                                   column.Name.ToLower().EndsWith("time") ||
+                                   column.Name.ToLower().StartsWith("time") ||
+                                   column.Name.ToLower().EndsWith("time") ||
+                                    column.Name.ToLower().StartsWith("zaman") ||
+                                     column.Name.ToLower().EndsWith("zaman"))
+                                     )
+                                {
+                                    column.ColumnType = Enum_ColumnType.Time;
+                                    if (column.TimeColumnType == null)
+                                        column.TimeColumnType = new TimeColumnTypeDTO();
+                                }
+                                else
+                                {
+
+
+                                    column.ColumnType = Enum_ColumnType.String;
+                                    if (column.StringColumnType == null)
+                                        column.StringColumnType = new StringColumnTypeDTO();
+                                    column.StringColumnType.MaxLength = maxLength;
+                                }
                             }
                             else if (IsNumericType(column))
                             {

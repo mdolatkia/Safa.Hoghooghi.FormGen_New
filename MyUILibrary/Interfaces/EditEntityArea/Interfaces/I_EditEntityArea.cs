@@ -133,7 +133,10 @@ namespace MyUILibrary.EntityArea
         //    ObservableCollection<BaseMessageItem> MessageItems { set; get; }
 
         //bool SecurityReadOnlyByParentData { get; set; }
-        UpdateResult UpdateData();
+        UpdateResult UpdateDataAndValidate(List<DP_FormDataRepository> datas);
+        void UpdateData(List<DP_FormDataRepository> datas);
+        bool ValidateData(List<DP_FormDataRepository> datas);
+        void SetDataIsUpdated(List<DP_FormDataRepository> datas);
         //DeleteResult DeleteData();
         //void RemoveFromRelation(List<DP_FormDataRepository> specifiData = null);
 
@@ -176,7 +179,7 @@ namespace MyUILibrary.EntityArea
 
 
         //void SelectFromParent(DP_FormDataRepository parentDataItem, Dictionary<int, string> colAndValues);
-        void CheckEmptyOneDirectData(I_EditEntityArea editEntityArea);
+        //    void CheckEmptyOneDirectData(I_EditEntityArea editEntityArea);
         //void SetColumnValueFromState(DP_FormDataRepository dataItem, List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula, bool setFkRelColumns);
         //void SetColumnValueRangeFromState(SimpleColumnControl propertyControl, List<ColumnValueRangeDetailsDTO> details, DP_FormDataRepository data, EntityStateDTO state);
         //void ResetColumnValueRangeFromState(SimpleColumnControl simpleColumn, DP_FormDataRepository dataItem, EntityStateDTO state);
@@ -194,7 +197,7 @@ namespace MyUILibrary.EntityArea
         //bool DataItemIsInEditMode(DP_FormDataRepository sourceData);
         //bool DataItemIsInTempViewMode(DP_FormDataRepository dataItem);
         //    void DecideButtonsReadonlityByState(bool isReadonly);
-        void ApplyStatesBeforeUpdate(bool shouldCheckChilds, ChildRelationshipInfo parentChildRelInfo);
+      //  void ApplyStatesBeforeUpdate(bool shouldCheckChilds, ChildRelationshipInfo parentChildRelInfo);
         //void ClearUIData();
         //void ChangeDataItemReadonlyFromState(DP_FormDataRepository dataItem, string message, string key, bool skipUICheck);
         //void ChangeClearDataItemReadonlyFromState(DP_FormDataRepository dataItem, string key, bool skipUICheck);
@@ -236,7 +239,8 @@ namespace MyUILibrary.EntityArea
 
         //void ResetActionActivities(DP_FormDataRepository dataItem);
         void CheckAndImposeEntityStates(DP_FormDataRepository data, ActionActivitySource actionActivitySource);
-        void DataAdded(DP_FormDataRepository dataItem);
+        void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem);
+        void DataToShowInDataview(DP_FormDataRepository specificDate);
     }
 
     public interface I_UIFomulaManager
@@ -249,7 +253,8 @@ namespace MyUILibrary.EntityArea
     }
     public interface I_UIValidationManager
     {
-        bool ValidateData(bool fromUpdate);
+        bool ValidateData(DP_FormDataRepository data);
+        //   bool ValidateData(bool fromUpdate);
     }
     public interface I_FormulaDataTree
     {
@@ -294,7 +299,7 @@ namespace MyUILibrary.EntityArea
         I_View_EditEntityAreaDataView SpecializedDataView { get; }
         I_View_EditEntityAreaDataView DataView { get; set; }
 
-        void OnDataItemSelected(DP_FormDataRepository DP_FormDataRepository);
+      //  void OnDataItemSelected(DP_FormDataRepository DP_FormDataRepository);
         void CheckContainerVisiblity(UIControlPackageTree container);
     }
     public interface I_EditEntityAreaMultipleData : I_EditEntityArea
@@ -1371,6 +1376,11 @@ namespace MyUILibrary.EntityArea
     }
     public class ChangeMonitor
     {
+        public ChangeMonitor()
+        {
+
+        }
+        public DP_FormDataRepository SourceData { set; get; }
         public string GeneralKey { set; get; }
         public string UsageKey { set; get; }
         public DP_FormDataRepository DataToCall { set; get; }

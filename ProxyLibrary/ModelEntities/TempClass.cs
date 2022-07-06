@@ -126,6 +126,7 @@ namespace ModelEntites
         public double? MaxValue { set; get; }
 
         public DateColumnTypeDTO TTT { set; get; }
+        public bool? Delimiter { get; set; }
     }
 
     public class DateColumnTypeDTO
@@ -215,7 +216,7 @@ namespace ModelEntites
         }
 
         public int ID { set; get; }
-        public string ExactValue { set; get; }
+        public object ExactValue { set; get; }
         public int ColumnID { set; get; }
         public bool EvenHasValue { set; get; }
         public bool EvenIsNotNew { set; get; }

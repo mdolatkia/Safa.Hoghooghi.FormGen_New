@@ -861,35 +861,9 @@ namespace MyUILibrary
 
 
 
-        internal static bool DataOrRelatedChildDataHasValue(DP_FormDataRepository dataItem, RelationshipDTO relationship)
-        {
-            List<int> excludeColumns = new List<int>();
-            if (relationship != null)
-                if (relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
-                    excludeColumns = relationship.RelationshipColumns.Select(x => x.SecondSideColumnID).ToList();
-            foreach (var item in dataItem.GetProperties())
-                if (!excludeColumns.Contains(item.ColumnID) && !ValueIsEmpty(item))
-                    return true;
+       
 
-
-            foreach (var childRel in dataItem.ChildRelationshipDatas)
-                foreach (var data in childRel.RelatedData)
-                {
-                    if (DataOrRelatedChildDataHasValue(data, childRel.Relationship))
-                        return true;
-                }
-
-            return false;
-        }
-
-        internal static bool DataHasValue(DP_DataRepository dataItem)
-        {
-            foreach (var item in dataItem.GetProperties())
-                if (!ValueIsEmpty(item))
-                    return true;
-
-            return false;
-        }
+     
         //internal static bool DataShouldBeCounted(DP_DataRepository data)
         //{
 
@@ -964,7 +938,7 @@ namespace MyUILibrary
 
                 rItem.IsNew = item.IsNewItem;
                 rItem.ExcludeFromDataEntry = item.ExcludeFromDataEntry;
-                rItem.HasData = AgentHelper.DataHasValue(item);
+              //  rItem.HasData = AgentHelper.DataHasValue(item);
                 foreach (var property in item.GetProperties())
                 {
                     var column = columns.FirstOrDefault(x => x.ID == property.ColumnID);
