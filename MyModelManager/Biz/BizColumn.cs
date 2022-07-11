@@ -273,30 +273,45 @@ namespace MyModelManager
             {
                 var column = projectContext.Column.First(x => x.ID == columnID);
                 if (column.DateColumnType != null)
-                    return ToDateColumTypeDTO(column.DateColumnType);
+                    return ToDateColumTypeDTO(column.DateColumnType, true);
             }
             return null;
         }
-        private DateColumnTypeDTO ToDateColumTypeDTO(DataAccess.DateColumnType item)
+        private DateColumnTypeDTO ToDateColumTypeDTO(DataAccess.DateColumnType item, bool withNullValues)
         {
+            //**5bd4e7ec-d66f-4476-a4e7-0c4c410b98b1
             DateColumnTypeDTO result = new DateColumnTypeDTO();
             result.ColumnID = item.ColumnID;
-            این هم همینطور بشه
-            result.StringDateIsMiladi = item.StringDateIsMiladi;
-            if (item.ShowMiladiDateInUI != null)
-                result.ShowMiladiDateInUI = item.ShowMiladiDateInUI.Value;
+            result.ValueIsString = item.ValueIsString.Value;
+            if (withNullValues)
+            {
+                //اینجا برای برنامه مدیریت فراداده است
+                result.ShowMiladiDateInUI = item.ShowMiladiDateInUI;
+                result.StringDateIsMiladi = item.StringDateIsMiladi;
+            }
             else
             {
-                if (item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting != null)
+                if (item.ShowMiladiDateInUI != null)
+                    result.ShowMiladiDateInUI = item.ShowMiladiDateInUI.Value;
+                else
                 {
-                    result.ShowMiladiDateInUI = item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.ShowMiladiDateInUI;
+                    if (item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting != null)
+                    {
+                        result.ShowMiladiDateInUI = item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.ShowMiladiDateInUI;
+                    }
+                }
+                if (item.StringDateIsMiladi != null)
+                    result.StringDateIsMiladi = item.StringDateIsMiladi.Value;
+                else
+                {
+                    if (item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting != null)
+                    {
+                        result.StringDateIsMiladi = item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringDateColumnIsMiladi;
+                    }
                 }
             }
-            if ((Enum_ColumnType)item.Column.OriginalTypeEnum == Enum_ColumnType.String && result.StringDateIsMiladi == null
-                && item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting != null)
-            {
-                result.StringDateIsMiladi = item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringDateColumnIsMiladi;
-            }
+
+
             return result;
         }
         public TimeColumnTypeDTO GetTimeColumType(int columnID)
@@ -407,13 +422,14 @@ namespace MyModelManager
         //}
         public void ConvertStringColumnToDateColumnType(int columnID)
         {
+            //**df565d06-49cf-4bb7-9aa5-5bcec38b43c9
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var dbColumn = projectContext.Column.First(x => x.ID == columnID);
 
                 if (dbColumn.DateColumnType == null)
                     dbColumn.DateColumnType = new DateColumnType();
-
+                اینجا
                 var dbUISetting = dbColumn.Table.DBSchema.DatabaseInformation.DatabaseUISetting;
                 dbColumn.DateColumnType.ShowMiladiDateInUI = dbUISetting != null ? dbUISetting.ShowMiladiDateInUI : false;
                 dbColumn.DateColumnType.StringDateIsMiladi = dbUISetting != null ? dbUISetting.StringDateColumnIsMiladi : false;
@@ -641,7 +657,7 @@ namespace MyModelManager
                 if (item.NumericColumnType != null)
                     result.NumericColumnType = ToNumericColumTypeDTO(item.NumericColumnType);
                 if (item.DateColumnType != null)
-                    result.DateColumnType = ToDateColumTypeDTO(item.DateColumnType);
+                    result.DateColumnType = ToDateColumTypeDTO(item.DateColumnType, false);
                 if (item.TimeColumnType != null)
                     result.TimeColumnType = ToTimeColumTypeDTO(item.TimeColumnType);
                 if (item.DateTimeColumnType != null)
@@ -744,6 +760,7 @@ namespace MyModelManager
         }
         public void UpdateStringColumnType(List<StringColumnTypeDTO> columnTypes)
         {
+            //**bf58c975-a36d-4a12-b7a3-1cbf252eff52
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 foreach (var column in columnTypes)
@@ -759,6 +776,7 @@ namespace MyModelManager
 
         public void UpdateNumericColumnType(List<NumericColumnTypeDTO> columnTypes)
         {
+            //**c99a93a8-756a-42a2-a9f2-d346c3f0299b
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 foreach (var column in columnTypes)
@@ -847,11 +865,17 @@ namespace MyModelManager
                 {
                     var dbColumn = projectContext.DateColumnType.First(x => x.ColumnID == column.ColumnID);
                     dbColumn.ShowMiladiDateInUI = column.ShowMiladiDateInUI;
-                    if ((Enum_ColumnType)dbColumn.Column.OriginalTypeEnum == Enum_ColumnType.String)
-                        dbColumn.StringDateIsMiladi = column.StringDateIsMiladi;
-                    else
-                        dbColumn.StringDateIsMiladi = null;
 
+                    if ((Enum_ColumnType)dbColumn.Column.OriginalTypeEnum == Enum_ColumnType.String)
+                    {
+                        dbColumn.StringDateIsMiladi = column.StringDateIsMiladi;
+                        dbColumn.ValueIsString = true;
+                    }
+                    else
+                    {
+                        dbColumn.StringDateIsMiladi = null;
+                        dbColumn.ValueIsString = false;
+                    }
                 }
                 projectContext.SaveChanges();
             }

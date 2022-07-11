@@ -62,11 +62,9 @@ namespace DataAccess
         public virtual ICollection<CodeFunction_TableDrivedEntity_Parameters> CodeFunction_TableDrivedEntity_Parameters { get; set; }
         public virtual ColumnCustomFormula ColumnCustomFormula { get; set; }
         public virtual ColumnValueRange ColumnValueRange { get; set; }
-        public virtual DateTimeColumnType DateTimeColumnType { get; set; }
         public virtual ICollection<EntityDirectlReportParameters> EntityDirectlReportParameters { get; set; }
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter { get; set; }
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter1 { get; set; }
-        public virtual TimeColumnType TimeColumnType { get; set; }
         public virtual ICollection<SuperToSubRelationshipType> SuperToSubRelationshipType { get; set; }
         public virtual ICollection<TableDrivedEntity> TableDrivedEntity { get; set; }
         public virtual ICollection<TableDrivedEntityStateCondition> TableDrivedEntityStateCondition { get; set; }
@@ -86,6 +84,8 @@ namespace DataAccess
         public virtual ICollection<RelationshipColumns> RelationshipColumns { get; set; }
         public virtual ICollection<RelationshipColumns> RelationshipColumns1 { get; set; }
         public virtual ICollection<UniqueConstraint> UniqueConstraint { get; set; }
+        public virtual DateTimeColumnType DateTimeColumnType { get; set; }
+        public virtual TimeColumnType TimeColumnType { get; set; }
         public virtual DateColumnType DateColumnType { get; set; }
     }
 }

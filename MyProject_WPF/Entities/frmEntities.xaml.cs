@@ -945,7 +945,7 @@ namespace MyProject_WPF
                     convertToDateTimeColumnMenu.Click += (sender1, EventArgs) => ConvertToDateTimeColumnType_Click1(sender, e, column.ID);
 
                 }
-                else if (column.OriginalColumnType == Enum_ColumnType.String && column.ColumnType != Enum_ColumnType.String)
+                if (column.DateColumnType != null && column.DateColumnType.ValueIsString == true)
                 {
                     var convertToStringColumnMenu = AddMenu(contextMenu.Items, "تبدیل به نوع رشته", "", "../Images/string.png");
                     convertToStringColumnMenu.Click += (sender1, EventArgs) => ConvertToStringColumnType_Click1(sender, e, column.ID);

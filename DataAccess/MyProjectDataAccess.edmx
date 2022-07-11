@@ -385,6 +385,7 @@
           </Key>
           <Property Name="ColumnID" Type="int" Nullable="false" />
           <Property Name="ShowMiladiDateInUI" Type="bit" />
+          <Property Name="ValueIsString" Type="bit" />
           <Property Name="StringDateIsMiladi" Type="bit" />
         </EntityType>
         <EntityType Name="DateTimeColumnType">
@@ -395,6 +396,7 @@
           <Property Name="ShowMiladiDateInUI" Type="bit" />
           <Property Name="HideTimePicker" Type="bit" Nullable="false" />
           <Property Name="ShowAMPMFormat" Type="bit" Nullable="false" />
+          <Property Name="ValueIsString" Type="bit" />
           <Property Name="StringDateIsMiladi" Type="bit" />
           <Property Name="StringTimeIsMiladi" Type="bit" />
           <Property Name="StringTimeISAMPMFormat" Type="bit" />
@@ -860,7 +862,6 @@
           <Property Name="Scale" Type="int" />
           <Property Name="MinValue" Type="float" />
           <Property Name="MaxValue" Type="float" />
-          <Property Name="Delimiter" Type="bit" />
         </EntityType>
         <EntityType Name="OneToManyRelationshipType">
           <Key>
@@ -1138,7 +1139,8 @@
           </Key>
           <Property Name="ColumnID" Type="int" Nullable="false" />
           <Property Name="ShowAMPMFormat" Type="bit" Nullable="false" />
-          <Property Name="ShowMiladiTime" Type="bit" Nullable="false" />
+          <Property Name="ShowMiladiTime" Type="bit" />
+          <Property Name="ValueIsString" Type="bit" />
           <Property Name="StringTimeIsMiladi" Type="bit" />
           <Property Name="StringTimeISAMPMFormat" Type="bit" />
         </EntityType>
@@ -6148,7 +6150,6 @@
           <EntitySet Name="DataMenuGridViewRelationship" EntityType="MyProjectModel.DataMenuGridViewRelationship" />
           <EntitySet Name="DataMenuSearchableReportRelationship" EntityType="MyProjectModel.DataMenuSearchableReportRelationship" />
           <EntitySet Name="DataMenuSetting" EntityType="MyProjectModel.DataMenuSetting" />
-          <EntitySet Name="DateTimeColumnType" EntityType="MyProjectModel.DateTimeColumnType" />
           <EntitySet Name="DBSchema" EntityType="MyProjectModel.DBSchema" />
           <EntitySet Name="DBServer" EntityType="MyProjectModel.DBServer" />
           <EntitySet Name="EmptySpaceUISetting" EntityType="MyProjectModel.EmptySpaceUISetting" />
@@ -6226,7 +6227,6 @@
           <EntitySet Name="TableDrivedEntityStateConditionSecuritySubject" EntityType="MyProjectModel.TableDrivedEntityStateConditionSecuritySubject" />
           <EntitySet Name="TableDrivedEntityStateConditionValues" EntityType="MyProjectModel.TableDrivedEntityStateConditionValues" />
           <EntitySet Name="TabPageUISetting" EntityType="MyProjectModel.TabPageUISetting" />
-          <EntitySet Name="TimeColumnType" EntityType="MyProjectModel.TimeColumnType" />
           <EntitySet Name="UIActionActivity" EntityType="MyProjectModel.UIActionActivity" />
           <EntitySet Name="UIColumnValue" EntityType="MyProjectModel.UIColumnValue" />
           <EntitySet Name="UIColumnValueRange" EntityType="MyProjectModel.UIColumnValueRange" />
@@ -6400,10 +6400,6 @@
             <End Role="Column" EntitySet="Column" />
             <End Role="ColumnValueRange" EntitySet="ColumnValueRange" />
           </AssociationSet>
-          <AssociationSet Name="FK_DateTimeColumnType_Column" Association="MyProjectModel.FK_DateTimeColumnType_Column">
-            <End Role="Column" EntitySet="Column" />
-            <End Role="DateTimeColumnType" EntitySet="DateTimeColumnType" />
-          </AssociationSet>
           <AssociationSet Name="FK_EntityDirectlReportParameters_Column" Association="MyProjectModel.FK_EntityDirectlReportParameters_Column">
             <End Role="Column" EntitySet="Column" />
             <End Role="EntityDirectlReportParameters" EntitySet="EntityDirectlReportParameters" />
@@ -6415,10 +6411,6 @@
           <AssociationSet Name="FK_RelationshipSearchFilter_Column1" Association="MyProjectModel.FK_RelationshipSearchFilter_Column1">
             <End Role="Column" EntitySet="Column" />
             <End Role="RelationshipSearchFilter" EntitySet="RelationshipSearchFilter" />
-          </AssociationSet>
-          <AssociationSet Name="FK_StringTimeColumnType_Column" Association="MyProjectModel.FK_StringTimeColumnType_Column">
-            <End Role="Column" EntitySet="Column" />
-            <End Role="TimeColumnType" EntitySet="TimeColumnType" />
           </AssociationSet>
           <AssociationSet Name="FK_SuperToSubRelationshipType_Column" Association="MyProjectModel.FK_SuperToSubRelationshipType_Column">
             <End Role="Column" EntitySet="Column" />
@@ -7377,6 +7369,16 @@
             <End Role="Column" EntitySet="Column" />
           </AssociationSet>
           <EntitySet Name="DateColumnType" EntityType="MyProjectModel.DateColumnType" />
+          <EntitySet Name="DateTimeColumnType" EntityType="MyProjectModel.DateTimeColumnType" />
+          <EntitySet Name="TimeColumnType" EntityType="MyProjectModel.TimeColumnType" />
+          <AssociationSet Name="FK_DateTimeColumnType_Column" Association="MyProjectModel.FK_DateTimeColumnType_Column">
+            <End Role="Column" EntitySet="Column" />
+            <End Role="DateTimeColumnType" EntitySet="DateTimeColumnType" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StringTimeColumnType_Column" Association="MyProjectModel.FK_StringTimeColumnType_Column">
+            <End Role="Column" EntitySet="Column" />
+            <End Role="TimeColumnType" EntitySet="TimeColumnType" />
+          </AssociationSet>
           <AssociationSet Name="FKDateColumn74546" Association="MyProjectModel.FKDateColumn74546">
             <End Role="Column" EntitySet="Column" />
             <End Role="DateColumnType" EntitySet="DateColumnType" />
@@ -7577,11 +7579,9 @@
           <NavigationProperty Name="CodeFunction_TableDrivedEntity_Parameters" Relationship="MyProjectModel.FKCodeFuncti70133" FromRole="Column" ToRole="CodeFunction_TableDrivedEntity_Parameters" />
           <NavigationProperty Name="ColumnCustomFormula" Relationship="MyProjectModel.FK_ColumnCustomFormula_Column" FromRole="Column" ToRole="ColumnCustomFormula" />
           <NavigationProperty Name="ColumnValueRange" Relationship="MyProjectModel.FK_ColumnValueRange_Column" FromRole="Column" ToRole="ColumnValueRange" />
-          <NavigationProperty Name="DateTimeColumnType" Relationship="MyProjectModel.FK_DateTimeColumnType_Column" FromRole="Column" ToRole="DateTimeColumnType" />
           <NavigationProperty Name="EntityDirectlReportParameters" Relationship="MyProjectModel.FK_EntityDirectlReportParameters_Column" FromRole="Column" ToRole="EntityDirectlReportParameters" />
           <NavigationProperty Name="RelationshipSearchFilter" Relationship="MyProjectModel.FK_RelationshipSearchFilter_Column" FromRole="Column" ToRole="RelationshipSearchFilter" />
           <NavigationProperty Name="RelationshipSearchFilter1" Relationship="MyProjectModel.FK_RelationshipSearchFilter_Column1" FromRole="Column" ToRole="RelationshipSearchFilter" />
-          <NavigationProperty Name="TimeColumnType" Relationship="MyProjectModel.FK_StringTimeColumnType_Column" FromRole="Column" ToRole="TimeColumnType" />
           <NavigationProperty Name="SuperToSubRelationshipType" Relationship="MyProjectModel.FK_SuperToSubRelationshipType_Column" FromRole="Column" ToRole="SuperToSubRelationshipType" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyProjectModel.FK_TableDrivedEntity_Column" FromRole="Column" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyProjectModel.FK_TableDrivedEntityStateCondition_Column" FromRole="Column" ToRole="TableDrivedEntityStateCondition" />
@@ -7601,6 +7601,8 @@
           <NavigationProperty Name="RelationshipColumns" Relationship="MyProjectModel.Relationship_FirstEntityColumns" FromRole="Column" ToRole="RelationshipColumns" />
           <NavigationProperty Name="RelationshipColumns1" Relationship="MyProjectModel.Relationship_SecondEntityColumns" FromRole="Column" ToRole="RelationshipColumns" />
           <NavigationProperty Name="UniqueConstraint" Relationship="MyProjectModel.UniqueConstraint_Column" FromRole="Column" ToRole="UniqueConstraint" />
+          <NavigationProperty Name="DateTimeColumnType" Relationship="MyProjectModel.FK_DateTimeColumnType_Column" FromRole="Column" ToRole="DateTimeColumnType" />
+          <NavigationProperty Name="TimeColumnType" Relationship="MyProjectModel.FK_StringTimeColumnType_Column" FromRole="Column" ToRole="TimeColumnType" />
           <NavigationProperty Name="DateColumnType" Relationship="MyProjectModel.FKDateColumn74546" FromRole="Column" ToRole="DateColumnType" />
         </EntityType>
         <EntityType Name="ColumnCustomFormula">
@@ -7896,19 +7898,6 @@
           <NavigationProperty Name="EntityRelationshipTailDataMenuItems" Relationship="MyProjectModel.FK_EntityRelationshipTailListViewItems_EntityListView" FromRole="DataMenuSetting" ToRole="EntityRelationshipTailDataMenuItems" />
           <NavigationProperty Name="GraphDefinition" Relationship="MyProjectModel.FK_GraphDefinition_DataMenuSetting" FromRole="DataMenuSetting" ToRole="GraphDefinition" />
           <NavigationProperty Name="TableDrivedEntity1" Relationship="MyProjectModel.FK_TableDrivedEntity_DataMenuSetting" FromRole="DataMenuSetting" ToRole="TableDrivedEntity" />
-        </EntityType>
-        <EntityType Name="DateTimeColumnType">
-          <Key>
-            <PropertyRef Name="ColumnID" />
-          </Key>
-          <Property Name="ColumnID" Type="Int32" Nullable="false" />
-          <Property Name="ShowMiladiDateInUI" Type="Boolean" />
-          <Property Name="HideTimePicker" Type="Boolean" Nullable="false" />
-          <Property Name="ShowAMPMFormat" Type="Boolean" Nullable="false" />
-          <Property Name="StringDateIsMiladi" Type="Boolean" />
-          <Property Name="StringTimeIsMiladi" Type="Boolean" />
-          <Property Name="StringTimeISAMPMFormat" Type="Boolean" />
-          <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_DateTimeColumnType_Column" FromRole="DateTimeColumnType" ToRole="Column" />
         </EntityType>
         <EntityType Name="DBSchema">
           <Key>
@@ -8955,17 +8944,6 @@
           <Property Name="InternalColumnsCount" Type="Int16" Nullable="false" />
           <NavigationProperty Name="EntityUIComposition" Relationship="MyProjectModel.FKTabPageUIS719811" FromRole="TabPageUISetting" ToRole="EntityUIComposition" />
         </EntityType>
-        <EntityType Name="TimeColumnType">
-          <Key>
-            <PropertyRef Name="ColumnID" />
-          </Key>
-          <Property Name="ColumnID" Type="Int32" Nullable="false" />
-          <Property Name="ShowAMPMFormat" Type="Boolean" Nullable="false" />
-          <Property Name="ShowMiladiTime" Type="Boolean" Nullable="false" />
-          <Property Name="StringTimeIsMiladi" Type="Boolean" />
-          <Property Name="StringTimeISAMPMFormat" Type="Boolean" />
-          <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_StringTimeColumnType_Column" FromRole="TimeColumnType" ToRole="Column" />
-        </EntityType>
         <EntityType Name="UIActionActivity">
           <Key>
             <PropertyRef Name="ID" />
@@ -9795,18 +9773,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_DateTimeColumnType_Column">
-          <End Type="MyProjectModel.Column" Role="Column" Multiplicity="1" />
-          <End Type="MyProjectModel.DateTimeColumnType" Role="DateTimeColumnType" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Column">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DateTimeColumnType">
-              <PropertyRef Name="ColumnID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_EntityDirectlReportParameters_Column">
           <End Type="MyProjectModel.Column" Role="Column" Multiplicity="1" />
           <End Type="MyProjectModel.EntityDirectlReportParameters" Role="EntityDirectlReportParameters" Multiplicity="*" />
@@ -9840,18 +9806,6 @@
             </Principal>
             <Dependent Role="RelationshipSearchFilter">
               <PropertyRef Name="SearchColumnID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_StringTimeColumnType_Column">
-          <End Type="MyProjectModel.Column" Role="Column" Multiplicity="1" />
-          <End Type="MyProjectModel.TimeColumnType" Role="TimeColumnType" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Column">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TimeColumnType">
-              <PropertyRef Name="ColumnID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -12721,9 +12675,60 @@
           </Key>
           <Property Name="ColumnID" Type="Int32" Nullable="false" />
           <Property Name="ShowMiladiDateInUI" Type="Boolean" />
+          <Property Name="ValueIsString" Type="Boolean" />
           <Property Name="StringDateIsMiladi" Type="Boolean" />
           <NavigationProperty Name="Column" Relationship="MyProjectModel.FKDateColumn74546" FromRole="DateColumnType" ToRole="Column" />
         </EntityType>
+        <EntityType Name="DateTimeColumnType">
+          <Key>
+            <PropertyRef Name="ColumnID" />
+          </Key>
+          <Property Name="ColumnID" Type="Int32" Nullable="false" />
+          <Property Name="ShowMiladiDateInUI" Type="Boolean" />
+          <Property Name="HideTimePicker" Type="Boolean" Nullable="false" />
+          <Property Name="ShowAMPMFormat" Type="Boolean" Nullable="false" />
+          <Property Name="ValueIsString" Type="Boolean" />
+          <Property Name="StringDateIsMiladi" Type="Boolean" />
+          <Property Name="StringTimeIsMiladi" Type="Boolean" />
+          <Property Name="StringTimeISAMPMFormat" Type="Boolean" />
+          <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_DateTimeColumnType_Column" FromRole="DateTimeColumnType" ToRole="Column" />
+        </EntityType>
+        <EntityType Name="TimeColumnType">
+          <Key>
+            <PropertyRef Name="ColumnID" />
+          </Key>
+          <Property Name="ColumnID" Type="Int32" Nullable="false" />
+          <Property Name="ShowAMPMFormat" Type="Boolean" Nullable="false" />
+          <Property Name="ShowMiladiTime" Type="Boolean" />
+          <Property Name="ValueIsString" Type="Boolean" />
+          <Property Name="StringTimeIsMiladi" Type="Boolean" />
+          <Property Name="StringTimeISAMPMFormat" Type="Boolean" />
+          <NavigationProperty Name="Column" Relationship="MyProjectModel.FK_StringTimeColumnType_Column" FromRole="TimeColumnType" ToRole="Column" />
+        </EntityType>
+        <Association Name="FK_DateTimeColumnType_Column">
+          <End Type="MyProjectModel.Column" Role="Column" Multiplicity="1" />
+          <End Type="MyProjectModel.DateTimeColumnType" Role="DateTimeColumnType" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Column">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DateTimeColumnType">
+              <PropertyRef Name="ColumnID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StringTimeColumnType_Column">
+          <End Type="MyProjectModel.Column" Role="Column" Multiplicity="1" />
+          <End Type="MyProjectModel.TimeColumnType" Role="TimeColumnType" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Column">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TimeColumnType">
+              <PropertyRef Name="ColumnID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKDateColumn74546">
           <End Type="MyProjectModel.Column" Role="Column" Multiplicity="1" />
           <End Type="MyProjectModel.DateColumnType" Role="DateColumnType" Multiplicity="0..1" />
@@ -13150,19 +13155,6 @@
                 <ScalarProperty Name="EntityListViewID" ColumnName="EntityListViewID" />
                 <ScalarProperty Name="TableDrivedEntityID" ColumnName="TableDrivedEntityID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DateTimeColumnType">
-            <EntityTypeMapping TypeName="MyProjectModel.DateTimeColumnType">
-              <MappingFragment StoreEntitySet="DateTimeColumnType">
-                <ScalarProperty Name="StringTimeISAMPMFormat" ColumnName="StringTimeISAMPMFormat" />
-                <ScalarProperty Name="StringTimeIsMiladi" ColumnName="StringTimeIsMiladi" />
-                <ScalarProperty Name="StringDateIsMiladi" ColumnName="StringDateIsMiladi" />
-                <ScalarProperty Name="ShowAMPMFormat" ColumnName="ShowAMPMFormat" />
-                <ScalarProperty Name="HideTimePicker" ColumnName="HideTimePicker" />
-                <ScalarProperty Name="ShowMiladiDateInUI" ColumnName="ShowMiladiDateInUI" />
-                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -13671,7 +13663,6 @@
           <EntitySetMapping Name="NumericColumnType">
             <EntityTypeMapping TypeName="MyProjectModel.NumericColumnType">
               <MappingFragment StoreEntitySet="NumericColumnType">
-                <ScalarProperty Name="Delimiter" ColumnName="Delimiter" />
                 <ScalarProperty Name="MaxValue" ColumnName="MaxValue" />
                 <ScalarProperty Name="MinValue" ColumnName="MinValue" />
                 <ScalarProperty Name="Scale" ColumnName="Scale" />
@@ -13971,17 +13962,6 @@
               <MappingFragment StoreEntitySet="TabPageUISetting">
                 <ScalarProperty Name="InternalColumnsCount" ColumnName="InternalColumnsCount" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TimeColumnType">
-            <EntityTypeMapping TypeName="MyProjectModel.TimeColumnType">
-              <MappingFragment StoreEntitySet="TimeColumnType">
-                <ScalarProperty Name="StringTimeISAMPMFormat" ColumnName="StringTimeISAMPMFormat" />
-                <ScalarProperty Name="StringTimeIsMiladi" ColumnName="StringTimeIsMiladi" />
-                <ScalarProperty Name="ShowMiladiTime" ColumnName="ShowMiladiTime" />
-                <ScalarProperty Name="ShowAMPMFormat" ColumnName="ShowAMPMFormat" />
-                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -14331,7 +14311,34 @@
             <EntityTypeMapping TypeName="MyProjectModel.DateColumnType">
               <MappingFragment StoreEntitySet="DateColumnType">
                 <ScalarProperty Name="StringDateIsMiladi" ColumnName="StringDateIsMiladi" />
+                <ScalarProperty Name="ValueIsString" ColumnName="ValueIsString" />
                 <ScalarProperty Name="ShowMiladiDateInUI" ColumnName="ShowMiladiDateInUI" />
+                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DateTimeColumnType">
+            <EntityTypeMapping TypeName="MyProjectModel.DateTimeColumnType">
+              <MappingFragment StoreEntitySet="DateTimeColumnType">
+                <ScalarProperty Name="StringTimeISAMPMFormat" ColumnName="StringTimeISAMPMFormat" />
+                <ScalarProperty Name="StringTimeIsMiladi" ColumnName="StringTimeIsMiladi" />
+                <ScalarProperty Name="StringDateIsMiladi" ColumnName="StringDateIsMiladi" />
+                <ScalarProperty Name="ValueIsString" ColumnName="ValueIsString" />
+                <ScalarProperty Name="ShowAMPMFormat" ColumnName="ShowAMPMFormat" />
+                <ScalarProperty Name="HideTimePicker" ColumnName="HideTimePicker" />
+                <ScalarProperty Name="ShowMiladiDateInUI" ColumnName="ShowMiladiDateInUI" />
+                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TimeColumnType">
+            <EntityTypeMapping TypeName="MyProjectModel.TimeColumnType">
+              <MappingFragment StoreEntitySet="TimeColumnType">
+                <ScalarProperty Name="StringTimeISAMPMFormat" ColumnName="StringTimeISAMPMFormat" />
+                <ScalarProperty Name="StringTimeIsMiladi" ColumnName="StringTimeIsMiladi" />
+                <ScalarProperty Name="ValueIsString" ColumnName="ValueIsString" />
+                <ScalarProperty Name="ShowMiladiTime" ColumnName="ShowMiladiTime" />
+                <ScalarProperty Name="ShowAMPMFormat" ColumnName="ShowAMPMFormat" />
                 <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
               </MappingFragment>
             </EntityTypeMapping>

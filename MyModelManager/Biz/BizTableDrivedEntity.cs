@@ -1266,12 +1266,16 @@ namespace MyModelManager
                 //{
                 //    throw (new Exception("نوع ستون" + " " + column.Name + " " + "در جدول" + " " + entity.Name + " " + "مشخص نشده است"));
                 //}
+
+                اینجا اگر رشته تاریخ شده بود چی؟ دوباره 
+                    پاک می شود؟
                 dbColumn.TypeEnum = Convert.ToByte(column.ColumnType);
                 dbColumn.OriginalTypeEnum = Convert.ToByte(column.OriginalColumnType);
                 if (column.ColumnType == Enum_ColumnType.Date)
                 {
                     if (dbColumn.DateColumnType == null)
                         dbColumn.DateColumnType = new DateColumnType();
+                    dbColumn.DateColumnType.ValueIsString = column.OriginalColumnType == Enum_ColumnType.String;
                     //dbColumn.DateColumnType.ShowMiladiDateInUI = column.DateColumnType.ShowMiladiDateInUI;
                     //dbColumn.DateColumnType.StringDateIsMiladi = column.DateColumnType.StringDateIsMiladi;
                     //if (column.OriginalColumnType == Enum_ColumnType.String)

@@ -16,7 +16,8 @@ namespace DataAccess
     {
         public int ColumnID { get; set; }
         public bool ShowAMPMFormat { get; set; }
-        public bool ShowMiladiTime { get; set; }
+        public Nullable<bool> ShowMiladiTime { get; set; }
+        public Nullable<bool> ValueIsString { get; set; }
         public Nullable<bool> StringTimeIsMiladi { get; set; }
         public Nullable<bool> StringTimeISAMPMFormat { get; set; }
     

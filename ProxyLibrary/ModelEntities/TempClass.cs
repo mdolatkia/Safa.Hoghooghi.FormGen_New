@@ -132,8 +132,9 @@ namespace ModelEntites
     public class DateColumnTypeDTO
     {
         public int ColumnID { set; get; }
-        public bool ShowMiladiDateInUI { set; get; }
-        public bool StringDateIsMiladi { set; get; }
+        public bool? ShowMiladiDateInUI { set; get; }
+        public bool ValueIsString { set; get; }
+        public bool? StringDateIsMiladi { set; get; }
     }
     public class DateTimeColumnTypeDTO
     {

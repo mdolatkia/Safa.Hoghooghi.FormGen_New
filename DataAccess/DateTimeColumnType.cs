@@ -18,6 +18,7 @@ namespace DataAccess
         public Nullable<bool> ShowMiladiDateInUI { get; set; }
         public bool HideTimePicker { get; set; }
         public bool ShowAMPMFormat { get; set; }
+        public Nullable<bool> ValueIsString { get; set; }
         public Nullable<bool> StringDateIsMiladi { get; set; }
         public Nullable<bool> StringTimeIsMiladi { get; set; }
         public Nullable<bool> StringTimeISAMPMFormat { get; set; }

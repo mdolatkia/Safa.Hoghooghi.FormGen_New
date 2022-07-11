@@ -43,7 +43,6 @@
         <EntityTypeShape EntityType="MyProjectModel.DataMenuGridViewRelationship" Width="1.5" PointX="26.25" PointY="195.625" />
         <EntityTypeShape EntityType="MyProjectModel.DataMenuSearchableReportRelationship" Width="1.5" PointX="28.5" PointY="185.75" />
         <EntityTypeShape EntityType="MyProjectModel.DataMenuSetting" Width="1.5" PointX="21" PointY="160.5" />
-        <EntityTypeShape EntityType="MyProjectModel.DateTimeColumnType" Width="1.5" PointX="11.25" PointY="163.875" />
         <EntityTypeShape EntityType="MyProjectModel.DBSchema" Width="1.5" PointX="5.25" PointY="153" />
         <EntityTypeShape EntityType="MyProjectModel.DBServer" Width="1.5" PointX="0.75" PointY="146" />
         <EntityTypeShape EntityType="MyProjectModel.EmptySpaceUISetting" Width="1.5" PointX="21" PointY="215.625" />
@@ -121,7 +120,6 @@
         <EntityTypeShape EntityType="MyProjectModel.TableDrivedEntityStateConditionSecuritySubject" Width="1.5" PointX="33.5" PointY="175.875" />
         <EntityTypeShape EntityType="MyProjectModel.TableDrivedEntityStateConditionValues" Width="1.5" PointX="33.5" PointY="178.625" />
         <EntityTypeShape EntityType="MyProjectModel.TabPageUISetting" Width="1.5" PointX="21" PointY="202.375" />
-        <EntityTypeShape EntityType="MyProjectModel.TimeColumnType" Width="1.5" PointX="11.25" PointY="173.375" />
         <EntityTypeShape EntityType="MyProjectModel.UIActionActivity" Width="1.5" PointX="18.75" PointY="195.75" />
         <EntityTypeShape EntityType="MyProjectModel.UIColumnValue" Width="1.5" PointX="26" PointY="176" />
         <EntityTypeShape EntityType="MyProjectModel.UIColumnValueRange" Width="1.5" PointX="13.5" PointY="170.25" />
@@ -190,11 +188,9 @@
         <AssociationConnector Association="MyProjectModel.FKCodeFuncti901395" />
         <AssociationConnector Association="MyProjectModel.FK_ColumnCustomFormula_Column" />
         <AssociationConnector Association="MyProjectModel.FK_ColumnValueRange_Column" />
-        <AssociationConnector Association="MyProjectModel.FK_DateTimeColumnType_Column" />
         <AssociationConnector Association="MyProjectModel.FK_EntityDirectlReportParameters_Column" />
         <AssociationConnector Association="MyProjectModel.FK_RelationshipSearchFilter_Column" />
         <AssociationConnector Association="MyProjectModel.FK_RelationshipSearchFilter_Column1" />
-        <AssociationConnector Association="MyProjectModel.FK_StringTimeColumnType_Column" />
         <AssociationConnector Association="MyProjectModel.FK_SuperToSubRelationshipType_Column" />
         <AssociationConnector Association="MyProjectModel.FK_TableDrivedEntity_Column" />
         <AssociationConnector Association="MyProjectModel.FK_TableDrivedEntityStateCondition_Column" />
@@ -434,7 +430,11 @@
         <AssociationConnector Association="MyProjectModel.FKTransition612866" />
         <AssociationConnector Association="MyProjectModel.FKTransition636993" />
         <AssociationConnector Association="MyProjectModel.UniqueConstraint_Column" />
-        <EntityTypeShape EntityType="MyProjectModel.DateColumnType" Width="1.5" PointX="11.25" PointY="158.375" />
+        <EntityTypeShape EntityType="MyProjectModel.DateColumnType" Width="1.5" PointX="11.25" PointY="165.625" />
+        <EntityTypeShape EntityType="MyProjectModel.DateTimeColumnType" Width="1.5" PointX="11.25" PointY="159" />
+        <EntityTypeShape EntityType="MyProjectModel.TimeColumnType" Width="1.5" PointX="11.25" PointY="162.5" />
+        <AssociationConnector Association="MyProjectModel.FK_DateTimeColumnType_Column" />
+        <AssociationConnector Association="MyProjectModel.FK_StringTimeColumnType_Column" />
         <AssociationConnector Association="MyProjectModel.FKDateColumn74546" />
       </Diagram>
     </edmx:Diagrams>

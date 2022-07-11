@@ -58,8 +58,11 @@ namespace MyUIGenerator.UIControlHelper
                 //??نباید DateColumnType نال باشد. فعلا ایف گذاشته شد
                 if (correspondingTypeProperty.DateColumnType != null)
                 {
-                    showMiladiDate = correspondingTypeProperty.DateColumnType.ShowMiladiDateInUI;
-                    stringDateIsMiladi = correspondingTypeProperty.DateColumnType.StringDateIsMiladi;
+                    //**cbeb78f5-f3ac-41d8-b615-c2f50657509c
+                    showMiladiDate = correspondingTypeProperty.DateColumnType.ShowMiladiDateInUI == true;
+                    valueIsString = correspondingTypeProperty.DateColumnType.ValueIsString;
+                    stringDateIsMiladi = correspondingTypeProperty.DateColumnType.StringDateIsMiladi == true;
+
                 }
                 hasnotTimePicker = true;
 
@@ -85,7 +88,6 @@ namespace MyUIGenerator.UIControlHelper
                 else
                     hideMiladiDatePicker = true;
             }
-            valueIsString = correspondingTypeProperty.OriginalColumnType == Enum_ColumnType.String;
             textBox = new MyDateTimePicker();
 
 
@@ -279,7 +281,7 @@ namespace MyUIGenerator.UIControlHelper
         public void SetOperator(CommonOperator searchOperator)
         {
             cmbOperators.SelectedValue = searchOperator;
-          //  return false;
+            //  return false;
         }
         public bool HasOperator()
         {
@@ -289,7 +291,7 @@ namespace MyUIGenerator.UIControlHelper
         {
             textBox.IsEnabled = enable;
         }
-      
+
         public bool IsVisible()
         {
             return textBox.Visibility == Visibility.Visible;
