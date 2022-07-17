@@ -27,17 +27,17 @@ namespace MyUIGenerator.UIControlHelper
         public override FrameworkElement MainControl { get { return textBox; } }
 
         bool stringDateIsMiladi;
-        bool stringTimeIsMiladi;
+        //bool stringTimeIsMiladi;
         bool valueIsString = false;
-        bool stringTimeISAMPMFormat;
+        //    bool stringTimeISAMPMFormat;
         bool hasnotTimePicker;
-        bool hideTimePicker;
+        // bool hideTimePicker;
         bool hideMiladiDatePicker;
         bool hideShamsiDatePicker;
-        bool hasnotDatePicker;
-        bool showAMPMFormat;
-        bool showMiladiTime;
-        bool showMiladiDate;
+        //  bool hasnotDatePicker;
+        StringTimeFormat stringTimeFormat;
+        //   bool showMiladiTime;
+        //   bool showMiladiDate;
         public DateTimePickerHelper(ColumnDTO correspondingTypeProperty, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {
             theGrid = new Grid();
@@ -45,13 +45,18 @@ namespace MyUIGenerator.UIControlHelper
             theGrid.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             if (correspondingTypeProperty.ColumnType == Enum_ColumnType.DateTime)
             {
-                showMiladiTime = correspondingTypeProperty.DateTimeColumnType.ShowMiladiDateInUI;
-                showMiladiDate = correspondingTypeProperty.DateTimeColumnType.ShowMiladiDateInUI;
-                showAMPMFormat = correspondingTypeProperty.DateTimeColumnType.ShowAMPMFormat;
-                stringDateIsMiladi = correspondingTypeProperty.DateTimeColumnType.StringDateIsMiladi;
-                stringTimeISAMPMFormat = correspondingTypeProperty.DateTimeColumnType.StringTimeISAMPMFormat;
-                stringTimeIsMiladi = correspondingTypeProperty.DateTimeColumnType.StringTimeIsMiladi;
-                hideTimePicker = correspondingTypeProperty.DateTimeColumnType.HideTimePicker;
+                //  showMiladiTime = correspondingTypeProperty.DateTimeColumnType.ShowMiladiDateInUI;
+
+                if (correspondingTypeProperty.DateTimeColumnType.ShowMiladiDateInUI == true)
+                    hideShamsiDatePicker = true;
+                else
+                    hideMiladiDatePicker = true;
+
+                valueIsString = correspondingTypeProperty.DateTimeColumnType.DBValueIsString;
+                //   stringTimeFormat = correspondingTypeProperty.DateTimeColumnType.StringTimeISAMPMFormat;
+                stringDateIsMiladi = correspondingTypeProperty.DateTimeColumnType.DBValueIsStringMiladi == true;
+                stringTimeFormat = correspondingTypeProperty.DateTimeColumnType.DBValueStringTimeFormat;
+                //   hideTimePicker = false;
             }
             else if (correspondingTypeProperty.ColumnType == Enum_ColumnType.Date)
             {
@@ -59,9 +64,13 @@ namespace MyUIGenerator.UIControlHelper
                 if (correspondingTypeProperty.DateColumnType != null)
                 {
                     //**cbeb78f5-f3ac-41d8-b615-c2f50657509c
-                    showMiladiDate = correspondingTypeProperty.DateColumnType.ShowMiladiDateInUI == true;
-                    valueIsString = correspondingTypeProperty.DateColumnType.ValueIsString;
-                    stringDateIsMiladi = correspondingTypeProperty.DateColumnType.StringDateIsMiladi == true;
+                    if (correspondingTypeProperty.DateColumnType.ShowMiladiDateInUI == true)
+                        hideShamsiDatePicker = true;
+                    else
+                        hideMiladiDatePicker = true;
+
+                    valueIsString = correspondingTypeProperty.DateColumnType.DBValueIsString;
+                    stringDateIsMiladi = correspondingTypeProperty.DateColumnType.DBValueIsStringMiladi == true;
 
                 }
                 hasnotTimePicker = true;
@@ -69,40 +78,34 @@ namespace MyUIGenerator.UIControlHelper
             }
             else if (correspondingTypeProperty.ColumnType == Enum_ColumnType.Time)
             {
-                showMiladiTime = correspondingTypeProperty.TimeColumnType.ShowMiladiTime;
-                showAMPMFormat = correspondingTypeProperty.TimeColumnType.ShowAMPMFormat;
-                stringTimeIsMiladi = correspondingTypeProperty.TimeColumnType.StringTimeIsMiladi;
-                stringTimeISAMPMFormat = correspondingTypeProperty.TimeColumnType.StringTimeISAMPMFormat;
-                hasnotDatePicker = true;
-                hasnotTimePicker = false;
-            }
-            if (hasnotDatePicker)
-            {
+                //   showMiladiTime = correspondingTypeProperty.TimeColumnType.ShowMiladiTime;
+                stringTimeFormat = correspondingTypeProperty.TimeColumnType.DBValueStringTimeFormat;
+                valueIsString = correspondingTypeProperty.TimeColumnType.DBValueIsString;
+
+                //      stringTimeIsMiladi = correspondingTypeProperty.TimeColumnType.StringTimeIsMiladi;
+                //   stringTimeISAMPMFormat = correspondingTypeProperty.TimeColumnType.StringTimeISAMPMFormat;
                 hideShamsiDatePicker = true;
                 hideMiladiDatePicker = true;
             }
-            else
-            {
-                if (showMiladiDate)
-                    hideShamsiDatePicker = true;
-                else
-                    hideMiladiDatePicker = true;
-            }
+
+
+
             textBox = new MyDateTimePicker();
 
 
-            (textBox as MyDateTimePicker).TimePickerVisiblity = !hasnotTimePicker && !hideTimePicker;
+            (textBox as MyDateTimePicker).TimePickerVisiblity = !hasnotTimePicker;
             (textBox as MyDateTimePicker).ShamsiDatePickerVisiblity = !hideShamsiDatePicker;
             (textBox as MyDateTimePicker).MiladiDatePickerVisiblity = !hideMiladiDatePicker;
 
             if ((textBox as MyDateTimePicker).TimePickerVisiblity)
             {
-                if (showAMPMFormat)
+                if (stringTimeFormat == StringTimeFormat.AMPMMiladi ||
+                   stringTimeFormat == StringTimeFormat.AMPMShamsi)
                 {
                     CultureInfo cultureInfo = null;
-                    if (showMiladiTime)
+                    if (stringTimeFormat == StringTimeFormat.AMPMMiladi)
                         cultureInfo = new CultureInfo("en-US");
-                    else
+                    else if (stringTimeFormat == StringTimeFormat.AMPMShamsi)
                         cultureInfo = new CultureInfo("fa-IR");
                     (textBox as MyDateTimePicker).TimePickeCulture = cultureInfo;
                 }
@@ -198,7 +201,8 @@ namespace MyUIGenerator.UIControlHelper
                         {
                             stringtime = value.ToString().Split(" ".ToCharArray(), 2)[1];
                         }
-                        if (param.stringTimeIsMiladi == false && param.stringTimeISAMPMFormat == true)
+                        if (param.stringTimeFormat == StringTimeFormat.AMPMMiladi ||
+                              param.stringTimeFormat == StringTimeFormat.AMPMShamsi)
                             stringtime = stringtime.Replace("ق.ظ", "AM").Replace("ب.ظ", "PM");
 
                         DateTime time;
@@ -246,15 +250,16 @@ namespace MyUIGenerator.UIControlHelper
                 }
                 if (!param.hasnotTimePicker)
                 {
-                    if (param.stringTimeISAMPMFormat == true)
+                    if (param.stringTimeFormat == StringTimeFormat.AMPMMiladi ||
+                            param.stringTimeFormat == StringTimeFormat.AMPMShamsi)
                     {
-                        if (param.stringTimeIsMiladi == true)
+                        if (param.stringTimeFormat == StringTimeFormat.AMPMMiladi)
                         {
-                            time = selectedDateTime.Value.ToString("hh:mm tt").ToUpper().Replace("AM", "ق.ظ").Replace("PM", "ب.ظ");
+                            time = selectedDateTime.Value.ToString("hh:mm tt").Replace("ق.ظ", "AM").Replace("ب.ظ", "PM");
                         }
-                        else
+                        else if (param.stringTimeFormat == StringTimeFormat.AMPMShamsi)
                         {
-                            time = selectedDateTime.Value.ToString("hh:mm tt");
+                            time = selectedDateTime.Value.ToString("hh:mm tt").ToUpper().Replace("AM", "ق.ظ").Replace("PM", "ب.ظ"); ;
                         }
                     }
                     else
@@ -395,17 +400,17 @@ namespace MyUIGenerator.UIControlHelper
         private DateConverterParameter GetConverterParameter()
         {
             DateConverterParameter param = new UIControlHelper.DateConverterParameter();
-            param.hasnotDatePicker = hasnotDatePicker;
+            //param.hasnotDatePicker = hasnotDatePicker;
             param.hasnotTimePicker = hasnotTimePicker;
             param.hideMiladiDatePicker = hideMiladiDatePicker;
             param.hideShamsiDatePicker = hideShamsiDatePicker;
-            param.hideTimePicker = hideTimePicker;
-            param.showAMPMFormat = showAMPMFormat;
-            param.showMiladiDate = showMiladiDate;
-            param.showMiladiTime = showMiladiTime;
+            // param.hideTimePicker = hasnotTimePicker;
+            param.stringTimeFormat = stringTimeFormat;
+            //param.showMiladiDate = showMiladiDate;
+            //    param.showMiladiTime = showMiladiTime;
             param.stringDateIsMiladi = stringDateIsMiladi;
-            param.stringTimeISAMPMFormat = stringTimeISAMPMFormat;
-            param.stringTimeIsMiladi = stringTimeIsMiladi;
+            //     param.stringTimeISAMPMFormat = stringTimeISAMPMFormat;
+            //param.stringTimeIsMiladi = stringTimeIsMiladi;
             param.valueIsString = valueIsString;
             return param;
         }
@@ -547,17 +552,24 @@ namespace MyUIGenerator.UIControlHelper
 
     public class DateConverterParameter
     {
+        internal bool hasnotDatePicker
+        {
+            get
+            {
+                return (hideMiladiDatePicker && hideShamsiDatePicker);
+            }
+        }
         public bool? stringDateIsMiladi;
-        public bool? stringTimeIsMiladi;
+        //      public bool? stringTimeIsMiladi;
         public bool valueIsString = false;
-        public bool? stringTimeISAMPMFormat;
+        //   public bool? stringTimeISAMPMFormat;
         public bool hasnotTimePicker;
-        public bool hideTimePicker;
+        //  public bool hideTimePicker;
         public bool hideMiladiDatePicker;
         public bool hideShamsiDatePicker;
-        public bool hasnotDatePicker;
-        public bool showAMPMFormat;
-        public bool showMiladiTime;
-        public bool showMiladiDate;
+        //   public bool hasnotDatePicker;
+        public StringTimeFormat stringTimeFormat;
+        //      public bool showMiladiTime;
+        //    public bool showMiladiDate;
     }
 }

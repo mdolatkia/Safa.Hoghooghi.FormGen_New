@@ -133,32 +133,37 @@ namespace ModelEntites
     {
         public int ColumnID { set; get; }
         public bool? ShowMiladiDateInUI { set; get; }
-        public bool ValueIsString { set; get; }
-        public bool? StringDateIsMiladi { set; get; }
+        public bool DBValueIsString { set; get; }
+        public bool? DBValueIsStringMiladi { set; get; }
     }
     public class DateTimeColumnTypeDTO
     {
         public int ColumnID { set; get; }
-        public bool ShowMiladiDateInUI { set; get; }
-        public bool HideTimePicker { set; get; }
-        public bool ShowAMPMFormat { set; get; }
-        public bool StringDateIsMiladi { set; get; }
-        public bool StringTimeIsMiladi { set; get; }
-        public bool StringTimeISAMPMFormat { set; get; }
+        public bool DBValueIsString { set; get; }
+        public bool? ShowMiladiDateInUI { set; get; }
+        public bool? DBValueIsStringMiladi { set; get; }
+        public StringTimeFormat DBValueStringTimeFormat { get; set; }
     }
     public class TimeColumnTypeDTO
     {
         public int ColumnID { set; get; }
         //public int MaxLength { get; set; }
-        public bool ShowAMPMFormat { set; get; }
-        public bool ShowMiladiTime { set; get; }
-        public bool StringTimeISAMPMFormat { get; set; }
-        public bool StringTimeIsMiladi { get; set; }
+        //public bool ShowAMPMFormat { set; get; }
+        //public bool ShowMiladiTime { set; get; }
+        public StringTimeFormat DBValueStringTimeFormat { get; set; }
+        public bool DBValueIsString { get; set; }
         //     public bool StringValueIsMiladi { set; get; }
 
         //  public bool ValueIsPersianDate { set; get; }
     }
-    public enum GeorgianDateFormat
+    public enum StringTimeFormat
+    {
+        Unknown,
+        Hours24,
+        AMPMMiladi,
+        AMPMShamsi
+    }
+        public enum GeorgianDateFormat
     {
         YYYYMMDD,
         DDMMYYYY,
@@ -352,6 +357,7 @@ namespace ModelEntites
         public bool FlowDirectionLTR { get; set; }
         public bool ShowMiladiDateInUI { get; set; }
         public bool StringDateColumnIsMiladi { get; set; }
+        public StringTimeFormat StringTimeFormat { get; set; }
     }
     public enum enum_DBType
     {

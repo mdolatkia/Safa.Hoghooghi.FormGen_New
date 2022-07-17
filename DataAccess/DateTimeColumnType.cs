@@ -16,12 +16,9 @@ namespace DataAccess
     {
         public int ColumnID { get; set; }
         public Nullable<bool> ShowMiladiDateInUI { get; set; }
-        public bool HideTimePicker { get; set; }
-        public bool ShowAMPMFormat { get; set; }
-        public Nullable<bool> ValueIsString { get; set; }
-        public Nullable<bool> StringDateIsMiladi { get; set; }
-        public Nullable<bool> StringTimeIsMiladi { get; set; }
-        public Nullable<bool> StringTimeISAMPMFormat { get; set; }
+        public bool DBValueIsString { get; set; }
+        public Nullable<bool> DBValueIsStringMiladi { get; set; }
+        public Nullable<short> DBValueStringTimeFormat { get; set; }
     
         public virtual Column Column { get; set; }
     }

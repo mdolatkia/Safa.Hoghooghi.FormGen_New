@@ -18,6 +18,7 @@ namespace DataAccess
         public bool FlowDirectionLTR { get; set; }
         public bool ShowMiladiDateInUI { get; set; }
         public bool StringDateColumnIsMiladi { get; set; }
+        public short StringTimeFormat { get; set; }
     
         public virtual DatabaseInformation DatabaseInformation { get; set; }
     }

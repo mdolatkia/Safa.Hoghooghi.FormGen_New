@@ -488,7 +488,7 @@ namespace MyModelCustomSetting
                     priceColumn.NumericColumnType.Delimiter = true;
                 }
             }
-                var serviceConclusion = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceConclusion" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+            var serviceConclusion = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceConclusion" && x.Table.DBSchema.DatabaseInformationID == databaseID);
             if (serviceConclusion != null)
             {
                 var userRateColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "UserRate");
@@ -503,11 +503,12 @@ namespace MyModelCustomSetting
                     if (stringUpdateDateTime.DateTimeColumnType == null)
                         stringUpdateDateTime.DateTimeColumnType = new DateTimeColumnType();
                     stringUpdateDateTime.DateTimeColumnType.ShowMiladiDateInUI = true;
-                    stringUpdateDateTime.DateTimeColumnType.HideTimePicker = true;
-                    stringUpdateDateTime.DateTimeColumnType.StringDateIsMiladi = true;
-                    stringUpdateDateTime.DateTimeColumnType.StringTimeIsMiladi = false;
-                    stringUpdateDateTime.DateTimeColumnType.StringTimeISAMPMFormat = true;
-                    stringUpdateDateTime.DateTimeColumnType.ShowAMPMFormat = true;
+                    //       stringUpdateDateTime.DateTimeColumnType.HideTimePicker = true;
+               //     stringUpdateDateTime.DateTimeColumnType.DBValueIsStringMiladi = true;
+                    stringUpdateDateTime.DateTimeColumnType.DBValueStringTimeFormat = (short)StringTimeFormat.AMPMMiladi;
+                    //     stringUpdateDateTime.DateTimeColumnType.StringTimeIsMiladi = false;
+                    //     stringUpdateDateTime.DateTimeColumnType.StringTimeISAMPMFormat = true;
+                    //      stringUpdateDateTime.DateTimeColumnType.ShowAMPMFormat = true;
                 }
                 var ConclusionTotalPriceColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "TotalPrice");
                 if (serviceConclusionItem != null)
@@ -547,14 +548,14 @@ namespace MyModelCustomSetting
             {
                 var dateTimeColumn = requestProductPart.Table.Column.FirstOrDefault(x => x.Name == "DateTime");
                 if (dateTimeColumn != null)
+                {
                     dateTimeColumn.DateTimeColumnType.ShowMiladiDateInUI = true;
+                }
                 var stringDateTimeColumn = requestProductPart.Table.Column.FirstOrDefault(x => x.Name == "StringDateTime");
                 if (stringDateTimeColumn != null)
                 {
-                    stringDateTimeColumn.DateTimeColumnType.StringDateIsMiladi = true;
-                    stringDateTimeColumn.DateTimeColumnType.StringTimeIsMiladi = true;
-                    stringDateTimeColumn.DateTimeColumnType.StringTimeISAMPMFormat = true;
-                    stringDateTimeColumn.DateTimeColumnType.ShowAMPMFormat = true;
+                    stringDateTimeColumn.DateTimeColumnType.DBValueIsStringMiladi = true;
+                    dateTimeColumn.DateTimeColumnType.DBValueStringTimeFormat = (short)StringTimeFormat.AMPMShamsi;
                 }
             }
             var serviceRequest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequest" && x.Table.DBSchema.DatabaseInformationID == databaseID);
@@ -576,10 +577,10 @@ namespace MyModelCustomSetting
                 var timeColumn = serviceRequest.Table.Column.FirstOrDefault(x => x.Name == "Time");
                 if (timeColumn != null)
                 {
-                    timeColumn.TimeColumnType.ShowAMPMFormat = true;
-                    timeColumn.TimeColumnType.StringTimeISAMPMFormat = true;
-                    timeColumn.TimeColumnType.StringTimeIsMiladi = false;
-                    timeColumn.TimeColumnType.ShowMiladiTime = true;
+                    //  timeColumn.TimeColumnType.ShowAMPMFormat = true;
+                    //  timeColumn.TimeColumnType.StringTimeISAMPMFormat = true;
+                    timeColumn.TimeColumnType.DBValueStringTimeFormat = (short)StringTimeFormat.AMPMShamsi;
+                    //timeColumn.TimeColumnType.ShowMiladiTime = true;
                 }
 
 
@@ -599,13 +600,13 @@ namespace MyModelCustomSetting
             {
                 var autoDateColumn = serviceRequestReview.Table.Column.FirstOrDefault(x => x.Name == "AutoDate");
                 if (autoDateColumn != null)
-                    autoDateColumn.DateColumnType.StringDateIsMiladi = true;
+                    autoDateColumn.DateColumnType.DBValueIsStringMiladi = true;
                 var autoTimeColumn = serviceRequestReview.Table.Column.FirstOrDefault(x => x.Name == "AutoTime");
                 if (autoTimeColumn != null)
                 {
-                    autoTimeColumn.TimeColumnType.ShowAMPMFormat = true;
-                    autoTimeColumn.TimeColumnType.StringTimeIsMiladi = true;
-                    autoTimeColumn.TimeColumnType.StringTimeISAMPMFormat = true;
+                    autoTimeColumn.TimeColumnType.DBValueStringTimeFormat = (short)StringTimeFormat.Hours24;
+                    //autoTimeColumn.TimeColumnType.StringTimeIsMiladi = true;
+                    //autoTimeColumn.TimeColumnType.StringTimeISAMPMFormat = true;
                 }
             }
 

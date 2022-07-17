@@ -68,7 +68,7 @@ namespace MyModelManager
                 dbDatabase.DatabaseUISetting.FlowDirectionLTR = databaseSetting.FlowDirectionLTR;
                 dbDatabase.DatabaseUISetting.ShowMiladiDateInUI = databaseSetting.ShowMiladiDateInUI;
                 dbDatabase.DatabaseUISetting.StringDateColumnIsMiladi = databaseSetting.StringDateColumnIsMiladi;
-
+                dbDatabase.DatabaseUISetting.StringTimeFormat = (short)databaseSetting.StringTimeFormat;
                 projectContext.SaveChanges();
                 return true;
             }
@@ -265,6 +265,8 @@ namespace MyModelManager
                 result.FlowDirectionLTR = item.DatabaseUISetting.FlowDirectionLTR;
                 result.ShowMiladiDateInUI = item.DatabaseUISetting.ShowMiladiDateInUI;
                 result.StringDateColumnIsMiladi = item.DatabaseUISetting.StringDateColumnIsMiladi;
+                result.StringTimeFormat = (StringTimeFormat)item.DatabaseUISetting.StringTimeFormat;
+
                 return result;
             }
             else
@@ -318,7 +320,7 @@ namespace MyModelManager
                 db.DBType = "SQLServer";
                 db.DBServer = dbserver;
                 db.DBHasDate = false;
-               
+
 
                 db.SecurityObject = new SecurityObject();
                 db.SecurityObject.Type = (int)DatabaseObjectCategory.Database;

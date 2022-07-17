@@ -4,6 +4,7 @@ using MyFormulaFunctionStateFunctionLibrary;
 using MyModelGenerator;
 using MyModelManager;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,7 +43,9 @@ namespace MyProject_WPF
             dtgRuleEntity.SelectionChanged += dtgRuleEntity_SelectionChanged;
             dtgColumns.SelectionChanged += dtgColumns_SelectionChanged;
             dtgColumns.RowLoaded += DtgColumns_RowLoaded;
-
+            dtgDateColumnType.RowLoaded += DtgDateColumnType_RowLoaded;
+            dtgTimeColumnType.RowLoaded += DtgTimeColumnType_RowLoaded;
+            dtgDateTimeColumnType.RowLoaded += DtgDateTimeColumnType_RowLoaded;
             dtgColumns.EnableColumnVirtualization = false;
 
             var entityMenu = new RadContextMenu();
@@ -61,6 +64,52 @@ namespace MyProject_WPF
 
             //dtgNumericColumnType.CellEditEnded += DtgNumericColumnType_CellEditEnded;
             //dtgNumericColumnType.CellValidating += DtgNumericColumnType_CellValidating;
+        }
+
+        private void DtgDateTimeColumnType_RowLoaded(object sender, RowLoadedEventArgs e)
+        {
+            if (e.DataElement is DateTimeColumnTypeDTO)
+            {
+                var column = e.DataElement as DateTimeColumnTypeDTO;
+                if (!column.DBValueIsString)
+                {
+                    var cell = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "DBValueStringTimeFormat");
+                    if (cell != null)
+                        cell.IsEnabled = false;
+
+                    var cell1 = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "DBValueIsStringMiladi");
+                    if (cell1 != null)
+                        cell1.IsEnabled = false;
+                }
+            }
+        }
+
+        private void DtgTimeColumnType_RowLoaded(object sender, RowLoadedEventArgs e)
+        {
+            if (e.DataElement is TimeColumnTypeDTO)
+            {
+                var column = e.DataElement as TimeColumnTypeDTO;
+                if (!column.DBValueIsString)
+                {
+                    var cell = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "DBValueStringTimeFormat");
+                    if (cell != null)
+                        cell.IsEnabled = false;
+                }
+            }
+        }
+
+        private void DtgDateColumnType_RowLoaded(object sender, RowLoadedEventArgs e)
+        {
+            if (e.DataElement is DateColumnTypeDTO)
+            {
+                var column = e.DataElement as DateColumnTypeDTO;
+                if (!column.DBValueIsString )
+                {
+                    var cell = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "DBValueIsStringMiladi");
+                    if (cell != null)
+                        cell.IsEnabled = false;
+                }
+            }
         }
 
         //private void DtgNumericColumnType_CellValidating(object sender, GridViewCellValidatingEventArgs e)
@@ -210,32 +259,42 @@ namespace MyProject_WPF
             {
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ColumnID", "شناسه ستون", true, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ShowMiladiDateInUI", "نمایش تاریخ میلادی", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("StringDateIsMiladi", "مقدار رشته ای میلادی", false, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBValueIsString", "مقدار رشته است", true, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBValueIsStringMiladi", "مقدار رشته ای میلادی", false, null, GridViewColumnType.CheckBox));
 
             }
             else if (dataGrid == dtgTimeColumnType)
             {
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ColumnID", "شناسه ستون", true, null, GridViewColumnType.Text));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ShowAMPMFormat", "نمایش به فرمت 12 ساعته", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ShowMiladiTime", "نمایش زمان میلادی", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("StringTimeIsMiladi", "مقدار رشته ای میلادی", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("StringTimeISAMPMFormat", "مقدار رشته ای 12 ساعته", false, null, GridViewColumnType.CheckBox));
+                //dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ShowAMPMFormat", "نمایش به فرمت 12 ساعته", false, null, GridViewColumnType.CheckBox));
+                //dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ShowMiladiTime", "نمایش زمان میلادی", false, null, GridViewColumnType.CheckBox));
+                //dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("StringTimeIsMiladi", "مقدار رشته ای میلادی", false, null, GridViewColumnType.CheckBox));
+                //dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("StringTimeISAMPMFormat", "مقدار رشته ای 12 ساعته", false, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBValueIsString", "مقدار رشته است", true, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBValueStringTimeFormat", "فرمت رشته زمان", false, null, GridViewColumnType.Enum, GetStringTimeFormatAsItemsSource()));
+
 
             }
             else if (dataGrid == dtgDateTimeColumnType)
             {
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ColumnID", "شناسه ستون", true, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ShowMiladiDateInUI", "نمایش تاریخ میلادی", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("HideTimePicker", "مخفی نمودن زمان", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ShowAMPMFormat", "نمایش 12 ساعته", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("StringDateIsMiladi", "مقدار رشته ای تاریخ میلادی", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("StringTimeIsMiladi", "مقدار رشته ای زمان میلادی", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("StringTimeISAMPMFormat", "مقدار رشته ای 12 ساعته", false, null, GridViewColumnType.CheckBox));
+                //dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("HideTimePicker", "مخفی نمودن زمان", false, null, GridViewColumnType.CheckBox));
+                //dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ShowAMPMFormat", "نمایش 12 ساعته", false, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBValueIsString", "مقدار رشته است", true, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBValueIsStringMiladi", "مقدار رشته ای تاریخ میلادی", false, null, GridViewColumnType.CheckBox));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBValueStringTimeFormat","فرمت رشته زمان", false, null, GridViewColumnType.Enum, GetStringTimeFormatAsItemsSource()));
 
 
             }
         }
 
+        private IEnumerable GetStringTimeFormatAsItemsSource()
+        {
+            return Enum.GetValues(typeof(StringTimeFormat))
+                       .Cast<object>();
+        }
+        
 
 
         //private void SetFormulas()
@@ -936,20 +995,23 @@ namespace MyProject_WPF
                 if (column.ColumnType == Enum_ColumnType.String)
                 {
                     var convertToDateColumnMenu = AddMenu(contextMenu.Items, "تبدیل به تاریخ", "", "../Images/date.png");
-                    convertToDateColumnMenu.Click += (sender1, EventArgs) => ConvertToDateColumnType_Click1(sender, e, column.ID);
+                    convertToDateColumnMenu.Click += (sender1, EventArgs) => ConvertToDateColumnType_Click1(sender, e, column);
 
                     var convertToTimeColumnMenu = AddMenu(contextMenu.Items, "تبدیل به زمان", "", "../Images/date.png");
-                    convertToTimeColumnMenu.Click += (sender1, EventArgs) => ConvertToTimeColumnType_Click1(sender, e, column.ID);
+                    convertToTimeColumnMenu.Click += (sender1, EventArgs) => ConvertToTimeColumnType_Click1(sender, e, column);
 
                     var convertToDateTimeColumnMenu = AddMenu(contextMenu.Items, "تبدیل به تاریخ زمان", "", "../Images/date.png");
-                    convertToDateTimeColumnMenu.Click += (sender1, EventArgs) => ConvertToDateTimeColumnType_Click1(sender, e, column.ID);
+                    convertToDateTimeColumnMenu.Click += (sender1, EventArgs) => ConvertToDateTimeColumnType_Click1(sender, e, column);
 
                 }
-                if (column.DateColumnType != null && column.DateColumnType.ValueIsString == true)
+                if ((column.DateColumnType != null && column.DateColumnType.DBValueIsString == true)
+                    || (column.TimeColumnType != null && column.TimeColumnType.DBValueIsString == true)
+                       || (column.DateTimeColumnType != null && column.DateTimeColumnType.DBValueIsString == true))
                 {
                     var convertToStringColumnMenu = AddMenu(contextMenu.Items, "تبدیل به نوع رشته", "", "../Images/string.png");
-                    convertToStringColumnMenu.Click += (sender1, EventArgs) => ConvertToStringColumnType_Click1(sender, e, column.ID);
+                    convertToStringColumnMenu.Click += (sender1, EventArgs) => ConvertToStringColumnType_Click1(sender, e, column);
                 }
+             
 
                 //if (column.ColumnType == Enum_ColumnType.String)
                 //{
@@ -976,9 +1038,9 @@ namespace MyProject_WPF
         }
 
 
-        void ConvertToStringColumnType_Click1(object sender, RoutedEventArgs e, int columnID)
+        void ConvertToStringColumnType_Click1(object sender, RoutedEventArgs e, ColumnDTO column)
         {
-            bizColumn.ConvertColumnToStringColumnType(columnID);
+            bizColumn.ConvertColumnToStringColumnType(selectedEntity, column);
         }
         //void ConvertTimeToStringColumnType_Click1(object sender, RoutedEventArgs e, int columnID)
         //{
@@ -988,17 +1050,17 @@ namespace MyProject_WPF
         //{
         //    bizColumn.ConvertStringDateTimeColumnToStringColumnType(columnID);
         //}
-        void ConvertToDateColumnType_Click1(object sender, RoutedEventArgs e, int columnID)
+        void ConvertToDateColumnType_Click1(object sender, RoutedEventArgs e, ColumnDTO column)
         {
-            bizColumn.ConvertStringColumnToDateColumnType(columnID);
+            bizColumn.ConvertStringColumnToDateTimeColumn(selectedEntity, column,Enum_ColumnType.Date);
         }
-        void ConvertToTimeColumnType_Click1(object sender, RoutedEventArgs e, int columnID)
+        void ConvertToTimeColumnType_Click1(object sender, RoutedEventArgs e, ColumnDTO column)
         {
-            bizColumn.ConvertStringColumnToTimeColumnType(columnID);
+            bizColumn.ConvertStringColumnToDateTimeColumn(selectedEntity, column, Enum_ColumnType.Time);
         }
-        void ConvertToDateTimeColumnType_Click1(object sender, RoutedEventArgs e, int columnID)
+        void ConvertToDateTimeColumnType_Click1(object sender, RoutedEventArgs e, ColumnDTO column)
         {
-            bizColumn.ConvertStringColumnToDateTimeColumnType(columnID);
+            bizColumn.ConvertStringColumnToDateTimeColumn(selectedEntity, column, Enum_ColumnType.DateTime);
         }
 
         void DefineColumnCustomFormula(object sender, RoutedEventArgs e, ColumnDTO column)

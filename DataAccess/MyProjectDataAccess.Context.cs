@@ -63,6 +63,8 @@ namespace DataAccess
         public virtual DbSet<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }
         public virtual DbSet<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
         public virtual DbSet<DataMenuSetting> DataMenuSetting { get; set; }
+        public virtual DbSet<DateColumnType> DateColumnType { get; set; }
+        public virtual DbSet<DateTimeColumnType> DateTimeColumnType { get; set; }
         public virtual DbSet<DBSchema> DBSchema { get; set; }
         public virtual DbSet<DBServer> DBServer { get; set; }
         public virtual DbSet<EmptySpaceUISetting> EmptySpaceUISetting { get; set; }
@@ -140,6 +142,7 @@ namespace DataAccess
         public virtual DbSet<TableDrivedEntityStateConditionSecuritySubject> TableDrivedEntityStateConditionSecuritySubject { get; set; }
         public virtual DbSet<TableDrivedEntityStateConditionValues> TableDrivedEntityStateConditionValues { get; set; }
         public virtual DbSet<TabPageUISetting> TabPageUISetting { get; set; }
+        public virtual DbSet<TimeColumnType> TimeColumnType { get; set; }
         public virtual DbSet<UIActionActivity> UIActionActivity { get; set; }
         public virtual DbSet<UIColumnValue> UIColumnValue { get; set; }
         public virtual DbSet<UIColumnValueRange> UIColumnValueRange { get; set; }
@@ -173,8 +176,5 @@ namespace DataAccess
         public virtual DbSet<TransitionAction_Formula> TransitionAction_Formula { get; set; }
         public virtual DbSet<TransitionActionTarget> TransitionActionTarget { get; set; }
         public virtual DbSet<TransitionActivity> TransitionActivity { get; set; }
-        public virtual DbSet<DateColumnType> DateColumnType { get; set; }
-        public virtual DbSet<DateTimeColumnType> DateTimeColumnType { get; set; }
-        public virtual DbSet<TimeColumnType> TimeColumnType { get; set; }
     }
 }

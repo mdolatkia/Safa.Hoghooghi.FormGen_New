@@ -15,6 +15,10 @@ namespace MyModelManager
 {
     public class ModelDataHelper
     {
+        public ModelDataHelper()
+        {
+
+        }
         //public List<DataAccess.Column> GetColumnList(TableDrivedEntity template)
         //{
         //    if (template.Column == null || template.Column.Count == 0)
@@ -300,7 +304,7 @@ namespace MyModelManager
             var fkDBHelper = ConnectionManager.GetDBHelper(entity.DatabaseID);
 
             var query = GetSingleEntityBaseSelectFromQuery(entity);
-       
+
             var res1 = fkDBHelper.ExecuteScalar(query);
             return Convert.ToInt32(res1) != 0;
         }
@@ -391,6 +395,24 @@ namespace MyModelManager
                 return 0;
             else
                 return Convert.ToInt64(val);
+        }
+
+        public object GetColumnNotNullData(TableDrivedEntityDTO entity, ColumnDTO column)
+        {
+            var fkDBHelper = ConnectionManager.GetDBHelper(entity.DatabaseID);
+
+            var selectFrom = "";
+            string tableName = "";
+
+            tableName = (string.IsNullOrEmpty(entity.RelatedSchema) ? "" : "[" + entity.RelatedSchema + "]" + ".") + "[" + entity.TableName + "]";
+
+
+            selectFrom = "select top 1 " + column.Name + " from " + tableName + " where " + column.Name + " is not Null " + " and " + column.Name + "<>''";
+
+
+
+            var val = fkDBHelper.ExecuteScalar(selectFrom);
+            return val;
         }
 
         private bool FKMoreThanOnceQuery(TableDrivedEntityDTO fkEntity, RelationshipDTO relationship)

@@ -113,7 +113,9 @@ namespace MyModelGenerator
                     while (reader.Read())
                     {
                         TableDrivedEntityDTO table = new TableDrivedEntityDTO();
+                        table.DatabaseID = Database.ID;
                         table.Name = reader["TABLE_Name"].ToString();
+                        table.TableName = reader["TABLE_Name"].ToString();
                         //try
                         //{
                         counter++;
@@ -179,49 +181,14 @@ namespace MyModelGenerator
                                 var maxLength = (columnRow["CHARACTER_MAXIMUM_LENGTH"] == null || columnRow["CHARACTER_MAXIMUM_LENGTH"] == DBNull.Value ? 0 : Convert.ToInt32(columnRow["CHARACTER_MAXIMUM_LENGTH"]));
                                 column.OriginalColumnType = Enum_ColumnType.String;
 
-                                if (maxLength <= 50 &&
-                                    (column.Name.ToLower().StartsWith("datetime") ||
-                                    column.Name.ToLower().EndsWith("datetime"))
-                                      )
-                                {
-                                    column.ColumnType = Enum_ColumnType.DateTime;
-                                    if (column.DateTimeColumnType == null)
-                                        column.DateTimeColumnType = new DateTimeColumnTypeDTO();
-                                }
-                                else if (maxLength <= 50 &&
-                                    (column.Name.ToLower().StartsWith("date") ||
-                                    column.Name.ToLower().EndsWith("date") ||
-                                     column.Name.ToLower().StartsWith("tarikh") ||
-                                      column.Name.ToLower().EndsWith("tarikh"))
-                                      )
-                                {
-                                    column.ColumnType = Enum_ColumnType.Date;
-                                    if (column.DateColumnType == null)
-                                        column.DateColumnType = new DateColumnTypeDTO();
-
-                                }
-                                else if (maxLength <= 20 &&
-                                   (column.Name.ToLower().StartsWith("time") ||
-                                   column.Name.ToLower().EndsWith("time") ||
-                                   column.Name.ToLower().StartsWith("time") ||
-                                   column.Name.ToLower().EndsWith("time") ||
-                                    column.Name.ToLower().StartsWith("zaman") ||
-                                     column.Name.ToLower().EndsWith("zaman"))
-                                     )
-                                {
-                                    column.ColumnType = Enum_ColumnType.Time;
-                                    if (column.TimeColumnType == null)
-                                        column.TimeColumnType = new TimeColumnTypeDTO();
-                                }
-                                else
-                                {
 
 
-                                    column.ColumnType = Enum_ColumnType.String;
-                                    if (column.StringColumnType == null)
-                                        column.StringColumnType = new StringColumnTypeDTO();
-                                    column.StringColumnType.MaxLength = maxLength;
-                                }
+
+                                column.ColumnType = Enum_ColumnType.String;
+                                if (column.StringColumnType == null)
+                                    column.StringColumnType = new StringColumnTypeDTO();
+                                column.StringColumnType.MaxLength = maxLength;
+                                // }
                             }
                             else if (IsNumericType(column))
                             {
@@ -246,7 +213,7 @@ namespace MyModelGenerator
                                 //    column.StringColumnType = null;
                                 //if (column.NumericColumnType != null)
                                 //    column.NumericColumnType = null;
-                                column.OriginalColumnType = Enum_ColumnType.Date;
+                                column.OriginalColumnType = Enum_ColumnType.DateTime;
                                 column.ColumnType = Enum_ColumnType.DateTime;
                                 if (column.DateTimeColumnType == null)
                                     column.DateTimeColumnType = new DateTimeColumnTypeDTO();
@@ -921,8 +888,9 @@ namespace MyModelGenerator
                         while (reader.Read())
                         {
                             var table = new TableDrivedEntityDTO();
-
+                            table.DatabaseID = Database.ID;
                             table.Name = reader["Name"].ToString();
+                            table.TableName = reader["Name"].ToString();
                             try
                             {
 

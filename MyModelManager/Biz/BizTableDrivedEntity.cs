@@ -1220,156 +1220,15 @@ namespace MyModelManager
             // }
 
             //   table.TableDrivedEntity.First(x => x.IsOrginal == true).Alias = entity.Alias;
-
-
-
             table.DBSchema = dbSchema;
-            foreach (var column in entity.Columns)
-            {
-                Column dbColumn = table.Column.FirstOrDefault(x => x.Name == column.Name);
-                if (dbColumn == null)
-                {
-                    dbColumn = new Column();
-                    dbColumn.SecurityObject = new SecurityObject();
-                    dbColumn.SecurityObject.Type = (int)DatabaseObjectCategory.Column;
-                    dbColumn.Name = column.Name;
-                    dbColumn.DataEntryEnabled = true;
 
-                    if (!string.IsNullOrEmpty(column.DBFormula) ||
-                        (!string.IsNullOrEmpty(column.DefaultValue) && DefaultValueIsDBFunction(column)))
-                    {
-                        dbColumn.IsReadonly = true;
-                        //چون اگه تو حالت اصلاح بود بتونه ببینه داده رو
-
-                    }
-                    else
-                    {
-                        dbColumn.IsReadonly = false;
-                    }
-                    table.Column.Add(dbColumn);
-                }
-                if (dbColumn.ID == 0)
-                {
-                    dbColumn.Alias = string.IsNullOrEmpty(column.Alias) ? column.Name : column.Alias;
-                    dbColumn.Description = column.Description;
-                }
-
-                dbColumn.DataType = column.DataType;
-                dbColumn.PrimaryKey = column.PrimaryKey;
-                dbColumn.IsNull = column.IsNull;
-                dbColumn.IsMandatory = !column.IsNull;
-                dbColumn.IsIdentity = column.IsIdentity;
-                dbColumn.Position = column.Position;
-                dbColumn.DefaultValue = column.DefaultValue;
-                //if (column.OriginalColumnType == Enum_ColumnType.None ||
-                //   column.ColumnType == Enum_ColumnType.None)
-                //{
-                //    throw (new Exception("نوع ستون" + " " + column.Name + " " + "در جدول" + " " + entity.Name + " " + "مشخص نشده است"));
-                //}
-
-                اینجا اگر رشته تاریخ شده بود چی؟ دوباره 
-                    پاک می شود؟
-                dbColumn.TypeEnum = Convert.ToByte(column.ColumnType);
-                dbColumn.OriginalTypeEnum = Convert.ToByte(column.OriginalColumnType);
-                if (column.ColumnType == Enum_ColumnType.Date)
-                {
-                    if (dbColumn.DateColumnType == null)
-                        dbColumn.DateColumnType = new DateColumnType();
-                    dbColumn.DateColumnType.ValueIsString = column.OriginalColumnType == Enum_ColumnType.String;
-                    //dbColumn.DateColumnType.ShowMiladiDateInUI = column.DateColumnType.ShowMiladiDateInUI;
-                    //dbColumn.DateColumnType.StringDateIsMiladi = column.DateColumnType.StringDateIsMiladi;
-                    //if (column.OriginalColumnType == Enum_ColumnType.String)
-                    //{
-                    //    if (dbColumn.StringColumnType == null)
-                    //        dbColumn.StringColumnType = new StringColumnType();
-                    //    dbColumn.StringColumnType.MaxLength = column.StringColumnType.MaxLength;
-                    //    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Date, Enum_ColumnType.String });
-
-                    //}
-                    //else
-                    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Date });
-                }
-                else if (column.ColumnType == Enum_ColumnType.String)
-                {
-                    if (dbColumn.StringColumnType == null)
-                        dbColumn.StringColumnType = new StringColumnType();
-                    dbColumn.StringColumnType.MaxLength = column.StringColumnType.MaxLength;
-                    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.String });
-                }
-                else if (column.ColumnType == Enum_ColumnType.Time)
-                {
-                    if (dbColumn.TimeColumnType == null)
-                        dbColumn.TimeColumnType = new TimeColumnType();
-                    dbColumn.TimeColumnType.ShowMiladiTime = column.TimeColumnType.ShowMiladiTime;
-                    dbColumn.TimeColumnType.ShowAMPMFormat = column.TimeColumnType.ShowAMPMFormat;
-                    dbColumn.TimeColumnType.StringTimeIsMiladi = column.TimeColumnType.StringTimeIsMiladi;
-                    dbColumn.TimeColumnType.StringTimeISAMPMFormat = column.TimeColumnType.StringTimeISAMPMFormat;
-                    //if (column.OriginalColumnType == Enum_ColumnType.String)
-                    //{
-                    //    if (dbColumn.StringColumnType == null)
-                    //        dbColumn.StringColumnType = new StringColumnType();
-                    //    dbColumn.StringColumnType.MaxLength = column.StringColumnType.MaxLength;
-                    //    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Time, Enum_ColumnType.String });
-                    //}
-                    //else
-                    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Time });
-                }
-                else if (column.ColumnType == Enum_ColumnType.DateTime)
-                {
-                    if (dbColumn.DateTimeColumnType == null)
-                        dbColumn.DateTimeColumnType = new DateTimeColumnType();
-                    dbColumn.DateTimeColumnType.ShowMiladiDateInUI = column.DateTimeColumnType.ShowMiladiDateInUI;
-                    dbColumn.DateTimeColumnType.ShowAMPMFormat = column.DateTimeColumnType.ShowAMPMFormat;
-                    dbColumn.DateTimeColumnType.HideTimePicker = column.DateTimeColumnType.HideTimePicker;
-                    dbColumn.DateTimeColumnType.StringDateIsMiladi = column.DateTimeColumnType.StringDateIsMiladi;
-                    dbColumn.DateTimeColumnType.StringTimeIsMiladi = column.DateTimeColumnType.StringTimeIsMiladi;
-                    dbColumn.DateTimeColumnType.StringTimeISAMPMFormat = column.DateTimeColumnType.StringTimeISAMPMFormat;
-                    //if (column.OriginalColumnType == Enum_ColumnType.String)
-                    //{
-                    //    if (dbColumn.StringColumnType == null)
-                    //        dbColumn.StringColumnType = new StringColumnType();
-                    //    dbColumn.StringColumnType.MaxLength = column.StringColumnType.MaxLength;
-                    //    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.DateTime, Enum_ColumnType.String });
-                    //}
-                    //else
-                    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.DateTime });
-                }
-                else if (column.ColumnType == Enum_ColumnType.Numeric)
-                {
-                    if (dbColumn.NumericColumnType == null)
-                        dbColumn.NumericColumnType = new NumericColumnType();
-
-                    dbColumn.NumericColumnType.Precision = column.NumericColumnType.Precision;
-                    dbColumn.NumericColumnType.Scale = column.NumericColumnType.Scale;
-
-
-                    RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.Numeric });
-                }
-
-                dbColumn.DBCalculateFormula = column.DBFormula;
-
-                //dbColumn.ShowNullValue=
-                //if (column.IsDBCalculatedColumn)
-                //{
-                //    dbColumn.IsDBCalculatedColumn = true;
-                //    if (dbColumn.DBCalculatedColumn == null)
-                //        dbColumn.DBCalculatedColumn = new DBCalculatedColumn();
-                //    dbColumn.DBCalculatedColumn.Formula = column.DBFormula;
-                //}
-                //else
-                //{
-                //    dbColumn.IsDBCalculatedColumn = false;
-                //    if (dbColumn.DBCalculatedColumn != null)
-                //        projectContext.DBCalculatedColumn.Remove(dbColumn.DBCalculatedColumn);
-                //}
-            }
-            var columnNames = entity.Columns.Select(x => x.Name).ToList();
-            foreach (var dbColumn in table.Column.Where(x => !columnNames.Contains(x.Name)))
-            {
-                dbColumn.IsDisabled = true;
-            }
+            BizColumn bizColumn = new BizColumn();
+            bizColumn.UpdateColumnsInModel(entity, table, projectContext);
+          
             //throw new Exception("asdasdasd");
         }
+
+   
 
         private void RemoveColumnTypes(MyProjectEntities projectContext, Column dbColumn, List<Enum_ColumnType> exceptionTypes)
         {
@@ -1400,14 +1259,7 @@ namespace MyModelManager
             }
         }
 
-        private bool DefaultValueIsDBFunction(ColumnDTO column)
-        {
-            if (column.DefaultValue != null && column.DefaultValue.Contains("()"))
-                return true;
-            else
-                return false;
-        }
-
+      
 
 
 

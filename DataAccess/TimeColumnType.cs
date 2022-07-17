@@ -15,11 +15,8 @@ namespace DataAccess
     public partial class TimeColumnType
     {
         public int ColumnID { get; set; }
-        public bool ShowAMPMFormat { get; set; }
-        public Nullable<bool> ShowMiladiTime { get; set; }
-        public Nullable<bool> ValueIsString { get; set; }
-        public Nullable<bool> StringTimeIsMiladi { get; set; }
-        public Nullable<bool> StringTimeISAMPMFormat { get; set; }
+        public bool DBValueIsString { get; set; }
+        public Nullable<short> DBValueStringTimeFormat { get; set; }
     
         public virtual Column Column { get; set; }
     }
