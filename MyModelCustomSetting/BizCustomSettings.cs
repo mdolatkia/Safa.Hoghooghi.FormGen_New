@@ -630,49 +630,49 @@ namespace MyModelCustomSetting
                         if (employeeRole2Column.ColumnValueRange == null)
                         {
                             employeeRole2Column.ColumnValueRange = new ColumnValueRange();
-
-                            employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "1", Tag1 = "1", KeyTitle = "مدیر سطح 1" });
-                            employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "2", Tag1 = "1", KeyTitle = "مدیر سطح 2" });
-                            employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "3", Tag1 = "2", KeyTitle = "کارشناس سطح 1" });
-                            employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "4", Tag1 = "2", KeyTitle = "کارشناس سطح 2" });
+                            employeeRole2Column.ColumnValueRange.TagColumnID = employeeRoleColumn.ID;
+                            employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "1", Tag = "1", KeyTitle = "مدیر سطح 1" });
+                            employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "2", Tag = "1", KeyTitle = "مدیر سطح 2" });
+                            employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "3", Tag = "2", KeyTitle = "کارشناس سطح 1" });
+                            employeeRole2Column.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = "4", Tag = "2", KeyTitle = "کارشناس سطح 2" });
                         }
 
-                        var employeeRole2ModirState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == employee.ID && x.Title == "فیلتر نقش 2 کارمند برای مدیر");
-                        if (employeeRole2ModirState == null)
-                        {
-                            employeeRole2ModirState = new TableDrivedEntityState();
-                            employeeRole2ModirState.Title = "فیلتر نقش 2 کارمند برای مدیر";
-                            employeeRole2ModirState.TableDrivedEntityID = employee.ID;
-                            TableDrivedEntityStateCondition condition = new TableDrivedEntityStateCondition();
-                            condition.ColumnID = employeeRoleColumn.ID;
-                            condition.TableDrivedEntityStateConditionValues.Add(new TableDrivedEntityStateConditionValues() { Value = "1" });
-                            employeeRole2ModirState.TableDrivedEntityStateCondition.Add(condition);
-                            var uiActionActivity = new UIActionActivity();
-                            uiActionActivity.Title = "نقش 2 برای مدیر";
-                            employeeRole2ModirState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
-                            uiActionActivity.Type = (short)Enum_ActionActivityType.ColumnValueRange;
-                            uiActionActivity.TableDrivedEntityID = employee.ID;
-                            uiActionActivity.UIColumnValueRange.Add(new UIColumnValueRange() { ColumnValueRange = employeeRole2Column.ColumnValueRange, EnumTag = (short)EnumColumnValueRangeTag.Tag1, Value = "1" });
-                            projectContext.TableDrivedEntityState.Add(employeeRole2ModirState);
-                        }
-                        var employeeRole2KarshenasState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == employee.ID && x.Title == "فیلتر نقش 2 کارمند برای کارشناس");
-                        if (employeeRole2KarshenasState == null)
-                        {
-                            employeeRole2KarshenasState = new TableDrivedEntityState();
-                            employeeRole2KarshenasState.Title = "فیلتر نقش 2 کارمند برای کارشناس";
-                            employeeRole2KarshenasState.TableDrivedEntityID = employee.ID;
-                            TableDrivedEntityStateCondition condition = new TableDrivedEntityStateCondition();
-                            condition.ColumnID = employeeRoleColumn.ID;
-                            condition.TableDrivedEntityStateConditionValues.Add(new TableDrivedEntityStateConditionValues() { Value = "2" });
-                            employeeRole2KarshenasState.TableDrivedEntityStateCondition.Add(condition);
-                            var uiActionActivity = new UIActionActivity();
-                            uiActionActivity.Title = "نقش 2 برای کارشناس";
-                            employeeRole2KarshenasState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
-                            uiActionActivity.Type = (short)Enum_ActionActivityType.ColumnValueRange;
-                            uiActionActivity.TableDrivedEntityID = employee.ID;
-                            uiActionActivity.UIColumnValueRange.Add(new UIColumnValueRange() { ColumnValueRange = employeeRole2Column.ColumnValueRange, EnumTag = (short)EnumColumnValueRangeTag.Tag1, Value = "2" });
-                            projectContext.TableDrivedEntityState.Add(employeeRole2KarshenasState);
-                        }
+                        //var employeeRole2ModirState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == employee.ID && x.Title == "فیلتر نقش 2 کارمند برای مدیر");
+                        //if (employeeRole2ModirState == null)
+                        //{
+                        //    employeeRole2ModirState = new TableDrivedEntityState();
+                        //    employeeRole2ModirState.Title = "فیلتر نقش 2 کارمند برای مدیر";
+                        //    employeeRole2ModirState.TableDrivedEntityID = employee.ID;
+                        //    TableDrivedEntityStateCondition condition = new TableDrivedEntityStateCondition();
+                        //    condition.ColumnID = employeeRoleColumn.ID;
+                        //    condition.TableDrivedEntityStateConditionValues.Add(new TableDrivedEntityStateConditionValues() { Value = "1" });
+                        //    employeeRole2ModirState.TableDrivedEntityStateCondition.Add(condition);
+                        //    var uiActionActivity = new UIActionActivity();
+                        //    uiActionActivity.Title = "نقش 2 برای مدیر";
+                        //    employeeRole2ModirState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                        //    uiActionActivity.Type = (short)Enum_ActionActivityType.ColumnValueRange;
+                        //    uiActionActivity.TableDrivedEntityID = employee.ID;
+                        // ////   uiActionActivity.UIColumnValueRange.Add(new UIColumnValueRange() { ColumnValueRange = employeeRole2Column.ColumnValueRange, EnumTag = (short)EnumColumnValueRangeTag.Tag1, Value = "1" });
+                        //    projectContext.TableDrivedEntityState.Add(employeeRole2ModirState);
+                        //}
+                        //var employeeRole2KarshenasState = projectContext.TableDrivedEntityState.FirstOrDefault(x => x.TableDrivedEntityID == employee.ID && x.Title == "فیلتر نقش 2 کارمند برای کارشناس");
+                        //if (employeeRole2KarshenasState == null)
+                        //{
+                        //    employeeRole2KarshenasState = new TableDrivedEntityState();
+                        //    employeeRole2KarshenasState.Title = "فیلتر نقش 2 کارمند برای کارشناس";
+                        //    employeeRole2KarshenasState.TableDrivedEntityID = employee.ID;
+                        //    TableDrivedEntityStateCondition condition = new TableDrivedEntityStateCondition();
+                        //    condition.ColumnID = employeeRoleColumn.ID;
+                        //    condition.TableDrivedEntityStateConditionValues.Add(new TableDrivedEntityStateConditionValues() { Value = "2" });
+                        //    employeeRole2KarshenasState.TableDrivedEntityStateCondition.Add(condition);
+                        //    var uiActionActivity = new UIActionActivity();
+                        //    uiActionActivity.Title = "نقش 2 برای کارشناس";
+                        //    employeeRole2KarshenasState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
+                        //    uiActionActivity.Type = (short)Enum_ActionActivityType.ColumnValueRange;
+                        //    uiActionActivity.TableDrivedEntityID = employee.ID;
+                        //  ////  uiActionActivity.UIColumnValueRange.Add(new UIColumnValueRange() { ColumnValueRange = employeeRole2Column.ColumnValueRange, EnumTag = (short)EnumColumnValueRangeTag.Tag1, Value = "2" });
+                        //    projectContext.TableDrivedEntityState.Add(employeeRole2KarshenasState);
+                        //}
                     }
                 }
             }
@@ -3644,8 +3644,8 @@ namespace MyModelCustomSetting
             //        projectContext.EntitySecurityInDirect.Add(indirectSecurity);
             //    }
             //}
-            try
-            {
+            //try
+            //{
                 projectContext.SaveChanges();
 
 
@@ -3981,6 +3981,8 @@ namespace MyModelCustomSetting
 
                 projectContext.SaveChanges();
 
+            if (regionDataLinkReport != null)
+            {
                 var mnuRegionDataLinkReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش لینک ریپورت" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == regionDataLinkReport.ID);
                 if (mnuRegionDataLinkReport == null && regionDataLinkReport != null)
                 {
@@ -3993,30 +3995,30 @@ namespace MyModelCustomSetting
                     projectContext.NavigationTree.Add(mnuRegionDataLinkReport);
                 }
                 projectContext.SaveChanges();
-
             }
-            catch (DbUpdateException e)
-            {
-                throw e;
-            }
-            catch (DbEntityValidationException e)
-            {
-                foreach (var eve in e.EntityValidationErrors)
-                {
-                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
-                    foreach (var ve in eve.ValidationErrors)
-                    {
-                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
-                            ve.PropertyName, ve.ErrorMessage);
-                    }
-                }
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            //}
+            //catch (DbUpdateException e)
+            //{
+            //    throw e;
+            //}
+            //catch (DbEntityValidationException e)
+            //{
+            //    foreach (var eve in e.EntityValidationErrors)
+            //    {
+            //        Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+            //            eve.Entry.Entity.GetType().Name, eve.Entry.State);
+            //        foreach (var ve in eve.ValidationErrors)
+            //        {
+            //            Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+            //                ve.PropertyName, ve.ErrorMessage);
+            //        }
+            //    }
+            //    throw;
+            //}
+            //catch (Exception e)
+            //{
+            //    throw e;
+            //}
             using (var dataContext = new MyIdeaDataDBEntities())
             {
                 var serviceRequestDataItemID = GetDataItemID(requester, serviceRequest);

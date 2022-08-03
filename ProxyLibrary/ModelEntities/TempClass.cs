@@ -126,7 +126,7 @@ namespace ModelEntites
         public double? MaxValue { set; get; }
 
         public DateColumnTypeDTO TTT { set; get; }
-        public bool? Delimiter { get; set; }
+        public bool Delimiter { get; set; }
     }
 
     public class DateColumnTypeDTO
@@ -176,7 +176,9 @@ namespace ModelEntites
             Details = new List<ModelEntites.ColumnValueRangeDetailsDTO>();
         }
         public int ID { set; get; }
-        //public int ColumnID { set; get; }
+        public int EntityRelationshipTailID { set; get; }
+        public EntityRelationshipTailDTO EntityRelationshipTail { set; get; }
+        public int TagColumnID { set; get; }
         //public int EntityID { set; get; }
         //public bool ValueFromTitleOrValue { set; get; }
 
@@ -190,8 +192,8 @@ namespace ModelEntites
         public string KeyTitle { set; get; }
         public string Value { set; get; }
 
-        public string Tag1 { set; get; }
-        public string Tag2 { set; get; }
+        public string Tag { set; get; }
+        //public string Tag2 { set; get; }
     }
     public enum Enum_ColumnType
     {
@@ -2516,10 +2518,10 @@ namespace ModelEntites
     {
         public UIActionActivityDTO()
         {
-            UIColumnValueRange = new List<ModelEntites.UIColumnValueRangeDTO>();
+        //    UIColumnValueRange = new List<ModelEntites.UIColumnValueRangeDTO>();
             UIColumnValue = new List<ModelEntites.UIColumnValueDTO>();
             UIEnablityDetails = new List<ModelEntites.UIEnablityDetailsDTO>();
-            UIColumnValueRangeReset = new List<ModelEntites.UIColumnValueRangeResetDTO>();
+         //   UIColumnValueRangeReset = new List<ModelEntites.UIColumnValueRangeResetDTO>();
         }
         public int ID { set; get; }
         public string RelatedStates { set; get; }
@@ -2530,24 +2532,25 @@ namespace ModelEntites
         public string Title { set; get; }
         public int EntityID { set; get; }
         public Enum_ActionActivityType Type { set; get; }
-        public List<UIColumnValueRangeDTO> UIColumnValueRange { set; get; }
-        public List<UIColumnValueRangeResetDTO> UIColumnValueRangeReset { set; get; }
+        public UIColumnValueRangeDTO UIColumnValueRange { set; get; }
+      //  public List<UIColumnValueRangeResetDTO> UIColumnValueRangeReset { set; get; }
     //    public bool OnlyOnLoad { get; set; }
     }
     public class UIColumnValueRangeDTO
     {
         public UIColumnValueRangeDTO()
         {
-            vwCandidateValues = new List<string>();
+          //  vwCandidateValues = new List<string>();
         }
         public int ID { set; get; }
-        public int ColumnValueRangeID { set; get; }
-        public ColumnValueRangeDTO ColumnValueRange { set; get; }
-        public EnumColumnValueRangeTag EnumTag { set; get; }
+        public int ColumnID { set; get; }
+        public int FilterValueRelationshipTailID { set; get; }
+        public int FilterValueColumnID { set; get; }
+        public EntityRelationshipTailDTO FilterValueRelationshipTail { get; set; }
 
-        public string Value { set; get; }
+        //   public string Value { set; get; }
 
-        public List<string> vwCandidateValues { set; get; }
+        //    public List<string> vwCandidateValues { set; get; }
     }
     public class UIColumnValueRangeResetDTO
     {
@@ -2564,8 +2567,8 @@ namespace ModelEntites
     {
         Value,
         Title,
-        Tag1,
-        Tag2
+        Tag1
+        //Tag2
     }
 
 

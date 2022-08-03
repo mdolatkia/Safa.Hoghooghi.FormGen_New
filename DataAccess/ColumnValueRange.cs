@@ -17,13 +17,15 @@ namespace DataAccess
         public ColumnValueRange()
         {
             this.ColumnValueRangeDetails = new HashSet<ColumnValueRangeDetails>();
-            this.UIColumnValueRange = new HashSet<UIColumnValueRange>();
         }
     
         public int ID { get; set; }
+        public Nullable<int> EntityRelationshipTailID { get; set; }
+        public Nullable<int> TagColumnID { get; set; }
     
         public virtual Column Column { get; set; }
+        public virtual Column Column1 { get; set; }
+        public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
         public virtual ICollection<ColumnValueRangeDetails> ColumnValueRangeDetails { get; set; }
-        public virtual ICollection<UIColumnValueRange> UIColumnValueRange { get; set; }
     }
 }

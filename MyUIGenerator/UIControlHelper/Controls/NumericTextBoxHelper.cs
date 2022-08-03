@@ -84,7 +84,7 @@ namespace MyUIGenerator.UIControlHelper
 
 
             //}
-            if (correspondingTypeProperty.NumericColumnType.Delimiter == true)
+            if (correspondingTypeProperty.NumericColumnType != null && correspondingTypeProperty.NumericColumnType.Delimiter == true)
             {
                 textBox.FormatString = "n0";
             }

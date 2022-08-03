@@ -18,6 +18,7 @@ namespace DataAccess
         {
             this.EntityArchiveRelationshipTails = new HashSet<EntityArchiveRelationshipTails>();
             this.EntityLetterRelationshipTails = new HashSet<EntityLetterRelationshipTails>();
+            this.ColumnValueRange = new HashSet<ColumnValueRange>();
             this.DataLinkDefinition_EntityRelationshipTail = new HashSet<DataLinkDefinition_EntityRelationshipTail>();
             this.DataMenuDataViewRelationship = new HashSet<DataMenuDataViewRelationship>();
             this.DataMenuGridViewRelationship = new HashSet<DataMenuGridViewRelationship>();
@@ -40,6 +41,7 @@ namespace DataAccess
     
         public virtual ICollection<EntityArchiveRelationshipTails> EntityArchiveRelationshipTails { get; set; }
         public virtual ICollection<EntityLetterRelationshipTails> EntityLetterRelationshipTails { get; set; }
+        public virtual ICollection<ColumnValueRange> ColumnValueRange { get; set; }
         public virtual ICollection<DataLinkDefinition_EntityRelationshipTail> DataLinkDefinition_EntityRelationshipTail { get; set; }
         public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship { get; set; }
         public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }

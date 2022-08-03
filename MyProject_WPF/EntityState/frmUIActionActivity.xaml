@@ -39,7 +39,7 @@
                 <RadioButton x:Name="optColumnValue" Margin="10,0,10,0" Checked="optColumnValue_Checked">مقداردهی پیش فرض ستون</RadioButton>
                 <RadioButton x:Name="optUIEnablity" Margin="10,0,10,0" Checked="optUIEnablity_Checked">فعالسازی کنترلها</RadioButton>
                 <RadioButton x:Name="optEntityReadonly" Margin="10,0,10,0" Checked="optEntityReadonly_Checked">فقط خواندنی سازی موجودیت</RadioButton>
-                <RadioButton x:Name="optUIColumnValueRange" Margin="10,0,10,0" Checked="optUIColumnValueRange_Checked">فیلتر بازه داده</RadioButton>
+                <!--<RadioButton x:Name="optUIColumnValueRange" Margin="10,0,10,0" Checked="optUIColumnValueRange_Checked">فیلتر بازه داده</RadioButton>-->
             </StackPanel>
             <TabControl x:Name="tabControl" Grid.Row="1">
                 <TabItem x:Name="tabColumnValue" Header="مقادیر ستونها">
@@ -123,7 +123,7 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem x:Name="tabUIColumnValueRange" Header="بازه داده">
+                <!--<TabItem x:Name="tabUIColumnValueRange" Header="بازه داده">
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"></RowDefinition>
@@ -136,9 +136,9 @@
                             <ColumnDefinition Width="auto"></ColumnDefinition>
 
                         </Grid.ColumnDefinitions>
-                        <!--<TextBlock  Text="زنجیره رابطه"></TextBlock>
+                        --><!--<TextBlock  Text="زنجیره رابطه"></TextBlock>
                         <ComboBox  x:Name="cmbUIEnablityRelationshipTail" HorizontalAlignment="Stretch" SelectionChanged="cmbUIEnablityRelationshipTail_SelectionChanged" Grid.Column="1"></ComboBox>-->
-                        <!--<Button x:Name="btnUIEnablityRelationshipTail"  Width="120" Height="20" Content="افزودن زنجیره رابطه ..." Grid.Column="2" Click="btnUIEnablityRelationshipTail_Click"></Button>-->
+                        <!--<Button x:Name="btnUIEnablityRelationshipTail"  Width="120" Height="20" Content="افزودن زنجیره رابطه ..." Grid.Column="2" Click="btnUIEnablityRelationshipTail_Click"></Button>--><!--
                         <telerik:RadGridView Grid.Row="1" Grid.Column="1" AutoGenerateColumns="False" Height="200" x:Name="dtgColumnValueRange" >
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewComboBoxColumn x:Name="colColumnValueRange" Header="انتخاب ستون" DataMemberBinding="{Binding ColumnValueRangeID}" />
@@ -148,7 +148,7 @@
                         </telerik:RadGridView>
 
                     </Grid>
-                </TabItem>
+                </TabItem>-->
         
                 <!--<TabItem x:Name="tabRelationshipEnablity" Header="فعالسازی رابطه">
                     <Grid Margin="10">

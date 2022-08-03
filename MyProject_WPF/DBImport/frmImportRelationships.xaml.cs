@@ -473,24 +473,24 @@ namespace MyProject_WPF
            });
         }
 
-        private bool RelationshipExists(RelationshipDTO item, List<RelationshipDTO> result)
-        {
-            foreach (var importedRel in result)
-            {
-                if (importedRel.Entity1 == item.TableName1
-                    && importedRel.Entity2 == item.TableName2)
-                {
-                    if (importedRel.RelationshipColumns.All(x => item.RelationshipColumns.Any(y => x.FirstSideColumn.Name == y.FirstSideColumn.Name)))
-                    {
-                        if (item.RelationshipColumns.All(x => importedRel.RelationshipColumns.Any(y => x.FirstSideColumn.Name == y.FirstSideColumn.Name)))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
+        //private bool RelationshipExists(RelationshipDTO item, List<RelationshipDTO> result)
+        //{
+        //    foreach (var importedRel in result)
+        //    {
+        //        if (importedRel.Entity1 == item.TableName1
+        //            && importedRel.Entity2 == item.TableName2)
+        //        {
+        //            if (importedRel.RelationshipColumns.All(x => item.RelationshipColumns.Any(y => x.FirstSideColumn.Name == y.FirstSideColumn.Name)))
+        //            {
+        //                if (item.RelationshipColumns.All(x => importedRel.RelationshipColumns.Any(y => x.FirstSideColumn.Name == y.FirstSideColumn.Name)))
+        //                {
+        //                    return true;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return false;
+        //}
 
         public Task<List<RelationshipImportItem>> GetRelationshipsInfo()
         {

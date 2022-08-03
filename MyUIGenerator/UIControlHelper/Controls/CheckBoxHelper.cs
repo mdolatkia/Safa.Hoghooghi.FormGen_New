@@ -28,12 +28,13 @@ namespace MyUIGenerator.UIControlHelper
 
         public CheckBoxHelper(ColumnDTO correspondingTypeProperty, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {
+            //** 01264950-cc64-4088-90ec-c5150319d9e8
             //UIControlPackage package = new UIControlPackage();
             //  package.UIControls = new List<FrameworkElement>();
             //UIControlSetting controlUISetting = new UIControlSetting();
             //controlUISetting.DesieredColumns = 1;
             //controlUISetting.DesieredRows = 1;
-             theGrid = new Grid();
+            theGrid = new Grid();
             theGrid.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
             theGrid.ColumnDefinitions.Add(new ColumnDefinition());

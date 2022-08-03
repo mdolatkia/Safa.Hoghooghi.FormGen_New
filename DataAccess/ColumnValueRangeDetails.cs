@@ -18,8 +18,7 @@ namespace DataAccess
         public int ColumnValueRangeID { get; set; }
         public string KeyTitle { get; set; }
         public string Value { get; set; }
-        public string Tag1 { get; set; }
-        public string Tag2 { get; set; }
+        public string Tag { get; set; }
     
         public virtual ColumnValueRange ColumnValueRange { get; set; }
     }

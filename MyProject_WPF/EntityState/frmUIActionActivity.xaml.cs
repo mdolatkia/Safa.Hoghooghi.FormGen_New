@@ -67,47 +67,47 @@ namespace MyProject_WPF
                 Message = new UIActionActivityDTO();
                 dtgDetails.ItemsSource = Message.UIEnablityDetails;
                 dtgColumnValue.ItemsSource = Message.UIColumnValue;
-                dtgColumnValueRange.ItemsSource = Message.UIColumnValueRange;
+              //  dtgColumnValueRange.ItemsSource = Message.UIColumnValueRange;
                 //dtgColumnValueRangeReset.ItemsSource = Message.UIColumnValueRangeReset;
             }
             else
                 GetActionActivity(ActionActivityID);
             ControlHelper.GenerateContextMenu(dtgDetails);
             ControlHelper.GenerateContextMenu(dtgColumnValue);
-            ControlHelper.GenerateContextMenu(dtgColumnValueRange);
+     //       ControlHelper.GenerateContextMenu(dtgColumnValueRange);
             //    ControlHelper.GenerateContextMenu(dtgColumnValueRangeReset);
-            dtgColumnValueRange.CellEditEnded += DtgColumnValueRange_CellEditEnded;
-            dtgColumnValueRange.RowLoaded += DtgColumnValueRange_RowLoaded;
+        //    dtgColumnValueRange.CellEditEnded += DtgColumnValueRange_CellEditEnded;
+         //   dtgColumnValueRange.RowLoaded += DtgColumnValueRange_RowLoaded;
         }
 
-        private void DtgColumnValueRange_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
-        {
-            if (e.Row != null && e.Row.DataContext is UIColumnValueRangeDTO)
-            {
-                var item = e.Row.DataContext as UIColumnValueRangeDTO;
-                if (item.ColumnValueRangeID != 0)
-                {
-                    BizColumnValueRange bizColumnValueRange = new BizColumnValueRange();
-                    var list = bizColumnValueRange.GetColumnValueRangeValues(item.ColumnValueRangeID, item.EnumTag);
-                    item.vwCandidateValues = list;
-                }
-            }
-        }
+        //private void DtgColumnValueRange_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
+        //{
+        //    if (e.Row != null && e.Row.DataContext is UIColumnValueRangeDTO)
+        //    {
+        //        var item = e.Row.DataContext as UIColumnValueRangeDTO;
+        //        if (item.ColumnValueRangeID != 0)
+        //        {
+        //            BizColumnValueRange bizColumnValueRange = new BizColumnValueRange();
+        //            var list = bizColumnValueRange.GetColumnValueRangeValues(item.ColumnValueRangeID, item.EnumTag);
+        //            item.vwCandidateValues = list;
+        //        }
+        //    }
+        //}
 
-        private void DtgColumnValueRange_CellEditEnded(object sender, Telerik.Windows.Controls.GridViewCellEditEndedEventArgs e)
-        {
-            if (e.Cell.ParentRow != null && e.Cell.ParentRow.DataContext is UIColumnValueRangeDTO)
-            {
-                var item = e.Cell.ParentRow.DataContext as UIColumnValueRangeDTO;
-                if (item.ColumnValueRangeID != 0)
-                {
-                    BizColumnValueRange bizColumnValueRange = new BizColumnValueRange();
-                    var list = bizColumnValueRange.GetColumnValueRangeValues(item.ColumnValueRangeID, item.EnumTag);
-                    item.vwCandidateValues = list;
-                }
+        //private void DtgColumnValueRange_CellEditEnded(object sender, Telerik.Windows.Controls.GridViewCellEditEndedEventArgs e)
+        //{
+        //    if (e.Cell.ParentRow != null && e.Cell.ParentRow.DataContext is UIColumnValueRangeDTO)
+        //    {
+        //        var item = e.Cell.ParentRow.DataContext as UIColumnValueRangeDTO;
+        //        if (item.ColumnValueRangeID != 0)
+        //        {
+        //            BizColumnValueRange bizColumnValueRange = new BizColumnValueRange();
+        //            var list = bizColumnValueRange.GetColumnValueRangeValues(item.ColumnValueRangeID, item.EnumTag);
+        //            item.vwCandidateValues = list;
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
         //private void SetAllowedActivityTypes()
         //{
@@ -129,25 +129,25 @@ namespace MyProject_WPF
             //SetRelationshipEnablityRelationshipTails();
             SetColumnValueColumns();
             SetUIEnablityColumns();
-            SetUIColumnValueRangeColumns();
+      //      SetUIColumnValueRangeColumns();
 
             dtgColumnValue.ItemsSource = ValidValues;
         }
 
-        private void SetUIColumnValueRangeColumns()
-        {
-            TableDrivedEntityDTO targetEntity = bizTableDrivedEntity.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithoutRelationships);
-            colColumnValueRange.ItemsSource = targetEntity.Columns.Where(x => x.ColumnValueRange != null);
-            colColumnValueRange.DisplayMemberPath = "Alias";
-            colColumnValueRange.SelectedValueMemberPath = "ID";
+        //private void SetUIColumnValueRangeColumns()
+        //{
+        //    TableDrivedEntityDTO targetEntity = bizTableDrivedEntity.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithoutRelationships);
+        //    colColumnValueRange.ItemsSource = targetEntity.Columns.Where(x => x.ColumnValueRange != null);
+        //    colColumnValueRange.DisplayMemberPath = "Alias";
+        //    colColumnValueRange.SelectedValueMemberPath = "ID";
 
-            colEnumTag.ItemsSource = Enum.GetValues(typeof(EnumColumnValueRangeTag));
+        //    colEnumTag.ItemsSource = Enum.GetValues(typeof(EnumColumnValueRangeTag));
 
-            ///colColumnValueRangeReset.ItemsSource = targetEntity.Columns.Where(x => x.ColumnValueRange != null);
-            //colColumnValueRangeReset.DisplayMemberPath = "Alias";
-            //colColumnValueRangeReset.SelectedValueMemberPath = "ID";
+        //    ///colColumnValueRangeReset.ItemsSource = targetEntity.Columns.Where(x => x.ColumnValueRange != null);
+        //    //colColumnValueRangeReset.DisplayMemberPath = "Alias";
+        //    //colColumnValueRangeReset.SelectedValueMemberPath = "ID";
 
-        }
+        //}
 
 
 
@@ -204,7 +204,7 @@ namespace MyProject_WPF
 
             dtgDetails.ItemsSource = Message.UIEnablityDetails;
             dtgColumnValue.ItemsSource = Message.UIColumnValue;
-            dtgColumnValueRange.ItemsSource = Message.UIColumnValueRange;
+       //     dtgColumnValueRange.ItemsSource = Message.UIColumnValueRange;
             //dtgColumnValueRangeReset.ItemsSource = Message.UIColumnValueRangeReset;
             if (Message.Type == Enum_ActionActivityType.ColumnValue)
             {
@@ -220,12 +220,12 @@ namespace MyProject_WPF
                 //cmbUIEnablityRelationshipTail.SelectedValue = Message.UIEnablity.EntityRelationshipTailID;
 
             }
-            else if (Message.Type == Enum_ActionActivityType.ColumnValueRange)
-            {
-                optUIColumnValueRange.IsChecked = true;
-                //cmbUIEnablityRelationshipTail.SelectedValue = Message.UIEnablity.EntityRelationshipTailID;
+            //else if (Message.Type == Enum_ActionActivityType.ColumnValueRange)
+            //{
+            //    optUIColumnValueRange.IsChecked = true;
+            //    //cmbUIEnablityRelationshipTail.SelectedValue = Message.UIEnablity.EntityRelationshipTailID;
 
-            }
+            //}
             else if (Message.Type == Enum_ActionActivityType.EntityReadonly)
             {
                 optEntityReadonly.IsChecked = true;
@@ -270,7 +270,7 @@ namespace MyProject_WPF
         {
             tabColumnValue.Visibility = Visibility.Collapsed;
             tabUIEnablity.Visibility = Visibility.Collapsed;
-            tabUIColumnValueRange.Visibility = Visibility.Collapsed;
+         //   tabUIColumnValueRange.Visibility = Visibility.Collapsed;
             //tabUIColumnValueRangeReset.Visibility = Visibility.Collapsed;
             //    tabRelationshipEnablity.Visibility = Visibility.Collapsed;
         }
@@ -301,12 +301,12 @@ namespace MyProject_WPF
             tabUIEnablity.Visibility = Visibility.Visible;
             tabUIEnablity.IsSelected = true;
         }
-        private void optUIColumnValueRange_Checked(object sender, RoutedEventArgs e)
-        {
-            HideTabs();
-            tabUIColumnValueRange.Visibility = Visibility.Visible;
-            tabUIColumnValueRange.IsSelected = true;
-        }
+        //private void optUIColumnValueRange_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    HideTabs();
+        ////    tabUIColumnValueRange.Visibility = Visibility.Visible;
+        ////    tabUIColumnValueRange.IsSelected = true;
+        //}
         //private void optRelationshipEnablity_Checked(object sender, RoutedEventArgs e)
         //{
         //    HideTabs();
@@ -324,8 +324,8 @@ namespace MyProject_WPF
                 return;
             }
 
-            if (optEntityReadonly.IsChecked == false && optColumnValue.IsChecked == false && optUIEnablity.IsChecked == false
-                && optUIColumnValueRange.IsChecked == false )
+            if (optEntityReadonly.IsChecked == false && optColumnValue.IsChecked == false && optUIEnablity.IsChecked == false)
+              //  && optUIColumnValueRange.IsChecked == false )
             {
                 MessageBox.Show("یکی از حالات شروط را انتخاب نمایید");
                 return;
@@ -347,10 +347,10 @@ namespace MyProject_WPF
             {
                 Message.Type = Enum_ActionActivityType.UIEnablity;
             }
-            else if (optUIColumnValueRange.IsChecked == true)
-            {
-                Message.Type = Enum_ActionActivityType.ColumnValueRange;
-            }
+            //else if (optUIColumnValueRange.IsChecked == true)
+            //{
+            //    Message.Type = Enum_ActionActivityType.ColumnValueRange;
+            //}
             else if (optEntityReadonly.IsChecked == true)
             {
                 Message.Type = Enum_ActionActivityType.EntityReadonly;

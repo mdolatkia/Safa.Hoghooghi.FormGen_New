@@ -43,7 +43,6 @@ namespace DataAccess
         public virtual DbSet<ColumnCustomFormula> ColumnCustomFormula { get; set; }
         public virtual DbSet<ColumnPhrase> ColumnPhrase { get; set; }
         public virtual DbSet<ColumnUISetting> ColumnUISetting { get; set; }
-        public virtual DbSet<ColumnValue_ValidValues> ColumnValue_ValidValues { get; set; }
         public virtual DbSet<ColumnValueRange> ColumnValueRange { get; set; }
         public virtual DbSet<ColumnValueRangeDetails> ColumnValueRangeDetails { get; set; }
         public virtual DbSet<CrosstabReportColumns> CrosstabReportColumns { get; set; }
@@ -145,7 +144,6 @@ namespace DataAccess
         public virtual DbSet<TimeColumnType> TimeColumnType { get; set; }
         public virtual DbSet<UIActionActivity> UIActionActivity { get; set; }
         public virtual DbSet<UIColumnValue> UIColumnValue { get; set; }
-        public virtual DbSet<UIColumnValueRange> UIColumnValueRange { get; set; }
         public virtual DbSet<UIEnablityDetails> UIEnablityDetails { get; set; }
         public virtual DbSet<UnionRelationshipType> UnionRelationshipType { get; set; }
         public virtual DbSet<UnionToSubUnionRelationshipType> UnionToSubUnionRelationshipType { get; set; }

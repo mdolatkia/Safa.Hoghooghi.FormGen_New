@@ -245,26 +245,11 @@ namespace MyModelManager
             result.Precision = (item.Precision == null ? 0 : item.Precision.Value);
             result.Scale = (item.Scale == null ? 0 : item.Scale.Value);
             result.Delimiter = item.Delimiter;
-            if (result.Delimiter == null)
-            {
-                result.Delimiter = CheckDelimiter(item);
-            }
+
             return result;
         }
 
-        private bool? CheckDelimiter(NumericColumnType item)
-        {
-            //**9d5217f1-8a54-49a1-a1d2-0ff4dad8df1a
-            if (item.Column.Name.ToLower().Contains("price"))
-                return true;
-            if (item.Column.Alias != null)
-            {
-                if (item.Column.Alias.ToLower().Contains("price") ||
-                         item.Column.Alias.ToLower().Contains("مبلغ"))
-                    return true;
-            }
-            return null;
-        }
+
 
         public DateColumnTypeDTO GetDateColumType(int columnID)
         {
@@ -486,6 +471,7 @@ namespace MyModelManager
         //}
         public void ConvertStringColumnToDateTimeColumn(TableDrivedEntityDTO entity, ColumnDTO column, Enum_ColumnType columnType)
         {
+            //**559a48c0-417b-4813-8b9e-b6ad00bdd936
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var dbColumn = projectContext.Column.First(x => x.ID == column.ID);
@@ -698,7 +684,7 @@ namespace MyModelManager
                     result.DateTimeColumnType = ToDateTimeColumTypeDTO(item.DateTimeColumnType, false);
                 BizColumnValueRange bizColumnValueRange = new MyModelManager.BizColumnValueRange();
                 if (item.ColumnValueRange != null)
-                    result.ColumnValueRange = bizColumnValueRange.ToColumnValueRangeDTO(item.ColumnValueRange, true);
+                    result.ColumnValueRange = bizColumnValueRange.ToColumnValueRangeDTO(item.ColumnValueRange, true,true);
 
                 if (item.ColumnCustomFormula != null)
                 {
@@ -800,7 +786,7 @@ namespace MyModelManager
                 foreach (var column in columnTypes)
                 {
                     var dbColumn = projectContext.StringColumnType.First(x => x.ColumnID == column.ColumnID);
-                    dbColumn.MaxLength = column.MaxLength;
+                    //  dbColumn.MaxLength = column.MaxLength;
                     dbColumn.MinLength = column.MinLength;
                     dbColumn.Format = column.Format;
                 }
@@ -981,6 +967,7 @@ namespace MyModelManager
 
         internal void UpdateColumnsInModel(TableDrivedEntityDTO entity, Table table, MyProjectEntities projectContext)
         {
+            //**6c99db26-bb1b-40df-ba63-1e9a8bbe5eff
             foreach (var column in entity.Columns)
             {
                 Column dbColumn = table.Column.FirstOrDefault(x => x.Name == column.Name);
@@ -1025,15 +1012,14 @@ namespace MyModelManager
                 //}
                 if (dbColumn.ID == 0)
                 {
-                    //**c3583c1c-dcc2-42c1-979e-aa893da6b6e7
-                    CreateNewColumnDataType(entity, dbColumn, column, true);
+                    CreateNewColumnDataType(entity, dbColumn, column);
                 }
                 else
                 {
                     if ((Enum_ColumnType)dbColumn.OriginalTypeEnum != column.OriginalColumnType)
                     {
                         RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>());
-                        CreateNewColumnDataType(entity, dbColumn, column, false);
+                        CreateNewColumnDataType(entity, dbColumn, column);
                     }
                     else
                     {
@@ -1071,6 +1057,7 @@ namespace MyModelManager
 
         private void SyncColumnTypesDBProperties(Column dbColumn, ColumnDTO column)
         {
+            //**608254b4-72f0-419f-a038-ad4ff657a6ff 
             if ((Enum_ColumnType)dbColumn.OriginalTypeEnum == Enum_ColumnType.String)
             {
                 dbColumn.StringColumnType.MaxLength = column.StringColumnType.MaxLength;
@@ -1082,13 +1069,14 @@ namespace MyModelManager
             }
         }
 
-        private void CreateNewColumnDataType(TableDrivedEntityDTO entity, Column dbColumn, ColumnDTO column, bool checkStringColumns)
+        private void CreateNewColumnDataType(TableDrivedEntityDTO entity, Column dbColumn, ColumnDTO column)
         {
             if (column.ColumnType == Enum_ColumnType.String)
             {
                 var dataHelper = new ModelDataHelper();
-                if (checkStringColumns)
+                if (dbColumn.ID == 0)
                 {
+                    //**caf85527-3025-4e25-8b24-50861ad0329b
                     if (column.StringColumnType.MaxLength <= 50 &&
                                   (column.Name.ToLower().StartsWith("datetime") ||
                                   column.Name.ToLower().EndsWith("datetime"))
@@ -1148,9 +1136,9 @@ namespace MyModelManager
 
         private void CreateNewStringColumn(Column dbColumn, ColumnDTO column)
         {
+            //**c3583c1c-dcc2-42c1-979e-aa893da6b6e7
             dbColumn.OriginalTypeEnum = Convert.ToByte(Enum_ColumnType.String);
             dbColumn.TypeEnum = Convert.ToByte(Enum_ColumnType.String);
-
 
             dbColumn.StringColumnType = new StringColumnType();
             SyncColumnTypesDBProperties(dbColumn, column);
@@ -1159,13 +1147,12 @@ namespace MyModelManager
         private void CreateNewStringDateTimeColumn(TableDrivedEntityDTO entity, Column dbColumn, ColumnDTO column, Enum_ColumnType columnType)
         {
             CreateNewStringColumn(dbColumn, column);
-
-
             CreateNewDateTimeColumnOriginallyString(entity, dbColumn, column, columnType);
         }
 
         private void CreateNewDateTimeColumnOriginallyString(TableDrivedEntityDTO entity, Column dbColumn, ColumnDTO column, Enum_ColumnType columnType)
         {
+            //**e0a2dd6f-ec52-4430-b15f-9e272e60f7cb
             ModelDataHelper dataHelper = new ModelDataHelper();
             dbColumn.TypeEnum = Convert.ToByte(columnType);
 
@@ -1196,6 +1183,7 @@ namespace MyModelManager
 
         private void CreateNewDateTimeColumn(Column dbColumn, ColumnDTO column, Enum_ColumnType columnType)
         {
+            //**5a4645cf-0487-48d5-89bb-65590717ebfd
             ModelDataHelper dataHelper = new ModelDataHelper();
             dbColumn.OriginalTypeEnum = Convert.ToByte(columnType);
             dbColumn.TypeEnum = Convert.ToByte(columnType);
@@ -1218,14 +1206,29 @@ namespace MyModelManager
         }
         private void CreateNewNumericColumn(Column dbColumn, ColumnDTO column)
         {
+            //**e64b16d0-bfc0-46fd-9116-67b59e86132f
             ModelDataHelper dataHelper = new ModelDataHelper();
             dbColumn.OriginalTypeEnum = Convert.ToByte(Enum_ColumnType.Numeric);
             dbColumn.TypeEnum = Convert.ToByte(Enum_ColumnType.Numeric);
 
             dbColumn.NumericColumnType = new NumericColumnType();
             SyncColumnTypesDBProperties(dbColumn, column);
-        }
+            dbColumn.NumericColumnType.Delimiter = CheckDelimiter(column);
 
+        }
+        private bool CheckDelimiter(ColumnDTO column)
+        {
+            //**9d5217f1-8a54-49a1-a1d2-0ff4dad8df1a
+            if (column.Name.ToLower().Contains("price"))
+                return true;
+            if (column.Alias != null)
+            {
+                if (column.Alias.ToLower().Contains("price") ||
+                         column.Alias.ToLower().Contains("مبلغ"))
+                    return true;
+            }
+            return false;
+        }
 
         private bool DefaultValueIsDBFunction(ColumnDTO column)
         {

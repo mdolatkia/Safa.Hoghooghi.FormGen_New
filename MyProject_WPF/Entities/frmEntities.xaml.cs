@@ -103,7 +103,7 @@ namespace MyProject_WPF
             if (e.DataElement is DateColumnTypeDTO)
             {
                 var column = e.DataElement as DateColumnTypeDTO;
-                if (!column.DBValueIsString )
+                if (!column.DBValueIsString)
                 {
                     var cell = e.Row.Cells.FirstOrDefault(x => x.Column.UniqueName == "DBValueIsStringMiladi");
                     if (cell != null)
@@ -241,7 +241,7 @@ namespace MyProject_WPF
             else if (dataGrid == dtgStringColumnType)
             {
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ColumnID", "شناسه ستون", true, null, GridViewColumnType.Text));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("MaxLength", "حداکثر طول", false, null, GridViewColumnType.Numeric));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("MaxLength", "حداکثر طول", true, null, GridViewColumnType.Numeric));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("MinLength", "حداقل طول", false, null, GridViewColumnType.Numeric));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Format", "فرمت", false, null, GridViewColumnType.Text));
             }
@@ -283,7 +283,7 @@ namespace MyProject_WPF
                 //dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ShowAMPMFormat", "نمایش 12 ساعته", false, null, GridViewColumnType.CheckBox));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBValueIsString", "مقدار رشته است", true, null, GridViewColumnType.CheckBox));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBValueIsStringMiladi", "مقدار رشته ای تاریخ میلادی", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBValueStringTimeFormat","فرمت رشته زمان", false, null, GridViewColumnType.Enum, GetStringTimeFormatAsItemsSource()));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBValueStringTimeFormat", "فرمت رشته زمان", false, null, GridViewColumnType.Enum, GetStringTimeFormatAsItemsSource()));
 
 
             }
@@ -294,7 +294,7 @@ namespace MyProject_WPF
             return Enum.GetValues(typeof(StringTimeFormat))
                        .Cast<object>();
         }
-        
+
 
 
         //private void SetFormulas()
@@ -1011,7 +1011,7 @@ namespace MyProject_WPF
                     var convertToStringColumnMenu = AddMenu(contextMenu.Items, "تبدیل به نوع رشته", "", "../Images/string.png");
                     convertToStringColumnMenu.Click += (sender1, EventArgs) => ConvertToStringColumnType_Click1(sender, e, column);
                 }
-             
+
 
                 //if (column.ColumnType == Enum_ColumnType.String)
                 //{
@@ -1052,7 +1052,7 @@ namespace MyProject_WPF
         //}
         void ConvertToDateColumnType_Click1(object sender, RoutedEventArgs e, ColumnDTO column)
         {
-            bizColumn.ConvertStringColumnToDateTimeColumn(selectedEntity, column,Enum_ColumnType.Date);
+            bizColumn.ConvertStringColumnToDateTimeColumn(selectedEntity, column, Enum_ColumnType.Date);
         }
         void ConvertToTimeColumnType_Click1(object sender, RoutedEventArgs e, ColumnDTO column)
         {
@@ -1078,7 +1078,8 @@ namespace MyProject_WPF
 
         void DefineColumnValueForColumn(object sender, RoutedEventArgs e, ColumnDTO column)
         {
-            frmColumnValueRange view = new frmColumnValueRange(column.ID);
+            //**5389ea8a-2644-4759-9716-1abc824a1aa2
+            frmColumnValueRange view = new frmColumnValueRange(selectedEntity.ID, column.ID);
             if (column.ColumnValueRangeID == 0)
             {
                 view.ItemSaved += (sender1, e1) => View_ItemSaved(sender1, e1, column.ID);

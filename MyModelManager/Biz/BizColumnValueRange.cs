@@ -43,7 +43,7 @@ namespace MyModelManager
             {
                 var column = projectContext.ColumnValueRange.FirstOrDefault(x => x.ID == columnID);
                 if (column != null)
-                    return ToColumnValueRangeDTO(column,false);
+                    return ToColumnValueRangeDTO(column, false, false);
                 else
                     return null;
             }
@@ -63,35 +63,40 @@ namespace MyModelManager
                 }
                 else if (tag == EnumColumnValueRangeTag.Tag1)
                 {
-                    return columnValueRange.ColumnValueRangeDetails.Select(x => x.Tag1).Distinct().ToList();
+                    return columnValueRange.ColumnValueRangeDetails.Select(x => x.Tag).Distinct().ToList();
                 }
-                else if (tag == EnumColumnValueRangeTag.Tag2)
-                {
-                    return columnValueRange.ColumnValueRangeDetails.Select(x => x.Tag2).Distinct().ToList();
-                }
+                //else if (tag == EnumColumnValueRangeTag.Tag2)
+                //{
+                //    return columnValueRange.ColumnValueRangeDetails.Select(x => x.Tag2).Distinct().ToList();
+                //}
 
             }
             return null;
         }
 
-        public ColumnValueRangeDTO GetColumnKeyValue(int columnID)
-        {
-            //////ColumnValueRangeDTO result = new ColumnValueRangeDTO();
-            //////using (var projectContext = new DataAccess.MyProjectEntities())
-            //////{
-            //////    var column = projectContext.Column.FirstOrDefault(x => x.ID == columnID);
-            //////    if (column.ColumnValueRange != null)
-            //////        return ToColumnKeyValueDTO(column.ColumnValueRange);
-            //////}
-            return null;
-        }
+        //public ColumnValueRangeDTO GetColumnKeyValue(int columnID)
+        //{
+        //    //////ColumnValueRangeDTO result = new ColumnValueRangeDTO();
+        //    //////using (var projectContext = new DataAccess.MyProjectEntities())
+        //    //////{
+        //    //////    var column = projectContext.Column.FirstOrDefault(x => x.ID == columnID);
+        //    //////    if (column.ColumnValueRange != null)
+        //    //////        return ToColumnKeyValueDTO(column.ColumnValueRange);
+        //    //////}
+        //    return null;
+        //}
 
-        public ColumnValueRangeDTO ToColumnValueRangeDTO(DataAccess.ColumnValueRange item, bool titleIsValueIfEmpty)
+        public ColumnValueRangeDTO ToColumnValueRangeDTO(DataAccess.ColumnValueRange item, bool titleIsValueIfEmpty, bool withDetails)
         {
             ColumnValueRangeDTO result = new ColumnValueRangeDTO();
             //       result.ValueFromTitleOrValue = item.ValueFromTitleOrValue;
             result.Details = new List<ColumnValueRangeDetailsDTO>();
             result.ID = item.ID;
+            BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
+            result.EntityRelationshipTailID = item.EntityRelationshipTailID ?? 0;
+            if (withDetails && result.EntityRelationshipTailID != 0)
+                result.EntityRelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
+            result.TagColumnID = item.TagColumnID ?? 0;
             foreach (var rItem in item.ColumnValueRangeDetails)
             {
                 var keyValueRange = new ColumnValueRangeDetailsDTO();
@@ -101,8 +106,10 @@ namespace MyModelManager
                 keyValueRange.KeyTitle = rItem.KeyTitle;
                 if (titleIsValueIfEmpty && string.IsNullOrEmpty(keyValueRange.KeyTitle))
                     keyValueRange.KeyTitle = keyValueRange.Value;
-                keyValueRange.Tag1 = rItem.Tag1;
-                keyValueRange.Tag2 = rItem.Tag2;
+                keyValueRange.Tag = rItem.Tag;
+             //   keyValueRange.Tag2 = rItem.Tag2;
+
+
                 result.Details.Add(keyValueRange);
             }
             return result;
@@ -118,6 +125,9 @@ namespace MyModelManager
                     dbColumn.ColumnValueRange = new ColumnValueRange();
                     //  projectContext.ColumnValueRange.Add(dbColumnValueRange);
                 }
+                dbColumn.ColumnValueRange.EntityRelationshipTailID = message.EntityRelationshipTailID == 0 ? (int?)null : message.EntityRelationshipTailID;
+                dbColumn.ColumnValueRange.TagColumnID = message.TagColumnID == 0 ? (int?)null : message.TagColumnID;
+
                 //else
                 //    dbColumnValueRange = projectContext.ColumnValueRange.First(x => x.ID == message.ID);
                 //     dbColumnValueRange.ID = message.ID;
@@ -126,7 +136,7 @@ namespace MyModelManager
                     projectContext.ColumnValueRangeDetails.Remove(dbColumn.ColumnValueRange.ColumnValueRangeDetails.First());
                 foreach (var keyValueRange in message.Details)
                 {
-                    dbColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = keyValueRange.Value, KeyTitle = keyValueRange.KeyTitle, Tag1 = keyValueRange.Tag1, Tag2 = keyValueRange.Tag2 });
+                    dbColumn.ColumnValueRange.ColumnValueRangeDetails.Add(new ColumnValueRangeDetails() { Value = keyValueRange.Value, KeyTitle = keyValueRange.KeyTitle, Tag = keyValueRange.Tag});
                 }
                 //dbColumnValueRange.Name = message.Name;
                 projectContext.SaveChanges();

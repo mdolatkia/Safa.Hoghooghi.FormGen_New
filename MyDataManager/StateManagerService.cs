@@ -28,7 +28,11 @@ namespace MyFormulaManagerService
             StateHandler handler = new StateHandler();
             return handler.GetStateResult(state, mainDataItem, requester);
         }
-
+        public object GetValueSomeHow(DR_Requester requester, DP_DataRepository sourceData, EntityRelationshipTailDTO valueRelationshipTail, int valueColumnID)
+        {
+            DataitemRelatedColumnValueHandler dataitemRelatedColumnValueHandler = new DataitemRelatedColumnValueHandler();
+            return dataitemRelatedColumnValueHandler.GetValueSomeHow(requester, sourceData, valueRelationshipTail, valueColumnID);
+        }
         //public FormulaDTO GetFormula(int formulaID)
         //{
         //    BizFormula bizFormula = new BizFormula();

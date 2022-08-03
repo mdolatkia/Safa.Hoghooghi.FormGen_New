@@ -51,11 +51,11 @@ namespace MyModelManager
                 foreach (var dbitem in item.UIEnablityDetails)
                     result.UIEnablityDetails.Add(ToUIEnablityDetailsDTO(result.UIEnablityDetails, dbitem));
             }
-            if (withDetails && result.Type == Enum_ActionActivityType.ColumnValueRange)
-            {
-                foreach (var dbitem in item.UIColumnValueRange)
-                    result.UIColumnValueRange.Add(ToUIColumnValueRangeDTO(dbitem));
-            }
+            //if (withDetails && result.Type == Enum_ActionActivityType.ColumnValueRange)
+            //{
+            //    foreach (var dbitem in item.UIColumnValueRange)
+            //        result.UIColumnValueRange.Add(ToUIColumnValueRangeDTO(dbitem));
+            //}
             //if (withDetails && result.Type == Enum_ActionActivityType.ColumnValueRangeReset)
             //{
             //    foreach (var dbitem in item.UIColumnValueRangeReset)
@@ -81,15 +81,15 @@ namespace MyModelManager
             return result;
         }
 
-        private UIColumnValueRangeDTO ToUIColumnValueRangeDTO(UIColumnValueRange item)
-        {
-            UIColumnValueRangeDTO msgtem = new UIColumnValueRangeDTO();
-            msgtem.ColumnValueRangeID = item.ColumnValueRangeID;
-            msgtem.ID = item.ID;
-            msgtem.EnumTag = (EnumColumnValueRangeTag)item.EnumTag;
-            msgtem.Value = item.Value;
-            return msgtem;
-        }
+        //private UIColumnValueRangeDTO ToUIColumnValueRangeDTO(UIColumnValueRange item)
+        //{
+        //    UIColumnValueRangeDTO msgtem = new UIColumnValueRangeDTO();
+        //    msgtem.ColumnValueRangeID = item.ColumnValueRangeID;
+        //    msgtem.ID = item.ID;
+        //    msgtem.EnumTag = (EnumColumnValueRangeTag)item.EnumTag;
+        //    msgtem.Value = item.Value;
+        //    return msgtem;
+        //}
         //private UIColumnValueRangeResetDTO ToUIColumnValueRangeResetDTO(UIColumnValueRangeReset item)
         //{
         //    UIColumnValueRangeResetDTO msgtem = new UIColumnValueRangeResetDTO();
@@ -239,17 +239,17 @@ namespace MyModelManager
                     //}
                 }
 
-
-                while (dbActionActivity.UIColumnValueRange.Any())
-                    projectContext.UIColumnValueRange.Remove(dbActionActivity.UIColumnValueRange.First());
-                foreach (var item in UIActionActivity.UIColumnValueRange)
-                {
-                    UIColumnValueRange dbItem = new UIColumnValueRange();
-                    dbItem.ColumnValueRangeID = item.ColumnValueRangeID;
-                    dbItem.EnumTag = (short)item.EnumTag;
-                    dbItem.Value = item.Value;
-                    dbActionActivity.UIColumnValueRange.Add(dbItem);
-                }
+                //**f328c04c-b44b-4c6a-ac79-b8cd78f3254b
+                //while (dbActionActivity.UIColumnValueRange.Any())
+                //    projectContext.UIColumnValueRange.Remove(dbActionActivity.UIColumnValueRange.First());
+                //foreach (var item in UIActionActivity.UIColumnValueRange)
+                //{
+                //    UIColumnValueRange dbItem = new UIColumnValueRange();
+                //    dbItem.ColumnValueRangeID = item.ColumnValueRangeID;
+                //    dbItem.EnumTag = (short)item.EnumTag;
+                //    dbItem.Value = item.Value;
+                //    dbActionActivity.UIColumnValueRange.Add(dbItem);
+                //}
                 //while (dbActionActivity.UIColumnValueRangeReset.Any())
                 //    projectContext.UIColumnValueRangeReset.Remove(dbActionActivity.UIColumnValueRangeReset.First());
                 //foreach (var item in UIActionActivity.UIColumnValueRangeReset)

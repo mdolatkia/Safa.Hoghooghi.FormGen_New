@@ -1,10 +1,10 @@
 ﻿<UserControl x:Class="MyProject_WPF.frmColumnValueRange"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  xmlns:MyCommonWPFControls="clr-namespace:MyCommonWPFControls;assembly=MyCommonWPFControls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d"  xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
-             d:DesignHeight="300" d:DesignWidth="800" FlowDirection="RightToLeft">
+             d:DesignHeight="300" d:DesignWidth="900" FlowDirection="RightToLeft">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"></RowDefinition>
@@ -15,7 +15,23 @@
             <RadioButton   Margin="30,0,10,0" x:Name="optValueComesFromTitle" VerticalAlignment="Center" Content="مقدار ستون از عنوان خوانده میشود"></RadioButton>
             <RadioButton    Margin="10,0,10,0"  x:Name="optValueComesFromValue" VerticalAlignment="Center"  Content="مقدار ستون از مقدار خوانده میشود"></RadioButton>
         </StackPanel>-->
-        <Button  Margin="2" HorizontalAlignment="Right" Width="240" Content="استخراج عنوان/مقدار از مقادیر موجود ستون" x:Name="btnImportKeyValues" Click="btnImportKeyValues_Click"></Button>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition  Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="رابطه مقدار Tag" HorizontalAlignment="Right"></TextBlock>
+            <!--<ComboBox  x:Name="cmbTag1Column" Width="200" Grid.Column="1"></ComboBox>-->
+            <MyCommonWPFControls:MyStaticLookup Grid.Row="0" NewItemEnabled="True" x:Name="lokRelationshipTail" Width="230" Grid.Column="1" />
+
+            <TextBlock Text="ستون مقدار Tag" Grid.Column="2" HorizontalAlignment="Right"></TextBlock>
+            <ComboBox  x:Name="cmbTagColumn" Width="200" Grid.Column="3"></ComboBox>
+            <Button Grid.Column="4"  Margin="2" HorizontalAlignment="Right" Width="240" Content="استخراج عنوان/مقدار از مقادیر موجود ستون" x:Name="btnImportKeyValues" Click="btnImportKeyValues_Click"></Button>
+        </Grid>
         <telerik:RadGridView AutoGenerateColumns="False" x:Name="dtgColumnKeyValue" Grid.Row="1">
 
         </telerik:RadGridView>

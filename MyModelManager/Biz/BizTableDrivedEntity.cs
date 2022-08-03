@@ -1157,7 +1157,7 @@ namespace MyModelManager
 
         private void UpdateEntityInModel(MyProjectEntities projectContext, int databaseID, TableDrivedEntityDTO entity, List<DBSchema> listAddedSchema)
         {
-            //**6c99db26-bb1b-40df-ba63-1e9a8bbe5eff
+           
             DBSchema dbSchema = null;
             dbSchema = listAddedSchema.FirstOrDefault(x => x.DatabaseInformationID == databaseID && x.Name == entity.RelatedSchema);
             if (dbSchema == null)
