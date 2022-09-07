@@ -34,38 +34,38 @@ namespace MyUILibrary.DataViewArea
         //{
         //    set; get;
         //}
-        bool UICompositionsCalled;
-        EntityUICompositionCompositeDTO _UICompositions;
-        public EntityUICompositionCompositeDTO UICompositions
-        {
-            get
-            {
-                if (_UICompositions == null && !UICompositionsCalled)
-                {
-                    UICompositionsCalled = true;
-                    _UICompositions = AgentUICoreMediator.GetAgentUICoreMediator.entityUICompositionService.GetEntityUICompositionTree(AreaInitializer.EntityID);
-                }
-                return _UICompositions;
-            }
-        }
-        private ColumnUISettingDTO GetColumnUISetting(ColumnDTO column)
-        {
-            if (UICompositions != null && UICompositions.ColumnItems != null
-                && UICompositions.ColumnItems.Any(x => x.ColumnID == column.ID))
-            {
-                var setting = UICompositions.ColumnItems.First(x => x.ColumnID == column.ID);
-                if (setting == null)
-                {
-                    setting = new ColumnUISettingDTO();
-                    setting.UIColumnsType = Enum_UIColumnsType.Normal;
-                    setting.UIRowsCount = 1;
-                    setting.ColumnID = column.ID;
-                    UICompositions.ColumnItems.Add(setting);
-                }
-                return setting;
-            }
-            return null;
-        }
+        //bool UICompositionsCalled;
+        //EntityUICompositionCompositeDTO _UICompositions;
+        //public EntityUICompositionCompositeDTO UICompositions
+        //{
+        //    get
+        //    {
+        //        if (_UICompositions == null && !UICompositionsCalled)
+        //        {
+        //            UICompositionsCalled = true;
+        //            _UICompositions = AgentUICoreMediator.GetAgentUICoreMediator.entityUICompositionService.GetEntityUICompositionTree(AreaInitializer.EntityID);
+        //        }
+        //        return _UICompositions;
+        //    }
+        //}
+        //private ColumnUISettingDTO GetColumnUISetting(ColumnDTO column)
+        //{
+        //    if (UICompositions != null && UICompositions.ColumnItems != null
+        //        && UICompositions.ColumnItems.Any(x => x.ColumnID == column.ID))
+        //    {
+        //        var setting = UICompositions.ColumnItems.First(x => x.ColumnID == column.ID);
+        //        if (setting == null)
+        //        {
+        //            setting = new ColumnUISettingDTO();
+        //            setting.UIColumnsType = Enum_UIColumnsType.Normal;
+        //            setting.UIRowsCount = 1;
+        //            setting.ColumnID = column.ID;
+        //            UICompositions.ColumnItems.Add(setting);
+        //        }
+        //        return setting;
+        //    }
+        //    return null;
+        //}
         public List<SimpleViewColumnControl> ViewColumnControls = new List<SimpleViewColumnControl>();
 
         int lastListView = 0;
@@ -86,7 +86,7 @@ namespace MyUILibrary.DataViewArea
                     else
                         propertyControl.Alias = column.Alias;
                     //     propertyControl.ControlPackage = new UIControlPackageForSimpleColumn();
-                    propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column.Column, GetColumnUISetting(column.Column), false);
+                    propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column.Column, column.ColumnUISetting, false);
                     propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Alias);
 
                     //      if (propertyControl.IsPermanentReadOnly)

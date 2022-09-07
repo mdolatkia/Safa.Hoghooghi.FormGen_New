@@ -162,11 +162,11 @@ namespace MyUILibrary.WorkflowArea
             editEntityAreaInitializer1.EntityID = entityID;
             editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
             editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
-            var FirstSideEditEntityAreaResult = EditEntityAreaConstructor.GetEditEntityArea(editEntityAreaInitializer1);
+            var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
             if (FirstSideEditEntityAreaResult.Item1 != null && FirstSideEditEntityAreaResult.Item1 is I_EditEntityAreaOneData)
             {
                 EditEntityArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                EditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
+             //   EditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
                 View.AddDataSelector(EditEntityArea.TemporaryDisplayView);
             }
         }

@@ -124,7 +124,7 @@ namespace MyProject_WPF
                 }
                 else
                 {
-                    var entities = bizTableDrivedEntity.GetAllEntities(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false);
+                    var entities = bizTableDrivedEntity.GetAllEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false, false);
                     e.ResultItemsSource = entities;
                 }
             }
@@ -151,6 +151,7 @@ namespace MyProject_WPF
 
         private void CheckRelatioshipProperties()
         {
+            //** ea5c5926-4277-43d7-a4da-7c2af6a7543d
             var firstEntity = cmbFirstEntity.SelectedItem as TableDrivedEntityDTO;
             var secondEntity = cmbSecondEntity.SelectedItem as TableDrivedEntityDTO;
             if (firstEntity != null && secondEntity != null)
@@ -188,7 +189,7 @@ namespace MyProject_WPF
                 }
                 else
                 {
-                    var entities = bizTableDrivedEntity.GetAllEntities(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, null);
+                    var entities = bizTableDrivedEntity.GetAllEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false, null);
                     e.ResultItemsSource = entities;
                 }
             }

@@ -233,11 +233,11 @@ namespace MyUILibrary.EntityArea
                         editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
 
                         editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
-                        var FirstSideEditEntityAreaResult = EditEntityAreaConstructor.GetEditEntityArea(editEntityAreaInitializer1);
+                        var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
                         if (FirstSideEditEntityAreaResult.Item1 != null)
                         {
                             propertyControl.EditNdTypeArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                            propertyControl.EditNdTypeArea.SetAreaInitializer(editEntityAreaInitializer1);
+                       //     propertyControl.EditNdTypeArea.SetAreaInitializer(editEntityAreaInitializer1);
                             //         propertyControl.ControlPackage = new UIControlPackageForRelationshipColumn();
                             propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelationshipControlManagerForOneDataForm(propertyControl.EditNdTypeArea.TemporaryDisplayView, GetRelationshipUISetting());
                             propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.EntitySearchColumn.Alias);

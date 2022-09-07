@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyDatabaseToObject
+namespace MyModelManager
 {
     public class BizDatabaseToObject
     {
@@ -82,10 +82,11 @@ namespace MyDatabaseToObject
         //}
 
 
-        
+        BizRelationship bizRelationship = new BizRelationship();
+        BizColumn bizColumn = new BizColumn();
+        BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         public List<ObjectDTO> GetDatabaseChildObjects(DatabaseObjectCategory parentCategory, string parentTitle, int parentIdentity)
         {
-
             List<ObjectDTO> result = new List<ObjectDTO>();
             using (var myProjectContext = new MyProjectEntities())
             {
@@ -113,7 +114,7 @@ namespace MyDatabaseToObject
                 else if (parentCategory == DatabaseObjectCategory.Schema)
                 {
                     //var res = GetDBNameSchemaName(parentIdentity);
-                    foreach (var entity in myProjectContext.TableDrivedEntity.Where(x => x.IsDisabled == false && x.Table.DBSchemaID == parentIdentity))
+                    foreach (var entity in bizTableDrivedEntity.GetAllEntities(myProjectContext, false).Where(x =>  x.Table.DBSchemaID == parentIdentity))
                     {
                         if (IgnoreNotIndependentOrAlreadyInNavigationTree)
                             if (entity.IndependentDataEntry != true || myProjectContext.NavigationTree.Any(x => x.Category == "Entity" && x.ItemIdentity == entity.ID))
@@ -128,14 +129,10 @@ namespace MyDatabaseToObject
                 else if (parentCategory == DatabaseObjectCategory.Entity)
                 {
                     int id = Convert.ToInt32(parentIdentity);
-                    var dbEntity = myProjectContext.TableDrivedEntity.First(x => x.ID == id);
+                    var dbEntity = bizTableDrivedEntity.GetAllEntities(myProjectContext, false).First(x => x.ID == id);
                     if (!IgnoreColumns)
                     {
-                        List<Column> columns = null;
-                        if (dbEntity.TableDrivedEntity_Columns.Any())
-                            columns = dbEntity.TableDrivedEntity_Columns.Select(x => x.Column).ToList();
-                        else
-                            columns = dbEntity.Table.Column.ToList();
+                        var columns = bizColumn.GetAllColumns(dbEntity, false);
                         foreach (var column in columns)
                         {
                             bool skipColumn = false;
@@ -147,7 +144,7 @@ namespace MyDatabaseToObject
                             if (HideFKRelationshipColumns)
                             {
                                 var type = (int)Enum_MasterRelationshipType.FromForeignToPrimary;
-                                if (myProjectContext.Relationship.Any(x => x.Removed != true && x.MasterTypeEnum == type && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID && y.Column.PrimaryKey == false)))
+                                if (bizRelationship.GetAllRelationships(myProjectContext, false, false).Any(x => x.MasterTypeEnum == type && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID && y.Column.PrimaryKey == false)))
                                     skipColumn = true;
                             }
                             if (!skipColumn)
@@ -245,7 +242,7 @@ namespace MyDatabaseToObject
                 else if (objectCategory == DatabaseObjectCategory.Entity)
                 {
                     //int id = Convert.ToInt32(objectIdentity);
-                    var entity = projectContext.TableDrivedEntity.First(x => x.ID == objectIdentity);
+                    var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == objectIdentity);
                     result = ToObjectDTO(DatabaseObjectCategory.Schema, entity.Table.DBSchemaID, entity.Table.DBSchema.Name, "", 0);
                 }
                 else if (objectCategory == DatabaseObjectCategory.Column)

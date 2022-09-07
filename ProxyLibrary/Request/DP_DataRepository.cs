@@ -260,7 +260,7 @@ namespace ProxyLibrary
         public bool IsNewItem;
 
 
-     
+
         public bool IsDBRelationship { get; set; }
         //public bool RelationshipIsAdded { get;  }
         public bool IsEdited { get; set; }
@@ -491,7 +491,7 @@ namespace ProxyLibrary
         //public List<int> StateIds { set; get; }
 
         //public bool ExcludeFromDataEntry { set; get; }
-      
+
 
         //public EntityInstance DataInstance;
 
@@ -556,7 +556,7 @@ namespace ProxyLibrary
         //    }
         //}
 
-       
+
         //  public bool IsReadonlyBecauseOfState { get; set; }
         //   public bool IsReadonlyBecauseOfCreatorRelationshipOnState { get; set; }
         //   public bool IsReadonlyBecauseOfCreatorRelationshipOnShow { set; get; }
@@ -830,10 +830,10 @@ namespace ProxyLibrary
 
         public bool IsKey { get { return Column.PrimaryKey; } }
 
-        public bool IsIdentity
-        {
-            get { return Column.IsIdentity; }
-        }
+        //public bool IsIdentity
+        //{
+        //    get { return Column.IsIdentity; }
+        //}
 
         public bool? IsDescriptive { get { return ListViewColumn != null ? ListViewColumn.IsDescriptive : (bool?)null; } }
         //public PropertyContitionType ContitionType;
@@ -848,6 +848,19 @@ namespace ProxyLibrary
 
         public bool ISFK { get; set; }
         public EntityListViewColumnsDTO ListViewColumn { get; set; }
+
+        public bool ValueIsEmptyOrDefaultValue()
+        {
+            //**9b38140b-d290-4157-a617-b1b659034738
+            return ValueIsEmpty() || Value.ToString() == Column.DefaultValue;
+        }
+        public bool ValueIsEmpty()
+        {
+            if (Value == null || string.IsNullOrEmpty(Value.ToString()) || Value.ToString() == "0")
+                return true;
+            else
+                return false;
+        }
         //public int EntityListViewColumnsID { get; set; }
     }
 
@@ -1308,7 +1321,7 @@ namespace ProxyLibrary
     //        return false;
     //}
     //   public bool RelationshipIsChanged { get; set; }
-   
+
 
     //public class ParentRelationshipInfo
 

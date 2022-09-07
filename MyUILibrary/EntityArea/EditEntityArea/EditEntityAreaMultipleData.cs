@@ -221,38 +221,40 @@ namespace MyUILibrary.EntityArea
         //    //        AgentUICoreMediator.UIManager.ShowPane(TemporaryDisplayView, SimpleEntity.Alias);
         //    //}
         //}
-        public I_View_EditEntityAreaMultiple DataView { set; get; }
         public override I_View_Area DataViewGeneric
         {
             get { return DataView; }
         }
-        public override void GenerateUIComposition(List<EntityUICompositionDTO> UICompositions)
+        public override void GenerateUIControlsByCompositionDTO(EntityUICompositionDTO UICompositions)
         {
-
-            foreach (var uiCompositionItem in UICompositions.OrderBy(x => x.Position))
+            GenerateUIComposition(UICompositions);
+        }
+        private void GenerateUIComposition(EntityUICompositionDTO UICompositions)
+        {
+            foreach (var uiCompositionItem in UICompositions.ChildItems.OrderBy(x => x.Position))
             {
                 if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Entity)
                 {
-                    GenerateUIComposition(uiCompositionItem.ChildItems);
+                    GenerateUIComposition(uiCompositionItem);
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Group)
                 {
-                    GenerateUIComposition(uiCompositionItem.ChildItems);
+                    GenerateUIComposition(uiCompositionItem);
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.TabControl)
                 {
-                    GenerateUIComposition(uiCompositionItem.ChildItems);
+                    GenerateUIComposition(uiCompositionItem);
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.TabPage)
                 {
-                    GenerateUIComposition(uiCompositionItem.ChildItems);
+                    GenerateUIComposition(uiCompositionItem);
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Column)
                 {
                     var columnControl = SimpleColumnControls.FirstOrDefault(x => x.Column.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity)) as SimpleColumnControlMultiple;
                     if (columnControl != null)
                     {
-                        SpecializedDataView.AddUIControlPackage(columnControl.SimpleControlManager, columnControl.LabelControlManager);
+                        DataView.AddUIControlPackage(columnControl.SimpleControlManager, columnControl.LabelControlManager);
                         columnControl.Visited = true;
                     }
                 }
@@ -261,7 +263,7 @@ namespace MyUILibrary.EntityArea
                     var columnControl = RelationshipColumnControls.FirstOrDefault(x => x.Relationship != null && x.Relationship.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity)) as RelationshipColumnControlMultiple;
                     if (columnControl != null)
                     {
-                        SpecializedDataView.AddView(columnControl.LabelControlManager, columnControl.RelationshipControlManager);
+                        DataView.AddView(columnControl.LabelControlManager, columnControl.RelationshipControlManager);
                         columnControl.Visited = true;
                     }
                 }
@@ -274,7 +276,6 @@ namespace MyUILibrary.EntityArea
 
             }
         }
-
         //private void SearchViewEntityArea_DataSelected(object sender, DataSelectedEventArg e)
         //{
         //    foreach (var data in e.DataItem)
@@ -284,33 +285,34 @@ namespace MyUILibrary.EntityArea
         //        {
         //            result = AreaInitializer.EditAreaDataManager.GetFullDataFromDataViewSearch(AreaInitializer.EntityID, data, this);
 
-        //        }
-        //        else
-        //        {
-        //            result = AreaInitializer.EditAreaDataManager.ConvertDP_DataViewToDP_DataRepository(data, this);
-        //        }
+            //        }
+            //        else
+            //        {
+            //            result = AreaInitializer.EditAreaDataManager.ConvertDP_DataViewToDP_DataRepository(data, this);
+            //        }
 
-        //        if (result != null)
-        //        {
-        //            bool addResult = AddData(result, SearchViewEntityArea.IsCalledFromDataView);
-        //            if (!addResult)
-        //                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", data.ViewInfo, Temp.InfoColor.Red);
+            //        if (result != null)
+            //        {
+            //            bool addResult = AddData(result, SearchViewEntityArea.IsCalledFromDataView);
+            //            if (!addResult)
+            //                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", data.ViewInfo, Temp.InfoColor.Red);
 
-        //        }
-        //        else
-        //        {
-        //            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", e.DataItem.First().ViewInfo, Temp.InfoColor.Red);
-        //        }
+            //        }
+            //        else
+            //        {
+            //            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", e.DataItem.First().ViewInfo, Temp.InfoColor.Red);
+            //        }
+            //    }
+            //}
+        public I_View_EditEntityAreaMultiple DataView { set; get; }
+
+        //public I_View_EditEntityAreaMultiple SpecializedDataView
+        //{
+        //    get
+        //    {
+        //        return DataViewGeneric as I_View_EditEntityAreaMultiple;
         //    }
         //}
-
-        public I_View_EditEntityAreaMultiple SpecializedDataView
-        {
-            get
-            {
-                return DataViewGeneric as I_View_EditEntityAreaMultiple;
-            }
-        }
         //public override void DataItemVisiblity(object dataItem, bool visible)
         //{
         //    (DataViewGeneric as I_View_EditEntityAreaMultiple).Visiblity(dataItem, visible);

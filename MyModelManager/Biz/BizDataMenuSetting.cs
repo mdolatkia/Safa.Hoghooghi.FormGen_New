@@ -53,7 +53,7 @@ namespace MyModelManager
 
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var entity = projectContext.TableDrivedEntity.FirstOrDefault(x => x.ID == entityID);
+                var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.ID == entityID);
                 if (entity != null && entity.DataMenuSetting1 != null)
                 {
                     return ToDataMenuSettingDTO(requester, entity.DataMenuSetting1, withDetails);
@@ -191,6 +191,7 @@ namespace MyModelManager
             if (dataMenuSetting != null)
                 result.DataMenuSettingName = dataMenuSetting.Name;
 
+            //** 1677d2a6-f3cf-43f9-b61b-f6bf4c34c203
             if (simpleEntity.IsView)
             {
                 if (dataMenuSetting != null)
@@ -372,7 +373,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var dbEntity = projectContext.TableDrivedEntity.FirstOrDefault(x => x.ID == entityID);
+                var dbEntity = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.ID == entityID);
                 dbEntity.DataMenuSettingID = iD;
                 projectContext.SaveChanges();
             }

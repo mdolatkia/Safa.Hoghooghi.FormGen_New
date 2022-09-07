@@ -198,10 +198,11 @@ namespace MyUILibrary.EntityArea
                 else
                     actionLogProperty.NewValue = stringvalue.ToString();
 
+                //** 131e42d5-ee2e-4613-a5d6-b7c6b5787207
                 if (item.IsNewItem)
                 {
                     if (property.Column.IsIdentity)
-                        if (AgentHelper.ValueIsEmpty(property))
+                        if (property.ValueIsEmpty())
                             actionLogProperty.NewValue = "<identity>";
                 }
                 if (item.OriginalProperties.Any(x => x.ColumnID == property.ColumnID))

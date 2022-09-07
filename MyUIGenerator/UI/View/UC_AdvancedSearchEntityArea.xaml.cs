@@ -97,7 +97,7 @@ namespace MyUIGenerator.View
         //    get;
         //}
         public bool IsOpenedTemporary { set; get; }
-        public UIControlPackageTree UIControlPackageTreeItem { set; get; }
+        public UIControlComposition UIControlPackageTreeItem { set; get; }
 
         public void SetTooltip(string tooltip)
         {

@@ -41,7 +41,7 @@ namespace MyUILibrary
         public LogManagerService logManagerService = new LogManagerService();
         public SecurityManagerService securityManagerService = new SecurityManagerService();
         //SecurityService securityManager = new SecurityService();
-        public EntityUICompositionService entityUICompositionService = new EntityUICompositionService();
+    //    public EntityUICompositionService entityUICompositionService = new EntityUICompositionService();
         public TableDrivedEntityManagerService tableDrivedEntityManagerService = new TableDrivedEntityManagerService();
         public EntityValidationManagerService entityValidationManagerService = new EntityValidationManagerService();
         //public PackageManagerService packageManager = new PackageManagerService();
@@ -465,6 +465,9 @@ namespace MyUILibrary
             return requester;
         }
         List<NavigationItemDTO> allNavigationTreeItems { set; get; }
+
+
+        //** 5e93e360-7ae9-4800-a97f-39c7547dd08c
         private void ShowNavigationTree()
         {
             allNavigationTreeItems = navigationTreeManagerService.GetNavigationTree(GetRequester());
@@ -495,6 +498,7 @@ namespace MyUILibrary
 
         private void NavigationMenuClicked(NavigationItemDTO item)
         {
+
             if (item.ObjectCategory == DatabaseObjectCategory.Folder)
                 return;
             else if (item.ObjectCategory == DatabaseObjectCategory.Entity)
@@ -1024,9 +1028,8 @@ namespace MyUILibrary
         }
         public void ShowEditEntityArea(int entityId, bool dialog, DataMode dataMode = DataMode.None, List<DP_BaseData> initializeData = null, Tuple<DP_DataView, EntityRelationshipTailDTO> tailDataValidation = null)
         {
-            //var request = new DP_EntityRequest();
-            //request.EntityID = entityId;
-            //var result = GetEntity(request, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships, false, false, false, false, false, false);
+
+            //** 453786cd-8f9d-4995-bbe7-cc973c4f9fdb
             if (initializeData != null)
             {
                 if (initializeData.Count > 1)
@@ -1042,10 +1045,7 @@ namespace MyUILibrary
             editEntityAreaInitializer.DataMode = dataMode;
             editEntityAreaInitializer.TailDataValidation = tailDataValidation;
 
-            var editAreaResult = EditEntityAreaConstructor.GetEditEntityArea(editEntityAreaInitializer);
-            //MainEntityArea.DisableEnableChanged += MainEntityArea_DisableEnableChanged;
-            //MainEntityArea.DisableEnableCommandByTypeChanged += MainEntityArea_DisableEnableCommandByTypeChanged;
-            //editEntityAreaInitializer.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
+            var editAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer);
             if (editAreaResult.Item1 == null)
             {
                 if (!string.IsNullOrEmpty(editAreaResult.Item2))
@@ -1054,77 +1054,19 @@ namespace MyUILibrary
                 return;
             }
             var MainEntityArea = editAreaResult.Item1;
-            MainEntityArea.SetAreaInitializer(editEntityAreaInitializer);
+        //    MainEntityArea.SetAreaInitializer(editEntityAreaInitializer);
 
             MainEntityArea.ShowDataFromExternalSource(initializeData);
-            //if (initializeData != null && initializeData.Any())
+
+            //object view = null;
+
+            //if (view != null)
             //{
-            //    var result = initializeData;
-            //    if (result.Count > 0)
-            //    {
-                   
-            //            var lastData = result.Last();
-            //            MainEntityArea.ShowDataFromExternalSource(lastData);
-
-            //        }
-            //        else
-            //        {
-            //            MainEntityArea.ShowDataFromExternalSource(result);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    if (MainEntityArea is I_EditEntityAreaOneData)
-            //    {
-            //        (MainEntityArea as I_EditEntityAreaOneData).ShowDataFromExternalSource(null);
-
-            //    }
-            //    else
-            //    {
-            //        (MainEntityArea as I_EditEntityAreaMultipleData).ShowDataFromExternalSource(null);
-            //    }
-            //}
-
-            //if (dialog)
-            //{
-            //    if (dataView)
-            //        AgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(DataView, SimpleEntity.Alias, Enum_WindowSize.Big);
-            //    else
-            //        AgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(TemporaryDisplayView, SimpleEntity.Alias, Enum_WindowSize.Big);
-
-            //}
-            //else
-            //{
-            object view = null;
-            if (MainEntityArea is I_EditEntityAreaOneData)
-            {
-                if (MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-                        MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                    view = (MainEntityArea as I_EditEntityAreaOneData).DataViewGeneric;
-                else if (MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
-                        MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect
-                        || MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.Select)
-                    view = (MainEntityArea as I_EditEntityAreaOneData).TemporaryDisplayView;
-
-            }
-            else if (MainEntityArea is I_EditEntityAreaMultipleData)
-            {
-                if (MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-                    MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
-                    view = (MainEntityArea as I_EditEntityAreaMultipleData).DataViewGeneric;
-                else if (MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
-                        MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect
-                        || MainEntityArea.AreaInitializer.IntracionMode == IntracionMode.Select)
-                    view = (MainEntityArea as I_EditEntityAreaMultipleData).TemporaryDisplayView;
-            }
-            if (view != null)
-            {
-                if (!dialog)
-                    UIManager.ShowPane(view, MainEntityArea.SimpleEntity.Alias);
-                else
-                    UIManager.GetDialogWindow().ShowDialog(view, MainEntityArea.SimpleEntity.Alias, Enum_WindowSize.Maximized);
-            }
+            if (!dialog)
+                UIManager.ShowPane(MainEntityArea.FirstView, MainEntityArea.SimpleEntity.Alias);
+            else
+                UIManager.GetDialogWindow().ShowDialog(MainEntityArea.FirstView, MainEntityArea.SimpleEntity.Alias, Enum_WindowSize.Maximized);
+            //  }
 
             //}
 
@@ -1391,11 +1333,11 @@ namespace MyUILibrary
 
         //}
 
-        internal bool ReverseRelationshipIsMandatory(int relationshipID)
-        {
+        //internal bool ReverseRelationshipIsMandatory(int relationshipID)
+        //{
 
-            return RelationshipManager.ReverseRelationshipIsMandatory(relationshipID);
-        }
+        //    return RelationshipManager.ReverseRelationshipIsMandatory(relationshipID);
+        //}
         //internal bool ReverseRelationshipIsMandatory(int relationshipID)
         //{
         //    RelationshipManagerService relationshipManager = new RelationshipManagerService();

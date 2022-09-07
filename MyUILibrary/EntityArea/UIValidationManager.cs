@@ -96,16 +96,17 @@ namespace MyUILibrary.EntityArea
             //اگر داده جدید باشد ستونها و رابطی که اجباری باشند اما در فرم ورود اطلاعات وجود نداشته باشند را چک میکند
             CheckAccessValidation(data);
 
-            foreach (var simplePropertyControl in EditArea.SimpleColumnControls)
-            {
-                var dataProperty = data.GetProperty(simplePropertyControl.Column.ID);
-                if (dataProperty != null)
-                    ValidateSimpleColumn(data, dataProperty, simplePropertyControl);
-            }
+            //foreach (var simplePropertyControl in EditArea.SimpleColumnControls)
+            //{
+            //    var dataProperty = data.GetProperty(simplePropertyControl.Column.ID);
+            //    if (dataProperty != null)
+            foreach (var simpleProperty in data.ChildSimpleContorlProperties)
+                ValidateSimpleColumn(data, simpleProperty);
+            //}
 
             foreach (var childRel in data.ChildRelationshipDatas)
             {
-               // relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(data.ChildRelationshipDatas.First(x => x.Relationship == relationshipControl.Relationship));
+                // relationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(data.ChildRelationshipDatas.First(x => x.Relationship == relationshipControl.Relationship));
 
                 ValidateRelationshipColumn(data, childRel, childRel.RelationshipControl);
             }
@@ -127,12 +128,14 @@ namespace MyUILibrary.EntityArea
 
         private void CheckAccessValidation(DP_FormDataRepository dataITem)
         {
+
+            //** 511a49ba-1a7c-47d0-8b6f-3b7eb162083e
             if (dataITem.IsNewItem)
             {
                 if (EditArea.FullEntity.Columns.Any(x => x.DataEntryEnabled && x.IsMandatory &&
                 (!EditArea.SimpleColumnControls.Any(c => c.Column.ID == x.ID) &&
                 !EditArea.RelationshipColumnControls.Any(r => r.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && r.Relationship.RelationshipColumns.Any(rc => rc.FirstSideColumnID == x.ID)) &&
-                (EditArea.AreaInitializer == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum!= Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
+                (EditArea.AreaInitializer == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum != Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
                 )
                 ))
                 {  //اگر غیر از این باشه و بخوایم ستونهایی که دسترسی دارند را از آنهایی که ندارند جدا کرده و بررسی کنیم قضیه خلی پیچیده میشود. 
@@ -141,7 +144,7 @@ namespace MyUILibrary.EntityArea
                     foreach (var col in EditArea.FullEntity.Columns.Where(x => x.DataEntryEnabled && x.IsMandatory &&
                 (!EditArea.SimpleColumnControls.Any(c => c.Column.ID == x.ID) &&
                 !EditArea.RelationshipColumnControls.Any(r => r.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && r.Relationship.RelationshipColumns.Any(rc => rc.FirstSideColumnID == x.ID)) &&
-                (EditArea.AreaInitializer == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum!= Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
+                (EditArea.AreaInitializer == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum != Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
                 )
                 ))
                     {
@@ -152,6 +155,7 @@ namespace MyUILibrary.EntityArea
                     AddDataValidationMessage(message, dataITem);
                 }
 
+                //** a2c0b0ee-ee1d-4f4f-a2a5-048593ae6651
                 if (EditArea.FullEntity.Relationships.Any(x => x.DataEntryEnabled == true && x.IsOtherSideMandatory == true &&
               (!EditArea.RelationshipColumnControls.Any(r => r.Relationship.ID == x.ID) && (EditArea.AreaInitializer.SourceRelationColumnControl == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID != x.ID))))
                 {  //اگر غیر از این باشه و بخوایم روابطی که دسترسی دارند را از آنهایی که ندارند جدا کرده و بررسی کنیم قضیه خلی پیچیده میشود. 
@@ -500,6 +504,7 @@ namespace MyUILibrary.EntityArea
         }
         private void ValidateRelationshipColumn(DP_FormDataRepository dataItem, ChildRelationshipInfo childRelationshipInfo, RelationshipColumnControlGeneral relationshipControl)
         {
+            //** 91e61718-d072-43c4-8aa6-dec468052171
             if (!childRelationshipInfo.IsHidden)
             {
                 if (relationshipControl.Relationship.IsOtherSideMandatory == true)
@@ -525,7 +530,7 @@ namespace MyUILibrary.EntityArea
                     || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect
                     || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.Select)
                     {
-                        if (relationshipControl.GenericEditNdTypeArea.SearchViewEntityArea != null)
+                        if (relationshipControl.GenericEditNdTypeArea.SearchViewEntityArea!=null && relationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.RelationshipFilters != null)
                         {
                             if (relationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.RelationshipFilters.Any())
                             {
@@ -578,8 +583,11 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        private void ValidateSimpleColumn(DP_FormDataRepository dataItem, EntityInstanceProperty dataColumn, SimpleColumnControlGenerel simplePropertyControl)
+        private void ValidateSimpleColumn(DP_FormDataRepository dataItem, ChildSimpleContorlProperty childSimpleContorlProperty)
         {
+            //** 54ed40be-5fa9-46ee-a27b-2d60cd226e9e
+            var simplePropertyControl = childSimpleContorlProperty.SimpleColumnControl;
+            var dataColumn = childSimpleContorlProperty.Property;
             if (simplePropertyControl.Column.IsMandatory == true)
             {
                 if (dataColumn.Value == null || dataColumn.Value.ToString() == "")
@@ -675,16 +683,16 @@ namespace MyUILibrary.EntityArea
                     && simplePropertyControl.Column.ColumnValueRange.Details.Any())
                 {
 
-                    List<ColumnValueRangeDetailsDTO> validValueRange = null;
-                    //اینجا
-                    //////if (dataItem.ColumnKeyValueRanges.Any(x => x.Key == simplePropertyControl.Column.ID && x.Value.Any()))
-                    //////{
-                    //////    validValueRange = dataItem.ColumnKeyValueRanges.First(x => x.Key == simplePropertyControl.Column.ID && x.Value.Any()).Value;
+                    List<ColumnValueRangeDetailsDTO> validValueRange = childSimpleContorlProperty.ColumnValueRange;
+                    //  اینجا
+                    //if (dataItem.ColumnKeyValueRanges.Any(x => x.Key == simplePropertyControl.Column.ID && x.Value.Any()))
+                    //{
+                    //    validValueRange = dataItem.ColumnKeyValueRanges.First(x => x.Key == simplePropertyControl.Column.ID && x.Value.Any()).Value;
 
-                    //////}
-                    //////else
-                    //////    validValueRange = simplePropertyControl.Column.ColumnValueRange.Details;
-                  
+                    //}
+                    //else
+                    //    validValueRange = simplePropertyControl.Column.ColumnValueRange.Details;
+
                     if (!validValueRange.Any(x => x.Value == dataColumn.Value.ToString()))
                     {
                         string message = "مقدار این خصوصیت در لیست مقادیر مجاز نمی باشد";

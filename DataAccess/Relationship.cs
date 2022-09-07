@@ -42,6 +42,8 @@ namespace DataAccess
         public bool IsOrginal { get; set; }
         public bool Reviewed { get; set; }
         public bool SearchInitially { get; set; }
+        public Nullable<short> DBDeleteRule { get; set; }
+        public Nullable<short> DBUpdateRule { get; set; }
     
         public virtual ICollection<ArcRelationshipGroup_Relationship> ArcRelationshipGroup_Relationship { get; set; }
         public virtual ICollection<DataMenuForViewEntity> DataMenuForViewEntity { get; set; }

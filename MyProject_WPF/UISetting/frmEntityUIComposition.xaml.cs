@@ -25,6 +25,7 @@ namespace MyProject_WPF
     /// </summary>
     public partial class frmEntityUIComposition : UserControl
     {
+        //** d4503365-cbb8-45c8-a108-3292f851d67b
         BizEntityUIComposition bizEntityUIComposition = new BizEntityUIComposition();
         EntityUICompositionDTO UICompositionTree { set; get; }
         int EntityID { set; get; }
@@ -62,8 +63,6 @@ namespace MyProject_WPF
 
         private void SetEntityColumnOrRelationships()
         {
-           
-
             ColumnOrRelationships.Clear();
             foreach (var column in Entity.Columns.Where(x => x.DataEntryEnabled).OrderBy(x => x.Position))
             {
@@ -102,7 +101,7 @@ namespace MyProject_WPF
         {
             SetEntityColumnOrRelationships();
             treeEntityUIComposition.Items.Clear();
-            UICompositionTree = bizEntityUIComposition.GetEntityUICompositionTree(EntityID).RootItem;
+            UICompositionTree = bizEntityUIComposition.GetEntityUICompositionTree(EntityID);
             RadTreeViewItem parentNode = null;
             if (UICompositionTree == null)
             {
@@ -698,26 +697,26 @@ namespace MyProject_WPF
             }
         }
 
-        public EntityUICompositionCompositeDTO GetEntityUICompositionComposite()
+        public EntityUICompositionDTO GetEntityUICompositionComposite()
         {
-            EntityUICompositionCompositeDTO result = new EntityUICompositionCompositeDTO();
+            EntityUICompositionDTO result = new EntityUICompositionDTO();
 
-            result.ColumnItems = new List<ColumnUISettingDTO>();
-            result.RelationshipItems = new List<RelationshipUISettingDTO>();
+        //    result.ColumnItems = new List<ColumnUISettingDTO>();
+          //  result.RelationshipItems = new List<RelationshipUISettingDTO>();
 
             var rootNode = (treeEntityUIComposition.Items[0] as RadTreeViewItem);
             var context = rootNode.DataContext as EntityUICompositionDTO;
-            result.RootItem = context;
+         //  result.RootItem = context;
 
             //List<EntityUICompositionDTO> items = new List<EntityUICompositionDTO>();
             //CollectEntityUICompositionItems(items);
 
-            SetEntityUICompositionDTO(rootNode, result.ColumnItems, result.RelationshipItems);
+            SetEntityUICompositionDTO(rootNode);
 
-            return result;
+            return context;
         }
 
-        private void SetEntityUICompositionDTO(RadTreeViewItem parentNode, List<ColumnUISettingDTO> columnItems, List<RelationshipUISettingDTO> relationshipItems)
+        private void SetEntityUICompositionDTO(RadTreeViewItem parentNode)
         {
             var parentContext = parentNode.DataContext as EntityUICompositionDTO;
             int index = 0;
@@ -730,16 +729,16 @@ namespace MyProject_WPF
                 context.Position = index;
                 index++;
 
-                if (context.ObjectCategory == DatabaseObjectCategory.Column)
-                {
-                    columnItems.Add(context.ColumnUISetting);
-                }
-                else if (context.ObjectCategory == DatabaseObjectCategory.Relationship)
-                {
-                    relationshipItems.Add(context.RelationshipUISetting);
-                }
+                //if (context.ObjectCategory == DatabaseObjectCategory.Column)
+                //{
+                //    columnItems.Add(context.ColumnUISetting);
+                //}
+                //else if (context.ObjectCategory == DatabaseObjectCategory.Relationship)
+                //{
+                //    relationshipItems.Add(context.RelationshipUISetting);
+                //}
 
-                SetEntityUICompositionDTO(node, columnItems, relationshipItems);
+                SetEntityUICompositionDTO(node);
             }
         }
 
@@ -933,6 +932,8 @@ namespace MyProject_WPF
                 SelectedTreeItem.TabPageUISetting.InternalColumnsCount = (txtTabPageColumnsCount.Text == "" ? (Int16)0 : Convert.ToInt16(txtTabPageColumnsCount.Text));
         }
         I_EditEntityArea EditEntityArea { set; get; }
+        I_EditEntityArea MultipleEditEntityArea { set; get; }
+
         private void btnPreview_Click(object sender, RoutedEventArgs e)
         {
 
@@ -942,54 +943,40 @@ namespace MyProject_WPF
             MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.UserInfo = userInfo;
 
             brdView.Child = null;
+
+            I_EditEntityArea currentEditArea = null;
             if (chkMultiple.IsChecked == false)
-            {
-
-                if (EditEntityArea == null)
-                {
-                    var initializer = new EditEntityAreaInitializer();
-                    initializer.Preview = true;
-                    initializer.EntityID = EntityID;
-                    EditEntityArea = EditEntityAreaConstructor.GetEditEntityArea(initializer).Item1;
-                    EditEntityArea.UICompositions = GetEntityUICompositionComposite();
-                    EditEntityArea.SetAreaInitializer(initializer);
-                }
-                else
-                {
-                    EditEntityArea.UICompositions = GetEntityUICompositionComposite();
-                    EditEntityArea.GenerateDataView();
-                }
-                brdView.Child = (EditEntityArea as I_EditEntityAreaOneData).DataViewGeneric as UIElement;
-
-            }
+                currentEditArea = EditEntityArea;
             else
+                currentEditArea = MultipleEditEntityArea;
+         
+            if (currentEditArea == null)
             {
-                if (MultipleEditEntityArea == null)
-                {
-                    var initializer = new EditEntityAreaInitializer();
-                    initializer.Preview = true;
-                    initializer.DataMode = CommonDefinitions.UISettings.DataMode.Multiple;
-                    initializer.EntityID = EntityID;
-                    MultipleEditEntityArea = EditEntityAreaConstructor.GetEditEntityArea(initializer).Item1;
-                    MultipleEditEntityArea.UICompositions = GetEntityUICompositionComposite();
-                    MultipleEditEntityArea.SetAreaInitializer(initializer);
-                }
+                var initializer = new EditEntityAreaInitializer();
+                initializer.Preview = true;
+                initializer.EntityID = EntityID;
+                if (chkMultiple.IsChecked == false)
+                    initializer.DataMode = CommonDefinitions.UISettings.DataMode.One;
                 else
-                {
-                    MultipleEditEntityArea.UICompositions = GetEntityUICompositionComposite();
-                    MultipleEditEntityArea.GenerateDataView();
-                }
-                brdView.Child = (MultipleEditEntityArea as I_EditEntityAreaMultipleData).DataViewGeneric as UIElement;
-
+                    initializer.DataMode = CommonDefinitions.UISettings.DataMode.Multiple;
+                currentEditArea = BaseEditEntityArea.GetEditEntityArea(initializer).Item1;
+                if (chkMultiple.IsChecked == false)
+                    EditEntityArea = currentEditArea;
+                else
+                    MultipleEditEntityArea = currentEditArea;
             }
+
+            currentEditArea.DataEntryEntity.UICompositions = GetEntityUICompositionComposite();
+            currentEditArea.GenerateDataView();
+            brdView.Child = currentEditArea.DataViewGeneric as UIElement;
+
         }
 
-        I_EditEntityArea MultipleEditEntityArea { set; get; }
         private void btnPreviewMultiple_Click(object sender, RoutedEventArgs e)
         {
-          
-           
-           
+
+
+
 
         }
         private void mnuEmptySpace_Click(object sender, RoutedEventArgs e)

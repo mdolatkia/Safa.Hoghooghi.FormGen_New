@@ -337,7 +337,7 @@ namespace MyModelManager
                 if (permission.Actions.Any(x => x == SecurityAction.NoAccess))
                 {
                     BizColumn bizColumn = new BizColumn();
-                    var column = bizColumn.GetColumn(permission.SecurityObjectID, true);
+                    var column = bizColumn.GetColumnDTO(permission.SecurityObjectID, true);
                     if (column.PrimaryKey)
                     {
                         throw new Exception("امکان تعیین عدم دسترسی به ستونهای کلید اصلی وجود ندارد");

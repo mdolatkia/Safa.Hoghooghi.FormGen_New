@@ -18,7 +18,7 @@ namespace MyModelManager
         //{
         //    using (var projectContext = new DataAccess.MyProjectEntities())
         //    {
-        //        var column = projectContext.Column.First(x => x.ID == columnID);
+        //        var column = GetColumn(columnID);
         //        return GetColumnDotNetType(column.DataType, column.IsNull);
         //    }
         //}
@@ -114,7 +114,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var dbColumn = projectContext.Column.First(x => x.ID == columnID);
+                var dbColumn = GetColumn(columnID);
                 if (dbColumn.ColumnCustomFormula == null)
                     return null;
                 else
@@ -126,7 +126,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var dbColumn = projectContext.Column.First(x => x.ID == columnID);
+                var dbColumn = GetColumn(columnID);
 
 
                 if (dbColumn.ColumnCustomFormula == null)
@@ -139,7 +139,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var dbColumn = projectContext.Column.First(x => x.ID == columnID);
+                var dbColumn = GetColumn(columnID);
 
 
                 if (dbColumn.ColumnCustomFormula == null)
@@ -161,18 +161,18 @@ namespace MyModelManager
         //{
 
         //}
-        public List<ColumnDTO> GetTableColumns(int tableID, bool simple)
-        {
-            List<ColumnDTO> result = new List<ColumnDTO>();
+        //public List<ColumnDTO> GetTableColumns(int tableID, bool simple)
+        //{
+        //    List<ColumnDTO> result = new List<ColumnDTO>();
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
-            {
-                var table = projectContext.Table.First(x => x.ID == tableID);
-                foreach (var column in table.Column)
-                    result.Add(ToColumnDTO(column, simple));
-            }
-            return result;
-        }
+        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    {
+        //        var table = projectContext.Table.First(x => x.ID == tableID);
+        //        foreach (var column in table.Column)
+        //            result.Add(ToColumnDTO(column, simple));
+        //    }
+        //    return result;
+        //}
 
         //public ICollection<Column> GetColumns(TableDrivedEntity entity)
         //{
@@ -182,12 +182,12 @@ namespace MyModelManager
         //        return entity.Table.Column;
         //}
 
-        public ColumnDTO GetColumn(int columnID, bool simple)
+        public ColumnDTO GetColumnDTO(int columnID, bool simple)
         {
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var column = projectContext.Column.First(x => x.ID == columnID);
+                var column = GetColumn(columnID);
                 return ToColumnDTO(column, simple);
             }
         }
@@ -197,7 +197,7 @@ namespace MyModelManager
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var column = projectContext.Column.First(x => x.ID == columnID);
+                var column = GetColumn(columnID);
                 if (column.StringColumnType != null)
                     return ToStringColumTypeDTO(column.StringColumnType);
             }
@@ -208,7 +208,7 @@ namespace MyModelManager
         //{
         //    using (var projectContext = new DataAccess.MyProjectEntities())
         //    {
-        //        var column = projectContext.Column.First(x => x.ID == columnID);
+        //        var column = GetColumn(columnID);
         //        if (column.CustomCalculatedColumn == null)
         //            column.CustomCalculatedColumn = new CustomCalculatedColumn();
         //        column.CustomCalculatedColumn.FormulaID = formulaID;
@@ -230,7 +230,7 @@ namespace MyModelManager
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var column = projectContext.Column.First(x => x.ID == columnID);
+                var column = GetColumn(columnID);
                 if (column.NumericColumnType != null)
                     return ToNumericColumTypeDTO(column.NumericColumnType);
             }
@@ -256,7 +256,7 @@ namespace MyModelManager
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var column = projectContext.Column.First(x => x.ID == columnID);
+                var column = GetColumn(columnID);
                 if (column.DateColumnType != null)
                     return ToDateColumTypeDTO(column.DateColumnType, true);
             }
@@ -312,7 +312,7 @@ namespace MyModelManager
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var column = projectContext.Column.First(x => x.ID == columnID);
+                var column = GetColumn(columnID);
                 if (column.TimeColumnType != null)
                     return ToTimeColumTypeDTO(column.TimeColumnType, true);
             }
@@ -360,7 +360,7 @@ namespace MyModelManager
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var column = projectContext.Column.First(x => x.ID == columnID);
+                var column = GetColumn(columnID);
                 if (column.DateTimeColumnType != null)
                     return ToDateTimeColumTypeDTO(column.DateTimeColumnType, true);
             }
@@ -524,26 +524,51 @@ namespace MyModelManager
                     projectContext.StringColumnType.Remove(dbColumn.StringColumnType);
             }
         }
-        public List<ColumnDTO> GetAllColumns(int entityID, bool simple)
+
+        public IEnumerable<Column> GetAllColumns(TableDrivedEntity dbEntity, bool evenDisabled, bool tableColumns = false)
         {
+            //**835426f1-378b-41df-af1a-76435880babc
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var dbEntity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
-                List<ColumnDTO> result = new List<ColumnDTO>();
-                List<Column> columns = null;
-                if (dbEntity.TableDrivedEntity_Columns.Count > 0)
+                IEnumerable<Column> columns = null;
+                if (!tableColumns && dbEntity.TableDrivedEntity_Columns.Count > 0)
                 {
                     //اینجا باید لیست مقادیر هم ست شود
-                    columns = dbEntity.TableDrivedEntity_Columns.Select(x => x.Column).ToList();
+                    columns = dbEntity.TableDrivedEntity_Columns.Select(x => x.Column);
                 }
                 else
                 {
-                    columns = dbEntity.Table.Column.ToList();
+                    columns = dbEntity.Table.Column;
                 }
+
+                columns = columns.Where(x => x.Removed == false && (evenDisabled || x.IsDisabled == false));
+                return columns;
+            }
+        }
+        private Column GetColumn(int columnID)
+        {
+            using (var projectContext = new DataAccess.MyProjectEntities())
+            {
+                BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+
+                return projectContext.Column.FirstOrDefault(x => x.ID == columnID && x.Removed == false && x.IsDisabled == false);
+            }
+        }
+        public List<ColumnDTO> GetAllColumnsDTO(int entityID, bool simple, bool evenDisabled)
+        {
+            List<ColumnDTO> result = new List<ColumnDTO>();
+            using (var projectContext = new DataAccess.MyProjectEntities())
+            {
+                BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+                var dbEntity = bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == entityID);
+
+                var columns = GetAllColumns(dbEntity, evenDisabled);
+
                 foreach (var column in columns)
                     result.Add(ToColumnDTO(column, simple));
-                return result;
+
             }
+            return result;
         }
 
         //private List<ColumnDTO> GetColumns(TableDrivedEntity item, bool simple)
@@ -613,20 +638,20 @@ namespace MyModelManager
         //    }
         //    return result;
         //}
-        public List<ColumnDTO> GetOtherColums(int columnID)
-        {
-            List<ColumnDTO> result = new List<ColumnDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
-            {
-                var column = projectContext.Column.First(x => x.ID == columnID);
-                var list = column.Table.Column.ToList();
-                foreach (var item in list)
-                {
-                    result.Add(ToColumnDTO(item, true));
-                }
-            }
-            return result;
-        }
+        //public List<ColumnDTO> GetOtherColums(int columnID)
+        //{
+        //    List<ColumnDTO> result = new List<ColumnDTO>();
+        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    {
+        //        var column = GetColumn(columnID);
+        //        var list = column.Table.Column.ToList();
+        //        foreach (var item in list)
+        //        {
+        //            result.Add(ToColumnDTO(item, true));
+        //        }
+        //    }
+        //    return result;
+        //}
         public ColumnDTO ToColumnDTO(DataAccess.Column item, bool simple)
         {
             var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Column, item.ID.ToString(), simple.ToString());
@@ -661,7 +686,7 @@ namespace MyModelManager
             result.IsDisabled = item.IsDisabled;
             result.IsNotTransferable = item.IsNotTransferable;
 
-            result.DBFormula = item.DBCalculateFormula;
+            result.DBCalculateFormula = item.DBCalculateFormula;
             // result.IsDBCalculatedColumn = !string.IsNullOrEmpty(result.DBFormula);
             result.IsReadonly = item.IsReadonly;
             result.DotNetType = GetColumnDotNetType(item.DataType, item.IsNull);
@@ -684,7 +709,7 @@ namespace MyModelManager
                     result.DateTimeColumnType = ToDateTimeColumTypeDTO(item.DateTimeColumnType, false);
                 BizColumnValueRange bizColumnValueRange = new MyModelManager.BizColumnValueRange();
                 if (item.ColumnValueRange != null)
-                    result.ColumnValueRange = bizColumnValueRange.ToColumnValueRangeDTO(item.ColumnValueRange, true,true);
+                    result.ColumnValueRange = bizColumnValueRange.ToColumnValueRangeDTO(item.ColumnValueRange, true, true);
 
                 if (item.ColumnCustomFormula != null)
                 {
@@ -727,15 +752,16 @@ namespace MyModelManager
 
         public void UpdateColumns(int entityID, List<ColumnDTO> columns)
         {
+            //** 8ee14cf5-30d9-4af4-afc3-14ecf5010471
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var dbEntity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
-                dbEntity.ColumnsReviewed = true;
+                //   var dbEntity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
+                //  dbEntity.ColumnsReviewed = true;
                 foreach (var column in columns)
                 {
                     var dbColumn = projectContext.Column.First(x => x.ID == column.ID);
                     dbColumn.Alias = column.Alias;
-                    dbColumn.DefaultValue = column.DefaultValue;
+                    //   dbColumn.DefaultValue = column.DefaultValue;
                     dbColumn.IsMandatory = column.IsMandatory;
                     dbColumn.Position = column.Position;
                     dbColumn.Description = column.Description;
@@ -816,17 +842,16 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var dbColumn = projectContext.Column.First(x => x.ID == columnID);
+                var dbColumn = GetColumn(columnID);
                 return DataIsAccessable(requester, dbColumn);
             }
         }
         public bool DataIsAccessable(DR_Requester requester, Column column)
         {
+            //** 200a1e5f-f17f-42ef-9bc4-0c6adb5b0bdc
             SecurityHelper securityHelper = new SecurityHelper();
             if (column.IsDisabled == true)
                 return false;
-            //else if (isNotReadonlyCheck && column.IsReadonly)
-            //    return false;
             else
             {
                 if (requester.SkipSecurity)
@@ -847,12 +872,13 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var dbColumn = projectContext.Column.First(x => x.ID == columnID);
+                var dbColumn = GetColumn(columnID);
                 return DataIsReadonly(requester, dbColumn);
             }
         }
         public bool DataIsReadonly(DR_Requester requester, Column column)
         {
+            //** d6858f16-a243-4655-be6e-46ee61f89778
             SecurityHelper securityHelper = new SecurityHelper();
 
             if (column.IsReadonly == true)
@@ -979,17 +1005,17 @@ namespace MyModelManager
                     dbColumn.Name = column.Name;
                     dbColumn.DataEntryEnabled = true;
 
-                    if (!string.IsNullOrEmpty(column.DBFormula) ||
-                        (!string.IsNullOrEmpty(column.DefaultValue) && DefaultValueIsDBFunction(column)))
-                    {
-                        dbColumn.IsReadonly = true;
-                        //چون اگه تو حالت اصلاح بود بتونه ببینه داده رو
+                    //if (!string.IsNullOrEmpty(column.DBFormula) ||
+                    //    (!string.IsNullOrEmpty(column.DefaultValue) && DefaultValueIsDBFunction(column)))
+                    //{
+                    //    dbColumn.IsReadonly = true;
+                    //    //چون اگه تو حالت اصلاح بود بتونه ببینه داده رو
 
-                    }
-                    else
-                    {
-                        dbColumn.IsReadonly = false;
-                    }
+                    //}
+                    //else
+                    //{
+                    //    dbColumn.IsReadonly = false;
+                    //}
                     table.Column.Add(dbColumn);
                 }
                 if (dbColumn.ID == 0)
@@ -1005,6 +1031,8 @@ namespace MyModelManager
                 dbColumn.IsIdentity = column.IsIdentity;
                 dbColumn.Position = column.Position;
                 dbColumn.DefaultValue = column.DefaultValue;
+                dbColumn.IsDisabled = column.IsDisabled;
+                //dbColumn.IsDisabled = false;
                 //if (column.OriginalColumnType == Enum_ColumnType.None ||
                 //   column.ColumnType == Enum_ColumnType.None)
                 //{
@@ -1031,7 +1059,7 @@ namespace MyModelManager
 
 
 
-                dbColumn.DBCalculateFormula = column.DBFormula;
+                dbColumn.DBCalculateFormula = column.DBCalculateFormula;
 
                 //dbColumn.ShowNullValue=
                 //if (column.IsDBCalculatedColumn)
@@ -1051,7 +1079,7 @@ namespace MyModelManager
             var columnNames = entity.Columns.Select(x => x.Name).ToList();
             foreach (var dbColumn in table.Column.Where(x => !columnNames.Contains(x.Name)))
             {
-                dbColumn.IsDisabled = true;
+                dbColumn.Removed = true;
             }
         }
 
@@ -1230,35 +1258,35 @@ namespace MyModelManager
             return false;
         }
 
-        private bool DefaultValueIsDBFunction(ColumnDTO column)
-        {
-            if (column.DefaultValue != null && column.DefaultValue.Contains("()"))
-                return true;
-            else
-                return false;
-        }
-        private void CheckStringDateColumn(TableDrivedEntityDTO entity, Column dbColumn, ColumnDTO column)
-        {
+        //private bool DefaultValueIsDBFunction(ColumnDTO column)
+        //{
+        //    if (column.DefaultValue != null && column.DefaultValue.Contains("()"))
+        //        return true;
+        //    else
+        //        return false;
+        //}
+        //private void CheckStringDateColumn(TableDrivedEntityDTO entity, Column dbColumn, ColumnDTO column)
+        //{
 
-            //  else
-            {
-                if (column.ColumnType == Enum_ColumnType.String)
-                {
-                    if (dbColumn.DateTimeColumnType != null)
-                    {
-                        column.ColumnType = Enum_ColumnType.DateTime;
-                    }
-                    else if (dbColumn.DateColumnType != null)
-                    {
-                        column.ColumnType = Enum_ColumnType.Date;
-                    }
-                    else if (dbColumn.TimeColumnType != null)
-                    {
-                        column.ColumnType = Enum_ColumnType.Time;
-                    }
-                }
-            }
-        }
+        //    //  else
+        //    {
+        //        if (column.ColumnType == Enum_ColumnType.String)
+        //        {
+        //            if (dbColumn.DateTimeColumnType != null)
+        //            {
+        //                column.ColumnType = Enum_ColumnType.DateTime;
+        //            }
+        //            else if (dbColumn.DateColumnType != null)
+        //            {
+        //                column.ColumnType = Enum_ColumnType.Date;
+        //            }
+        //            else if (dbColumn.TimeColumnType != null)
+        //            {
+        //                column.ColumnType = Enum_ColumnType.Time;
+        //            }
+        //        }
+        //    }
+        //}
 
         private StringTimeFormat DBValueStringTimeFormat(object value)
         {
@@ -1305,7 +1333,7 @@ namespace MyModelManager
         //{
         //    using (var projectContext = new DataAccess.MyProjectEntities())
         //    {
-        //        var dbColumn = projectContext.Column.First(x => x.ID == columnID);
+        //        var dbColumn = GetColumn(columnID);
         //        dbColumn.ColumnValueRangeID = columnValueRangeID;
         //        projectContext.SaveChanges();
         //    }

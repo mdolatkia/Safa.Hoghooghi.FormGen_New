@@ -208,7 +208,11 @@ namespace MyProject_WPF
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DataEntryEnabled", "قابلیت ورود اطلاعات", false, null, GridViewColumnType.CheckBox));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsReadonly", "فقط خواندنی", false, null, GridViewColumnType.CheckBox));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsDisabled", "غیر فعال", false, null, GridViewColumnType.CheckBox));
-                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DeleteOption", "حذف", false, null, GridViewColumnType.Enum, GetDeleteOptionAsItemsSource()));
+                //dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DeleteOption", "حذف", false, null, GridViewColumnType.Enum, GetDeleteOptionAsItemsSource()));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBDeleteRule", "قانون حذف", true, null, GridViewColumnType.Enum, GetDeleteOptionAsItemsSource()));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DBUpdateRule", "قانون بروزرسانی", true, null, GridViewColumnType.Enum, GetDeleteOptionAsItemsSource()));
+
+
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("SearchInitially", "جستجوی خودکار", false, null, GridViewColumnType.CheckBox));
 
                 dataGrid.CanUserDeleteRows = false;
@@ -218,9 +222,8 @@ namespace MyProject_WPF
 
         private IEnumerable GetDeleteOptionAsItemsSource()
         {
-            return Enum.GetValues(typeof(RelationshipDeleteOption))
-                        .Cast<object>()
-                        ;
+            return Enum.GetValues(typeof(RelationshipDeleteUpdateRule))
+                        .Cast<object>();
         }
 
         void dtgRelationships_ContextMenuOpening(object sender, RoutedEventArgs e)
@@ -252,7 +255,6 @@ namespace MyProject_WPF
 
                     var relationshipDeleteMenu = AddMenu(contextMenu.Items, "حذف رابطه", "", "../Images/delete.png");
                     relationshipDeleteMenu.Click += (sender1, EventArgs) => MnuRelationshipDelete_Click(sender, EventArgs, (relationship).ID);
-
                 }
             }
             var relationshipCreateMenu = AddMenu(contextMenu.Items, "تعریف رابطه جدید", "", "../Images/edit.png");

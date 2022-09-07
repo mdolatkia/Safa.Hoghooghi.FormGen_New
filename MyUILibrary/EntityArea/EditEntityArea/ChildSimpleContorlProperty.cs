@@ -50,6 +50,7 @@ namespace MyUILibrary.EntityArea
             Property = property;
             if (SimpleColumnControl.Column.ColumnValueRange != null && SimpleColumnControl.Column.ColumnValueRange.Details.Any())
             {
+                ColumnValueRange = SimpleColumnControl.Column.ColumnValueRange.Details;
                 GetUIControlManager.SetColumnValueRange(SimpleColumnControl.Column.ColumnValueRange.Details);
             }
             //CheckColumnReadonly();
@@ -83,7 +84,7 @@ namespace MyUILibrary.EntityArea
         {
             get
             {
-
+                //**7a082dc6-eb74-4622-8062-1eac557339df
                 return SimpleColumnControl.Column.IsReadonly || ControlReadonlyStateItems.Any();
 
                 //|| (Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary &&
@@ -171,7 +172,7 @@ namespace MyUILibrary.EntityArea
                 ControlHiddenStateItems.RemoveAll(x => x.Key == key);
 
             DecideControl();
-           // SetMessageAndColor();
+            // SetMessageAndColor();
         }
 
 
@@ -245,7 +246,7 @@ namespace MyUILibrary.EntityArea
                 Property.Value = value;
             }
         }
-        List<ColumnValueRangeDetailsDTO> ColumnValueRange { set; get; }
+        public List<ColumnValueRangeDetailsDTO> ColumnValueRange { set; get; }
         public void SetColumnValueRangeFromState(List<ColumnValueRangeDetailsDTO> details)
         {
             if (SourceData.DataIsInEditMode())
@@ -287,7 +288,7 @@ namespace MyUILibrary.EntityArea
         }
         //public void SetMessageAndColor()
         //{
-          
+
         //}
 
 

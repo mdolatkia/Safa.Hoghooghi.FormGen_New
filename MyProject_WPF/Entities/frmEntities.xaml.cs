@@ -382,7 +382,7 @@ namespace MyProject_WPF
                 tabColumns.Visibility = Visibility.Visible;
                 tabRelationships.Visibility = Visibility.Visible;
 
-                var columns = bizColumn.GetAllColumns(entity.ID, true);
+                var columns = bizColumn.GetAllColumnsDTO(entity.ID, true, true);
                 //بهتره ستونها کامل گرفته نشوند و تک به تک کامل شوند
                 dtgColumns.ItemsSource = columns;
                 SetColumnTabs();
@@ -610,6 +610,7 @@ namespace MyProject_WPF
             var contextMenu = sender as RadContextMenu;
             contextMenu.Items.Clear();
             var source = contextMenu.GetClickedElement<GridViewRow>();
+            //** d87f4811-14dd-49ce-b86f-087423a635d6
             if (contextMenu != null && source != null)
             {
                 //RadMenuSeparatorItem separator = new RadMenuSeparatorItem();
@@ -1154,7 +1155,7 @@ namespace MyProject_WPF
         {
             return Task.Run(() =>
             {
-                var result = bizTableDrivedEntity.GetAllEntities(DatabaseID, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships, null);
+                var result = bizTableDrivedEntity.GetAllEntitiesDTO(DatabaseID, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships, true, null);
                 return result;
             });
         }

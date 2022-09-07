@@ -74,12 +74,12 @@ namespace MyUILibrary.EntitySelectArea
                 editEntityAreaInitializer1.EntityID = entity.ID;
                 editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
                 editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
-                var FirstSideEditEntityAreaResult = EditEntityAreaConstructor.GetEditEntityArea(editEntityAreaInitializer1);
+                var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
                 if (FirstSideEditEntityAreaResult.Item1 != null && FirstSideEditEntityAreaResult.Item1 is I_EditEntityAreaOneData)
                 {
                     SelectDataArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
                     SelectDataArea.DataItemSelected += FirstSideEditEntityArea_DataItemSelected;
-                    SelectDataArea.SetAreaInitializer(editEntityAreaInitializer1);
+                  //  SelectDataArea.SetAreaInitializer(editEntityAreaInitializer1);
                     View.AddDataSelector(SelectDataArea.TemporaryDisplayView, "داده");
                 }
 

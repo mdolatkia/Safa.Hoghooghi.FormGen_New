@@ -327,6 +327,7 @@ namespace MyDataSearchManagerBusiness
             var innerjoin = "";
             var searchTableName = GetSearchTableAlias(entity, 0);
             var searchTableNameWithSchema = (string.IsNullOrEmpty(entity.RelatedSchema) ? "" : entity.RelatedSchema + ".") + searchTableName;
+            //** 72ca04ba-004f-45aa-afb4-49a7ec0e684b
             if (!entity.IsView)
             {
                 var onClause = "";

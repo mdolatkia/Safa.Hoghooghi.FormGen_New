@@ -83,7 +83,6 @@
     <Compile Include="LogManagerService.cs" />
     <Compile Include="NavigationTreeManagerService.cs" />
     <Compile Include="EntityStateManagerService.cs" />
-    <Compile Include="EntityUICompositionService.cs" />
     <Compile Include="DataLinkManagerService.cs" />
     <Compile Include="DataSearchManagerService.cs" />
     <Compile Include="BasicUISettingService.cs" />

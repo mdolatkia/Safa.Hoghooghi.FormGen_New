@@ -262,11 +262,11 @@ namespace MyModelGenerator
                             if (IsComputed != null && Convert.ToBoolean(IsComputed))
                             {
                                 if ((columnRow["Formula"]) != null)
-                                    column.DBFormula = columnRow["Formula"].ToString();
+                                    column.DBCalculateFormula = columnRow["Formula"].ToString();
                             }
                             else
                             {
-                                column.DBFormula = "";
+                                column.DBCalculateFormula = "";
                                 //column.IsDBCalculatedColumn = false;
                                 //if (column.DBCalculatedColumn != null)
                                 //    projectContext.DBCalculatedColumn.Remove(column.DBCalculatedColumn);
@@ -395,7 +395,7 @@ namespace MyModelGenerator
 
                 //نام رابطه و جداول مرتبط
                 string groupStr = @"SELECT
-                                             fk.name 'Constraint_Name',tp.name 'FK_Table',  tr.name 'PK_Table',count(*) as count
+                                             fk.name 'Constraint_Name',tp.name 'FK_Table',  tr.name 'PK_Table',DELETE_RULE,UPDATE_RULE,count(*) as count
                                         FROM 
                                             sys.foreign_keys fk
                                         INNER JOIN 
@@ -408,7 +408,8 @@ namespace MyModelGenerator
                                             sys.columns cp ON fkc.parent_column_id = cp.column_id AND fkc.parent_object_id = cp.object_id
                                         INNER JOIN 
                                             sys.columns cr ON fkc.referenced_column_id = cr.column_id AND fkc.referenced_object_id = cr.object_id
-        			group by  fk.name,tp.name,tr.name";
+                                        Inner join INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc on fk.name=rc.CONSTRAINT_NAME
+        			group by  fk.name,tp.name,tr.name,rc.DELETE_RULE,rc.UPDATE_RULE";
 
 
                 //گرفتن تعداد
@@ -510,6 +511,11 @@ namespace MyModelGenerator
 
                             relation.Entity2 = reader["FK_Table"].ToString();
 
+
+                            var deleteRule = reader["DELETE_RULE"].ToString();
+                            relation.DBDeleteRule = GetDeletetUpdateRule(deleteRule);
+                            var updateRule = reader["UPDATE_RULE"].ToString();
+                            relation.DBUpdateRule = GetDeletetUpdateRule(updateRule);
                             ////var entity1 = projectContext.TableDrivedEntity.FirstOrDefault(x => x.DeteminerColumnID == null && x.Table.Name == PKTable && x.Table.DBSchema.DatabaseInformationID == Database.ID);
                             ////if (entity1 == null)
                             ////    throw (new Exception("There is no entity defined for table " + PKTable));
@@ -652,6 +658,23 @@ namespace MyModelGenerator
             //    throw ex;
             //}
 
+        }
+
+        private RelationshipDeleteUpdateRule GetDeletetUpdateRule(string deleteRule)
+        {
+            if (deleteRule != null)
+            {
+                if (deleteRule.ToLower() == "NO ACTION".ToLower())
+                    return RelationshipDeleteUpdateRule.NoAction;
+                else if (deleteRule.ToLower() == "Cascade".ToLower())
+                    return RelationshipDeleteUpdateRule.Cascade;
+                else if (deleteRule.ToLower() == "Set Null".ToLower())
+                    return RelationshipDeleteUpdateRule.SetNull;
+                else if (deleteRule.ToLower() == "Set Default".ToLower())
+                    return RelationshipDeleteUpdateRule.SetDefault;
+            }
+
+            return RelationshipDeleteUpdateRule.NoAction;
         }
 
         private bool FKSidePKColumnsAreFkColumns(RelationshipDTO relation, EnumerableRowCollection<DataRow> keyColumnsEnumerator)
@@ -890,6 +913,7 @@ namespace MyModelGenerator
                             var table = new TableDrivedEntityDTO();
                             table.DatabaseID = Database.ID;
                             table.Name = reader["Name"].ToString();
+                            table.IsView = true;
                             table.TableName = reader["Name"].ToString();
                             try
                             {

@@ -158,7 +158,7 @@ namespace MyProject_WPF
             //**4efc8298-8f06-410b-bd2f-1489ef28f581
             BizDatabase bizDatabase = new BizDatabase();
             BizColumn bizColumn = new BizColumn();
-            var column = bizColumn.GetColumn(ColumnID, true);
+            var column = bizColumn.GetColumnDTO(ColumnID, true);
             var database = bizDatabase.GetDatabaseByTableID(column.TableID);
             var dbHelper = MyModelGenerator.ModelGenerator.GetDatabaseImportHelper(database);
             var result = dbHelper.GetColumnValueRange(ColumnID);

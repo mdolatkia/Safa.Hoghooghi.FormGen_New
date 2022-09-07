@@ -81,7 +81,7 @@ namespace MyProject_WPF
             {
                 FormIsBusy(this, null);
                 var result = await GetViewsInfo();
-                result.ForEach(x => x.Entity.IsView = true);
+              //  result.ForEach(x => x.Entity.IsView = true);
                 listNew = new List<TableImportItem>();
                 listEdited = new List<TableImportItem>();
                 listDeleted = new List<TableImportItem>();
@@ -245,7 +245,7 @@ namespace MyProject_WPF
                 //    result += (result == "" ? "" : Environment.NewLine) + "موقعیت ستون" + " " + column.Name + " " + "تغییر کرده است";
                 if (column.IsDBCalculatedColumn != dbColumn.IsDBCalculatedColumn)
                     result += (result == "" ? "" : Environment.NewLine) + "محاسباتی بودن ستون" + " " + column.Name + " " + "تغییر کرده است";
-                if (column.DBFormula != dbColumn.DBFormula)
+                if (column.DBCalculateFormula != dbColumn.DBCalculateFormula)
                     result += (result == "" ? "" : Environment.NewLine) + "فرمول محاسباتی ستون" + " " + column.Name + " " + "تغییر کرده است";
                 if (column.IsNull != dbColumn.IsNull)
                     result += (result == "" ? "" : Environment.NewLine) + "Null" + " " + "پذیر بودن ستون" + " " + column.Name + " " + "تغییر کرده است";

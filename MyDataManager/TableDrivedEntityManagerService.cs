@@ -14,7 +14,7 @@ namespace MyDataManagerService
     public class TableDrivedEntityManagerService
     {
         //SecurityHelper securityHelper = new SecurityHelper();
-      //  BizPackageManager bizPackageManager { set; get; }
+        //  BizPackageManager bizPackageManager { set; get; }
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         public TableDrivedEntityManagerService()
         {
@@ -27,26 +27,26 @@ namespace MyDataManagerService
         //{
         //    return bizPackageManager.GetEntityActionActivities(request);
         //}
-    
+
         public TableDrivedEntityDTO GetSimpleEntity(DR_Requester requester, int entityID, List<SecurityAction> specificActions = null)
         {
-            return bizTableDrivedEntity.GetSimpleEntity(requester,entityID, specificActions);
+            return bizTableDrivedEntity.GetSimpleEntity(requester, entityID, specificActions);
         }
 
-        public TableDrivedEntityDTO GetEntityWithSimpleColumns(DR_Requester requester, int entityID, List<SecurityAction> specificActions = null)
-        {
-            return bizTableDrivedEntity.GetTableDrivedEntity(requester,entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships, specificActions);
-        }
+        //public TableDrivedEntityDTO GetEntityWithSimpleColumns(DR_Requester requester, int entityID, List<SecurityAction> specificActions = null)
+        //{
+        //    return bizTableDrivedEntity.GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships, specificActions);
+        //}
 
         public TableDrivedEntityDTO GetFullEntity(DR_Requester requester, int entityID, List<SecurityAction> specificActions = null)
         {
-         return bizTableDrivedEntity.GetTableDrivedEntity(requester,entityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships, specificActions);
+            return bizTableDrivedEntity.GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships, specificActions);
         }
 
-        public object GetSimpleEntity(DR_Requester dR_Requester, int v, object specificActions)
-        {
-            throw new NotImplementedException();
-        }
+        //public object GetSimpleEntity(DR_Requester dR_Requester, int v, object specificActions)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         //public TableDrivedEntityDTO GetEntity(int entityID, EntityColumnInfoType entityColumnInfoType, EntityRelationshipInfoType entityRelationshipInfoType)
         //{
@@ -55,7 +55,7 @@ namespace MyDataManagerService
 
         public List<TableDrivedEntityDTO> SearchEntities(DR_Requester requester, string singleFilterValue, bool? isView, List<SecurityAction> specificActions = null)
         {
-            return bizTableDrivedEntity.GetAllEntities(requester,singleFilterValue, isView, specificActions);
+            return bizTableDrivedEntity.GetAllEntitiesDTO(requester, singleFilterValue, false, isView, specificActions);
         }
 
         //public DP_EntitySearchResult GetEntitySearch(DP_EntitySearchRequest request)
@@ -78,7 +78,7 @@ namespace MyDataManagerService
         public bool IndependentDataEntry(int entityID)
         {
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-            return bizTableDrivedEntity.IndependentDataEntry(entityID) ;
+            return bizTableDrivedEntity.IndependentDataEntry(entityID);
         }
 
         public RelationshipDTO GetRelationship(int relationshipID)
@@ -95,7 +95,7 @@ namespace MyDataManagerService
 
         public DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, DataEntryRelationshipDTO parentRelationship = null)
         {
-            return bizTableDrivedEntity.GetDataEntryEntity(requester,entityID, parentRelationship);
+            return bizTableDrivedEntity.GetDataEntryEntity(requester, entityID, parentRelationship);
         }
         public TableDrivedEntityDTO GetPermissionedEntity(DR_Requester requester, int entityID)
         {

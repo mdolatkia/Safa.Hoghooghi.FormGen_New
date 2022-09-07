@@ -119,7 +119,7 @@ namespace MyUILibrary.EntityArea
         //event EventHandler<Arg_CommandExecuted> CommandExecuted;
         //void AddCommands(List<I_Command> Commands, TemplateEntityUISettings templateEntityUISettings);
         //  UIControlPackageTree UIControlPackageTreeItem { get; set; }
-        UIControlPackageTree UIControlPackageTreeItem { get; set; }
+        UIControlComposition UIControlPackageTreeItem { get; set; }
 
 
     }

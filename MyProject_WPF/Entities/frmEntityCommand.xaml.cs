@@ -140,7 +140,7 @@ namespace MyProject_WPF
                 }
                 else
                 {
-                    e.ResultItemsSource = bizTableDrivedEntity.GetAllEntities(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false);
+                    e.ResultItemsSource = bizTableDrivedEntity.GetAllEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false, false);
                 }
             }
             //else if (e.Filters.Count > 0)

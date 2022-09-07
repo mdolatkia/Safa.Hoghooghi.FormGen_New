@@ -48,18 +48,24 @@
                         <telerik:GridViewDataColumn Header="عنوان" DataMemberBinding="{Binding Relationship.Alias}"></telerik:GridViewDataColumn>
                         <telerik:GridViewComboBoxColumn Header="نوع رابطه" x:Name="colRelationshipType" DataMemberBinding="{Binding Relationship.OrginalTypeEnum}"></telerik:GridViewComboBoxColumn>
                         <telerik:GridViewDataColumn Header="گروه رابطه" DataMemberBinding="{Binding Relationship.OrginalRelationshipGroup}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="قانون حذف"  DataMemberBinding="{Binding Relationship.DeleteRule}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="قانون بروزرسانی"  DataMemberBinding="{Binding Relationship.UpdateRule}"></telerik:GridViewDataColumn>
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>
-            <!--<TabItem x:Name="tabEditRelationships" Header="روابط اصلاح شده">
-                    <telerik:RadGridView x:Name="dtgEditRelationships"  AutoGenerateColumns="False">
-                        <telerik:RadGridView.Columns>
-                            <telerik:GridViewCheckBoxColumn AutoSelectOnEdit="True"  EditTriggers="CellClick"  Header="انتخاب" DataMemberBinding="{Binding Selected}"></telerik:GridViewDataColumn>
-                            <telerik:GridViewDataColumn Header="نام" DataMemberBinding="{Binding Entity.Name}"></telerik:GridViewDataColumn>
-                            <telerik:GridViewDataColumn Header="شمای مرتبط" DataMemberBinding="{Binding Entity.RelatedSchema}"></telerik:GridViewDataColumn>
-                        </telerik:RadGridView.Columns>
-                    </telerik:RadGridView>
-                </TabItem>-->
+            <TabItem x:Name="tabEditRelationships" Header="روابط اصلاح شده">
+                <telerik:RadGridView IsReadOnly="True" x:Name="dtgEditedRelationships"  AutoGenerateColumns="False">
+                    <telerik:RadGridView.Columns>
+                        <telerik:GridViewDataColumn Header="نام" DataMemberBinding="{Binding Relationship.Name}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn IsReadOnly="True" Header="عنوان" DataMemberBinding="{Binding Relationship.Alias}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="جدول کلید اصلی" DataMemberBinding="{Binding Relationship.Entity1}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="جدول کلید فرعی" DataMemberBinding="{Binding Relationship.Entity2}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="نوع رابطه" x:Name="colRelationshipTypeEdited" DataMemberBinding="{Binding Relationship.TypeEnum}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="قانون حذف" DataMemberBinding="{Binding Relationship.DeleteRule}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="قانون بروزرسانی" DataMemberBinding="{Binding Relationship.UpdateRule}"></telerik:GridViewDataColumn>
+                    </telerik:RadGridView.Columns>
+                </telerik:RadGridView>
+            </TabItem>
             <TabItem x:Name="tabDeletedRelationships" Header="روابط حذف شده">
                 <telerik:RadGridView x:Name="dtgDeletedRelationships" AutoGenerateColumns="False" >
                     <telerik:RadGridView.Columns>
@@ -79,19 +85,21 @@
                         <telerik:GridViewDataColumn Header="جدول کلید اصلی" DataMemberBinding="{Binding Relationship.Entity1}"></telerik:GridViewDataColumn>
                         <telerik:GridViewDataColumn Header="جدول کلید فرعی" DataMemberBinding="{Binding Relationship.Entity2}"></telerik:GridViewDataColumn>
                         <telerik:GridViewDataColumn Header="خطای مرتبط" DataMemberBinding="{Binding Tooltip}"></telerik:GridViewDataColumn>
-                        <telerik:GridViewDataColumn Header="نوع رابطه" x:Name="colRelationshipType1" DataMemberBinding="{Binding Relationship.TypeEnum}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="نوع رابطه" x:Name="colRelationshipTypeException" DataMemberBinding="{Binding Relationship.TypeEnum}"></telerik:GridViewDataColumn>
 
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </TabItem>
-            <TabItem x:Name="tabExistingRelationships" Header="روابط بدون تغییر">
+            <TabItem x:Name="tabExistingRelationships" Header="روابط موجود">
                 <telerik:RadGridView IsReadOnly="True" x:Name="dtgExistingRelationships"  AutoGenerateColumns="False">
                     <telerik:RadGridView.Columns>
                         <telerik:GridViewDataColumn Header="نام" DataMemberBinding="{Binding Relationship.Name}"></telerik:GridViewDataColumn>
                         <telerik:GridViewDataColumn IsReadOnly="True" Header="عنوان" DataMemberBinding="{Binding Relationship.Alias}"></telerik:GridViewDataColumn>
                         <telerik:GridViewDataColumn Header="جدول کلید اصلی" DataMemberBinding="{Binding Relationship.Entity1}"></telerik:GridViewDataColumn>
                         <telerik:GridViewDataColumn Header="جدول کلید فرعی" DataMemberBinding="{Binding Relationship.Entity2}"></telerik:GridViewDataColumn>
-                        <telerik:GridViewDataColumn Header="نوع رابطه" x:Name="colRelationshipType2" DataMemberBinding="{Binding Relationship.TypeEnum}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="نوع رابطه" x:Name="colRelationshipTypeExisting" DataMemberBinding="{Binding Relationship.TypeEnum}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="قانون حذف"  DataMemberBinding="{Binding Relationship.DeleteRule}"></telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="قانون بروزرسانی"  DataMemberBinding="{Binding Relationship.UpdateRule}"></telerik:GridViewDataColumn>
 
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>

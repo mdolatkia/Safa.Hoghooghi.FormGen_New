@@ -303,7 +303,7 @@ namespace MyProject_WPF
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DataEntryEnabled", "قابلیت ورود اطلاعات", false, null, GridViewColumnType.CheckBox));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("IsReadonly", "فقط خواندنی", false, null, GridViewColumnType.CheckBox));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Enabled", "فعال", false, null, GridViewColumnType.CheckBox));
-              
+
                 dataGrid.CanUserDeleteRows = false;
             }
             else if (dataGrid == dtgSubToSuper)
@@ -339,7 +339,7 @@ namespace MyProject_WPF
             {
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("ID", "شناسه", true, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Name", "نام", false, null, GridViewColumnType.Text));
-                              dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Alias", "عنوان", false, null, GridViewColumnType.Text));
+                dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Alias", "عنوان", false, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Entity1", "موجودیت طرف اول", true, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("Entity2", "موجودیت طرف دوم", true, null, GridViewColumnType.Text));
                 dataGrid.Columns.Add(ControlHelper.GenerateGridviewColumn("DeterminerColumnID", "ستون تعیین کننده", false, null, GridViewColumnType.ComboBox));
@@ -397,6 +397,7 @@ namespace MyProject_WPF
                 //    relationshipTypeMenu.Click += (sender1, EventArgs) => MnuRelationshipType_Click(sender, EventArgs, (source.DataContext as RelationshipDTO).ID);
                 //}
 
+                //** eb4cff7d-b2a8-416a-bc92-04618a5382fe
                 if (relationship.Created == true)
                 {
                     var relationshipEditMenu = AddMenu(contextMenu.Items, "اصلاح رابطه", "", "../Images/edit.png");
@@ -538,6 +539,8 @@ namespace MyProject_WPF
 
         private void AddConvertRelationshipContextMenu(RadContextMenu contextMenu, RelationshipDTO relationship)
         {
+            //** dba40053-a505-4812-b93f-7f5e35e21ddc
+
             if (relationship == null)
                 return;
             //RadMenuSeparatorItem separator = new RadMenuSeparatorItem();
@@ -829,7 +832,7 @@ namespace MyProject_WPF
                     BizColumn bizColumn = new BizColumn();
                     if (iSARelationship.SuperEntityID != 0)
                     {
-                        var clomuns = bizColumn.GetAllColumns(iSARelationship.SuperEntityID, true);
+                        var clomuns = bizColumn.GetAllColumnsDTO(iSARelationship.SuperEntityID, true, false);
                         ControlHelper.AddComboColumnItemsSource(dtgSuperToSub, "DeterminerColumnID", clomuns as IEnumerable, "Alias", "ID");
                     }
                     dtgSuperToSub.ItemsSource = biz.GetSuperToSubRelationship(iSARelationship.ID);
@@ -882,7 +885,7 @@ namespace MyProject_WPF
                     BizColumn bizColumn = new BizColumn();
                     if (UnionRelationship.SuperEntityID != 0)
                     {
-                        var clomuns = bizColumn.GetAllColumns(UnionRelationship.SuperEntityID, true);
+                        var clomuns = bizColumn.GetAllColumnsDTO(UnionRelationship.SuperEntityID, true,false);
                         ControlHelper.AddComboColumnItemsSource(dtgUnionToSubUnion, "DeterminerColumnID", clomuns as IEnumerable, "Alias", "ID");
                     }
                     dtgUnionToSubUnion.ItemsSource = biz.GetSuperUnionToSubUnionRelationship(UnionRelationship.ID);

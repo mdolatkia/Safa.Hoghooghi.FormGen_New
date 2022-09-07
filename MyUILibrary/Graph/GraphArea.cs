@@ -190,11 +190,11 @@ namespace MyUILibrary.GraphArea
                 editEntityAreaInitializer1.EntityID = SelectedGraph.TableDrivedEntityID;
                 editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
                 editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
-                var FirstSideEditEntityAreaResult = EditEntityAreaConstructor.GetEditEntityArea(editEntityAreaInitializer1);
+                var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
                 if (FirstSideEditEntityAreaResult.Item1 != null)
                 {
                     FirstSideEditEntityArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                    FirstSideEditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
+                 //   FirstSideEditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
                     View.SetFirstSideEntityView(FirstSideEditEntityArea.TemporaryDisplayView, FirstSideEditEntityArea.SimpleEntity.Alias);
                     FirstSideEditEntityArea.DataItemSelected += FirstSideEditEntityArea_DataItemSelected;
                 }

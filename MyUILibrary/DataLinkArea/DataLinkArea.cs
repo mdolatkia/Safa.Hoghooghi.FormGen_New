@@ -191,11 +191,11 @@ namespace MyUILibrary.DataLinkArea
                 editEntityAreaInitializer1.EntityID = SelectedDataLink.TableDrivedEntityID;
                 editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
                 editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
-                var FirstSideEditEntityAreaResult = EditEntityAreaConstructor.GetEditEntityArea(editEntityAreaInitializer1);
+                var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
                 if (FirstSideEditEntityAreaResult.Item1 != null)
                 {
                     FirstSideEditEntityArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                    FirstSideEditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
+                //    FirstSideEditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
                     View.SetFirstSideEntityView(FirstSideEditEntityArea.TemporaryDisplayView, FirstSideEditEntityArea.SimpleEntity.Alias);
                 }
                 else
@@ -209,11 +209,11 @@ namespace MyUILibrary.DataLinkArea
                 editEntityAreaInitializer2.EntityID = SelectedDataLink.SecondSideEntityID;
                 editEntityAreaInitializer2.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
                 editEntityAreaInitializer2.DataMode = CommonDefinitions.UISettings.DataMode.One;
-                var SecondSideEditEntityAreaResult = EditEntityAreaConstructor.GetEditEntityArea(editEntityAreaInitializer2);
+                var SecondSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer2);
                 if (SecondSideEditEntityAreaResult.Item1 != null)
                 {
                     SecondSideEditEntityArea = SecondSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                    SecondSideEditEntityArea.SetAreaInitializer(editEntityAreaInitializer2);
+          //          SecondSideEditEntityArea.SetAreaInitializer(editEntityAreaInitializer2);
                     View.SetSecondSideEntityView(SecondSideEditEntityArea.TemporaryDisplayView, SecondSideEditEntityArea.SimpleEntity.Alias);
                 }
                 else

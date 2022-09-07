@@ -132,7 +132,8 @@ namespace MyModelManager
 
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
+
+                var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == entityID);
                 while (entity.EntityArchiveRelationshipTails.Any(x => x.TableDrivedEntityID == entityID))
                     projectContext.EntityArchiveRelationshipTails.Remove(entity.EntityArchiveRelationshipTails.First(x => x.TableDrivedEntityID == entityID));
                 foreach (var item in list)

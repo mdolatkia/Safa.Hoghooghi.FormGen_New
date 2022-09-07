@@ -12,6 +12,7 @@ namespace MyModelManager
 {
     public class BizRelationshipFilter
     {
+        BizRelationship bizRelationship = new BizRelationship();
         public List<RelationshipFilterDTO> GetRelationshipFilters(DR_Requester requester, int relationshipID)
         {
             List<RelationshipFilterDTO> result = new List<RelationshipFilterDTO>();
@@ -66,7 +67,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var relationship = projectContext.Relationship.FirstOrDefault(x => x.ID == relationshipID);
+                var relationship = bizRelationship.GetAllRelationships(projectContext, false, false).FirstOrDefault(x => x.ID == relationshipID);
                 while (relationship.RelationshipSearchFilter.Any())
                     projectContext.RelationshipSearchFilter.Remove(relationship.RelationshipSearchFilter.First());
                 foreach (var item in RelationshipSearchFilter)

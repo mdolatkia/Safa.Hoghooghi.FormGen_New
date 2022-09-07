@@ -166,7 +166,7 @@ namespace MyModelManager
             {
                 BizColumn bizColumn = new BizColumn();
                 result.SuperEntityDeterminerColumnID = item.SuperEntityDeterminerColumnID.Value;
-                result.SuperEntityDeterminerColumn = bizColumn.GetColumn(result.SuperEntityDeterminerColumnID, true);
+                result.SuperEntityDeterminerColumn = bizColumn.GetColumnDTO(result.SuperEntityDeterminerColumnID, true);
             }
 
             return result;
@@ -208,7 +208,7 @@ namespace MyModelManager
             {
                 BizColumn bizColumn = new BizColumn();
                 result.SuperEntityDeterminerColumnID = item.RelationshipType.Relationship.Relationship2.RelationshipType.SuperToSubRelationshipType.SuperEntityDeterminerColumnID.Value;
-                result.SuperEntityDeterminerColumn = bizColumn.GetColumn(result.SuperEntityDeterminerColumnID, true);
+                result.SuperEntityDeterminerColumn = bizColumn.GetColumnDTO(result.SuperEntityDeterminerColumnID, true);
             }
             return result;
         }

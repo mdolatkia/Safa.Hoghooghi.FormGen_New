@@ -1,5 +1,4 @@
 ﻿using ModelEntites;
-using MyDatabaseToObject;
 using MyModelManager;
 using System;
 using System.Collections.Generic;
@@ -31,6 +30,8 @@ namespace MyProject_WPF
         DatabaseDTO Database { set; get; }
         //List<int> DatabaseIDs { set; get; }
         //     bool IgnoreAlreadyInNavigationTree { set; get; }
+
+        // ** 11d98350-9239-4fbd-9ab3-16800307f2f0
         public frmNavigationTree()
         {
             InitializeComponent();
@@ -67,7 +68,7 @@ namespace MyProject_WPF
         private void FrmNavigationTree_Loaded(object sender, RoutedEventArgs e)
         {
             if (Database != null)
-                SetImportedInfo();
+                SetDatabaeObjects();
             SetNavigationTree();
         }
 
@@ -99,7 +100,7 @@ namespace MyProject_WPF
             }
             parentNode.ExpandAll();
         }
-        private async void SetImportedInfo()
+        private async void SetDatabaeObjects()
         {
             try
             {
@@ -238,7 +239,7 @@ namespace MyProject_WPF
         {
             return Task.Run(() =>
                 {
-                    return bizNavigationTree.GetFullNavigatoinTree(MyProjectManager.GetMyProjectManager.GetRequester());
+                    return bizNavigationTree.GetNavigationTree(MyProjectManager.GetMyProjectManager.GetRequester());
                 });
         }
 
@@ -572,7 +573,7 @@ namespace MyProject_WPF
 
         private void btnExtract_Click(object sender, RoutedEventArgs e)
         {
-            SetImportedInfo();
+            SetDatabaeObjects();
         }
 
 
@@ -604,7 +605,7 @@ namespace MyProject_WPF
                 if (updated)
                 {
                     if (bizDatabaseToObject.IgnoreNotIndependentOrAlreadyInNavigationTree)
-                        SetImportedInfo();
+                        SetDatabaeObjects();
                     //SetNavigationTree();
                 }
             }

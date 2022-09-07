@@ -56,7 +56,7 @@ namespace MyModelManager
                         else
                         {
                             //ادغام نوع سازمان و نوع نقش
-                            var aa =7;
+                            var aa = 7;
                             var organizationTypeActions = GetPersmissionByPost(context, post.OrganizationType_RoleType.OrganizationType.SecuritySubject, securityObject, 0, goUpward);
                             var finalOrganizationTypeActions = GetPossibleActions(organizationTypeActions, GetActionsByCategory(objectCategory));
                             postAccess = Combination(new List<List<SecurityAction>>() { finalRoleTypeActions, finalOrganizationTypeActions }, possibleActionTree);
@@ -677,12 +677,8 @@ namespace MyModelManager
                 result = securityObject.DatabaseInformation.DBSchema.Select(x => x.SecurityObject).ToList();
             else if (type == DatabaseObjectCategory.Entity)
             {//گزارش و ستون چی؟
-
-                if (securityObject.TableDrivedEntity.TableDrivedEntity_Columns.Any())
-                    result = securityObject.TableDrivedEntity.TableDrivedEntity_Columns.Select(x => x.Column.SecurityObject).ToList();
-                else
-                    result = securityObject.TableDrivedEntity.Table.Column.Select(x => x.SecurityObject).ToList();
-
+                BizColumn bizColumn = new BizColumn();
+                result = bizColumn.GetAllColumns(securityObject.TableDrivedEntity, false).Select(x => x.SecurityObject).ToList();
                 result.AddRange(securityObject.TableDrivedEntity.Relationship.Select(x => x.SecurityObject).ToList());
             }
             return result;

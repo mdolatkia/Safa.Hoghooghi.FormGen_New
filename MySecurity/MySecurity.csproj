@@ -106,10 +106,6 @@
       <Project>{d1c98a55-d403-45bb-b06f-63482de541f3}</Project>
       <Name>MyCacheManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MyDatabaseToObject\MyDatabaseToObject.csproj">
-      <Project>{BB4870CD-5A28-474C-A513-491AF655988F}</Project>
-      <Name>MyDatabaseToObject</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ProxyLibrary\ProxyLibrary.csproj">
       <Project>{2ad586dd-c9be-42d3-8ef7-e9657f992503}</Project>
       <Name>ProxyLibrary</Name>

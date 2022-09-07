@@ -53,9 +53,15 @@ namespace ModelEntites
         //public int SecurityObjectID { set; get; }
         public bool DataEntryEnabled { get; set; }
         public string DefaultValue { get; set; }
+        public bool IsSimpleColumn
+        {
+            //** edeace71-ffce-4695-8fa8-993db3be8ad4
+            get { return DataEntryEnabled && IsDBCalculatedColumn == false && IsIdentity == false && PrimaryKey == false && ForeignKey == false; }
+        }
         public bool IsMandatory { get; set; }
         public int Position { get; set; }
         public bool IsDisabled { get; set; }
+        //  public bool Removed { get; set; }
         //public bool ViewEnabled { get; set; }
         public bool IsReadonly { get; set; }
         public Enum_ColumnType ColumnType { set; get; }
@@ -63,7 +69,7 @@ namespace ModelEntites
 
         public Type DotNetType { set; get; }
         public bool IsNotTransferable { get; set; }
-        public bool ShowNullValue { get; set; }
+        //  public bool ShowNullValue { get; set; }
 
         public bool IsIdentity { get; set; }
         //   public bool IsStringOriginally { get; set; }
@@ -76,18 +82,20 @@ namespace ModelEntites
         public int ColumnValueRangeID { set; get; }
         public ColumnValueRangeDTO ColumnValueRange { set; get; }
 
-        public string DBFormula { get; set; }
+        public string DBCalculateFormula { get; set; }
         public bool IsDBCalculatedColumn
         {
             get
             {
-                return !string.IsNullOrEmpty(DBFormula);
+                return !string.IsNullOrEmpty(DBCalculateFormula);
             }
         }
 
         public string CustomFormulaName { set; get; }
         public ColumnCustomFormulaDTO ColumnCustomFormula { set; get; }
         public bool ColumnsAdded { get; set; }
+
+        public ColumnUISettingDTO ColumnUISetting { get; set; }
         //   public bool IsDescriptive { get; set; }
     }
     public class ColumnCustomFormulaDTO
@@ -163,7 +171,7 @@ namespace ModelEntites
         AMPMMiladi,
         AMPMShamsi
     }
-        public enum GeorgianDateFormat
+    public enum GeorgianDateFormat
     {
         YYYYMMDD,
         DDMMYYYY,
@@ -280,15 +288,15 @@ namespace ModelEntites
         public bool? Readonly { set; get; }
         public bool EvenInTempView { get; set; }
         public bool Permanent { get; set; }
-      //  public List<ActionActivitySource> AllowedSteps { get; set; }
-     //   public bool OnLoadOnly { get; set; }
+        //  public List<ActionActivitySource> AllowedSteps { get; set; }
+        //   public bool OnLoadOnly { get; set; }
         //    public int UICompositionID { set; get; }
 
 
     }
     public enum ActionActivitySource
     {
-     //   OnFirstShowData,
+        //   OnFirstShowData,
         OnShowData,
         TailOrPropertyChange,
         BeforeUpdate
@@ -447,7 +455,7 @@ namespace ModelEntites
         public string DatabaseName2 { set; get; }
         public string ServerName1 { set; get; }
         public string ServerName2 { set; get; }
-        public bool Removed { get; set; }
+        //   public bool Removed { get; set; }
 
         public bool IsReadonly { get; set; }
         public bool IsDisabled { get; set; }
@@ -487,7 +495,9 @@ namespace ModelEntites
         //  public string LinkedServer2 { get; set; }
 
         public bool SearchInitially { set; get; }
-        public RelationshipDeleteOption DeleteOption { get; set; }
+        //    public RelationshipDeleteOption DeleteOption { get; set; }
+        public RelationshipDeleteUpdateRule DBDeleteRule { set; get; }
+        public RelationshipDeleteUpdateRule DBUpdateRule { set; get; }
 
         public RelationInfo RelationInfo { set; get; }
         public bool FKSidePKColumnsAreFkColumns { get; set; }
@@ -504,6 +514,7 @@ namespace ModelEntites
         public bool IsNotSkippable { get; set; }
         public bool Entity1IsIndependent { get; set; }
         public bool Entity2IsIndependent { get; set; }
+        public RelationshipUISettingDTO RelationshipUISetting { get; set; }
     }
     public enum CreateRelationshipType
     {
@@ -515,6 +526,13 @@ namespace ModelEntites
         //None,
         SetNull,
         DeleteCascade
+    }
+    public enum RelationshipDeleteUpdateRule
+    {
+        NoAction,
+        Cascade,
+        SetNull,
+        SetDefault
     }
     public class RelationshipColumnDTO
     {
@@ -668,6 +686,10 @@ namespace ModelEntites
     }
     public class NavigationItemDTO
     {
+        public NavigationItemDTO()
+        {
+
+        }
         public int ID { set; get; }
 
         public int? ParentID { set; get; }
@@ -676,7 +698,7 @@ namespace ModelEntites
         public int ObjectIdentity { set; get; }
         public DatabaseObjectCategory ObjectCategory { set; get; }
         public int TableDrivedEntityID { set; get; }
-        public bool? Permitted { set; get; }
+        //   public bool? Permitted { set; get; }
         public string Tooltip { get; set; }
         public string Name { get; set; }
         //public List<string> AllowedActions { set; get; }
@@ -689,23 +711,20 @@ namespace ModelEntites
         object Node { set; get; }
         event EventHandler Clicked;
     }
-    public class EntityUICompositionCompositeDTO
-    {
-        public EntityUICompositionDTO RootItem { set; get; }
-        public List<ColumnUISettingDTO> ColumnItems { set; get; }
-        public List<RelationshipUISettingDTO> RelationshipItems { set; get; }
-    }
+    //public class EntityUICompositionCompositeDTO
+    //{
+    //    public EntityUICompositionDTO RootItem { set; get; }
+
+    //}
     public class EntityUICompositionDTO
     {
         public List<ColumnUISettingDTO> RootColumnItems { set; get; }
         public List<RelationshipUISettingDTO> RootRelationshipItems { set; get; }
-
         public EntityUICompositionDTO()
         {
             ChildItems = new List<EntityUICompositionDTO>();
         }
         public int ID { set; get; }
-
         public int? ParentID { set; get; }
         public EntityUICompositionDTO ParentItem { set; get; }
         public string Title { set; get; }
@@ -713,11 +732,9 @@ namespace ModelEntites
         public DatabaseObjectCategory ObjectCategory { set; get; }
         public List<EntityUICompositionDTO> ChildItems { set; get; }
         public int Position { set; get; }
-
         public EntityUISettingDTO EntityUISetting { set; get; }
         public ColumnUISettingDTO ColumnUISetting { set; get; }
         public RelationshipUISettingDTO RelationshipUISetting { set; get; }
-
         public EmptySpaceUISettingDTO EmptySpaceUISetting { set; get; }
         public GroupUISettingDTO GroupUISetting { set; get; }
         public TabGroupUISettingDTO TabGroupUISetting { set; get; }
@@ -953,11 +970,11 @@ namespace ModelEntites
         public bool? IndependentDataEntry { set; get; }
         //public string Criteria { get; set; }
         public List<ColumnDTO> Columns { set; get; }
-        public string SuperTypeEntities { set; get; }
-        public string SubTypeEntities { set; get; }
+        //    public string SuperTypeEntities { set; get; }
+        //   public string SubTypeEntities { set; get; }
         //public List<int> SuperTypeEntityIDs { set; get; }
-        public string UnionTypeEntities { set; get; }
-        public string SubUnionTypeEntities { set; get; }
+        //   public string UnionTypeEntities { set; get; }
+        //    public string SubUnionTypeEntities { set; get; }
         //public List<int> UnionTypeEntityIDs { set; get; }
         public bool BatchDataEntry { set; get; }
 
@@ -974,8 +991,8 @@ namespace ModelEntites
                 return _IsDataReference;
             }
         }
-        public bool DataIsLimited { set; get; }
-        public bool? DataCountIsFew { set; get; }
+        //public bool DataIsLimited { set; get; }
+        //public bool? DataCountIsFew { set; get; }
 
         //bool _DataIsLimited;
         //public bool DataIsLimited
@@ -1035,7 +1052,7 @@ namespace ModelEntites
         //public string DeterminerColumnValue { get; set; }
         //   public List<EntityDeterminerDTO> EntityDeterminers { set; get; }
         public bool Reviewed { get; set; }
-        public bool ColumnsReviewed { get; set; }
+        //    public bool ColumnsReviewed { get; set; }
         public SuperToSubRelationshipDTO InternalSuperToSubRelationship { get; set; }
         public bool HasNotDeleteAccess { get; set; }
         //public bool ColumnsAdded { get; set; }
@@ -1057,6 +1074,8 @@ namespace ModelEntites
         public List<RelationshipDTO> SkippedRelationships { set; get; }
         public string Info { set; get; }
         public bool HasNotDeleteAccess { get; set; }
+        22222
+        public EntityUICompositionDTO UICompositions { set; get; }
     }
     public class DataEntryRelationshipDTO
     {
@@ -1065,6 +1084,11 @@ namespace ModelEntites
         public DataMode DataMode { set; get; }
         public IntracionMode IntracionMode { set; get; }
         public bool TempViewBecauseOfRelationHistory { set; get; }
+    }
+    public enum RelationshipSkipMode
+    {
+        MustSkip,
+        Depends
     }
     public class EntityDeterminerDTO
     {
@@ -1352,6 +1376,7 @@ namespace ModelEntites
         public short WidthUnit { set; get; }
         public string Alias { set; get; }
         public List<ColumnDTO> vwValueColumns { set; get; }
+        public ColumnUISettingDTO ColumnUISetting { set; get; }
         //  public string RelationshipPath { set; get; }
         public string EntityPath { set; get; }
         //public int EntityListViewRelationshipTailsID { set; get; }
@@ -2518,10 +2543,10 @@ namespace ModelEntites
     {
         public UIActionActivityDTO()
         {
-        //    UIColumnValueRange = new List<ModelEntites.UIColumnValueRangeDTO>();
+            //    UIColumnValueRange = new List<ModelEntites.UIColumnValueRangeDTO>();
             UIColumnValue = new List<ModelEntites.UIColumnValueDTO>();
             UIEnablityDetails = new List<ModelEntites.UIEnablityDetailsDTO>();
-         //   UIColumnValueRangeReset = new List<ModelEntites.UIColumnValueRangeResetDTO>();
+            //   UIColumnValueRangeReset = new List<ModelEntites.UIColumnValueRangeResetDTO>();
         }
         public int ID { set; get; }
         public string RelatedStates { set; get; }
@@ -2533,14 +2558,14 @@ namespace ModelEntites
         public int EntityID { set; get; }
         public Enum_ActionActivityType Type { set; get; }
         public UIColumnValueRangeDTO UIColumnValueRange { set; get; }
-      //  public List<UIColumnValueRangeResetDTO> UIColumnValueRangeReset { set; get; }
-    //    public bool OnlyOnLoad { get; set; }
+        //  public List<UIColumnValueRangeResetDTO> UIColumnValueRangeReset { set; get; }
+        //    public bool OnlyOnLoad { get; set; }
     }
     public class UIColumnValueRangeDTO
     {
         public UIColumnValueRangeDTO()
         {
-          //  vwCandidateValues = new List<string>();
+            //  vwCandidateValues = new List<string>();
         }
         public int ID { set; get; }
         public int ColumnID { set; get; }
@@ -2867,8 +2892,8 @@ namespace ModelEntites
 
         public ObservableCollection<UIActionActivityDTO> ActionActivities { set; get; }
         public ObservableCollection<EntityStateConditionDTO> StateConditions { set; get; }
-   //     public bool HasOnLoadOnlyAction { get; set; }
-    //    public bool HasDynamicAction { get; set; }
+        //     public bool HasOnLoadOnlyAction { get; set; }
+        //    public bool HasDynamicAction { get; set; }
     }
     public class EntityStateConditionDTO
     {

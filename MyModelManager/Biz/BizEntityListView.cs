@@ -59,7 +59,7 @@ namespace MyModelManager
             EntityListViewDTO result = null;
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
+                var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == entityID);
                 if (entity.EntityListView1 != null)
                 {
                     if (DataIsAccessable(requester, entity.EntityListView1))
@@ -291,7 +291,7 @@ namespace MyModelManager
         {
             if (list == null)
                 list = new List<EntityListViewColumnsDTO>();
-
+            //** 35838f12-76ec-4a3a-8f4d-e0b50248b309
             if (!entity.IsView)
             {
                 foreach (var column in entity.Columns.Where(x => x.PrimaryKey))
@@ -798,7 +798,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var dbEntity = projectContext.TableDrivedEntity.FirstOrDefault(x => x.ID == entityID);
+                var dbEntity = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.ID == entityID);
                 dbEntity.EntityListViewID = iD;
                 projectContext.SaveChanges();
             }

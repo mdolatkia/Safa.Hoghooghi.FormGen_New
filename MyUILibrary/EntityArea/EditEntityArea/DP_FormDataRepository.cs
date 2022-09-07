@@ -1117,6 +1117,7 @@ namespace MyUILibrary.EntityArea
         //}
         public void SetColumnValue(List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula, bool fromSetFkRelColumns)
         {
+            //** 62c0cf57-c2cf-4092-885c-5d7ba8eeba1a
             if (DataIsInEditMode())
             {
                 if (fromSetFkRelColumns == false)
@@ -1145,32 +1146,29 @@ namespace MyUILibrary.EntityArea
                         var column = GetProperty(columnValue.ColumnID);
                         if (column != null)
                         {
-                            if (!columnValue.EvenHasValue && !AgentHelper.ValueIsEmptyOrDefaultValue(column))
+                            if (!columnValue.EvenHasValue && !column.ValueIsEmptyOrDefaultValue())
                                 continue;
 
                             //اینجا باید بیزینسی ریدونلی شدن داده هم تست شود
-                            if (ChildRelationshipDatas.Any(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID)))
+                            if (ChildRelationshipDatas.Any(x => !x.IsReadonly && !x.IsHidden && x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID)))
                             {
-                                var relationshipColumn = ChildRelationshipDatas.First(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID));
+                                var relationshipColumn = ChildRelationshipDatas.First(x => !x.IsReadonly && !x.IsHidden && x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID));
 
-                                if (!relationshipColumn.Relationship.IsReadonly)
+                                if (relationshipColumn.Relationship.RelationshipColumns.All(x => uIColumnValue.Any(z => z.ColumnID == x.FirstSideColumnID)))
                                 {
-                                    if (relationshipColumn.Relationship.RelationshipColumns.All(x => uIColumnValue.Any(z => z.ColumnID == x.FirstSideColumnID)))
+                                    Dictionary<int, object> listColumns = new Dictionary<int, object>();
+                                    foreach (var relCol in relationshipColumn.Relationship.RelationshipColumns)
                                     {
-                                        Dictionary<int, object> listColumns = new Dictionary<int, object>();
-                                        foreach (var relCol in relationshipColumn.Relationship.RelationshipColumns)
-                                        {
-                                            listColumns.Add(relCol.FirstSideColumnID, uIColumnValue.First(x => x.ColumnID == relCol.FirstSideColumnID).ExactValue);
-                                        }
-                                        relationshipColumnValues.Add(new Tuple<DP_FormDataRepository, RelationshipColumnControlGeneral, Dictionary<int, object>>(this, relationshipColumn.RelationshipControl, listColumns));
-
+                                        listColumns.Add(relCol.FirstSideColumnID, uIColumnValue.First(x => x.ColumnID == relCol.FirstSideColumnID).ExactValue);
                                     }
+                                    relationshipColumnValues.Add(new Tuple<DP_FormDataRepository, RelationshipColumnControlGeneral, Dictionary<int, object>>(this, relationshipColumn.RelationshipControl, listColumns));
                                 }
+
                             }
-                            else if (ChildSimpleContorlProperties.Any(x => x.SimpleColumnControl.Column.ID == column.ColumnID))
+                            else if (ChildSimpleContorlProperties.Any(x => !x.IsReadonly && !x.IsHiddenOnState && x.SimpleColumnControl.Column.ID == column.ColumnID))
                             {
                                 //اینجا باید بیزینسی ریدونلی شدن داده هم تست شود
-                                var simpleColumn = ChildSimpleContorlProperties.First(x => x.SimpleColumnControl.Column.ID == column.ColumnID);
+                                var simpleColumn = ChildSimpleContorlProperties.First(x => !x.IsReadonly && !x.IsHiddenOnState && x.SimpleColumnControl.Column.ID == column.ColumnID);
                                 simpleColumnValues.Add(new Tuple<ChildSimpleContorlProperty, object>(simpleColumn, columnValue.ExactValue));
                             }
                         }
@@ -1186,10 +1184,7 @@ namespace MyUILibrary.EntityArea
                         var childInfo = ChildRelationshipDatas.FirstOrDefault(x => x.Relationship.ID == item.Item2.Relationship.ID);
                         if (childInfo != null)
                         {
-                            if (!childInfo.Relationship.IsReadonly && !childInfo.IsReadonlyOnState && !childInfo.IsHidden)
-                            {
-                                childInfo.SelectFromParent(item.Item3);
-                            }
+                            childInfo.SelectFromParent(item.Item3);
                         }
                     }
                 }
@@ -1200,7 +1195,7 @@ namespace MyUILibrary.EntityArea
                         if (!columnValue.EvenIsNotNew && !IsNewItem)
                             continue;
                         var property = GetProperty(columnValue.ColumnID);
-                        if (!columnValue.EvenHasValue && !AgentHelper.ValueIsEmptyOrDefaultValue(property))
+                        if (!columnValue.EvenHasValue && !property.ValueIsEmptyOrDefaultValue())
                             continue;
                         //اینجا باید بررسی بشه که نوع مقدار و پراپرتی مناسب هستند
                         //اگر ارتباط یک به یک روی کلید بود چی میشه؟

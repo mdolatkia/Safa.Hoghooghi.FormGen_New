@@ -76,10 +76,10 @@ namespace ProxyLibrary
         }
         public int EntityID;
     }
-    public class DP_EntityUICompositionResult : BaseResult
-    {
-        public EntityUICompositionCompositeDTO UIComposition { set; get; }
-    }
+    //public class DP_EntityUICompositionResult : BaseResult
+    //{
+    //    public EntityUICompositionCompositeDTO UIComposition { set; get; }
+    //}
     public class DP_EntityCommandsRequest : BaseRequest
     {
         public DP_EntityCommandsRequest(DR_Requester Requester) : base(Requester)

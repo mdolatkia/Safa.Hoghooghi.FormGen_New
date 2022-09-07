@@ -30,6 +30,7 @@ namespace MyUILibrary.EntityArea
         //bool ShouldBeReviewed { set; get; }
         //List<RelationshipColumnControl> SkippedRelationshipColumnControl { set; get; }
 
+        object FirstView { get; }
         void ClearUIData(DP_FormDataRepository dataItem);
         void RemoveDatas(List<DP_FormDataRepository> datas);
 
@@ -42,10 +43,11 @@ namespace MyUILibrary.EntityArea
         bool AddData(DP_FormDataRepository data);
         bool ShowDataInDataView(DP_FormDataRepository dataItem);
 
+
         //  void DataItemVisiblity(object dataItem, bool visible);
         //   void DataItemEnablity(object dataItem, bool visible);
 
-        EntityUICompositionCompositeDTO UICompositions { set; get; }
+       // EntityUICompositionCompositeDTO UICompositions { set; get; }
         List<DP_FormDataRepository> GetDataList();
         I_View_Area DataViewGeneric { get; }
         //void RemoveData(ProxyLibrary.DP_FormDataRepository data);
@@ -61,7 +63,7 @@ namespace MyUILibrary.EntityArea
         //    void AddDataBusinessMessage(string message, InfoColor infoColor, string key, DP_FormDataRepository causingData, ControlItemPriority priority);
         //   void RemoveDataBusinessMessage(DP_FormDataRepository dataItem, string key);
         TableDrivedEntityDTO SimpleEntity { set; get; }
-        TableDrivedEntityDTO EntityWithSimpleColumns { get; }
+     //   TableDrivedEntityDTO EntityWithSimpleColumns { get; }
         //  void SetColumnValueFromState(DP_FormDataRepository dataItem, List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula, bool setFkRelColumns);
         EntityListViewDTO DefaultEntityListViewDTO { get; }
 
@@ -91,7 +93,7 @@ namespace MyUILibrary.EntityArea
         //}
         //////void ImposeTemporaryViewSecurity();
         //////void ImposeDataViewSecurity();
-        void GenerateUIComposition(List<EntityUICompositionDTO> UICompositions);
+        void GenerateUIControlsByCompositionDTO(EntityUICompositionDTO UICompositions);
 
         // void DecideDataRelatedButtons();
 
@@ -106,7 +108,7 @@ namespace MyUILibrary.EntityArea
         //List<DP_FormDataRepository> DataRepository { set; get; }
 
         //void AddEmptyNDType();
-        void SetAreaInitializer(EditEntityAreaInitializer initParam);
+    //    void SetAreaInitializer1(EditEntityAreaInitializer initParam);
         //void GenerateDataViewSearchView();
 
         //void RemoveData(DP_FormDataRepository data);
@@ -148,7 +150,7 @@ namespace MyUILibrary.EntityArea
 
         //void ShowData(Guid guid, Enum_DP_RelationSide enum_DP_RelationSide, List<DP_FormDataRepository> list);
 
-        void ManageDataView();
+    //    void GenerateControls();
 
 
 
@@ -197,7 +199,7 @@ namespace MyUILibrary.EntityArea
         //bool DataItemIsInEditMode(DP_FormDataRepository sourceData);
         //bool DataItemIsInTempViewMode(DP_FormDataRepository dataItem);
         //    void DecideButtonsReadonlityByState(bool isReadonly);
-      //  void ApplyStatesBeforeUpdate(bool shouldCheckChilds, ChildRelationshipInfo parentChildRelInfo);
+        //  void ApplyStatesBeforeUpdate(bool shouldCheckChilds, ChildRelationshipInfo parentChildRelInfo);
         //void ClearUIData();
         //void ChangeDataItemReadonlyFromState(DP_FormDataRepository dataItem, string message, string key, bool skipUICheck);
         //void ChangeClearDataItemReadonlyFromState(DP_FormDataRepository dataItem, string key, bool skipUICheck);
@@ -289,7 +291,7 @@ namespace MyUILibrary.EntityArea
         void CheckContainersVisiblity(List<BaseColumnControl> hiddenControls);
 
         event EventHandler<EditAreaDataItemArg> DataItemSelected;
-        List<UIControlPackageTree> UIControlPackageTree { set; get; }
+        List<UIControlComposition> UIControlPackageTree { set; get; }
         //bool ShowDataInDataView(DP_FormDataRepository relatedData);
 
 
@@ -299,8 +301,8 @@ namespace MyUILibrary.EntityArea
         I_View_EditEntityAreaDataView SpecializedDataView { get; }
         I_View_EditEntityAreaDataView DataView { get; set; }
 
-      //  void OnDataItemSelected(DP_FormDataRepository DP_FormDataRepository);
-        void CheckContainerVisiblity(UIControlPackageTree container);
+        //  void OnDataItemSelected(DP_FormDataRepository DP_FormDataRepository);
+        void CheckContainerVisiblity(UIControlComposition container);
     }
     public interface I_EditEntityAreaMultipleData : I_EditEntityArea
     {
@@ -315,7 +317,7 @@ namespace MyUILibrary.EntityArea
 
         //      bool ShowDatasInDataView(List<DP_FormDataRepository> dataItems);
 
-        I_View_EditEntityAreaMultiple SpecializedDataView { get; }
+        //    I_View_EditEntityAreaMultiple SpecializedDataView { get; }
         I_View_EditEntityAreaMultiple DataView { get; set; }
 
         object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControlMultiple typePropertyControl);
@@ -490,7 +492,7 @@ namespace MyUILibrary.EntityArea
     public interface I_TabGroupContainer
     {
         object UIMainControl { get; }
-        UIControlPackageTree UIControlPackageTreeItem { get; set; }
+        UIControlComposition UIControlPackageTreeItem { get; set; }
 
         void SetVisibility(bool visible);
         void AddTabPage(I_TabPageContainer groupItem, string title, TabPageUISettingDTO tabpageSetting, bool skipTitle);
@@ -929,7 +931,7 @@ namespace MyUILibrary.EntityArea
         //        }
         //    }
         public SecurityAction Permission { get; set; }
-        public UIControlPackageTree UIControlPackageTreeItem { set; get; }
+        public UIControlComposition UIControlPackageTreeItem { set; get; }
 
     }
     public abstract class SimpleColumnControlGenerel : BaseColumnControl
@@ -1015,18 +1017,18 @@ namespace MyUILibrary.EntityArea
 
 
     }
-    public class UIControlPackageTree
+    public class UIControlComposition
     {
-        public UIControlPackageTree()
+        public UIControlComposition()
         {
-            ChildItems = new List<UIControlPackageTree>();
+            ChildItems = new List<UIControlComposition>();
         }
         public object Container { set; get; }
         public object Item { set; get; }
         public object UIItem { set; get; }
         public EntityUICompositionDTO UIComposition { set; get; }
-        public List<UIControlPackageTree> ChildItems { set; get; }
-        public UIControlPackageTree ParentItem { set; get; }
+        public List<UIControlComposition> ChildItems { set; get; }
+        public UIControlComposition ParentItem { set; get; }
     }
 
 

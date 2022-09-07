@@ -131,12 +131,12 @@ namespace MyProject_WPF
 
                 if (Database.Name.ToLower().StartsWith("DBProductService".ToLower()))
                 {
-                    if(tableImportItem.Entity.Name== "GenericPersonAddress")
+                    if (tableImportItem.Entity.Name == "GenericPersonAddress")
                     {
                         tableImportItem.Entity.IndependentDataEntry = false;
                         tableImportItem.Relationships.First(x => x.Entity1 == "GenericPerson").Select = true;
                     }
-                    else if(tableImportItem.Entity.Name == "ProductItem")
+                    else if (tableImportItem.Entity.Name == "ProductItem")
                     {
                         tableImportItem.Entity.IndependentDataEntry = false;
                         tableImportItem.Relationships.First(x => x.Entity1 == "ServiceRequest").Select = true;
@@ -187,10 +187,10 @@ namespace MyProject_WPF
                         tableImportItem.Relationships.First(x => x.Entity1 == "ServiceItem").Select = true;
                     }
                 }
-                    //if (!string.IsNullOrEmpty(tableImportItem.Tooltip))
-                    //    ToolTipService.SetToolTip(e.Row, tableImportItem.Tooltip);
-                    var cell = e.Row.Cells.FirstOrDefault(x => x.Column.Name == "colRelationshipsSuspicious"
-                 || x.Column.Name == "colRelationshipsNonSuspicious");
+                //if (!string.IsNullOrEmpty(tableImportItem.Tooltip))
+                //    ToolTipService.SetToolTip(e.Row, tableImportItem.Tooltip);
+                var cell = e.Row.Cells.FirstOrDefault(x => x.Column.Name == "colRelationshipsSuspicious"
+             || x.Column.Name == "colRelationshipsNonSuspicious");
                 if (cell != null)
                     DecideCellEnabled(tableImportItem, cell);
             }
@@ -486,7 +486,7 @@ namespace MyProject_WPF
                 //        }
                 //    }
                 //}
-                var columns = entity.Columns.Where(x => string.IsNullOrEmpty(x.DefaultValue) && x.IsDBCalculatedColumn == false && x.IsIdentity == false && x.PrimaryKey == false && !entity.Relationships.Any(y => y.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && y.RelationshipColumns.Any(z => z.FirstSideColumnID == x.ID)));
+                var columns = entity.Columns.Where(x => x.IsSimpleColumn);
                 if (columns.Count() >= 10)
                     isIndependant = true;
                 if (!entity.Relationships.Any())
@@ -654,7 +654,7 @@ namespace MyProject_WPF
                         {
                             bool isValid = false;
 
-                            if (relationships.Any(x => !x.IsDisabled && x.DataEntryEnabled))
+                            if (relationships.Any())
                             {
                                 isValid = true;
                             }

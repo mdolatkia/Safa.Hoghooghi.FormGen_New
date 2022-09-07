@@ -54,7 +54,7 @@ namespace MyProject_WPF
             BizColumn bizColumn = new BizColumn();
             colColumn.SelectedValueMemberPath = "ID";
             colColumn.DisplayMemberPath = "Name";
-            colColumn.ItemsSource = bizColumn.GetAllColumns(EntityID, true).Where(x => x.PrimaryKey).ToList();
+            colColumn.ItemsSource = bizColumn.GetAllColumnsDTO(EntityID, true,false).Where(x => x.PrimaryKey).ToList();
         }
 
         private void GetEntityDirectReport(int entityViewReportID)

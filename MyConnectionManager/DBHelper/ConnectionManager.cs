@@ -68,13 +68,13 @@ namespace MyConnectionManager
                             dbHelper = dbHelpers.First(x => x.Item1 == queryItem.TargetEntity.DatabaseID).Item2;
 
                         dbHelper.ExecuteNonQuery(queryItem.Query);
-
-                        if (queryItem.DataItem != null && queryItem.DataItem.GetProperties().Any(x => x.IsIdentity))
+                        //**74d5cc97-f11a-4579-b922-9475f2414cf3
+                        if (queryItem.DataItem != null && queryItem.DataItem.GetProperties().Any(x => x.Column.IsIdentity))
                         {
                             if (queryItem.DataItem.IsNewItem)
                             {
                                 var identity = dbHelper.ExecuteScalar("select scope_identity()");
-                                foreach (var identityProperty in queryItem.DataItem.GetProperties().Where(x => x.IsIdentity))
+                                foreach (var identityProperty in queryItem.DataItem.GetProperties().Where(x => x.Column.IsIdentity))
                                 {
 
                                     //ایونت باید اینجا ریز بشه

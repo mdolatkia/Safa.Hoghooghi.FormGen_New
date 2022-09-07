@@ -140,7 +140,7 @@ namespace MyDataItemManager
 
                 foreach (var property in dbDataItem.MyDataItemKeyColumns)
                 {
-                    result.Properties.Add(new EntityInstanceProperty(bizColumn.GetColumn(property.ColumnID, true))
+                    result.Properties.Add(new EntityInstanceProperty(bizColumn.GetColumnDTO(property.ColumnID, true))
                     {
                         Value = property.Value
                     });

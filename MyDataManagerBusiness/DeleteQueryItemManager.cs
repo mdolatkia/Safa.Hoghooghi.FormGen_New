@@ -61,12 +61,11 @@ namespace MyDataEditManagerBusiness
 
                         var ChildRelationshipData = new ChildRelationshipData(deleteDataItem, relationship);
                         result.Add(ChildRelationshipData);
-                        ChildRelationshipData.RelationshipDeleteOption = relationship.DeleteOption;
                         deleteDataItem.ChildRelationshipDatas.Add(ChildRelationshipData);
 
                         var ParentRelationshipData = new ParentRelationshipData(ChildRelationshipData);
 
-                        if (ChildRelationshipData.RelationshipDeleteOption == RelationshipDeleteOption.SetNull)
+                        if (ChildRelationshipData.DBDeleteRule != RelationshipDeleteUpdateRule.Cascade)
                         {
                             foreach (var childItem in searchViewResult.ResultDataItems)
                             {
@@ -127,6 +126,8 @@ namespace MyDataEditManagerBusiness
             }
             return loop;
         }
+
+
         public DP_DataView GetDataView(DP_BaseData data)
         {
             var newrequester = new DR_Requester();
@@ -172,10 +173,11 @@ namespace MyDataEditManagerBusiness
             return false;
         }
         EditDataActionActivityManager actionActivityManager = new EditDataActionActivityManager();
-        public List<Tuple<DP_DataRepository, List<QueryItem>>> GetDeleteQueryItems(DR_Requester requester, List<DP_DataRepository> items)
+
+        public List<Tuple<DP_DataRepository, QueryItem>> GetDeleteQueryItems(DR_Requester requester, List<DP_DataRepository> items)
         {
-            List<Tuple<DP_DataRepository, List<QueryItem>>> result = new List<Tuple<DP_DataRepository, List<QueryItem>>>();
-            List<DP_DataRepository> rootDataItems = new List<DP_DataRepository>();
+            List<Tuple<DP_DataRepository, QueryItem>> result = new List<Tuple<DP_DataRepository, QueryItem>>();
+            //     List<DP_DataRepository> rootDataItems = new List<DP_DataRepository>();
             foreach (var item in items)
             {
                 DP_DataRepository rootDeleteITem = new DP_DataRepository(item.TargetEntityID, item.TargetEntityAlias);
@@ -184,32 +186,73 @@ namespace MyDataEditManagerBusiness
                 rootDeleteITem.EntityListView = item.EntityListView;
                 rootDeleteITem.IsFullData = item.IsFullData;
 
-                var loop = GetTreeItems(requester, rootDeleteITem, rootDeleteITem);
-                if (loop)
-                {
-                    throw new Exception("امکان حذف بعلت وابستگی داده ها وجود ندارد");
-                }
-                rootDataItems.Add(rootDeleteITem);
+                var queryItem = new QueryItem(GetTableDrivedDTO(requester, item.TargetEntityID), Enum_QueryItemType.Delete, new List<EntityInstanceProperty>(), item);
+                queryItem.Query = GetDeleteQueryQueue(requester, queryItem);
+                //var loop = GetTreeItems(requester, rootDeleteITem, rootDeleteITem);
+                //if (loop)
+                //{
+                //    throw new Exception("امکان حذف بعلت وابستگی داده ها وجود ندارد");
+                //}
+                result.Add(new Tuple<DP_DataRepository, QueryItem>(item, queryItem));
             }
-            foreach (var item in rootDataItems)
-            {
-                var queryItems = GetDeleteQueryQueue(requester, item);
-                foreach (var queryItem in queryItems)
-                {
-                    if (queryItem.QueryType == Enum_QueryItemType.Delete)
-                    {
-                        queryItem.Query = GetDeleteQueryQueue(requester, queryItem);
-                    }
-                    else if (queryItem.QueryType == Enum_QueryItemType.Update)
-                    {
-                        EditQueryItemManager editQueryItemManage = new EditQueryItemManager();
-                        queryItem.Query = editQueryItemManage.GetUpdateQuery(queryItem);
-                    }
-                }
-                result.Add(new Tuple<DP_DataRepository, List<QueryItem>>(item, queryItems));
-            }
+            //foreach (var item in rootDataItems)
+            //{
+            //    var queryItems = GetDeleteQueryQueue(requester, item);
+            //    foreach (var queryItem in queryItems)
+            //    {
+            //        if (queryItem.QueryType == Enum_QueryItemType.Delete)
+            //        {
+            //            queryItem.Query = GetDeleteQueryQueue(requester, queryItem);
+            //        }
+            //        else if (queryItem.QueryType == Enum_QueryItemType.Update)
+            //        {
+            //            EditQueryItemManager editQueryItemManage = new EditQueryItemManager();
+            //            queryItem.Query = editQueryItemManage.GetUpdateQuery(queryItem);
+            //        }
+            //    }
+            //    result.Add(new Tuple<DP_DataRepository, List<QueryItem>>(item, queryItems));
+            //}
             return result;
         }
+
+        //public List<Tuple<DP_DataRepository, List<QueryItem>>> GetDeleteQueryItems(DR_Requester requester, List<DP_DataRepository> items)
+        //{
+        //    List<Tuple<DP_DataRepository, List<QueryItem>>> result = new List<Tuple<DP_DataRepository, List<QueryItem>>>();
+        //    List<DP_DataRepository> rootDataItems = new List<DP_DataRepository>();
+        //    foreach (var item in items)
+        //    {
+        //        DP_DataRepository rootDeleteITem = new DP_DataRepository(item.TargetEntityID, item.TargetEntityAlias);
+        //        rootDeleteITem.SetProperties(item.GetProperties());
+        //        rootDeleteITem.DataView = item.DataView;
+        //        rootDeleteITem.EntityListView = item.EntityListView;
+        //        rootDeleteITem.IsFullData = item.IsFullData;
+
+        //        var loop = GetTreeItems(requester, rootDeleteITem, rootDeleteITem);
+        //        if (loop)
+        //        {
+        //            throw new Exception("امکان حذف بعلت وابستگی داده ها وجود ندارد");
+        //        }
+        //        rootDataItems.Add(rootDeleteITem);
+        //    }
+        //    foreach (var item in rootDataItems)
+        //    {
+        //        var queryItems = GetDeleteQueryQueue(requester, item);
+        //        foreach (var queryItem in queryItems)
+        //        {
+        //            if (queryItem.QueryType == Enum_QueryItemType.Delete)
+        //            {
+        //                queryItem.Query = GetDeleteQueryQueue(requester, queryItem);
+        //            }
+        //            else if (queryItem.QueryType == Enum_QueryItemType.Update)
+        //            {
+        //                EditQueryItemManager editQueryItemManage = new EditQueryItemManager();
+        //                queryItem.Query = editQueryItemManage.GetUpdateQuery(queryItem);
+        //            }
+        //        }
+        //        result.Add(new Tuple<DP_DataRepository, List<QueryItem>>(item, queryItems));
+        //    }
+        //    return result;
+        //}
 
         private string GetDeleteQueryQueue(DR_Requester requester, QueryItem queryItem)
         {
@@ -245,59 +288,59 @@ namespace MyDataEditManagerBusiness
             else
                 return "'" + value + "'";
         }
-        private List<QueryItem> GetDeleteQueryQueue(DR_Requester requester, DP_DataRepository item, ChildRelationshipData parentChildRelatoinshipInfo = null, List<QueryItem> result = null)
-        {
-            //اینجا کوئری آیتمها بصورت درختی ست نمیشوند چون لازم نیست همینکه بترتیب می آیند کافی است
-            if (result == null)
-                result = new List<QueryItem>();
+        //private List<QueryItem> GetDeleteQueryQueue(DR_Requester requester, DP_DataRepository item, ChildRelationshipData parentChildRelatoinshipInfo = null, List<QueryItem> result = null)
+        //{
+        //    //اینجا کوئری آیتمها بصورت درختی ست نمیشوند چون لازم نیست همینکه بترتیب می آیند کافی است
+        //    if (result == null)
+        //        result = new List<QueryItem>();
 
-            if (item.ChildRelationshipDatas.Any(x => x.RelatedData.Any()))
-            {
-                foreach (var child in item.ChildRelationshipDatas)
-                {
-                    //اول زیر مجموعه ها حذف شوند 
-                    foreach (var cItem in child.RelatedData)
-                        GetDeleteQueryQueue(requester, cItem, child, result);
-                }
-            }
-            var query = GetQueryDeleteOrUpdateNull(item, parentChildRelatoinshipInfo);
-            result.Add(new QueryItem(GetTableDrivedDTO(requester, item.TargetEntityID), query.Item1, query.Item2, item));
-            return result;
-        }
+        //    if (item.ChildRelationshipDatas.Any(x => x.RelatedData.Any()))
+        //    {
+        //        foreach (var child in item.ChildRelationshipDatas)
+        //        {
+        //            //اول زیر مجموعه ها حذف شوند 
+        //            foreach (var cItem in child.RelatedData)
+        //                GetDeleteQueryQueue(requester, cItem, child, result);
+        //        }
+        //    }
+        //    var query = GetQueryDeleteOrUpdateNull(item, parentChildRelatoinshipInfo);
+        //    result.Add(new QueryItem(GetTableDrivedDTO(requester, item.TargetEntityID), query.Item1, query.Item2, item));
+        //    return result;
+        //}
 
-        private Tuple<Enum_QueryItemType, List<EntityInstanceProperty>> GetQueryDeleteOrUpdateNull(DP_DataRepository item, ChildRelationshipData parentChildRelatoinshipInfo)
-        {
+        //private Tuple<Enum_QueryItemType, List<EntityInstanceProperty>> GetQueryDeleteOrUpdateNull(DP_DataRepository item, ChildRelationshipData parentChildRelatoinshipInfo)
+        //{
 
-            Enum_QueryItemType queryItemType;
-            List<EntityInstanceProperty> listEditProperties = new List<EntityInstanceProperty>();
+        //    Enum_QueryItemType queryItemType;
+        //    List<EntityInstanceProperty> listEditProperties = new List<EntityInstanceProperty>();
 
-            if (parentChildRelatoinshipInfo == null)
-            {
-                queryItemType = Enum_QueryItemType.Delete;
-            }
-            else
-            {
-                if (parentChildRelatoinshipInfo.RelationshipDeleteOption == RelationshipDeleteOption.DeleteCascade)
-                {
-                    queryItemType = Enum_QueryItemType.Delete;
-                }
-                else
-                {
-                    queryItemType = Enum_QueryItemType.Update;
+        //    if (parentChildRelatoinshipInfo == null)
+        //    {
+        //        queryItemType = Enum_QueryItemType.Delete;
+        //    }
+        //    else
+        //    {
+        //        if (parentChildRelatoinshipInfo.RelationshipDeleteOption == RelationshipDeleteOption.DeleteCascade)
+        //        {
+        //            queryItemType = Enum_QueryItemType.Delete;
+        //        }
+        //        else
+        //        {
+        //            queryItemType = Enum_QueryItemType.Update;
 
-                    foreach (var col in parentChildRelatoinshipInfo.Relationship.RelationshipColumns)
-                    {
-                        var prop = item.GetProperty(col.SecondSideColumnID);
-                        if (prop == null)
-                            prop = new EntityInstanceProperty(col.SecondSideColumn);
-                        prop.Value = null;
-                        listEditProperties.Add(prop);
+        //            foreach (var col in parentChildRelatoinshipInfo.Relationship.RelationshipColumns)
+        //            {
+        //                var prop = item.GetProperty(col.SecondSideColumnID);
+        //                if (prop == null)
+        //                    prop = new EntityInstanceProperty(col.SecondSideColumn);
+        //                prop.Value = null;
+        //                listEditProperties.Add(prop);
 
-                    }
-                }
-            }
-            return new Tuple<Enum_QueryItemType, List<EntityInstanceProperty>>(queryItemType, listEditProperties);
-        }
+        //            }
+        //        }
+        //    }
+        //    return new Tuple<Enum_QueryItemType, List<EntityInstanceProperty>>(queryItemType, listEditProperties);
+        //}
         private string GetTableName(TableDrivedEntityDTO entity)
         {
             return (string.IsNullOrEmpty(entity.RelatedSchema) ? "" : "[" + entity.RelatedSchema + "]" + ".") + "[" + entity.TableName + "]";

@@ -21,11 +21,11 @@ namespace MyDataManagerService
             //bizRelationshipManager = new BizRelationshipManager();
         }
 
-        public bool ReverseRelationshipIsMandatory(int relationshipID)
-        {
+        //public bool ReverseRelationshipIsMandatory(int relationshipID)
+        //{
 
-            return biz.ReverseRelationshipIsMandatory(relationshipID);
-        }
+        //    return biz.ReverseRelationshipIsMandatory(relationshipID);
+        //}
         //public List<RelationshipDTO> GetRelationshipsByEntityID(int entityID)
         //{
 

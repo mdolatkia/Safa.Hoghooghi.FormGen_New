@@ -272,12 +272,11 @@ namespace MyUILibrary.EntityArea
 
         public void CheckSearchInitially()
         {
+            //**b07a3760-ff93-410f-b6b9-e40244e72ac7
             if (SearchInitialyDone == false)
             {
-                bool? sarchInitially = null;
+                //   bool? sarchInitially = null;
                 if (AreaInitializer.SourceEditArea.SimpleEntity.SearchInitially == true || (AreaInitializer.SourceEditArea.AreaInitializer.SourceRelationColumnControl != null && AreaInitializer.SourceEditArea.AreaInitializer.SourceRelationColumnControl.Relationship.SearchInitially))
-                    sarchInitially = AreaInitializer.SourceEditArea.SimpleEntity.SearchInitially;
-                if (sarchInitially == true)
                 {
                     SearchInitialy();
                 }

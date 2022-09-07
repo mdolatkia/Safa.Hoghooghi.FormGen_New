@@ -36,8 +36,8 @@ namespace ProxyLibrary
 
 
         //    RelationshipDeleteOption RelationshipDeleteOption { set; get; }
-        public RelationshipDeleteOption RelationshipDeleteOption { set; get; }
-
+        public RelationshipDeleteUpdateRule DBDeleteRule { get {return Relationship.DBDeleteRule; } }
+        public RelationshipDeleteUpdateRule DBUpdateRule { get { return Relationship.DBUpdateRule; } }
 
 
         public bool RelationshipIsChangedForUpdate

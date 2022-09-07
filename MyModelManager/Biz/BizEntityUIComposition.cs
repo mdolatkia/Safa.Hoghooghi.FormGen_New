@@ -13,6 +13,8 @@ namespace MyModelManager
 {
     public class BizEntityUIComposition
     {
+
+        //** 0a8a4656-9ddf-4557-9823-9cbf2509d6f8
         public event EventHandler<ItemImportingStartedArg> ItemImportingStarted;
         //public EntityUICompositionDTO GetEntityUICompositionTree(int entityID)
         //{
@@ -34,26 +36,26 @@ namespace MyModelManager
         //    //CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.EntityUICompositionTree, entityID.ToString());
 
         //}
-        public EntityUICompositionCompositeDTO GetEntityUICompositionTree(int entityID)
+        public EntityUICompositionDTO GetEntityUICompositionTree(int entityID)
         {
-            EntityUICompositionCompositeDTO result = new EntityUICompositionCompositeDTO();
+            // EntityUICompositionCompositeDTO result = new EntityUICompositionCompositeDTO();
             //////var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.EntityUICompositionTree, entityID.ToString());
             //////if (cachedItem != null)
             //////    return (cachedItem as List<EntityUICompositionDTO>);
 
-            result.ColumnItems = new List<ColumnUISettingDTO>();
-            result.RelationshipItems = new List<RelationshipUISettingDTO>();
+            //  result.ColumnItems = new List<ColumnUISettingDTO>();
+            // result.RelationshipItems = new List<RelationshipUISettingDTO>();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
                 var dbroot = projectContext.EntityUIComposition.FirstOrDefault(x => x.TableDrivedEntityID == entityID && x.ParentID == null);
                 //foreach (var item in list)
                 //{
                 if (dbroot != null)
-                    result.RootItem = ToEntityUICompositionDTO(dbroot, true, result.ColumnItems, result.RelationshipItems);
+                    return ToEntityUICompositionDTO(dbroot, true);
                 //}
             }
             //CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.EntityUICompositionTree, entityID.ToString());
-            return result;
+            return null;
         }
         public List<EntityUICompositionDTO> GetListEntityUIComposition(int entityID)
         {
@@ -86,7 +88,7 @@ namespace MyModelManager
         //    return result;
         //}
 
-        private EntityUICompositionDTO ToEntityUICompositionDTO(DataAccess.EntityUIComposition item, bool withChilds, List<ColumnUISettingDTO> columnItems = null, List<RelationshipUISettingDTO> relationshipItems = null)
+        private EntityUICompositionDTO ToEntityUICompositionDTO(DataAccess.EntityUIComposition item, bool withChilds)
         {
             var result = new EntityUICompositionDTO();
             result.ID = item.ID;
@@ -113,8 +115,8 @@ namespace MyModelManager
                     result.ColumnUISetting.ColumnID = Convert.ToInt32(item.ItemIdentity);
                     result.ColumnUISetting.UIColumnsType = (Enum_UIColumnsType)item.ColumnUISetting.UIColumnsType;
                     result.ColumnUISetting.UIRowsCount = item.ColumnUISetting.UIRowsCount;
-                    if (columnItems != null)
-                        columnItems.Add(result.ColumnUISetting);
+                    //      if (columnItems != null)
+                    //            columnItems.Add(result.ColumnUISetting);
                 }
             }
             else if (result.ObjectCategory == DatabaseObjectCategory.Relationship)
@@ -128,8 +130,8 @@ namespace MyModelManager
                     result.RelationshipUISetting.Expander = item.RelationshipUISetting.Expander;
                     result.RelationshipUISetting.IsExpanded = item.RelationshipUISetting.IsExpanded == true;
                     result.RelationshipUISetting.UIRowsCount = Convert.ToInt16(item.RelationshipUISetting.UIRowsCount);
-                    if (relationshipItems != null)
-                        relationshipItems.Add(result.RelationshipUISetting);
+                    //      if (relationshipItems != null)
+                    //          relationshipItems.Add(result.RelationshipUISetting);
                 }
             }
             else if (result.ObjectCategory == DatabaseObjectCategory.Group)
@@ -182,10 +184,12 @@ namespace MyModelManager
             }
             result.ChildItems = new List<EntityUICompositionDTO>();
             if (withChilds)
+            {
                 foreach (var citem in item.EntityUIComposition1)
                 {
-                    result.ChildItems.Add(ToEntityUICompositionDTO(citem, withChilds, columnItems, relationshipItems));
+                    result.ChildItems.Add(ToEntityUICompositionDTO(citem, withChilds));
                 }
+            }
 
             return result;
         }
@@ -203,6 +207,7 @@ namespace MyModelManager
 
         public List<EntityUICompositionDTO> GenerateUIComposition(TableDrivedEntityDTO entity)
         {
+            //** a301db67-64d0-4a8b-85cc-ed81338a7008
             List<EntityUICompositionDTO> result = new List<EntityUICompositionDTO>();
             var entityUiComposition = new EntityUICompositionDTO();
             entityUiComposition.ObjectCategory = DatabaseObjectCategory.Entity;
@@ -239,7 +244,7 @@ namespace MyModelManager
             EntityUICompositionDTO tabConrol = null;
             foreach (var relationship in list)
             {
-                if (relationship.IsOtherSideCreatable && relationship.IsOtherSideDirectlyCreatable)
+                if (relationship.IsOtherSideDirectlyCreatable)
                 {
                     if (tabConrol == null)
                     {
@@ -280,7 +285,7 @@ namespace MyModelManager
             childItem.Title = relationship.Alias;
             childItem.ParentItem = parentItem;
             childItem.RelationshipUISetting = new RelationshipUISettingDTO();
-            if (relationship.IsOtherSideCreatable && relationship.IsOtherSideDirectlyCreatable)
+            if (relationship.IsOtherSideDirectlyCreatable)
             {
                 //if (relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary)
                 //{
@@ -364,7 +369,7 @@ namespace MyModelManager
                 List<RelationshipDTO> candidateRelationships = GetCandidUpdateRelationships(entityUICompositions, entity);
                 if (candidateRelationships.Any())
                 {
-                    var tabControl = GetOrCreateRelationshipTabControl(entityUICompositions.RootItem);
+                    var tabControl = GetOrCreateRelationshipTabControl(entityUICompositions);
                     if (tabControl.ID == 0)
                         generetedUIComposition.Add(tabControl);
                     foreach (var relationship in candidateRelationships)
@@ -431,13 +436,13 @@ namespace MyModelManager
             return null;
         }
 
-        private List<RelationshipDTO> GetCandidUpdateRelationships(EntityUICompositionCompositeDTO entityUICompositions, TableDrivedEntityDTO entity)
+        private List<RelationshipDTO> GetCandidUpdateRelationships(EntityUICompositionDTO entityUICompositions, TableDrivedEntityDTO entity)
         {
             List<RelationshipDTO> rels = new List<RelationshipDTO>();
             foreach (var relationship in entity.Relationships.Where(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign &&
-            x.DataEntryEnabled == true && x.IsOtherSideCreatable && x.IsOtherSideDirectlyCreatable))
+            x.DataEntryEnabled == true && x.IsOtherSideDirectlyCreatable))
             {
-                if (!RelationshipExistsInTree(entityUICompositions.RootItem, relationship))
+                if (!RelationshipExistsInTree(entityUICompositions, relationship))
                 {
                     rels.Add(relationship);
                 }
@@ -469,7 +474,8 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                return projectContext.TableDrivedEntity.First(x => x.ID == entity.ID).EntityUIComposition.Any();
+                BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+                return bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == entity.ID).EntityUIComposition.Any();
             }
         }
 

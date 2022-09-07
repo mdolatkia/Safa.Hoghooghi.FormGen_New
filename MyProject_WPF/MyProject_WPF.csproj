@@ -1121,10 +1121,6 @@
       <Project>{BD833980-A9AD-4889-A9B0-23A0EFCFEA80}</Project>
       <Name>MyConnectionManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MyDatabaseToObject\MyDatabaseToObject.csproj">
-      <Project>{bb4870cd-5a28-474c-a513-491af655988f}</Project>
-      <Name>MyDatabaseToObject</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MyDataSearchManagerBusiness\MyDataSearchManagerBusiness.csproj">
       <Project>{518BDF6D-0AD2-44DD-945D-DCF74BB4A055}</Project>
       <Name>MyDataSearchManagerBusiness</Name>

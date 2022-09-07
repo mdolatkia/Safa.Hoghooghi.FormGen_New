@@ -119,7 +119,6 @@
     <Compile Include="Commands\LetterCommand.cs" />
     <Compile Include="EntityArea\EditEntityArea\EditAreaDataManager.cs" />
     <Compile Include="EntityArea\EditEntityArea\EditEntityAreaMultipleData.cs" />
-    <Compile Include="EntityArea\EditEntityArea\EditEntityAreaConstructor.cs" />
     <Compile Include="EntityArea\EditEntityArea\EntityAreaLogManager.cs" />
     <Compile Include="EntityArea\EntityCommand.cs" />
     <Compile Include="EntityArea\FormulaCalculationArea.cs" />

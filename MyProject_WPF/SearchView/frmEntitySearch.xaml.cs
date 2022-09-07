@@ -35,6 +35,7 @@ namespace MyProject_WPF
         public frmEntitySearch(int entityID, int entitySearchID)
         {
             InitializeComponent();
+            //** 4bbbbc10-0d57-4023-821b-62576df5955b
             EntityID = entityID;
             BizTableDrivedEntity biz = new BizTableDrivedEntity();
             var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
@@ -156,6 +157,7 @@ namespace MyProject_WPF
                     }
                 }
             }
+            //** 689066db-d730-43a0-b5c7-9eddceb0a41b
             foreach (var item in Message.EntitySearchAllColumns)
             {
                 if (item.RelationshipTailID != 0)

@@ -255,7 +255,7 @@ namespace MyProject_WPF
                 return false;
             if (entity.Relationships.Any(x => x.TypeEnum == Enum_RelationshipType.OneToMany))
             {
-                var columns = entity.Columns.Where(x => string.IsNullOrEmpty(x.DefaultValue) && x.IsDBCalculatedColumn == false && x.IsIdentity == false && x.PrimaryKey == false && !entity.Relationships.Any(y => y.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && y.RelationshipColumns.Any(z => z.FirstSideColumnID == x.ID)));
+                var columns = entity.Columns.Where(x => x.IsSimpleColumn);
                 if (columns.Count() >= 0 && columns.Count() <= 4)
                 {
                     if (!entity.Relationships.Any(x => x.TypeEnum == Enum_RelationshipType.SubToSuper)

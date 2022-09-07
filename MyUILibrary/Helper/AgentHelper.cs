@@ -194,14 +194,14 @@ namespace MyUILibrary
         //        return color;
         //    }
         //}
-        internal static Temp.InfoColor GetPropertyColor(RelationshipColumnControlGeneral propertyControl)
-        {
-            Temp.InfoColor color = Temp.InfoColor.Black;
-            //title += (title == "" ? "" : " > ") + (propertyControl as RelationSourceControl).EditNdTypeArea.AreaInitializer.TemplateEntity.Name + "." + (propertyControl as RelationSourceControl).EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType.ToString();
-            if (propertyControl.Relationship.IsOtherSideMandatory)
-                color = Temp.InfoColor.DarkRed;
-            return color;
-        }
+        //internal static Temp.InfoColor GetPropertyColor(RelationshipColumnControlGeneral propertyControl)
+        //{
+        //    Temp.InfoColor color = Temp.InfoColor.Black;
+        //    //title += (title == "" ? "" : " > ") + (propertyControl as RelationSourceControl).EditNdTypeArea.AreaInitializer.TemplateEntity.Name + "." + (propertyControl as RelationSourceControl).EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType.ToString();
+        //    if (propertyControl.Relationship.IsOtherSideMandatory)
+        //        color = Temp.InfoColor.DarkRed;
+        //    return color;
+        //}
 
         //internal static List<MyDataObject> GetDataObjects(List<DP_DataRepository> resultDataItems)
         //{
@@ -516,7 +516,7 @@ namespace MyUILibrary
             innerItem.EntityListView = editEntityArea.DefaultEntityListViewDTO;
             //result.TargetEntityID = editEntityArea.AreaInitializer.EntityID;
             // result.DataInstance = new EntityInstance();// Clone<TableDrivedEntityDTO>(AreaInitializer.Template);
-           
+
             List<ColumnDTO> columns = null;
             //فرض بر اینه که تنها ستونهایی که کنترل دارند اضافه شود.تازه برای روابط فارن به اصلی بهتر است ستونها کلید خارجی نیز اضافه شوند
             if (editEntityArea is I_EditEntityAreaOneData)
@@ -565,6 +565,8 @@ namespace MyUILibrary
             //به حالت اول برمیگردانم یعنی استفاده از فول انتیتی
             //columns= editEntityArea.FullEntity.Columns;
             //همه ستونها؟؟؟
+
+            //** c8c4ca7a-9a7c-4469-a872-193cdabb907a
             foreach (var column in columns)
             {
                 object value = null;
@@ -606,11 +608,11 @@ namespace MyUILibrary
 
             }
             var result = new DP_FormDataRepository(innerItem, editEntityArea, false, true);
-           // if (editEntityArea.DataEntryEntity.IsReadonly
-           //|| (editEntityArea.AreaInitializer.SourceRelationColumnControl != null && editEntityArea.AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly))
-           //     result.IsUseLessBecauseNewAndReadonly = true;
+            // if (editEntityArea.DataEntryEntity.IsReadonly
+            //|| (editEntityArea.AreaInitializer.SourceRelationColumnControl != null && editEntityArea.AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly))
+            //     result.IsUseLessBecauseNewAndReadonly = true;
 
-            
+
 
             return result;
         }
@@ -861,9 +863,9 @@ namespace MyUILibrary
 
 
 
-       
 
-     
+
+
         //internal static bool DataShouldBeCounted(DP_DataRepository data)
         //{
 
@@ -886,17 +888,13 @@ namespace MyUILibrary
         //        return true;
         //    return false;
         //}
-        internal static bool ValueIsEmpty(EntityInstanceProperty property)
-        {
-            if (property.Value == null || string.IsNullOrEmpty(property.Value.ToString()) || property.Value.ToString() == "0")
-                return true;
-            else
-                return false;
-        }
-        internal static bool ValueIsEmptyOrDefaultValue(EntityInstanceProperty property)
-        {
-            return ValueIsEmpty(property) || property.Value.ToString() == property.Column.DefaultValue;
-        }
+        //internal static bool ValueIsEmpty(EntityInstanceProperty property)
+        //{
+        //    if (property.Value == null || string.IsNullOrEmpty(property.Value.ToString()) || property.Value.ToString() == "0")
+        //        return true;
+        //    else
+        //        return false;
+        //}
 
         //internal static string GetTypePropertyValue(DP_DataRepository dataRepository, ColumnDTO typeProperty)
         //{
@@ -921,10 +919,10 @@ namespace MyUILibrary
         {
             EditEntityAreaInfo info = new EditEntityAreaInfo();
             //info.DataCount = editArea.AreaInitializer.Data.Count;
-            var columns = editArea.EntityWithSimpleColumns.Columns;
-            List<ColumnDTO> columnsSource = null;
-            if (editArea.AreaInitializer.SourceRelationColumnControl != null)
-                columnsSource = editArea.AreaInitializer.SourceRelationColumnControl.ParentEditArea.EntityWithSimpleColumns.Columns;
+            //var columns = editArea.EntityWithSimpleColumns.Columns;
+            //   List<ColumnDTO> columnsSource = null;
+            //    if (editArea.AreaInitializer.SourceRelationColumnControl != null)
+            //      columnsSource = editArea.AreaInitializer.SourceRelationColumnControl.ParentEditArea.EntityWithSimpleColumns.Columns;
 
             List<DP_FormDataRepository> dataList = null;
             if (editArea.AreaInitializer.SourceRelationColumnControl != null)
@@ -938,11 +936,11 @@ namespace MyUILibrary
 
                 rItem.IsNew = item.IsNewItem;
                 rItem.ExcludeFromDataEntry = item.ExcludeFromDataEntry;
-              //  rItem.HasData = AgentHelper.DataHasValue(item);
-                foreach (var property in item.GetProperties())
+                //  rItem.HasData = AgentHelper.DataHasValue(item);
+                foreach (var property in item.ChildSimpleContorlProperties)
                 {
-                    var column = columns.FirstOrDefault(x => x.ID == property.ColumnID);
-                    rItem.ColumnWithValues += (rItem.ColumnWithValues == "" ? "" : " , ") + (column != null ? column.Name : property.ColumnID.ToString()) + "=" + property.Value;
+                    //    var column = columns.FirstOrDefault(x => x.ID == property.ColumnID);
+                    rItem.ColumnWithValues += (rItem.ColumnWithValues == "" ? "" : " , ") + property.SimpleColumnControl.Column.Name + "=" + property.Property.Value;
                 }
 
                 info.DataInfo.Add(rItem);

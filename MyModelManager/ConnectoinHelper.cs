@@ -11,15 +11,15 @@ namespace MyDataManagerBusiness
 {
     public class ConnectoinHelper
     {
-        public static string GetConnectionString(int entityID)
-        {
-            using (var context = new MyProjectEntities())
-            {
-                var entity = context.TableDrivedEntity.First(x => x.ID == entityID);
+        //public static string GetConnectionString(int entityID)
+        //{
+        //    using (var context = new MyProjectEntities())
+        //    {
+        //        var entity = context.TableDrivedEntity.First(x => x.ID == entityID);
 
-                return entity.Table.DBSchema.DatabaseInformation.ConnectionString;
-            }
-        }
+        //        return entity.Table.DBSchema.DatabaseInformation.ConnectionString;
+        //    }
+        //}
       
         //public static string GetConnectionString(DR_BaseRequest request)
         //{

@@ -70,7 +70,7 @@ namespace MyUILibrary.WorkflowArea
                 editEntityAreaInitializer.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
                 editEntityAreaInitializer.DataMode = CommonDefinitions.UISettings.DataMode.One;
                 editEntityAreaInitializer.EntityID = proccess.EntityID;
-                var searchEditEntityAreaResult = EditEntityAreaConstructor.GetEditEntityArea(editEntityAreaInitializer);
+                var searchEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer);
                 if (searchEditEntityAreaResult.Item1 == null)
                 {
                     if (!string.IsNullOrEmpty(searchEditEntityAreaResult.Item2))
@@ -79,7 +79,7 @@ namespace MyUILibrary.WorkflowArea
 
                 }
                 SearchEditEntityArea = searchEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                SearchEditEntityArea.SetAreaInitializer(editEntityAreaInitializer);
+                //SearchEditEntityArea.SetAreaInitializer(editEntityAreaInitializer);
                 SearchEditEntityArea.DataItemSelected += SearchEditEntityArea_DataItemSelected;
                 (sender as I_View_WorkflowRequestCreator).SearchView = SearchEditEntityArea.TemporaryDisplayView;
             }

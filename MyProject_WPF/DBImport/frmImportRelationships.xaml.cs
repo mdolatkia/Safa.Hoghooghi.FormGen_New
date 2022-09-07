@@ -35,14 +35,35 @@ namespace MyProject_WPF
             ImportHelper.ItemImportingStarted += ImportHelper_ItemImportingStarted;
             bizTableDrivedEntity.ItemImportingStarted += ImportHelper_ItemImportingStarted;
             bizRelationship.ItemImportingStarted += ImportHelper_ItemImportingStarted;
+
             dtgNewRelationships.RowLoaded += DtgNewRelationships_RowLoaded;
-            dtgExistingRelationships.RowLoaded += DtgNewRelationships_RowLoaded;
-            dtgDeletedRelationships.RowLoaded += DtgNewRelationships_RowLoaded;
-            dtgExceptionRelationships.RowLoaded += DtgNewRelationships_RowLoaded;
+            dtgExceptionRelationships.RowLoaded += DtgRelationships_RowLoaded;
+            dtgDeletedRelationships.RowLoaded += DtgRelationships_RowLoaded;
+            dtgEditedRelationships.RowLoaded += DtgRelationships_RowLoaded;
+            dtgExistingRelationships.RowLoaded += DtgRelationships_RowLoaded;
+
 
             colRelationshipType.ItemsSource = Enum.GetValues(typeof(Enum_OrginalRelationshipType)).Cast<Enum_OrginalRelationshipType>();
             dtgNewRelationships.CellEditEnded += DtgNewRelationships_CellEditEnded;
             this.Loaded += FrmImportRelationships_Loaded;
+        }
+
+        private void DtgRelationships_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
+        {
+            if (e.DataElement is RelationshipImportItem)
+            {
+                var item = e.DataElement as RelationshipImportItem;
+                var tooltip = item.Tooltip;
+                if (!string.IsNullOrEmpty(item.ValidationTooltip))
+                {
+                    tooltip += Environment.NewLine + item.ValidationTooltip;
+                    e.Row.Background = new SolidColorBrush(Colors.Pink);
+                }
+                else
+                    e.Row.Background = new SolidColorBrush(Colors.White);
+                if (!string.IsNullOrEmpty(tooltip))
+                    ToolTipService.SetToolTip(e.Row, tooltip);
+            }
         }
 
         private void FrmImportRelationships_Loaded(object sender, RoutedEventArgs e)
@@ -105,19 +126,9 @@ namespace MyProject_WPF
         {
             if (e.DataElement is RelationshipImportItem)
             {
+                DtgRelationships_RowLoaded(sender, e);
                 var item = e.DataElement as RelationshipImportItem;
-                var tooltip = item.Tooltip;
-                if (!string.IsNullOrEmpty(item.ValidationTooltip))
-                {
-                    tooltip += Environment.NewLine + item.ValidationTooltip;
-                    e.Row.Background = new SolidColorBrush(Colors.Pink);
-                }
-                else
-                    e.Row.Background = new SolidColorBrush(Colors.White);
-                if (!string.IsNullOrEmpty(tooltip))
-                    ToolTipService.SetToolTip(e.Row, tooltip);
-
-                if(Database.Name.ToLower().StartsWith("DBProductService".ToLower()))
+                if (Database.Name.ToLower().StartsWith("DBProductService".ToLower()))
                 {
                     if (item.Relationship.Entity1 == "GenericPerson" && item.Relationship.Entity2 == "Customer")
                         item.Relationship.OrginalRelationshipGroup = "GenericPerson_Customer";
@@ -149,6 +160,7 @@ namespace MyProject_WPF
         List<RelationshipImportItem> listNew = new List<RelationshipImportItem>();
         List<RelationshipImportItem> listDeleted = new List<RelationshipImportItem>();
         List<RelationshipImportItem> listExisting = new List<RelationshipImportItem>();
+        List<RelationshipImportItem> listEdited = new List<RelationshipImportItem>();
         List<RelationshipImportItem> listException = new List<RelationshipImportItem>();
         private void btnExtract_Click(object sender, RoutedEventArgs e)
         {
@@ -159,20 +171,26 @@ namespace MyProject_WPF
             try
             {
                 FormIsBusy(this, null);
-                var result = await GetRelationshipsInfo();
+                var dbRelationships = await GetDBRelationshipsInfo();
                 listNew = new List<RelationshipImportItem>();
                 listDeleted = new List<RelationshipImportItem>();
                 listExisting = new List<RelationshipImportItem>();
+                listEdited = new List<RelationshipImportItem>();
                 listException = new List<RelationshipImportItem>();
-                var originalRelationships = await GetOrginalRelationships();
+                var originalRelationshipsDTO = await GetOrginalRelationships();
                 var originalEntities = await GetOrginalEntities();
-                foreach (var item in result.Where(x => x.Exception == false))
+                foreach (var item in dbRelationships.Where(x => x.Exception == false))
                 {
-                    var existingRelationship = OrginalRelationshipExists(item.Relationship, originalRelationships);
+                    var existingRelationship = OrginalRelationshipExists(item.Relationship, originalRelationshipsDTO);
                     if (existingRelationship != null)
                     {
+
+
+                        if (ExistingRelationshipIsEdited(item, existingRelationship))
+                            listEdited.Add(item);
+                        else
+                            listExisting.Add(item);
                         item.Relationship = existingRelationship;
-                        listExisting.Add(item);
                     }
                     else
                     {
@@ -188,14 +206,14 @@ namespace MyProject_WPF
                     }
                 }
 
-                foreach (var item in result.Where(x => x.Exception == true))
+                foreach (var item in dbRelationships.Where(x => x.Exception == true))
                 {
                     listException.Add(item);
                 }
                 //بعدا دقت شود که با غیر فعال کردن یک رابطه و حتی کلید خارجی کل رابطه در هر دو طرف غیرفعال فرض شود
                 //var existingRelationships = bizRelationship.GetEnabledOrginalRelationships(Database.ID);
-                var listImportedRelationship = result.Select(x => x.Relationship).ToList();
-                foreach (var item in originalRelationships)
+                var listImportedRelationship = dbRelationships.Select(x => x.Relationship).ToList();
+                foreach (var item in originalRelationshipsDTO)
                 {
                     var existingRelationship = OrginalRelationshipExists(item, listImportedRelationship);
                     if (existingRelationship == null)
@@ -207,6 +225,7 @@ namespace MyProject_WPF
 
                 dtgNewRelationships.ItemsSource = listNew;
                 dtgExistingRelationships.ItemsSource = listExisting;
+                dtgEditedRelationships.ItemsSource = listEdited;
                 dtgExceptionRelationships.ItemsSource = listException;
                 dtgDeletedRelationships.ItemsSource = listDeleted;
 
@@ -219,9 +238,11 @@ namespace MyProject_WPF
                 tabDeletedRelationships.Foreground = listDeleted.Any() ? new SolidColorBrush(Colors.Green) : new SolidColorBrush(Colors.Red);
                 tabExceptionRelationships.Foreground = listException.Any() ? new SolidColorBrush(Colors.Green) : new SolidColorBrush(Colors.Red);
                 tabExistingRelationships.Foreground = listExisting.Any() ? new SolidColorBrush(Colors.Green) : new SolidColorBrush(Colors.Red);
-
+                tabEditRelationships.Foreground = listEdited.Any() ? new SolidColorBrush(Colors.Green) : new SolidColorBrush(Colors.Red);
                 if (listNew.Any())
                     tabNewRelationships.IsSelected = true;
+                else if (listEdited.Any())
+                    tabEditRelationships.IsSelected = true;
                 else if (listDeleted.Any())
                     tabDeletedRelationships.IsSelected = true;
                 else if (listException.Any())
@@ -240,11 +261,21 @@ namespace MyProject_WPF
                 FormIsFree(this, null);
             }
         }
+
+        private bool ExistingRelationshipIsEdited(RelationshipImportItem item, RelationshipDTO existingRelationship)
+        {
+            if (item.Relationship.DBUpdateRule != existingRelationship.DBUpdateRule
+                 || item.Relationship.DBDeleteRule != existingRelationship.DBDeleteRule)
+                return true;
+            else
+                return false;
+        }
+
         public Task<List<TableDrivedEntityDTO>> GetOrginalEntities()
         {
             return Task.Run(() =>
             {
-                var result = bizTableDrivedEntity.GetOrginalEntities(Database.ID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships,false);
+                var result = bizTableDrivedEntity.GetOrginalEntities(Database.ID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships, false);
                 return result;
             });
         }
@@ -492,7 +523,7 @@ namespace MyProject_WPF
         //    return false;
         //}
 
-        public Task<List<RelationshipImportItem>> GetRelationshipsInfo()
+        public Task<List<RelationshipImportItem>> GetDBRelationshipsInfo()
         {
             return Task.Run(() =>
             {
@@ -557,9 +588,10 @@ namespace MyProject_WPF
                 {
                     var newRelationships = listNew.Where(x => x.Selected).Select(x => x.Relationship).ToList();
                     var deletedRelationships = listDeleted.Where(x => x.Selected).Select(x => x.Relationship).ToList();
-                    if (newRelationships.Any() || deletedRelationships.Any())
+                    var editedRelationships = listEdited.Where(x => x.Selected).Select(x => x.Relationship).ToList();
+                    if (newRelationships.Any() || deletedRelationships.Any() || editedRelationships.Any())
                     {
-                        await UpdateModel(Database.ID, newRelationships, deletedRelationships);
+                        await UpdateModel(Database.ID, newRelationships, deletedRelationships, editedRelationships);
                         updated = true;
                         MessageBox.Show("انتقال اطلاعات انجام شد");
                     }
@@ -580,11 +612,11 @@ namespace MyProject_WPF
                     SetImportedInfo();
             }
         }
-        private Task UpdateModel(int databaseID, List<RelationshipDTO> listNew, List<RelationshipDTO> listDeleted)
+        private Task UpdateModel(int databaseID, List<RelationshipDTO> listNew, List<RelationshipDTO> listDeleted, List<RelationshipDTO> listEdited)
         {
             return Task.Run(() =>
             {
-                bizRelationship.UpdateModel(MyProjectManager.GetMyProjectManager.GetRequester(), databaseID, listNew, listDeleted);
+                bizRelationship.UpdateModel(MyProjectManager.GetMyProjectManager.GetRequester(), databaseID, listNew, listDeleted, listEdited);
             });
         }
 

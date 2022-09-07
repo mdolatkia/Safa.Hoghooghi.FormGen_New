@@ -27,7 +27,7 @@ namespace MyRules.TableRules.TableDrivedEntity_IsReference.Action
                         (x.RelationshipType.SubUnionToUnionRelationshipType != null && x.RelationshipType.SubUnionToUnionRelationshipType.UnionRelationshipType.UnionHoldsKeys == false))).Count() == 0)
                     {
                         BizColumn biz = new BizColumn();
-                        var columns = biz.GetAllColumns(entity.ID,true);
+                        var columns = biz.GetAllColumnsDTO(entity.ID, true, false);
                         if (columns.Count <= 4)
                         {
                             if (columns.Any(x => x.ColumnType == Enum_ColumnType.String))

@@ -12,20 +12,21 @@ namespace MyModelManager
 {
     public class BizDatabase
     {
-        public DatabaseDTO GetDatabaseByEntityID(int entityID)
-        {
-            using (var context = new MyProjectEntities())
-            {
-                var entity = context.TableDrivedEntity.FirstOrDefault(x => x.ID == entityID);
-                if (entity != null)
-                {
-                    var dbInfo = entity.Table.DBSchema.DatabaseInformation;
-                    if (dbInfo != null)
-                        return ToDatabaseDTO(dbInfo);
-                }
-                return null;
-            }
-        }
+        //public DatabaseDTO GetDatabaseByEntityID(int entityID)
+        //{
+        //    using (var projectContext = new MyProjectEntities())
+        //    {
+        //        BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+        //           var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.ID == entityID);
+        //        if (entity != null)
+        //        {
+        //            var dbInfo = entity.Table.DBSchema.DatabaseInformation;
+        //            if (dbInfo != null)
+        //                return ToDatabaseDTO(dbInfo);
+        //        }
+        //        return null;
+        //    }
+        //}
         public DatabaseDTO GetDatabaseByTableID(int tableID)
         {
             using (var context = new MyProjectEntities())
@@ -44,18 +45,18 @@ namespace MyModelManager
 
 
 
-        public int GetDatabaseIDByEntityID(int entityID)
-        {
-            using (var context = new MyProjectEntities())
-            {
-                var entity = context.TableDrivedEntity.FirstOrDefault(x => x.ID == entityID);
-                if (entity != null)
-                {
-                    return entity.Table.DBSchema.DatabaseInformationID;
-                }
-            }
-            return 0;
-        }
+        //public int GetDatabaseIDByEntityID(int entityID)
+        //{
+        //    using (var context = new MyProjectEntities())
+        //    {
+        //        var entity = context.TableDrivedEntity.FirstOrDefault(x => x.ID == entityID);
+        //        if (entity != null)
+        //        {
+        //            return entity.Table.DBSchema.DatabaseInformationID;
+        //        }
+        //    }
+        //    return 0;
+        //}
 
         public bool SaveDatabaseSetting(int databaseID, DatabaseSettingDTO databaseSetting)
         {

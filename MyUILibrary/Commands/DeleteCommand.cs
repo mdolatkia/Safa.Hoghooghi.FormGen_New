@@ -56,10 +56,10 @@ namespace MyUILibrary.EntityArea.Commands
                 else
                 {
                     view.SetUserConfirmMode(UserDialogMode.YesNo);
-                    if (reuslt.DataTreeItems.Any(x => x.ChildRelationshipDatas.Any(y => y.RelationshipDeleteOption == ModelEntites.RelationshipDeleteOption.DeleteCascade && y.RelatedData.Any())))
-                        view.SetMessage("داده های وابسته نمایش داده شده نیز حذف خواهند شد. آیا مطمئن هستید؟");
-                    else
-                        view.SetMessage("داده های نمایش داده شده حذف خواهد شد. آیا مطمئن هستید؟");
+                //    if (reuslt.DataTreeItems.Any(x => x.ChildRelationshipDatas.Any(y => y.RelationshipDeleteOption == ModelEntites.RelationshipDeleteOption.DeleteCascade && y.RelatedData.Any())))
+                //        view.SetMessage("داده های وابسته نمایش داده شده نیز حذف خواهند شد. آیا مطمئن هستید؟");
+                //    else
+                        view.SetMessage("داده های نمایش داده شده نیز بروزرسانی و یا حذف خواهند شد. آیا مطمئن هستید؟");
 
                 }
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(view, "تایید", Enum_WindowSize.Big);

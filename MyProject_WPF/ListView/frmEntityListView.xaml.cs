@@ -35,6 +35,8 @@ namespace MyProject_WPF
         public frmEntityListView(int entityID, int entityListViewID)
         {
             InitializeComponent();
+
+            //** 1db5ddd3-be11-41b3-9739-a97eb7d1f22e
             EntityID = entityID;
             BizTableDrivedEntity biz = new BizTableDrivedEntity();
             var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);

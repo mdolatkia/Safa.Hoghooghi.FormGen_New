@@ -248,7 +248,7 @@ namespace MyFormulaFunctionStateFunctionLibrary
                                var fprop = FormulaObject.DataItem.GetProperty(rProperty.FirstSideColumnID);
                             var firstSideValue = fprop.Value;
                             BizColumn bizColumn = new BizColumn();
-                            var sColumn = bizColumn.GetColumn(rProperty.SecondSideColumnID, true);
+                            var sColumn = bizColumn.GetColumnDTO(rProperty.SecondSideColumnID, true);
                             items.Add(new EntityInstanceProperty(sColumn) { Value = firstSideValue });
                         }
                     }

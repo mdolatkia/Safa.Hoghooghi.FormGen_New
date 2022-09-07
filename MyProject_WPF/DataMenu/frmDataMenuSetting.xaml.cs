@@ -108,6 +108,7 @@ namespace MyProject_WPF
 
         private void SetTabVisiblities()
         {
+            //** 71a75126-c643-4bbd-b001-8605f9c20cc9
             if (Entity.IsView)
             {
                 tabDataGridRelationships.Visibility = Visibility.Collapsed;

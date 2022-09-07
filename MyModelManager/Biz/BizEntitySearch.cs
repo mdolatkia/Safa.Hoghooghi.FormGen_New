@@ -43,7 +43,7 @@ namespace MyModelManager
             EntitySearchDTO result = null;
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
+                var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == entityID);
                 if (entity.EntitySearch != null)
                     if (DataIsAccessable(requester, entity.EntitySearch))
                         result = ToEntitySearchDTO(requester, entity.EntitySearch, true);
@@ -151,7 +151,7 @@ namespace MyModelManager
         //    List<EntitySearchDTO> result = new List<EntitySearchDTO>();
         //    using (var projectContext = new DataAccess.MyProjectEntities())
         //    {
-        //        var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
+        //        var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == entityID);
         //        var defaultSearch = entity.EntitySearch.FirstOrDefault();
         //        if (defaultSearch != null)
         //            return ToEntitySearchDTO(defaultSearch, true);
@@ -246,6 +246,7 @@ namespace MyModelManager
         }
         private List<EntitySearchColumnsDTO> GenereateDefaultSearchColumns(TableDrivedEntityDTO entity, List<TableDrivedEntityDTO> allEntities, List<EntitySearchColumnsDTO> list = null)
         {
+            //** 8ab306e9-0d52-4be6-95c0-9e5b4c36a21c
             if (list == null)
                 list = new List<EntitySearchColumnsDTO>();
             if (entity.IsView == false)

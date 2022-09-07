@@ -239,7 +239,7 @@ namespace MyUILibrary.EntityArea
 
                 List<ColumnControlColorItem> columnControlColorItems = new List<ColumnControlColorItem>();
                 List<ColumnControlMessageItem> columnControlMessageItems = new List<ColumnControlMessageItem>();
-
+                //**5410c49f-5d04-40f3-8b48-a579903e12bd
                 if (RelationshipControl.Relationship.IsOtherSideMandatory)
                     columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
 
@@ -719,7 +719,7 @@ namespace MyUILibrary.EntityArea
 
             if (Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
             {
-                if (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.DeleteOption == RelationshipDeleteOption.DeleteCascade || RelationshipControl.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(x => !x.SecondSideColumn.IsNull))
+                if (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.DBDeleteRule == RelationshipDeleteUpdateRule.Cascade)//|| RelationshipControl.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(x => !x.SecondSideColumn.IsNull))
                 {
                     shouldDeleteFromDB = true;
                 }
@@ -753,10 +753,11 @@ namespace MyUILibrary.EntityArea
                 else
                 {
                     view.SetUserConfirmMode(UserDialogMode.YesNo);
-                    if (reuslt.DataTreeItems.Any(x => x.ChildRelationshipDatas.Any(y => y.RelationshipDeleteOption == ModelEntites.RelationshipDeleteOption.DeleteCascade && y.RelatedData.Any())))
-                        view.SetMessage("داده های وابسته نمایش داده شده نیز حذف خواهند شد. آیا مطمئن هستید؟");
-                    else
-                        view.SetMessage("داده نمایش داده شده حذف خواهد شد. آیا مطمئن هستید؟");
+                    // if (reuslt.DataTreeItems.Any(x => x.ChildRelationshipDatas.Any(y => y.RelationshipDeleteOption == ModelEntites.RelationshipDeleteOption.DeleteCascade && y.RelatedData.Any())))
+                    //        view.SetMessage("داده های وابسته نمایش داده شده نیز حذف خواهند شد. آیا مطمئن هستید؟");
+                    //   else
+                    view.SetMessage("داده های نمایش داده شده نیز بروزرسانی و یا حذف خواهند شد. آیا مطمئن هستید؟");
+                  
                     var result = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowPromptDialog(view, "");
                     if (result == UserDialogResult.Ok || result == UserDialogResult.No)
                     {
@@ -876,7 +877,7 @@ namespace MyUILibrary.EntityArea
             get
             {
 
-
+                //** 4a3e4287-2824-4019-ad03-e276ef44e0fb
 
 
                 return Relationship.IsReadonly || ControlReadonlyStateItems.Any() || DataIsOneAndReadonly;
@@ -1023,8 +1024,11 @@ namespace MyUILibrary.EntityArea
 
 
         bool dataLoaded = false;
+
+        
         public bool SetBinding()
         {
+            //اینکه اینجا هیدن ها بایند نمیشن خوب نیست چون برای ارث بری مثلا شخص فرمهای شخص حقیقی و حقوقی مخفی هستن اولش و بایند نمیشن. بعدا یه فکری بشه
             RelationshipControl.GenericEditNdTypeArea.ChildRelationshipInfoBinded = this;
             if (!IsHidden)
             {
@@ -1060,7 +1064,7 @@ namespace MyUILibrary.EntityArea
                     dataLoaded = true;
 
                     bool relationshipFirstSideHasValue = RelationshipControl.Relationship.RelationshipColumns.Any()
-                        && RelationshipControl.Relationship.RelationshipColumns.All(x => SourceData.GetProperties().Any(y => !AgentHelper.ValueIsEmpty(y) && y.ColumnID == x.FirstSideColumnID));
+                        && RelationshipControl.Relationship.RelationshipColumns.All(x => SourceData.GetProperties().Any(y => !y.ValueIsEmpty() && y.ColumnID == x.FirstSideColumnID));
                     if (!relationshipFirstSideHasValue)
                     {
                         //childData = specificDate.AddChildRelationshipInfo(relationshipControl);

@@ -199,7 +199,7 @@ namespace MyModelManager
                 }
                 if (withEntitiesAndRelationships)
                 {
-                    var relationship = projectContext.Relationship.First(x => x.ID == relationshipID);
+                    var relationship = bizRelationship.GetAllRelationships(projectContext, false, false).First(x => x.ID == relationshipID);
                     if (!entities.Any(x => x.ID == relationship.TableDrivedEntityID2))
                     {
                         entities.Add(relationship.TableDrivedEntity1);
@@ -231,8 +231,8 @@ namespace MyModelManager
             //if (result.ReverseRelationshipTail.ChildTail != null)
             //    result.ReverseRelationshipTail.LastRelationship = result.ReverseRelationshipTail.ChildTail.LastRelationship;
 
-            var resultTuple= new Tuple<EntityRelationshipTailDTO, List<TableDrivedEntity>, List<Relationship>>(result, entities, relationships);
-            CacheManager.GetCacheManager().AddCacheItem(resultTuple,CacheItemType.RelationshipTail, initialiEntityID.ToString(), relationshipPath.ToString(), withEntitiesAndRelationships.ToString());
+            var resultTuple = new Tuple<EntityRelationshipTailDTO, List<TableDrivedEntity>, List<Relationship>>(result, entities, relationships);
+            CacheManager.GetCacheManager().AddCacheItem(resultTuple, CacheItemType.RelationshipTail, initialiEntityID.ToString(), relationshipPath.ToString(), withEntitiesAndRelationships.ToString());
 
             return resultTuple;
             //if (item.ReverseRelationshipTailID != null)
@@ -372,7 +372,7 @@ namespace MyModelManager
                 {
                     relationshipID = Convert.ToInt32(path);
                 }
-                dbItem.TargetEntityID = projectContext.Relationship.First(x => x.ID == relationshipID).TableDrivedEntityID2;
+                dbItem.TargetEntityID = bizRelationship.GetAllRelationships(projectContext, false, false).First(x => x.ID == relationshipID).TableDrivedEntityID2;
                 dbItem.RelationshipPath = path;
                 projectContext.EntityRelationshipTail.Add(dbItem);
             }

@@ -48,7 +48,7 @@ namespace MyUIGenerator.UIControlHelper
         {
             ControlArea.IsEnabled = enable;
         }
-        public UIControlPackageTree UIControlPackageTreeItem { get; set; }
+        public UIControlComposition UIControlPackageTreeItem { get; set; }
 
         public bool IsOpenedTemporary { get; set; }
         //public View_Container(GridSetting gridSetting)

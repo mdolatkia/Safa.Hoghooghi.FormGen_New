@@ -76,6 +76,7 @@ namespace DataAccess
         public Nullable<int> DeterminerColumnID { get; set; }
         public Nullable<int> DataMenuSettingID { get; set; }
         public Nullable<int> InternalTableSuperToSubRelID { get; set; }
+        public bool Removed { get; set; }
     
         public virtual ICollection<ArchiveFolder> ArchiveFolder { get; set; }
         public virtual ICollection<ArchiveTag> ArchiveTag { get; set; }

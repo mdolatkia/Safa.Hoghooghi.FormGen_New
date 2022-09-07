@@ -95,7 +95,7 @@ namespace MyModelManager
                     if (ItemImportingStarted != null)
                         ItemImportingStarted(this, new ItemImportingStartedArg() { ItemName = "Setting default view for entity" + " " + item.Item1.Name, TotalProgressCount = listEntityAndView.Count(), CurrentProgress = listEntityAndView.IndexOf(item) + 1 });
                     var dbListView = bizEntityListView.SaveItem(projectContext, item.Item2, createdRelationshipTails);
-                    var dbentity = projectContext.TableDrivedEntity.First(x => x.ID == item.Item1.ID);
+                    var dbentity = bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == item.Item1.ID);
                     dbentity.EntityListView1 = dbListView;
                 }
 
@@ -114,7 +114,7 @@ namespace MyModelManager
                     if (ItemImportingStarted != null)
                         ItemImportingStarted(this, new ItemImportingStartedArg() { ItemName = "Setting default search for entity" + " " + item.Item1.Name, TotalProgressCount = listEntityAndSearch.Count(), CurrentProgress = listEntityAndSearch.IndexOf(item) + 1 });
                     var dbSearch = bizEntitySearch.SaveItem(projectContext, item.Item2, createdRelationshipTails);
-                    var dbentity = projectContext.TableDrivedEntity.First(x => x.ID == item.Item1.ID);
+                    var dbentity = bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == item.Item1.ID);
                     dbentity.EntitySearch = dbSearch;
                 }
 
@@ -147,14 +147,14 @@ namespace MyModelManager
        //     using (var projectContext = new DataAccess.MyProjectEntities())
        //     {
        //         var dbDatabase = projectContext.DatabaseInformation.FirstOrDefault(x => x.ID == databaseID);
-       //         var customer = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "Customer" && x.Table.DBSchema.DatabaseInformationID == databaseID);
-       //         var productItem = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ProductItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
-       //         var realPerson = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "RealPerson" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var customer = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "Customer" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var productItem = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "ProductItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var realPerson = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "RealPerson" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (realPerson != null)
        //         {
 
        //         }
-       //         var legalPerson = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "LegalPerson" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var legalPerson = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "LegalPerson" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (legalPerson != null)
        //         {
        //             var legalPersonName = legalPerson.Table.Column.FirstOrDefault(x => x.Name == "Name");
@@ -163,7 +163,7 @@ namespace MyModelManager
        //                 legalPersonName.IsMandatory = true;
        //             }
        //         }
-       //         var genericPerson = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "GenericPerson" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var genericPerson = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "GenericPerson" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (genericPerson != null)
        //         {
        //             var emailColumn = genericPerson.Table.Column.FirstOrDefault(x => x.Name == "EmailAddress");
@@ -224,7 +224,7 @@ namespace MyModelManager
 
 
        //         Formula serviceItemPriceFormula = null;
-       //         var serviceItem = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var serviceItem = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "ServiceItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (serviceItem != null)
        //         {
        //             var StartDateTimeColumn = serviceItem.Table.Column.FirstOrDefault(x => x.Name == "StartDateTime");
@@ -386,10 +386,10 @@ namespace MyModelManager
        //                 }
        //             }
        //         }
-       //         var serviceAdditionalItem = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceAdditionalItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var serviceAdditionalItem = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "ServiceAdditionalItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
 
        //         Column ConclusionItemPriceColumn = null;
-       //         var serviceConclusionItem = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceConclusionItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var serviceConclusionItem = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "ServiceConclusionItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (serviceConclusionItem != null)
        //         {
        //             var typeColumn = serviceConclusionItem.Table.Column.FirstOrDefault(x => x.Name == "Type");
@@ -508,7 +508,7 @@ namespace MyModelManager
        //             }
        //         }
        //         Column ConclusionTotalPriceColumn = null;
-       //         var serviceConclusion = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceConclusion" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var serviceConclusion = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "ServiceConclusion" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (serviceConclusion != null)
        //         {
        //             var userRateColumn = serviceConclusion.Table.Column.FirstOrDefault(x => x.Name == "UserRate");
@@ -558,7 +558,7 @@ namespace MyModelManager
        //             }
 
        //         }
-       //         var requestProductPart = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "RequestProductPart" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var requestProductPart = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "RequestProductPart" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (requestProductPart != null)
        //         {
        //             var dateTimeColumn = requestProductPart.Table.Column.FirstOrDefault(x => x.Name == "DateTime");
@@ -573,9 +573,9 @@ namespace MyModelManager
        //                 stringDateTimeColumn.DateTimeColumnType.ShowAMPMFormat = true;
        //             }
        //         }
-       //         var serviceRequest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequest" && x.Table.DBSchema.DatabaseInformationID == databaseID);
-       //         var serviceRequest_RequestType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequest_RequestType" && x.Table.DBSchema.DatabaseInformationID == databaseID);
-       //         var serviceRequestType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequestType" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var serviceRequest = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "ServiceRequest" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var serviceRequest_RequestType = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "ServiceRequest_RequestType" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var serviceRequestType = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "ServiceRequestType" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (serviceRequest != null)
        //         {
        //             var persianDateColumn = serviceRequest.Table.Column.FirstOrDefault(x => x.Name == "PersianDate");
@@ -605,8 +605,8 @@ namespace MyModelManager
        //             }
 
        //         }
-       //         var serviceRequestReviewItems = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequestReviewItems" && x.Table.DBSchema.DatabaseInformationID == databaseID);
-       //         var serviceRequestReview = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequestReview" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var serviceRequestReviewItems = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "ServiceRequestReviewItems" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var serviceRequestReview = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "ServiceRequestReview" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (serviceRequestReview != null)
        //         {
        //             var autoDateColumn = serviceRequestReview.Table.Column.FirstOrDefault(x => x.Name == "AutoDate");
@@ -621,7 +621,7 @@ namespace MyModelManager
        //             }
        //         }
 
-       //         var employee = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "Employee" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var employee = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "Employee" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (employee != null)
        //         {
        //             var employeeRoleColumn = employee.Table.Column.FirstOrDefault(x => x.Name == "EmployeeRole");
@@ -683,7 +683,7 @@ namespace MyModelManager
        //                 }
        //             }
        //         }
-       //         var office = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "Office" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var office = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "Office" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (office != null)
        //         {
        //             var workshopLevelColumn = office.Table.Column.FirstOrDefault(x => x.Name == "WorkshopLevel");
@@ -760,7 +760,7 @@ namespace MyModelManager
 
        //         }
 
-       //         var region = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "Region" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var region = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "Region" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (region != null)
        //         {
        //             var typeColumn = region.Table.Column.FirstOrDefault(x => x.Name == "Type");
@@ -814,7 +814,7 @@ namespace MyModelManager
 
        //             }
        //         }
-       //         var genericPersonAddress = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "GenericPersonAddress" && x.Table.DBSchema.DatabaseInformationID == databaseID);
+       //         var genericPersonAddress = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.Name == "GenericPersonAddress" && x.Table.DBSchema.DatabaseInformationID == databaseID);
        //         if (genericPersonAddress != null && region != null)
        //         {
        //             var relaitonship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == genericPersonAddress.ID && x.TableDrivedEntityID2 == region.ID);
@@ -2192,7 +2192,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                return projectContext.TableDrivedEntity.Any(x =>
+                return bizTableDrivedEntity.GetAllEntities(projectContext, false).Any(x =>
                 x.IsOrginal == true &&  x.IsDisabled == false && x.Table.DBSchema.DatabaseInformationID == databaseID
                 && (x.EntitySearchID == null || x.EntityListViewID == null || !x.EntityUIComposition.Any() || x.SearchInitially == null));
             }

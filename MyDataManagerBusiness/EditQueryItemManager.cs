@@ -41,24 +41,58 @@ namespace MyDataEditManagerBusiness
         {
             ListData = listData;
 
-            var queryDeleteItems = GetDeleteQueryQueue(requester);
-            var queryRemoveItems = GetRemoveQueryQueue(requester);
-            var queryEditItems = GetEditQueryQueue(requester);
+            List<QueryItem> allQueryItems = new List<QueryItem>();
 
-            var allQueryItems = queryDeleteItems.Union(queryRemoveItems).Union(queryEditItems);
-            return allQueryItems.ToList();
-        }
+            List<DP_DataRepository> deleteItems = GetDeleteItems(ListData);
+            var itemAndQueriesDelete = deleteQueryItemManager.GetDeleteQueryItems(requester, deleteItems);
+            foreach (var item in itemAndQueriesDelete)
+            {
+                allQueryItems.Add(item.Item2);
+            }
 
-        List<QueryItem> GetEditQueryQueue(DR_Requester requester)
-        {
+            List<Tuple<RelationshipDTO, DP_DataRepository>> removeItems = GetRemoveItems(ListData);
+            var itemAndQueriesRemove = GetRemoveQueryItems(requester, removeItems);
+            foreach (var item in itemAndQueriesRemove)
+            {
+                allQueryItems.Add(item.Item2);
+            }
+
             var sortedList = SetSortedTree(requester);
             GetUpdateQueryItems(requester, sortedList);
+            foreach (var item in sortedList)
+            {
+                allQueryItems.Add(item);
+            }
 
-            //foreach (var item in sortedList.Where(x => string.IsNullOrEmpty(x.Query)).ToList())
-            //    sortedList.Remove(item);
-            return sortedList;
+            return allQueryItems;
         }
 
+        private List<Tuple<DP_DataRepository, QueryItem>> GetRemoveQueryItems(DR_Requester requester, List<Tuple<RelationshipDTO, DP_DataRepository>> removeItems)
+        {
+            List<Tuple<DP_DataRepository, QueryItem>> result = new List<Tuple<DP_DataRepository, QueryItem>>();
+            foreach (var item in removeItems)
+            {
+                List<EntityInstanceProperty> listEditProperties = new List<EntityInstanceProperty>();
+
+                foreach (var col in item.Item1.RelationshipColumns)
+                {
+                    var prop = item.Item2.GetProperty(col.SecondSideColumnID);
+                    if (prop == null)
+                    {
+                        prop = new EntityInstanceProperty(col.SecondSideColumn);
+                    }
+                    prop.Value = null;
+                    listEditProperties.Add(prop);
+                }
+                result.Add(new Tuple<DP_DataRepository, QueryItem>(item.Item2, new QueryItem(GetTableDrivedDTO(requester, item.Item2.TargetEntityID), Enum_QueryItemType.Update, listEditProperties, item.Item2)));
+
+            }
+            foreach (var queryItem in result)
+            {
+                queryItem.Item2.Query = GetUpdateQuery(queryItem.Item2);
+            }
+            return result;
+        }
 
         private List<QueryItem> SetSortedTree(DR_Requester requester)
         {
@@ -104,7 +138,9 @@ namespace MyDataEditManagerBusiness
             return result;
         }
         private QueryItem SetSortedTree(DR_Requester requester, List<QueryItem> result, DP_DataRepository item, QueryItem parentQueryItem = null, ChildRelationshipData parentChildRelationshipInfo = null)
-        {
+        {  
+            
+            //**b6bbadec-6c6a-4b8c-a604-9703604e81b5
             List<EntityInstanceProperty> editingProperties = new List<EntityInstanceProperty>();
 
             foreach (var child in item.ChildRelationshipDatas.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
@@ -136,6 +172,7 @@ namespace MyDataEditManagerBusiness
                         //        pkIdentityColumnID = pkData.KeyProperties.First(x => x.IsIdentity).ColumnID;
                         //    }
                         // queryItem.FKSources.Add(new FKToPK(child.Relationship, pkQueryItem, pkIdentityColumnID, isSelfTable));
+
                         if (child.RelationshipIsChangedForUpdate)
                         {
                             foreach (var relCol in child.Relationship.RelationshipColumns)
@@ -183,7 +220,7 @@ namespace MyDataEditManagerBusiness
                 }
             }
 
-
+          
             if (parentChildRelationshipInfo != null && parentChildRelationshipInfo.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
             {
                 bool isSelfTable = false;
@@ -239,6 +276,7 @@ namespace MyDataEditManagerBusiness
 
         private void GetUpdateQueryItems(DR_Requester requester, List<QueryItem> sortedList)
         {
+            //**be3c95de-74cf-4838-aa97-c6809a1b6f29
             List<QueryItem> removeList = new List<QueryItem>();
             foreach (var queryItem in sortedList)
             {
@@ -261,7 +299,7 @@ namespace MyDataEditManagerBusiness
                             skip = true;
                         if (property.Column.IsDBCalculatedColumn)
                             skip = true;
-                        if (property.IsIdentity)
+                        if (property.Column.IsIdentity)
                             skip = true;
                         if (!queryItem.DataItem.IsNewItem && property.IsKey)
                             skip = true;
@@ -437,47 +475,30 @@ namespace MyDataEditManagerBusiness
             //}
             return result;
         }
-        List<QueryItem> GetRemoveQueryQueue(DR_Requester requester)
-        {
-            List<QueryItem> result = new List<QueryItem>();
-            var removeItems = GetRemoveItems(ListData);
-            foreach (var item in removeItems)
-            {
-                List<EntityInstanceProperty> listEditProperties = new List<EntityInstanceProperty>();
+        //List<QueryItem> GetRemoveQueryQueue(DR_Requester requester)
+        //{
+        //    List<QueryItem> result = new List<QueryItem>();
+        //    var removeItems = GetRemoveItems(ListData);
 
-                foreach (var col in item.Item1.RelationshipColumns)
-                {
-                    var prop = item.Item2.GetProperty(col.SecondSideColumnID);
-                    if (prop == null)
-                    {
-                        prop = new EntityInstanceProperty(col.SecondSideColumn);
-                    }
-                    prop.Value = null;
-                    listEditProperties.Add(prop);
-                }
-                result.Add(new QueryItem(GetTableDrivedDTO(requester, item.Item2.TargetEntityID), Enum_QueryItemType.Update, listEditProperties, item.Item2));
-
-            }
-            foreach (var queryItem in result)
-            {
-                queryItem.Query = GetUpdateQuery(queryItem);
-            }
-            return result;
-        }
+        //    return result;
+        //}
         private List<Tuple<RelationshipDTO, DP_DataRepository>> GetRemoveItems(List<DP_DataRepository> listdata, List<Tuple<RelationshipDTO, DP_DataRepository>> result = null)
         {
+            //تمامی مواردی که باید نال شوند را استخراج می کند
             if (result == null)
                 result = new List<Tuple<RelationshipDTO, DP_DataRepository>>();
             foreach (var item in listdata)
             {
-                foreach (var removeChild in item.ChildRelationshipDatas.Where(x => x.RemovedDataForUpdate.Any() && x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
+                foreach (var removeChild in item.ChildRelationshipDatas.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign && x.RemovedDataForUpdate.Any()))
                 {
-                    if (removeChild.RelationshipDeleteOption == RelationshipDeleteOption.SetNull)
+                    if (removeChild.Relationship.RelationshipColumns.Any(x => x.SecondSideColumn.IsNull))
+                    {
                         foreach (var removeItem in removeChild.RemovedDataForUpdate)
                         {
                             var relationship = bizRelationship.GetRelationship(removeChild.Relationship.ID);
                             result.Add(new Tuple<RelationshipDTO, DP_DataRepository>(relationship, removeItem));
                         }
+                    }
                 }
                 foreach (var child in item.ChildRelationshipDatas)
                 {
@@ -486,36 +507,32 @@ namespace MyDataEditManagerBusiness
             }
             return result;
         }
-        List<QueryItem> GetDeleteQueryQueue(DR_Requester requester)
-        {
-            List<QueryItem> result = new List<QueryItem>();
-            List<DP_DataRepository> deleteITems = GetDeleteItems(ListData);
-            var itemAndQueries = deleteQueryItemManager.GetDeleteQueryItems(requester, deleteITems);
-            foreach (var item in itemAndQueries)
-            {
-                foreach (var query in item.Item2)
-                    result.Add(query);
-            }
-            //foreach (var item in listData)
-            //{
-            //    var inner = GetDeleteQueryQueue(item);
-            //    foreach (var it in inner)
-            //        result.Add(it);
-            //}
-            return result;
-        }
+        //List<QueryItem> GetDeleteQueryQueue(DR_Requester requester)
+        //{
+
+        //    //foreach (var item in listData)
+        //    //{
+        //    //    var inner = GetDeleteQueryQueue(item);
+        //    //    foreach (var it in inner)
+        //    //        result.Add(it);
+        //    //}
+        //    return result;
+        //}
 
         private List<DP_DataRepository> GetDeleteItems(List<DP_DataRepository> listdata, List<DP_DataRepository> result = null)
         {
+            //تمامی مواردی که باید دیلیت شوند را استخراج می کند
             if (result == null)
                 result = new List<DP_DataRepository>();
             foreach (var item in listdata)
             {
-                foreach (var removeChild in item.ChildRelationshipDatas.Where(x => x.RemovedDataForUpdate.Any() && x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
+                foreach (var removeChild in item.ChildRelationshipDatas.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign && x.RemovedDataForUpdate.Any()))
                 {
-                    if (removeChild.RelationshipDeleteOption == RelationshipDeleteOption.DeleteCascade || removeChild.Relationship.RelationshipColumns.Any(x => !x.SecondSideColumn.IsNull))
-                        foreach (var removeItem in removeChild.RemovedDataForUpdate)
-                            result.Add(removeItem);
+                    if (removeChild.Relationship.RelationshipColumns.Any(x => !x.SecondSideColumn.IsNull /* || removeChild.RelationshipDeleteOption == RelationshipDeleteOption.DeleteCascade */ ))
+                    {
+                        foreach (var deleteItem in removeChild.RemovedDataForUpdate)
+                            result.Add(deleteItem);
+                    }
                 }
                 foreach (var child in item.ChildRelationshipDatas)
                 {

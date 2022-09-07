@@ -87,8 +87,8 @@ namespace MyUILibrary.EntityArea.Commands
             {
                 var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
                 DR_EditRequest request = new DR_EditRequest(requester);
-                //اینجا
-                //request.EditPackages = Datas;
+           //     اینجا
+                request.EditPackages = Datas;
 
                 var reuslt = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendEditRequest(request);
                 if (reuslt.Result == Enum_DR_ResultType.SeccessfullyDone)
@@ -250,7 +250,7 @@ namespace MyUILibrary.EntityArea.Commands
                 {
                     var newChildItems = new ChildRelationshipData(childItem.SourceData, childItem.Relationship);
 
-                    newChildItems.RelationshipDeleteOption = childItem.RelationshipDeleteOption;
+            //        newChildItems.RelationshipDeleteOption = childItem.RelationshipDeleteOption;
                     foreach (var orginalData in childItem.OriginalRelatedData)
                     {
                         newChildItems.OriginalRelatedData.Add(orginalData);

@@ -73,19 +73,19 @@ namespace MyUILibrary.EntityArea
 
         //      public EntityUICompositionCompositeDTO PreviewUICompositionItems { get; set; }
 
-        public List<DP_DataRepository> ParentDataItemBusinessReadOnly = new List<DP_DataRepository>();
+        //public List<DP_DataRepository> ParentDataItemBusinessReadOnly = new List<DP_DataRepository>();
 
         //public List<DP_DataRepository> DataItemBusinessReadOnly = new List<DP_DataRepository>();
-        public void AddBusinessReadOnlyByParent(DP_DataRepository dataItem)
-        {
-            if (!ParentDataItemBusinessReadOnly.Contains(dataItem))
-                ParentDataItemBusinessReadOnly.Add(dataItem);
-        }
-        public void RemoveBusinessReadOnlyByParent(DP_DataRepository dataItem)
-        {
-            if (ParentDataItemBusinessReadOnly.Contains(dataItem))
-                ParentDataItemBusinessReadOnly.Remove(dataItem);
-        }
+        //public void AddBusinessReadOnlyByParent(DP_DataRepository dataItem)
+        //{
+        //    if (!ParentDataItemBusinessReadOnly.Contains(dataItem))
+        //        ParentDataItemBusinessReadOnly.Add(dataItem);
+        //}
+        //public void RemoveBusinessReadOnlyByParent(DP_DataRepository dataItem)
+        //{
+        //    if (ParentDataItemBusinessReadOnly.Contains(dataItem))
+        //        ParentDataItemBusinessReadOnly.Remove(dataItem);
+        //}
         //public FormAttributes FormAttributes { set; get; }
         //public List<DataItemAttributes> DataItemAttributes { set; get; }
 

@@ -22,7 +22,7 @@ namespace MyDataManagerService
         {
             BizNavigationTree biz = new BizNavigationTree();
 
-            var fullNavigation = biz.GetFullNavigatoinTree(requester);
+            var fullNavigation = biz.GetNavigationTree(requester);
 
             //ValidateTree(request.Requester, fullNavigation.TreeItems);
 

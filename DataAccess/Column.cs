@@ -59,6 +59,7 @@ namespace DataAccess
         public string Description { get; set; }
         public string DBCalculateFormula { get; set; }
         public bool IsNotTransferable { get; set; }
+        public bool Removed { get; set; }
     
         public virtual ICollection<CodeFunction_TableDrivedEntity_Parameters> CodeFunction_TableDrivedEntity_Parameters { get; set; }
         public virtual ColumnCustomFormula ColumnCustomFormula { get; set; }

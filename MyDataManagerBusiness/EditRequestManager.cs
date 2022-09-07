@@ -80,11 +80,12 @@ namespace MyDataEditManagerBusiness
                         if (!string.IsNullOrEmpty(logResult))
                             result.Details.Add(ToResultDetail("خطا در ثبت لاگ", "", logResult));
 
+                        //**adb34385-d2d1-4b29-a147-0cbaba268135
                         foreach (var item in request.EditPackages)
                         {
                             var baseData = new DP_BaseData(item.TargetEntityID, item.TargetEntityAlias);
                             var listKeyProperties = new List<EntityInstanceProperty>();
-                            if (item.IsNewItem && item.KeyProperties.Any(x => x.IsIdentity))
+                            if (item.IsNewItem && item.KeyProperties.Any(x => x.Column.IsIdentity))
                             {
                                 var dataItem = editQueryResults.First(x => x.QueryItem.DataItem == item).QueryItem.DataItem;
                                 foreach (var key in dataItem.KeyProperties)
@@ -271,14 +272,14 @@ namespace MyDataEditManagerBusiness
         {
             DR_ResultDelete result = new DR_ResultDelete();
             var itemsAndQueries = deleteQueryItemManager.GetDeleteQueryItems(request.Requester, request.DataItems);
-            var editQueryResults = new List<EditQueryResultItem>();
+            var deleteQueryResults = new List<EditQueryResultItem>();
             foreach (var item in itemsAndQueries)
             {
-                foreach (var childitem in item.Item2)
-                    editQueryResults.Add(new EditQueryResultItem(childitem));
+               // foreach (var childitem in item.Item2)
+                    deleteQueryResults.Add(new EditQueryResultItem(item.Item2));
             }
             //کاملا مثل ادیت .یکی شوند
-            var allQueryItems = editQueryResults.Select(x => x.QueryItem).ToList();
+            var allQueryItems = deleteQueryResults.Select(x => x.QueryItem).ToList();
             if (allQueryItems.Any(x => string.IsNullOrEmpty(x.Query)))
             {
                 throw new Exception("sdfsdf");
@@ -288,10 +289,10 @@ namespace MyDataEditManagerBusiness
             if (result.Result == Enum_DR_ResultType.ExceptionThrown)
                 return result;
 
-            actionActivityManager.DoBeforeDeleteActionActivities(request.Requester, editQueryResults);
-            if (editQueryResults.Any(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
+            actionActivityManager.DoBeforeDeleteActionActivities(request.Requester, deleteQueryResults);
+            if (deleteQueryResults.Any(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
             {
-                var exceptionItem = editQueryResults.First(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown);
+                var exceptionItem = deleteQueryResults.First(x => x.BeforeSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown);
                 result.Result = Enum_DR_ResultType.ExceptionThrown;
                 var logResult = bizLogManager.AddLog(GetBeforeDeleteExceptionLog(exceptionItem), request.Requester);
                 if (!string.IsNullOrEmpty(logResult))
@@ -304,15 +305,15 @@ namespace MyDataEditManagerBusiness
                 var transactionresult = ConnectionManager.ExecuteTransactionalQueryItems(allQueryItems);
                 if (transactionresult.Successful)
                 {
-                    actionActivityManager.DoAfterEditActionActivities(request.Requester, editQueryResults);
-                    var logResult = bizLogManager.AddLogs(GetUpdateDataSuccessfulLogs(editQueryResults), request.Requester);
+                    actionActivityManager.DoAfterEditActionActivities(request.Requester, deleteQueryResults);
+                    var logResult = bizLogManager.AddLogs(GetUpdateDataSuccessfulLogs(deleteQueryResults), request.Requester);
                     if (!string.IsNullOrEmpty(logResult))
                         result.Details.Add(ToResultDetail("خطا در ثبت لاگ", "", logResult));
 
-                    if (editQueryResults.Any(x => x.AfterSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
+                    if (deleteQueryResults.Any(x => x.AfterSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
                     {
                         result.Result = Enum_DR_ResultType.JustMajorFunctionDone;
-                        foreach (var item in editQueryResults.Where(x => x.AfterSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
+                        foreach (var item in deleteQueryResults.Where(x => x.AfterSaveActionActivitiesResult == Enum_DR_SimpleResultType.ExceptionThrown))
                         {
                             result.Details.Add(ToResultDetail(item.QueryItem.DataItem.ViewInfo, "فعالیتهای بعد از ذخیره شدن داده با خطا همراه بود", item.AfterSaveActionActivitiesMessage));
                         }
@@ -325,14 +326,14 @@ namespace MyDataEditManagerBusiness
                 else
                 {
                     result.Result = Enum_DR_ResultType.ExceptionThrown;
-                    if (editQueryResults.Any(x => x.DataUpdateResult == Enum_DR_SimpleResultType.ExceptionThrown))
+                    if (deleteQueryResults.Any(x => x.DataUpdateResult == Enum_DR_SimpleResultType.ExceptionThrown))
                     {
                         foreach (var item in transactionresult.QueryItems.Where(x => x.Exception != null))
                         {
-                            editQueryResults.First(x => x.QueryItem == item.QueryItem).DataUpdateMessage = item.Exception.Message;
-                            editQueryResults.First(x => x.QueryItem == item.QueryItem).DataUpdateResult = Enum_DR_SimpleResultType.ExceptionThrown;
+                            deleteQueryResults.First(x => x.QueryItem == item.QueryItem).DataUpdateMessage = item.Exception.Message;
+                            deleteQueryResults.First(x => x.QueryItem == item.QueryItem).DataUpdateResult = Enum_DR_SimpleResultType.ExceptionThrown;
                         }
-                        var exceptionItem = editQueryResults.First(x => x.DataUpdateResult == Enum_DR_SimpleResultType.ExceptionThrown);
+                        var exceptionItem = deleteQueryResults.First(x => x.DataUpdateResult == Enum_DR_SimpleResultType.ExceptionThrown);
                         var logResult = bizLogManager.AddLog(GetUpdateDataExceptionLog(exceptionItem), request.Requester);
                         if (!string.IsNullOrEmpty(logResult))
                             result.Details.Add(ToResultDetail("خطا در ثبت لاگ", "", logResult));

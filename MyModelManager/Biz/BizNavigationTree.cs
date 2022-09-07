@@ -14,8 +14,9 @@ namespace MyModelManager
     {
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         BizEntityReport bizEntityReport = new BizEntityReport();
-        public NavigationTreeDTO GetFullNavigatoinTree(DR_Requester requester)
+        public NavigationTreeDTO GetNavigationTree(DR_Requester requester)
         {
+            //** 220a1cf0-bfce-4db2-8949-e807e75a4ae6
             NavigationTreeDTO result = new NavigationTreeDTO();
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
@@ -187,7 +188,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyProjectEntities())
             {
-                return projectContext.TableDrivedEntity.Any(x => x.IsOrginal == true && x.IsView == false && x.IsDisabled == false && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IndependentDataEntry == true && !projectContext.NavigationTree.Any(y => y.Category == "Entity" && y.ItemIdentity == x.ID));
+                return bizTableDrivedEntity.GetAllEntities(projectContext, false).Any(x => x.IsOrginal == true && x.IsView == false && x.IsDisabled == false && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IndependentDataEntry == true && !projectContext.NavigationTree.Any(y => y.Category == "Entity" && y.ItemIdentity == x.ID));
             }
         }
     }
