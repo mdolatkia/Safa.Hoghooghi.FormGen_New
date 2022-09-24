@@ -21,7 +21,7 @@ namespace MyProject
 
         internal void GetTables(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -31,7 +31,7 @@ namespace MyProject
         }
         internal void UpdateTables(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var table in (dataSource as List<Table>))
                 {
@@ -48,7 +48,7 @@ namespace MyProject
         }
         internal void GetColumns(int tableID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 var list = projectContext.Column.Where(x => x.TableID == tableID).ToList();
@@ -57,7 +57,7 @@ namespace MyProject
         }
         internal void UpdateColumns(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in (dataSource as List<Column>))
                 {
@@ -77,7 +77,7 @@ namespace MyProject
 
         internal void GetKeyValue(int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 var column = projectContext.Column.First(x => x.ID == columnID);
@@ -86,7 +86,7 @@ namespace MyProject
         }
         internal void UpdateColumnKeyValue(int columnID, bool ValueFromKeyOrValue, object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = projectContext.Column.First(x => x.ID == columnID);
                 if ((dataSource as List<ColumnKeyValueRange>).Count > 0)
@@ -130,7 +130,7 @@ namespace MyProject
             else
                 MessageBox.Show("Operation is not done!");
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = projectContext.Column.First(x => x.ID == columnID);
 
@@ -139,7 +139,7 @@ namespace MyProject
         }
         internal void GetColumnType(int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 var column = projectContext.Column.First(x => x.ID == columnID);
@@ -166,7 +166,7 @@ namespace MyProject
         }
         internal enum_ColumnType GetTypeOfColumn(int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 var column = projectContext.Column.First(x => x.ID == columnID);
@@ -191,7 +191,7 @@ namespace MyProject
         }
         internal void UpdateNumericColumnType(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in (dataSource as List<NumericColumnType>))
                 {
@@ -206,7 +206,7 @@ namespace MyProject
         }
         internal void UpdateDateColumnType(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in (dataSource as List<DateColumnType>))
                 {
@@ -219,7 +219,7 @@ namespace MyProject
 
         internal void UpdateStringColumnType(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in (dataSource as List<StringColumnType>))
                 {
@@ -233,7 +233,7 @@ namespace MyProject
 
         internal void ConvertToStringColumnType(int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = projectContext.DateColumnType.First(x => x.ColumnID == columnID);
                 if (dbColumn.Column.DateColumnType != null)
@@ -248,7 +248,7 @@ namespace MyProject
 
         internal void ConvertToDateColumnType(int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = projectContext.StringColumnType.First(x => x.ColumnID == columnID);
                 if (dbColumn.Column.StringColumnType != null)
@@ -269,7 +269,7 @@ namespace MyProject
 
         internal void GetUniqueConstraints(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -297,7 +297,7 @@ namespace MyProject
 
         internal void GetEntities(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -312,7 +312,7 @@ namespace MyProject
         internal void ImposeEntitTableRule(string serverName, string dbName)
         {
             string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
-            MyProjectEntities context = new MyProjectEntities();
+            MyIdeaEntities context = new MyIdeaEntities();
             context.Configuration.LazyLoadingEnabled = true;
             var list = context.TableDrivedEntity.Where(x => x.Table.Catalog == catalogName);
             var count = list.Count();
@@ -348,7 +348,7 @@ namespace MyProject
 
         internal void GetRuleEntities(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -362,7 +362,7 @@ namespace MyProject
         }
         internal void UpdateRuleEntities(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var entity in (dataSource as List<EntityDTO>))
                 {
@@ -415,7 +415,7 @@ namespace MyProject
         internal void ImposeRelationshipRule(string serverName, string dbName)
         {
             string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
-            MyProjectEntities context = new MyProjectEntities();
+            MyIdeaEntities context = new MyIdeaEntities();
             context.Configuration.LazyLoadingEnabled = true;
             var list = context.TableDrivedEntity.Where(x => x.Table.Catalog == catalogName);
             var count = list.Count();
@@ -453,7 +453,7 @@ namespace MyProject
 
         internal void GetRuleRelationships(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -472,7 +472,7 @@ namespace MyProject
         }
         internal void UpdateRuleRelationships(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<RelationshipDTO>))
                 {
@@ -491,7 +491,7 @@ namespace MyProject
 
         internal void GetOneToManyRelationships(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -510,7 +510,7 @@ namespace MyProject
         }
         internal void UpdateOneToManyRelationships(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<OneToMany>))
                 {
@@ -544,7 +544,7 @@ namespace MyProject
         internal void UpdateManyToOneRelationships(object dataSource)
         {
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<ManyToOne>))
                 {
@@ -564,7 +564,7 @@ namespace MyProject
 
         internal void GetManyToOneRelationships(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -586,7 +586,7 @@ namespace MyProject
         internal void UpdateManyToManyRelationships(object dataSource)
         {
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<ManyToMany>))
                 {
@@ -600,7 +600,7 @@ namespace MyProject
 
         internal void GetManyToManyRelationships(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -625,7 +625,7 @@ namespace MyProject
 
         internal void GetManyToMany_ManyToOneRelationships(int manyToManyId)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 var manyToOneList = projectContext.ManyToOneRelationshipType.Where(x => x.ManyToManyRelationshipTypeID == manyToManyId);
@@ -645,7 +645,7 @@ namespace MyProject
         }
         internal void CreateManyToManyRelationships(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
                 var list = projectContext.Table.Where(x => x.Catalog == catalogName);
@@ -667,7 +667,7 @@ namespace MyProject
 
         void view_ManyToManyCreated(object sender, ManyToManyCreatedArg e)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 ManyToManyRelationshipType manyToManyRelationshipType = new ManyToManyRelationshipType();
                 manyToManyRelationshipType.Name = e.Name;
@@ -688,7 +688,7 @@ namespace MyProject
 
         void selectView_ManyToOneSelected(object sender, SelectedItemArg<ManyToOne> e, ManyToMany manyToMany)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var manyToManyDB = projectContext.ManyToManyRelationshipType.First(x => x.ID == manyToMany.ID);
                 foreach (var item in e.Items)
@@ -705,7 +705,7 @@ namespace MyProject
 
         internal void RemoveManyToManyRelationships(int manyToManyID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var manyToOneDB = projectContext.ManyToManyRelationshipType.First(x => x.ID == manyToManyID);
                 while (manyToOneDB.ManyToOneRelationshipType.Any())
@@ -718,7 +718,7 @@ namespace MyProject
 
         //internal void RemoveManyToOneFromManyToManyRelationship(ManyToOne entity)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var manyToOneDB = projectContext.ManyToOneRelationshipType.First(x => x.ID == entity.ID);
         //        var manyToManyId = manyToOneDB.ManyToManyRelationshipTypeID;
@@ -730,7 +730,7 @@ namespace MyProject
 
         internal void UpdateExplicitRelationships(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<ExplicitOneToOne>))
                 {
@@ -748,7 +748,7 @@ namespace MyProject
         }
         internal void GetExplicitOneToOneRelationships(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -779,7 +779,7 @@ namespace MyProject
 
         internal void GetImplicitOneToOneRelationships(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -801,7 +801,7 @@ namespace MyProject
 
         internal void UpdateImplicitRelationships(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<ImplicitOneToOne>))
                 {
@@ -836,7 +836,7 @@ namespace MyProject
 
         internal void GetISARelationships(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
                 List<ISARelationshipDTO> ISARelationshipList = new List<ISARelationshipDTO>();
@@ -867,7 +867,7 @@ namespace MyProject
         }
         internal void UpdateISARelationships(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<ISARelationshipDTO>))
                 {
@@ -884,7 +884,7 @@ namespace MyProject
 
         internal void GetSubSuperRelationshipTypes(int iSARelationshipID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 var iSaRelationship = projectContext.ISARelationship.FirstOrDefault(x => x.ID == iSARelationshipID);
@@ -932,7 +932,7 @@ namespace MyProject
         }
         internal void UpdateSuperToSubRelationships(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<SuperToSub>))
                 {
@@ -950,7 +950,7 @@ namespace MyProject
 
         internal void UpdateSubToSuperRelationships(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<SubToSuper>))
                 {
@@ -977,7 +977,7 @@ namespace MyProject
 
         internal void GetUnionRelationships(string serverName, string dbName)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
                 List<UnionRelationship> UnionRelationshipTypeList = new List<UnionRelationship>();
@@ -1007,7 +1007,7 @@ namespace MyProject
         }
         internal void UpdateUnionRelationships(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<UnionRelationship>))
                 {
@@ -1022,7 +1022,7 @@ namespace MyProject
 
         internal void GetUnionRelationshipTypes(int unionRelationshipID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
 
 
@@ -1073,7 +1073,7 @@ namespace MyProject
 
         internal void UpdateUnionToSubUnionRelationships(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<UnionToSubUnion>))
                 {
@@ -1091,7 +1091,7 @@ namespace MyProject
 
         internal void UpdateSubUnionToUnionRelationships(object dataSource)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in (dataSource as List<SubUnionToUnion>))
                 {
@@ -1112,7 +1112,7 @@ namespace MyProject
 
         internal void ConvertRelationship(string convertType, RelationshipDTO relationship)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 if (convertType == "OneToMany_ImplicitOneToOne"
                       || convertType == "OneToMany_SuperToSub"
@@ -1602,7 +1602,7 @@ namespace MyProject
                  || convertType == "SubUnionToUnion_UnionHoldsKeys_SubUnionToUnion")
             {
                 uninoHoldsKeys = true;
-                using (var projectContext = new DataAccess.MyProjectEntities())
+                using (var projectContext = new DataAccess.MyIdeaEntities())
                 {
                     defaultName = projectContext.Relationship.First(x => x.ID == dbRelationship).TableDrivedEntity1.Name;
                 }
@@ -1614,7 +1614,7 @@ namespace MyProject
                 || convertType == "UnionToSubUnion_!UnionHoldsKeys_UnionToSubUnion")
             {
                 uninoHoldsKeys = false;
-                using (var projectContext = new DataAccess.MyProjectEntities())
+                using (var projectContext = new DataAccess.MyIdeaEntities())
                 {
                     defaultName = projectContext.Relationship.First(x => x.ID == dbRelationship).TableDrivedEntity.Name;
                 }
@@ -1627,7 +1627,7 @@ namespace MyProject
 
         void frm_UnionRelationshipSelected(object sender, UnionRelationshipSelectedArg e, string convertType, int dbRelationshipID, int dbReverseRelationshipID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //dbrelationship 
                 //در ادامه در حالت عادی طرف ساب پونیون تو یونیون ساخته میشود 
@@ -1790,7 +1790,7 @@ namespace MyProject
 
         void frm_ISARelationshipSelected(object sender, ISARelationshipSelectedArg e, string convertType, int dbRelationshipID, int dbReverseRelationshipID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 if (convertType == "OneToMany_SuperToSub"
                  || convertType == "ImplicitOneToOne_SuperToSub"
@@ -1870,7 +1870,7 @@ namespace MyProject
                 MessageBox.Show("برای ادغام چند رابطه ارث بری تمامی موجودیتهای پدر میباست از یک نوع باشند");
                 return;
             }
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 int isaRelationID = 0;
                 foreach (var relationship in relationships)
@@ -1904,7 +1904,7 @@ namespace MyProject
                 MessageBox.Show("برای ادغام چند رابطه اتحاد تمامی موجودیتهای پدر میباست از یک نوع باشند");
                 return;
             }
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //   int isaRelationID = 0;
                 foreach (var relationship in relationships)
@@ -1934,7 +1934,7 @@ namespace MyProject
         {
             frmEditEntity frm = new frmEditEntity(entity.ID, inheritance);
             frm.ShowDialog();
-            //using (var projectContext = new DataAccess.MyProjectEntities())
+            //using (var projectContext = new DataAccess.MyIdeaEntities())
             //{
 
             //}

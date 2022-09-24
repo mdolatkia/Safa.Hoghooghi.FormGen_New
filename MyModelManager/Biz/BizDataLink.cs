@@ -22,7 +22,7 @@ namespace MyModelManager
 
         public DataLinkDTO GetDataLink(DR_Requester requester, int ID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbItem = projectContext.DataLinkDefinition.First(x => x.ID == ID);
                 if (!DataIsAccessable(requester, dbItem))
@@ -54,7 +54,7 @@ namespace MyModelManager
         public List<DataLinkDTO> GetDataLinkByEntitiyID(DR_Requester requester, int entitiyID)
         {
             List<DataLinkDTO> result = new List<DataLinkDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var items = projectContext.DataLinkDefinition.Where(x => x.EntityDataItemReport.EntityReport.TableDrivedEntityID == entitiyID
                 || x.SecondSideEntityID == entitiyID);
@@ -71,7 +71,7 @@ namespace MyModelManager
         public List<DataLinkDTO> SearchDatalinks(DR_Requester requester, string singleFilterValue)
         {
             List<DataLinkDTO> result = new List<DataLinkDTO>();
-            using (var projectContext = new MyProjectEntities())
+            using (var projectContext = new MyIdeaEntities())
             {
                 var items = projectContext.DataLinkDefinition.Where(x => x.EntityDataItemReport.EntityReport.Title.Contains(singleFilterValue) || x.EntityDataItemReport.EntityReport.TableDrivedEntity.Alias.Contains(singleFilterValue)
                 || x.EntityDataItemReport.EntityReport.TableDrivedEntity.Name.Contains(singleFilterValue) || x.TableDrivedEntity.Alias.Contains(singleFilterValue) || x.TableDrivedEntity.Name.Contains(singleFilterValue));
@@ -119,7 +119,7 @@ namespace MyModelManager
         }
         public int UpdateDataLink(DataLinkDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 BizEntityDataItemReport bizEntityDataItemReport = new BizEntityDataItemReport();
 

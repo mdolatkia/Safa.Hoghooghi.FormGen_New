@@ -15,7 +15,7 @@ namespace MyModelManager
         //public List<SecurityObjectDTO> GetSecurityObjectsOfEntity(int entityID)
         //{
         //    List<SecurityObjectDTO> result = new List<SecurityObjectDTO>();
-        //    var context = new MyProjectEntities();
+        //    var context = new MyIdeaEntities();
         //    var entity = context.TableDrivedEntity.First(x => x.ID == entityID);
         //    result.Add(ToSecurityObjectDTO(entity.SecurityObject));
         //    BizColumn bizColumn = new BizColumn();
@@ -42,7 +42,7 @@ namespace MyModelManager
         public SecurityObjectDTO GetSecurityObject(int ID)
         {
 
-            var context = new MyProjectEntities();
+            var context = new MyIdeaEntities();
             var item = context.SecurityObject.First(x => x.ID == ID);
 
             return ToSecurityObjectDTO(item);

@@ -17,7 +17,7 @@ namespace MyModelManager
        BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         //public bool DataIsAccessable(DR_Requester requester, int entityID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var permission = bizTableDrivedEntity.GetEntityAssignedPermissions(requester, entityID, false);
         //        if (permission.GrantedActions.Any(x => x == SecurityAction.LetterView || x == SecurityAction.LetterEdit))
@@ -28,7 +28,7 @@ namespace MyModelManager
         //}
         public MainLetterTemplateDTO GetMainLetterTepmplate(DR_Requester requester, int letterTempleteID)
         {
-            using (var projectContext = new MyProjectEntities())
+            using (var projectContext = new MyIdeaEntities())
             {
                 var dbitem = projectContext.MainLetterTemplate.First(x => x.ID == letterTempleteID);
                 return ToMainLetterTemplateDTO(requester, dbitem, true);
@@ -37,7 +37,7 @@ namespace MyModelManager
         public List<MainLetterTemplateDTO> GetMainLetterTemplates(DR_Requester requester, int entityID)
         {
             List<MainLetterTemplateDTO> result = new List<MainLetterTemplateDTO>();
-            using (var projectContext = new MyProjectEntities())
+            using (var projectContext = new MyIdeaEntities())
             {
                 var list = projectContext.MainLetterTemplate.Where(x => x.LetterTemplate.TableDrivedEntityID == entityID);
                 foreach (var item in list)
@@ -48,7 +48,7 @@ namespace MyModelManager
 
         public LetterSettingDTO GetLetterSetting(bool withDetails)
         {
-            using (var projectContext = new MyProjectEntities())
+            using (var projectContext = new MyIdeaEntities())
             {
                 var letterSetting = projectContext.LetterSetting.FirstOrDefault();
                 if (letterSetting == null)
@@ -86,7 +86,7 @@ namespace MyModelManager
 
         public void UpdateLetterSetting(LetterSettingDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbLetterSetting = projectContext.LetterSetting.FirstOrDefault();
                 if (dbLetterSetting == null)
@@ -109,7 +109,7 @@ namespace MyModelManager
         public List<LetterRelationshipTailDTO> GetLetterRelationshipTails(DR_Requester requester, int entityID, bool withDetails)
         {
             List<LetterRelationshipTailDTO> result = new List<LetterRelationshipTailDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = projectContext.EntityLetterRelationshipTails.Where(x => x.TableDrivedEntityID == entityID);
                 foreach (var item in list)
@@ -138,7 +138,7 @@ namespace MyModelManager
         public bool UpdateLetterRelationshipTails(int entityID, List<LetterRelationshipTailDTO> list)
         {
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == entityID);
                 while (entity.EntityLetterRelationshipTails.Any(x => x.TableDrivedEntityID == entityID))
@@ -175,7 +175,7 @@ namespace MyModelManager
 
         public void UpdateMainLetterTemplate(MainLetterTemplateDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbLetterTemplate = projectContext.MainLetterTemplate.FirstOrDefault(x => x.ID == message.ID);
                 if (dbLetterTemplate == null)
@@ -231,7 +231,7 @@ namespace MyModelManager
         public List<LetterTemplateDTO> GetLetterTemplates(int entityID, bool? extarnal)
         {
             List<LetterTemplateDTO> result = new List<LetterTemplateDTO>();
-            using (var projectContext = new MyProjectEntities())
+            using (var projectContext = new MyIdeaEntities())
             {
                 var list = projectContext.LetterTemplate.Where(x => x.TableDrivedEntityID == entityID);
                 if (extarnal == true)
@@ -306,7 +306,7 @@ namespace MyModelManager
             }
         }
 
-        private void SetOwnerDBPart(MyProjectEntities projectContext, LetterTemplate owner, LetterTemplateDTO message)
+        private void SetOwnerDBPart(MyIdeaEntities projectContext, LetterTemplate owner, LetterTemplateDTO message)
         {
             owner.TableDrivedEntityID = message.TableDrivedEntityID;
             owner.Name = message.Name;
@@ -341,7 +341,7 @@ namespace MyModelManager
         //public List<LetterRelationshipTemplateDTO> GetLetterRelationshipTemplates(int entityID)
         //{
         //    List<LetterRelationshipTemplateDTO> result = new List<LetterRelationshipTemplateDTO>();
-        //    using (var projectContext = new MyProjectEntities())
+        //    using (var projectContext = new MyIdeaEntities())
         //    {
         //        var list = projectContext.LetterRelationshipTemplate.Where(x => x.TableDrivedEntityID == entityID);
         //        foreach (var item in list)
@@ -352,7 +352,7 @@ namespace MyModelManager
         public List<PartialLetterTemplateDTO> GetPartialLetterTemplates(DR_Requester requester, int entityID)
         {
             List<PartialLetterTemplateDTO> result = new List<PartialLetterTemplateDTO>();
-            using (var projectContext = new MyProjectEntities())
+            using (var projectContext = new MyIdeaEntities())
             {
                 var list = projectContext.PartialLetterTemplate.Where(x => x.LetterTemplate.TableDrivedEntityID == entityID);
                 foreach (var item in list)
@@ -362,7 +362,7 @@ namespace MyModelManager
         }
         public PartialLetterTemplateDTO GetPartialLetterTepmplate(DR_Requester requester, int letterTempleteID)
         {
-            using (var projectContext = new MyProjectEntities())
+            using (var projectContext = new MyIdeaEntities())
             {
                 var dbitem = projectContext.PartialLetterTemplate.First(x => x.ID == letterTempleteID);
                 return ToPartialLetterTemplateDTO(requester, dbitem, true);
@@ -378,7 +378,7 @@ namespace MyModelManager
 
         public int UpdatePartialLetterTemplate(PartialLetterTemplateDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbLetterTemplate = projectContext.PartialLetterTemplate.FirstOrDefault(x => x.ID == message.ID);
                 if (dbLetterTemplate == null)

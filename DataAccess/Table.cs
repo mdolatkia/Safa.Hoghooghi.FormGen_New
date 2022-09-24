@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class Table
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Table()
         {
             this.Column = new HashSet<Column>();
@@ -25,9 +26,12 @@ namespace DataAccess
         public string Name { get; set; }
         public int DBSchemaID { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Column> Column { get; set; }
         public virtual DBSchema DBSchema { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TableDrivedEntity> TableDrivedEntity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UniqueConstraint> UniqueConstraint { get; set; }
     }
 }

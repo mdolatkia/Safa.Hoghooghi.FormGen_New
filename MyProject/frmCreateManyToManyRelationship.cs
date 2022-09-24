@@ -30,7 +30,7 @@ namespace MyProject
             dtgList.Columns.Add(ControlHelper.GenerateGridviewColumn("Entity1", "Entity1", true, 100, GridViewColumnType.Text));
             dtgList.Columns.Add(ControlHelper.GenerateGridviewColumn("Entity2", "Entity2", true, 100, GridViewColumnType.Text));
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 txtName.Text = projectContext.Table.First(x => x.ID == tableID).Name;
 

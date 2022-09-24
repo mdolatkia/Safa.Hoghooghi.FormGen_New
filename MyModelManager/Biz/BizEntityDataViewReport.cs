@@ -26,7 +26,7 @@ namespace MyModelManager
             //    return (cachedItem as List<EntityDataViewReportDTO>);
 
             List<EntityDataViewReportDTO> result = new List<EntityDataViewReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityDataViewReport = projectContext.EntityDataViewReport.Where(x => x.EntitySearchableReport.EntityReport.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityDataViewReport)
@@ -39,7 +39,7 @@ namespace MyModelManager
         public EntityDataViewReportDTO GetEntityDataViewReport(DR_Requester requester, int EntityDataViewReportsID, bool withDetails)
         {
             List<EntityDataViewReportDTO> result = new List<EntityDataViewReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbItem = projectContext.EntityDataViewReport.First(x => x.ID == EntityDataViewReportsID);
                 if (bizEntityReport.DataIsAccessable(requester, dbItem.EntitySearchableReport.EntityReport))
@@ -63,7 +63,7 @@ namespace MyModelManager
         public void UpdateEntityDataViewReports(EntityDataViewReportDTO message)
         {
             BizEntityReport bizEntityReport = new MyModelManager.BizEntityReport();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
 
                 var dbEntitySpecifiedReport = projectContext.EntityDataViewReport.FirstOrDefault(x => x.ID == message.ID);

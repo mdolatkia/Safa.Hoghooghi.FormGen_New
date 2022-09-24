@@ -39,7 +39,7 @@ namespace MyProject
             SetGridViewColumns(dtgRelationshipsDrived);
             dtgRelationships.RowFormatting += dtgRelationships_RowFormatting;
             SetEntities(entityID);
-            //using (var projectContext = new DataAccess.MyProjectEntities())
+            //using (var projectContext = new DataAccess.MyIdeaEntities())
             //{
             //    var mainEntity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
 
@@ -64,7 +64,7 @@ namespace MyProject
         {
             dtgRelationships.DataSource = new ObservableCollection<RelationshipDTO>();
             dtgColumns.DataSource = new ObservableCollection<ColumnDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 TableDrivedEntity baseEntity = null;
                 var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
@@ -158,7 +158,7 @@ namespace MyProject
             {
                 txtName.Text = drivedEntity.Name;
                 txtCriteria.Text = drivedEntity.Criteria;
-                using (var projectContext = new DataAccess.MyProjectEntities())
+                using (var projectContext = new DataAccess.MyIdeaEntities())
                 {
                     var dbDrivedEntity = projectContext.TableDrivedEntity.First(x => x.ID == drivedEntity.ID);
 
@@ -202,7 +202,7 @@ namespace MyProject
         //{
         //    if (value)
         //    {
-        //        using (var projectContext = new DataAccess.MyProjectEntities())
+        //        using (var projectContext = new DataAccess.MyIdeaEntities())
         //        {
         //            var dbRelationship = projectContext.Relationship.First(x => x.ID == relationshipDTO.ID);
         //            foreach (var relColumn in dbRelationship.RelationshipColumns)
@@ -295,7 +295,7 @@ namespace MyProject
                     return;
                 }
             }
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 if (!Inheritance || (cmbDrivedEntities.SelectedValue == null ? 0 : (int)cmbDrivedEntities.SelectedValue) == BaseEntity.ID)
                 {
@@ -589,7 +589,7 @@ namespace MyProject
                 var selectedRelationshipRow = dtgRelationships.SelectedRows[0];
                 var relationship = (selectedRelationshipRow.DataBoundItem as RelationshipDTO);
 
-                using (var projectContext = new DataAccess.MyProjectEntities())
+                using (var projectContext = new DataAccess.MyIdeaEntities())
                 {
 
                     var dbRelationship = projectContext.Relationship.First(x => relationship.ID == x.ID);
@@ -647,7 +647,7 @@ namespace MyProject
                 // ستون انتخاب شده اما رابطه معادل خیر!
                 var relationship = dtgRelationshipsDrived.SelectedRows[0].DataBoundItem as RelationshipDTO;
 
-                using (var projectContext = new DataAccess.MyProjectEntities())
+                using (var projectContext = new DataAccess.MyIdeaEntities())
                 {
                     var dbRelationship = projectContext.Relationship.First(x => relationship.ID == x.ID);
                     //var baseColumns = dtgColumns.DataSource as ObservableCollection<ColumnDTO>;
@@ -774,7 +774,7 @@ namespace MyProject
 
             var relationships = dtgRelationships.DataSource as ObservableCollection<RelationshipDTO>;
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var columnMessage = "";
                 if (checkRelationshipColumns)
@@ -874,7 +874,7 @@ namespace MyProject
 
             var relationships = dtgRelationshipsDrived.DataSource as ObservableCollection<RelationshipDTO>;
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var columnMessage = "";
                 if (checkRelationshipColumns)

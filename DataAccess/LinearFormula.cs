@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class LinearFormula
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public LinearFormula()
         {
             this.Formula = new HashSet<Formula>();
@@ -23,6 +24,7 @@ namespace DataAccess
         public string FormulaText { get; set; }
         public short Version { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Formula> Formula { get; set; }
     }
 }

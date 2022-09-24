@@ -21,7 +21,7 @@ namespace MyModelManager
         //public List<DatabaseFunctionDTO> GetDatabaseFunctionsByEntityID(int entityID)
         //{
         //    List<DatabaseFunctionDTO> result = new List<DatabaseFunctionDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        //projectContext.Configuration.LazyLoadingEnabled = false;
 
@@ -37,7 +37,7 @@ namespace MyModelManager
         public DatabaseFunctionDTO GetDatabaseFunctionByName(int databaseID, string name)
         {
             List<DatabaseFunctionDTO> result = new List<DatabaseFunctionDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbFunction = projectContext.DatabaseFunction.FirstOrDefault(x => x.FunctionName == name && x.DBSchema.DatabaseInformationID == databaseID);
 
@@ -51,7 +51,7 @@ namespace MyModelManager
         public List<DatabaseFunctionDTO> GetAllDatabaseFunctions(DR_Requester dR_Requester, string generalFilter, Enum_DatabaseFunctionType type)
         {
             List<DatabaseFunctionDTO> result = new List<DatabaseFunctionDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 IQueryable<DatabaseFunction> listDatabaseFunction;
                 listDatabaseFunction = projectContext.DatabaseFunction;
@@ -73,7 +73,7 @@ namespace MyModelManager
         public List<DatabaseFunctionDTO> GetDatabaseFunctions(DR_Requester requester, Enum_DatabaseFunctionType type, int databaseID = 0)
         {
             List<DatabaseFunctionDTO> result = new List<DatabaseFunctionDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 IQueryable<DatabaseFunction> listDatabaseFunction;
@@ -97,7 +97,7 @@ namespace MyModelManager
         public DatabaseFunctionDTO GetDatabaseFunction(DR_Requester requester, int DatabaseFunctionsID)
         {
             List<DatabaseFunctionDTO> result = new List<DatabaseFunctionDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var DatabaseFunctions = projectContext.DatabaseFunction.First(x => x.ID == DatabaseFunctionsID);
                 return ToDatabaseFunctionDTO(DatabaseFunctions, true);
@@ -106,7 +106,7 @@ namespace MyModelManager
         public List<DatabaseFunctionDTO> GetOrginalFunctions(int databaseID)
         {
             List<DatabaseFunctionDTO> result = new List<DatabaseFunctionDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var functions = projectContext.DatabaseFunction.Include("DatabaseFunctionParameter")
                     .Where(x => x.DBSchema.DatabaseInformationID == databaseID);
@@ -117,14 +117,14 @@ namespace MyModelManager
         }
         public bool OrginalEntityExists(string functionName, int databaseID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 return projectContext.DatabaseFunction.Any(x => x.FunctionName == functionName && x.DBSchema.DatabaseInformationID == databaseID);
             }
         }
         public DatabaseFunctionDTO GetOrginalDatabaseFunction(string name, int databaseID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 return ToDatabaseFunctionDTO(projectContext.DatabaseFunction.First(x => x.FunctionName == name && x.DBSchema.DatabaseInformationID == databaseID), true);
 
@@ -133,7 +133,7 @@ namespace MyModelManager
         public List<DatabaseFunctionDTO> GetEnalbedDatabaseFunctions(int databaseID)
         {
             List<DatabaseFunctionDTO> result = new List<DatabaseFunctionDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = projectContext.DatabaseFunction.Where(x => x.Enable == true && x.DBSchema.DatabaseInformationID == databaseID);
                 foreach (var item in list)
@@ -229,7 +229,7 @@ namespace MyModelManager
 
 
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var DatabaseFunction = projectContext.DatabaseFunction.First(x => x.ID == functionID);
                 return ToDatabaseFunctionParameterDTO(DatabaseFunction);
@@ -239,7 +239,7 @@ namespace MyModelManager
         public DatabaseFunction_EntityDTO GetDatabaseFunctionEntity(DR_Requester requester, int functionEntityID)
         {
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var DatabaseFunctions = projectContext.DatabaseFunction_TableDrivedEntity.First(x => x.ID == functionEntityID);
                 return ToDatabaseFunction_EntityDTO(DatabaseFunctions, true);
@@ -248,7 +248,7 @@ namespace MyModelManager
         public DatabaseFunction_EntityDTO GetDatabaseFunctionEntity(int functionID, int entityID)
         {
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var DatabaseFunctions = projectContext.DatabaseFunction_TableDrivedEntity.FirstOrDefault(x => x.TableDrivedEntityID == entityID && x.DatabaseFunctionID == functionID);
                 if (DatabaseFunctions != null)
@@ -260,7 +260,7 @@ namespace MyModelManager
         public List<DatabaseFunction_EntityDTO> GetDatabaseFunctionEntities(DR_Requester requester, int entityID)
         {
             List<DatabaseFunction_EntityDTO> result = new List<DatabaseFunction_EntityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
 
@@ -274,7 +274,7 @@ namespace MyModelManager
         public List<DatabaseFunction_EntityDTO> GetDatabaseFunctionEntityByEntityID(DR_Requester requester, int entityID)
         {
             List<DatabaseFunction_EntityDTO> result = new List<DatabaseFunction_EntityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var DatabaseFunctions = projectContext.DatabaseFunction_TableDrivedEntity.Where(x => x.TableDrivedEntityID == entityID);
                 foreach (var item in DatabaseFunctions)
@@ -284,7 +284,7 @@ namespace MyModelManager
         }
         public void UpdateModel(int databaseID, List<DatabaseFunctionDTO> listNew, List<DatabaseFunctionDTO> listEdit, List<DatabaseFunctionDTO> listDeleted)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listSchema = new List<DBSchema>();
                 foreach (var newEntity in listNew)
@@ -309,7 +309,7 @@ namespace MyModelManager
                 projectContext.SaveChanges();
             }
         }
-        private void UpdateEntityInModel(MyProjectEntities projectContext, int databaseID, DatabaseFunctionDTO function, List<DBSchema> listAddedSchema)
+        private void UpdateEntityInModel(MyIdeaEntities projectContext, int databaseID, DatabaseFunctionDTO function, List<DBSchema> listAddedSchema)
         {
             DBSchema dbSchema = null;
             var schema = function.RelatedSchema;
@@ -375,7 +375,7 @@ namespace MyModelManager
         public int GetDatabaseFunctionEntityID(int entityID, int DatabaseFunctionID)
         {
             List<DatabaseFunction_EntityDTO> result = new List<DatabaseFunction_EntityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
 
@@ -415,7 +415,7 @@ namespace MyModelManager
         }
         public void Save(List<DatabaseFunctionDTO> list)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var dbFunction in list)
                 {
@@ -428,7 +428,7 @@ namespace MyModelManager
         }
         public int UpdateDatabaseFunctionEntity(DatabaseFunction_EntityDTO DatabaseFunctionEntity)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbDatabaseFunctionEntity = projectContext.DatabaseFunction_TableDrivedEntity.FirstOrDefault(x => x.ID == DatabaseFunctionEntity.ID);
                 if (dbDatabaseFunctionEntity == null)
@@ -466,7 +466,7 @@ namespace MyModelManager
 
         //public void UpdateDatabaseFunctions(List<DatabaseFunctionDTO> DatabaseFunctions)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        foreach (var item in DatabaseFunctions)
         //        {

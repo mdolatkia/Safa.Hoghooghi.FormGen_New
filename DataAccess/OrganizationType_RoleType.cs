@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class OrganizationType_RoleType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public OrganizationType_RoleType()
         {
             this.OrganizationPost = new HashSet<OrganizationPost>();
@@ -25,6 +26,7 @@ namespace DataAccess
         public int OrganizationTypeID { get; set; }
         public string ExternalKey { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrganizationPost> OrganizationPost { get; set; }
         public virtual OrganizationType OrganizationType { get; set; }
         public virtual SecuritySubject SecuritySubject { get; set; }

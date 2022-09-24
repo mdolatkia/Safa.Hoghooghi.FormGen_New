@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class DatabaseFunctionParameter
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public DatabaseFunctionParameter()
         {
             this.DatabaseFunction_TableDrivedEntity_Columns = new HashSet<DatabaseFunction_TableDrivedEntity_Columns>();
@@ -28,6 +29,7 @@ namespace DataAccess
         public Nullable<short> Order { get; set; }
     
         public virtual DatabaseFunction DatabaseFunction { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DatabaseFunction_TableDrivedEntity_Columns> DatabaseFunction_TableDrivedEntity_Columns { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class ManyToManyRelationshipType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ManyToManyRelationshipType()
         {
             this.ManyToOneRelationshipType = new HashSet<ManyToOneRelationshipType>();
@@ -22,6 +23,7 @@ namespace DataAccess
         public int ID { get; set; }
         public string Name { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ManyToOneRelationshipType> ManyToOneRelationshipType { get; set; }
     }
 }

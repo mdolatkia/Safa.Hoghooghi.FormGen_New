@@ -24,11 +24,13 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
+                
             </Grid.ColumnDefinitions>
             <TextBlock Text="عنوان">
             </TextBlock>
             <TextBox Grid.Column="1" x:Name="txtViewName"></TextBox>
-            
+            <TextBlock Grid.Column="2" Text="لیست پیش فرض"/>
+            <CheckBox Grid.Column="3" x:Name="chkIsDefault"></CheckBox>
         </Grid>
         <Grid Grid.Row="1">
             <Grid Grid.Column="1" x:Name="grdColumns">

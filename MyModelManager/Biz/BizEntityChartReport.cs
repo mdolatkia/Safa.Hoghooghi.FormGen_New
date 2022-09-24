@@ -18,7 +18,7 @@ namespace MyModelManager
         //public List<EntityChartReportDTO> GetEntityChartReports(DR_Requester requester)
         //{
         //    List<EntityChartReportDTO> result = new List<EntityChartReportDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var listEntityChartReport = projectContext.EntityChartReport;
         //        foreach (var item in listEntityChartReport)
@@ -34,7 +34,7 @@ namespace MyModelManager
             //    return (cachedItem as List<EntityChartReportDTO>);
 
             List<EntityChartReportDTO> result = new List<EntityChartReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityChartReport = projectContext.EntityChartReport.Where(x => x.EntitySearchableReport.EntityReport.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityChartReport)
@@ -47,7 +47,7 @@ namespace MyModelManager
         public EntityChartReportDTO GetEntityChartReport(DR_Requester requester, int EntityChartReportsID, bool withDetails)
         {
             List<EntityChartReportDTO> result = new List<EntityChartReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var EntityChartReports = projectContext.EntityChartReport.First(x => x.ID == EntityChartReportsID);
                 return ToEntityChartReportDTO(requester, EntityChartReports, withDetails);
@@ -130,7 +130,7 @@ namespace MyModelManager
         }
         public int UpdateEntityChartReports(EntityChartReportDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
 
                 var dbEntitySpecifiedReport = projectContext.EntityChartReport.FirstOrDefault(x => x.ID == message.ID);

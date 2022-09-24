@@ -18,7 +18,7 @@ namespace MyModelManager
         public List<EntityRelationshipTailDTO> GetEntityRelationshipTails(DR_Requester requester, int entityID)
         {
             List<EntityRelationshipTailDTO> result = new List<EntityRelationshipTailDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 IQueryable<EntityRelationshipTail> listEntityRelationshipTail;
                 listEntityRelationshipTail = projectContext.EntityRelationshipTail.Where(x => x.TableDrivedEntityID == entityID);
@@ -32,7 +32,7 @@ namespace MyModelManager
         public EntityRelationshipTailDTO GetEntityRelationshipTail(DR_Requester requester, int EntityRelationshipTailsID)
         {
             List<EntityRelationshipTailDTO> result = new List<EntityRelationshipTailDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var EntityRelationshipTail = projectContext.EntityRelationshipTail.First(x => x.ID == EntityRelationshipTailsID);
                 if (DataIsAccessable(requester, EntityRelationshipTail))
@@ -41,131 +41,119 @@ namespace MyModelManager
                     return null;
             }
         }
-        //public bool CheckRelationshipTailPermission(DR_Requester requester, EntityRelationshipTailDTO relationshipTail)
-        //{
-        //    BizTableDrivedEntity bizTableDrivedEntity = new MyModelManager.BizTableDrivedEntity();
-
-        //    //اینکه وسط راه تیل انتیتی دسترسی نداشته باشد مهم نیست؟
-
-
-        //    return CheckRelationshipTailRelationshipPermission(requester, relationshipTail);
-
-        //}
-        public bool DataIsAccessable(DR_Requester requester, EntityRelationshipTailDTO relationshipTailDTO)
-        {
-            using (var projectContext = new DataAccess.MyProjectEntities())
-            {
-                var relatoinshipTail = projectContext.EntityRelationshipTail.First(x => x.ID == relationshipTailDTO.ID);
-                return DataIsAccessable(requester, relatoinshipTail);
-            }
-        }
         public bool DataIsAccessable(DR_Requester requester, EntityRelationshipTail relationshipTail)
         {
             if (requester.SkipSecurity)
                 return true;
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var ittem = ToEntityRelationshipTailDTO(projectContext, relationshipTail.RelationshipPath, relationshipTail.TableDrivedEntityID, relationshipTail.TableDrivedEntity.Alias, relationshipTail.TargetEntityID, relationshipTail.TableDrivedEntity1.Alias, null, true);
-                var entities = ittem.Item2;
-                if (entities.Any(x => !bizTableDrivedEntity.DataIsAccessable(requester, x)))
-                    return false;
-                var relationships = ittem.Item3;
-                if (relationships.Any(x => !bizRelationship.DataIsAccessable(requester, x, false, false)))
-                    return false;
-                return true;
+                return DataIsAccessable(requester, relationshipTail.TableDrivedEntityID, relationshipTail.RelationshipPath);
             }
 
             //return CheckRelationshipTailPermission(requester, dto);
         }
-        //public bool CheckRelationshipTailPermission(DR_Requester requester, EntityRelationshipTailDTO relationshipTail)
-        //{
+        public bool DataIsAccessable(DR_Requester requester, int initialiEntityID, string relationshipPath)
+        {
+            if (requester.SkipSecurity)
+                return true;
+            using (var projectContext = new DataAccess.MyIdeaEntities())
+            {
+                var ittem = GetRelationshipTailEntitiesAndRelationsips(projectContext, initialiEntityID, relationshipPath);
+                var entities = ittem.Item2;
+                return DataIsAccessable(requester, ittem.Item1, ittem.Item2);
+            }
 
-        //    if (!bizTableDrivedEntity.IsEntityEnabled(relationshipTail.Relationship.EntityID2))
-        //        return false;
-
-        //    var entityPermission = securityHelper.GetAssignedPermissions(requester, relationshipTail.Relationship.EntityID2, false);
-        //    if (entityPermission.GrantedActions.Any(y => y == SecurityAction.NoAccess))
-        //        return false;
-
-        //    BizRelationship bizRelationship = new BizRelationship();
-        //    if (!bizRelationship.IsRelationshipEnabled(relationshipTail.Relationship.ID))
-        //        return false;
-
-        //    var relationshipPermission = securityHelper.GetAssignedPermissions(requester, relationshipTail.Relationship.ID, false);
-        //    if (relationshipPermission.GrantedActions.Any(y => y == SecurityAction.NoAccess))
-        //        return false;
-
-        //    if (relationshipTail.ChildTail != null)
-        //        return CheckRelationshipTailPermission(requester, relationshipTail.ChildTail);
-        //    else
-        //        return true;
-        //}
-        //public bool CheckRelationshipTailPermission(EntityRelationshipTailDTO relationshipTail)
-        //{
-        //    //if (first)
-        //    //{
-        //    //    var entityPermission = securityHelper.GetAssignedPermissions(requester, relationshipTail.Relationship.EntityID2, false);
-
-        //    //    if (entityPermission.GrantedActions.Any(y => y == SecurityAction.NoAccess))
-        //    //        return false;
-        //    //}
-
-        //    var relationshipPermission = securityHelper.GetAssignedPermissions(requester, relationshipTail.Relationship.ID, false);
-
-        //    if (relationshipPermission.GrantedActions.Any(y => y == SecurityAction.NoAccess))
-        //        return false;
-
-
-
-        //    if (relationshipTail.ChildTail != null)
-        //        return CheckRelationshipTailPermission(relationshipTail.ChildTail, false);
-        //    else
-        //        return true;
-        //}
-
-        //public EntityRelationshipTailDTO GetReverseRelationShipTail(int iD)
-        //{
-        //    List<EntityRelationshipTailDTO> result = new List<EntityRelationshipTailDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
-        //    {
-        //        var EntityRelationshipTails = projectContext.EntityRelationshipTail.First(x => x.ReverseRelationshipTailID == iD);
-        //        return ToEntityRelationshipTailDTO(EntityRelationshipTails);
-        //    }
-        //}
+            //return CheckRelationshipTailPermission(requester, dto);
+        }
+        public bool DataIsAccessable(DR_Requester requester, List<TableDrivedEntity> entities, List<Relationship> relationships)
+        {
+            if (requester.SkipSecurity)
+                return true;
+            using (var projectContext = new DataAccess.MyIdeaEntities())
+            {
+                if (entities.Any(x => !bizTableDrivedEntity.DataIsAccessable(requester, x)))
+                    return false;
+                if (relationships.Any(x => !bizRelationship.DataIsAccessable(requester, x, false, false)))
+                    return false;
+                return true;
+            }
+        }
 
         public EntityRelationshipTailDTO ToEntityRelationshipTailDTO(EntityRelationshipTail tail)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var ittem = ToEntityRelationshipTailDTO(projectContext, tail.RelationshipPath, tail.TableDrivedEntityID, tail.TableDrivedEntity1.Alias, tail.TargetEntityID, tail.TableDrivedEntity.Alias, null, false);
-                ittem.Item1.ID = tail.ID;
-                return ittem.Item1;
+                var ittem = ToEntityRelationshipTailDTO(projectContext, tail.RelationshipPath, tail.TableDrivedEntityID, tail.TableDrivedEntity1.Alias, tail.TargetEntityID, tail.TableDrivedEntity.Alias, null);
+                ittem.ID=tail.ID;
+                return ittem;
             }
         }
-        public EntityRelationshipTailDTO JoinRelationshipTail(EntityRelationshipTailDTO firstTail, EntityRelationshipTailDTO secondTail)
-        {
-            using (var projectContext = new DataAccess.MyProjectEntities())
-            {
-                var RelationshipIDPath = firstTail.RelationshipIDPath + "," + secondTail.RelationshipIDPath;
-                return ToEntityRelationshipTailDTO(projectContext, RelationshipIDPath, firstTail.InitialEntityID, firstTail.InitialiEntityAlias, secondTail.TargetEntityID, secondTail.TargetEntityAlias, null, false).Item1;
-            }
-        }
+        //public EntityRelationshipTailDTO JoinRelationshipTail(EntityRelationshipTailDTO firstTail, EntityRelationshipTailDTO secondTail)
+        //{
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
+        //    {
+        //        var RelationshipIDPath = firstTail.RelationshipIDPath + "," + secondTail.RelationshipIDPath;
+        //        return ToEntityRelationshipTailDTO(projectContext, RelationshipIDPath, firstTail.InitialEntityID, firstTail.InitialiEntityAlias, secondTail.TargetEntityID, secondTail.TargetEntityAlias, null, false).Item1;
+        //    }
+        //}
         BizRelationship bizRelationship = new BizRelationship();
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-        private Tuple<EntityRelationshipTailDTO, List<TableDrivedEntity>, List<Relationship>> ToEntityRelationshipTailDTO
-            (MyProjectEntities projectContext, string relationshipPath, int initialiEntityID, string initialiEntityAlias, int targetEntityID, string targetEntityAlias
-            , EntityRelationshipTailDTO reverseRelationshipTail, bool withEntitiesAndRelationships, List<TableDrivedEntity> entities = null, List<Relationship> relationships = null)
+
+        Tuple<List<TableDrivedEntity>, List<Relationship>> GetRelationshipTailEntitiesAndRelationsips(MyIdeaEntities projectContext, int initialiEntityID, string relationshipPath
+            , List<TableDrivedEntity> entities = null, List<Relationship> relationships = null)
         {
-
-            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.RelationshipTail, initialiEntityID.ToString(), relationshipPath.ToString(), withEntitiesAndRelationships.ToString());
-            if (cachedItem != null)
-                return (cachedItem as Tuple<EntityRelationshipTailDTO, List<TableDrivedEntity>, List<Relationship>>);
-
             if (entities == null)
             {
                 entities = new List<TableDrivedEntity>();
                 relationships = new List<Relationship>();
             }
+            if (!string.IsNullOrEmpty(relationshipPath))
+            {
+                int relationshipID = 0;
+                string rest = "";
+                if (relationshipPath.Contains(","))
+                {
+                    var splt = relationshipPath.Split(',');
+                    relationshipID = Convert.ToInt32(splt[0]);
+                    for (int i = 1; i <= splt.Count() - 1; i++)
+                    {
+                        rest += (rest == "" ? "" : ",") + splt[i];
+                    }
+                }
+                else
+                {
+                    relationshipID = Convert.ToInt32(relationshipPath);
+                }
+                var relationship = bizRelationship.GetAllRelationships(projectContext, false, false).First(x => x.ID == relationshipID);
+                if (!entities.Any(x => x.ID == relationship.TableDrivedEntity.ID))
+                {
+                    entities.Add(relationship.TableDrivedEntity);
+                }
+                if (!entities.Any(x => x.ID == relationship.TableDrivedEntity1.ID))
+                {
+                    entities.Add(relationship.TableDrivedEntity1);
+                }
+                if (!relationships.Any(x => x.ID == relationshipID))
+                {
+                    relationships.Add(relationship);
+                }
+                if (rest != "")
+                {
+                    GetRelationshipTailEntitiesAndRelationsips(projectContext, initialiEntityID, rest, entities, relationships);
+                }
+            }
+            return new Tuple<List<TableDrivedEntity>, List<Relationship>>(entities, relationships);
+        }
+        private EntityRelationshipTailDTO ToEntityRelationshipTailDTO
+            (MyIdeaEntities projectContext, string relationshipPath, int initialiEntityID, string initialiEntityAlias, int targetEntityID, string targetEntityAlias
+            , EntityRelationshipTailDTO reverseRelationshipTail)
+        {
+
+            var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.RelationshipTail, initialiEntityID.ToString(), relationshipPath.ToString());
+            if (cachedItem != null)
+                return cachedItem as EntityRelationshipTailDTO;
+
+
 
             //    اینجا درست شه. بعد چک شه همه جا در درسترس بودن انتیتی از کلاس بیز انتیتی چک بشه و نه از گرقتن اسیند پرمیشن ها
 
@@ -197,22 +185,11 @@ namespace MyModelManager
                 {
                     relationshipID = Convert.ToInt32(relationshipPath);
                 }
-                if (withEntitiesAndRelationships)
-                {
-                    var relationship = bizRelationship.GetAllRelationships(projectContext, false, false).First(x => x.ID == relationshipID);
-                    if (!entities.Any(x => x.ID == relationship.TableDrivedEntityID2))
-                    {
-                        entities.Add(relationship.TableDrivedEntity1);
-                    }
-                    if (!relationships.Any(x => x.ID == relationshipID))
-                    {
-                        relationships.Add(relationship);
-                    }
-                }
+
                 result.Relationship = bizRelationship.GetRelationship(relationshipID);
                 if (rest != "")
                 {
-                    result.ChildTail = ToEntityRelationshipTailDTO(projectContext, rest, initialiEntityID, initialiEntityAlias, targetEntityID, targetEntityAlias, null, withEntitiesAndRelationships, entities, relationships).Item1;
+                    result.ChildTail = ToEntityRelationshipTailDTO(projectContext, rest, initialiEntityID, initialiEntityAlias, targetEntityID, targetEntityAlias, null);
                     //result.LastRelationship = result.ChildTail.LastRelationship;
                 }
             }
@@ -224,17 +201,17 @@ namespace MyModelManager
             result.EntityPath = result.Relationship.Entity1 + "==>" + GetEntityPath(result);
             if (reverseRelationshipTail == null)
             {
-                result.ReverseRelationshipTail = ToEntityRelationshipTailDTO(projectContext, GetReveseRaletionshipPath(result), result.TargetEntityID, targetEntityAlias, result.InitialEntityID, initialiEntityAlias, result, withEntitiesAndRelationships, entities, relationships).Item1;
+                result.ReverseRelationshipTail = ToEntityRelationshipTailDTO(projectContext, GetReveseRaletionshipPath(result), result.TargetEntityID, targetEntityAlias, result.InitialEntityID, initialiEntityAlias, result);
             }
             else
                 result.ReverseRelationshipTail = reverseRelationshipTail;
             //if (result.ReverseRelationshipTail.ChildTail != null)
             //    result.ReverseRelationshipTail.LastRelationship = result.ReverseRelationshipTail.ChildTail.LastRelationship;
 
-            var resultTuple = new Tuple<EntityRelationshipTailDTO, List<TableDrivedEntity>, List<Relationship>>(result, entities, relationships);
-            CacheManager.GetCacheManager().AddCacheItem(resultTuple, CacheItemType.RelationshipTail, initialiEntityID.ToString(), relationshipPath.ToString(), withEntitiesAndRelationships.ToString());
+            //var resultTuple = new Tuple<EntityRelationshipTailDTO, List<TableDrivedEntity>, List<Relationship>>(result, entities, relationships);
+            CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.RelationshipTail, initialiEntityID.ToString(), relationshipPath.ToString());
 
-            return resultTuple;
+            return result;
             //if (item.ReverseRelationshipTailID != null)
             //    result.ReverseRelationshipTailID = item.ReverseRelationshipTailID.Value;
             //result.TargetEntityAlias = item.TableDrivedEntity1.Alias;
@@ -263,9 +240,9 @@ namespace MyModelManager
 
         internal EntityRelationshipTailDTO ToEntityRelationshipTailDTO(int entityID, string relationshipIDTail)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                return ToEntityRelationshipTailDTO(projectContext, relationshipIDTail, entityID, "", 0, "", null, false).Item1;
+                return ToEntityRelationshipTailDTO(projectContext, relationshipIDTail, entityID, "", 0, "", null);
             }
         }
 
@@ -309,7 +286,7 @@ namespace MyModelManager
         }
         //public string CheckLinkedServers(int relationshipTailID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        List<string> messages = new List<string>();
         //        var tail = projectContext.EntityRelationshipTail.First(x => x.ID == relationshipTailID);
@@ -353,7 +330,7 @@ namespace MyModelManager
         //    else
         //        return item.Relationship.ID.ToString();
         //}
-        public EntityRelationshipTail GetOrCreateEntityRelationshipTail(MyProjectEntities projectContext, int entityID, string path)
+        public EntityRelationshipTail GetOrCreateEntityRelationshipTail(MyIdeaEntities projectContext, int entityID, string path)
         {
             var dbItem = projectContext.EntityRelationshipTail.FirstOrDefault(x => x.TableDrivedEntityID == entityID && x.RelationshipPath == path);
             if (dbItem == null)
@@ -383,7 +360,7 @@ namespace MyModelManager
 
         public int GetOrCreateEntityRelationshipTailID(int entityID, string path)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //var dbEntityRelationshipTail = ToEntityRelationshipTail(entityID, targetEntityID, EntityRelationshipTail, "");
                 //projectContext.EntityRelationshipTail.Add(dbEntityRelationshipTail);
@@ -465,7 +442,7 @@ namespace MyModelManager
 
         //internal int GetOrCreateEntityRelationshipTail(int tableDrivedEntityID, string relationshipPath)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var fItem = GetEntityRelationshipTail(relationshipPath, projectContext, tableDrivedEntityID);
         //        if (fItem != null)
@@ -484,7 +461,7 @@ namespace MyModelManager
         //        }
         //    }
         //}
-        //private EntityRelationshipTail GetEntityRelationshipTail(string relationshipPath, MyProjectEntities projectContext, int entityID)
+        //private EntityRelationshipTail GetEntityRelationshipTail(string relationshipPath, MyIdeaEntities projectContext, int entityID)
         //{
         //    var lastTail = projectContext.EntityRelationshipTail.FirstOrDefault(x => x.RelationshipPath == relationshipPath && x.TableDrivedEntityID == entityID && !x.EntityRelationshipTail11.Any());
         //    if (lastTail != null)
@@ -513,7 +490,7 @@ namespace MyModelManager
 
 
 
-        //private EntityRelationshipTail GetEntityRelationshipTail(List<string> paths, MyProjectEntities projectContext, IQueryable<EntityRelationshipTail> childTails)
+        //private EntityRelationshipTail GetEntityRelationshipTail(List<string> paths, MyIdeaEntities projectContext, IQueryable<EntityRelationshipTail> childTails)
         //{
         //    //تکنیک قشنگی بود که ار پت ریلیشن شیپ تیل رو پیدا میکرد.اما مسیر در خود جدول قرار گرفت و این بلااستفاده شد.
         //    if (paths.Count == 0)

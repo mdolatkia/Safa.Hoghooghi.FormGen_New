@@ -616,12 +616,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EntityDeploy Include="MyProjectDataAccess.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>MyProjectDataAccess.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.Config" />
     <EntityDeploy Include="MyIdeaDataDB.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
@@ -630,18 +624,12 @@
     <None Include="MyIdeaDataDB.edmx.diagram">
       <DependentUpon>MyIdeaDataDB.edmx</DependentUpon>
     </None>
-    <None Include="MyProjectDataAccess.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MyProjectDataAccess.edmx</DependentUpon>
-      <LastGenOutput>MyProjectDataAccess.Context.cs</LastGenOutput>
-    </None>
+    <EntityDeploy Include="MyProjectDataAccess.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>MyProjectDataAccess.Designer.cs</LastGenOutput>
+    </EntityDeploy>
     <None Include="MyProjectDataAccess.edmx.diagram">
       <DependentUpon>MyProjectDataAccess.edmx</DependentUpon>
-    </None>
-    <None Include="MyProjectDataAccess.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MyProjectDataAccess.edmx</DependentUpon>
-      <LastGenOutput>MyProjectDataAccess.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
@@ -658,6 +646,16 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>MyIdeaDataDB.edmx</DependentUpon>
       <LastGenOutput>MyIdeaDataDB.cs</LastGenOutput>
+    </Content>
+    <Content Include="MyProjectDataAccess.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MyProjectDataAccess.edmx</DependentUpon>
+      <LastGenOutput>MyProjectDataAccess.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="MyProjectDataAccess.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MyProjectDataAccess.edmx</DependentUpon>
+      <LastGenOutput>MyProjectDataAccess.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

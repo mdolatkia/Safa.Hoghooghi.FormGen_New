@@ -17,7 +17,7 @@ namespace MyModelManager
         public List<EntityDirectReportDTO> GetEntityDirectReports(DR_Requester requester, int entityID)
         {
             List<EntityDirectReportDTO> result = new List<EntityDirectReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = projectContext.EntityDirectlReport.Where(x => x.EntityDataItemReport.EntityReport.TableDrivedEntityID == entityID);
                 foreach (var item in list)
@@ -31,7 +31,7 @@ namespace MyModelManager
 
         public EntityDirectReportDTO GetEntityDirectReport(DR_Requester requester, int iD)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var item = projectContext.EntityDirectlReport.First(x => x.ID == iD);
                 if (bizEntityReport.DataIsAccessable(requester, item.EntityDataItemReport.EntityReport))
@@ -66,7 +66,7 @@ namespace MyModelManager
 
         public int UpdateEntityDirectReport(EntityDirectReportDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //BizEntityReport bizEntityReport = new MyModelManager.BizEntityReport();
                 BizEntityDataItemReport bizEntityDataItemReport = new BizEntityDataItemReport();

@@ -16,13 +16,18 @@ namespace MyUILibrary.EntityArea
 {
     public class ViewEntityArea : I_ViewEntityArea
     {
-        public ViewEntityArea()
+        public ViewEntityArea(ViewEntityAreaInitializer initParam)
         {
             ViewCommands = new List<I_ViewAreaCommand>();
             ViewColumnControls = new List<SimpleViewColumnControl>();
+            ViewInitializer = initParam;
+            //if (initParam.TempEntity != null)
+            //    _FullEntity = initParam.TempEntity;
+
+            GenerateView();
         }
-
-
+      
+        public ViewEntityAreaInitializer ViewInitializer { set; get; }
         //public I_EditEntityArea SourceEditEntityArea
         //{
         //    set;
@@ -42,7 +47,7 @@ namespace MyUILibrary.EntityArea
                 return AgentUICoreMediator.GetAgentUICoreMediator;
             }
         }
-        public ViewEntityAreaInitializer ViewInitializer { set; get; }
+      
 
         //internal static void ShowReport(List<DP_DataRepository> resultDataItems, bool v)
         //{
@@ -125,15 +130,7 @@ namespace MyUILibrary.EntityArea
         //    AgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(SearchViewArea, ViewInitializer.SearchEntity.Alias);
         //}
 
-        public void SetAreaInitializer(ViewEntityAreaInitializer initParam)
-        {
-            ViewInitializer = initParam;
-            //if (initParam.TempEntity != null)
-            //    _FullEntity = initParam.TempEntity;
-
-            GenerateView();
-        }
-
+      
         private void GenerateView()
         {
             ViewView = AgentUICoreMediator.UIManager.GenerateViewOfViewEntityArea();
@@ -202,7 +199,7 @@ namespace MyUILibrary.EntityArea
             foreach (var columnControl in ViewColumnControls)
             {
 
-                columnControl.Visited = true;
+            //    columnControl.Visited = true;
                 var simpleColumn = (columnControl as SimpleViewColumnControl);
                 ViewView.AddUIControlPackage(simpleColumn.ControlManager, simpleColumn.LabelControlManager);
             }

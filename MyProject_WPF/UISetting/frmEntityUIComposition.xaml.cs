@@ -2,6 +2,7 @@
 using MyModelManager;
 using MyUIGenerator;
 using MyUILibrary.EntityArea;
+using ProxyLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,17 +28,14 @@ namespace MyProject_WPF
     {
         //** d4503365-cbb8-45c8-a108-3292f851d67b
         BizEntityUIComposition bizEntityUIComposition = new BizEntityUIComposition();
-        EntityUICompositionDTO UICompositionTree { set; get; }
         int EntityID { set; get; }
-        List<ColumnOrRelationship> ColumnOrRelationships = new List<ColumnOrRelationship>();
+        //  List<ColumnOrRelationship> ColumnOrRelationships = new List<ColumnOrRelationship>();
         //List<relationship> Relationships = new List<relationship>();
-        TableDrivedEntityDTO Entity { set; get; }
+
         public frmEntityUIComposition(int entityID)
         {
             InitializeComponent();
             EntityID = entityID;
-            BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-            Entity = bizTableDrivedEntity.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
             SetColumnTypes();
             HideAllPanels();
             PopulateTree();
@@ -61,87 +59,17 @@ namespace MyProject_WPF
             cmbEmptySpaceColumnsCount.ItemsSource = listEnum;
         }
 
-        private void SetEntityColumnOrRelationships()
-        {
-            ColumnOrRelationships.Clear();
-            foreach (var column in Entity.Columns.Where(x => x.DataEntryEnabled).OrderBy(x => x.Position))
-            {
-                if (Entity.Relationships.Where(x => x.DataEntryEnabled).Any(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID)))
-                {
-                    if (!ColumnOrRelationships.Any(x => x.RelationshipColumn.Any(y => y == column.ID)))
-                    {
-                        var rel = Entity.Relationships.First(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID));
-                        ColumnOrRelationship columnOrRelationship = new MyProject_WPF.ColumnOrRelationship();
-                        columnOrRelationship.RelationshipID = rel.ID;
-                        foreach (var relcolumn in rel.RelationshipColumns)
-                        {
-                            columnOrRelationship.RelationshipColumn.Add(relcolumn.FirstSideColumn.ID);
-                        }
-                        ColumnOrRelationships.Add(columnOrRelationship);
-                    }
-                }
-                else
-                {
-                    ColumnOrRelationship columnOrRelationship = new MyProject_WPF.ColumnOrRelationship();
-                    columnOrRelationship.ColumnID = column.ID;
-                    ColumnOrRelationships.Add(columnOrRelationship);
-                }
-            }
 
-            foreach (var relationship in Entity.Relationships
-                            .Where(x => x.DataEntryEnabled && x.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign))
-            {
-                ColumnOrRelationship columnOrRelationship = new MyProject_WPF.ColumnOrRelationship();
-                columnOrRelationship.RelationshipID = relationship.ID;
-                ColumnOrRelationships.Add(columnOrRelationship);
-            }
-        }
 
         private void PopulateTree()
         {
-            SetEntityColumnOrRelationships();
+            //** c6287638-6961-48c2-ba47-35292cf1d9a1
             treeEntityUIComposition.Items.Clear();
-            UICompositionTree = bizEntityUIComposition.GetEntityUICompositionTree(EntityID);
-            RadTreeViewItem parentNode = null;
-            if (UICompositionTree == null)
-            {
-                parentNode = GetNavigationRootNode();
-            }
-            else
-            {
-                if (UICompositionTree.ObjectCategory != DatabaseObjectCategory.Entity
-                  || UICompositionTree.EntityUISetting == null)
-                {
-                    return;
-                }
-                parentNode = AddNavigationNode(treeEntityUIComposition.Items, UICompositionTree);
-                ShowTreeItem(parentNode.Items, UICompositionTree.ChildItems.OrderBy(x => x.Position).ToList());
 
-            }
+            var UICompositionTree = bizEntityUIComposition.GetOrCreateEntityUIComposition(EntityID);
 
-            var unVisitedList = ColumnOrRelationships.Where(x => x.visited == false).ToList();
-            List<EntityUICompositionDTO> unVisitedUICompositions = new List<EntityUICompositionDTO>();
-            foreach (var item in unVisitedList)
-            {
-                EntityUICompositionDTO tempItem = new EntityUICompositionDTO();
-                if (item.ColumnID != 0)
-                {
-                    tempItem.ObjectCategory = DatabaseObjectCategory.Column;
-                    tempItem.ColumnUISetting = new ColumnUISettingDTO();
-                    tempItem.ObjectIdentity = item.ColumnID.ToString();
-                    tempItem.Title = Entity.Columns.First(x => x.ID == item.ColumnID).Alias;
-                }
-                else if (item.RelationshipID != 0)
-                {
-                    tempItem.ObjectCategory = DatabaseObjectCategory.Relationship;
-                    tempItem.RelationshipUISetting = new RelationshipUISettingDTO();
-                    tempItem.ObjectIdentity = item.RelationshipID.ToString();
-                    tempItem.Title = Entity.Relationships.First(x => x.ID == item.RelationshipID).Alias;
-                }
-                unVisitedUICompositions.Add(tempItem);
-            }
-            if (unVisitedUICompositions.Any())
-                ShowTreeItem(parentNode.Items, unVisitedUICompositions);
+            var parentNode = AddNavigationNode(treeEntityUIComposition.Items, UICompositionTree);
+            ShowTreeItem(parentNode.Items, UICompositionTree.ChildItems.OrderBy(x => x.Position).ToList());
 
             treeEntityUIComposition.ExpandAll();
         }
@@ -149,90 +77,13 @@ namespace MyProject_WPF
         {
             foreach (var item in items)
             {
-                bool isValid = true;
-                if (item.ObjectCategory == DatabaseObjectCategory.Column)
-                {
-                    var colOrRel = ColumnOrRelationships.FirstOrDefault(x => x.visited == false && x.ColumnID == Convert.ToInt32(item.ObjectIdentity));
-                    if (colOrRel == null)
-                        isValid = false;
-                    else
-                        colOrRel.visited = true;
-                }
-                else if (item.ObjectCategory == DatabaseObjectCategory.Relationship)
-                {
-                    var colOrRel = ColumnOrRelationships.FirstOrDefault(x => x.visited == false && x.RelationshipID == Convert.ToInt32(item.ObjectIdentity));
-                    if (colOrRel == null)
-                        isValid = false;
-                    else
-                        colOrRel.visited = true;
-                }
-                if (isValid)
-                {
-                    var node = AddNavigationNode(itemCollection, item);
-                    ShowTreeItem(node.Items, item.ChildItems.OrderBy(x => x.Position).ToList());
-                }
+                var node = AddNavigationNode(itemCollection, item);
+                ShowTreeItem(node.Items, item.ChildItems.OrderBy(x => x.Position).ToList());
             }
             // return node;
         }
 
-        //void frmEntityUIComposition_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    if (treeEntityUIComposition.Items.Count == 0)
-        //        PopulateEntityUIComposition();
 
-        //    if ((treeEntityUIComposition.Items[0] as RadTreeViewItem).Items.Count == 0)
-        //    {
-        //        AddAllEntityItemsToTree();
-        //    }
-        //}
-
-        //private void AddAllEntityItemsToTree()
-        //{
-        //    foreach (var item in ucEntityTree.GetAllTreeItems)
-        //    {
-        //        var objectDTO = item.DataContext as ObjectDTO;
-        //        if (objectDTO.ObjectCategory == DatabaseObjectCategory.Column || objectDTO.ObjectCategory == DatabaseObjectCategory.Relationship)
-        //        {
-        //            var currentNode = FindTreeDBObject(treeEntityUIComposition.Items, objectDTO.ObjectCategory, objectDTO.ObjectIdentity);
-        //            if (currentNode == null)
-        //                AddNavigationNode((treeEntityUIComposition.Items[0] as RadTreeViewItem).Items, objectDTO.ObjectCategory, objectDTO.ObjectIdentity, objectDTO.Title, 0, (item.ToolTip == null ? null : item.ToolTip.ToString()));
-        //        }
-        //    }
-        //}
-        //private RadTreeViewItem FindTreeDBObject(ItemCollection collection, DatabaseObjectCategory objectCategory, string objectIdentity)
-        //{
-
-        //    foreach (var item in collection)
-        //    {
-        //        if ((item is RadTreeViewItem))
-        //        {
-        //            var objectDTO = (item as RadTreeViewItem).DataContext as EntityUICompositionDTO;
-        //            if (objectDTO.ObjectIdentity == objectIdentity && objectDTO.ObjectCategory == objectCategory)
-        //                return (item as RadTreeViewItem);
-        //            else
-        //            {
-        //                var result = FindTreeDBObject((item as RadTreeViewItem).Items, objectCategory, objectIdentity);
-        //                if (result != null)
-        //                    return result;
-        //            }
-        //        }
-
-        //    }
-        //    return null;
-        //}
-
-        private RadTreeViewItem GetNavigationRootNode()
-        {
-            if (treeEntityUIComposition.Items.Count > 0)
-            {
-                return treeEntityUIComposition.Items[0] as RadTreeViewItem;
-            }
-            else
-            {
-                var rootNode = AddNode(treeEntityUIComposition.Items, Entity.Alias, DatabaseObjectCategory.Entity);
-                return rootNode;
-            }
-        }
         private RadTreeViewItem AddNode(ItemCollection collection, string title, DatabaseObjectCategory type)
         {
             var node = new RadTreeViewItem();
@@ -375,12 +226,9 @@ namespace MyProject_WPF
                 {
                     var sourceContext = sourceNode.DataContext as EntityUICompositionDTO;
                     CloneTreeNode(sourceNode, targetNode);
-
                 }
-
             }
         }
-
         private void CloneTreeNode(RadTreeViewItem sourceNode, RadTreeViewItem targetNode)
         {
             if (sourceNode == null || targetNode == null)
@@ -398,7 +246,6 @@ namespace MyProject_WPF
 
             try
             {
-
                 if (sourceContext.ObjectCategory == DatabaseObjectCategory.Group
                   || sourceContext.ObjectCategory == DatabaseObjectCategory.TabControl
                   || sourceContext.ObjectCategory == DatabaseObjectCategory.Column
@@ -443,7 +290,6 @@ namespace MyProject_WPF
 
             }
         }
-
         private bool IsNodeInChilds(ItemCollection items, RadTreeViewItem targetNode)
         {
             foreach (RadTreeViewItem item in items)
@@ -455,8 +301,6 @@ namespace MyProject_WPF
             }
             return false;
         }
-
-
         //private void SetEntityUICompositionIcons(ItemCollection treeNodeCollection)
         //{
         //    foreach (RadTreeViewItem node in treeNodeCollection)
@@ -465,7 +309,6 @@ namespace MyProject_WPF
         //        SetEntityUICompositionIcons(node.Nodes);
         //    }
         //}
-
         private void menuNavigation_Opened(object sender, RoutedEventArgs e)
         {
             mnuDelete.Visibility = Visibility.Collapsed;
@@ -550,9 +393,6 @@ namespace MyProject_WPF
                 }
             }
         }
-
-
-
         private int GetTreeViewItemIndex(ItemCollection items, RadTreeViewItem item)
         {
             int index = 0;
@@ -626,25 +466,6 @@ namespace MyProject_WPF
             }
         }
 
-
-
-
-        //void node_Selected(object sender, RoutedEventArgs e)
-        //{
-        //    e.Handled = true;
-        //    var item = e.Source as RadTreeViewItem;
-        //    if ((item !=null) && item.DataContext is EntityUICompositionDTO)
-        //    {
-        //        var navigationItem = item.DataContext as EntityUICompositionDTO;
-        //        if (navigationItem.Category == "Folder")
-        //        {
-        //            txtName.IsEnabled = true;
-        //            txtName.Text = navigationItem.ItemName;
-        //            txtName.Focus();
-        //        }
-        //    }
-        //}
-
         private void txtName_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (txtName.IsEnabled == true)
@@ -662,57 +483,41 @@ namespace MyProject_WPF
             }
 
         }
-
-
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            List<EntityUICompositionDTO> items = new List<EntityUICompositionDTO>();
-            CollectEntityUICompositionItems(items);
-            bizEntityUIComposition.Save(EntityID, items);
+
+            var rootNode = (treeEntityUIComposition.Items[0] as RadTreeViewItem);
+
+            CollectEntityUICompositionItems(rootNode);
+            EntityUICompositionDTO item = rootNode.DataContext as EntityUICompositionDTO;
+
+            bizEntityUIComposition.Save(EntityID, item);
             PopulateTree();
         }
-
-        private void CollectEntityUICompositionItems(List<EntityUICompositionDTO> items, RadTreeViewItem parentNode = null)
+        private void CollectEntityUICompositionItems(RadTreeViewItem parentNode)
         {
-            if (parentNode == null)
+            var parentContext = parentNode.DataContext as EntityUICompositionDTO;
+            int index = 0;
+            parentContext.ChildItems.Clear();
+            foreach (RadTreeViewItem node in parentNode.Items)
             {
-                var rootNode = (treeEntityUIComposition.Items[0] as RadTreeViewItem);
-                var context = rootNode.DataContext as EntityUICompositionDTO;
-                items.Add(context);
-                CollectEntityUICompositionItems(items, rootNode);
+                var context = node.DataContext as EntityUICompositionDTO;
+                context.ParentItem = parentContext;
+                context.Position = index;
+               
+                
+                parentContext.ChildItems.Add(context);
+                index++;
+                CollectEntityUICompositionItems(node);
             }
-            else
-            {
-                var parentContext = parentNode.DataContext as EntityUICompositionDTO;
-                int index = 0;
-                foreach (RadTreeViewItem node in parentNode.Items)
-                {
-                    var context = node.DataContext as EntityUICompositionDTO;
-                    context.ParentItem = parentContext;
-                    context.Position = index;
-                    items.Add(context);
-                    index++;
-                    CollectEntityUICompositionItems(items, node);
-                }
-            }
-        }
 
+        }
         public EntityUICompositionDTO GetEntityUICompositionComposite()
         {
             EntityUICompositionDTO result = new EntityUICompositionDTO();
-
-        //    result.ColumnItems = new List<ColumnUISettingDTO>();
-          //  result.RelationshipItems = new List<RelationshipUISettingDTO>();
-
             var rootNode = (treeEntityUIComposition.Items[0] as RadTreeViewItem);
             var context = rootNode.DataContext as EntityUICompositionDTO;
-         //  result.RootItem = context;
-
-            //List<EntityUICompositionDTO> items = new List<EntityUICompositionDTO>();
-            //CollectEntityUICompositionItems(items);
-
             SetEntityUICompositionDTO(rootNode);
-
             return context;
         }
 
@@ -931,12 +736,11 @@ namespace MyProject_WPF
             if (change && SelectedTreeItem != null)
                 SelectedTreeItem.TabPageUISetting.InternalColumnsCount = (txtTabPageColumnsCount.Text == "" ? (Int16)0 : Convert.ToInt16(txtTabPageColumnsCount.Text));
         }
-        I_EditEntityArea EditEntityArea { set; get; }
-        I_EditEntityArea MultipleEditEntityArea { set; get; }
+        //   I_EditEntityArea EditEntityArea { set; get; }
+        //   I_EditEntityArea MultipleEditEntityArea { set; get; }
 
         private void btnPreview_Click(object sender, RoutedEventArgs e)
         {
-
             MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.SetUIManager(new UIManager());
             var userInfo = new MyUILibrary.UserInfo();
             userInfo.AdminSecurityInfo = new MyUILibrary.AdminSecurityInfo() { IsActive = true, ByPassSecurity = true };
@@ -944,41 +748,44 @@ namespace MyProject_WPF
 
             brdView.Child = null;
 
-            I_EditEntityArea currentEditArea = null;
-            if (chkMultiple.IsChecked == false)
-                currentEditArea = EditEntityArea;
-            else
-                currentEditArea = MultipleEditEntityArea;
-         
-            if (currentEditArea == null)
-            {
-                var initializer = new EditEntityAreaInitializer();
-                initializer.Preview = true;
-                initializer.EntityID = EntityID;
-                if (chkMultiple.IsChecked == false)
-                    initializer.DataMode = CommonDefinitions.UISettings.DataMode.One;
-                else
-                    initializer.DataMode = CommonDefinitions.UISettings.DataMode.Multiple;
-                currentEditArea = BaseEditEntityArea.GetEditEntityArea(initializer).Item1;
-                if (chkMultiple.IsChecked == false)
-                    EditEntityArea = currentEditArea;
-                else
-                    MultipleEditEntityArea = currentEditArea;
-            }
+            //I_EditEntityArea currentEditArea = null;
+            //if (chkMultiple.IsChecked == false)
+            //    currentEditArea = EditEntityArea;
+            //else
+            //    currentEditArea = MultipleEditEntityArea;
 
-            currentEditArea.DataEntryEntity.UICompositions = GetEntityUICompositionComposite();
-            currentEditArea.GenerateDataView();
+            //if (currentEditArea == null)
+            //{
+
+            DR_Requester requester = new DR_Requester();
+            requester.SkipSecurity = true;
+            BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+            var dataEntryEntity = bizTableDrivedEntity.GetDataEntryEntity(requester, EntityID, GetEntityUICompositionComposite());
+
+            var initializer = new EditEntityAreaInitializer();
+            initializer.Preview = true;
+            initializer.EntityID = EntityID;
+            if (chkMultiple.IsChecked == false)
+                initializer.DataMode = CommonDefinitions.UISettings.DataMode.One;
+            else
+                initializer.DataMode = CommonDefinitions.UISettings.DataMode.Multiple;
+            initializer.PreviewDataEntryEntity = dataEntryEntity;
+            var currentEditArea = BaseEditEntityArea.GetEditEntityArea(initializer).Item1;
+
+
+            //if (chkMultiple.IsChecked == false)
+            //    EditEntityArea = currentEditArea;
+            //else
+            //    MultipleEditEntityArea = currentEditArea;
+            //}
+
+
+            //    currentEditArea.GenerateDataViewPreview(dataEntryEntity);
             brdView.Child = currentEditArea.DataViewGeneric as UIElement;
 
         }
 
-        private void btnPreviewMultiple_Click(object sender, RoutedEventArgs e)
-        {
 
-
-
-
-        }
         private void mnuEmptySpace_Click(object sender, RoutedEventArgs e)
         {
             var node = treeEntityUIComposition.SelectedItem as RadTreeViewItem;
@@ -1006,7 +813,6 @@ namespace MyProject_WPF
                 }
             }
         }
-
         private void chkExtendToEnd_Checked(object sender, RoutedEventArgs e)
         {
             if (change && SelectedTreeItem != null)
@@ -1015,53 +821,44 @@ namespace MyProject_WPF
                 cmbEmptySpaceColumnsCount.IsEnabled = false;
             }
         }
-
         private void chkExtendToEnd_Unchecked(object sender, RoutedEventArgs e)
         {
             if (change && SelectedTreeItem != null)
             {
                 SelectedTreeItem.EmptySpaceUISetting.ExpandToEnd = chkExtendToEnd.IsChecked == true;
                 cmbEmptySpaceColumnsCount.IsEnabled = true;
-
             }
         }
-
         private void cmbEmptySpaceColumnsCount_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (change && SelectedTreeItem != null)
                 SelectedTreeItem.EmptySpaceUISetting.UIColumnsType = (Enum_UIColumnsType)cmbEmptySpaceColumnsCount.SelectedItem;
         }
-
         private void txtRelationshipRowsCount_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (change && SelectedTreeItem != null)
                 SelectedTreeItem.RelationshipUISetting.UIRowsCount = (txtRelationshipRowsCount.Text == "" ? (Int16)0 : Convert.ToInt16(txtRelationshipRowsCount.Text));
         }
-
         private void txtGroupRowsCount_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (change && SelectedTreeItem != null)
                 SelectedTreeItem.GroupUISetting.UIRowsCount = (txtGroupRowsCount.Text == "" ? (Int16)0 : Convert.ToInt16(txtGroupRowsCount.Text));
         }
-
         private void txtTabGroupRowsCount_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (change && SelectedTreeItem != null)
                 SelectedTreeItem.TabGroupUISetting.UIRowsCount = (txtTabGroupRowsCount.Text == "" ? (Int16)0 : Convert.ToInt16(txtTabGroupRowsCount.Text));
         }
-
         private void chkRelationshipIsExpanded_Checked(object sender, RoutedEventArgs e)
         {
             if (change && SelectedTreeItem != null)
                 SelectedTreeItem.RelationshipUISetting.IsExpanded = chkRelationshipIsExpanded.IsChecked == true;
         }
-
         private void chkGroupIsExpanded_Checked(object sender, RoutedEventArgs e)
         {
             if (change && SelectedTreeItem != null)
                 SelectedTreeItem.GroupUISetting.IsExpanded = chkGroupIsExpanded.IsChecked == true;
         }
-
         private void chkTabGroupIsExpanded_Checked(object sender, RoutedEventArgs e)
         {
             if (change && SelectedTreeItem != null)

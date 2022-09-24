@@ -13,7 +13,7 @@ namespace MyModelManager
     //    public List<ArcRelationshipGroupDTO> GetArcRelationshipGroups(int tableDrivedEntityID)
     //    {
     //        List<ArcRelationshipGroupDTO> result = new List<ArcRelationshipGroupDTO>();
-    //        using (var projectContext = new DataAccess.MyProjectEntities())
+    //        using (var projectContext = new DataAccess.MyIdeaEntities())
     //        {
     //            var list = projectContext.ArcRelationshipGroup.Where(x => x.TableDrivedEntityID == tableDrivedEntityID);
     //            foreach (var item in list)
@@ -41,7 +41,7 @@ namespace MyModelManager
     //    //public List<ArcRelationshipGroup_RelationshipDTO> GetArcRelationshipGroup_RelationshipDTO(int arcGroupID)
     //    //{
     //    //    List<ArcRelationshipGroup_RelationshipDTO> result = new List<ArcRelationshipGroup_RelationshipDTO>();
-    //    //    using (var projectContext = new DataAccess.MyProjectEntities())
+    //    //    using (var projectContext = new DataAccess.MyIdeaEntities())
     //    //    {
     //    //        var listRel = projectContext.ArcRelationshipGroup_Relationship.Where(x => x.ArcRelationshipGroupID == arcGroupID);
     //    //        foreach (var item in listRel)
@@ -64,7 +64,7 @@ namespace MyModelManager
 
     //    public void SaveArcRelationshipGroup(List<ArcRelationshipGroupDTO> list)
     //    {
-    //        using (var projectContext = new DataAccess.MyProjectEntities())
+    //        using (var projectContext = new DataAccess.MyIdeaEntities())
     //        {
     //            foreach (var item in list)
     //            {

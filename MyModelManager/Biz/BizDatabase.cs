@@ -14,7 +14,7 @@ namespace MyModelManager
     {
         //public DatabaseDTO GetDatabaseByEntityID(int entityID)
         //{
-        //    using (var projectContext = new MyProjectEntities())
+        //    using (var projectContext = new MyIdeaEntities())
         //    {
         //        BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         //           var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.ID == entityID);
@@ -29,7 +29,7 @@ namespace MyModelManager
         //}
         public DatabaseDTO GetDatabaseByTableID(int tableID)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var table = context.Table.FirstOrDefault(x => x.ID == tableID);
                 if (table != null)
@@ -47,7 +47,7 @@ namespace MyModelManager
 
         //public int GetDatabaseIDByEntityID(int entityID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var entity = context.TableDrivedEntity.FirstOrDefault(x => x.ID == entityID);
         //        if (entity != null)
@@ -60,7 +60,7 @@ namespace MyModelManager
 
         public bool SaveDatabaseSetting(int databaseID, DatabaseSettingDTO databaseSetting)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbDatabase = projectContext.DatabaseInformation.FirstOrDefault(x => x.ID == databaseID);
                 if (dbDatabase.DatabaseUISetting == null)
@@ -77,7 +77,7 @@ namespace MyModelManager
 
         public DatabaseDTO GetDatabase(int databaseID, bool withSetting = false)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var db = context.DatabaseInformation.First(x => x.ID == databaseID);
                 return ToDatabaseDTO(db, withSetting);
@@ -88,7 +88,7 @@ namespace MyModelManager
         public List<DbServerDTO> GetDBServers()
         {
             List<DbServerDTO> result = new List<DbServerDTO>();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var servers = context.DBServer;
                 foreach (var item in servers)
@@ -103,7 +103,7 @@ namespace MyModelManager
 
         public DbServerDTO GetDBServer(int dbServerID)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var db = context.DBServer.First(x => x.ID == dbServerID);
                 return ToDBServerDTO(db);
@@ -111,7 +111,7 @@ namespace MyModelManager
         }
         public int SaveLinkedServer(LinkedServerDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbServer = projectContext.LinkedServer.FirstOrDefault(x => x.ID == message.ID);
                 if (dbServer == null)
@@ -129,14 +129,14 @@ namespace MyModelManager
 
         public bool LinkedServerExists(int firstSideServerID, int secondSideServerId)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 return projectContext.LinkedServer.Any(x => x.SourceDBServerID == firstSideServerID && x.TargetDBServerID == secondSideServerId);
             }
         }
         public int SaveServer(DbServerDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbServer = projectContext.DBServer.FirstOrDefault(x => x.ID == message.ID);
                 if (dbServer == null)
@@ -152,7 +152,7 @@ namespace MyModelManager
         }
         public LinkedServerDTO GetLinkedServer(int ID)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var db = context.LinkedServer.First(x => x.ID == ID);
                 return ToLinkedServer(db);
@@ -161,7 +161,7 @@ namespace MyModelManager
         public List<LinkedServerDTO> GetLinkedServerBySourceServerID(int iD)
         {
             List<LinkedServerDTO> result = new List<LinkedServerDTO>();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 foreach (var db in context.LinkedServer.Where(x => x.SourceDBServerID == iD))
                 {
@@ -172,7 +172,7 @@ namespace MyModelManager
         }
         public LinkedServerDTO GetLinkedServer(int firstSideServerID, int secondSideServerID)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var db = context.LinkedServer.FirstOrDefault(x => x.SourceDBServerID == firstSideServerID && x.TargetDBServerID == secondSideServerID);
                 if (db != null)
@@ -214,7 +214,7 @@ namespace MyModelManager
 
         //public DatabaseDTO GetDatabaseDTO(string catalog)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
 
         //            var dbInfo = context.DatabaseInformation.FirstOrDefault(x => x.Name == catalog);
@@ -227,7 +227,7 @@ namespace MyModelManager
         public List<DatabaseDTO> GetDatabases()
         {
             List<DatabaseDTO> result = new List<DatabaseDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = projectContext.DatabaseInformation;
                 foreach (var item in list)
@@ -276,7 +276,7 @@ namespace MyModelManager
 
         public int SaveDatabase(DatabaseDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbDatabase = projectContext.DatabaseInformation.FirstOrDefault(x => x.ID == message.ID);
                 if (dbDatabase == null)
@@ -302,20 +302,20 @@ namespace MyModelManager
 
         public void CheckDatabaseInfoExists()
         {
-            var context = new MyProjectEntities();
-            DBServer dbserver = context.DBServer.FirstOrDefault(x => x.Name == "LOCALHOST");
+            var context = new MyIdeaEntities();
+            DBServer dbserver = context.DBServer.FirstOrDefault(x => x.Name == "ORACLE");
             if (dbserver == null)
             {
                 dbserver = new DBServer();
-                dbserver.Name = "LOCALHOST";
-                dbserver.Title = "LOCALHOST";
+                dbserver.Name = "ORACLE";
+                dbserver.Title = "ORACLE";
                 context.DBServer.Add(dbserver);
             }
 
             if (!context.DatabaseInformation.Any(x => x.Name == "DBProductService"))
             {
                 DatabaseInformation db = new DatabaseInformation();
-                db.ConnectionString = "Data Source=LOCALHOST;Initial Catalog=DBProductService;User ID=sa;Password=123;MultipleActiveResultSets=True;";// "Data Source=Localhost;Initial Catalog=DBProductService;Integrated Security=True;MultipleActiveResultSets=True;";
+                db.ConnectionString = "Data Source=ORACLE;Initial Catalog=DBProductService;User ID=sa;Password=123;MultipleActiveResultSets=True;";// "Data Source=Localhost;Initial Catalog=DBProductService;Integrated Security=True;MultipleActiveResultSets=True;";
                 db.Name = "DBProductService";
                 db.Title = "خدمات و سرويس";
                 db.DBType = "SQLServer";
@@ -329,23 +329,23 @@ namespace MyModelManager
                 context.DatabaseInformation.Add(db);
             }
 
-            DBServer dbserver2 = context.DBServer.FirstOrDefault(x => x.Name == "LOCALHOST\\SQL_EXP_SALARY");
-            if (dbserver2 == null)
-            {
-                dbserver2 = new DBServer();
-                dbserver2.Name = "LOCALHOST\\SQL_EXP_SALARY";
-                dbserver2.Title = "LOCALHOST\\SQL_EXP_SALARY";
-                context.DBServer.Add(dbserver2);
-            }
+            //DBServer dbserver2 = context.DBServer.FirstOrDefault(x => x.Name == "LOCALHOST\\SQL_EXP_SALARY");
+            //if (dbserver2 == null)
+            //{
+            //    dbserver2 = new DBServer();
+            //    dbserver2.Name = "LOCALHOST\\SQL_EXP_SALARY";
+            //    dbserver2.Title = "LOCALHOST\\SQL_EXP_SALARY";
+            //    context.DBServer.Add(dbserver2);
+            //}
 
             if (!context.DatabaseInformation.Any(x => x.Name == "DBProducts"))
             {
                 DatabaseInformation db = new DatabaseInformation();
-                db.ConnectionString = "Data Source=LOCALHOST\\SQL_EXP_SALARY;Initial Catalog=DBProducts;Integrated Security=True;MultipleActiveResultSets=True;"; //"Data Source=.\\SQL_EXP_SALARY;Initial Catalog=DBProducts;User ID=sa;Password=123;MultipleActiveResultSets=True;";
+                db.ConnectionString = "Data Source=ORACLE;Initial Catalog=DBProducts;Integrated Security=True;MultipleActiveResultSets=True;"; //"Data Source=LOCALHOST\\SQL_EXP_SALARY;Initial Catalog=DBProducts;Integrated Security=True;MultipleActiveResultSets=True;"; 
                 db.Name = "DBProducts";
                 db.Title = "محصولات";
                 db.DBType = "SQLServer";
-                db.DBServer = dbserver2;
+                db.DBServer = dbserver;// dbserver2;
                 db.DBHasDate = false;
 
 
@@ -371,7 +371,7 @@ namespace MyModelManager
         //public bool TestConnection(int databaseID)
         //{
         //    var 
-        //    //using (var context = new MyProjectEntities())
+        //    //using (var context = new MyIdeaEntities())
         //    //{
         //    // var database= context.DatabaseInformation.First(x => x.ID == databaseID);
 
@@ -392,7 +392,7 @@ namespace MyModelManager
         //public List<SchemaDTO> GetSchemaDTO(string databaseName)
         //{
         //    List<SchemaDTO> result = new List<SchemaDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        foreach (var schema in projectContext.TableDrivedEntity.Where(x => x.Table.Catalog == databaseName).GroupBy(x => x.Table.RelatedSchema))
         //        {
@@ -414,7 +414,7 @@ namespace MyModelManager
         //public List<ObjectDTO> GetDatabaseObjectTree(string parentCategory, string parentIdentity)
         //{
         //    List<ObjectDTO> result = new List<ObjectDTO>();
-        //    using (var myProjectContext = new MyProjectEntities())
+        //    using (var myProjectContext = new MyIdeaEntities())
         //    {
         //        if (string.IsNullOrEmpty(parentIdentity))
         //        {
@@ -488,7 +488,7 @@ namespace MyModelManager
         //{
         //    if (objectCategory == "Database")
         //        return null;
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        ObjectDTO result = null;
         //        if (objectCategory == "Schema")
@@ -517,7 +517,7 @@ namespace MyModelManager
         ////    if (objectCategory == "Column")
         ////        return null;
         ////    var result = new List<ObjectDTO>();
-        ////    using (var projectContext = new DataAccess.MyProjectEntities())
+        ////    using (var projectContext = new DataAccess.MyIdeaEntities())
         ////    {
         ////        if (objectCategory == "Database")
         ////        {

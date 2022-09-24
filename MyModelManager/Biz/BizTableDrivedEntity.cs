@@ -24,13 +24,13 @@ namespace MyModelManager
 
         public bool IndependentDataEntry(int entityID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 return GetAllEntities(projectContext, false).First(x => x.ID == entityID).IndependentDataEntry == true;
             }
         }
 
-        public IQueryable<TableDrivedEntity> GetAllEntities(MyProjectEntities projectContext, bool evenDisabled, bool? isView = null)
+        public IQueryable<TableDrivedEntity> GetAllEntities(MyIdeaEntities projectContext, bool evenDisabled, bool? isView = null)
         {
             //fc78bf47-f1ed-4bee-b141-8b4f7f33ae0d
             //بعدا بررسی شود که اینکلود رو میشه یکبار به کوئری اضافه کرد؟
@@ -90,19 +90,19 @@ namespace MyModelManager
         {
             //بهتره خود انتیتی با دیتابیس رابطه داشته باشد
             List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntity = GetAllEntities(projectContext, evenDisabled, isView);
                 listEntity = listEntity.Where(x => x.Table.DBSchema.DatabaseInformationID == databaseID);
                 foreach (var item in listEntity)
-                    result.Add(ToTableDrivedEntityDTO(item, columnInfoType, relationshipInfoType, false, false));
+                    result.Add(ToTableDrivedEntityDTO(item, columnInfoType, relationshipInfoType, false));
             }
             return result.OrderBy(x => x.RelatedSchema).ThenBy(x => x.Name).ToList();
         }
         public List<TableDrivedEntityDTO> GetAllEntitiesDTO(DR_Requester requester, string generalFilter, bool evenDisabled, bool? isView, List<SecurityAction> specificActions = null)
         {
             List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntity = GetAllEntities(projectContext, evenDisabled, isView);
                 if (generalFilter != "")
@@ -112,7 +112,7 @@ namespace MyModelManager
                 {
                     if (DataIsAccessable(requester, item, specificActions))
                     {
-                        var rItem = ToTableDrivedEntityDTO(item, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships, false, false);
+                        var rItem = ToTableDrivedEntityDTO(item, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships, false);
                         result.Add(rItem);
                     }
                 }
@@ -142,7 +142,7 @@ namespace MyModelManager
 
         //public List<int> GetDisabledEntityIDs(List<int> checkEntityIDs)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        returnGetAllEntities(projectContext, false).Where(x => checkEntityIDs.Contains(x.ID) && x.IsEnabled == false).Select(x => x.ID).ToList();
         //    }
@@ -174,7 +174,7 @@ namespace MyModelManager
 
         public bool DataIsAccessable(DR_Requester requester, int entityID, List<SecurityAction> specificActions = null)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var entity = GetAllEntities(projectContext, false).First(x => x.ID == entityID);
                 return DataIsAccessable(requester, entity, specificActions);
@@ -206,7 +206,7 @@ namespace MyModelManager
         }
         public bool DataIsReadonly(DR_Requester requester, int entityID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var entity = GetAllEntities(projectContext, false).First(x => x.ID == entityID);
                 return DataIsReadonly(requester, entity);
@@ -232,7 +232,7 @@ namespace MyModelManager
         }
         public bool DataHasNotDeleteAccess(DR_Requester requester, int entityID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var entity = GetAllEntities(projectContext, false).First(x => x.ID == entityID);
                 return DataHasNotDeleteAccess(requester, entity);
@@ -257,18 +257,29 @@ namespace MyModelManager
         }
 
 
-        internal void UpdateEntityInitiallySearch(MyProjectEntities projectContext, int entityID, bool item2)
+        internal void UpdateEntityInitiallySearch(MyIdeaEntities projectContext, int entityID, bool item2)
         {
             var dbEntity = GetAllEntities(projectContext, false).First(x => x.ID == entityID);
             dbEntity.SearchInitially = item2;
         }
 
-        internal bool DecideEntityIsInitialySearched(TableDrivedEntityDTO entity, List<TableDrivedEntityDTO> allEntities)
+        internal bool DecideEntityIsInitialySearched(int entityID)
         {
-            return entity.IsDataReference == true;
+            using (var projectContext = new DataAccess.MyIdeaEntities())
+            {
+                var entity = GetAllEntities(projectContext, false).First(x => x.ID == entityID);
+                return entity.IsDataReference == true;
+            }
         }
-
+        public DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, EntityUICompositionDTO uiCompositionDTO)
+        {
+            return GetDataEntryEntity(requester, entityID, uiCompositionDTO, null);
+        }
         public DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, DataEntryRelationshipDTO parentRelationship = null)
+        {
+            return GetDataEntryEntity(requester, entityID, null, parentRelationship);
+        }
+        private DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, EntityUICompositionDTO uiCompositionDTO, DataEntryRelationshipDTO parentRelationship = null)
         {
             //** aa7aa0ad-87b7-4842-b854-fedaef41c5c7
 
@@ -369,11 +380,81 @@ namespace MyModelManager
 
 
             }
+            SetDataEntryEntityUIComposition(result, finalEntity, uiCompositionDTO);
+
             return result;
 
 
         }
 
+        private void SetDataEntryEntityUIComposition(DataEntryEntityDTO dataEntryDTO, TableDrivedEntityDTO finalEntity, EntityUICompositionDTO currentUIComposition)
+        {
+            //** 5e0fbd74-a0e8-4c09-8904-59b9417736aa
+            //اینجا باید بعدا تست بشه، موجودیت تغییر بکنه و انواع حالتهای اضافه شدن ستون و رابطه و یا رابطه شدن یک ستون قبلا موجود تست شود
+            BizEntityUIComposition bizEntityUIComposition = new BizEntityUIComposition();
+            if (currentUIComposition == null)
+            {
+                currentUIComposition = bizEntityUIComposition.GetOrCreateEntityUIComposition(finalEntity.ID, dataEntryDTO.Columns, dataEntryDTO.Relationships.Select(x => x.Relationship).ToList());
+                //if (currentUIComposition == null)
+                //{
+                //    currentUIComposition = bizEntityUIComposition.GenerateUIComposition(finalEntity, finalEntity.Columns, finalEntity.Relationships);
+                //}
+            }
+
+            //** 8400bf54-fed4-4226-8e61-0f2b5dd22bf3
+
+
+            //foreach (var column in dataEntryDTO.Columns)
+            //{
+            //    if (dataEntryDTO.Relationships.Any(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID)))
+            //        column.InvisibleInUI = true;
+            //}
+            SetColumnsAndRelationship(currentUIComposition, dataEntryDTO);
+            dataEntryDTO.UICompositions = currentUIComposition;
+        }
+
+        private void SetColumnsAndRelationship(EntityUICompositionDTO currentUIComposition, DataEntryEntityDTO dataEntryDTO)
+        {
+            //** ed89f4f2-9a80-4cbf-be42-bb0b00630402
+            if (currentUIComposition.ObjectCategory == DatabaseObjectCategory.Column)
+            {
+                //result.Add(currentUIComposition);
+                var fColumn = dataEntryDTO.Columns.FirstOrDefault(x => x.ID == Convert.ToInt32(currentUIComposition.ObjectIdentity));
+                if (fColumn != null)
+                    currentUIComposition.Column = fColumn;
+            }
+            else if (currentUIComposition.ObjectCategory == DatabaseObjectCategory.Relationship)
+            {
+                //result.Add(currentUIComposition);
+                var fRel = dataEntryDTO.Relationships.FirstOrDefault(x => x.Relationship.ID == Convert.ToInt32(currentUIComposition.ObjectIdentity));
+                if (fRel != null)
+                    currentUIComposition.Relationship = fRel;
+                else
+                {
+
+                }
+
+            }
+            foreach (var cItem in currentUIComposition.ChildItems)
+            {
+                SetColumnsAndRelationship(cItem, dataEntryDTO);
+            }
+        }
+        //private List<EntityUICompositionDTO> GetRelationships(EntityUICompositionDTO currentUIComposition, List<EntityUICompositionDTO> result = null)
+        //{
+        //    if (result == null)
+        //        result = new List<EntityUICompositionDTO>();
+
+        //    if (currentUIComposition.ObjectCategory == DatabaseObjectCategory.Relationship)
+        //    {
+        //        result.Add(currentUIComposition);
+        //    }
+        //    foreach (var cItem in currentUIComposition.ChildItems)
+        //    {
+        //        GetRelationships(cItem, result);
+        //    }
+        //    return result;
+        //}
         //private DataEntryEntityDTO ToDataEntryEntityDTO(DR_Requester requester, TableDrivedEntityDTO finalEntity, DataEntryRelationshipDTO parentRelationship)
         //{
 
@@ -563,22 +644,67 @@ namespace MyModelManager
             return entity;
         }
 
-        public List<TableDrivedEntityDTO> GetOrginalEntitiesWithoutUIComposition(int databaseID, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType)
+        public List<int> GetOrginalEntitiesWithoutUIComposition(int databaseID)
         {
-            List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            List<int> result = new List<int>();
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var entities = GetAllEntities(projectContext, false)
-                    .Where(x => !x.EntityUIComposition.Any(e => e.TableDrivedEntityID == x.ID) && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true);
-                foreach (var entity in entities)
-                    result.Add(ToTableDrivedEntityDTO(entity, columnInfoType, relationshipInfoType, false, true));
+                return GetAllEntities(projectContext, false)
+                      .Where(x => !x.EntityUIComposition.Any() && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true).Select(x => x.ID).ToList();
             }
-            return result;
         }
+        public List<int> GetOrginalEntitiesWithoutEntitySearch(int databaseID)
+        {
+            List<int> result = new List<int>();
+            using (var projectContext = new DataAccess.MyIdeaEntities())
+            {
+                return GetAllEntities(projectContext, false)
+                       .Where(x => !x.EntitySearch.Any() && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true).Select(x => x.ID).ToList();
+            }
+        }
+
+
+        public List<int> GetOrginalEntitiesWithoutEntityListView(int databaseID)
+        {
+            List<int> result = new List<int>();
+            using (var projectContext = new DataAccess.MyIdeaEntities())
+            {
+                return GetAllEntities(projectContext, false)
+                       .Where(x => !x.EntityListView.Any() && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true).Select(x => x.ID).ToList();
+
+            }
+        }
+        public List<int> GetOrginalEntitiesWithoutInitiallySearch(int databaseID)
+        {
+            List<int> result = new List<int>();
+            using (var projectContext = new DataAccess.MyIdeaEntities())
+            {
+                return GetAllEntities(projectContext, false)
+                     .Where(x => x.SearchInitially == null && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true).Select(x => x.ID).ToList();
+            }
+        }
+
+        public bool EntityWithoutSetting(int databaseID)
+        {
+            using (var projectContext = new DataAccess.MyIdeaEntities())
+            {
+                //foreach(var item in   bizTableDrivedEntity.GetAllEntities(projectContext, false).Where(x =>
+                //x.IsOrginal == true && x.IsDisabled == false && x.Table.DBSchema.DatabaseInformationID == databaseID
+                //&& ( !x.EntityListView.Any() || !x.EntityUIComposition.Any() || x.SearchInitially == null)))
+                //{
+
+                //}
+
+                return GetAllEntities(projectContext, false).Any(x =>
+                x.IsOrginal == true && x.IsDisabled == false && x.Table.DBSchema.DatabaseInformationID == databaseID
+                && (!x.EntitySearch.Any() || !x.EntityListView.Any() || !x.EntityUIComposition.Any() || x.SearchInitially == null));
+            }
+        }
+
         //public List<TableDrivedEntityDTO> GetOrginalEntitiesWithoutDefaultListView(int databaseID, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType, bool? isView)
         //{
         //    List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entities = GetEntities(projectContext, columnInfoType, relationshipInfoType, isView)
         //            .Where(x => x.IsView == false && x.EntityListViewID == null && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true);
@@ -590,7 +716,7 @@ namespace MyModelManager
         //public List<TableDrivedEntityDTO> GetOrginalEntitiesWithoutDefaultSearchList(int databaseID, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType, bool? isView)
         //{
         //    List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entities = GetEntities(projectContext, columnInfoType, relationshipInfoType, isView)
         //            .Where(x => x.IsView == false && x.EntitySearchID == null && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true);
@@ -602,7 +728,7 @@ namespace MyModelManager
         public List<int> GetEntityIDs(int databaseID)
         {
             List<int> result = new List<int>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var entities = GetAllEntities(projectContext, false)
                     .Where(x => x.Table.DBSchema.DatabaseInformationID == databaseID).ToList();
@@ -616,7 +742,7 @@ namespace MyModelManager
         public List<TableDrivedEntityDTO> GetOrginalEntities(int databaseID, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType, bool? isView)
         {
             List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var entities = GetAllEntities(projectContext, false, isView)
                     .Where(x => x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true).ToList();
@@ -624,7 +750,7 @@ namespace MyModelManager
                 {
                     if (ItemImportingStarted != null)
                         ItemImportingStarted(this, new ItemImportingStartedArg() { ItemName = "Fetching entity" + " " + entity.Name, TotalProgressCount = entities.Count(), CurrentProgress = entities.IndexOf(entity) + 1 });
-                    result.Add(ToTableDrivedEntityDTO(entity, columnInfoType, relationshipInfoType, false, true));
+                    result.Add(ToTableDrivedEntityDTO(entity, columnInfoType, relationshipInfoType, false));
                 }
             }
             return result;
@@ -632,7 +758,7 @@ namespace MyModelManager
         //public List<TableDrivedEntityDTO> GetOrginalViews(int databaseID)
         //{
         //    List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entities = GetEntities(projectContext, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships)
         //            .Where(x => x.IsView == true && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true);
@@ -643,7 +769,7 @@ namespace MyModelManager
         //}
         //public TableDrivedEntityDTO GetOrginalEntity(string entityName, int databaseID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entity =GetAllEntities(projectContext, false).First(x => x.Name == entityName && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true);
         //        return ToTableDrivedEntityDTO(entity, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithoutRelationships, false, true);
@@ -652,7 +778,7 @@ namespace MyModelManager
 
         //public bool OrginalEntityExists(string entityName, int databaseID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        returnGetAllEntities(projectContext, false).Any(x => x.Name == entityName && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true);
         //    }
@@ -661,7 +787,7 @@ namespace MyModelManager
         //public List<TableDrivedEntityDTO> GetEnabledOrginalEntities(int databaseID)
         //{
         //    List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list =GetAllEntities(projectContext, false).Where(x => x.IsView == false && x.IsEnabled == true && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true);
         //        foreach (var item in list)
@@ -674,14 +800,14 @@ namespace MyModelManager
 
         //public List<string> GetOriginalEntityNames(int databaseID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        returnGetAllEntities(projectContext, false).Where(x => x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true).Select(x => x.Name).ToList();
         //    }
         //}
         public void UpdateTablesIsDataReferenceProperty(int databaseID, List<TableDrivedEntityDTO> listEntities)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var item in listEntities)
                 {
@@ -697,7 +823,7 @@ namespace MyModelManager
         BizRelationship bizRelationship = new BizRelationship();
         public void UpdateTableIndependentDataEntryProperty(int databaseID, List<TableImportItem> listEntities)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var item in listEntities)
                 {
@@ -731,7 +857,7 @@ namespace MyModelManager
         //public List<TableImportItem> GetEnabledWithNullIsIndependent(int databaseID)
         //{
         //    List<TableImportItem> result = new List<TableImportItem>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = GetEntities(projectContext, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships).Where(x => x.IsOrginal == true && x.IsView == false && x.IsEnabled == true && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IndependentDataEntry == null);
         //        foreach (var item in list)
@@ -746,7 +872,7 @@ namespace MyModelManager
         //public List<TableImportItem> GetEnabledNotIndependentEntities(int databaseID)
         //{
         //    List<TableImportItem> result = new List<TableImportItem>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = GetEntities(projectContext, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships).Where(x => x.IsOrginal == true && x.Reviewed == false && x.IsView == false
         //        && x.IsEnabled == true && x.Table.DBSchema.DatabaseInformationID == databaseID &&
@@ -761,7 +887,7 @@ namespace MyModelManager
         public bool ExistsEnabledEntitiesWithNullDataReference(int databaseID)
         {
             List<TableImportItem> result = new List<TableImportItem>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = GetAllEntities(projectContext, false).Where(x => x.IsOrginal == true && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsDataReference == null);
                 return list.Any();
@@ -771,7 +897,7 @@ namespace MyModelManager
         public bool ExistsEnabledEntitiesWithNullIndependentProperty(int databaseID)
         {
             List<TableImportItem> result = new List<TableImportItem>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = GetAllEntities(projectContext, false).Where(x => x.IsOrginal == true && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IndependentDataEntry == null);
                 return list.Any();
@@ -781,7 +907,7 @@ namespace MyModelManager
         //public List<TableImportItem> GetEnabledEntitiesWithNullDataReference(int databaseID)
         //{
         //    List<TableImportItem> result = new List<TableImportItem>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = GetEntities(projectContext, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships).Where(x => x.IsOrginal == true && x.IsView == false && x.IsEnabled == true && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsDataReference == null);
         //        foreach (var item in list)
@@ -795,7 +921,7 @@ namespace MyModelManager
         //public List<TableDrivedEntityDTO> GetEnabledOrginalViews(int databaseID)
         //{
         //    List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list =GetAllEntities(projectContext, false).Where(x => x.IsView == true && x.IsEnabled == true && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IsOrginal == true);
         //        foreach (var item in list)
@@ -807,7 +933,7 @@ namespace MyModelManager
         //}
         //public string GetCatalog(int entityID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        returnGetAllEntities(projectContext, false).First(x => x.ID == entityID).Table.Catalog;
         //    }
@@ -815,7 +941,7 @@ namespace MyModelManager
         //public List<TableDrivedEntityDTO> GetAllEntities(int databaseID)
         //{
         //    List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        //string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
         //        var listEntity =GetAllEntities(projectContext, false).Where(x => x.Table.DBSchema.DatabaseInformationID == databaseID);
@@ -830,7 +956,7 @@ namespace MyModelManager
         //public TableDrivedEntityDTO GetBaseEntity(int entityID)
         //{
 
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entity =GetAllEntities(projectContext, false).First(x => x.ID == entityID);
         //        if (string.IsNullOrEmpty(entity.Criteria))
@@ -842,7 +968,7 @@ namespace MyModelManager
 
         //public bool IsEntityEnabled(int entityID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
         //        return entity.IsDisabled == false;
@@ -850,7 +976,7 @@ namespace MyModelManager
         //}
         //public bool IsEntityReadonly(int entityID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
         //        return entity.IsEnabled == true;
@@ -859,7 +985,7 @@ namespace MyModelManager
         public List<int> GetOtherDrivedEntityIDs(ISARelationshipDTO isaRelationship)
         {
             List<int> result = new List<int>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //if (withInheritance)
                 //{
@@ -884,7 +1010,7 @@ namespace MyModelManager
         public int GetDefaultEntityID(int tableID)
         {
             List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 return projectContext.Table.First(x => x.ID == tableID).TableDrivedEntity.First().ID;
 
@@ -893,7 +1019,7 @@ namespace MyModelManager
         //public string GetTableName(int entityID)
         //{
         //    List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        return projectContext.TableDrivedEntity.First(x => x.ID == entityID).Table.Name;
 
@@ -906,7 +1032,7 @@ namespace MyModelManager
         //public TableDrivedEntityDTO GetTableDrivedEntity(int databaseID, string entityName, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType, bool onlyEnabledColumns = true)
         //{
         //    List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var table = GetEntities(projectContext, columnInfoType, relationshipInfoType).FirstOrDefault(x => x.Table.DBSchema.DatabaseInformationID == databaseID && x.Name == entityName);
         //        if (table == null)
@@ -927,6 +1053,12 @@ namespace MyModelManager
         //{
         //    return GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships, securityMode);
         //}
+        public TableDrivedEntityDTO GetTableDrivedEntity(int entityID, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType, List<SecurityAction> specificActions = null)
+        {
+            DR_Requester requester = new DR_Requester();
+            requester.SkipSecurity = true;
+            return GetTableDrivedEntity(requester, entityID, columnInfoType, relationshipInfoType);
+        }
         public TableDrivedEntityDTO GetTableDrivedEntity(DR_Requester requester, int entityID, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType, List<SecurityAction> specificActions = null)
         {
             //List<TableDrivedEntityDTO> result = new List<TableDrivedEntityDTO>();
@@ -934,7 +1066,7 @@ namespace MyModelManager
             //if (cachedItem != null)
             //    return (cachedItem as TableDrivedEntityDTO);
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var entity = GetAllEntities(projectContext, false).FirstOrDefault(x => x.ID == entityID);
                 if (!DataIsAccessable(requester, entity, specificActions))
@@ -943,7 +1075,7 @@ namespace MyModelManager
                 }
                 else
                 {
-                    var result = ToTableDrivedEntityDTO(entity, columnInfoType, relationshipInfoType, true, false);
+                    var result = ToTableDrivedEntityDTO(entity, columnInfoType, relationshipInfoType, true);
                     return result;
                 }
             }
@@ -951,7 +1083,7 @@ namespace MyModelManager
 
         //public TableDrivedEntityDTO GetPermissionedEntityByName(DR_Requester requester, int databaseID, string entityName)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entity = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == entityName);
         //        if (entity != null)
@@ -969,7 +1101,7 @@ namespace MyModelManager
         //    //if (cachedItem != null)
         //    //    return (cachedItem as TableDrivedEntityDTO);
 
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var table = GetEntities(projectContext, columnInfoType, relationshipInfoType, null).FirstOrDefault(x => x.ID == entityID);
         //        if (table == null)
@@ -978,7 +1110,7 @@ namespace MyModelManager
         //               ToTableDrivedEntityDTO(table, columnInfoType, relationshipInfoType, true, false);
         //    }
         //}
-        private TableDrivedEntityDTO ToTableDrivedEntityDTO(DataAccess.TableDrivedEntity item, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType, bool specializeRelationships, bool tableColumns)
+        private TableDrivedEntityDTO ToTableDrivedEntityDTO(DataAccess.TableDrivedEntity item, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType, bool specializeRelationships)
         {
 
             // ستونهای disable از لیست ستونها حذف میشوند
@@ -998,8 +1130,8 @@ namespace MyModelManager
             //    result.SelectAsComboBox = item.SelectAsComboBox;
             result.Description = item.Description;
             //    result.Schema = item.Table.DBSchema.Name;
-            result.EntitySearchID = item.EntitySearchID ?? 0;
-            result.EntityListViewID = item.EntityListViewID ?? 0;
+            //result.EntitySearchID = item.EntitySearchID ?? 0;
+            //result.EntityListViewID = item.EntityListViewID ?? 0;
             result.DatabaseID = item.Table.DBSchema.DatabaseInformationID;
             result.DatabaseName = item.Table.DBSchema.DatabaseInformation.Name;
             result.RelatedSchemaID = item.Table.DBSchemaID;
@@ -1046,7 +1178,7 @@ namespace MyModelManager
                 //    result.EntityDeterminers.Add(new EntityDeterminerDTO() { ID = det.ID, Value = det.Value });
                 //}
 
-                var columns = bizColumn.GetAllColumns(item, false, tableColumns);
+                var columns = bizColumn.GetAllColumns(item, false);
                 //if (tableColumns)
                 //{
                 //    columns = item.Table.Column.ToList();
@@ -1120,7 +1252,7 @@ namespace MyModelManager
         public void UpdateModel(int databaseID, List<TableDrivedEntityDTO> listNew, List<TableDrivedEntityDTO> listEdit, List<TableDrivedEntityDTO> listDeleted)
         {
             //** 1bcad93c-9349-4f31-a710-b2bc55f8b578
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //bool showNullValue = false;
                 //var database = projectContext.DatabaseInformation.First(x => x.ID == databaseID);
@@ -1153,7 +1285,7 @@ namespace MyModelManager
             }
         }
 
-        private void UpdateEntityInModel(MyProjectEntities projectContext, int databaseID, TableDrivedEntityDTO entity, List<DBSchema> listAddedSchema)
+        private void UpdateEntityInModel(MyIdeaEntities projectContext, int databaseID, TableDrivedEntityDTO entity, List<DBSchema> listAddedSchema)
         {
 
             DBSchema dbSchema = null;
@@ -1228,7 +1360,7 @@ namespace MyModelManager
 
 
 
-        private void RemoveColumnTypes(MyProjectEntities projectContext, Column dbColumn, List<Enum_ColumnType> exceptionTypes)
+        private void RemoveColumnTypes(MyIdeaEntities projectContext, Column dbColumn, List<Enum_ColumnType> exceptionTypes)
         {
             if (!exceptionTypes.Contains(Enum_ColumnType.Numeric))
             {
@@ -1280,7 +1412,7 @@ namespace MyModelManager
 
         //public List<ColumnDTO> GetColumnsSimple(TableDrivedEntity entity)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        if (entity.Column.Count > 0)
         //        {
@@ -1297,7 +1429,7 @@ namespace MyModelManager
         public void Save(List<TableDrivedEntityDTO> entities)
         {
             //**03385f9c-7b5c-431f-b532-fd4a517eeb6e
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var entity in entities)
                 {
@@ -1327,7 +1459,7 @@ namespace MyModelManager
         {
             try
             {
-                using (var projectContext = new DataAccess.MyProjectEntities())
+                using (var projectContext = new DataAccess.MyIdeaEntities())
                 {
                     var dbBaseEntity = GetAllEntities(projectContext, false).First(x => x.ID == message.BaseEntity.ID);
                     foreach (var item in message.BaseEntity.Relationships)
@@ -1666,7 +1798,7 @@ namespace MyModelManager
             return true;
         }
 
-        private Tuple<Relationship, Relationship> AddISARelationship(MyProjectEntities projectContext, ISARelationship isaRelationship
+        private Tuple<Relationship, Relationship> AddISARelationship(MyIdeaEntities projectContext, ISARelationship isaRelationship
             , SuperToSubRelationshipDTO superToSub, SubToSuperRelationshipDTO subToSuper, TableDrivedEntity dbBaseEntity, TableDrivedEntity dbDrivedEntity)
         {
             var relaitonship = new Relationship();
@@ -1730,7 +1862,7 @@ namespace MyModelManager
             return new Tuple<Relationship, Relationship>(relaitonship, reverserelaitonship);
         }
 
-        private void RemoveDrivedEntity(MyProjectEntities projectContext, TableDrivedEntity entity, ISARelationship isaRelationship)
+        private void RemoveDrivedEntity(MyIdeaEntities projectContext, TableDrivedEntity entity, ISARelationship isaRelationship)
         {
             //  projectContext.TableDrivedEntity.Remove(entity);
             entity.IsDisabled = true;
@@ -1791,7 +1923,7 @@ namespace MyModelManager
         //public void ImposeEntityTableRule(int databaseID)
         //{
         //    //string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
-        //    MyProjectEntities context = new MyProjectEntities();
+        //    MyIdeaEntities context = new MyIdeaEntities();
         //    context.Configuration.LazyLoadingEnabled = true;
         //    var list = context.TableDrivedEntity.Where(x => x.Table.DBSchema.DatabaseInformationID == databaseID);
         //    var count = list.Count();

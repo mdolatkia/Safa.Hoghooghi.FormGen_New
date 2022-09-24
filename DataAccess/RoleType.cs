@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class RoleType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public RoleType()
         {
             this.OrganizationType_RoleType = new HashSet<OrganizationType_RoleType>();
@@ -26,8 +27,11 @@ namespace DataAccess
         public Nullable<bool> IsSuperAdmin { get; set; }
         public string ExternalKey { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrganizationType_RoleType> OrganizationType_RoleType { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransitionActionTarget> TransitionActionTarget { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ActivityTarget_RoleType> ActivityTarget_RoleType { get; set; }
         public virtual SecuritySubject SecuritySubject { get; set; }
     }

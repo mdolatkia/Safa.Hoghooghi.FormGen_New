@@ -21,7 +21,8 @@ namespace MyUILibrary.EntityArea.Commands
             CommandManager.SetTitle("حذف از پایگاه");
 
             CommandManager.ImagePath = "Images//Remove.png";
-            CommandManager.Clicked += CommandManager_Clicked;
+            if (!editArea.AreaInitializer.Preview)
+                CommandManager.Clicked += CommandManager_Clicked;
         }
         List<DP_DataRepository> dataList = new List<DP_DataRepository>();
         private void CommandManager_Clicked(object sender, EventArgs e)

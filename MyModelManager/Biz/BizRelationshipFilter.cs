@@ -16,7 +16,7 @@ namespace MyModelManager
         public List<RelationshipFilterDTO> GetRelationshipFilters(DR_Requester requester, int relationshipID)
         {
             List<RelationshipFilterDTO> result = new List<RelationshipFilterDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 IQueryable<RelationshipSearchFilter> listRelationshipFilter;
                 listRelationshipFilter = projectContext.RelationshipSearchFilter.Where(x => x.RelationshipID == relationshipID);
@@ -29,7 +29,7 @@ namespace MyModelManager
         //public RelationshipFilterDTO GetRelationshipFilter(int RelationshipFiltersID)
         //{
         //    List<RelationshipFilterDTO> result = new List<RelationshipFilterDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var RelationshipFilters = projectContext.RelationshipSearchFilter.First(x => x.ID == RelationshipFiltersID);
         //        return ToRelationshipFilterDTO(RelationshipFilters);
@@ -65,7 +65,7 @@ namespace MyModelManager
         }
         public bool UpdateRelationshipFilters(int relationshipID, List<RelationshipFilterDTO> RelationshipSearchFilter)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var relationship = bizRelationship.GetAllRelationships(projectContext, false, false).FirstOrDefault(x => x.ID == relationshipID);
                 while (relationship.RelationshipSearchFilter.Any())

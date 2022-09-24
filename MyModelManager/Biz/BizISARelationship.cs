@@ -15,7 +15,7 @@ namespace MyModelManager
         public List<ISARelationshipDTO> GetISARelationshipsByEntityID(int superEntityID)
         {
             List<ISARelationshipDTO> result = new List<ISARelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var isaRelationships = projectContext.ISARelationship.Where(x => x.SuperToSubRelationshipType.Any(y => y.RelationshipType.Relationship.TableDrivedEntity.ID == superEntityID));
                 foreach (var isaRelationship in isaRelationships)
@@ -29,7 +29,7 @@ namespace MyModelManager
         public ISARelationshipDTO GetInternalTableISARelationships(int baseEntityID)
         {
             ISARelationshipDTO result = new ISARelationshipDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var isaRelationship = projectContext.ISARelationship.FirstOrDefault(x => x.InternalTable == true && x.SuperToSubRelationshipType.Any(y => y.RelationshipType.Relationship.TableDrivedEntityID1 == baseEntityID));
                 if (isaRelationship != null)
@@ -42,7 +42,7 @@ namespace MyModelManager
         //public List<ISARelationshipDTO> GetISARelationships(int tableDrivedEntityID)
         //{
         //    List<ISARelationshipDTO> result = new List<ISARelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.ISARelationship.Where(x => x.TableDrivedEntityID1 == tableDrivedEntityID || x.TableDrivedEntityID2 == tableDrivedEntityID);
         //        foreach (var item in list)
@@ -80,7 +80,7 @@ namespace MyModelManager
 
         public int Save(ISARelationshipDTO item)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 ISARelationship dbItem = null;
                 if (item.ID == 0)
@@ -108,7 +108,7 @@ namespace MyModelManager
         public List<ISARelationshipDTO> GetISARelationships(int databaseID)
         {
             List<ISARelationshipDTO> result = new List<ISARelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 // string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
                 foreach (var item in projectContext.ISARelationship.Where(x => x.SuperToSubRelationshipType.Any(y => y.RelationshipType.Relationship.TableDrivedEntity.Table.DBSchema.DatabaseInformationID == databaseID)))
@@ -121,7 +121,7 @@ namespace MyModelManager
         }
         public void UpdateISARelationships(List<ISARelationshipDTO> relationships)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in relationships)
                 {
@@ -133,7 +133,7 @@ namespace MyModelManager
         public List<SuperToSubRelationshipDTO> GetSuperToSubRelationship(int iSARelationshipID)
         {
             List<SuperToSubRelationshipDTO> result = new List<SuperToSubRelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 var iSaRelationship = projectContext.ISARelationship.FirstOrDefault(x => x.ID == iSARelationshipID);
@@ -175,7 +175,7 @@ namespace MyModelManager
         public List<SubToSuperRelationshipDTO> GetSubToSuperRelationship(int iSARelationshipID)
         {
             List<SubToSuperRelationshipDTO> result = new List<SubToSuperRelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 var iSaRelationship = projectContext.ISARelationship.FirstOrDefault(x => x.ID == iSARelationshipID);
@@ -216,7 +216,7 @@ namespace MyModelManager
 
         public void UpdateSuperToSubRelationships(List<SuperToSubRelationshipDTO> relationships)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in relationships)
                 {
@@ -246,7 +246,7 @@ namespace MyModelManager
 
         public void UpdateSubToSuperRelationships(List<SubToSuperRelationshipDTO> relationships)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in relationships)
                 {
@@ -264,7 +264,7 @@ namespace MyModelManager
 
         public void MergeISARelationships(string name, List<ISARelationshipDTO> relationships, ISARelationshipDTO selectedOne)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 int isaRelationID = 0;
                 foreach (var relationship in relationships)

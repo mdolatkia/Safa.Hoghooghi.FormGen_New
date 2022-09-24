@@ -22,7 +22,7 @@ namespace MyModelManager
         public List<EntityGridViewReportDTO> GetEntityGridViewReports()
         {
             List<EntityGridViewReportDTO> result = new List<EntityGridViewReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityGridViewReport = projectContext.EntityGridViewReport;
                 foreach (var item in listEntityGridViewReport)
@@ -38,7 +38,7 @@ namespace MyModelManager
             //    return (cachedItem as List<EntityGridViewReportDTO>);
 
             List<EntityGridViewReportDTO> result = new List<EntityGridViewReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityGridViewReport = projectContext.EntityGridViewReport.Where(x => x.EntitySearchableReport.EntityReport.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityGridViewReport)
@@ -51,7 +51,7 @@ namespace MyModelManager
         public EntityGridViewReportDTO GetEntityGridViewReport(DR_Requester requester, int EntityGridViewReportsID, bool withDetails)
         {
             List<EntityGridViewReportDTO> result = new List<EntityGridViewReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbItem = projectContext.EntityGridViewReport.First(x => x.ID == EntityGridViewReportsID);
                 if (bizEntityReport.DataIsAccessable(requester, dbItem.EntitySearchableReport.EntityReport))
@@ -75,7 +75,7 @@ namespace MyModelManager
         public void UpdateEntityGridViewReports(EntityGridViewReportDTO message)
         {
             BizEntityReport bizEntityReport = new MyModelManager.BizEntityReport();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbEntitySpecifiedReport = projectContext.EntityGridViewReport.FirstOrDefault(x => x.ID == message.ID);
                 if (dbEntitySpecifiedReport == null)

@@ -64,7 +64,7 @@ namespace MyUIGenerator.UIControlHelper
     }
     public class TabGroupContainerManager : I_TabGroupContainer
     {
-        public UIControlComposition UIControlPackageTreeItem { get; set; }
+        public EntityUICompositionDTO UICompositionDTO { get; set; }
 
         public TabGroupUISettingDTO TabGroupSetting { get; internal set; }
         public TabControl TabControl;

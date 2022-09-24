@@ -19,7 +19,7 @@ namespace MyModelManager
                 return (cachedItem as List<EntityValidationDTO>);
 
             List<EntityValidationDTO> result = new List<EntityValidationDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityValidation = projectContext.EntityValidation.Where(x => x.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityValidation)
@@ -32,7 +32,7 @@ namespace MyModelManager
         public EntityValidationDTO GetEntityValidation(int entityValidationsID, bool withDetails)
         {
             List<EntityValidationDTO> result = new List<EntityValidationDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var EntityValidations = projectContext.EntityValidation.First(x => x.ID == entityValidationsID);
                 return ToEntityValidationDTO(EntityValidations, withDetails);
@@ -64,7 +64,7 @@ namespace MyModelManager
         }
         public void UpdateEntityValidations(EntityValidationDTO EntityValidation)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbEntityValidation = projectContext.EntityValidation.FirstOrDefault(x => x.ID == EntityValidation.ID);
                 if (dbEntityValidation == null)

@@ -16,7 +16,7 @@ namespace MyModelManager
         public List<ActivityDTO> GetActivities(int processID, bool withDetails)
         {
             List<ActivityDTO> result = new List<ActivityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listActivity = projectContext.Activity.Where(x => x.ProcessID == processID);
                 foreach (var item in listActivity)
@@ -26,7 +26,7 @@ namespace MyModelManager
         }
         public ActivityDTO GetActivity(int ActivitysID, bool withDetails)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var Activitys = projectContext.Activity.First(x => x.ID == ActivitysID);
                 return ToActivityDTO(Activitys, withDetails);
@@ -66,7 +66,7 @@ namespace MyModelManager
         }
         public int UpdateActivitys(ActivityDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbActivity = projectContext.Activity.FirstOrDefault(x => x.ID == message.ID);
                 if (dbActivity == null)

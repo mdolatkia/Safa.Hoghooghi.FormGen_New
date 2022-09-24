@@ -8,11 +8,8 @@ namespace MyUILibrary.EntityArea
 {
     public interface I_BaseSearchEntityArea
     {
-
-
-        SearchEntityAreaInitializer SearchInitializer { set; get; }
+        SearchAreaInitializer SearchInitializer { set; get; }
         void ClearSearchData();
-        void SetAreaInitializer(SearchEntityAreaInitializer initParam);
     }
     public interface I_SearchEntityArea : I_BaseSearchEntityArea
     {
@@ -21,7 +18,7 @@ namespace MyUILibrary.EntityArea
 
         event EventHandler<SearchDataArg> SearchDataDefined;
         I_View_SearchEntityArea SearchView { set; get; }
-        I_SimpleSearchEntityArea SimpleSearchEntityArea { set; get; }
+        I_EntityDefinedSearchArea SimpleSearchEntityArea { set; get; }
         I_AdvancedSearchEntityArea AdvancedSearchEntityAre { set; get; }
         bool IsSimpleSearchActiveOrAdvancedSearch { get; }
         void ShowSearchRepository(DP_SearchRepository searchRepository);
@@ -41,9 +38,9 @@ namespace MyUILibrary.EntityArea
         I_AdvancedSearchEntityArea AdvancedSearchEntityAre { set; get; }
 
     }
-    public interface I_SimpleSearchEntityArea : I_BaseSearchEntityArea
+    public interface I_EntityDefinedSearchArea : I_BaseSearchEntityArea
     {
-        EntitySearchDTO EntitySearch { get; }
+        EntitySearchDTO EntitySearchDTO { get; }
         void OnSearchDataDefined(DP_SearchRepository logicPhrase);
         DP_SearchRepository GetSearchRepository();
         bool ShowSearchRepository(DP_SearchRepository item);

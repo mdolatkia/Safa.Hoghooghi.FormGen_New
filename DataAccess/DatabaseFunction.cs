@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class DatabaseFunction
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public DatabaseFunction()
         {
             this.DatabaseFunctionParameter = new HashSet<DatabaseFunctionParameter>();
@@ -27,7 +28,9 @@ namespace DataAccess
         public int DBSchemaID { get; set; }
         public bool Enable { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DatabaseFunctionParameter> DatabaseFunctionParameter { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DatabaseFunction_TableDrivedEntity> DatabaseFunction_TableDrivedEntity { get; set; }
         public virtual DBSchema DBSchema { get; set; }
     }

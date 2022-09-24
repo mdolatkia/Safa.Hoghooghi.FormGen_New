@@ -18,7 +18,7 @@ namespace MyModelManager
     {
         //public CodeFunctionEntityFormulaDTO GetCodeFunctionEntityFormula(DR_Requester requester, int FormulaID, bool withDetails)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbFormula = projectContext.Formula.First(x => x.ID == FormulaID);
         //        CodeFunctionEntityFormulaDTO result = new CodeFunctionEntityFormulaDTO();
@@ -33,7 +33,7 @@ namespace MyModelManager
         //}
         public LinearFormulaDTO GetLinearFormula(DR_Requester requester, int FormulaID, bool withDetails)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbFormula = projectContext.Formula.First(x => x.ID == FormulaID);
                 //     LinearFormulaDTO result = new LinearFormulaDTO();
@@ -51,7 +51,7 @@ namespace MyModelManager
         public List<FormulaDTO> GetAllFormulas(DR_Requester requester, string generalFilter)
         {
             List<FormulaDTO> result = new List<FormulaDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = projectContext.Formula as IQueryable<Formula>;
                 if (generalFilter != "")
@@ -70,7 +70,7 @@ namespace MyModelManager
         }
         //public CodeFunctionFormulaDTO GetCodeFunctionFormula(DR_Requester requester, int FormulaID, bool withDetails)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbFormula = projectContext.Formula.First(x => x.ID == FormulaID);
         //        CodeFunctionFormulaDTO result = new CodeFunctionFormulaDTO();
@@ -85,7 +85,7 @@ namespace MyModelManager
         //}
         //public DatabaseFunctionEntityFormulaDTO GetDatabaseFunctionEntityFormula(DR_Requester requester, int FormulaID, bool withDetails)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbFormula = projectContext.Formula.First(x => x.ID == FormulaID);
         //        DatabaseFunctionEntityFormulaDTO result = new DatabaseFunctionEntityFormulaDTO();
@@ -102,7 +102,7 @@ namespace MyModelManager
 
         public FormulaDTO GetFormula(DR_Requester requester, int FormulaID, bool withDetails)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var Formula = projectContext.Formula.First(x => x.ID == FormulaID);
 
@@ -169,7 +169,7 @@ namespace MyModelManager
         public List<FormulaDTO> GetFormulas(int entityID, bool generalFormulas)
         {
             List<FormulaDTO> result = new List<FormulaDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 IQueryable<Formula> formulas = null;
                 if (generalFormulas)
@@ -233,7 +233,7 @@ namespace MyModelManager
 
         public Type GetFormulaDotNetType(int forumlaID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var Formula = projectContext.Formula.First(x => x.ID == forumlaID);
                 return GetFormulaDotNetType(Formula.ResultType);
@@ -250,7 +250,7 @@ namespace MyModelManager
         //public FormulaParameterDTO GetFormulaParameter(int formulaParameterID)
         //{
         //    List<FormulaParameterDTO> result = new List<FormulaParameterDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        return ToFormulaParameterDTO(projectContext.FormulaParameter.First(x => x.ID == formulaParameterID));
         //    }
@@ -258,7 +258,7 @@ namespace MyModelManager
         //public List<FormulaParameterDTO> GetFormulaParameters(int entityID)
         //{
         //    List<FormulaParameterDTO> result = new List<FormulaParameterDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.FormulaParameter.Where(x => x.TableDrivedEntityID == entityID);
         //        foreach (var item in list)
@@ -287,7 +287,7 @@ namespace MyModelManager
 
         //public int UpdateDatabaseFunction(DatabaseFunctionDTO DatabaseFunction)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbDatabaseFunction = projectContext.DatabaseFunction.FirstOrDefault(x => x.ID == DatabaseFunction.ID);
         //        if (dbDatabaseFunction == null)
@@ -340,7 +340,7 @@ namespace MyModelManager
 
         public int UpdateFormula(FormulaDTO formula, LinearFormulaDTO linearFormula)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 DataAccess.Formula dbFormula = null;
                 if (formula.ID == 0)
@@ -412,7 +412,7 @@ namespace MyModelManager
             }
         }
 
-        //private void RemoveFormulaItem(MyProjectEntities projectContext, FormulaItems formulaItems)
+        //private void RemoveFormulaItem(MyIdeaEntities projectContext, FormulaItems formulaItems)
         //{
         //    while (formulaItems.Any())
         //    {
@@ -465,7 +465,7 @@ namespace MyModelManager
 
         //public int UpdateFormulaParameterss(FormulaParameterDTO formulaParameter)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbFormulaParameter = projectContext.FormulaParameter.FirstOrDefault(x => x.ID == formulaParameter.ID);
         //        if (dbFormulaParameter == null)

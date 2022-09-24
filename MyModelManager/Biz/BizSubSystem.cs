@@ -14,7 +14,7 @@ namespace MyModelManager
         public List<SubSystemDTO> GetAllSubSystems()
         {
             List<SubSystemDTO> result = new List<SubSystemDTO>();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 foreach (var item in context.SubSystems)
                 {
@@ -36,7 +36,7 @@ namespace MyModelManager
         public List<ObjectDTO> GetAllSubSystemsObjectDTO()
         {
             List<ObjectDTO> result = new List<ObjectDTO>();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 foreach (var item in context.SubSystems)
                 {

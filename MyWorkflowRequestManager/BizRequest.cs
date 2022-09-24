@@ -22,7 +22,7 @@ namespace MyWorkflowRequestManager
             BaseResult result = new BaseResult();
             using (var context = new MyIdeaDataDBEntities())
             {
-                using (var modelContext = new MyProjectEntities())
+                using (var modelContext = new MyIdeaEntities())
                 {
                     try
                     {
@@ -81,7 +81,7 @@ namespace MyWorkflowRequestManager
             }
             return result;
         }
-        private void RequestEnteredToState(MyIdeaDataDBEntities context, MyProjectEntities modelContext, List<PossibleTransitionActionDTO> roleTransitoinActions, Request dbrequest, int currentStateID, DR_Requester requester, RequestAction lastRequestAction, DP_DataView dataItem = null)
+        private void RequestEnteredToState(MyIdeaDataDBEntities context, MyIdeaEntities modelContext, List<PossibleTransitionActionDTO> roleTransitoinActions, Request dbrequest, int currentStateID, DR_Requester requester, RequestAction lastRequestAction, DP_DataView dataItem = null)
         {
             var dbState = modelContext.State.First(x => x.ID == currentStateID);
             if (dataItem == null && dbrequest.MyDataItem != null)
@@ -186,7 +186,7 @@ namespace MyWorkflowRequestManager
             List<WorkflowRequestDTO> result = new List<WorkflowRequestDTO>();
             using (var context = new MyIdeaDataDBEntities())
             {
-                using (var projectContext = new MyProjectEntities())
+                using (var projectContext = new MyIdeaEntities())
                 {
                     var list = context.Request as IQueryable<Request>;
                     if (processID != 0)
@@ -271,7 +271,7 @@ namespace MyWorkflowRequestManager
             RequestDiagramDTO result = new RequestDiagramDTO();
             using (var context = new MyIdeaDataDBEntities())
             {
-                using (var modelContext = new MyProjectEntities())
+                using (var modelContext = new MyIdeaEntities())
                 {
                     var dbRequest = context.Request.First(x => x.ID == requestID);
                     result.ProcessID = dbRequest.ProcessID;
@@ -401,7 +401,7 @@ namespace MyWorkflowRequestManager
             List<RequestNoteDTO> result = new List<RequestNoteDTO>();
             using (var context = new MyIdeaDataDBEntities())
             {
-                using (var modelContext = new MyProjectEntities())
+                using (var modelContext = new MyIdeaEntities())
                 {
                     var dbRequest = context.Request.First(x => x.ID == requestID);
                     foreach (var item in dbRequest.RequestNote)
@@ -418,7 +418,7 @@ namespace MyWorkflowRequestManager
             return result.OrderBy(x => x.Date).ToList();
         }
         BizUser bizUser = new BizUser();
-        private RequestNoteDTO ToRequestNoteDTO(RequestAction item, MyProjectEntities context)
+        private RequestNoteDTO ToRequestNoteDTO(RequestAction item, MyIdeaEntities context)
         {
             RequestNoteDTO result = new RequestNoteDTO();
             result.UserID = item.DoerUserID.Value;
@@ -522,7 +522,7 @@ namespace MyWorkflowRequestManager
         public List<ProcessDTO> GetProcessesForExecution(DR_Requester requester)
         {
             List<ProcessDTO> result = new List<ProcessDTO>();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 BizProcess bizProcess = new BizProcess();
                 var list = context.Process;//.Where(x => x.RequestInitializers.Any(y => requester.RoleGroupIds.Contains(y.RoleGroupID)));
@@ -555,7 +555,7 @@ namespace MyWorkflowRequestManager
         //    List<WFActionDTO> result = new List<WFActionDTO>();
         //    using (var context = new MyIdeaDataDBEntities())
         //    {
-        //        using (var modelContext = new MyProjectEntities())
+        //        using (var modelContext = new MyIdeaEntities())
         //        {
         //            //  var targetTypeRequester = (int)TargetType.Requester;
         //            //  var targetTypeAdmin = (int)TargetType.ProcessAdmins;
@@ -601,7 +601,7 @@ namespace MyWorkflowRequestManager
             List<TransitionActionDTO> result = new List<TransitionActionDTO>();
             using (var context = new MyIdeaDataDBEntities())
             {
-                using (var modelContext = new MyProjectEntities())
+                using (var modelContext = new MyIdeaEntities())
                 {
                     //  var targetTypeRequester = (int)TargetType.Requester;
                     //  var targetTypeAdmin = (int)TargetType.ProcessAdmins;
@@ -669,7 +669,7 @@ namespace MyWorkflowRequestManager
             List<WorkflowRequestDTO> result = new List<WorkflowRequestDTO>();
             using (var context = new MyIdeaDataDBEntities())
             {
-                using (var modelContext = new MyProjectEntities())
+                using (var modelContext = new MyIdeaEntities())
                 {
                     var requestActions = context.RequestAction.Where(y => y.IsActive == true && y.IsCompleted == false && requester.PostIds.Contains(y.TargetOrganizationPostID));
 
@@ -687,7 +687,7 @@ namespace MyWorkflowRequestManager
             }
         }
 
-        private WorkflowRequestDTO ToWorkflowRequestDTO(DR_Requester requester, Request request, MyProjectEntities modelContext)
+        private WorkflowRequestDTO ToWorkflowRequestDTO(DR_Requester requester, Request request, MyIdeaEntities modelContext)
         {
             WorkflowRequestDTO wfRequest = new WorkflowRequestDTO();
             wfRequest.ID = request.ID;
@@ -735,7 +735,7 @@ namespace MyWorkflowRequestManager
             BaseResult result = new BaseResult();
             using (var context = new MyIdeaDataDBEntities())
             {
-                using (var modelContext = new MyProjectEntities())
+                using (var modelContext = new MyIdeaEntities())
                 {
                     try
                     {
@@ -792,7 +792,7 @@ namespace MyWorkflowRequestManager
             return result;
         }
 
-        private bool ValidRequestActionToCompleted(MyIdeaDataDBEntities context, MyProjectEntities modelContext, int formulaID, DP_DataView dataItem, DR_Requester requester, bool TrueFalse)
+        private bool ValidRequestActionToCompleted(MyIdeaDataDBEntities context, MyIdeaEntities modelContext, int formulaID, DP_DataView dataItem, DR_Requester requester, bool TrueFalse)
         {
             bool isValid = true;
 
@@ -825,7 +825,7 @@ namespace MyWorkflowRequestManager
         //    }
         //}
 
-        private void DoTransition(MyIdeaDataDBEntities context, MyProjectEntities modelContext, List<PossibleTransitionActionDTO> roleTransitoinActions, Request request, Transition transition, DR_Requester requester, RequestAction lastRequestAction)
+        private void DoTransition(MyIdeaDataDBEntities context, MyIdeaEntities modelContext, List<PossibleTransitionActionDTO> roleTransitoinActions, Request request, Transition transition, DR_Requester requester, RequestAction lastRequestAction)
         {
 
             request.CurrentStateID = transition.NextStateID;
@@ -895,7 +895,7 @@ namespace MyWorkflowRequestManager
         //    List<PossibleTransitionActionDTO> result = new List<PossibleTransitionActionDTO>();
         //    using (var context = new MyIdeaDataDBEntities())
         //    {
-        //        using (var modelContext = new MyProjectEntities())
+        //        using (var modelContext = new MyIdeaEntities())
         //        {
 
         //            List<int> adminPosts = null;
@@ -936,7 +936,7 @@ namespace MyWorkflowRequestManager
             PossibleTransitionActionResult result = new PossibleTransitionActionResult();
             using (var context = new MyIdeaDataDBEntities())
             {
-                using (var modelContext = new MyProjectEntities())
+                using (var modelContext = new MyIdeaEntities())
                 {
 
                     //List<int> adminPosts = null;
@@ -992,7 +992,7 @@ namespace MyWorkflowRequestManager
             PossibleTransitionActionResult result = new PossibleTransitionActionResult();
             using (var context = new MyIdeaDataDBEntities())
             {
-                using (var modelContext = new MyProjectEntities())
+                using (var modelContext = new MyIdeaEntities())
                 {
                     //  var transitionAction = modelContext.TransitionAction.FirstOrDefault(x => x.ID == parentTransitionActionID);
                     var state = modelContext.State.First(x => x.ID == stateID);
@@ -1008,7 +1008,7 @@ namespace MyWorkflowRequestManager
         //    PossibleTransitionActionResult result = new PossibleTransitionActionResult();
         //    using (var context = new MyIdeaDataDBEntities())
         //    {
-        //        using (var modelContext = new MyProjectEntities())
+        //        using (var modelContext = new MyIdeaEntities())
         //        {
         //            BizRole bizRole = new BizRole();
         //            //var outGoingTransition = modelContext.Transition.First(x => x.CurrentStateID == stateID);

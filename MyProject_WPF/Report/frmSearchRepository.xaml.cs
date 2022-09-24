@@ -68,13 +68,14 @@ namespace MyProject_WPF
             int entitySearchID = lokEntitySearch.SelectedItem == null ? 0 : (int)lokEntitySearch.SelectedValue;
             //if (SearchEntityArea == null || SearchEntityArea.SearchInitializer.SearchEntityID != entitySearchID)
             //{
-                SearchEntityArea = new SearchEntityArea();
-                var searchViewInitializer = new SearchEntityAreaInitializer();
-                searchViewInitializer.EntityID = EntityID;
-                searchViewInitializer.SearchEntityID = entitySearchID;
-                SearchEntityArea.SetAreaInitializer(searchViewInitializer);
-                grdSearch.Children.Clear();
-                grdSearch.Children.Add(SearchEntityArea.SearchView as UIElement);
+
+            var searchViewInitializer = new SearchAreaInitializer();
+            searchViewInitializer.EntityID = EntityID;
+            searchViewInitializer.EntitySearchID = entitySearchID;
+            SearchEntityArea = new SearchEntityArea(searchViewInitializer);
+
+            grdSearch.Children.Clear();
+            grdSearch.Children.Add(SearchEntityArea.SearchView as UIElement);
             //}
 
             SearchEntityArea.ShowSearchRepository(Message);
@@ -95,7 +96,7 @@ namespace MyProject_WPF
             BizEntitySearch biz = new BizEntitySearch();
             lokEntitySearch.DisplayMember = "Title";
             lokEntitySearch.SelectedValueMember = "ID";
-            lokEntitySearch.ItemsSource = biz.GetEntitySearchs(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+            lokEntitySearch.ItemsSource = biz.GetEntitySearchs(MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EntityID);
         }
 
         private void LokEntitySearch_EditItemClicked(object sender, EditItemClickEventArg e)
@@ -169,7 +170,7 @@ namespace MyProject_WPF
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
             SetNewItem();
-         
+
         }
 
         private void SetNewItem()

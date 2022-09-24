@@ -22,7 +22,7 @@ namespace MyModelManager
 
         public GraphDTO GetGraph(DR_Requester requester, int ID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbItem = projectContext.GraphDefinition.First(x => x.ID == ID);
                 if (!DataIsAccessable(requester, dbItem))
@@ -53,7 +53,7 @@ namespace MyModelManager
         public List<GraphDTO> GetGraphByEntitiyID(DR_Requester requester, int entitiyID)
         {
             List<GraphDTO> result = new List<GraphDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var items = projectContext.GraphDefinition.Where(x => x.EntityDataItemReport.EntityReport.TableDrivedEntityID == entitiyID);
                 foreach (var dbItem in items)
@@ -69,7 +69,7 @@ namespace MyModelManager
         public List<GraphDTO> SearchGraphs(DR_Requester requester, string singleFilterValue)
         {
             List<GraphDTO> result = new List<GraphDTO>();
-            using (var projectContext = new MyProjectEntities())
+            using (var projectContext = new MyIdeaEntities())
             {
                 var items = projectContext.GraphDefinition.Where(x => x.EntityDataItemReport.EntityReport.Title.Contains(singleFilterValue) || x.EntityDataItemReport.EntityReport.TableDrivedEntity.Alias.Contains(singleFilterValue)
                 || x.EntityDataItemReport.EntityReport.TableDrivedEntity.Name.Contains(singleFilterValue));
@@ -114,7 +114,7 @@ namespace MyModelManager
         }
         public int UpdateGraph(GraphDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 BizEntityDataItemReport bizEntityDataItemReport = new BizEntityDataItemReport();
 

@@ -179,7 +179,7 @@ namespace MyProject_WPF
         //{
         //    try
         //    {
-        //        using (var projectContext = new MyProjectEntities())
+        //        using (var projectContext = new MyIdeaEntities())
         //        {
         //            var serviceRequest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceRequest" && x.Table.DBSchema.DatabaseInformationID == db.ID);
         //            if (serviceRequest != null)

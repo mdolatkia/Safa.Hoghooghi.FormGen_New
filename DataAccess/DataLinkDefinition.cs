@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class DataLinkDefinition
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public DataLinkDefinition()
         {
             this.DataLinkDefinition_EntityRelationshipTail = new HashSet<DataLinkDefinition_EntityRelationshipTail>();
@@ -29,6 +30,7 @@ namespace DataAccess
         public virtual DataMenuSetting DataMenuSetting1 { get; set; }
         public virtual EntityDataItemReport EntityDataItemReport { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataLinkDefinition_EntityRelationshipTail> DataLinkDefinition_EntityRelationshipTail { get; set; }
     }
 }

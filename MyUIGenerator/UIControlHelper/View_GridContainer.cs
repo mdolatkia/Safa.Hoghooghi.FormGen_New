@@ -165,7 +165,7 @@ namespace MyUIGenerator.UIControlHelper
         }
 
 
-        public  void AddView(I_UIControlManager labelControlManager, I_RelationshipControlManagerOne relationshipControlManager)
+        public void AddView(I_UIControlManager labelControlManager, I_RelationshipControlManagerOne relationshipControlManager)
         {
             //UISingleControl labelControl = new UISingleControl();
             ////if (!string.IsNullOrEmpty(title))
@@ -174,7 +174,7 @@ namespace MyUIGenerator.UIControlHelper
             //labelControl.ColumnSetting.UIColumnsType = ModelEntites.Enum_UIColumnsType.Normal;
             //labelControl.ColumnSetting.UIRowsCount = 1;
             var localRelationshipControlManager = relationshipControlManager as RelationshipControlManagerForOneDataForm;
-               var localLabelControlManager = labelControlManager as LabelHelper;
+            var localLabelControlManager = labelControlManager as LabelHelper;
 
             //FrameworkElement labelControl = null;
             ////برای پریویو که دوباره لیبل تولید نشود
@@ -472,6 +472,13 @@ namespace MyUIGenerator.UIControlHelper
 
         public override void ClearControls()
         {
+            Grid.RowDefinitions.Clear();
+            var rowDefinition = new RowDefinition();
+            rowDefinition.Height = new GridLength(30);
+            Grid.RowDefinitions.Add(rowDefinition);
+            CurrentColumn = 1;
+            CurrentRow = 0;
+            //         Grid.ColumnDefinitions.Clear();
             Grid.Children.Clear();
         }
 

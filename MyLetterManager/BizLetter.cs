@@ -23,7 +23,7 @@ namespace MyDataItemManager
             List<LetterDTO> result = new List<LetterDTO>();
             using (var letterModel = new MyIdeaDataDBEntities())
             {
-                using (var projectContext = new MyProjectEntities())
+                using (var projectContext = new MyIdeaEntities())
                 {
                     var list = letterModel.Letter.Where(x => dataitemIDS.Contains(x.MyDataItemID));
                     foreach (var item in list)
@@ -115,7 +115,7 @@ namespace MyDataItemManager
             List<LetterDTO> result = new List<LetterDTO>();
             using (var letterModel = new MyIdeaDataDBEntities())
             {
-                using (var projectContext = new MyProjectEntities())
+                using (var projectContext = new MyIdeaEntities())
                 {
                     var listEntity = letterModel.Letter as IQueryable<Letter>;
                     if (generalFilter != "")
@@ -129,7 +129,7 @@ namespace MyDataItemManager
         public List<LetterTypeDTO> GetLetterTypes()
         {
             List<LetterTypeDTO> result = new List<LetterTypeDTO>();
-            using (var letterModel = new MyProjectEntities())
+            using (var letterModel = new MyIdeaEntities())
             {
                 var list = letterModel.LetterType;
                 foreach (var item in list)
@@ -147,7 +147,7 @@ namespace MyDataItemManager
         {
             using (var letterModel = new MyIdeaDataDBEntities())
             {
-                using (var projectContext = new MyProjectEntities())
+                using (var projectContext = new MyIdeaEntities())
                 {
                     var dbitem = letterModel.Letter.First(x => x.ID == letterID);
                     var letetr = ToLetterDTO(requester,dbitem, withDetails, projectContext);
@@ -204,7 +204,7 @@ namespace MyDataItemManager
 
 
 
-        private LetterDTO ToLetterDTO(DR_Requester requester, Letter item, bool withDetails, MyProjectEntities projectContext)
+        private LetterDTO ToLetterDTO(DR_Requester requester, Letter item, bool withDetails, MyIdeaEntities projectContext)
         {
             LetterDTO result = new LetterDTO();
             result.ID = item.ID;
@@ -241,7 +241,7 @@ namespace MyDataItemManager
 
         public LetterSettingDTO GetLetterSetting()
         {
-            using (var projectContext = new MyProjectEntities())
+            using (var projectContext = new MyIdeaEntities())
             {
                 var letterSetting = projectContext.LetterSetting.FirstOrDefault();
                 if (letterSetting == null)

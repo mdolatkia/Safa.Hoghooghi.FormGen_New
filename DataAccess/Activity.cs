@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class Activity
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Activity()
         {
             this.ActivityTarget = new HashSet<ActivityTarget>();
@@ -29,8 +30,11 @@ namespace DataAccess
         public Nullable<bool> vwSelected { get; set; }
     
         public virtual Process Process { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ActivityTarget> ActivityTarget { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StateActivity> StateActivity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransitionActivity> TransitionActivity { get; set; }
     }
 }

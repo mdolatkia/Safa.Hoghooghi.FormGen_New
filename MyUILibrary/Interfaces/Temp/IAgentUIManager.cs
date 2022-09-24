@@ -54,10 +54,11 @@ namespace MyUILibrary
         I_View_DataViewArea GetViewOfDataViewArea();
 
         //event EventHandler<Arg_NavigationTreeRequest> NavigationTreeRequested;
-
-        I_RelationshipControlManagerMultiple GenerateRelationshipControlManagerForMultipleDataForm(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipUISetting);
+        I_View_TemporaryView GenerateTemporaryLinkUI();
+        I_View_GridViewArea GetViewOfGridViewArea();
+        I_RelationshipControlManagerMultiple GenerateRelControlManagerForMultiDataForm(I_View_TemporaryView temporaryView, RelationshipUISettingDTO relationshipUISetting);
       //  I_RelationshipControlManagerOne GenerateRelationshipControlManagerForOneDataForm(I_View_DataContainer view, RelationshipUISettingDTO relationshipUISetting);
-        I_RelationshipControlManagerOne GenerateRelationshipControlManagerForOneDataForm(I_View_Area view, RelationshipUISettingDTO relationshipUISetting);
+        I_RelationshipControlManagerOne GenerateRelControlManagerForOneDataForm(I_View_Area view, RelationshipUISettingDTO relationshipUISetting);
 
         I_View_EditLogReportDetails GenereateViewOfEditLogReportDetails();
         I_View_ArchiveLogReportDetails GenereateViewOfArchiveLogReportDetails();
@@ -91,7 +92,7 @@ namespace MyUILibrary
         I_NavigationMenu AddSearchNavigationTree(I_NavigationMenu parentItem, NavigationItemDTO item, bool expanded);
         //I_View_EditPackageArea GenerateEditPackageAreaView();
 
-        I_View_EditEntityAreaMultiple GenerateEditEntityAreaMultipleDataView();
+        I_View_EditEntityAreaMultiple GenerateEditEntityAreaMultipleDataView(EntityUISettingDTO entityUISettingDTO);
         I_View_EditEntityAreaDataView GenerateEditEntityAreaOneDataView(EntityUISettingDTO entityUISettingDTO);
         I_View_DiagramStateInfo GetViewOfDiagramStateInfo();
         I_View_ArchiveItemInfo GenerateViewOfArchiveItemInfo();
@@ -147,8 +148,7 @@ namespace MyUILibrary
         //void ShowSearchViewPackageArea(I_View_SearchViewPackageArea view);
         //void CloseSearchViewPackageArea(I_View_SearchViewPackageArea view);
 
-        I_View_TemporaryView GenerateTemporaryLinkUI(TemporaryLinkState temporaryLinkState);
-        I_View_GridViewArea GetViewOfGridViewArea();
+     
 
         //I_View_SearchViewArea GenerateSearchViewArea();
         //////UIContainerPackage GenerateGroup(I_View_GridContainer parentGridContainer, string groupTitle);

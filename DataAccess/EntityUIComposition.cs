@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class EntityUIComposition
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntityUIComposition()
         {
             this.EntityUIComposition1 = new HashSet<EntityUIComposition>();
@@ -29,6 +30,7 @@ namespace DataAccess
     
         public virtual ColumnUISetting ColumnUISetting { get; set; }
         public virtual EmptySpaceUISetting EmptySpaceUISetting { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityUIComposition> EntityUIComposition1 { get; set; }
         public virtual EntityUIComposition EntityUIComposition2 { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }

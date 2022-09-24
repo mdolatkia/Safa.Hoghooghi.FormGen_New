@@ -21,7 +21,7 @@ namespace MyModelManager
             //    return (cachedItem as List<EntityCommandDTO>);
 
             List<EntityCommandDTO> result = new List<EntityCommandDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 IQueryable<EntityCommand> listEntityCommand;
                 if (entityID != 0)
@@ -52,7 +52,7 @@ namespace MyModelManager
         public EntityCommandDTO GetEntityCommand(DR_Requester requester, int EntityCommandsID, bool withDetails)
         {
             List<EntityCommandDTO> result = new List<EntityCommandDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var EntityCommands = projectContext.EntityCommand.First(x => x.ID == EntityCommandsID);
                 return ToEntityCommandDTO(requester, EntityCommands, withDetails);
@@ -87,7 +87,7 @@ namespace MyModelManager
         }
         public void UpdateEntityCommands(EntityCommandDTO EntityCommand)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbEntityCommand = projectContext.EntityCommand.FirstOrDefault(x => x.ID == EntityCommand.ID);
                 if (dbEntityCommand == null)

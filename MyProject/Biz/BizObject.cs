@@ -74,7 +74,7 @@ namespace MySecurity
 
         //public void ExtractObjectsFromDB()
         //{
-        //    using (var myProjectContext = new MyProjectEntities())
+        //    using (var myProjectContext = new MyIdeaEntities())
         //    {
         //        using (var mySecurityContext = new MySecurityEntities())
         //        {

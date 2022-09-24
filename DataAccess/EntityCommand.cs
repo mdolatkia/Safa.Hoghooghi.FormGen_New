@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class EntityCommand
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntityCommand()
         {
             this.TableDrivedEntity_EntityCommand = new HashSet<TableDrivedEntity_EntityCommand>();
@@ -25,6 +26,7 @@ namespace DataAccess
         public Nullable<short> Type { get; set; }
     
         public virtual CodeFunction CodeFunction { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TableDrivedEntity_EntityCommand> TableDrivedEntity_EntityCommand { get; set; }
         public virtual SecurityObject SecurityObject { get; set; }
     }

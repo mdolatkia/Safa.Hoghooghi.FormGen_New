@@ -209,7 +209,7 @@ namespace MyDataSearchManagerBusiness
             }
             else
             {
-                listView = bizEntityListView.GetEntityEditListView(requester, entityID);
+                listView = bizEntityListView.GetEntityListViewWithAllColumns(requester, entityID);
             }
 
             var queryParts = GetQueryParts(requester, entityID, searchDataItem, listView, 0);
@@ -227,10 +227,9 @@ namespace MyDataSearchManagerBusiness
             BizEntityListView bizEntityListView = new BizEntityListView();
             if (listView == null)
             {
-                if (listViewID == 0)
-                    listView = bizEntityListView.GetEntityDefaultListView(requester, entity.ID);
-                else
-                    listView = bizEntityListView.GetEntityListView(requester, listViewID);
+
+                listView = bizEntityListView.GetOrCreateEntityListViewDTO(requester, entity.ID);
+
             }
             if (listView == null)
             {
@@ -1423,7 +1422,7 @@ namespace MyDataSearchManagerBusiness
         private List<DP_DataRepository> GetFullDataResult(DR_Requester requester, DP_SearchRepository searchDataItem)
         {
             BizEntityListView bizEntityListView = new BizEntityListView();
-            var editListView = bizEntityListView.GetEntityEditListView(requester, searchDataItem.TargetEntityID);
+            var editListView = bizEntityListView.GetEntityListViewWithAllColumns(requester, searchDataItem.TargetEntityID);
             var dataTable = GetDataTableBySearchDataItems(requester, searchDataItem.TargetEntityID, searchDataItem, editListView, 0);
             return DataTableToDP_DataRepository(dataTable.Item1, dataTable.Item2, dataTable.Item3);
         }

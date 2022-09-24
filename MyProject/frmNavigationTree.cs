@@ -88,7 +88,7 @@ namespace MyProject
         {
             TreeNode rootNode = new TreeNode { Text = "ریشه", Tag = "Root" };
             treeNavigation.Nodes.Add(rootNode);
-            using (var myProjectContext = new MyProjectEntities())
+            using (var myProjectContext = new MyIdeaEntities())
             {
                 foreach (var item in myProjectContext.NavigationTree.Where(x => x.ParentID == null))
                 {
@@ -98,7 +98,7 @@ namespace MyProject
                 }
             }
         }
-        private void PopulateNavigationTree(int parentID, TreeNodeCollection collection, MyProjectEntities myProjectContext)
+        private void PopulateNavigationTree(int parentID, TreeNodeCollection collection, MyIdeaEntities myProjectContext)
         {
             foreach (var item in myProjectContext.NavigationTree.Where(x => x.ParentID == parentID))
             {
@@ -108,7 +108,7 @@ namespace MyProject
         }
         private void PopulateDBObjectTree()
         {
-            using (var myProjectContext = new MyProjectEntities())
+            using (var myProjectContext = new MyIdeaEntities())
             {
                 foreach (var database in myProjectContext.DatabaseInformation)
                 {

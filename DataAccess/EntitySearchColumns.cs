@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class EntitySearchColumns
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntitySearchColumns()
         {
             this.ColumnPhrase = new HashSet<ColumnPhrase>();
@@ -29,6 +30,7 @@ namespace DataAccess
         public string Tooltip { get; set; }
     
         public virtual Column Column { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ColumnPhrase> ColumnPhrase { get; set; }
         public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
         public virtual EntitySearch EntitySearch { get; set; }

@@ -28,7 +28,7 @@ namespace MyModelManager
             //    return (cachedItem as List<EntityReportDTO>);
 
             List<EntityReportDTO> result = new List<EntityReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityReport = projectContext.EntityReport.Where(x => x.TableDrivedEntityID == entityID);
                 foreach (var dbItem in listEntityReport)
@@ -48,7 +48,7 @@ namespace MyModelManager
         public EntityReportDTO GetEntityReport(DR_Requester requester, int EntityReportID,bool withDetails)
         {
             //withSearchInfo این یجوریه! حذف بشه
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbItem = projectContext.EntityReport.First(x => x.ID == EntityReportID);
                 if (DataIsAccessable(requester, dbItem))
@@ -64,7 +64,7 @@ namespace MyModelManager
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         internal bool DataIsAccessable(DR_Requester requester, int reportID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var report = projectContext.EntityReport.First(x => x.ID == reportID);
                 return DataIsAccessable(requester, report);

@@ -14,7 +14,7 @@
 //        public List<ViewDTO> GetViews(int databaseID)
 //        {
 //            List<ViewDTO> result = new List<ViewDTO>();
-//            using (var projectContext = new DataAccess.MyProjectEntities())
+//            using (var projectContext = new DataAccess.MyIdeaEntities())
 //            {
 //                //projectContext.Configuration.LazyLoadingEnabled = false;
 //                //string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -28,7 +28,7 @@
 //        public ViewDTO GetView(int ViewsID)
 //        {
 //            List<ViewDTO> result = new List<ViewDTO>();
-//            using (var projectContext = new DataAccess.MyProjectEntities())
+//            using (var projectContext = new DataAccess.MyIdeaEntities())
 //            {
 //                var Views = projectContext.View.First(x => x.ID == ViewsID);
 //                return ToViewDTO(Views);
@@ -57,7 +57,7 @@
 
 //        public bool OrginalViewExists(string name, int databaseID)
 //        {
-//            using (var projectContext = new DataAccess.MyProjectEntities())
+//            using (var projectContext = new DataAccess.MyIdeaEntities())
 //            {
 //                return projectContext.View.Any(x => x.Name == name && x.DBSchema.DatabaseInformationID == databaseID);
 
@@ -65,7 +65,7 @@
 //        }
 //        public ViewDTO GetOrginalView(string name, int databaseID)
 //        {
-//            using (var projectContext = new DataAccess.MyProjectEntities())
+//            using (var projectContext = new DataAccess.MyIdeaEntities())
 //            {
 //                return ToViewDTO(projectContext.View.First(x => x.Name == name && x.DBSchema.DatabaseInformationID == databaseID));
 
@@ -75,7 +75,7 @@
 //        public List<ViewDTO> GetEnableOrginalViews(int databaseID)
 //        {
 //            List<ViewDTO> result = new List<ViewDTO>();
-//            using (var projectContext = new DataAccess.MyProjectEntities())
+//            using (var projectContext = new DataAccess.MyIdeaEntities())
 //            {
 //                var list = projectContext.View.Where(x => x.Enable == true && x.DBSchema.DatabaseInformationID == databaseID);
 //                foreach (var item in list)
@@ -86,7 +86,7 @@
 
 //        public void UpdateModel(int databaseID, List<ViewDTO> listNew, List<ViewDTO> listEdit, List<ViewDTO> listDeleted)
 //        {
-//            using (var projectContext = new DataAccess.MyProjectEntities())
+//            using (var projectContext = new DataAccess.MyIdeaEntities())
 //            {
 //                foreach (var newEntity in listNew)
 //                {
@@ -105,7 +105,7 @@
 //            }
 //        }
 
-//        private void UpdateViewInModel(MyProjectEntities projectContext, int databaseID, ViewDTO view)
+//        private void UpdateViewInModel(MyIdeaEntities projectContext, int databaseID, ViewDTO view)
 //        {
 //            var schema = view.RelatedSchema;
 //            var dbSchema = projectContext.DBSchema.FirstOrDefault(x => x.DatabaseInformationID == databaseID && x.Name == schema);
@@ -149,7 +149,7 @@
 //        }
 //        //public void UpdateViews(List<ViewDTO> Views)
 //        //{
-//        //    using (var projectContext = new DataAccess.MyProjectEntities())
+//        //    using (var projectContext = new DataAccess.MyIdeaEntities())
 //        //    {
 //        //        foreach (var item in Views)
 //        //        {

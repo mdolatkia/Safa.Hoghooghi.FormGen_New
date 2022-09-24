@@ -12,7 +12,7 @@ namespace MyModelManager
     {
         public List<OrganizationTypeDTO> GetAllOrganizationTypes()
         {
-            var context = new MyProjectEntities();
+            var context = new MyIdeaEntities();
             var organizationTypes = context.OrganizationType;
             List<OrganizationTypeDTO> result = new List<OrganizationTypeDTO>();
             foreach (var item in organizationTypes)
@@ -24,7 +24,7 @@ namespace MyModelManager
         }
         public OrganizationTypeDTO GetOrganizationType(int ID, bool withDetails)
         {
-            var context = new MyProjectEntities();
+            var context = new MyIdeaEntities();
             var dborganizationType = context.OrganizationType.First(x => x.ID == ID);
             return ToOrganizationTypeDTO(dborganizationType, withDetails);
         }
@@ -53,7 +53,7 @@ namespace MyModelManager
 
         public int SaveOrganizationType(OrganizationTypeDTO OrganizationTypeDto)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
 
                 OrganizationType dbOrganizationType = null;

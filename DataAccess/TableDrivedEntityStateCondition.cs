@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class TableDrivedEntityStateCondition
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public TableDrivedEntityStateCondition()
         {
             this.TableDrivedEntityStateConditionSecuritySubject = new HashSet<TableDrivedEntityStateConditionSecuritySubject>();
@@ -33,7 +34,9 @@ namespace DataAccess
         public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
         public virtual Formula Formula { get; set; }
         public virtual TableDrivedEntityState TableDrivedEntityState { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TableDrivedEntityStateConditionSecuritySubject> TableDrivedEntityStateConditionSecuritySubject { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TableDrivedEntityStateConditionValues> TableDrivedEntityStateConditionValues { get; set; }
     }
 }

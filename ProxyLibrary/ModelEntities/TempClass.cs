@@ -95,7 +95,9 @@ namespace ModelEntites
         public ColumnCustomFormulaDTO ColumnCustomFormula { set; get; }
         public bool ColumnsAdded { get; set; }
 
-        public ColumnUISettingDTO ColumnUISetting { get; set; }
+     //   public ColumnUISettingDTO ColumnUISetting { get; set; }
+        public bool InvisibleInUI { get; set; }
+        //public ColumnDTO Column { get; set; }
         //   public bool IsDescriptive { get; set; }
     }
     public class ColumnCustomFormulaDTO
@@ -514,7 +516,11 @@ namespace ModelEntites
         public bool IsNotSkippable { get; set; }
         public bool Entity1IsIndependent { get; set; }
         public bool Entity2IsIndependent { get; set; }
-        public RelationshipUISettingDTO RelationshipUISetting { get; set; }
+
+      //  public bool IsDirectInUI { set; get; }
+
+        public bool? FKReservedPosition { get; set; }
+        //     public RelationshipUISettingDTO RelationshipUISetting { get; set; }
     }
     public enum CreateRelationshipType
     {
@@ -739,7 +745,11 @@ namespace ModelEntites
         public GroupUISettingDTO GroupUISetting { set; get; }
         public TabGroupUISettingDTO TabGroupUISetting { set; get; }
         public TabPageUISettingDTO TabPageUISetting { set; get; }
-
+        public ColumnDTO Column { get; set; }
+        public DataEntryRelationshipDTO Relationship { get; set; }
+        public object Container { get; set; }
+        public object Item { get; set; }
+        public object UIItem { get; set; }
     }
 
     public class EditBaseEntityDTO
@@ -1041,8 +1051,8 @@ namespace ModelEntites
         //public List<SubToSuperRelationshipDTO> SubToSuperRelationships { set; get; }
         //public List<SuperUnionToSubUnionRelationshipDTO> SuperUnionToSubUnionRelationships { set; get; }
         //public List<SubUnionToSuperUnionRelationshipDTO> SubUnionToSuperUnionRelationships { set; get; }
-        public int EntityListViewID { get; set; }
-        public int EntitySearchID { get; set; }
+        //public int EntityListViewID { get; set; }
+        //public int EntitySearchID { get; set; }
         public bool LoadArchiveRelatedItems { get; set; }
         public bool LoadLetterRelatedItems { get; set; }
 
@@ -1074,9 +1084,9 @@ namespace ModelEntites
         public List<RelationshipDTO> SkippedRelationships { set; get; }
         public string Info { set; get; }
         public bool HasNotDeleteAccess { get; set; }
-        22222
         public EntityUICompositionDTO UICompositions { set; get; }
     }
+
     public class DataEntryRelationshipDTO
     {
         public DataEntryEntityDTO TargetDataEntryEntity { set; get; }
@@ -1358,6 +1368,7 @@ namespace ModelEntites
         }
         public int ID { set; get; }
         public int TableDrivedEntityID { set; get; }
+        public bool IsDefault { set; get; }
         public string Title { set; get; }
         //public List<EntityListViewRelationshipTailDTO> EntityListViewRelationshipTails { set; get; }
         public List<EntityListViewColumnsDTO> EntityListViewAllColumns { set; get; }
@@ -1394,7 +1405,7 @@ namespace ModelEntites
 
         public string CreateRelationshipTailPath { get; set; }
         public bool IsDescriptive { get; set; }
-        public bool AllRelationshipsAreSubToSuper { get; set; }
+      //  public bool AllRelationshipsAreSubToSuper { get; set; }
         public string Tooltip { get; set; }
 
         //public int CreateRelationshipID { get; set; }
@@ -1413,6 +1424,7 @@ namespace ModelEntites
         public string Title { set; get; }
         //public List<EntitySearchRelationshipTailDTO> EntitySearchRelationshipTails { set; get; }
         public List<EntitySearchColumnsDTO> EntitySearchAllColumns { set; get; }
+        public bool IsDefault { get; set; }
     }
     public class EntitySearchColumnsDTO
     {
@@ -1434,7 +1446,7 @@ namespace ModelEntites
 
         public bool RelationshipTailSelectable { set; get; }
         public string CreateRelationshipTailPath { get; set; }
-        public bool AllRelationshipsAreSubToSuper { get; set; }
+      //  public bool AllRelationshipsAreSubToSuper { get; set; }
         public string Tooltip { get; set; }
         //public int CreateRelationshipTargetEntityID { get; set; }
     }

@@ -48,15 +48,15 @@ namespace MyUIGenerator.UIControlHelper
 
         //    TemporaryViewLink = temporaryViewLink;
         //}
-        TemporaryLinkState TemporaryLinkState { set; get; }
+        I_View_TemporaryView TemporaryView { set; get; }
         //    TemporaryLinkType LinkType { set; get; }
         RelationshipUISettingDTO RelationshipSetting { set; get; }
-        public RelationshipControlManagerForMultipleDataForm(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipSetting)
+        public RelationshipControlManagerForMultipleDataForm(I_View_TemporaryView temporaryView, RelationshipUISettingDTO relationshipSetting)
         {
             //ColumnSetting = columnSetting;
             //   LinkType = linkType;
             RelationshipSetting = relationshipSetting;
-            TemporaryLinkState = temporaryLinkState;
+            TemporaryView = temporaryView;
             // TypeProperty = correspondingTypeProperty;
             //   Column = column;
             //UnSetValue = null;
@@ -350,7 +350,7 @@ namespace MyUIGenerator.UIControlHelper
 
         internal void AddDataItem(object dataItem)
         {
-            UC_TemporaryDataSearchLink control = new UC_TemporaryDataSearchLink(TemporaryLinkState);
+            UC_TemporaryDataSearchLink control = new UC_TemporaryDataSearchLink(TemporaryView);
             // if (TemporaryViewLoaded != null)
             //      this.TemporaryViewLoaded(this, new Arg_MultipleTemporaryDisplayLoaded() { DataItem = dataItem });
 

@@ -128,6 +128,7 @@ namespace MyProject_WPF
             //{
             //    SetColumns(item);
             //}
+            chkIsDefault.IsChecked = Message.IsDefault;
             dtgColumns.ItemsSource = Message.EntitySearchAllColumns;
         }
 
@@ -169,7 +170,7 @@ namespace MyProject_WPF
                         var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), relationshipTail.TargetEntityID, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships);
                         if (entity.IsView)
                         {
-                            MessageBox.Show("به منظور استفاده از رشته رابطه"+" "+ relationshipTail.EntityPath+" "+"، به علت منتهی شدن با نما، انتخاب ستون هدف اجباری می باشد");
+                            MessageBox.Show("به منظور استفاده از رشته رابطه" + " " + relationshipTail.EntityPath + " " + "، به علت منتهی شدن با نما، انتخاب ستون هدف اجباری می باشد");
                             return;
                         }
                     }
@@ -177,28 +178,24 @@ namespace MyProject_WPF
             }
             Message.TableDrivedEntityID = EntityID;
             Message.Title = txtViewName.Text;
+            Message.IsDefault = chkIsDefault.IsChecked == true;
             Message.ID = bizEntitySearch.UpdateEntitySearchs(Message);
             if (EntitySearchUpdated != null)
                 EntitySearchUpdated(this, new MyProject_WPF.EntitySearchUpdatedArg() { ID = Message.ID });
             MessageBox.Show("اطلاعات ثبت شد");
         }
-
-
-
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
             Message = new EntitySearchDTO();
             ShowMessage();
         }
-
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
 
             frmEntitySearchSelect view = new MyProject_WPF.frmEntitySearchSelect(EntityID);
             view.EntitySearchSelected += View_EntitySearchSelected1;
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form",Enum_WindowSize.Big);
+            MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Big);
         }
-
         private void View_EntitySearchSelected1(object sender, EntitySearchSelectedArg e)
         {
             if (e.EntitySearchID != 0)
@@ -208,8 +205,6 @@ namespace MyProject_WPF
                 GetEntityEntitySearch(e.EntitySearchID);
             }
         }
-
-
     }
     public class EntitySearchUpdatedArg : EventArgs
     {

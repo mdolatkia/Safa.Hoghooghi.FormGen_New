@@ -20,7 +20,8 @@ namespace MyUILibrary.EntityArea.Commands
             //else
                 CommandManager.SetTitle("بازگشت");
             CommandManager.ImagePath = "Images//Close.png";
-            CommandManager.Clicked += CommandManager_Clicked;
+            if (!editArea.AreaInitializer.Preview)
+                CommandManager.Clicked += CommandManager_Clicked;
         }
         private void CommandManager_Clicked(object sender, EventArgs e)
         {

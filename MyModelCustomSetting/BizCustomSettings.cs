@@ -21,7 +21,7 @@ namespace MyModelCustomSetting
     {
         public void SetCustomSettings(int databaseID, DR_Requester requester)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbDatabase = projectContext.DatabaseInformation.FirstOrDefault(x => x.ID == databaseID);
                 if (dbDatabase.Name == "DBProductService")
@@ -36,7 +36,7 @@ namespace MyModelCustomSetting
             }
         }
 
-        private void SetDbProductsSettings(int databaseID, MyProjectEntities projectContext, DR_Requester requester)
+        private void SetDbProductsSettings(int databaseID, MyIdeaEntities projectContext, DR_Requester requester)
         {
             var roleRahbarKol = projectContext.RoleType.FirstOrDefault(x => x.Name == "راهبر کل");
             if (roleRahbarKol == null)
@@ -60,7 +60,7 @@ namespace MyModelCustomSetting
             projectContext.SaveChanges();
         }
 
-        private void SetDbProductServiceSettings(int databaseID, MyProjectEntities projectContext, DR_Requester requester)
+        private void SetDbProductServiceSettings(int databaseID, MyIdeaEntities projectContext, DR_Requester requester)
         {
             var customer = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "Customer" && x.Table.DBSchema.DatabaseInformationID == databaseID);
             var productItem = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ProductItem" && x.Table.DBSchema.DatabaseInformationID == databaseID);
@@ -504,7 +504,7 @@ namespace MyModelCustomSetting
                         stringUpdateDateTime.DateTimeColumnType = new DateTimeColumnType();
                     stringUpdateDateTime.DateTimeColumnType.ShowMiladiDateInUI = true;
                     //       stringUpdateDateTime.DateTimeColumnType.HideTimePicker = true;
-               //     stringUpdateDateTime.DateTimeColumnType.DBValueIsStringMiladi = true;
+                    //     stringUpdateDateTime.DateTimeColumnType.DBValueIsStringMiladi = true;
                     stringUpdateDateTime.DateTimeColumnType.DBValueStringTimeFormat = (short)StringTimeFormat.AMPMMiladi;
                     //     stringUpdateDateTime.DateTimeColumnType.StringTimeIsMiladi = false;
                     //     stringUpdateDateTime.DateTimeColumnType.StringTimeISAMPMFormat = true;
@@ -1027,7 +1027,8 @@ namespace MyModelCustomSetting
                     serviceConclusaionListView.TableDrivedEntityID = serviceConclusion.ID;
                     //    projectContext.EntityListView.Add(serviceConclusaionListView);
                     serviceConclusaionListView.Title = "لیست پیش فرض خلاصه سرویس";
-                    serviceConclusion.EntityListView1 = serviceConclusaionListView;
+                    serviceConclusaionListView.IsDefault = true;
+                    //  serviceConclusion.EntityListView1 = serviceConclusaionListView;
                     if (conclusionIDColumn != null)
                     {
                         var idColumn = new EntityListViewColumns() { Column = conclusionIDColumn, Alias = "شناسه", WidthUnit = 1, IsDescriptive = true, OrderID = 1 };
@@ -1161,13 +1162,14 @@ namespace MyModelCustomSetting
 
 
 
-                if (!serviceConclusion.EntitySearch1.Any(x => x.Title == "جستجوی پیش فرض خلاصه سرویس"))
+                if (!serviceConclusion.EntitySearch.Any(x => x.Title == "جستجوی پیش فرض خلاصه سرویس"))
                 {
                     var serviceConclusaionSearch = new EntitySearch();
-                    serviceConclusaionSearch.TableDrivedEntityID = serviceConclusion.ID;
+                    serviceConclusaionSearch.TableDrivedEntityID1 = serviceConclusion.ID;
                     //    projectContext.EntitySearch.Add(serviceConclusaionSearch);
                     serviceConclusaionSearch.Title = "جستجوی پیش فرض خلاصه سرویس";
-                    serviceConclusion.EntitySearch = serviceConclusaionSearch;
+                    serviceConclusaionSearch.IsDefault = true;
+                    //   serviceConclusion.EntitySearch = serviceConclusaionSearch;
                     if (conclusionIDColumn != null)
                     {
                         var idColumn = new EntitySearchColumns() { Column = conclusionIDColumn, Alias = "شناسه", OrderID = 1 };
@@ -2109,7 +2111,7 @@ namespace MyModelCustomSetting
 
 
             MainLetterTemplate simpleLetterTemplate = null;
-            if (serviceRequest != null && serviceRequest.EntityListViewID != null)
+            if (serviceRequest != null && serviceRequest.EntityListView.Any(x => x.IsDefault == true))
             {
                 simpleLetterTemplate = projectContext.MainLetterTemplate.FirstOrDefault(x => x.LetterTemplate != null && x.LetterTemplate.Name == "قالب ساده" && x.LetterTemplate.TableDrivedEntityID == serviceRequest.ID);
                 if (simpleLetterTemplate == null)
@@ -2121,7 +2123,7 @@ namespace MyModelCustomSetting
                         simpleLetterTemplate.LetterTemplate = new LetterTemplate();
                         simpleLetterTemplate.LetterTemplate.Name = "قالب ساده";
                         simpleLetterTemplate.LetterTemplate.TableDrivedEntityID = serviceRequest.ID;
-                        simpleLetterTemplate.LetterTemplate.EntityListViewID = serviceRequest.EntityListViewID.Value;
+                        simpleLetterTemplate.LetterTemplate.EntityListViewID = serviceRequest.EntityListView.First(x => x.IsDefault == true).ID;
                         simpleLetterTemplate.Content = File.ReadAllBytes(path);
                         simpleLetterTemplate.FileExtension = Path.GetExtension(path);
                         simpleLetterTemplate.Type = (short)LetterTemplateType.None;
@@ -2138,7 +2140,7 @@ namespace MyModelCustomSetting
                 }
             }
             MainLetterTemplate complexLetterTemplate = null;
-            if (serviceRequestReview != null && serviceRequestReview.EntityListViewID != null)
+            if (serviceRequestReview != null && serviceRequestReview.EntityListView.Any(x => x.IsDefault == true))
             {
                 complexLetterTemplate = projectContext.MainLetterTemplate.FirstOrDefault(x => x.LetterTemplate != null && x.LetterTemplate.Name == "قالب بررسی درخواست" && x.LetterTemplate.TableDrivedEntityID == serviceRequestReview.ID);
                 if (complexLetterTemplate == null)
@@ -2150,7 +2152,7 @@ namespace MyModelCustomSetting
                         complexLetterTemplate.LetterTemplate = new LetterTemplate();
                         complexLetterTemplate.LetterTemplate.Name = "قالب بررسی درخواست";
                         complexLetterTemplate.LetterTemplate.TableDrivedEntityID = serviceRequestReview.ID;
-                        complexLetterTemplate.LetterTemplate.EntityListViewID = serviceRequestReview.EntityListViewID.Value;
+                        complexLetterTemplate.LetterTemplate.EntityListViewID = serviceRequestReview.EntityListView.First(x => x.IsDefault == true).ID;
                         complexLetterTemplate.Content = File.ReadAllBytes(path);
                         complexLetterTemplate.FileExtension = Path.GetExtension(path);
                         complexLetterTemplate.Type = (short)LetterTemplateType.None;
@@ -2172,7 +2174,7 @@ namespace MyModelCustomSetting
                             letterTemplateRelationshipFieldWithTail.PartialLetterTemplate = new PartialLetterTemplate();
                             letterTemplateRelationshipFieldWithTail.PartialLetterTemplate.LetterTemplate = new LetterTemplate();
                             letterTemplateRelationshipFieldWithTail.PartialLetterTemplate.LetterTemplate.Name = "نوع درخواست";
-                            letterTemplateRelationshipFieldWithTail.PartialLetterTemplate.LetterTemplate.EntityListViewID = serviceRequestType.EntityListViewID.Value;
+                            letterTemplateRelationshipFieldWithTail.PartialLetterTemplate.LetterTemplate.EntityListViewID = serviceRequestType.EntityListView.First(x => x.IsDefault == true).ID;
                             letterTemplateRelationshipFieldWithTail.PartialLetterTemplate.LetterTemplate.TableDrivedEntityID = serviceRequestType.ID;
                             var listViewColumnTitle = GetOrCreateListViewColumn(serviceRequestType, "Title", null);
                             letterTemplateRelationshipFieldWithTail.PartialLetterTemplate.LetterTemplate.LetterTemplatePlainField.Add(new LetterTemplatePlainField() { FieldName = "Title", EntityListViewColumns = listViewColumnTitle });
@@ -2193,7 +2195,7 @@ namespace MyModelCustomSetting
                             letterTemplateRelationshipFieldDirect.PartialLetterTemplate = new PartialLetterTemplate();
                             letterTemplateRelationshipFieldDirect.PartialLetterTemplate.LetterTemplate = new LetterTemplate();
                             letterTemplateRelationshipFieldDirect.PartialLetterTemplate.LetterTemplate.TableDrivedEntityID = serviceRequestReviewItems.ID;
-                            letterTemplateRelationshipFieldDirect.PartialLetterTemplate.LetterTemplate.EntityListViewID = serviceRequestReviewItems.EntityListViewID.Value;
+                            letterTemplateRelationshipFieldDirect.PartialLetterTemplate.LetterTemplate.EntityListViewID = serviceRequestReviewItems.EntityListView.First(x => x.IsDefault == true).ID;
                             letterTemplateRelationshipFieldDirect.PartialLetterTemplate.LetterTemplate.Name = "قالب موارد بررسی";
 
                             var listViewColumnDescription = GetOrCreateListViewColumn(serviceRequestReviewItems, "Description", null);
@@ -2223,7 +2225,7 @@ namespace MyModelCustomSetting
                                 letterTemplateRelationshipField2.PartialLetterTemplate.LetterTemplate = new LetterTemplate();
                                 letterTemplateRelationshipField2.PartialLetterTemplate.LetterTemplate.TableDrivedEntityID = serviceRequestType.ID;
                                 letterTemplateRelationshipField2.PartialLetterTemplate.LetterTemplate.Name = "قالب نوع درخواست";
-                                letterTemplateRelationshipField2.PartialLetterTemplate.LetterTemplate.EntityListViewID = serviceRequestType.EntityListViewID.Value;
+                                letterTemplateRelationshipField2.PartialLetterTemplate.LetterTemplate.EntityListViewID = serviceRequestType.EntityListView.First(x => x.IsDefault == true).ID;
                                 var listViewColumnTitle = GetOrCreateListViewColumn(serviceRequestType, "Title", null);
                                 letterTemplateRelationshipField2.PartialLetterTemplate.LetterTemplate.LetterTemplatePlainField.Add(new LetterTemplatePlainField() { FieldName = "ReqTypeTitle", EntityListViewColumns = listViewColumnTitle });
                                 letterTemplateRelationshipFieldDirect.PartialLetterTemplate.LetterTemplate.LetterTemplateRelationshipField.Add(letterTemplateRelationshipField2);
@@ -2332,7 +2334,7 @@ namespace MyModelCustomSetting
                 serviceConclusion.DataMenuSetting1 = conclusionDataMenuSetting;
                 conclusionDataMenuSetting.Name = "تنظیمات منوی صورتحساب و جزئیات";
                 conclusionDataMenuSetting.TableDrivedEntityID = serviceConclusion.ID;
-                conclusionDataMenuSetting.EntityListViewID = serviceConclusion.EntityListViewID.Value;
+                conclusionDataMenuSetting.EntityListViewID = serviceConclusion.EntityListView.First(x => x.IsDefault == true).ID;
 
                 var conclusionToItemsRelMenu = new DataMenuGridViewRelationship();
                 var conclusionToItems = serviceConclusion.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusionItem.ID);
@@ -2396,12 +2398,12 @@ namespace MyModelCustomSetting
             EntitySearchColumns searchColumnAzDate = null;
             EntitySearchColumns searchColumnTaDate = null;
 
-            var conclusionSearch = projectContext.EntitySearch.FirstOrDefault(x => x.TableDrivedEntityID == serviceConclusion.ID && x.Title == "جستجوی صورتحساب بر اساس تاریخ");
+            var conclusionSearch = projectContext.EntitySearch.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.Title == "جستجوی صورتحساب بر اساس تاریخ");
             if (conclusionSearch == null)
             {
                 conclusionSearch = new EntitySearch();
                 conclusionSearch.Title = "جستجوی صورتحساب بر اساس تاریخ";
-                conclusionSearch.TableDrivedEntityID = serviceConclusion.ID;
+                conclusionSearch.TableDrivedEntityID1 = serviceConclusion.ID;
 
                 var conclusionServiceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
                 if (conclusionServiceRequestRelationship != null)
@@ -2552,7 +2554,7 @@ namespace MyModelCustomSetting
 
 
             EntityReport conclusionItemlistReport = null;
-            if (serviceConclusionItem.EntityListViewID != null)
+            if (serviceConclusionItem.EntityListView.Any(x => x.IsDefault == true))
             {
                 conclusionItemlistReport = projectContext.EntityReport.FirstOrDefault(x => x.Title == "گزارش چاپی لیست موارد صورتحساب" && x.TableDrivedEntityID == serviceConclusionItem.ID);
                 if (conclusionItemlistReport == null)
@@ -2568,7 +2570,7 @@ namespace MyModelCustomSetting
                     //conclusionItemlistReport.EntitySearchableReport.SearchRepositoryID=
 
                     conclusionItemlistReport.EntitySearchableReport.EntityListReport = new EntityListReport();
-                    conclusionItemlistReport.EntitySearchableReport.EntityListReport.EntityListViewID = serviceConclusionItem.EntityListViewID.Value;
+                    conclusionItemlistReport.EntitySearchableReport.EntityListReport.EntityListViewID = serviceConclusionItem.EntityListView.First(x => x.IsDefault == true).ID;
 
                     projectContext.EntityReport.Add(conclusionItemlistReport);
 
@@ -2591,7 +2593,7 @@ namespace MyModelCustomSetting
                 listReportWithSubs.EntitySearchableReport.EntityListReport.EntityListView = serviceConclusaionListView;
 
                 var listViewColumnID = serviceConclusaionListView.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "ID");
-                var listViewColumnFKID = serviceConclusionItem.EntityListView1.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "ServiceConclusionID");
+                var listViewColumnFKID = serviceConclusionItem.EntityListView.First(x => x.IsDefault == true).EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "ServiceConclusionID");
 
                 var conclusionToItems = serviceConclusion.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusionItem.ID);
                 var tailconclusionToItemsRel = GetRelationshipTail(projectContext, serviceConclusion, serviceConclusionItem, conclusionToItems.ID.ToString());
@@ -2711,10 +2713,11 @@ namespace MyModelCustomSetting
 
             var viewServiceRequest = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "view_ServieRequests");
             EntityReport viewServiceRequestChartRadar = null;
-            if (viewServiceRequest != null && viewServiceRequest.EntityListView1 != null)
+            if (viewServiceRequest != null && viewServiceRequest.EntityListView.Any(x => x.IsDefault == true))
             {
-                var brandTitle = viewServiceRequest.EntityListView1.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "BrandTitle");
-                var hoursSpentColumn = viewServiceRequest.EntityListView1.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "HoursSpent");
+                var listView = viewServiceRequest.EntityListView.First(x => x.IsDefault == true);
+                var brandTitle = listView.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "BrandTitle");
+                var hoursSpentColumn = listView.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "HoursSpent");
                 viewServiceRequestChartRadar = projectContext.EntityReport.FirstOrDefault(x => x.Title == "نمای درخواست سرویس مجموع ساعات کار بر حسب برند" && x.TableDrivedEntityID == viewServiceRequest.ID);
                 if (viewServiceRequestChartRadar == null)
                 {
@@ -2730,7 +2733,7 @@ namespace MyModelCustomSetting
 
                     viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport = new EntityChartReport();
                     viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Pie;
-                    viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.EntityListView = viewServiceRequest.EntityListView1;
+                    viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.EntityListView = viewServiceRequest.EntityListView.First(x => x.IsDefault == true);
 
                     //   viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.CharetReportCategories.Add(new CharetReportCategories() { EntityListViewColumns = brandTitle });
                     viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.CharetReportSeries.Add(new CharetReportSeries() { EntityListViewColumns = brandTitle });
@@ -2810,7 +2813,7 @@ namespace MyModelCustomSetting
 
             EntityRelationshipTail tailCustomerToConclusion = null;
             DataMenuSetting customerDataMenuSetting = null;
-            if (customer != null && customer.EntityListViewID != null)
+            if (customer != null && customer.EntityListView.Any(x => x.IsDefault == true))
             {
                 customerDataMenuSetting = projectContext.DataMenuSetting.FirstOrDefault(x => x.TableDrivedEntityID == customer.ID && x.Name == "تنظیمات منوی مشتری و صورتحساب");
                 if (customerDataMenuSetting == null)
@@ -2818,7 +2821,7 @@ namespace MyModelCustomSetting
                     customerDataMenuSetting = new DataMenuSetting();
                     customerDataMenuSetting.Name = "تنظیمات منوی مشتری و صورتحساب";
                     customerDataMenuSetting.TableDrivedEntityID = customer.ID;
-                    customerDataMenuSetting.EntityListViewID = customer.EntityListViewID.Value;
+                    customerDataMenuSetting.EntityListViewID = customer.EntityListView.First(x => x.IsDefault == true).ID;
                     projectContext.DataMenuSetting.Add(customerDataMenuSetting);
                     var customerToServiceRequest = customer.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceRequest.ID);
                     var serviceRequestToServiceConclusion = serviceRequest.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusion.ID);
@@ -2996,7 +2999,7 @@ namespace MyModelCustomSetting
                 serviceRequestDataMenuSetting = new DataMenuSetting();
                 serviceRequestDataMenuSetting.Name = "تنظیمات منوی درخواست سرویس";
                 serviceRequestDataMenuSetting.TableDrivedEntityID = serviceRequest.ID;
-                serviceRequestDataMenuSetting.EntityListViewID = serviceRequest.EntityListViewID.Value;
+                serviceRequestDataMenuSetting.EntityListViewID = serviceRequest.EntityListView.First(x => x.IsDefault == true).ID;
                 projectContext.DataMenuSetting.Add(serviceRequestDataMenuSetting);
             }
             if (viewServiceRequest != null)
@@ -3048,7 +3051,7 @@ namespace MyModelCustomSetting
                 }
                 if (viewServiceRequest.DataMenuSetting1 == null)
                 {
-                    if (viewServiceRequest.EntityListViewID != null && serviceRequest.EntityListViewID != null)
+                    if (viewServiceRequest.EntityListView.Any(x => x.IsDefault == true) && serviceRequest.EntityListView.Any(x => x.IsDefault == true))
                     {
 
                         if (serviceRequest.DataMenuSetting1 == null)
@@ -3060,7 +3063,7 @@ namespace MyModelCustomSetting
                             viewServiceRequest.DataMenuSetting1 = viewServiceRequestDataMenuSetting;
                             viewServiceRequestDataMenuSetting.Name = "تنظیمات منوی نمای درخواست سرویس";
                             viewServiceRequestDataMenuSetting.TableDrivedEntityID = viewServiceRequest.ID;
-                            viewServiceRequestDataMenuSetting.EntityListViewID = viewServiceRequest.EntityListViewID.Value;
+                            viewServiceRequestDataMenuSetting.EntityListViewID = viewServiceRequest.EntityListView.First(x => x.IsDefault == true).ID;
                             var viewMenuSetting = new DataMenuForViewEntity();
                             viewMenuSetting.Relationship = viewServiceRequestToServiceRequest;
                             viewMenuSetting.DataMenuSetting1 = serviceRequestDataMenuSetting;
@@ -3646,340 +3649,340 @@ namespace MyModelCustomSetting
             //}
             //try
             //{
-                projectContext.SaveChanges();
+            projectContext.SaveChanges();
 
 
-                if (serviceRepairRelationship != null)
+            if (serviceRepairRelationship != null)
+            {
+                serviceRepairRelationship.Item1.RelationshipID = serviceRepairRelationship.Item2.ID;
+                serviceRepairRelationship.Item2.RelationshipID = serviceRepairRelationship.Item1.ID;
+                serviceRepair.SuperToSubRelationshipType = serviceRepairRelationship.Item1.RelationshipType.SuperToSubRelationshipType;
+                if (!projectContext.RelationshipSearchFilter.Any(x => x.ValueColumnID == ServiceItemServiceTypeEnumColumn.ID))
                 {
-                    serviceRepairRelationship.Item1.RelationshipID = serviceRepairRelationship.Item2.ID;
-                    serviceRepairRelationship.Item2.RelationshipID = serviceRepairRelationship.Item1.ID;
-                    serviceRepair.SuperToSubRelationshipType = serviceRepairRelationship.Item1.RelationshipType.SuperToSubRelationshipType;
-                    if (!projectContext.RelationshipSearchFilter.Any(x => x.ValueColumnID == ServiceItemServiceTypeEnumColumn.ID))
+                    //    var serviceRepairToServiceActionType= serviceRepair
+                    var serviceRepairItem = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceItemRepair");
+                    var serviceRepairItemToServiceRepair = serviceRepairItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceRepair.ID);
+                    var serviceRepairToServiceItem = serviceRepairRelationship.Item2;
+                    var serviceItemToServiceRequest = serviceItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceRequest.ID);
+                    var serviceRequestToProductItem = serviceRequest.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == productItem.ID);
+                    var productTypeIDColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "ProductTypeID");
+                    var productTail = GetRelationshipTail(projectContext, serviceRepairItem, productItem, serviceRepairItemToServiceRepair.ID + "," +
+                        serviceRepairToServiceItem.ID + "," + serviceItemToServiceRequest.ID + "," + serviceRequestToProductItem.ID);
+                    var searchFilter = new RelationshipSearchFilter();
+                    var serviceRepairItemToActionType = serviceRepairItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceActionType.ID);
+                    searchFilter.EntityRelationshipTail = productTail;
+                    searchFilter.ValueColumnID = productTypeIDColumn.ID;
+                    var searchColumn = serviceActionType.Table.Column.FirstOrDefault(x => x.Name == "ProductTypeID");
+                    searchFilter.SearchColumnID = searchColumn.ID;
+                    searchFilter.Relationship = serviceRepairItemToActionType;
+                    projectContext.RelationshipSearchFilter.Add(searchFilter);
+
+
+                    var searchFilterServiceType = new RelationshipSearchFilter();
+
+                    var serviceTypeTail = GetRelationshipTail(projectContext, serviceRepairItem, serviceItem, serviceRepairItemToServiceRepair.ID + "," + serviceRepairToServiceItem.ID);
+                    searchFilterServiceType.EntityRelationshipTail = serviceTypeTail;
+                    searchFilterServiceType.ValueColumnID = ServiceItemServiceTypeEnumColumn.ID;
+                    var searchColumnServiceType = serviceActionType.Table.Column.FirstOrDefault(x => x.Name == "ServiceItemType");
+                    searchFilterServiceType.SearchColumnID = searchColumnServiceType.ID;
+                    searchFilterServiceType.Relationship = serviceRepairItemToActionType;
+                    projectContext.RelationshipSearchFilter.Add(searchFilterServiceType);
+
+                }
+            }
+            if (serviceTestRelationship != null)
+            {
+                serviceTestRelationship.Item1.RelationshipID = serviceTestRelationship.Item2.ID;
+                serviceTestRelationship.Item2.RelationshipID = serviceTestRelationship.Item1.ID;
+                serviceTest.SuperToSubRelationshipType = serviceTestRelationship.Item1.RelationshipType.SuperToSubRelationshipType;
+            }
+
+            if (productItemToProduct != null)
+            {
+                productItemToProduct.RelationshipID = productToProductItem.ID;
+                productToProductItem.RelationshipID = productItemToProduct.ID;
+            }
+            if (serviceRequestToViewServiceRequest != null)
+            {
+                serviceRequestToViewServiceRequest.RelationshipID = viewServiceRequestToServiceRequest.ID;
+                viewServiceRequestToServiceRequest.RelationshipID = serviceRequestToViewServiceRequest.ID;
+
+
+                var hoursSpentListColumn = serviceRequest.EntityListView.First(x => x.IsDefault == true).EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "HoursSpent");
+                if (hoursSpentListColumn == null)
+                {
+                    var hoursSpentColumn = viewServiceRequest.Table.Column.First(x => x.Name == "HoursSpent");
+
+                    hoursSpentListColumn = new EntityListViewColumns();
+                    hoursSpentListColumn.Column = hoursSpentColumn;
+                    hoursSpentListColumn.EntityRelationshipTail = GetRelationshipTail(projectContext, serviceRequest, viewServiceRequest, serviceRequestToViewServiceRequest.ID.ToString());
+                    serviceRequest.EntityListView.First(x => x.IsDefault == true).EntityListViewColumns.Add(hoursSpentListColumn);
+                }
+            }
+            var brandProductType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "BrandProductType");
+
+            var productType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ProductType");
+            if (productType != null)
+            {
+                if (productItem.EntityListView.Any(x => x.IsDefault == true) )
+                {
+                    if (!productItem.EntityListView.First(x => x.IsDefault == true).EntityListViewColumns.Any(x => x.Alias == "نوع محصول"))
                     {
-                        //    var serviceRepairToServiceActionType= serviceRepair
-                        var serviceRepairItem = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ServiceItemRepair");
-                        var serviceRepairItemToServiceRepair = serviceRepairItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceRepair.ID);
-                        var serviceRepairToServiceItem = serviceRepairRelationship.Item2;
-                        var serviceItemToServiceRequest = serviceItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceRequest.ID);
-                        var serviceRequestToProductItem = serviceRequest.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == productItem.ID);
-                        var productTypeIDColumn = productItem.Table.Column.FirstOrDefault(x => x.Name == "ProductTypeID");
-                        var productTail = GetRelationshipTail(projectContext, serviceRepairItem, productItem, serviceRepairItemToServiceRepair.ID + "," +
-                            serviceRepairToServiceItem.ID + "," + serviceItemToServiceRequest.ID + "," + serviceRequestToProductItem.ID);
-                        var searchFilter = new RelationshipSearchFilter();
-                        var serviceRepairItemToActionType = serviceRepairItem.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceActionType.ID);
-                        searchFilter.EntityRelationshipTail = productTail;
-                        searchFilter.ValueColumnID = productTypeIDColumn.ID;
-                        var searchColumn = serviceActionType.Table.Column.FirstOrDefault(x => x.Name == "ProductTypeID");
-                        searchFilter.SearchColumnID = searchColumn.ID;
-                        searchFilter.Relationship = serviceRepairItemToActionType;
-                        projectContext.RelationshipSearchFilter.Add(searchFilter);
-
-
-                        var searchFilterServiceType = new RelationshipSearchFilter();
-
-                        var serviceTypeTail = GetRelationshipTail(projectContext, serviceRepairItem, serviceItem, serviceRepairItemToServiceRepair.ID + "," + serviceRepairToServiceItem.ID);
-                        searchFilterServiceType.EntityRelationshipTail = serviceTypeTail;
-                        searchFilterServiceType.ValueColumnID = ServiceItemServiceTypeEnumColumn.ID;
-                        var searchColumnServiceType = serviceActionType.Table.Column.FirstOrDefault(x => x.Name == "ServiceItemType");
-                        searchFilterServiceType.SearchColumnID = searchColumnServiceType.ID;
-                        searchFilterServiceType.Relationship = serviceRepairItemToActionType;
-                        projectContext.RelationshipSearchFilter.Add(searchFilterServiceType);
-
-                    }
-                }
-                if (serviceTestRelationship != null)
-                {
-                    serviceTestRelationship.Item1.RelationshipID = serviceTestRelationship.Item2.ID;
-                    serviceTestRelationship.Item2.RelationshipID = serviceTestRelationship.Item1.ID;
-                    serviceTest.SuperToSubRelationshipType = serviceTestRelationship.Item1.RelationshipType.SuperToSubRelationshipType;
-                }
-
-                if (productItemToProduct != null)
-                {
-                    productItemToProduct.RelationshipID = productToProductItem.ID;
-                    productToProductItem.RelationshipID = productItemToProduct.ID;
-                }
-                if (serviceRequestToViewServiceRequest != null)
-                {
-                    serviceRequestToViewServiceRequest.RelationshipID = viewServiceRequestToServiceRequest.ID;
-                    viewServiceRequestToServiceRequest.RelationshipID = serviceRequestToViewServiceRequest.ID;
-
-
-                    var hoursSpentListColumn = serviceRequest.EntityListView1.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "HoursSpent");
-                    if (hoursSpentListColumn == null)
-                    {
-                        var hoursSpentColumn = viewServiceRequest.Table.Column.First(x => x.Name == "HoursSpent");
-
-                        hoursSpentListColumn = new EntityListViewColumns();
-                        hoursSpentListColumn.Column = hoursSpentColumn;
-                        hoursSpentListColumn.EntityRelationshipTail = GetRelationshipTail(projectContext, serviceRequest, viewServiceRequest, serviceRequestToViewServiceRequest.ID.ToString());
-                        serviceRequest.EntityListView1.EntityListViewColumns.Add(hoursSpentListColumn);
-                    }
-                }
-                var brandProductType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "BrandProductType");
-
-                var productType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ProductType");
-                if (productType != null)
-                {
-                    if (productItem.EntityListView1 != null)
-                    {
-                        if (!productItem.EntityListView1.EntityListViewColumns.Any(x => x.Alias == "نوع محصول"))
-                        {
-                            var listViewColumn = new EntityListViewColumns();
-                            var productTypeTitle = productType.Table.Column.First(x => x.Name == "Title");
-                            var productToBrandProductType = product.Relationship.First(x => x.TableDrivedEntityID2 == brandProductType.ID);
-                            var brandProductTypeToProductType = brandProductType.Relationship.First(x => x.TableDrivedEntityID2 == productType.ID);
-                            listViewColumn.Column = productTypeTitle;
-                            listViewColumn.Alias = "نوع محصول";
-                            listViewColumn.EntityRelationshipTail = GetRelationshipTail(projectContext, productItem, productType, productItemToProduct.ID + "," +
-                            productToBrandProductType.ID + "," + brandProductTypeToProductType.ID);
-                            productItem.EntityListView1.EntityListViewColumns.Add(listViewColumn);
-                        }
-                    }
-                }
-                if (processIsNew)
-                {
-
-                    process.TransitionFlowSTR = @"<?xml version=""1.0"" encoding=""utf - 8""?><RadDiagram Version=""2020.2""><Metadata Type=""Telerik.Windows.Controls.RadDiagram"" Id=""dfd25c17 - f7e3 - 4e86 - 8fd6 - 8b4605cd6308"" Zoom=""1"" Position=""50; 279""><Title>Diagram [7/31/2021 11:49:53 AM]</Title><Description></Description></Metadata><Groups /><Shapes QNs=""MyProject_WPF, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null; ""><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""23b3ba9b - 903a - 43eb - 91b4 - ea16019a9db8"" ZIndex=""2"" Position=""1100; -100"" Background=""#FFFF0000"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateFirst"" Title=""ثبت درخواست""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" ZIndex=""2"" Position=""840;-100"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateReview"" Title=""بررسي درخواست""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""302637ea-08f9-4e91-b8ba-b4247b87d129"" ZIndex=""2"" Position=""580;-100"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateService"" Title=""در حال سرويس مي باشد""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""9b6c3168-da3a-4255-a0a5-b51bb7152070"" ZIndex=""2"" Position=""340;-100"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateConclusion"" Title=""در حال صدور صورتحساب مي باشد""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""76c2cb54-6d47-49b1-a52c-f46d851c9545"" ZIndex=""2"" Position=""100;-100"" Background=""#FFFF0000"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateEnd"" Title=""صورتحساب تسويه شد و اتمام کار""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""21bf6a45-0c4d-41b2-9d01-dd8779ecf292"" ZIndex=""2"" Position=""840;120"" Background=""#FFFF0000"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateCanceled"" Title=""درخواست لغو شد و اتمام کار""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape></Shapes><Connections QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""ca28dc0a-c62d-40f6-9f56-d6651b40246e"" ZIndex=""1"" Position=""940;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""1100;-70"" Source=""23b3ba9b-903a-43eb-91b4-ea16019a9db8"" EndPoint=""940;-70"" Target=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""8a637286-d20b-4d6b-8509-3f54b7672a23"" ZIndex=""1"" Position=""680;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""840;-70"" Source=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" EndPoint=""680;-70"" Target=""302637ea-08f9-4e91-b8ba-b4247b87d129"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""8f17ed01-5485-4e05-95b2-0a161801997a"" ZIndex=""1"" Position=""440;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""580;-70"" Source=""302637ea-08f9-4e91-b8ba-b4247b87d129"" EndPoint=""440;-70"" Target=""9b6c3168-da3a-4255-a0a5-b51bb7152070"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""2d97676e-ba58-4580-bbea-e56af9b78fbc"" ZIndex=""1"" Position=""200;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""340;-70"" Source=""9b6c3168-da3a-4255-a0a5-b51bb7152070"" EndPoint=""200;-70"" Target=""76c2cb54-6d47-49b1-a52c-f46d851c9545"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""0e7b550f-3064-4d7a-a5a2-6cfe478304e2"" ZIndex=""1"" Position=""890;-40"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""890;-40"" Source=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" EndPoint=""890;120"" Target=""21bf6a45-0c4d-41b2-9d01-dd8779ecf292"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""e7d8e6f7-ede1-4db7-80a7-9a4c1a156f9c"" ZIndex=""1"" Position=""940;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""940;-70"" Source=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" EndPoint=""1100;-70"" Target=""23b3ba9b-903a-43eb-91b4-ea16019a9db8"" ConnectionType=""Spline"" UseFreeConnectors=""False"" ConnectionPoints=""1020;0"" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""2c9449af-44e0-4b31-9a2b-ee696b010258"" ZIndex=""1"" Position=""680;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""680;-70"" Source=""302637ea-08f9-4e91-b8ba-b4247b87d129"" EndPoint=""840;-70"" Target=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" ConnectionType=""Spline"" UseFreeConnectors=""False"" ConnectionPoints=""760;0"" IsModified=""False"" QN=""0"" /></Connections></RadDiagram>";
-                    process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateFirst", stateFirst.ID.ToString());
-                    process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateReview", stateReview.ID.ToString());
-                    process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateService", stateService.ID.ToString());
-                    process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateConclusion", stateConclusion.ID.ToString());
-                    process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateEnd", stateEnd.ID.ToString());
-                    process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateCanceled", stateCanceled.ID.ToString());
-                    //  process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateNotServicable", stateNotServicable.ID.ToString());
-                    //process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateFirst", stateFirst.ID.ToString());
-                }
-
-                var mnuConclustionDataViewReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش نمای داده صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == dataViewReport.ID);
-                if (mnuConclustionDataViewReport == null)
-                {
-                    mnuConclustionDataViewReport = new NavigationTree();
-                    mnuConclustionDataViewReport.ItemTitle = "گزارش نمای داده صورتحساب";
-                    mnuConclustionDataViewReport.NavigationTree2 = mnuReportFolder;
-                    mnuConclustionDataViewReport.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuConclustionDataViewReport.ItemIdentity = dataViewReport.ID;
-                    mnuConclustionDataViewReport.TableDrivedEntityID = serviceConclusion.ID;
-                    projectContext.NavigationTree.Add(mnuConclustionDataViewReport);
-                }
-
-                var mnuConclustiongridViewReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش گرید داده صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == gridViewReport.ID);
-                if (mnuConclustiongridViewReport == null)
-                {
-                    mnuConclustiongridViewReport = new NavigationTree();
-                    mnuConclustiongridViewReport.ItemTitle = "گزارش گرید داده صورتحساب";
-                    mnuConclustiongridViewReport.NavigationTree2 = mnuReportFolder;
-                    mnuConclustiongridViewReport.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuConclustiongridViewReport.ItemIdentity = gridViewReport.ID;
-                    mnuConclustiongridViewReport.TableDrivedEntityID = serviceConclusion.ID;
-                    projectContext.NavigationTree.Add(mnuConclustiongridViewReport);
-                }
-
-                var mnuConclustionListReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چاپی صورتحساب ساده" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionListReport.ID);
-                if (mnuConclustionListReport == null)
-                {
-                    mnuConclustionListReport = new NavigationTree();
-                    mnuConclustionListReport.ItemTitle = "گزارش چاپی صورتحساب ساده";
-                    mnuConclustionListReport.NavigationTree2 = mnuReportFolder;
-                    mnuConclustionListReport.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuConclustionListReport.ItemIdentity = conclusionListReport.ID;
-                    mnuConclustionListReport.TableDrivedEntityID = serviceConclusion.ID;
-                    projectContext.NavigationTree.Add(mnuConclustionListReport);
-                }
-
-                var mnuConclustionListReportGrouped = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چاپی صورتحساب گروهبندی" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == listReportGrouped.ID);
-                if (mnuConclustionListReportGrouped == null)
-                {
-                    mnuConclustionListReportGrouped = new NavigationTree();
-                    mnuConclustionListReportGrouped.ItemTitle = "گزارش چاپی صورتحساب گروهبندی";
-                    mnuConclustionListReportGrouped.NavigationTree2 = mnuReportFolder;
-                    mnuConclustionListReportGrouped.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuConclustionListReportGrouped.ItemIdentity = listReportGrouped.ID;
-                    mnuConclustionListReportGrouped.TableDrivedEntityID = serviceConclusion.ID;
-                    projectContext.NavigationTree.Add(mnuConclustionListReportGrouped);
-                }
-
-                var mnuConclustionListReportWithSub = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چاپی صورتحساب زیر گزارش" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == listReportWithSubs.ID);
-                if (mnuConclustionListReportWithSub == null)
-                {
-                    mnuConclustionListReportWithSub = new NavigationTree();
-                    mnuConclustionListReportWithSub.ItemTitle = "گزارش چاپی صورتحساب زیر گزارش";
-                    mnuConclustionListReportWithSub.NavigationTree2 = mnuReportFolder;
-                    mnuConclustionListReportWithSub.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuConclustionListReportWithSub.ItemIdentity = listReportWithSubs.ID;
-                    mnuConclustionListReportWithSub.TableDrivedEntityID = serviceConclusion.ID;
-                    projectContext.NavigationTree.Add(mnuConclustionListReportWithSub);
-                }
-
-                var mnuConclustionChartColumn = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چارت ستونی صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionChartColumn.ID);
-                if (mnuConclustionChartColumn == null)
-                {
-                    mnuConclustionChartColumn = new NavigationTree();
-                    mnuConclustionChartColumn.ItemTitle = "گزارش چارت ستونی صورتحساب";
-                    mnuConclustionChartColumn.NavigationTree2 = mnuReportFolder;
-                    mnuConclustionChartColumn.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuConclustionChartColumn.ItemIdentity = conclusionChartColumn.ID;
-                    mnuConclustionChartColumn.TableDrivedEntityID = serviceConclusion.ID;
-                    projectContext.NavigationTree.Add(mnuConclustionChartColumn);
-                }
-
-                var mnuConclustionChartPie = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چارت دایره ای صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionChartPie.ID);
-                if (mnuConclustionChartPie == null)
-                {
-                    mnuConclustionChartPie = new NavigationTree();
-                    mnuConclustionChartPie.ItemTitle = "گزارش چارت دایره ای صورتحساب";
-                    mnuConclustionChartPie.NavigationTree2 = mnuReportFolder;
-                    mnuConclustionChartPie.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuConclustionChartPie.ItemIdentity = conclusionChartPie.ID;
-                    mnuConclustionChartPie.TableDrivedEntityID = serviceConclusion.ID;
-                    projectContext.NavigationTree.Add(mnuConclustionChartPie);
-                }
-
-                var mnuConclustionChartLine = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چارت خطی صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionChartLine.ID);
-                if (mnuConclustionChartLine == null)
-                {
-                    mnuConclustionChartLine = new NavigationTree();
-                    mnuConclustionChartLine.ItemTitle = "گزارش چارت خطی صورتحساب";
-                    mnuConclustionChartLine.NavigationTree2 = mnuReportFolder;
-                    mnuConclustionChartLine.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuConclustionChartLine.ItemIdentity = conclusionChartLine.ID;
-                    mnuConclustionChartLine.TableDrivedEntityID = serviceConclusion.ID;
-                    projectContext.NavigationTree.Add(mnuConclustionChartLine);
-                }
-
-                var mnuConclustionChartRadar = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چارت رادار صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionChartRadar.ID);
-                if (mnuConclustionChartRadar == null)
-                {
-                    mnuConclustionChartRadar = new NavigationTree();
-                    mnuConclustionChartRadar.ItemTitle = "گزارش چارت رادار صورتحساب";
-                    mnuConclustionChartRadar.NavigationTree2 = mnuReportFolder;
-                    mnuConclustionChartRadar.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuConclustionChartRadar.ItemIdentity = conclusionChartRadar.ID;
-                    mnuConclustionChartRadar.TableDrivedEntityID = serviceConclusion.ID;
-                    projectContext.NavigationTree.Add(mnuConclustionChartRadar);
-                }
-                var mnuViewServiceRequestChartRadar = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش مجموع ساعات کار بر حسب برند" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == viewServiceRequestChartRadar.ID);
-                if (mnuViewServiceRequestChartRadar == null)
-                {
-                    mnuViewServiceRequestChartRadar = new NavigationTree();
-                    mnuViewServiceRequestChartRadar.ItemTitle = "گزارش مجموع ساعات کار بر حسب برند";
-                    mnuViewServiceRequestChartRadar.NavigationTree2 = mnuReportFolder;
-                    mnuViewServiceRequestChartRadar.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuViewServiceRequestChartRadar.ItemIdentity = viewServiceRequestChartRadar.ID;
-                    mnuViewServiceRequestChartRadar.TableDrivedEntityID = viewServiceRequest.ID;
-                    projectContext.NavigationTree.Add(mnuViewServiceRequestChartRadar);
-                }
-
-
-                var mnuConclustionCrossTab = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش کراس تب صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionCrossTab.ID);
-                if (mnuConclustionCrossTab == null)
-                {
-                    mnuConclustionCrossTab = new NavigationTree();
-                    mnuConclustionCrossTab.ItemTitle = "گزارش کراس تب صورتحساب";
-                    mnuConclustionCrossTab.NavigationTree2 = mnuReportFolder;
-                    mnuConclustionCrossTab.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuConclustionCrossTab.ItemIdentity = conclusionCrossTab.ID;
-                    mnuConclustionCrossTab.TableDrivedEntityID = serviceConclusion.ID;
-                    projectContext.NavigationTree.Add(mnuConclustionCrossTab);
-                }
-                var mnuConclustionExternalReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش خارجی صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionExternalReport.ID);
-                if (mnuConclustionExternalReport == null)
-                {
-                    mnuConclustionExternalReport = new NavigationTree();
-                    mnuConclustionExternalReport.ItemTitle = "گزارش خارجی صورتحساب";
-                    mnuConclustionExternalReport.NavigationTree2 = mnuReportFolder;
-                    mnuConclustionExternalReport.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuConclustionExternalReport.ItemIdentity = conclusionExternalReport.ID;
-                    mnuConclustionExternalReport.TableDrivedEntityID = serviceConclusion.ID;
-                    projectContext.NavigationTree.Add(mnuConclustionExternalReport);
-                }
-
-                var mnuCustomerDirectReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش خارجی مستقیم مشتری" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == customerDirectReport.ID);
-                if (mnuCustomerDirectReport == null)
-                {
-                    mnuCustomerDirectReport = new NavigationTree();
-                    mnuCustomerDirectReport.ItemTitle = "گزارش خارجی مستقیم مشتری";
-                    mnuCustomerDirectReport.NavigationTree2 = mnuReportFolder;
-                    mnuCustomerDirectReport.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuCustomerDirectReport.ItemIdentity = customerDirectReport.ID;
-                    mnuCustomerDirectReport.TableDrivedEntityID = customer.ID;
-                    projectContext.NavigationTree.Add(mnuCustomerDirectReport);
-                }
-                var mnuCustomerGraphReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش گراف مشتری" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == customerGraphReport.ID);
-                if (mnuCustomerGraphReport == null)
-                {
-                    mnuCustomerGraphReport = new NavigationTree();
-                    mnuCustomerGraphReport.ItemTitle = "گزارش گراف مشتری";
-                    mnuCustomerGraphReport.NavigationTree2 = mnuReportFolder;
-                    mnuCustomerGraphReport.Category = DatabaseObjectCategory.Report.ToString();
-                    mnuCustomerGraphReport.ItemIdentity = customerGraphReport.ID;
-                    mnuCustomerGraphReport.TableDrivedEntityID = customer.ID;
-                    projectContext.NavigationTree.Add(mnuCustomerGraphReport);
-                }
-                var regionDataLinkReport = projectContext.EntityReport.FirstOrDefault(x => x.Title == "گزارش لینک ریپورت" && x.TableDrivedEntityID == region.ID);
-                if (regionDataLinkReport == null)
-                {
-                    if (brandProductType != null)
-                    {
-                        //اینجا اومد چون productItemToProduct ثبت شده باشد
-                        regionDataLinkReport = new EntityReport();
-                        regionDataLinkReport.Title = "گزارش لینک ریپورت";
-                        regionDataLinkReport.ReportType = (short)ReportType.DataItemReport;
-                        regionDataLinkReport.SecurityObject = new SecurityObject();
-                        regionDataLinkReport.SecurityObject.Type = (short)DatabaseObjectCategory.Report;
-                        regionDataLinkReport.TableDrivedEntityID = region.ID;
-                        regionDataLinkReport.EntityDataItemReport = new EntityDataItemReport();
-                        regionDataLinkReport.EntityDataItemReport.DataItemReportType = (short)DataItemReportType.DataLinkReport;
-                        regionDataLinkReport.EntityDataItemReport.DataLinkDefinition = new DataLinkDefinition();
-                        regionDataLinkReport.EntityDataItemReport.DataLinkDefinition.SecondSideEntityID = brandProductType.ID;
-                        //projectContext.DataLinkDefinition.Add(regionDataLinkReport.EntityDataItemReport.DataLinkDefinition);
-                        var regionToGenericPersonAddress = region.Relationship.First(x => x.TableDrivedEntityID2 == genericPersonAddress.ID);
-                        var genericPersonAddressToGenericPeron = genericPersonAddress.Relationship.First(x => x.TableDrivedEntityID2 == genericPerson.ID);
-                        var genericPersonToCustomer = genericPerson.Relationship.First(x => x.TableDrivedEntityID2 == customer.ID);
-                        var customerToSrviceRequest = customer.Relationship.First(x => x.TableDrivedEntityID2 == serviceRequest.ID);
-                        var serviceRequestToProductItem = serviceRequest.Relationship.First(x => x.TableDrivedEntityID2 == productItem.ID);
+                        var listViewColumn = new EntityListViewColumns();
+                        var productTypeTitle = productType.Table.Column.First(x => x.Name == "Title");
                         var productToBrandProductType = product.Relationship.First(x => x.TableDrivedEntityID2 == brandProductType.ID);
-
-                        var relatinshipTail = GetRelationshipTail(projectContext, region, brandProductType, regionToGenericPersonAddress.ID + "," + genericPersonAddressToGenericPeron.ID + "," +
-                             genericPersonToCustomer.ID + "," + customerToSrviceRequest.ID + "," + serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID);
-                        var reportTail = new DataLinkDefinition_EntityRelationshipTail();
-                        reportTail.EntityRelationshipTail = relatinshipTail;
-
-
-                        var tailDataMenu = projectContext.EntityRelationshipTailDataMenu.FirstOrDefault(x => x.Name == "منوی لینک شهر به نوع محصول/برند" && x.EntityRelationshipTailID == relatinshipTail.ID);
-                        if (tailDataMenu == null)
-                        {
-
-                            tailDataMenu = new EntityRelationshipTailDataMenu();
-                            tailDataMenu.Name = "منوی لینک شهر به نوع محصول/برند";
-                            tailDataMenu.EntityRelationshipTail = relatinshipTail;
-                            if (customerDataMenuSetting != null)
-                            {
-                                EntityRelationshipTailDataMenuItems customerTailMenu = new EntityRelationshipTailDataMenuItems();
-                                customerTailMenu.Path = customerToSrviceRequest.ID + "," + serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID;
-                                customerTailMenu.TableDrivedEntityID = customer.ID;
-                                customerTailMenu.DataMenuSetting = customerDataMenuSetting;
-                                tailDataMenu.EntityRelationshipTailDataMenuItems.Add(customerTailMenu);
-                            }
-                            if (serviceRequestDataMenuSetting != null)
-                            {
-                                EntityRelationshipTailDataMenuItems serviceRequestTailMenu = new EntityRelationshipTailDataMenuItems();
-                                serviceRequestTailMenu.Path = serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID;
-                                serviceRequestTailMenu.TableDrivedEntityID = serviceRequest.ID;
-                                serviceRequestTailMenu.DataMenuSetting = serviceRequestDataMenuSetting;
-                                tailDataMenu.EntityRelationshipTailDataMenuItems.Add(serviceRequestTailMenu);
-                            }
-                            //   tailDataMenu.EntityRelationshipTailDataMenuItems.Add();
-                        }
-                        reportTail.EntityRelationshipTailDataMenu = tailDataMenu;
-                        regionDataLinkReport.EntityDataItemReport.DataLinkDefinition.DataLinkDefinition_EntityRelationshipTail.Add(reportTail);
-                        projectContext.EntityReport.Add(regionDataLinkReport);
-
+                        var brandProductTypeToProductType = brandProductType.Relationship.First(x => x.TableDrivedEntityID2 == productType.ID);
+                        listViewColumn.Column = productTypeTitle;
+                        listViewColumn.Alias = "نوع محصول";
+                        listViewColumn.EntityRelationshipTail = GetRelationshipTail(projectContext, productItem, productType, productItemToProduct.ID + "," +
+                        productToBrandProductType.ID + "," + brandProductTypeToProductType.ID);
+                        productItem.EntityListView.First(x => x.IsDefault == true).EntityListViewColumns.Add(listViewColumn);
                     }
                 }
+            }
+            if (processIsNew)
+            {
+
+                process.TransitionFlowSTR = @"<?xml version=""1.0"" encoding=""utf - 8""?><RadDiagram Version=""2020.2""><Metadata Type=""Telerik.Windows.Controls.RadDiagram"" Id=""dfd25c17 - f7e3 - 4e86 - 8fd6 - 8b4605cd6308"" Zoom=""1"" Position=""50; 279""><Title>Diagram [7/31/2021 11:49:53 AM]</Title><Description></Description></Metadata><Groups /><Shapes QNs=""MyProject_WPF, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null; ""><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""23b3ba9b - 903a - 43eb - 91b4 - ea16019a9db8"" ZIndex=""2"" Position=""1100; -100"" Background=""#FFFF0000"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateFirst"" Title=""ثبت درخواست""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" ZIndex=""2"" Position=""840;-100"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateReview"" Title=""بررسي درخواست""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""302637ea-08f9-4e91-b8ba-b4247b87d129"" ZIndex=""2"" Position=""580;-100"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateService"" Title=""در حال سرويس مي باشد""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""9b6c3168-da3a-4255-a0a5-b51bb7152070"" ZIndex=""2"" Position=""340;-100"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateConclusion"" Title=""در حال صدور صورتحساب مي باشد""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""76c2cb54-6d47-49b1-a52c-f46d851c9545"" ZIndex=""2"" Position=""100;-100"" Background=""#FFFF0000"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateEnd"" Title=""صورتحساب تسويه شد و اتمام کار""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape><StateShape Type=""MyProject_WPF.Diagram.StateShape"" Id=""21bf6a45-0c4d-41b2-9d01-dd8779ecf292"" ZIndex=""2"" Position=""840;120"" Background=""#FFFF0000"" Size=""100;60"" RotationAngle=""0"" MinWidth=""0"" MinHeight=""0"" MaxWidth=""Infinity"" MaxHeight=""Infinity"" UseDefaultConnectors=""True"" QN=""0"" StateID=""stateCanceled"" Title=""درخواست لغو شد و اتمام کار""><Connectors QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Auto"" Offset=""0.5;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Left"" Offset=""0;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Top"" Offset=""0.5;0"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Right"" Offset=""1;0.5"" QN=""0"" /><RadDiagramConnector Type=""Telerik.Windows.Controls.Diagrams.RadDiagramConnector"" Name=""Bottom"" Offset=""0.5;1"" QN=""0"" /></Connectors></StateShape></Shapes><Connections QNs=""Telerik.Windows.Controls.Diagrams, Version=2020.2.513.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7;""><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""ca28dc0a-c62d-40f6-9f56-d6651b40246e"" ZIndex=""1"" Position=""940;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""1100;-70"" Source=""23b3ba9b-903a-43eb-91b4-ea16019a9db8"" EndPoint=""940;-70"" Target=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""8a637286-d20b-4d6b-8509-3f54b7672a23"" ZIndex=""1"" Position=""680;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""840;-70"" Source=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" EndPoint=""680;-70"" Target=""302637ea-08f9-4e91-b8ba-b4247b87d129"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""8f17ed01-5485-4e05-95b2-0a161801997a"" ZIndex=""1"" Position=""440;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""580;-70"" Source=""302637ea-08f9-4e91-b8ba-b4247b87d129"" EndPoint=""440;-70"" Target=""9b6c3168-da3a-4255-a0a5-b51bb7152070"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""2d97676e-ba58-4580-bbea-e56af9b78fbc"" ZIndex=""1"" Position=""200;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""340;-70"" Source=""9b6c3168-da3a-4255-a0a5-b51bb7152070"" EndPoint=""200;-70"" Target=""76c2cb54-6d47-49b1-a52c-f46d851c9545"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""0e7b550f-3064-4d7a-a5a2-6cfe478304e2"" ZIndex=""1"" Position=""890;-40"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""890;-40"" Source=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" EndPoint=""890;120"" Target=""21bf6a45-0c4d-41b2-9d01-dd8779ecf292"" ConnectionType=""Polyline"" UseFreeConnectors=""False"" ConnectionPoints="""" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""e7d8e6f7-ede1-4db7-80a7-9a4c1a156f9c"" ZIndex=""1"" Position=""940;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""940;-70"" Source=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" EndPoint=""1100;-70"" Target=""23b3ba9b-903a-43eb-91b4-ea16019a9db8"" ConnectionType=""Spline"" UseFreeConnectors=""False"" ConnectionPoints=""1020;0"" IsModified=""False"" QN=""0"" /><RadDiagramConnection Type=""Telerik.Windows.Controls.RadDiagramConnection"" Id=""2c9449af-44e0-4b31-9a2b-ee696b010258"" ZIndex=""1"" Position=""680;-70"" IsRotationEnabled=""False"" IsResizingEnabled=""False"" SourceConnectorPosition=""Auto"" TargetConnectorPosition=""Auto"" SourceCapType=""None"" TargetCapType=""Arrow1Filled"" SourceCapSize=""7;7"" TargetCapSize=""7;7"" StartPoint=""680;-70"" Source=""302637ea-08f9-4e91-b8ba-b4247b87d129"" EndPoint=""840;-70"" Target=""a0caccdc-1424-44ed-98cd-6f825abca3ab"" ConnectionType=""Spline"" UseFreeConnectors=""False"" ConnectionPoints=""760;0"" IsModified=""False"" QN=""0"" /></Connections></RadDiagram>";
+                process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateFirst", stateFirst.ID.ToString());
+                process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateReview", stateReview.ID.ToString());
+                process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateService", stateService.ID.ToString());
+                process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateConclusion", stateConclusion.ID.ToString());
+                process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateEnd", stateEnd.ID.ToString());
+                process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateCanceled", stateCanceled.ID.ToString());
+                //  process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateNotServicable", stateNotServicable.ID.ToString());
+                //process.TransitionFlowSTR = process.TransitionFlowSTR.Replace("stateFirst", stateFirst.ID.ToString());
+            }
+
+            var mnuConclustionDataViewReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش نمای داده صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == dataViewReport.ID);
+            if (mnuConclustionDataViewReport == null)
+            {
+                mnuConclustionDataViewReport = new NavigationTree();
+                mnuConclustionDataViewReport.ItemTitle = "گزارش نمای داده صورتحساب";
+                mnuConclustionDataViewReport.NavigationTree2 = mnuReportFolder;
+                mnuConclustionDataViewReport.Category = DatabaseObjectCategory.Report.ToString();
+                mnuConclustionDataViewReport.ItemIdentity = dataViewReport.ID;
+                mnuConclustionDataViewReport.TableDrivedEntityID = serviceConclusion.ID;
+                projectContext.NavigationTree.Add(mnuConclustionDataViewReport);
+            }
+
+            var mnuConclustiongridViewReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش گرید داده صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == gridViewReport.ID);
+            if (mnuConclustiongridViewReport == null)
+            {
+                mnuConclustiongridViewReport = new NavigationTree();
+                mnuConclustiongridViewReport.ItemTitle = "گزارش گرید داده صورتحساب";
+                mnuConclustiongridViewReport.NavigationTree2 = mnuReportFolder;
+                mnuConclustiongridViewReport.Category = DatabaseObjectCategory.Report.ToString();
+                mnuConclustiongridViewReport.ItemIdentity = gridViewReport.ID;
+                mnuConclustiongridViewReport.TableDrivedEntityID = serviceConclusion.ID;
+                projectContext.NavigationTree.Add(mnuConclustiongridViewReport);
+            }
+
+            var mnuConclustionListReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چاپی صورتحساب ساده" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionListReport.ID);
+            if (mnuConclustionListReport == null)
+            {
+                mnuConclustionListReport = new NavigationTree();
+                mnuConclustionListReport.ItemTitle = "گزارش چاپی صورتحساب ساده";
+                mnuConclustionListReport.NavigationTree2 = mnuReportFolder;
+                mnuConclustionListReport.Category = DatabaseObjectCategory.Report.ToString();
+                mnuConclustionListReport.ItemIdentity = conclusionListReport.ID;
+                mnuConclustionListReport.TableDrivedEntityID = serviceConclusion.ID;
+                projectContext.NavigationTree.Add(mnuConclustionListReport);
+            }
+
+            var mnuConclustionListReportGrouped = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چاپی صورتحساب گروهبندی" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == listReportGrouped.ID);
+            if (mnuConclustionListReportGrouped == null)
+            {
+                mnuConclustionListReportGrouped = new NavigationTree();
+                mnuConclustionListReportGrouped.ItemTitle = "گزارش چاپی صورتحساب گروهبندی";
+                mnuConclustionListReportGrouped.NavigationTree2 = mnuReportFolder;
+                mnuConclustionListReportGrouped.Category = DatabaseObjectCategory.Report.ToString();
+                mnuConclustionListReportGrouped.ItemIdentity = listReportGrouped.ID;
+                mnuConclustionListReportGrouped.TableDrivedEntityID = serviceConclusion.ID;
+                projectContext.NavigationTree.Add(mnuConclustionListReportGrouped);
+            }
+
+            var mnuConclustionListReportWithSub = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چاپی صورتحساب زیر گزارش" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == listReportWithSubs.ID);
+            if (mnuConclustionListReportWithSub == null)
+            {
+                mnuConclustionListReportWithSub = new NavigationTree();
+                mnuConclustionListReportWithSub.ItemTitle = "گزارش چاپی صورتحساب زیر گزارش";
+                mnuConclustionListReportWithSub.NavigationTree2 = mnuReportFolder;
+                mnuConclustionListReportWithSub.Category = DatabaseObjectCategory.Report.ToString();
+                mnuConclustionListReportWithSub.ItemIdentity = listReportWithSubs.ID;
+                mnuConclustionListReportWithSub.TableDrivedEntityID = serviceConclusion.ID;
+                projectContext.NavigationTree.Add(mnuConclustionListReportWithSub);
+            }
+
+            var mnuConclustionChartColumn = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چارت ستونی صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionChartColumn.ID);
+            if (mnuConclustionChartColumn == null)
+            {
+                mnuConclustionChartColumn = new NavigationTree();
+                mnuConclustionChartColumn.ItemTitle = "گزارش چارت ستونی صورتحساب";
+                mnuConclustionChartColumn.NavigationTree2 = mnuReportFolder;
+                mnuConclustionChartColumn.Category = DatabaseObjectCategory.Report.ToString();
+                mnuConclustionChartColumn.ItemIdentity = conclusionChartColumn.ID;
+                mnuConclustionChartColumn.TableDrivedEntityID = serviceConclusion.ID;
+                projectContext.NavigationTree.Add(mnuConclustionChartColumn);
+            }
+
+            var mnuConclustionChartPie = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چارت دایره ای صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionChartPie.ID);
+            if (mnuConclustionChartPie == null)
+            {
+                mnuConclustionChartPie = new NavigationTree();
+                mnuConclustionChartPie.ItemTitle = "گزارش چارت دایره ای صورتحساب";
+                mnuConclustionChartPie.NavigationTree2 = mnuReportFolder;
+                mnuConclustionChartPie.Category = DatabaseObjectCategory.Report.ToString();
+                mnuConclustionChartPie.ItemIdentity = conclusionChartPie.ID;
+                mnuConclustionChartPie.TableDrivedEntityID = serviceConclusion.ID;
+                projectContext.NavigationTree.Add(mnuConclustionChartPie);
+            }
+
+            var mnuConclustionChartLine = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چارت خطی صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionChartLine.ID);
+            if (mnuConclustionChartLine == null)
+            {
+                mnuConclustionChartLine = new NavigationTree();
+                mnuConclustionChartLine.ItemTitle = "گزارش چارت خطی صورتحساب";
+                mnuConclustionChartLine.NavigationTree2 = mnuReportFolder;
+                mnuConclustionChartLine.Category = DatabaseObjectCategory.Report.ToString();
+                mnuConclustionChartLine.ItemIdentity = conclusionChartLine.ID;
+                mnuConclustionChartLine.TableDrivedEntityID = serviceConclusion.ID;
+                projectContext.NavigationTree.Add(mnuConclustionChartLine);
+            }
+
+            var mnuConclustionChartRadar = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش چارت رادار صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionChartRadar.ID);
+            if (mnuConclustionChartRadar == null)
+            {
+                mnuConclustionChartRadar = new NavigationTree();
+                mnuConclustionChartRadar.ItemTitle = "گزارش چارت رادار صورتحساب";
+                mnuConclustionChartRadar.NavigationTree2 = mnuReportFolder;
+                mnuConclustionChartRadar.Category = DatabaseObjectCategory.Report.ToString();
+                mnuConclustionChartRadar.ItemIdentity = conclusionChartRadar.ID;
+                mnuConclustionChartRadar.TableDrivedEntityID = serviceConclusion.ID;
+                projectContext.NavigationTree.Add(mnuConclustionChartRadar);
+            }
+            var mnuViewServiceRequestChartRadar = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش مجموع ساعات کار بر حسب برند" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == viewServiceRequestChartRadar.ID);
+            if (mnuViewServiceRequestChartRadar == null)
+            {
+                mnuViewServiceRequestChartRadar = new NavigationTree();
+                mnuViewServiceRequestChartRadar.ItemTitle = "گزارش مجموع ساعات کار بر حسب برند";
+                mnuViewServiceRequestChartRadar.NavigationTree2 = mnuReportFolder;
+                mnuViewServiceRequestChartRadar.Category = DatabaseObjectCategory.Report.ToString();
+                mnuViewServiceRequestChartRadar.ItemIdentity = viewServiceRequestChartRadar.ID;
+                mnuViewServiceRequestChartRadar.TableDrivedEntityID = viewServiceRequest.ID;
+                projectContext.NavigationTree.Add(mnuViewServiceRequestChartRadar);
+            }
 
 
-                projectContext.SaveChanges();
+            var mnuConclustionCrossTab = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش کراس تب صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionCrossTab.ID);
+            if (mnuConclustionCrossTab == null)
+            {
+                mnuConclustionCrossTab = new NavigationTree();
+                mnuConclustionCrossTab.ItemTitle = "گزارش کراس تب صورتحساب";
+                mnuConclustionCrossTab.NavigationTree2 = mnuReportFolder;
+                mnuConclustionCrossTab.Category = DatabaseObjectCategory.Report.ToString();
+                mnuConclustionCrossTab.ItemIdentity = conclusionCrossTab.ID;
+                mnuConclustionCrossTab.TableDrivedEntityID = serviceConclusion.ID;
+                projectContext.NavigationTree.Add(mnuConclustionCrossTab);
+            }
+            var mnuConclustionExternalReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش خارجی صورتحساب" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == conclusionExternalReport.ID);
+            if (mnuConclustionExternalReport == null)
+            {
+                mnuConclustionExternalReport = new NavigationTree();
+                mnuConclustionExternalReport.ItemTitle = "گزارش خارجی صورتحساب";
+                mnuConclustionExternalReport.NavigationTree2 = mnuReportFolder;
+                mnuConclustionExternalReport.Category = DatabaseObjectCategory.Report.ToString();
+                mnuConclustionExternalReport.ItemIdentity = conclusionExternalReport.ID;
+                mnuConclustionExternalReport.TableDrivedEntityID = serviceConclusion.ID;
+                projectContext.NavigationTree.Add(mnuConclustionExternalReport);
+            }
+
+            var mnuCustomerDirectReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش خارجی مستقیم مشتری" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == customerDirectReport.ID);
+            if (mnuCustomerDirectReport == null)
+            {
+                mnuCustomerDirectReport = new NavigationTree();
+                mnuCustomerDirectReport.ItemTitle = "گزارش خارجی مستقیم مشتری";
+                mnuCustomerDirectReport.NavigationTree2 = mnuReportFolder;
+                mnuCustomerDirectReport.Category = DatabaseObjectCategory.Report.ToString();
+                mnuCustomerDirectReport.ItemIdentity = customerDirectReport.ID;
+                mnuCustomerDirectReport.TableDrivedEntityID = customer.ID;
+                projectContext.NavigationTree.Add(mnuCustomerDirectReport);
+            }
+            var mnuCustomerGraphReport = projectContext.NavigationTree.FirstOrDefault(x => x.ItemTitle == "گزارش گراف مشتری" && x.Category == DatabaseObjectCategory.Report.ToString() && x.ItemIdentity == customerGraphReport.ID);
+            if (mnuCustomerGraphReport == null)
+            {
+                mnuCustomerGraphReport = new NavigationTree();
+                mnuCustomerGraphReport.ItemTitle = "گزارش گراف مشتری";
+                mnuCustomerGraphReport.NavigationTree2 = mnuReportFolder;
+                mnuCustomerGraphReport.Category = DatabaseObjectCategory.Report.ToString();
+                mnuCustomerGraphReport.ItemIdentity = customerGraphReport.ID;
+                mnuCustomerGraphReport.TableDrivedEntityID = customer.ID;
+                projectContext.NavigationTree.Add(mnuCustomerGraphReport);
+            }
+            var regionDataLinkReport = projectContext.EntityReport.FirstOrDefault(x => x.Title == "گزارش لینک ریپورت" && x.TableDrivedEntityID == region.ID);
+            if (regionDataLinkReport == null)
+            {
+                if (brandProductType != null)
+                {
+                    //اینجا اومد چون productItemToProduct ثبت شده باشد
+                    regionDataLinkReport = new EntityReport();
+                    regionDataLinkReport.Title = "گزارش لینک ریپورت";
+                    regionDataLinkReport.ReportType = (short)ReportType.DataItemReport;
+                    regionDataLinkReport.SecurityObject = new SecurityObject();
+                    regionDataLinkReport.SecurityObject.Type = (short)DatabaseObjectCategory.Report;
+                    regionDataLinkReport.TableDrivedEntityID = region.ID;
+                    regionDataLinkReport.EntityDataItemReport = new EntityDataItemReport();
+                    regionDataLinkReport.EntityDataItemReport.DataItemReportType = (short)DataItemReportType.DataLinkReport;
+                    regionDataLinkReport.EntityDataItemReport.DataLinkDefinition = new DataLinkDefinition();
+                    regionDataLinkReport.EntityDataItemReport.DataLinkDefinition.SecondSideEntityID = brandProductType.ID;
+                    //projectContext.DataLinkDefinition.Add(regionDataLinkReport.EntityDataItemReport.DataLinkDefinition);
+                    var regionToGenericPersonAddress = region.Relationship.First(x => x.TableDrivedEntityID2 == genericPersonAddress.ID);
+                    var genericPersonAddressToGenericPeron = genericPersonAddress.Relationship.First(x => x.TableDrivedEntityID2 == genericPerson.ID);
+                    var genericPersonToCustomer = genericPerson.Relationship.First(x => x.TableDrivedEntityID2 == customer.ID);
+                    var customerToSrviceRequest = customer.Relationship.First(x => x.TableDrivedEntityID2 == serviceRequest.ID);
+                    var serviceRequestToProductItem = serviceRequest.Relationship.First(x => x.TableDrivedEntityID2 == productItem.ID);
+                    var productToBrandProductType = product.Relationship.First(x => x.TableDrivedEntityID2 == brandProductType.ID);
+
+                    var relatinshipTail = GetRelationshipTail(projectContext, region, brandProductType, regionToGenericPersonAddress.ID + "," + genericPersonAddressToGenericPeron.ID + "," +
+                         genericPersonToCustomer.ID + "," + customerToSrviceRequest.ID + "," + serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID);
+                    var reportTail = new DataLinkDefinition_EntityRelationshipTail();
+                    reportTail.EntityRelationshipTail = relatinshipTail;
+
+
+                    var tailDataMenu = projectContext.EntityRelationshipTailDataMenu.FirstOrDefault(x => x.Name == "منوی لینک شهر به نوع محصول/برند" && x.EntityRelationshipTailID == relatinshipTail.ID);
+                    if (tailDataMenu == null)
+                    {
+
+                        tailDataMenu = new EntityRelationshipTailDataMenu();
+                        tailDataMenu.Name = "منوی لینک شهر به نوع محصول/برند";
+                        tailDataMenu.EntityRelationshipTail = relatinshipTail;
+                        if (customerDataMenuSetting != null)
+                        {
+                            EntityRelationshipTailDataMenuItems customerTailMenu = new EntityRelationshipTailDataMenuItems();
+                            customerTailMenu.Path = customerToSrviceRequest.ID + "," + serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID;
+                            customerTailMenu.TableDrivedEntityID = customer.ID;
+                            customerTailMenu.DataMenuSetting = customerDataMenuSetting;
+                            tailDataMenu.EntityRelationshipTailDataMenuItems.Add(customerTailMenu);
+                        }
+                        if (serviceRequestDataMenuSetting != null)
+                        {
+                            EntityRelationshipTailDataMenuItems serviceRequestTailMenu = new EntityRelationshipTailDataMenuItems();
+                            serviceRequestTailMenu.Path = serviceRequestToProductItem.ID + "," + productItemToProduct.ID + "," + productToBrandProductType.ID;
+                            serviceRequestTailMenu.TableDrivedEntityID = serviceRequest.ID;
+                            serviceRequestTailMenu.DataMenuSetting = serviceRequestDataMenuSetting;
+                            tailDataMenu.EntityRelationshipTailDataMenuItems.Add(serviceRequestTailMenu);
+                        }
+                        //   tailDataMenu.EntityRelationshipTailDataMenuItems.Add();
+                    }
+                    reportTail.EntityRelationshipTailDataMenu = tailDataMenu;
+                    regionDataLinkReport.EntityDataItemReport.DataLinkDefinition.DataLinkDefinition_EntityRelationshipTail.Add(reportTail);
+                    projectContext.EntityReport.Add(regionDataLinkReport);
+
+                }
+            }
+
+
+            projectContext.SaveChanges();
 
             if (regionDataLinkReport != null)
             {
@@ -4174,9 +4177,9 @@ namespace MyModelCustomSetting
         {
             EntityListViewColumns listViewColumn = null;
             if (relationshipTail == null)
-                listViewColumn = entity.EntityListView1.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == columnName && x.EntityRelationshipTail == null);
+                listViewColumn = entity.EntityListView.First(x => x.IsDefault == true).EntityListViewColumns.FirstOrDefault(x => x.Column.Name == columnName && x.EntityRelationshipTail == null);
             else
-                listViewColumn = entity.EntityListView1.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == columnName && x.EntityRelationshipTail != null && x.EntityRelationshipTail.RelationshipPath == relationshipTail.RelationshipPath);
+                listViewColumn = entity.EntityListView.First(x => x.IsDefault == true).EntityListViewColumns.FirstOrDefault(x => x.Column.Name == columnName && x.EntityRelationshipTail != null && x.EntityRelationshipTail.RelationshipPath == relationshipTail.RelationshipPath);
             if (listViewColumn == null)
             {
                 Column dateColumn = null;
@@ -4187,13 +4190,13 @@ namespace MyModelCustomSetting
                 if (dateColumn != null)
                 {
                     listViewColumn = new EntityListViewColumns() { Column = dateColumn, IsDescriptive = true, EntityRelationshipTail = relationshipTail };
-                    entity.EntityListView1.EntityListViewColumns.Add(listViewColumn);
+                    entity.EntityListView.First(x => x.IsDefault == true).EntityListViewColumns.Add(listViewColumn);
                 }
             }
             return listViewColumn;
         }
 
-        private EntityRelationshipTail GetRelationshipTail(MyProjectEntities projectContext, TableDrivedEntity entity, TableDrivedEntity targetEntity, string path)
+        private EntityRelationshipTail GetRelationshipTail(MyIdeaEntities projectContext, TableDrivedEntity entity, TableDrivedEntity targetEntity, string path)
         {
             if (projectContext.EntityRelationshipTail.Any(x => x.TableDrivedEntityID == entity.ID && x.RelationshipPath == path))
                 return projectContext.EntityRelationshipTail.First(x => x.TableDrivedEntityID == entity.ID && x.RelationshipPath == path);

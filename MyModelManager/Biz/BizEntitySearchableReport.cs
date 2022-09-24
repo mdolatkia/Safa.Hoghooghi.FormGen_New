@@ -21,7 +21,7 @@ namespace MyModelManager
         //public EntitySearchableReportDTO GetEntitySearchableReport(DR_Requester requester, int EntityReportID, bool withDetails)
         //{
 
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbReport = projectContext.EntitySearchableReport.First(x => x.ID == EntityReportID);
         //        if (bizEntityReport.DataIsAccessable(requester, dbReport.EntityReport))
@@ -36,7 +36,7 @@ namespace MyModelManager
         public List<EntitySearchableReportDTO> GetEntityReportsOfRelationshipTail(DR_Requester requester, int entityRelationshipTailID)
         {
             List<EntitySearchableReportDTO> result = new List<EntitySearchableReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
                 var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(requester, entityRelationshipTailID);

@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class DBServer
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public DBServer()
         {
             this.DatabaseInformation = new HashSet<DatabaseInformation>();
@@ -26,8 +27,11 @@ namespace DataAccess
         public string Name { get; set; }
         public string IPAddress { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DatabaseInformation> DatabaseInformation { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LinkedServer> LinkedServer { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LinkedServer> LinkedServer1 { get; set; }
     }
 }

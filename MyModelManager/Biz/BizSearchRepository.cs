@@ -15,7 +15,7 @@ namespace MyModelManager
         public List<DP_SearchRepository> GetSearchRepositories(int entityID)
         {
             List<DP_SearchRepository> result = new List<DP_SearchRepository>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityReport = projectContext.SearchRepository.Where(x => x.Title != null && x.Title != "" && x.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityReport)
@@ -25,7 +25,7 @@ namespace MyModelManager
         }
         public DP_SearchRepository GetSearchRepository(int ID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityReport = projectContext.SearchRepository.First(x => x.ID == ID);
                 return ToSearchRepositoryDTO(listEntityReport);
@@ -35,7 +35,7 @@ namespace MyModelManager
         {
             try
             {
-                using (var projectContext = new DataAccess.MyProjectEntities())
+                using (var projectContext = new DataAccess.MyIdeaEntities())
                 {
                     var dbPreDefinedSearch = projectContext.SearchRepository.FirstOrDefault(x => x.ID == preDefinedSearch.ID);
                     //if (dbPreDefinedSearch == null)
@@ -65,7 +65,7 @@ namespace MyModelManager
                 throw;
             }
         }
-        private DataAccess.Phrase CreateSearchRepository(MyProjectEntities projectContext, DP_SearchRepository searchRepository)
+        private DataAccess.Phrase CreateSearchRepository(MyIdeaEntities projectContext, DP_SearchRepository searchRepository)
         {
             //DataAccess.Phrase phrase = new DataAccess.Phrase();
             //phrase.Type = 1;
@@ -105,7 +105,7 @@ namespace MyModelManager
 
 
 
-        private void SetLogicPhrase(MyProjectEntities projectContext, DataAccess.LogicPhrase dbLogicPhrase, ProxyLibrary.LogicPhraseDTO logicPhrase)
+        private void SetLogicPhrase(MyIdeaEntities projectContext, DataAccess.LogicPhrase dbLogicPhrase, ProxyLibrary.LogicPhraseDTO logicPhrase)
         {
             dbLogicPhrase.AndOrType = (short)logicPhrase.AndOrType;
             foreach (var phrase in logicPhrase.Phrases)
@@ -134,7 +134,7 @@ namespace MyModelManager
         //    dbphrase.LogicPhrase = ToLogicPhrase(logicPhrase);
         //    return dbphrase;
         //}
-        private Tuple<DataAccess.LogicPhrase, DataAccess.Phrase> ToLogicPhrase(MyProjectEntities projectContext, ProxyLibrary.LogicPhraseDTO logicPhrase)
+        private Tuple<DataAccess.LogicPhrase, DataAccess.Phrase> ToLogicPhrase(MyIdeaEntities projectContext, ProxyLibrary.LogicPhraseDTO logicPhrase)
         {
             //if (logicPhrase.Phrases.Any())
             //{
@@ -157,7 +157,7 @@ namespace MyModelManager
         //    dbphrase.LogicPhrase = ToLogicPhrase(logicPhrase);
         //    return dbphrase;
         //}
-        private Tuple<DataAccess.ColumnPhrase, DataAccess.Phrase> ToColumnPhrase(MyProjectEntities projectContext, SearchProperty searchProperty)
+        private Tuple<DataAccess.ColumnPhrase, DataAccess.Phrase> ToColumnPhrase(MyIdeaEntities projectContext, SearchProperty searchProperty)
         {
             DataAccess.Phrase phrase = new DataAccess.Phrase();
             phrase.Type = 3;
@@ -172,7 +172,7 @@ namespace MyModelManager
             return new Tuple<ColumnPhrase, DataAccess.Phrase>(dbColumnPhrase, phrase);
         }
 
-        //private void RemoveLogicPhrase(MyProjectEntities projectContext, DataAccess.LogicPhrase logicPhrase)
+        //private void RemoveLogicPhrase(MyIdeaEntities projectContext, DataAccess.LogicPhrase logicPhrase)
         //{
         //    while (logicPhrase.Phrase1.Any())
         //    {
@@ -184,7 +184,7 @@ namespace MyModelManager
         //    projectContext.LogicPhrase.Remove(logicPhrase);
         //}
 
-        private void RemovePhrase(MyProjectEntities projectContext, DataAccess.Phrase item, bool removeSearchRepository)
+        private void RemovePhrase(MyIdeaEntities projectContext, DataAccess.Phrase item, bool removeSearchRepository)
         {
             if (item.ColumnPhraseID != null)
             {
@@ -215,7 +215,7 @@ namespace MyModelManager
             }
             projectContext.Phrase.Remove(item);
         }
-        private void RemoveSearchRepository(MyProjectEntities projectContext, SearchRepository searchRepository, bool withPhrases)
+        private void RemoveSearchRepository(MyIdeaEntities projectContext, SearchRepository searchRepository, bool withPhrases)
         {
             if (withPhrases)
             {

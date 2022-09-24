@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class EntitySearchableReport
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntitySearchableReport()
         {
             this.DataMenuSearchableReportRelationship = new HashSet<DataMenuSearchableReportRelationship>();
@@ -23,6 +24,7 @@ namespace DataAccess
         public Nullable<short> SearchableReportType { get; set; }
         public Nullable<int> SearchRepositoryID { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
         public virtual EntityChartReport EntityChartReport { get; set; }
         public virtual EntityCrosstabReport EntityCrosstabReport { get; set; }

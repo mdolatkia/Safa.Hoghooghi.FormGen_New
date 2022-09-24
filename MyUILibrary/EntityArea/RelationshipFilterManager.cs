@@ -129,7 +129,7 @@ namespace MyUILibrary.EntityArea
                         var relFilters = AgentUICoreMediator.GetAgentUICoreMediator.relationshipFilterManagerService.GetRelationshipFilters(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), item.Relationship.ID);
                         //if (relFilters.Any())
                         //{
-                        item.GenericEditNdTypeArea.SearchViewEntityArea.RelationshipFilters = relFilters;
+                        item.GenericEditNdTypeArea.RelationshipFilters = relFilters;
                         SearchInitialyAreas.Add(new Tuple<I_EditEntityArea, List<RelationshipFilterDTO>>(item.GenericEditNdTypeArea, relFilters));
                         //}
                     }
@@ -144,16 +144,16 @@ namespace MyUILibrary.EntityArea
 
             foreach (var editArea in SearchInitialyAreas)
             {
-                if (editArea.Item1.SearchViewEntityArea.RelationshipFilters != null)
+                if (editArea.Item1.RelationshipFilters != null)
                 {
                     //List<int> columnsIds = new List<int>();
 
-                    foreach (var relTailID in editArea.Item1.SearchViewEntityArea.RelationshipFilters.GroupBy(x => x.ValueRelationshipTailID))
+                    foreach (var relTailID in editArea.Item1.RelationshipFilters.GroupBy(x => x.ValueRelationshipTailID))
                     {
                         string tail = "";
                         if (relTailID.Key != 0)
                         {
-                            tail = editArea.Item1.SearchViewEntityArea.RelationshipFilters.First(x => x.ValueRelationshipTailID == relTailID.Key).ValueRelationshipTail.RelationshipIDPath;
+                            tail = editArea.Item1.RelationshipFilters.First(x => x.ValueRelationshipTailID == relTailID.Key).ValueRelationshipTail.RelationshipIDPath;
                         }
                         foreach (var col in relTailID)
                         {

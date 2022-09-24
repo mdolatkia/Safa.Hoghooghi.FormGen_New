@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class ActivityTarget
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ActivityTarget()
         {
             this.ActivityTarget_RoleType = new HashSet<ActivityTarget_RoleType>();
@@ -24,6 +25,7 @@ namespace DataAccess
         public short TargetType { get; set; }
     
         public virtual Activity Activity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ActivityTarget_RoleType> ActivityTarget_RoleType { get; set; }
     }
 }

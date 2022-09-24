@@ -29,11 +29,14 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="عنوان">
                 </TextBlock>
                 <TextBox Grid.Column="1" x:Name="txtViewName"></TextBox>
-
+                <TextBlock Grid.Column="2" Text="لیست پیش فرض"/>
+                <CheckBox Grid.Column="3" x:Name="chkIsDefault"></CheckBox>
             </Grid>
            
             <Grid Grid.Column="2"  Grid.Row="1" x:Name="grdColumns">
@@ -60,7 +63,7 @@
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="جدید" x:Name="btnNew" Click="btnNew_Click"></Button>
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="جستجو" x:Name="btnSearch" Click="btnSearch_Click"></Button>
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="ثبت" x:Name="btnSave" Click="btnSave_Click"></Button>
-            <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="لیست پیش فرض شود" x:Name="btnSetDefaultListView" Click="btnSetDefaultListView_Click"></Button>
+            <!--<Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="لیست پیش فرض شود" x:Name="btnSetDefaultListView" Click="btnSetDefaultListView_Click"></Button>-->
         </StackPanel>
     </Grid>
 </UserControl>

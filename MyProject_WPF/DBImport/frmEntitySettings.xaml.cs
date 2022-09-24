@@ -129,7 +129,8 @@ namespace MyProject_WPF
         private void CheckFromState()
         {
             FormIsBusy(this, null);
-            if (bizEntitySettings.EntityWithoutSetting(Database.ID))
+            BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+            if (bizTableDrivedEntity.EntityWithoutSetting(Database.ID))
             {
                 FormIsFree(this, null);
                 lblMessage.Visibility = Visibility.Collapsed;

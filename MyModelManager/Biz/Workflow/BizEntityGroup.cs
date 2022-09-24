@@ -15,7 +15,7 @@ namespace MyModelManager
         public List<EntityGroupDTO> GetEntityGroups(DR_Requester requester, int processID)
         {
             List<EntityGroupDTO> result = new List<EntityGroupDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityGroup = projectContext.EntityGroup.Where(x => x.ProcessID == processID);
                 foreach (var item in listEntityGroup)
@@ -28,7 +28,7 @@ namespace MyModelManager
         }
         public EntityGroupDTO GetEntityGroup(DR_Requester requester, int id, bool withDetails)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var entityGroup = projectContext.EntityGroup.First(x => x.ID == id);
                 return GetEntityGroup(requester, entityGroup, withDetails);
@@ -86,7 +86,7 @@ namespace MyModelManager
         //public List<EntityGroupRelationshipDTO> GetEntityGroupRelationships(int entityGroupID)
         //{
         //    List<EntityGroupRelationshipDTO> result = new List<EntityGroupRelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.EntityGroup_Relationship.Where(x => x.EntityGroupID == entityGroupID);
         //        foreach (var ritem in list)
@@ -124,7 +124,7 @@ namespace MyModelManager
 
         public int UpdateEntityGroups(EntityGroupDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbEntityGroup = projectContext.EntityGroup.FirstOrDefault(x => x.ID == message.ID);
                 if (dbEntityGroup == null)

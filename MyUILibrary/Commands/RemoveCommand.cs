@@ -20,7 +20,8 @@ namespace MyUILibrary.EntityArea.Commands
             //else
             CommandManager.SetTitle("حذف");
             CommandManager.ImagePath = "Images//remove.png";
-            CommandManager.Clicked += CommandManager_Clicked;
+            if (!editArea.AreaInitializer.Preview)
+                CommandManager.Clicked += CommandManager_Clicked;
         }
         List<DP_DataRepository> deleteDataList = new List<DP_DataRepository>();
         private void CommandManager_Clicked(object sender, EventArgs e)

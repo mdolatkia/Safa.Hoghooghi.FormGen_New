@@ -14,7 +14,7 @@ namespace MyModelManager
         public List<UniqueConstraintsDTO> GetUniqueConstraints(int databaseID)
         {
             List<UniqueConstraintsDTO> result = new List<UniqueConstraintsDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
            //     string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -28,7 +28,7 @@ namespace MyModelManager
         public UniqueConstraintsDTO GetUniqueConstraint(int UniqueConstraintsID)
         {
             List<UniqueConstraintsDTO> result = new List<UniqueConstraintsDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var UniqueConstraints = projectContext.UniqueConstraint.First(x => x.ID == UniqueConstraintsID);
                 return ToUniqueConstraintDTO(UniqueConstraints);
@@ -44,7 +44,7 @@ namespace MyModelManager
         }
         //public void UpdateUniqueConstraints(List<UniqueConstraintsDTO> UniqueConstraints)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        foreach (var item in UniqueConstraints)
         //        {

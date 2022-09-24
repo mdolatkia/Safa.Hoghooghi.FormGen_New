@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class PartialLetterTemplate
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PartialLetterTemplate()
         {
             this.LetterTemplateRelationshipField = new HashSet<LetterTemplateRelationshipField>();
@@ -22,6 +23,7 @@ namespace DataAccess
         public int ID { get; set; }
     
         public virtual LetterTemplate LetterTemplate { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LetterTemplateRelationshipField> LetterTemplateRelationshipField { get; set; }
     }
 }

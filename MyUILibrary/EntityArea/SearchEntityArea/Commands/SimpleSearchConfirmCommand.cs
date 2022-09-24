@@ -11,8 +11,8 @@ namespace MyUILibrary.EntityArea.Commands
 {
     public class SimpleSearchConfirmCommand : BaseCommand
     {
-        I_SimpleSearchEntityArea SearchArea { set; get; }
-        public SimpleSearchConfirmCommand(I_SimpleSearchEntityArea searchArea) : base()
+        I_EntityDefinedSearchArea SearchArea { set; get; }
+        public SimpleSearchConfirmCommand(I_EntityDefinedSearchArea searchArea) : base()
         {
             SearchArea = searchArea;
             //if (AgentHelper.GetAppMode() == AppMode.Paper)

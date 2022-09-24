@@ -17,7 +17,7 @@ namespace MyModelManager
         //public List<WFActionDTO> GetActions(int processID)
         //{
         //    List<WFActionDTO> result = new List<WFActionDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var listAction = projectContext.Action.Where(x => x.ProcessID == processID);
         //        foreach (var item in listAction)
@@ -28,7 +28,7 @@ namespace MyModelManager
         //public WFActionDTO GetAction(int ActionsID)
         //{
 
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbAction = projectContext.Action.First(x => x.ID == ActionsID);
         //        return ToActionDTO(dbAction);
@@ -50,7 +50,7 @@ namespace MyModelManager
         public List<ActionType> GetActionTypes()
         {
             //List<ActionTypeDTO> result = new List<ActionTypeDTO>();
-            //using (var projectContext = new DataAccess.MyProjectEntities())
+            //using (var projectContext = new DataAccess.MyIdeaEntities())
             //{
             //    var list = projectContext.ActionType;
             //    foreach (var item in list)
@@ -67,7 +67,7 @@ namespace MyModelManager
 
         //public int UpdateActions(WFActionDTO message)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbAction = projectContext.Action.FirstOrDefault(x => x.ID == message.ID);
         //        if (dbAction == null)

@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class Permission
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Permission()
         {
             this.Permission_Action = new HashSet<Permission_Action>();
@@ -23,6 +24,7 @@ namespace DataAccess
         public int SecuritySubjectID { get; set; }
         public int SecurityObjectID { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Permission_Action> Permission_Action { get; set; }
         public virtual SecuritySubject SecuritySubject { get; set; }
         public virtual SecurityObject SecurityObject { get; set; }

@@ -13,7 +13,7 @@ namespace MyModelManager
     {
         public List<UserDTO> GetAllUsers(string generalFilter)
         {
-            var context = new MyProjectEntities();
+            var context = new MyIdeaEntities();
             var users = context.User as IQueryable<User>;
             if (generalFilter != "")
                 users = users.Where(x => x.UserName.Contains(generalFilter) || x.FirstName.Contains(generalFilter)
@@ -23,7 +23,7 @@ namespace MyModelManager
         public object GetAllLocalAdminUsers(string generalFilter, List<int> orgIds)
         {
             //سوپر ادمین را نمی تواند اصلاح کند به علاوه کاربران سازمانهای دیگر را هم نمی تواند اصلاح کند
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var users = context.User as IQueryable<User>;
                 if (generalFilter != "")
@@ -37,7 +37,7 @@ namespace MyModelManager
 
         public void CheckAdminUserExists()
         {
-            var context = new MyProjectEntities();
+            var context = new MyIdeaEntities();
             if (!context.User.Any(x => x.OrganizationPost.Any(y => y.OrganizationType_RoleType.RoleType.IsSuperAdmin == true)))
             {
                 var user = new User();
@@ -105,13 +105,13 @@ namespace MyModelManager
 
         public string GetUserFullName(int userID)
         {
-            var context = new MyProjectEntities();
+            var context = new MyIdeaEntities();
             var user = context.User.First(x => x.ID == userID);
             return user.FirstName + " " + user.LastName;
         }
         public UserDTO GetUser(int userID)
         {
-            var context = new MyProjectEntities();
+            var context = new MyIdeaEntities();
             var user = context.User.First(x => x.ID == userID);
             return ToUserDTO(user);
         }
@@ -144,7 +144,7 @@ namespace MyModelManager
 
         public int SaveUser(UserDTO userDto)
         { 
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 User dbUser = ToUserDB(userDto, context);
 
@@ -172,7 +172,7 @@ namespace MyModelManager
             }
         }
 
-        private User ToUserDB(UserDTO userDto, MyProjectEntities context)
+        private User ToUserDB(UserDTO userDto, MyIdeaEntities context)
         {
             User dbUser = null;
             if (userDto.ID == 0)
@@ -190,7 +190,7 @@ namespace MyModelManager
 
         //public List<UserDTO> GetUserByOrganization(int OrganizationID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        return ToUserDTOList(context.User.Where(x => x.Organization_User.Any(y => y.OrganizationID == OrganizationID)));
         //    }

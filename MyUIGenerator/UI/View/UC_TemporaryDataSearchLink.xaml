@@ -35,7 +35,7 @@
                     </StackPanel>-->
                 </Button.Content>
             </Button>
-            <Button  ToolTip="اصلاح" x:Name="btnLink" Margin="2,0,0,0" Click="btnLink_Click" >
+            <Button  ToolTip="اصلاح" x:Name="btnDataEdit" Margin="2,0,0,0" Click="btnLink_Click" >
                 <Button.Content>
                     <!--<StackPanel Orientation="Horizontal">-->
                     <Image  MaxWidth="20" MaxHeight="20" Source="/MyUIGenerator;component/Images/EditForm.png"></Image>
@@ -48,7 +48,7 @@
                     <Image  MaxWidth="20" MaxHeight="20" Source="/MyUIGenerator;component/Images/Clear.png"></Image>
                 </Button.Content>
             </Button>
-            <Button ToolTip="جستجو" x:Name="btnLinkSearch" Margin="2,0,0,0"   Click="btnLinkSearch_Click" >
+            <Button ToolTip="جستجو" x:Name="btnSearchForm" Margin="2,0,0,0"   Click="btnLinkSearch_Click" >
                 <Button.Content>
                     <Image MaxWidth="20" MaxHeight="20"  Source="/MyUIGenerator;component/Images/Search.png"></Image>
                 </Button.Content>

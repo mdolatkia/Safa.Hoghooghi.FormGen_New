@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class SecurityObject
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public SecurityObject()
         {
             this.Permission = new HashSet<Permission>();
@@ -30,6 +31,7 @@ namespace DataAccess
         public virtual Relationship Relationship { get; set; }
         public virtual SubSystems SubSystems { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Permission> Permission { get; set; }
     }
 }

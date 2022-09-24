@@ -28,7 +28,7 @@ namespace MyConnectionManager
             //بهتره ایدی دیتابیس در انتیت قرار گیرد
             //List<Tuple<int, DatabaseInformation>> entityDatabaseIDs = new List<Tuple<int, DatabaseInformation>>();
 
-            //using (var context = new MyProjectEntities())
+            //using (var context = new MyIdeaEntities())
             //{
             //    foreach (var queryResult in result.QueryItems)
             //    {
@@ -123,7 +123,7 @@ namespace MyConnectionManager
         }
         //public static DbTransaction GetTransactionalDBHelper(int dbID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        return new TransactionalDBHelper();
         //    }
@@ -132,7 +132,7 @@ namespace MyConnectionManager
         public static I_DBHelper GetDBHelperByEntityID(int entityID, bool withTransaction = false)
         {
             //کش شود
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var database = context.TableDrivedEntity.First(x => x.ID == entityID).Table.DBSchema.DatabaseInformation;
                 return GetDBHelper(database, withTransaction);
@@ -141,7 +141,7 @@ namespace MyConnectionManager
         }
         public static I_DBHelper GetDBHelper(int dbID, bool withTransaction = false)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var database = context.DatabaseInformation.First(x => x.ID == dbID);
                 return GetDBHelper(database, withTransaction);

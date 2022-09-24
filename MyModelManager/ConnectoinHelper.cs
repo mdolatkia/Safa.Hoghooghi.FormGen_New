@@ -13,7 +13,7 @@ namespace MyDataManagerBusiness
     {
         //public static string GetConnectionString(int entityID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var entity = context.TableDrivedEntity.First(x => x.ID == entityID);
 
@@ -39,7 +39,7 @@ namespace MyDataManagerBusiness
 
         //public static string GetConnectionString(string catalogName)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        return context.DatabaseInformation.First(x => x.Name == catalogName).ConnectionString;
         //    }

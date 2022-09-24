@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class EntityDirectlReport
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntityDirectlReport()
         {
             this.EntityDirectlReportParameters = new HashSet<EntityDirectlReportParameters>();
@@ -23,6 +24,7 @@ namespace DataAccess
         public string URL { get; set; }
     
         public virtual EntityDataItemReport EntityDataItemReport { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityDirectlReportParameters> EntityDirectlReportParameters { get; set; }
     }
 }

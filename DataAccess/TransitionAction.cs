@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class TransitionAction
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public TransitionAction()
         {
             this.TransitionActionTarget = new HashSet<TransitionActionTarget>();
@@ -28,8 +29,11 @@ namespace DataAccess
         public Nullable<short> ActionTypeID { get; set; }
     
         public virtual Transition Transition { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransitionActionTarget> TransitionActionTarget { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransitionAction_EntityGroup> TransitionAction_EntityGroup { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransitionAction_Formula> TransitionAction_Formula { get; set; }
     }
 }

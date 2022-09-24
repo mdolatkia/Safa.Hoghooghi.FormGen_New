@@ -21,7 +21,7 @@ namespace MyModelManager
         public List<EntityDataItemReportDTO> GetEntityDataItemReports(DR_Requester requester, int entityID)
         {
             List<EntityDataItemReportDTO> result = new List<EntityDataItemReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = projectContext.EntityDataItemReport.Where(x => x.EntityReport.TableDrivedEntityID == entityID);
                 foreach (var item in list)

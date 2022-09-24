@@ -24,7 +24,7 @@ namespace MyModelManager
             //    return (cachedItem as List<EntityRelationshipTailDataMenuDTO>);
 
             List<EntityRelationshipTailDataMenuDTO> result = new List<EntityRelationshipTailDataMenuDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityRelationshipTailDataMenu = projectContext.EntityRelationshipTailDataMenu.Where(x => x.EntityRelationshipTailID == relationshipTailID);
                 foreach (var item in listEntityRelationshipTailDataMenu)
@@ -41,7 +41,7 @@ namespace MyModelManager
             //    return (cachedItem as List<EntityRelationshipTailDataMenuDTO>);
 
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbItem = projectContext.EntityRelationshipTailDataMenu.First(x => x.ID == id);
                 return ToEntityRelationshipTailDataMenuDTO(dbItem, true);
@@ -72,7 +72,7 @@ namespace MyModelManager
 
         public int UpdateEntityRelationshipTailDataMenu(EntityRelationshipTailDataMenuDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 EntityRelationshipTailDataMenu dbItem = null;
                 if (message.ID == 0)

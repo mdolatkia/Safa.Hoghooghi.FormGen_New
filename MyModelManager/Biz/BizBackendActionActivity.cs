@@ -15,7 +15,7 @@ namespace MyModelManager
         public List<BackendActionActivityDTO> GetActionActivities(int entityID, List<Enum_EntityActionActivityStep> BackendActionActivitySteps, bool genericOnes, bool withDetails)
         {
             List<BackendActionActivityDTO> result = new List<BackendActionActivityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listBackendActionActivity = projectContext.BackendActionActivity as IQueryable<BackendActionActivity>;
                 if (genericOnes)
@@ -56,7 +56,7 @@ namespace MyModelManager
         public List<BackendActionActivityDTO> GetAllActionActivities(DR_Requester requester, string generalFilter)
         {
             List<BackendActionActivityDTO> result = new List<BackendActionActivityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listBackendActionActivity = projectContext.BackendActionActivity as IQueryable<BackendActionActivity>; ;
 
@@ -71,7 +71,7 @@ namespace MyModelManager
         public BackendActionActivityDTO GetBackendActionActivity(int BackendActionActivitysID)
         {
             List<BackendActionActivityDTO> result = new List<BackendActionActivityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var BackendActionActivitys = projectContext.BackendActionActivity.First(x => x.ID == BackendActionActivitysID);
                 return ToBackendActionActivityDTO(BackendActionActivitys, true);
@@ -117,7 +117,7 @@ namespace MyModelManager
 
         public int UpdateBackendActionActivitys(BackendActionActivityDTO BackendActionActivity)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbBackendActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.ID == BackendActionActivity.ID);
                 if (dbBackendActionActivity == null)
@@ -156,7 +156,7 @@ namespace MyModelManager
 
         public void DeleteBackendActionActivity(int iD)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbBackendActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.ID == iD);
                 projectContext.BackendActionActivity.Remove(dbBackendActionActivity);

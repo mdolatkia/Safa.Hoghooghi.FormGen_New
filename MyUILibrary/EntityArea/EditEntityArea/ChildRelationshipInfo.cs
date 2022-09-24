@@ -215,24 +215,22 @@ namespace MyUILibrary.EntityArea
                 {
                     var tempView = GetTempView;
 
-                    tempView.DisableEnable(TemporaryLinkType.Clear, clearCommandEnablity);
-                    tempView.DisableEnable(TemporaryLinkType.SerachView, searchCommandEnablity);
-                    tempView.DisableEnable(TemporaryLinkType.Popup, searchCommandEnablity);
+                    tempView.ButtonClearEnabled = clearCommandEnablity;
+                    tempView.ButtonSearchFormEnabled = searchCommandEnablity;
+                    tempView.ButtonPopupEnabled = searchCommandEnablity;
+                    tempView.ButtonQuickSearchEnabled = searchCommandEnablity;
 
-                    bool quickSearchEnablity = true;
-                    if (!searchCommandEnablity)
-                        quickSearchEnablity = false;
-                    else
-                        quickSearchEnablity = RelationshipControl.GenericEditNdTypeArea.TemporaryLinkState.quickSearch;
-
-
-
-                    tempView.DisableEnable(TemporaryLinkType.QuickSearch, quickSearchEnablity);
+                    //bool quickSearchEnablity = true;
+                    //if (!searchCommandEnablity)
+                       
+                    //else
+                    //    quickSearchEnablity = RelationshipControl.GenericEditNdTypeArea.TemporaryDisplayView.QuickSearchVisibility;
+                    //tempView.DisableEnable(TemporaryLinkType.QuickSearch, quickSearchEnablity);
 
                     bool dataViewEnablity = true;
                     if (IsReadonly && !RelatedData.Any())
                         dataViewEnablity = false;
-                    tempView.DisableEnable(TemporaryLinkType.DataView, dataViewEnablity);
+                    tempView.ButtonDataEditEnabled = dataViewEnablity;
                 }
 
 
@@ -757,7 +755,7 @@ namespace MyUILibrary.EntityArea
                     //        view.SetMessage("داده های وابسته نمایش داده شده نیز حذف خواهند شد. آیا مطمئن هستید؟");
                     //   else
                     view.SetMessage("داده های نمایش داده شده نیز بروزرسانی و یا حذف خواهند شد. آیا مطمئن هستید؟");
-                  
+
                     var result = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowPromptDialog(view, "");
                     if (result == UserDialogResult.Ok || result == UserDialogResult.No)
                     {
@@ -1025,7 +1023,7 @@ namespace MyUILibrary.EntityArea
 
         bool dataLoaded = false;
 
-        
+
         public bool SetBinding()
         {
             //اینکه اینجا هیدن ها بایند نمیشن خوب نیست چون برای ارث بری مثلا شخص فرمهای شخص حقیقی و حقوقی مخفی هستن اولش و بایند نمیشن. بعدا یه فکری بشه
@@ -1375,7 +1373,7 @@ namespace MyUILibrary.EntityArea
 
                     bool fromDataview = (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
                                RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
-                    RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.SelectFromParent(fromDataview, Relationship, SourceData, colAndValues);
+                    RelationshipControl.GenericEditNdTypeArea.SelectFromParent(fromDataview, Relationship, SourceData, colAndValues);
                 }
             }
         }
@@ -1500,7 +1498,7 @@ namespace MyUILibrary.EntityArea
             if (LastTemporaryView != null)
             {
                 if (LastTemporaryView.HasPopupView)
-                    LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.ViewEntityArea.ViewView);
+                    LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.ViewView);
             }
             LastTemporaryView = TemporaryView;
             if (linkType == TemporaryLinkType.DataView)
@@ -1522,9 +1520,9 @@ namespace MyUILibrary.EntityArea
             {
                 if (!TemporaryView.PopupVisibility)
                 {
-                    RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.RemoveViewEntityAreaView();
+                    RelationshipControl.GenericEditNdTypeArea.RemoveViewEntityAreaView();
                     if (!TemporaryView.HasPopupView)
-                        TemporaryView.AddPopupView(RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.ViewEntityArea.ViewView);
+                        TemporaryView.AddPopupView(RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.ViewView);
                 }
                 TemporaryView.PopupVisibility = !TemporaryView.PopupVisibility;
             }
@@ -1542,8 +1540,8 @@ namespace MyUILibrary.EntityArea
         public void ShowSearchView(bool fromDataView)
         {
             if (LastTemporaryView != null)
-                LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.ViewEntityArea.ViewView);
-            RelationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.ShowSearchView(fromDataView);
+                LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.ViewView);
+            RelationshipControl.GenericEditNdTypeArea.ShowSearchView(fromDataView);
         }
         //List<ColumnControlColorItem> GeneralColumnControlColorItems = new List<ColumnControlColorItem>();
         //List<ColumnControlMessageItem> GeneralColumnControlMessageItems = new List<ColumnControlMessageItem>();

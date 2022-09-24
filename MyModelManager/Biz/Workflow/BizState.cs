@@ -15,7 +15,7 @@ namespace MyModelManager
         public List<WFStateDTO> GetStates(int processID, bool withDetails)
         {
             List<WFStateDTO> result = new List<WFStateDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listState = projectContext.State.Where(x => x.ProcessID == processID);
                 foreach (var item in listState)
@@ -25,7 +25,7 @@ namespace MyModelManager
         }
         public WFStateDTO GetState(int StatesID, bool withDetails)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var States = projectContext.State.First(x => x.ID == StatesID);
                 return ToStateDTO(States, withDetails);
@@ -63,7 +63,7 @@ namespace MyModelManager
         }
         public int UpdateStates(WFStateDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbState = projectContext.State.FirstOrDefault(x => x.ID == message.ID);
                 if (dbState == null)
@@ -108,7 +108,7 @@ namespace MyModelManager
         public List<WFStateDTO> GetProcessInitializeStates(int processID)
         {
             List<WFStateDTO> result = new List<WFStateDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var startType = Convert.ToInt16(StateType.Start);
                 var listState = projectContext.State.Where(x => x.ProcessID == processID && x.StateTypeID == startType);

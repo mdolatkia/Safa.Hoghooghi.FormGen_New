@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class EntityListView
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntityListView()
         {
             this.DataMenuSetting = new HashSet<DataMenuSetting>();
@@ -22,20 +23,25 @@ namespace DataAccess
             this.EntityListReport = new HashSet<EntityListReport>();
             this.LetterTemplate = new HashSet<LetterTemplate>();
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
-            this.TableDrivedEntity1 = new HashSet<TableDrivedEntity>();
         }
     
         public int ID { get; set; }
         public int TableDrivedEntityID { get; set; }
         public string Title { get; set; }
+        public Nullable<bool> IsDefault { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataMenuSetting> DataMenuSetting { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityChartReport> EntityChartReport { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityCrosstabReport> EntityCrosstabReport { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityListReport> EntityListReport { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LetterTemplate> LetterTemplate { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityListViewColumns> EntityListViewColumns { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        public virtual ICollection<TableDrivedEntity> TableDrivedEntity1 { get; set; }
     }
 }

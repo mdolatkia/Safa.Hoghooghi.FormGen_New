@@ -19,7 +19,7 @@ namespace MyModelManager
         //public List<EntityExternalReportDTO> GetEntityExternalReports()
         //{
         //    List<EntityExternalReportDTO> result = new List<EntityExternalReportDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var listEntityListReport = projectContext.EntityExternalReport;
         //        foreach (var item in listEntityListReport)
@@ -35,7 +35,7 @@ namespace MyModelManager
             //    return (cachedItem as List<EntityExternalReportDTO>);
 
             List<EntityExternalReportDTO> result = new List<EntityExternalReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityListReport = projectContext.EntityExternalReport.Where(x => x.EntitySearchableReport.EntityReport.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityListReport)
@@ -48,7 +48,7 @@ namespace MyModelManager
         public EntityExternalReportDTO GetEntityExternalReport(int EntityListReportsID, bool withDetails)
         {
             List<EntityExternalReportDTO> result = new List<EntityExternalReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var EntityListReports = projectContext.EntityExternalReport.First(x => x.ID == EntityListReportsID);
                 return ToEntityExternalReportDTO(EntityListReports, withDetails);
@@ -68,7 +68,7 @@ namespace MyModelManager
         }
         public void UpdateEntityExternalReports(DR_Requester requester, EntityExternalReportDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 BizEntityReport bizEntityReport = new MyModelManager.BizEntityReport();
 

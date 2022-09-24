@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class OrganizationType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public OrganizationType()
         {
             this.Organization = new HashSet<Organization>();
@@ -24,7 +25,9 @@ namespace DataAccess
         public string Name { get; set; }
         public string ExternalKey { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Organization> Organization { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrganizationType_RoleType> OrganizationType_RoleType { get; set; }
         public virtual SecuritySubject SecuritySubject { get; set; }
     }

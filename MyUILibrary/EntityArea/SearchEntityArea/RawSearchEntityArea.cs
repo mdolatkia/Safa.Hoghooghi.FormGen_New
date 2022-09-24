@@ -17,12 +17,13 @@ namespace MyUILibrary.EntityArea
 {
     public class RawSearchEntityArea : I_RawSearchEntityArea
     {
-        public RawSearchEntityArea()
+        public RawSearchEntityArea(SearchAreaInitializer newAreaInitializer)
         {
             SearchCommands = new List<I_Command>();
             SimpleColumnControls = new List<SimpleSearchColumnControl>();
+            SearchInitializer = newAreaInitializer;
+            GenerateSearchView();
         }
-
         public I_View_SimpleSearchEntityArea RawSearchView { set; get; }
 
         public List<I_Command> SearchCommands
@@ -31,7 +32,7 @@ namespace MyUILibrary.EntityArea
             get;
         }
 
-        public SearchEntityAreaInitializer SearchInitializer { set; get; }
+        public SearchAreaInitializer SearchInitializer { set; get; }
 
         //public event EventHandler<Arg_PackageSelected> DataPackageSelected;
         public event EventHandler<SearchPropertyArg> SearchDataDefined;
@@ -91,14 +92,7 @@ namespace MyUILibrary.EntityArea
         //        return _Permission;
         //    }
         //}
-        public void SetAreaInitializer(SearchEntityAreaInitializer newAreaInitializer)
-        {
-            SearchInitializer = newAreaInitializer;
-            //if (SearchInitializer.TempEntity != null)
-            //    _FullEntity = SearchInitializer.TempEntity;
-            GenerateSearchView();
-        }
-
+      
         private void GenerateSearchView()
         {
             RawSearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchEntityArea(GetEntityUISetting());

@@ -28,7 +28,7 @@ namespace MyRuleEngineTest
 
         //    //Biz_RuleSet myruleSet = new Biz_RuleSet(myrule);
         //    //  TestEntities.Customer customer = new TestEntities.Customer();
-        //    MyProjectEntities context = new MyProjectEntities();
+        //    MyIdeaEntities context = new MyIdeaEntities();
         //    foreach (Table table in context.Table)
         //        if (table != null)
         //        {
@@ -45,7 +45,7 @@ namespace MyRuleEngineTest
 
         private void btnRuleEntityRelationships_Click(object sender, EventArgs e)
         {
-            MyProjectEntities context = new MyProjectEntities();
+            MyIdeaEntities context = new MyIdeaEntities();
             context.Configuration.LazyLoadingEnabled = true;
             var list = context.TableDrivedEntity;
             progressBar1.Maximum = list.Count();
@@ -63,7 +63,7 @@ namespace MyRuleEngineTest
 
         private void btnRuleEntity_Click(object sender, EventArgs e)
         {
-            MyProjectEntities context = new MyProjectEntities();
+            MyIdeaEntities context = new MyIdeaEntities();
             context.Configuration.LazyLoadingEnabled = true;
 
             //customer.Age = 4;

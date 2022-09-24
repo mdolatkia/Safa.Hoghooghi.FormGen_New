@@ -14,7 +14,7 @@ namespace MyModelManager
         public List<UIActionActivityDTO> GetActionActivities(int entityID, bool withDetails)
         {
             List<UIActionActivityDTO> result = new List<UIActionActivityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listActionActivity = projectContext.UIActionActivity.Where(x => x.TableDrivedEntityID == entityID);
 
@@ -28,7 +28,7 @@ namespace MyModelManager
         public UIActionActivityDTO GetActionActivity(int ActionActivitysID)
         {
             List<UIActionActivityDTO> result = new List<UIActionActivityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var ActionActivitys = projectContext.UIActionActivity.First(x => x.ID == ActionActivitysID);
                 return ToActionActivityDTO(ActionActivitys, true);
@@ -157,7 +157,7 @@ namespace MyModelManager
         }
         public int UpdateActionActivitys(UIActionActivityDTO UIActionActivity)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbActionActivity = projectContext.UIActionActivity.FirstOrDefault(x => x.ID == UIActionActivity.ID);
                 if (dbActionActivity == null)

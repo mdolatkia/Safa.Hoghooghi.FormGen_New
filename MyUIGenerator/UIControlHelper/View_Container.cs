@@ -1,5 +1,6 @@
 ﻿
 //using MyUIGenerator.UIContainerHelper;
+using ModelEntites;
 using MyUIGenerator.UIControlHelper;
 using MyUILibrary;
 using MyUILibrary.EntityArea;
@@ -29,7 +30,9 @@ namespace MyUIGenerator.UIControlHelper
             DefaultBorderThickness = this.BorderThickness;
             DefaultBackground = this.Background;
             DefaultForeground = this.Foreground;
+            
         }
+
         //    public abstract void AddView( I_UIControlManager labelControlManager, I_RelationshipControlManagerGeneral relationshipControlManag);
         //     public abstract void AddUIControlPackage(I_SimpleControlManagerGeneral controlManager, I_UIControlManager labelControlManager);
         public abstract void ClearControls();
@@ -44,11 +47,11 @@ namespace MyUIGenerator.UIControlHelper
         {
             this.IsEnabled = enable;
         }
-        public void DisableEnableDataSection(bool enable)
-        {
-            ControlArea.IsEnabled = enable;
-        }
-        public UIControlComposition UIControlPackageTreeItem { get; set; }
+        //public void DisableEnableDataSection(bool enable)
+        //{
+        //    ControlArea.IsEnabled = enable;
+        //}
+        public EntityUICompositionDTO UICompositionDTO { get; set; }
 
         public bool IsOpenedTemporary { get; set; }
         //public View_Container(GridSetting gridSetting)
@@ -280,6 +283,10 @@ namespace MyUIGenerator.UIControlHelper
         }
         Grid grdMain;
         Grid grdOther;
+        public void ClearCommands()
+        {
+            Toolbar.Children.Clear();
+        }
         public void AddCommand(I_CommandManager item, bool indirect)
         {
             if (grdMain == null)
@@ -355,10 +362,7 @@ namespace MyUIGenerator.UIControlHelper
             this.Background = new SolidColorBrush(UIHelper.getColorFromHexString(color));
         }
 
-        public virtual void AddUIControlPackage(object controlPackage, string title, InfoColor titleColor, string tooltip = "")
-        {
-
-        }
+       
 
         public void Visiblity(bool visible)
         {

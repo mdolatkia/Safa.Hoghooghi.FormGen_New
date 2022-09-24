@@ -15,7 +15,7 @@ namespace MyModelManager
         //public List<UnionRelationshipDTO> GetUnionRelationships(int tableDrivedEntityID)
         //{
         //    List<UnionRelationshipDTO> result = new List<UnionRelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.UnionRelationship.Where(x => x.TableDrivedEntityID1 == tableDrivedEntityID || x.TableDrivedEntityID2 == tableDrivedEntityID);
         //        foreach (var item in list)
@@ -29,7 +29,7 @@ namespace MyModelManager
         public List<UnionRelationshipDTO> GetUnionRelationshipsBySuperUnionEntity(int superunionEntityID, bool unionHoldsKeys)
         {
             List<UnionRelationshipDTO> result = new List<UnionRelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var UnionRelationships = projectContext.UnionRelationshipType.Where(x => x.UnionHoldsKeys == unionHoldsKeys && x.UnionToSubUnionRelationshipType.Any(y => y.RelationshipType.Relationship.TableDrivedEntity.ID == superunionEntityID));
                 foreach (var UnionRelationship in UnionRelationships)
@@ -65,7 +65,7 @@ namespace MyModelManager
 
         public int Save(UnionRelationshipDTO item)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 UnionRelationshipType dbItem = null;
                 if (item.ID == 0)
@@ -89,7 +89,7 @@ namespace MyModelManager
         public List<UnionRelationshipDTO> GetUnionRelationships(int databaseID)
         {
             List<UnionRelationshipDTO> result = new List<UnionRelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
                 foreach (var item in projectContext.UnionRelationshipType.Where(x => x.UnionToSubUnionRelationshipType.Any(y => y.RelationshipType.Relationship.TableDrivedEntity.Table.DBSchema.DatabaseInformationID == databaseID)))
@@ -102,7 +102,7 @@ namespace MyModelManager
         }
         public void UpdateUnionRelationships(List<UnionRelationshipDTO> relationships)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in relationships)
                 {
@@ -114,7 +114,7 @@ namespace MyModelManager
         public List<UnionToSubUnionRelationshipDTO> GetSuperUnionToSubUnionRelationship(int UnionRelationshipID)
         {
             List<UnionToSubUnionRelationshipDTO> result = new List<UnionToSubUnionRelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 var UnionRelationship = projectContext.UnionRelationshipType.FirstOrDefault(x => x.ID == UnionRelationshipID);
@@ -148,7 +148,7 @@ namespace MyModelManager
         public List<SubUnionToSuperUnionRelationshipDTO> GetSubUnionToSuperUnionRelationship(int UnionRelationshipID)
         {
             List<SubUnionToSuperUnionRelationshipDTO> result = new List<SubUnionToSuperUnionRelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 var UnionRelationship = projectContext.UnionRelationshipType.FirstOrDefault(x => x.ID == UnionRelationshipID);
@@ -180,7 +180,7 @@ namespace MyModelManager
 
         public void UpdateSuperUnionToSubUnionRelationships(List<UnionToSubUnionRelationshipDTO> relationships)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in relationships)
                 {
@@ -202,7 +202,7 @@ namespace MyModelManager
 
         public void UpdateSubUnionToSuperUnionRelationships(List<SubUnionToSuperUnionRelationshipDTO> relationships)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in relationships)
                 {
@@ -220,7 +220,7 @@ namespace MyModelManager
 
         public void MergeUnionRelationships(string name, List<UnionRelationshipDTO> relationships, UnionRelationshipDTO selectedOne)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //   int UnionRelationID = 0;
                 foreach (var relationship in relationships)

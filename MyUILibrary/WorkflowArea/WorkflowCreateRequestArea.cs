@@ -57,6 +57,7 @@ namespace MyUILibrary.WorkflowArea
         I_EditEntityAreaOneData SearchEditEntityArea;
         private void View_ProcessSelected(object sender, ProcessSelectedArg e)
         {
+            //** 3c5de418-bccb-4baf-aaeb-016da5fcba02
             var states = AgentUICoreMediator.GetAgentUICoreMediator.workflowService.GetProcessInitializeStates(e.ProcessID);
             View.States = states;
             if (states.Count == 1)

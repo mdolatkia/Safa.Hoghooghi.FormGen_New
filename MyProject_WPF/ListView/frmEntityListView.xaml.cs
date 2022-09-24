@@ -30,7 +30,7 @@ namespace MyProject_WPF
         private EntityListViewDTO Message { set; get; }
         BizEntityListView bizEntityListView = new BizEntityListView();
         int EntityID { set; get; }
-      //  int EntityListViewID { set; get; }
+        //  int EntityListViewID { set; get; }
         public event EventHandler<EntityListViewUpdatedArg> EntityListViewUpdated;
         public frmEntityListView(int entityID, int entityListViewID)
         {
@@ -42,7 +42,7 @@ namespace MyProject_WPF
             var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
             if (entity.IsView)
                 colRelationshipTail.IsVisible = false;
-           // EntityListViewID = entityListViewID;
+            // EntityListViewID = entityListViewID;
             SetRelationshipTails();
             if (entityListViewID == 0)
             {
@@ -126,10 +126,12 @@ namespace MyProject_WPF
         }
         private void ShowMessage()
         {
-            if (Message.ID == 0)
-                btnSetDefaultListView.IsEnabled = false;
-            else
-                btnSetDefaultListView.IsEnabled = true;
+            //if (Message.ID == 0)
+            //    btnSetDefaultListView.IsEnabled = false;
+            //else
+            //    btnSetDefaultListView.IsEnabled = true;
+
+            chkIsDefault.IsChecked = Message.IsDefault;
             txtViewName.Text = Message.Title;
             foreach (var item in Message.EntityListViewAllColumns)
             {
@@ -169,7 +171,7 @@ namespace MyProject_WPF
                     }
                 }
             }
-
+            Message.IsDefault = chkIsDefault.IsChecked == true;
             Message.TableDrivedEntityID = EntityID;
             Message.Title = txtViewName.Text;
             Message.ID = bizEntityListView.UpdateEntityListViews(Message);
@@ -205,8 +207,8 @@ namespace MyProject_WPF
 
         private void btnSetDefaultListView_Click(object sender, RoutedEventArgs e)
         {
-            if (bizEntityListView.SetDefaultListView(EntityID, Message.ID))
-                MessageBox.Show("لیست پیش فرض موجودیت تعیین شد");
+            //if (bizEntityListView.SetDefaultListView(EntityID, Message.ID))
+            //MessageBox.Show("لیست پیش فرض موجودیت تعیین شد");
         }
     }
     public class EntityListViewUpdatedArg : EventArgs

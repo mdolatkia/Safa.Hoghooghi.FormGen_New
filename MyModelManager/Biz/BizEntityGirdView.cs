@@ -19,7 +19,7 @@ namespace MyModelManager
         //    //    return (cachedItem as List<EntityGridViewDTO>);
 
         //    List<EntityGridViewDTO> result = new List<EntityGridViewDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var listEntityGridView = projectContext.EntityGridView.Where(x => x.TableDrivedEntityID == entityID);
         //        foreach (var item in listEntityGridView)
@@ -32,7 +32,7 @@ namespace MyModelManager
         //public GridViewSettingDTO GetGridViewSetting(int entitiyID, bool withDetails)
         //{
         //    List<GridViewSettingDTO> result = new List<GridViewSettingDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var item = projectContext.GridViewSetting.FirstOrDefault(x => x.ID == entitiyID);
         //        if (item != null)
@@ -69,7 +69,7 @@ namespace MyModelManager
         //}
         //public void UpdateEntityGridViews(int entityID, GridViewSettingDTO message)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbEntity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
 

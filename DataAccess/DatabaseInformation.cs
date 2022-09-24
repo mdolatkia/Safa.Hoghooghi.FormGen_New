@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class DatabaseInformation
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public DatabaseInformation()
         {
             this.DBSchema = new HashSet<DBSchema>();
@@ -30,6 +31,7 @@ namespace DataAccess
         public virtual DBServer DBServer { get; set; }
         public virtual SecurityObject SecurityObject { get; set; }
         public virtual DatabaseUISetting DatabaseUISetting { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DBSchema> DBSchema { get; set; }
     }
 }

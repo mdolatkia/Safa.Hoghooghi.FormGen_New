@@ -37,7 +37,7 @@ namespace MyModelManager
         //{
         //    EntityRelationInfo result = new EntityRelationInfo();
         //    result.TableDrivedEntity = bizEntity.GetTableDrivedEntity(entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
         //        if (asPrimary)
@@ -63,7 +63,7 @@ namespace MyModelManager
         //باید روابط اصلی به فرعی فرستاده شود
         //public RelationInfo GetRelationshipsInfo(int relationshipID)
         //{
-        //    //using (var projectContext = new DataAccess.MyProjectEntities())
+        //    //using (var projectContext = new DataAccess.MyIdeaEntities())
         //    //{
         //    var relationship = bizRelationship.GetRelationship(relationshipID);
         //    return GetRelationshipsInfoWithEntityIds(relationship);
@@ -913,7 +913,7 @@ namespace MyModelManager
         //        relationshipType.SubUnionToUnionRelationshipType = null;
         //}
 
-        //public Relationship GetReverseRelationship(MyProjectEntities context, Relationship relationship)
+        //public Relationship GetReverseRelationship(MyIdeaEntities context, Relationship relationship)
         //{
         //    return context.Relationship.FirstOrDefault(x => (x.RelationshipID != null && x.RelationshipID == relationship.ID) || (relationship.RelationshipID != null && relationship.RelationshipID == x.ID));
         //}

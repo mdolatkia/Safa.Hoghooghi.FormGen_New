@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class LogicPhrase
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public LogicPhrase()
         {
             this.Phrase = new HashSet<Phrase>();
@@ -24,7 +25,9 @@ namespace DataAccess
         public short AndOrType { get; set; }
     
         public virtual SearchRepository SearchRepository { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Phrase> Phrase { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Phrase> Phrase1 { get; set; }
     }
 }

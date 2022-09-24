@@ -64,6 +64,7 @@ namespace MyUILibrary.EntitySelectArea
         }
         private void EntitySearchLookup_SelectionChanged(object sender, SelectionChangedArg e)
         {
+            //** fc73e217-a2b2-43fc-a4a4-c3861e5f6f81
             if (e.SelectedItem != null)
             {
                 var entity = e.SelectedItem as TableDrivedEntityDTO;

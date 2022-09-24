@@ -98,7 +98,7 @@ namespace MyProject
                 MessageBox.Show("نوع " + "TolatParticipation/PartialParticipation" + "مشخص نشده است");
                 return;
             }
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 if (isaRelationship == null)
                     isaRelationship = new DataAccess.ISARelationship();

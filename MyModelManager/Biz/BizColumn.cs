@@ -16,7 +16,7 @@ namespace MyModelManager
     {
         //public Type GetColumnDotNetType(int columnID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var column = GetColumn(columnID);
         //        return GetColumnDotNetType(column.DataType, column.IsNull);
@@ -112,7 +112,7 @@ namespace MyModelManager
 
         public ModelEntites.ColumnCustomFormulaDTO GetCustomFormula(int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = GetColumn(columnID);
                 if (dbColumn.ColumnCustomFormula == null)
@@ -124,7 +124,7 @@ namespace MyModelManager
 
         public void DeleteColumnCustomFormula(int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = GetColumn(columnID);
 
@@ -137,7 +137,7 @@ namespace MyModelManager
 
         public void SaveColumnCustomFormula(int columnID, ModelEntites.ColumnCustomFormulaDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = GetColumn(columnID);
 
@@ -165,7 +165,7 @@ namespace MyModelManager
         //{
         //    List<ColumnDTO> result = new List<ColumnDTO>();
 
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var table = projectContext.Table.First(x => x.ID == tableID);
         //        foreach (var column in table.Column)
@@ -185,7 +185,7 @@ namespace MyModelManager
         public ColumnDTO GetColumnDTO(int columnID, bool simple)
         {
             ColumnDTO result = new ColumnDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = GetColumn(columnID);
                 return ToColumnDTO(column, simple);
@@ -195,7 +195,7 @@ namespace MyModelManager
         public StringColumnTypeDTO GetStringColumType(int columnID)
         {
             ColumnDTO result = new ColumnDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = GetColumn(columnID);
                 if (column.StringColumnType != null)
@@ -206,7 +206,7 @@ namespace MyModelManager
 
         //public void UpdateCustomCalculation(int columnID, int formulaID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var column = GetColumn(columnID);
         //        if (column.CustomCalculatedColumn == null)
@@ -228,7 +228,7 @@ namespace MyModelManager
         public NumericColumnTypeDTO GetNumericColumType(int columnID)
         {
             ColumnDTO result = new ColumnDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = GetColumn(columnID);
                 if (column.NumericColumnType != null)
@@ -254,7 +254,7 @@ namespace MyModelManager
         public DateColumnTypeDTO GetDateColumType(int columnID)
         {
             ColumnDTO result = new ColumnDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = GetColumn(columnID);
                 if (column.DateColumnType != null)
@@ -310,7 +310,7 @@ namespace MyModelManager
         public TimeColumnTypeDTO GetTimeColumType(int columnID)
         {
             ColumnDTO result = new ColumnDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = GetColumn(columnID);
                 if (column.TimeColumnType != null)
@@ -358,7 +358,7 @@ namespace MyModelManager
         public DateTimeColumnTypeDTO GetDateTimeColumType(int columnID)
         {
             ColumnDTO result = new ColumnDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = GetColumn(columnID);
                 if (column.DateTimeColumnType != null)
@@ -431,7 +431,7 @@ namespace MyModelManager
 
         //public void ConvertStringTimeColumnToStringColumnType(int columnID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbColumn = projectContext.TimeColumnType.First(x => x.ColumnID == columnID);
 
@@ -451,7 +451,7 @@ namespace MyModelManager
         //}
         //public void ConvertStringDateTimeColumnToStringColumnType(int columnID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbColumn = projectContext.TimeColumnType.First(x => x.ColumnID == columnID);
 
@@ -472,7 +472,7 @@ namespace MyModelManager
         public void ConvertStringColumnToDateTimeColumn(TableDrivedEntityDTO entity, ColumnDTO column, Enum_ColumnType columnType)
         {
             //**559a48c0-417b-4813-8b9e-b6ad00bdd936
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = projectContext.Column.First(x => x.ID == column.ID);
                 CreateNewDateTimeColumnOriginallyString(entity, dbColumn, column, columnType);
@@ -483,7 +483,7 @@ namespace MyModelManager
         public void ConvertColumnToStringColumnType(TableDrivedEntityDTO entity, ColumnDTO column)
         {
             //**8351e66f-a105-44ba-8a5c-7715aa287708
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
 
                 var dbColumn = projectContext.Column.First(x => x.ID == column.ID);
@@ -496,7 +496,7 @@ namespace MyModelManager
             }
         }
 
-        private void RemoveColumnTypes(MyProjectEntities projectContext, Column dbColumn, List<Enum_ColumnType> exceptionTypes)
+        private void RemoveColumnTypes(MyIdeaEntities projectContext, Column dbColumn, List<Enum_ColumnType> exceptionTypes)
         {
             if (!exceptionTypes.Contains(Enum_ColumnType.Numeric))
             {
@@ -525,13 +525,13 @@ namespace MyModelManager
             }
         }
 
-        public IEnumerable<Column> GetAllColumns(TableDrivedEntity dbEntity, bool evenDisabled, bool tableColumns = false)
+        public IEnumerable<Column> GetAllColumns(TableDrivedEntity dbEntity, bool evenDisabled)
         {
             //**835426f1-378b-41df-af1a-76435880babc
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 IEnumerable<Column> columns = null;
-                if (!tableColumns && dbEntity.TableDrivedEntity_Columns.Count > 0)
+                if (dbEntity.TableDrivedEntity_Columns.Count > 0)
                 {
                     //اینجا باید لیست مقادیر هم ست شود
                     columns = dbEntity.TableDrivedEntity_Columns.Select(x => x.Column);
@@ -547,7 +547,7 @@ namespace MyModelManager
         }
         private Column GetColumn(int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
 
@@ -557,7 +557,7 @@ namespace MyModelManager
         public List<ColumnDTO> GetAllColumnsDTO(int entityID, bool simple, bool evenDisabled)
         {
             List<ColumnDTO> result = new List<ColumnDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
                 var dbEntity = bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == entityID);
@@ -580,7 +580,7 @@ namespace MyModelManager
         //public List<ColumnDTO> GetColumnsForEdit(int entityID)
         //{
         //    List<ColumnDTO> result = new List<ColumnDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
         //        ICollection<Column> columns = null;
@@ -601,7 +601,7 @@ namespace MyModelManager
 
         //public List<ColumnDTO> GetColumnsSimple(int entityID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
         //        if (entity.Column.Count > 0)
@@ -628,7 +628,7 @@ namespace MyModelManager
         //public List<ColumnDTO> GetColums(int tableID, bool simple)
         //{
         //    List<ColumnDTO> result = new List<ColumnDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.Column.Where(x => x.TableID == tableID);
         //        foreach (var item in list)
@@ -641,7 +641,7 @@ namespace MyModelManager
         //public List<ColumnDTO> GetOtherColums(int columnID)
         //{
         //    List<ColumnDTO> result = new List<ColumnDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var column = GetColumn(columnID);
         //        var list = column.Table.Column.ToList();
@@ -739,7 +739,7 @@ namespace MyModelManager
         }
         //public FormulaDTO GetCustomCalculationFormula(int columnID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var column = projectContext.Column.FirstOrDefault(x => x.ID == columnID);
         //        if (column.CustomCalculatedColumn != null)
@@ -753,7 +753,7 @@ namespace MyModelManager
         public void UpdateColumns(int entityID, List<ColumnDTO> columns)
         {
             //** 8ee14cf5-30d9-4af4-afc3-14ecf5010471
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //   var dbEntity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
                 //  dbEntity.ColumnsReviewed = true;
@@ -807,7 +807,7 @@ namespace MyModelManager
         public void UpdateStringColumnType(List<StringColumnTypeDTO> columnTypes)
         {
             //**bf58c975-a36d-4a12-b7a3-1cbf252eff52
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in columnTypes)
                 {
@@ -823,7 +823,7 @@ namespace MyModelManager
         public void UpdateNumericColumnType(List<NumericColumnTypeDTO> columnTypes)
         {
             //**c99a93a8-756a-42a2-a9f2-d346c3f0299b
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in columnTypes)
                 {
@@ -840,7 +840,7 @@ namespace MyModelManager
 
         public bool DataIsAccessable(DR_Requester requester, int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = GetColumn(columnID);
                 return DataIsAccessable(requester, dbColumn);
@@ -870,7 +870,7 @@ namespace MyModelManager
 
         public bool DataIsReadonly(DR_Requester requester, int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = GetColumn(columnID);
                 return DataIsReadonly(requester, dbColumn);
@@ -905,7 +905,7 @@ namespace MyModelManager
 
         public void UpdateDateColumnType(List<DateColumnTypeDTO> columnTypes)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in columnTypes)
                 {
@@ -929,7 +929,7 @@ namespace MyModelManager
 
         public void UpdateDateTimeColumnType(List<DateTimeColumnTypeDTO> columnTypes)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in columnTypes)
                 {
@@ -962,7 +962,7 @@ namespace MyModelManager
 
         public void UpdateTimeColumnType(List<TimeColumnTypeDTO> columnTypes)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in columnTypes)
                 {
@@ -991,7 +991,7 @@ namespace MyModelManager
             }
         }
 
-        internal void UpdateColumnsInModel(TableDrivedEntityDTO entity, Table table, MyProjectEntities projectContext)
+        internal void UpdateColumnsInModel(TableDrivedEntityDTO entity, Table table, MyIdeaEntities projectContext)
         {
             //**6c99db26-bb1b-40df-ba63-1e9a8bbe5eff
             foreach (var column in entity.Columns)
@@ -1331,7 +1331,7 @@ namespace MyModelManager
 
         //public void UpdateColumnValueRangeID(int columnID, int columnValueRangeID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbColumn = GetColumn(columnID);
         //        dbColumn.ColumnValueRangeID = columnValueRangeID;

@@ -18,7 +18,7 @@ namespace MyModelManager
         //public List<EntityRoleSecurityDTO> GetEntityRoleSecurities(int entityID, bool withDetails)
         //{
 
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.EntityRoleSecurity.Where(x => x.TableDrivedEntityID == entityID);
         //        return ToEntityRoleSecuritiesDTO(list.ToList());
@@ -39,7 +39,7 @@ namespace MyModelManager
         //}
         //public void UpdateRoleSecurity(int entityID, List<EntityRoleSecurityDTO> message)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entity = projectContext.TableDrivedEntity.First(x => x.ID == entityID);
         //        while (entity.EntityRoleSecurity.Any())
@@ -58,7 +58,7 @@ namespace MyModelManager
         //public FinalEntitySecurityDirects GetFinalEntitySecurityDirects(DR_Requester requester, int entityID, DataDirectSecurityFinalMode mode, bool withDetails)
         //{
         //    FinalEntitySecurityDirects result = new FinalEntitySecurityDirects();
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        IQueryable<EntitySecurityDirect> directs = context.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID);
         //        if (mode == DataDirectSecurityFinalMode.FetchData)
@@ -78,21 +78,21 @@ namespace MyModelManager
 
         public bool EntityHasDirectSecurities(DR_Requester requester, int entityID, DataDirectSecurityMode mode)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 return context.EntitySecurityDirect.Any(x => x.TableDrivedEntityID == entityID && x.Mode == (short)mode);
             }
         }
         public bool EntityHasDirectSecurities(DR_Requester requester, int entityID)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 return context.EntitySecurityDirect.Any(x => x.TableDrivedEntityID == entityID);
             }
         }
         //public bool EntityHasInDirectSecurityWithDirectSecurity(DR_Requester requester, int entityID, DataDirectSecurityMode mode)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        if (mode == DataDirectSecurityMode.FetchData)
         //        {
@@ -122,7 +122,7 @@ namespace MyModelManager
         //}
         //public bool EntityHasInDirectSecurities(DR_Requester requester, int entityID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        if (context.EntitySecurityInDirect.Any(x => x.TableDrivedEntityID == entityID))
         //        {
@@ -138,7 +138,7 @@ namespace MyModelManager
         public EntitySecurityDirectDTO GetEntitySecurityDirectByEntityID(DR_Requester requester, int entityID, DataDirectSecurityMode mode, bool withDetails)
         {
             EntitySecurityDirectDTO result = new EntitySecurityDirectDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var item = projectContext.EntitySecurityDirect.FirstOrDefault(x => x.TableDrivedEntityID == entityID && x.Mode == (short)mode);
                 if (item != null)
@@ -152,7 +152,7 @@ namespace MyModelManager
         public bool DeleteEntitySecurityDirect(int id)
         {
             EntitySecurityDirectDTO result = new EntitySecurityDirectDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var item = projectContext.EntitySecurityDirect.FirstOrDefault(x => x.ID == id);
                 //foreach (var child in item.EntitySecurityDirectStates.ToList())
@@ -165,7 +165,7 @@ namespace MyModelManager
         public List<EntitySecurityDirectDTO> GetEntitySecurityDirects(DR_Requester requester, bool withDetails, string search)
         {
             List<EntitySecurityDirectDTO> result = new List<EntitySecurityDirectDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = projectContext.EntitySecurityDirect;
                 foreach (var item in list)
@@ -179,7 +179,7 @@ namespace MyModelManager
         public List<EntitySecurityDirectDTO> GetEntitySecurityDirects(DR_Requester requester, int entityID, bool withDetails)
         {
             List<EntitySecurityDirectDTO> result = new List<EntitySecurityDirectDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = projectContext.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID);
                 foreach (var item in list)
@@ -280,7 +280,7 @@ namespace MyModelManager
         //public EntitySecurityInDirectDTO GetEntitySecurityInDirect(DR_Requester requester, int entityID, bool withDetails)
         //{
         //    EntitySecurityInDirectDTO result = new EntitySecurityInDirectDTO();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var item = projectContext.EntitySecurityInDirect.FirstOrDefault(x => x.TableDrivedEntityID == entityID);
         //        if (item != null)
@@ -293,7 +293,7 @@ namespace MyModelManager
         //public EntitySecurityInDirectDTO GetEntitySecurityInDirect(DR_Requester requester, int entityID, bool withDetails)
         //{
         //    EntitySecurityInDirectDTO result = new EntitySecurityInDirectDTO();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var item = projectContext.EntitySecurityInDirect.FirstOrDefault(x => x.TableDrivedEntityID == entityID);
         //        if (item != null)
@@ -325,7 +325,7 @@ namespace MyModelManager
 
         public int UpdateEntitySecurityDirect(EntitySecurityDirectDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbItem = projectContext.EntitySecurityDirect.FirstOrDefault(x => x.ID == message.TableDrivedEntityID && x.Mode == (short)message.Mode);
                 if (dbItem == null)
@@ -416,7 +416,7 @@ namespace MyModelManager
         }
         //public void UpdateEntitySecurityInDirect(EntitySecurityInDirectDTO message)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbItem = projectContext.EntitySecurityInDirect.FirstOrDefault(x => x.ID == message.ID);
         //        if (dbItem == null)
@@ -445,7 +445,7 @@ namespace MyModelManager
             List<EntityStateConditionDTO> entityStateConditions = new List<EntityStateConditionDTO>();
             //  EntitySecurityInDirectDTO indisrectSecurityDTO = null;
             //   EntityStateDTO entityState = null;
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var directSecurityEntityID = entityID;
                 var targetEntityDisrectSecurity = GetEntitySecurityDirectByEntityID(requester, entityID, mode, true);
@@ -640,7 +640,7 @@ namespace MyModelManager
                 return true;
         }
 
-        public IQueryable<OrganizationPost> GetDBOrganizationPosts(MyProjectEntities context, DR_Requester requester)
+        public IQueryable<OrganizationPost> GetDBOrganizationPosts(MyIdeaEntities context, DR_Requester requester)
         {
             if (requester.PostIds.Any())
             {
@@ -705,7 +705,7 @@ namespace MyModelManager
             //       return (cachedItem as List<EntitySecurityDirectDTO>);
             BizRoleSecurity bizRoleSecurity = new BizRoleSecurity();
             List<EntitySecurityDirectDTO> result = new List<EntitySecurityDirectDTO>();
-            //////using (var context = new MyProjectEntities())
+            //////using (var context = new MyIdeaEntities())
             //////{
             //////    var disrectSecurities = context.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID && x.Mode == (short)DataDirectSecurityMode.FetchData);
 

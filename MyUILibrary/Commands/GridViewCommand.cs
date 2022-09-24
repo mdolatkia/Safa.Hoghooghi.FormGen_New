@@ -18,14 +18,15 @@ namespace MyUILibrary.EntityArea.Commands
             EditArea = editArea;
             CommandManager.SetTitle("گرید داده");
             CommandManager.ImagePath = "Images//grid.png";
-            CommandManager.Clicked += CommandManager_Clicked;
+            if (!editArea.AreaInitializer.Preview)
+                CommandManager.Clicked += CommandManager_Clicked;
         }
 
         private void CommandManager_Clicked(object sender, EventArgs e)
         {
-            if (EditArea.SearchViewEntityArea != null)
+            if (EditArea != null)
             {
-                var searchDP = EditArea.SearchViewEntityArea?.SearchEntityArea?.LastSearch;
+                var searchDP = EditArea?.SearchEntityArea?.LastSearch;
                 //if (searchDP != null)
                 //{
                 //if (packageArea.GridViewArea == null)

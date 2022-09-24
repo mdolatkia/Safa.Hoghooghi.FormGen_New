@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class GraphDefinition
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public GraphDefinition()
         {
             this.GraphDefinition_EntityRelationshipTail = new HashSet<GraphDefinition_EntityRelationshipTail>();
@@ -25,6 +26,7 @@ namespace DataAccess
     
         public virtual DataMenuSetting DataMenuSetting { get; set; }
         public virtual EntityDataItemReport EntityDataItemReport { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GraphDefinition_EntityRelationshipTail> GraphDefinition_EntityRelationshipTail { get; set; }
     }
 }

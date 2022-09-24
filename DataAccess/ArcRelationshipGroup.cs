@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class ArcRelationshipGroup
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ArcRelationshipGroup()
         {
             this.ArcRelationshipGroup_Relationship = new HashSet<ArcRelationshipGroup_Relationship>();
@@ -23,6 +24,7 @@ namespace DataAccess
         public int TableDrivedEntityID { get; set; }
         public string GroupName { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ArcRelationshipGroup_Relationship> ArcRelationshipGroup_Relationship { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
     }

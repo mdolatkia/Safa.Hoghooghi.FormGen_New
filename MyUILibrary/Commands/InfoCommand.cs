@@ -17,7 +17,8 @@ namespace MyUILibrary.EntityArea.Commands
             EditArea = editArea;
             CommandManager.SetTitle("اطلاعات");
             CommandManager.ImagePath = "Images//info.png";
-            CommandManager.Clicked += CommandManager_Clicked;
+            if (!editArea.AreaInitializer.Preview)
+                CommandManager.Clicked += CommandManager_Clicked;
         }
         private void CommandManager_Clicked(object sender, EventArgs e)
         {

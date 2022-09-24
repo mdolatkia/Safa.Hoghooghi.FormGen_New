@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class ColumnValueRange
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ColumnValueRange()
         {
             this.ColumnValueRangeDetails = new HashSet<ColumnValueRangeDetails>();
@@ -26,6 +27,7 @@ namespace DataAccess
         public virtual Column Column { get; set; }
         public virtual Column Column1 { get; set; }
         public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ColumnValueRangeDetails> ColumnValueRangeDetails { get; set; }
     }
 }

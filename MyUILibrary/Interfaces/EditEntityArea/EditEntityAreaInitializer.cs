@@ -65,6 +65,7 @@ namespace MyUILibrary.EntityArea
         public bool BusinessReadOnlyByParent { get; set; }
         public Tuple<DP_DataView, EntityRelationshipTailDTO> TailDataValidation { get; set; }
         public bool Preview { get; set; }
+        public DataEntryEntityDTO PreviewDataEntryEntity { get; set; }
         public I_EditAreaLogManager EntityAreaLogManager { get; set; }
         public I_UIFomulaManager UIFomulaManager { get; set; }
         public I_UIValidationManager UIValidationManager { get; set; }

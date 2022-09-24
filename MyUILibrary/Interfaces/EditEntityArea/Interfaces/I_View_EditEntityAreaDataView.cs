@@ -53,7 +53,7 @@ namespace MyUILibrary.EntityArea
         //void ClearControls();
         //object ContentGrid { get; }
         //GridSetting GridSetting { set; get; }
-
+        void ClearControls();
         void AddView(I_UIControlManager labelControlManager, I_RelationshipControlManagerOne relationshipControlManager);
         void AddUIControlPackage(I_SimpleControlManagerOne controlManager, I_UIControlManager labelControlManager);
 
@@ -107,7 +107,7 @@ namespace MyUILibrary.EntityArea
    //     void DisableEnableDataSection(bool enable);
      //   void Visiblity(bool visible);
         void EnableDisable(bool enable);
-
+       
         bool IsOpenedTemporary { get; set; }
         //void ClearControls();
         //int ControlsCount { get; }
@@ -119,9 +119,9 @@ namespace MyUILibrary.EntityArea
         //event EventHandler<Arg_CommandExecuted> CommandExecuted;
         //void AddCommands(List<I_Command> Commands, TemplateEntityUISettings templateEntityUISettings);
         //  UIControlPackageTree UIControlPackageTreeItem { get; set; }
-        UIControlComposition UIControlPackageTreeItem { get; set; }
+        EntityUICompositionDTO UICompositionDTO { get; set; }
 
-
+        void ClearCommands();
     }
     //public interface I_View_ControlContainer : I_View_Area
     //{
@@ -152,7 +152,7 @@ namespace MyUILibrary.EntityArea
         //bool ShowMultipleDateItemControlValue(DP_DataRepository dataItem, UIControlPackageMultipleData controlPackage, string value);
 
         //string FetchMultipleDateItemControlValue(DP_DataRepository dataItem, UIControlPackageMultipleData controlPackage);
-        void CleraUIControlPackages();
+        void ClearControls();
         bool MultipleSelection { get; set; }
         void AddDataContainer(object specificDate);
 

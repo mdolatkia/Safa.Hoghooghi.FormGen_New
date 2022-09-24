@@ -75,7 +75,7 @@ namespace MyUILibrary.DataViewArea
             {
                 lastListView = SelectedListView.ID;
                 ViewColumnControls.Clear();
-                View.CleraUIControlPackages();
+                View.ClearControls();
                 foreach (var column in SelectedListView.EntityListViewAllColumns.OrderBy(x => x.OrderID))
                 {
                     var propertyControl = new SimpleViewColumnControl() { ListViewColumn = column };
@@ -99,7 +99,7 @@ namespace MyUILibrary.DataViewArea
                 }
                 foreach (var columnControl in ViewColumnControls)
                 {
-                    columnControl.Visited = true;
+                //    columnControl.Visited = true;
                     View.AddUIControlPackage(columnControl.ControlManager, columnControl.LabelControlManager);
                 }
             }

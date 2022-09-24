@@ -17,7 +17,7 @@ namespace MyRules.TableRules.TableDrivedEntity_Relationships.Action
         public ActionResultEnum Execute(object[] objects)
         {
             //فقط بروی مدل دیتابیسی خصوصیات را ست میکند. عملیات سیو باید بیرون از این انجام شود
-            //var context = ObjectExtractor.Extract<MyProjectEntities>(objects);
+            //var context = ObjectExtractor.Extract<MyIdeaEntities>(objects);
             //var entity = ObjectExtractor.Extract<TableDrivedEntity>(objects);
 
             //ModelDataHelper dataHelper = new ModelDataHelper();

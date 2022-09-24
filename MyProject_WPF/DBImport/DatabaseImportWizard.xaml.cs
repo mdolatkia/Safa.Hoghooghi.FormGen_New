@@ -86,19 +86,21 @@ namespace MyProject_WPF
         {
             if (!steps.Any(x => x.Form == FrmEntitySettings))
             {
-                if (await FrmEntitySettingsHasData())
+                //     if (await FrmEntitySettingsHasData())
+                if (FrmEntitySettingsHasData())
                 {
                     steps.Add(new MyProject_WPF.ImportWizardStep() { Index = 7, State = WizrdState.TableFinalSettings, Title = "تنظیمات نهایی موجودیتها", Form = FrmEntitySettings });
                 }
             }
         }
         BizEntitySettings bizEntitySettings = new BizEntitySettings();
-        private Task<bool> FrmEntitySettingsHasData()
+        private bool FrmEntitySettingsHasData()
         {
-            return Task.Run(() =>
-            {
-                return bizEntitySettings.EntityWithoutSetting(Database.ID);
-            });
+            //    return Task.Run(() =>
+            //     {
+            BizEntitySettings bizEntitySettings1 = new BizEntitySettings();
+            return bizTableDrivedEntity.EntityWithoutSetting(Database.ID);
+            //   });
         }
 
         private async void CheckNavigationTree()

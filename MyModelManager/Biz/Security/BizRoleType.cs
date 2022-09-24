@@ -14,7 +14,7 @@ namespace MyModelManager
     {
         public List<RoleTypeDTO> GetAllRoleTypes()
         {
-            var context = new MyProjectEntities();
+            var context = new MyIdeaEntities();
             var roleTypes = context.RoleType;
             List<RoleTypeDTO> result = new List<RoleTypeDTO>();
             foreach (var item in roleTypes)
@@ -38,7 +38,7 @@ namespace MyModelManager
         //}
         public RoleTypeDTO GetRoleType(int roleTypeID)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var role = context.RoleType.First(x => x.ID == roleTypeID);
                 return ToRoleTypeDTO(role);
@@ -58,7 +58,7 @@ namespace MyModelManager
 
         public void SaveRoleTypes(List<RoleTypeDTO> roleTypes)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var ids = roleTypes.Select(x => x.ID).ToList();
                 var removeList = context.RoleType.Where(x => !ids.Contains(x.ID)).ToList();

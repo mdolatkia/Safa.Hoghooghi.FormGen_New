@@ -16,7 +16,7 @@ namespace MyModelManager
         public List<EntityStateDTO> GetEntityStates(DR_Requester requester, int entityID, bool withDetails)
         {
             List<EntityStateDTO> result = new List<EntityStateDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityState = projectContext.TableDrivedEntityState.Where(x => x.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityState)
@@ -28,7 +28,7 @@ namespace MyModelManager
         //public List<EntityStateDTO> GetPreservableEntityStates(int entityID, bool withDetails)
         //{
         //    List<EntityStateDTO> result = new List<EntityStateDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var listEntityState = projectContext.TableDrivedEntityState.Where(x => x.TableDrivedEntityID == entityID && x.Preserve == true);
         //        foreach (var item in listEntityState)
@@ -41,7 +41,7 @@ namespace MyModelManager
         //public List<EntityStateDTO> GetEntityStatesWithServerSideActionActivities(int entityID, bool withDetails)
         //{
         //    List<EntityStateDTO> result = new List<EntityStateDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var listEntityState = projectContext.TableDrivedEntityState.Where(x => x.TableDrivedEntityID == entityID);
         //        listEntityState = listEntityState.Where(x => x.EntityState_ActionActivity.Any(y => y.ActionActivity.Type == 0 || y.ActionActivity.Type == 1) || x.Preserve == true);
@@ -57,7 +57,7 @@ namespace MyModelManager
         public EntityStateDTO GetEntityState(DR_Requester requester, int entityStatesID, bool withDetails)
         {
             List<EntityStateDTO> result = new List<EntityStateDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var EntityStates = projectContext.TableDrivedEntityState.First(x => x.ID == entityStatesID);
                 return ToEntityStateDTO(requester, EntityStates, withDetails);
@@ -66,7 +66,7 @@ namespace MyModelManager
         //public bool EntityHasState(DP_DataRepository dataItem, int stateID)
         //{
         //    if (dataItem != null)
-        //        using (var projectContext = new DataAccess.MyProjectEntities())
+        //        using (var projectContext = new DataAccess.MyIdeaEntities())
         //        {
         //            var foundDataItem = GetDataItem(projectContext, dataItem);
         //            if (foundDataItem != null)
@@ -79,7 +79,7 @@ namespace MyModelManager
         //public bool EntityHasState(DP_DataRepository dataItem, string state)
         //{
 
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var foundDataItem = GetDataItem(projectContext, dataItem);
         //        if (foundDataItem != null)
@@ -90,7 +90,7 @@ namespace MyModelManager
         //    return false;
         //}
 
-        //private DataItem GetDataItem(DataAccess.MyProjectEntities projectContext, DP_DataRepository dataItem)
+        //private DataItem GetDataItem(DataAccess.MyIdeaEntities projectContext, DP_DataRepository dataItem)
         //{
         //    if (dataItem != null)
         //    {
@@ -189,7 +189,7 @@ namespace MyModelManager
 
         //public void ClearAndSaveStates(DataItemState item)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var foundDataItem = GetDataItem(projectContext, item.DataItem);
         //        if (foundDataItem != null)
@@ -210,7 +210,7 @@ namespace MyModelManager
 
         public int UpdateEntityStates(EntityStateDTO EntityState)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //if (EntityState.RelationshipTailID != 0)
 

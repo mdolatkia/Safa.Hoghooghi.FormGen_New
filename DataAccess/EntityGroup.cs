@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class EntityGroup
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntityGroup()
         {
             this.EntityGroup_Relationship = new HashSet<EntityGroup_Relationship>();
@@ -24,8 +25,10 @@ namespace DataAccess
         public string Name { get; set; }
         public int ProcessID { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityGroup_Relationship> EntityGroup_Relationship { get; set; }
         public virtual Process Process { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransitionAction_EntityGroup> TransitionAction_EntityGroup { get; set; }
     }
 }

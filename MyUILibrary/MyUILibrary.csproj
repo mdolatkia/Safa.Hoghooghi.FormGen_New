@@ -160,7 +160,6 @@
     <Compile Include="Interfaces\SearchEntityArea\Interfaces\I_View_SearchEntityArea.cs" />
     <Compile Include="Interfaces\SearchEntityArea\SearchEntityAreaInitializer.cs" />
     <Compile Include="Interfaces\SearchEntityArea\Temp.cs" />
-    <Compile Include="Interfaces\SearchViewEntityArea\Interfaces\I_SearchViewEntityArea.cs" />
     <Compile Include="Interfaces\SearchViewEntityArea\Interfaces\I_View_SearchViewEntityArea.cs" />
     <Compile Include="Interfaces\SearchViewEntityArea\SearchViewAreaInitializer.cs" />
     <Compile Include="Interfaces\Temp\AG_CommandExecutionRequest.cs" />
@@ -194,7 +193,6 @@
     <Compile Include="EntityArea\SearchEntityArea\SearchEntityArea.cs" />
     <Compile Include="EntityArea\SearchEntityArea\RawSearchEntityArea.cs" />
     <Compile Include="EntityArea\SearchEntityArea\SimpleSearchEntityArea.cs" />
-    <Compile Include="EntityArea\SearchViewEntityArea\SearchViewEntityArea.cs" />
     <Compile Include="EntityArea\RelationshipFilterManager.cs" />
     <Compile Include="EntityArea\UIValidationManager.cs" />
     <Compile Include="EntityArea\UIFomulaManager.cs" />

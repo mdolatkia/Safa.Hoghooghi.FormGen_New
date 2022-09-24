@@ -98,16 +98,15 @@ namespace MyUILibrary.DataViewArea
         {
             if (SearchEntityArea == null)
             {
-                SearchEntityArea = new SearchEntityArea();
-                var searchViewInitializer = new SearchEntityAreaInitializer();
+                
+                var searchViewInitializer = new SearchAreaInitializer();
 
                 searchViewInitializer.EntityID = AreaInitializer.EntityID;
                 //if (AreaInitializer.Entitiy==null)
                 //{
                 //    AreaInitializer.Entitiy = AgentUICoreMediator.GetAgentUICoreMediator.GetEntity(AreaInitializer.EntitiyID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships, false, false);
                 //}
-
-                SearchEntityArea.SetAreaInitializer(searchViewInitializer);
+                SearchEntityArea = new SearchEntityArea(searchViewInitializer);
                 //SearchEntityArea.GenerateSearchView();
                 SearchEntityArea.SearchDataDefined += SearchEntityArea_SearchDataDefined;
 

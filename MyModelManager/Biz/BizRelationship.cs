@@ -21,7 +21,7 @@ namespace MyModelManager
 
         //public bool ReverseRelationshipIsMandatory(int relationshipID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var reverseRelatoinship = GetAllRelationships(context, false, false).First(x => x.RelationshipID == relationshipID || x.Relationship1.Any(y => y.ID == relationshipID));
         //        //حالات دیگر افزوده شود
@@ -58,7 +58,7 @@ namespace MyModelManager
         //{
         //    BizColumn bizColumn = new BizColumn();
         //    List<Tuple<ColumnDTO, ColumnDTO>> result = new List<Tuple<ColumnDTO, ColumnDTO>>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var relationship = projectContext.Relationship.First(x => x.ID == sourceRelationshipID);
         //        foreach (var relcolumn in relationship.RelationshipColumns)
@@ -69,7 +69,7 @@ namespace MyModelManager
         //    return result;
         //}
 
-        public IQueryable<Relationship> GetAllRelationships(MyProjectEntities projectContext, bool includedTables, bool evenDisabled)
+        public IQueryable<Relationship> GetAllRelationships(MyIdeaEntities projectContext, bool includedTables, bool evenDisabled)
         {
             IQueryable<Relationship> relationships = null;
             //** e5f2c46e-fe5d-4f6d-b0ba-8a8242e6eb63
@@ -90,7 +90,7 @@ namespace MyModelManager
         public List<RelationshipDTO> GetOrginalRelationships(int databaseID)
         {
             List<RelationshipDTO> result = new List<RelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var relationships = GetAllRelationships(projectContext, true, true)
                     .Where(x => x.MasterTypeEnum == (byte)Enum_MasterRelationshipType.FromPrimartyToForeign && x.IsOrginal && x.TableDrivedEntity1.Table.DBSchema.DatabaseInformationID == databaseID).ToList();
@@ -107,7 +107,7 @@ namespace MyModelManager
 
         //public bool OrginalRelationshipExists(RelationshipDTO item, int databaseID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
 
         //    }
@@ -121,7 +121,7 @@ namespace MyModelManager
         //public List<RelationshipDTO> GetEnabledOrginalRelationships(int databaseID)
         //{
         //    List<RelationshipDTO> result = new List<RelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbRel = GetRelationships(projectContext).Where(x => x.Enabled == true && x.MasterTypeEnum == (byte)Enum_MasterRelationshipType.FromPrimartyToForeign && x.TableDrivedEntity.Table.DBSchema.DatabaseInformationID == databaseID && x.TableDrivedEntity1.Table.DBSchema.DatabaseInformationID == databaseID && x.Created != true);
         //        foreach (var item in dbRel)
@@ -132,7 +132,7 @@ namespace MyModelManager
         public List<RelationshipDTO> GetEnabledRelationships(int databaseID)
         {
             List<RelationshipDTO> result = new List<RelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbRel = GetAllRelationships(projectContext, true, false).Where(x => x.TableDrivedEntity.Table.DBSchema.DatabaseInformationID == databaseID && x.TableDrivedEntity1.Table.DBSchema.DatabaseInformationID == databaseID);
 
@@ -146,7 +146,7 @@ namespace MyModelManager
             List<RelationshipDTO> result = new List<RelationshipDTO>();
             var pkToFk = (byte)Enum_MasterRelationshipType.FromPrimartyToForeign;
             var fkToPK = (byte)Enum_MasterRelationshipType.FromForeignToPrimary;
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbRel = GetAllRelationships(projectContext, true, false).Where(x => x.TableDrivedEntity.Table.DBSchema.DatabaseInformationID == databaseID && x.TableDrivedEntity1.Table.DBSchema.DatabaseInformationID == databaseID
                 && ((x.MasterTypeEnum == pkToFk && x.RelationshipType.PKToFKDataEntryEnabled == true) || (x.MasterTypeEnum == fkToPK && x.RelationshipColumns.Any(y => y.Column.DataEntryEnabled))));
@@ -157,7 +157,7 @@ namespace MyModelManager
         }
         //public RelationshipDTO GetOrginalRelationship(RelationshipDTO item, int databaseID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbRel = GetRelationships(projectContext).First(x => x.TableDrivedEntity.Table.Name == item.Entity1 && x.TableDrivedEntity1.Table.Name == item.Entity2
         //          && x.TableDrivedEntity.Table.DBSchema.DatabaseInformationID == databaseID && x.TableDrivedEntity1.Table.DBSchema.DatabaseInformationID == databaseID
@@ -172,7 +172,7 @@ namespace MyModelManager
         //public int GetOtherSideTableID(int relationshipID)
         //{
         //    RelationshipDTO result = new RelationshipDTO();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var relationship = projectContext.Relationship.First(x => x.ID == relationshipID);
         //        return relationship.TableDrivedEntity1.TableID;
@@ -181,7 +181,7 @@ namespace MyModelManager
         //public int GetOtherSideEntityID(int relationshipID)
         //{
         //    RelationshipDTO result = new RelationshipDTO();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var relationship = projectContext.Relationship.First(x => x.ID == relationshipID);
         //        return relationship.TableDrivedEntityID2;
@@ -193,7 +193,7 @@ namespace MyModelManager
             //if (cachedItem != null)
             //    return (cachedItem as RelationshipDTO);
             RelationshipDTO result = new RelationshipDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //اینجا اگه رابطه ریمو یا غیر فعال شده باشه چی، خطا میده
                 var relationship = GetAllRelationships(projectContext, true, false).First(x => x.ID == relationshipID);
@@ -203,7 +203,7 @@ namespace MyModelManager
         //public RelationshipDTO GetReverseRelationship(int relationshipID)
         //{
         //    RelationshipDTO result = new RelationshipDTO();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbRelationship = GetRelationships(projectContext).First(x => x.ID == relationshipID);
         //        if (dbRelationship.Relationship2 != null)
@@ -249,7 +249,7 @@ namespace MyModelManager
                 }
 
             }
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 Relationship dbRelationship = null;
                 if (message.ID == 0)
@@ -437,7 +437,7 @@ namespace MyModelManager
         }
         public bool DataIsAccessable(DR_Requester requester, int relationshipID, bool checkFirstSideEntity, bool checkSecondSideEntity)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var relationship = GetAllRelationships(projectContext, false, false).First(x => x.ID == relationshipID);
                 return DataIsAccessable(requester, relationship, checkFirstSideEntity, checkSecondSideEntity);
@@ -513,7 +513,7 @@ namespace MyModelManager
         }
         public bool DataIsReadonly(DR_Requester requester, int relationshipID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var relationship = GetAllRelationships(projectContext, false, false).First(x => x.ID == relationshipID);
                 return DataIsReadonly(requester, relationship);
@@ -562,7 +562,7 @@ namespace MyModelManager
         public List<RelationshipDTO> GetRelationshipsByEntityID(int entityID)
         {
             List<RelationshipDTO> result = new List<RelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var relationships = GetAllRelationships(projectContext, true, true)
                     .Where(x => x.TableDrivedEntityID1 == entityID).ToList();
@@ -577,7 +577,7 @@ namespace MyModelManager
         public void UpdateModel(DR_Requester requester, int databaseID, List<RelationshipDTO> listNew, List<RelationshipDTO> listDeleted, List<RelationshipDTO> listEdited)
         {
             //** 692519c2-03ff-4b25-b7f8-58069fb34622
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //foreach (var newRel in listNew)
                 //{
@@ -604,7 +604,7 @@ namespace MyModelManager
                 projectContext.SaveChanges();
             }
         }
-        private List<Tuple<Relationship, Relationship>> UpdateRelationshipInModel(DR_Requester requester, MyProjectEntities projectContext, int databaseID, List<RelationshipDTO> listNew, List<RelationshipDTO> listEdited)
+        private List<Tuple<Relationship, Relationship>> UpdateRelationshipInModel(DR_Requester requester, MyIdeaEntities projectContext, int databaseID, List<RelationshipDTO> listNew, List<RelationshipDTO> listEdited)
         {
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
 
@@ -831,7 +831,7 @@ namespace MyModelManager
 
         public void DeleteRelationship(int relationshipID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbrelationship = GetAllRelationships(projectContext, false, true).First(x => x.ID == relationshipID);
                 var dbReverse = dbrelationship.Relationship2;
@@ -849,7 +849,7 @@ namespace MyModelManager
                 projectContext.SaveChanges();
             }
         }
-        void DeleteRelationship(MyProjectEntities projectContext, Relationship dbrelationship)
+        void DeleteRelationship(MyIdeaEntities projectContext, Relationship dbrelationship)
         {
             //**745a78eb-4053-4a01-8bc9-7637d8132422
             // var dbrelationship = projectContext.Relationship.First(x => x.ID == relationshipID);
@@ -877,7 +877,7 @@ namespace MyModelManager
 
             }
         }
-        void DeleteRelationshipType(MyProjectEntities projectContext, RelationshipType dbRelationshipType)
+        void DeleteRelationshipType(MyIdeaEntities projectContext, RelationshipType dbRelationshipType)
         {
             if (dbRelationshipType.ExplicitOneToOneRelationshipType != null)
                 projectContext.ExplicitOneToOneRelationshipType.Remove(dbRelationshipType.ExplicitOneToOneRelationshipType);
@@ -901,7 +901,7 @@ namespace MyModelManager
 
 
         }
-        private Tuple<Relationship, Relationship> GetModelRelationship(MyProjectEntities projectContext, RelationshipDTO relationship, List<TableDrivedEntityDTO> entities)
+        private Tuple<Relationship, Relationship> GetModelRelationship(MyIdeaEntities projectContext, RelationshipDTO relationship, List<TableDrivedEntityDTO> entities)
         {
             var dbRelationship = new Relationship();
             dbRelationship.SecurityObject = new SecurityObject();
@@ -981,7 +981,7 @@ namespace MyModelManager
 
         //public void UpdateRelationshipProperties(int databaseID, List<RelationshipDTO> listEntities)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        foreach (var item in listEntities)
         //        {
@@ -999,7 +999,7 @@ namespace MyModelManager
         //public List<RelationshipDTO> GetOneToManyDataEntryNotEnabledRelationships(int databaseID)
         //{
         //    List<RelationshipDTO> result = new List<RelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
 
         //        var dblist = GetRelationships(projectContext).Where(x => (x.TypeEnum == 2)
@@ -1031,7 +1031,7 @@ namespace MyModelManager
         //public List<RelationshipImportItem> GetEnabledNotReviewedRelationships(int databaseID)
         //{
         //    List<RelationshipImportItem> result = new List<RelationshipImportItem>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        List<RelationshipDTO> list = new List<RelationshipDTO>();
         //        var dblist = GetRelationships(projectContext).Where(x => (x.TypeEnum == 2 || x.TypeEnum == 4 || x.TypeEnum == 1 || x.TypeEnum == 3)
@@ -1061,11 +1061,11 @@ namespace MyModelManager
         //    return result;
         //}
 
-        internal Tuple<Relationship, Relationship> CopyRelationshipTuple(MyProjectEntities projectContext, Relationship dbRelationship)
+        internal Tuple<Relationship, Relationship> CopyRelationshipTuple(MyIdeaEntities projectContext, Relationship dbRelationship)
         {
             return new Tuple<Relationship, Relationship>(CopyRelationship(projectContext, dbRelationship), CopyRelationship(projectContext, dbRelationship.Relationship2));
         }
-        private Relationship CopyRelationship(MyProjectEntities projectContext, Relationship dbRelationship)
+        private Relationship CopyRelationship(MyIdeaEntities projectContext, Relationship dbRelationship)
         {
             Relationship newRelationship = new Relationship();
             newRelationship.SecurityObject = new SecurityObject();
@@ -1164,7 +1164,7 @@ namespace MyModelManager
         //private void ImposeSingleRelationshipType(RelationshipDTO relationshipdto, RelationInfo relationInfo)
         //{
         //    //حتما بررسی و یکی شود با ویزارد
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var relationship = projectContext.Relationship.First(x => x.ID == relationshipdto.ID);
         //        if (relationship.RelationshipType == null)
@@ -1238,7 +1238,7 @@ namespace MyModelManager
 
         //internal bool IsRelationshipEnabled(int relationshipID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entity = projectContext.Relationship.First(x => x.ID == relationshipID);
         //        return entity.Enabled == true;
@@ -1288,7 +1288,7 @@ namespace MyModelManager
         //private void ImposeISARelationshipType(Tuple<TableDrivedEntityDTO, List<Tuple<RelationshipDTO, TableDrivedEntityDTO>>> isaRelationship, ISARelationshipDetail isaRelationshipDetails)
         //{
         //    //شناسایی دسته جمعی توسط موجودیت پدر
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        foreach (var item in isaRelationship.Item2)
         //        {
@@ -1351,7 +1351,7 @@ namespace MyModelManager
         //public int GetReverseRelationshipID(int relationshipID)
         //{
 
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbRelationship = projectContext.Relationship.First(x => x.ID == relationshipID);
         //        if (dbRelationship.Relationship2 != null)
@@ -1389,7 +1389,7 @@ namespace MyModelManager
         public List<RelationshipDTO> GetRelationshipsByTableID(int tableID)
         {
             List<RelationshipDTO> result = new List<RelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = GetAllRelationships(projectContext, true, false).Where(x => x.TableDrivedEntity.TableID == tableID || x.TableDrivedEntity1.TableID == tableID);
                 foreach (var item in list)
@@ -1402,7 +1402,7 @@ namespace MyModelManager
         //public List<RelationshipDTO> GetRelationshipsByTableIDasSource(int tableID)
         //{
         //    List<RelationshipDTO> result = new List<RelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = GetRelationships(projectContext).Where(x => x.TableDrivedEntity.TableID == tableID);
         //        foreach (var item in list)
@@ -1415,7 +1415,7 @@ namespace MyModelManager
         //public List<RelationshipDTO> GetRelationships(int databaseID)
         //{
         //    List<RelationshipDTO> result = new List<RelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        //string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
         //        var list = GetRelationships(projectContext, true).Where(x => x.TableDrivedEntity.Table.DBSchema.DatabaseInformationID == databaseID);
@@ -1430,7 +1430,7 @@ namespace MyModelManager
         //public List<RelationshipDTO> GetRelationshipsByEntityIDBothSides(int tableDrivedEntityID)
         //{
         //    List<RelationshipDTO> result = new List<RelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.Relationship.Where(x => x.TableDrivedEntityID1 == tableDrivedEntityID || x.TableDrivedEntityID2 == tableDrivedEntityID);
         //        foreach (var item in list)
@@ -1443,7 +1443,7 @@ namespace MyModelManager
         //public List<RelationshipDTO> GetRelationshipsByEntityID(int tableDrivedEntityID)
         //{
         //    List<RelationshipDTO> result = new List<RelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.Relationship.Where(x => x.TableDrivedEntityID1 == tableDrivedEntityID);
         //        foreach (var item in list)
@@ -1457,7 +1457,7 @@ namespace MyModelManager
         //public List<RelationshipDTO> GetRelationshipsBetweenEntities(int firstEntityID, int secondEnitityID)
         //{
         //    List<RelationshipDTO> result = new List<RelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.Relationship.Where(x => x.TableDrivedEntityID1 == firstEntityID && x.TableDrivedEntityID2 == secondEnitityID);
         //        foreach (var item in list)
@@ -1471,7 +1471,7 @@ namespace MyModelManager
         //public List<RelationshipDTO> GetRelationshipsByEntityIDasSource(int tableDrivedEntityID)
         //{
         //    List<RelationshipDTO> result = new List<RelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.Relationship.Where(x => x.TableDrivedEntityID1 == tableDrivedEntityID);
         //        foreach (var item in list)
@@ -1483,7 +1483,7 @@ namespace MyModelManager
         //}
         public void UpdateRelationships(List<RelationshipDTO> relationships)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in relationships)
                 {
@@ -1492,7 +1492,7 @@ namespace MyModelManager
                 projectContext.SaveChanges();
             }
         }
-        private Relationship ToRelationshipDB(RelationshipDTO item, MyProjectEntities projectContext)
+        private Relationship ToRelationshipDB(RelationshipDTO item, MyIdeaEntities projectContext)
         {
             //** 3424ff73-1465-4872-aa31-c2cecbba5f18
             var dbRelationship = GetAllRelationships(projectContext, true, false).First(x => x.ID == item.ID);
@@ -1790,7 +1790,7 @@ namespace MyModelManager
 
         public bool RelationshipIsNotNulable(int relationshipID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbRelationship = GetAllRelationships(projectContext, true, false).First(x => x.ID == relationshipID);
                 return dbRelationship.RelationshipColumns.Any(y => y.Column.PrimaryKey == false && y.Column.IsNull == false);
@@ -1803,13 +1803,13 @@ namespace MyModelManager
         //public void ImposeRelationshipRule(int databaseID)
         //{
         //    //string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
-        //    //MyProjectEntities context = new MyProjectEntities();
+        //    //MyIdeaEntities context = new MyIdeaEntities();
         //    //context.Configuration.LazyLoadingEnabled = true;
         //    //var list = context.TableDrivedEntity.Where(x => x.Table.DBSchema.DatabaseInformationID == databaseID);
 
         //    int index = 0;
         //    BizTableDrivedEntity bizEntity = new MyModelManager.BizTableDrivedEntity();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var listEntity = projectContext.TableDrivedEntity.Where(x => x.Table.DBSchema.DatabaseInformationID == databaseID);
         //        var count = listEntity.Count();
@@ -1848,7 +1848,7 @@ namespace MyModelManager
         //public List<OneToManyRelationshipDTO> GetOneToManyRelationships(int databaseID)
         //{
         //    List<OneToManyRelationshipDTO> result = new List<OneToManyRelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        //projectContext.Configuration.LazyLoadingEnabled = false;
         //        //string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -1880,7 +1880,7 @@ namespace MyModelManager
         }
         //public void UpdateOneToManyRelationships(List<OneToManyRelationshipDTO> relationships)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        foreach (var relationship in relationships)
         //        {
@@ -1904,7 +1904,7 @@ namespace MyModelManager
         //public List<ManyToOneRelationshipDTO> GetManyToOneRelationships(int databaseID)
         //{
         //    List<ManyToOneRelationshipDTO> result = new List<ManyToOneRelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        //projectContext.Configuration.LazyLoadingEnabled = false;
         //        //string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -1932,7 +1932,7 @@ namespace MyModelManager
         }
         //public void UpdateManyToOneRelationships(List<ManyToOneRelationshipDTO> relationships)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        foreach (var relationship in relationships)
         //        {
@@ -1955,7 +1955,7 @@ namespace MyModelManager
         //public List<ExplicitOneToOneRelationshipDTO> GetExplicitOneToOneRelationships(int databaseID)
         //{
         //    List<ExplicitOneToOneRelationshipDTO> result = new List<ExplicitOneToOneRelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        //projectContext.Configuration.LazyLoadingEnabled = false;
         //        //string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -1982,7 +1982,7 @@ namespace MyModelManager
         }
         //public void UpdateExplicitOneToOneRelationships(List<ExplicitOneToOneRelationshipDTO> relationships)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        foreach (var relationship in relationships)
         //        {
@@ -2004,7 +2004,7 @@ namespace MyModelManager
         //public List<ImplicitOneToOneRelationshipDTO> GetImplicitOneToOneRelationships(int databaseID)
         //{
         //    List<ImplicitOneToOneRelationshipDTO> result = new List<ImplicitOneToOneRelationshipDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        //projectContext.Configuration.LazyLoadingEnabled = false;
         //        //string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
@@ -2032,7 +2032,7 @@ namespace MyModelManager
         }
         //public void UpdateImplicitOneToOneRelationships(List<ImplicitOneToOneRelationshipDTO> relationships)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        foreach (var relationship in relationships)
         //        {
@@ -2056,7 +2056,7 @@ namespace MyModelManager
 
         public void RemoveManyToManyRelationships(int manyToManyID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var manyToOneDB = projectContext.ManyToManyRelationshipType.First(x => x.ID == manyToManyID);
                 while (manyToOneDB.ManyToOneRelationshipType.Any())
@@ -2068,7 +2068,7 @@ namespace MyModelManager
         }
         public void CreateManyToManyRelationships()
         {
-            //using (var projectContext = new DataAccess.MyProjectEntities())
+            //using (var projectContext = new DataAccess.MyIdeaEntities())
             //{
             //    ManyToManyRelationshipType manyToManyRelationshipType = new ManyToManyRelationshipType();
             //    manyToManyRelationshipType.Name = e.Name;
@@ -2089,7 +2089,7 @@ namespace MyModelManager
         public void UpdateManyToManyRelationships(List<ManyToManyRelationshipDTO> relationships)
         {
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var relationship in relationships)
                 {
@@ -2104,7 +2104,7 @@ namespace MyModelManager
         public List<ManyToManyRelationshipDTO> GetManyToManyRelationships(int databaseID)
         {
             List<ManyToManyRelationshipDTO> result = new List<ManyToManyRelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 // string catalogName = GeneralHelper.GetCatalogName(databaseID);
@@ -2128,7 +2128,7 @@ namespace MyModelManager
         public List<ManyToOneRelationshipDTO> GetManyToMany_ManyToOneRelationships(int manyToManyId)
         {
             List<ManyToOneRelationshipDTO> result = new List<ManyToOneRelationshipDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //projectContext.Configuration.LazyLoadingEnabled = false;
                 var manyToOneList = projectContext.ManyToOneRelationshipType.Where(x => x.ManyToManyRelationshipTypeID == manyToManyId);
@@ -2150,7 +2150,7 @@ namespace MyModelManager
         //فقط اصلی به فرعی
         //public bool RelationshipHasManyData(RelationshipDTO relationship)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        ModelDataHelper dataHelper = new ModelDataHelper();
         //        var entityInfo = dataHelper.GetRelationshipsInfo(relationship.ID);
@@ -2167,7 +2167,7 @@ namespace MyModelManager
             //** 676102fe-fb75-4179-afaf-3873a3e8ce77
             //بعدا بررسی شود
             //خصوصیات مثل اجباری بودن به هنگام تبدیل تغییر نکند
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 Relationship dbPKtoFKRelationship = null;
                 Relationship dbFKtoPKRelationship = null;
@@ -2270,7 +2270,7 @@ namespace MyModelManager
 
         //public void ConvertManyToOneToExplicit(RelationshipDTO relationship, Enum_RelationshipType targetRaltionshipType, int isaRelationshipID = 0, int unionRelationshipID = 0)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbFKtoPKRelationship = projectContext.Relationship.First(x => x.ID == relationship.ID);
         //        var dbPKtoFKRelationship = dbFKtoPKRelationship.Relationship2;
@@ -2309,7 +2309,7 @@ namespace MyModelManager
         //}
         //public void ConvertManyToOneToSubToSuper(RelationshipDTO relationship, int ISARelationshipID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbFKtoPKRelationship = projectContext.Relationship.First(x => x.ID == relationship.ID);
         //        var dbPKtoFKRelationship = dbFKtoPKRelationship.Relationship2;
@@ -2333,7 +2333,7 @@ namespace MyModelManager
         //}
         //public void ConvertManyToOneToSubUnionToUnion(RelationshipDTO relationship, int UnionRelationshipID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbPKtoFKRelationship = projectContext.Relationship.First(x => x.ID == relationship.ID);
         //        var dbFKtoPKRelationship = projectContext.Relationship.First(x => x.RelationshipID == dbPKtoFKRelationship.ID);
@@ -2358,7 +2358,7 @@ namespace MyModelManager
 
         //public void ConvertManyToOneToUnionToSubUnion(RelationshipDTO relationship, int UnionRelationshipID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbPKtoFKRelationship = projectContext.Relationship.First(x => x.ID == relationship.ID);
         //        var dbFKtoPKRelationship = projectContext.Relationship.First(x => x.RelationshipID == dbPKtoFKRelationship.ID);
@@ -2382,7 +2382,7 @@ namespace MyModelManager
         //}
         //public void ConvertRelationship(RelationshipDTO relationship)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
 
         //        if (convertType == "OneToMany_ImplicitOneToOne"

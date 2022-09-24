@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class ISARelationship
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ISARelationship()
         {
             this.SubToSuperRelationshipType = new HashSet<SubToSuperRelationshipType>();
@@ -28,7 +29,9 @@ namespace DataAccess
         public bool IsDisjoint { get; set; }
         public Nullable<bool> InternalTable { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SubToSuperRelationshipType> SubToSuperRelationshipType { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SuperToSubRelationshipType> SuperToSubRelationshipType { get; set; }
     }
 }

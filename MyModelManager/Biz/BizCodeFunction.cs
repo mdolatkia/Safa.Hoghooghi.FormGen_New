@@ -15,7 +15,7 @@ namespace MyModelManager
         //public List<CodeFunctionDTO> GetCodeFunctionsByEntityID(DR_Requester requester, int entityID)
         //{
         //    List<CodeFunctionDTO> result = new List<CodeFunctionDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        IQueryable<CodeFunction> listCodeFunction;
         //        listCodeFunction = projectContext.CodeFunction.Where(x => x.CodeFunction_TableDrivedEntity.Any(y => y.TableDrivedEntityID == entityID));
@@ -29,7 +29,7 @@ namespace MyModelManager
         public List<CodeFunctionDTO> GetAllCodeFunctions(DR_Requester requester, string generalFilter, List<Enum_CodeFunctionParamType> paramTypes)
         {
             List<CodeFunctionDTO> result = new List<CodeFunctionDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 IQueryable<CodeFunction> listCodeFunction;
                 listCodeFunction = projectContext.CodeFunction;
@@ -54,7 +54,7 @@ namespace MyModelManager
         public List<CodeFunctionDTO> GetCodeFunctions(List<Enum_CodeFunctionParamType> paramTypes)
         {
             List<CodeFunctionDTO> result = new List<CodeFunctionDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 IQueryable<CodeFunction> listCodeFunction;
                 // if (string.IsNullOrEmpty(catalog))
@@ -76,7 +76,7 @@ namespace MyModelManager
         public CodeFunctionDTO GetCodeFunction(DR_Requester requester, int CodeFunctionsID)
         {
             List<CodeFunctionDTO> result = new List<CodeFunctionDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var CodeFunctions = projectContext.CodeFunction.First(x => x.ID == CodeFunctionsID);
                 return ToCodeFunctionDTO(CodeFunctions, true);
@@ -108,7 +108,7 @@ namespace MyModelManager
         }
         public int UpdateCodeFunctions(CodeFunctionDTO CodeFunction)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbCodeFunction = projectContext.CodeFunction.FirstOrDefault(x => x.ID == CodeFunction.ID);
                 if (dbCodeFunction == null)
@@ -215,7 +215,7 @@ namespace MyModelManager
         public List<CodeFunctionColumnDTO> GetCodeFunctionParameters(int functionID)
         {
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var CodeFunction = projectContext.CodeFunction.First(x => x.ID == functionID);
                 return ToCodeFunctionParameterDTO(CodeFunction);
@@ -234,7 +234,7 @@ namespace MyModelManager
 
         //public CodeFunction_EntityDTO GetCodeFunctionEntity(int functionEntityID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var CodeFunctions = projectContext.CodeFunction_TableDrivedEntity.First(x => x.ID == functionEntityID);
         //        return ToCodeFunction_EntityDTO(CodeFunctions, true);
@@ -243,7 +243,7 @@ namespace MyModelManager
         public List<CodeFunction_EntityDTO> GetCodeFunctionEntityByEntityID(DR_Requester requester, int entityID)
         {
             List<CodeFunction_EntityDTO> result = new List<CodeFunction_EntityDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var CodeFunctions = projectContext.CodeFunction_TableDrivedEntity.Where(x => x.TableDrivedEntityID == entityID);
                 foreach (var item in CodeFunctions)
@@ -254,7 +254,7 @@ namespace MyModelManager
         //public CodeFunction_EntityDTO GetCodeFunctionEntity(DR_Requester requester, int codeFunctionID, int entityID)
         //{
 
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var CodeFunctions = projectContext.CodeFunction_TableDrivedEntity.FirstOrDefault(x => x.CodeFunctionID == codeFunctionID && x.TableDrivedEntityID == entityID);
         //        if (CodeFunctions != null)
@@ -266,7 +266,7 @@ namespace MyModelManager
         public CodeFunction_EntityDTO GetCodeFunctionEntity(DR_Requester requester, int codeFunctionEntityID)
         {
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var CodeFunctions = projectContext.CodeFunction_TableDrivedEntity.FirstOrDefault(x => x.ID == codeFunctionEntityID);
                 if (CodeFunctions != null)
@@ -278,7 +278,7 @@ namespace MyModelManager
         //public List<CodeFunction_EntityDTO> GetCodeFunctionEntities(int entityID)
         //{
         //    List<CodeFunction_EntityDTO> result = new List<CodeFunction_EntityDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        //projectContext.Configuration.LazyLoadingEnabled = false;
 
@@ -309,7 +309,7 @@ namespace MyModelManager
         //public int GetCodeFunctionEntityID(int entityID, int CodeFunctionID)
         //{
         //    List<CodeFunction_EntityDTO> result = new List<CodeFunction_EntityDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        //projectContext.Configuration.LazyLoadingEnabled = false;
 
@@ -342,7 +342,7 @@ namespace MyModelManager
         }
         //public bool AddCodeFunctionToEntity(int codefuntionID, int entityID, bool showInFormula)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbCodeFunctionEntity = projectContext.CodeFunction_TableDrivedEntity.FirstOrDefault(x => x.TableDrivedEntityID == entityID && x.CodeFunctionID == codefuntionID);
         //        if (dbCodeFunctionEntity == null)
@@ -359,7 +359,7 @@ namespace MyModelManager
         //}
         public int UpdateCodeFunctionEntity(CodeFunction_EntityDTO CodeFunctionEntity)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbCodeFunctionEntity = projectContext.CodeFunction_TableDrivedEntity.FirstOrDefault(x => x.ID == CodeFunctionEntity.ID);
                 if (dbCodeFunctionEntity == null)

@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class SuperToSubRelationshipType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public SuperToSubRelationshipType()
         {
             this.SuperToSubDeterminerValue = new HashSet<SuperToSubDeterminerValue>();
@@ -27,7 +28,9 @@ namespace DataAccess
         public virtual Column Column { get; set; }
         public virtual ISARelationship ISARelationship { get; set; }
         public virtual RelationshipType RelationshipType { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SuperToSubDeterminerValue> SuperToSubDeterminerValue { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TableDrivedEntity> TableDrivedEntity { get; set; }
     }
 }

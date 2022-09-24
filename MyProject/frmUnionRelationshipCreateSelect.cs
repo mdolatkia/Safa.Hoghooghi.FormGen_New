@@ -103,7 +103,7 @@ namespace MyProject
                 return;
             }
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 if (unionRelationship == null)
                     unionRelationship = new DataAccess.UnionRelationshipType();

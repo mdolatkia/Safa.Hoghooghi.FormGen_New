@@ -17,14 +17,30 @@ namespace MyUILibrary.EntityArea
 {
     public class SearchEntityArea : I_SearchEntityArea
     {
-        public SearchEntityArea()
+        public SearchEntityArea(SearchAreaInitializer newAreaInitializer)
         {
+            SearchInitializer = newAreaInitializer;
 
+            //** 0fa106fa-203c-4249-b43b-b5efe4a26994
+            SearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchEntityArea();
+            SimpleSearchEntityArea = new EntityDefinedSearchArea(SearchInitializer);
+            newAreaInitializer.EntitySearchID = newAreaInitializer.EntitySearchID;
+            SimpleSearchEntityArea.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
+            SearchView.AddSimpleSearchView(SimpleSearchEntityArea.SimpleSearchView);
+
+            AdvancedSearchEntityAre = new AdvancedSearchEntityArea(SearchInitializer);
+            AdvancedSearchEntityAre.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
+            SearchView.AddAdvancedSearchView(AdvancedSearchEntityAre.AdvancedSearchView);
+            
+            if (newAreaInitializer.PreDefinedSearch != null)
+            {
+                ShowSearchRepository(newAreaInitializer.PreDefinedSearch);
+            }
         }
 
         public I_View_SearchEntityArea SearchView { set; get; }
 
-        public I_SimpleSearchEntityArea SimpleSearchEntityArea
+        public I_EntityDefinedSearchArea SimpleSearchEntityArea
         {
             set; get;
         }
@@ -34,39 +50,12 @@ namespace MyUILibrary.EntityArea
             set; get;
         }
 
-        public SearchEntityAreaInitializer SearchInitializer { set; get; }
+        public SearchAreaInitializer SearchInitializer { set; get; }
 
         public event EventHandler<SearchDataArg> SearchDataDefined;
 
 
-        public void SetAreaInitializer(SearchEntityAreaInitializer newAreaInitializer)
-        {
-            SearchInitializer = newAreaInitializer;
-
-            SearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchEntityArea();
-            SimpleSearchEntityArea = new SimpleSearchEntityArea();
-            newAreaInitializer.SearchEntityID = newAreaInitializer.SearchEntityID;
-            SimpleSearchEntityArea.SetAreaInitializer(newAreaInitializer);
-            SimpleSearchEntityArea.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
-            SearchView.AddSimpleSearchView(SimpleSearchEntityArea.SimpleSearchView);
-
-            AdvancedSearchEntityAre = new AdvancedSearchEntityArea();
-            AdvancedSearchEntityAre.SetAreaInitializer(newAreaInitializer);
-            AdvancedSearchEntityAre.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
-            SearchView.AddAdvancedSearchView(AdvancedSearchEntityAre.AdvancedSearchView);
-            //if (newAreaInitializer.PreDefinedSearch != null && newAreaInitializer.EditSearchRepository != null)
-            //    throw new Exception("sdfsbvxzcv");
-
-            //بررسی شود دوتاشون میتونن باشن یا خطا باید بده
-            //if (newAreaInitializer.PreDefinedSearch != null)
-            //{
-            //    newAreaInitializer.EditSearchRepository = newAreaInitializer.PreDefinedSearch;
-            //}
-            if (newAreaInitializer.PreDefinedSearch != null)
-            {
-                ShowSearchRepository(newAreaInitializer.PreDefinedSearch);
-            }
-        }
+     
 
         public void ShowSearchRepository(DP_SearchRepository searchRepository)
         {

@@ -56,7 +56,7 @@ namespace MyModelGenerator
             //یوزینگ کانتکست باید بره داخل داخل تا خطا باعث جلوگیری از سیو چنج نشه
             List<TableImportItem> result = new List<TableImportItem>();
 
-            //using (var projectContext = new DataAccess.MyProjectEntities())
+            //using (var projectContext = new DataAccess.MyIdeaEntities())
             //{
             //bool dataBaseInforationExists = false;
             //   var database = projectContext.DatabaseInformation.First(x => x.ID == Database.ID);
@@ -329,7 +329,7 @@ namespace MyModelGenerator
         //    GenericResult<OperationResult> result = new GenericResult<OperationResult>();
         //    try
         //    {
-        //        using (var projectContext = new DataAccess.MyProjectEntities())
+        //        using (var projectContext = new DataAccess.MyIdeaEntities())
         //        {
         //            var list = projectContext.Table.Where(x => !x.TableDrivedEntity.Any(y => y.Criteria == "" || y.Criteria == null));
         //            int count = list.Count();
@@ -389,7 +389,7 @@ namespace MyModelGenerator
 
             using (SqlConnection testConn = new SqlConnection(Database.ConnectionString))
             {
-                //using (var projectContext = new DataAccess.MyProjectEntities())
+                //using (var projectContext = new DataAccess.MyIdeaEntities())
                 //{
                 testConn.Open();
 
@@ -777,7 +777,7 @@ namespace MyModelGenerator
         { //try
           //{
             ImportResult result = new MyModelGenerator.ImportResult();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 using (SqlConnection testConn = new SqlConnection(Database.ConnectionString))
                 {
@@ -865,7 +865,7 @@ namespace MyModelGenerator
         { //try
           //{
             List<TableImportItem> result = new List<TableImportItem>();
-            //using (var projectContext = new DataAccess.MyProjectEntities())
+            //using (var projectContext = new DataAccess.MyIdeaEntities())
             //{
             using (SqlConnection testConn = new SqlConnection(Database.ConnectionString))
             {
@@ -1004,7 +1004,7 @@ namespace MyModelGenerator
         { //try
 
             List<FunctionImportItem> result = new List<FunctionImportItem>();
-            //using (var projectContext = new DataAccess.MyProjectEntities())
+            //using (var projectContext = new DataAccess.MyIdeaEntities())
             //{
             using (SqlConnection testConn = new SqlConnection(Database.ConnectionString))
             {
@@ -1164,7 +1164,7 @@ namespace MyModelGenerator
         public ColumnValueRangeDTO GetColumnValueRange(int columnID)
         {
             ColumnValueRangeDTO result = new ColumnValueRangeDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = projectContext.Column.First(x => x.ID == columnID);
                 using (SqlConnection testConn = new SqlConnection(Database.ConnectionString))

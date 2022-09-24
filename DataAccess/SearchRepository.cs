@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class SearchRepository
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public SearchRepository()
         {
             this.EntitySearchableReport = new HashSet<EntitySearchableReport>();
@@ -30,6 +31,7 @@ namespace DataAccess
         public string Title { get; set; }
     
         public virtual EntitySearch EntitySearch { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntitySearchableReport> EntitySearchableReport { get; set; }
         public virtual LogicPhrase LogicPhrase { get; set; }
         public virtual Relationship Relationship { get; set; }

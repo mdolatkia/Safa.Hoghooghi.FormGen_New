@@ -17,11 +17,12 @@ namespace MyUILibrary.EntityArea
 {
     public class AdvancedSearchEntityArea : I_AdvancedSearchEntityArea
     {
-        public AdvancedSearchEntityArea()
+        public AdvancedSearchEntityArea(SearchAreaInitializer newAreaInitializer)
         {
-            SearchCommands = new List<I_Command>();
+            SearchCommands = new List<I_Command>(); 
+            SearchInitializer = newAreaInitializer;
+            GenerateSearchView();
         }
-
         public I_View_AdvancedSearchEntityArea AdvancedSearchView { set; get; }
 
         public List<I_Command> SearchCommands
@@ -31,7 +32,7 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        public SearchEntityAreaInitializer SearchInitializer { set; get; }
+        public SearchAreaInitializer SearchInitializer { set; get; }
 
         //public event EventHandler<Arg_PackageSelected> DataPackageSelected;
         public event EventHandler<SearchDataArg> SearchDataDefined;
@@ -80,14 +81,7 @@ namespace MyUILibrary.EntityArea
         //    }
         //}
 
-        public void SetAreaInitializer(SearchEntityAreaInitializer newAreaInitializer)
-        {
-            SearchInitializer = newAreaInitializer;
-            //if (SearchInitializer.TempEntity != null)
-            //    _FullEntity = SearchInitializer.TempEntity;
-            GenerateSearchView();
-        }
-
+      
         private void GenerateSearchView()
         {
             AdvancedSearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfAdvancedSearch();
@@ -283,13 +277,14 @@ namespace MyUILibrary.EntityArea
         }
         private void Relationship_ClickedNew(object sender1, EventArgs e1, AdvanceSearchNode node, RelationshipDTO relationship)
         {
-            SearchEntityArea advancedAndRaw = new EntityArea.SearchEntityArea();
-            var searchViewInitializer = new SearchEntityAreaInitializer();
+          
+            var searchViewInitializer = new SearchAreaInitializer();
             searchViewInitializer.EntityID = relationship.EntityID2;
             searchViewInitializer.Title = relationship.Alias;
-            searchViewInitializer.SourceRelationship = relationship;
+           // searchViewInitializer.SourceRelationship = relationship;
+            SearchEntityArea advancedAndRaw = new EntityArea.SearchEntityArea(searchViewInitializer);
             advancedAndRaw.SearchDataDefined += (sender, e) => AdvancedAndRaw_SearchDataDefinedNew(sender, e, relationship, node, advancedAndRaw.SearchView);
-            advancedAndRaw.SetAreaInitializer(searchViewInitializer);
+     
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(advancedAndRaw.SearchView, searchViewInitializer.Title, Enum_WindowSize.Big);
         }
         private void AdvancedAndRaw_SearchDataDefinedNew(object sender, SearchDataArg e, RelationshipDTO relationship, AdvanceSearchNode node, object view)
@@ -303,14 +298,14 @@ namespace MyUILibrary.EntityArea
         }
         private void Relationship_ClickedEdit(object sender1, EventArgs e1, AdvanceSearchNode node, DP_SearchRepository dP_SearchRepository)
         {
-            SearchEntityArea advancedAndRaw = new EntityArea.SearchEntityArea();
-            var searchViewInitializer = new SearchEntityAreaInitializer();
+          
+            var searchViewInitializer = new SearchAreaInitializer();
             searchViewInitializer.PreDefinedSearch = dP_SearchRepository;
             searchViewInitializer.EntityID = dP_SearchRepository.TargetEntityID;
             searchViewInitializer.Title = dP_SearchRepository.Title;
-            searchViewInitializer.SourceRelationship = dP_SearchRepository.SourceRelationship;
+         //   searchViewInitializer.SourceRelationship = dP_SearchRepository.SourceRelationship;
+            SearchEntityArea advancedAndRaw = new EntityArea.SearchEntityArea(searchViewInitializer);
             advancedAndRaw.SearchDataDefined += (sender, e) => AdvancedAndRaw_SearchDataDefinedEdit(sender, e, node, advancedAndRaw.SearchView);
-            advancedAndRaw.SetAreaInitializer(searchViewInitializer);
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(advancedAndRaw.SearchView, searchViewInitializer.Title, Enum_WindowSize.Big);
         }
         private void AdvancedAndRaw_SearchDataDefinedEdit(object sender, SearchDataArg e, AdvanceSearchNode node, object view)
@@ -383,12 +378,12 @@ namespace MyUILibrary.EntityArea
         private void RootAndMenu_Clicked1(object sender1, EventArgs e1, AdvanceSearchNode andOrNode)
         {
 
-            I_RawSearchEntityArea rawSearchEntityArea = new RawSearchEntityArea();
-            var searchViewInitializer = new SearchEntityAreaInitializer();
+      
+            var searchViewInitializer = new SearchAreaInitializer();
             searchViewInitializer.EntityID = SearchInitializer.EntityID;
             //if (SearchInitializer.TempEntity != null && SearchInitializer.TempEntity.ID == SearchInitializer.EntityID)
             //    searchViewInitializer.TempEntity = SearchInitializer.TempEntity;
-            rawSearchEntityArea.SetAreaInitializer(searchViewInitializer);
+            I_RawSearchEntityArea rawSearchEntityArea = new RawSearchEntityArea(searchViewInitializer);
             rawSearchEntityArea.SearchDataDefined += (sender, e) => RawSearchEntityArea_SearchDataDefined(sender, e, andOrNode, rawSearchEntityArea.RawSearchView);
             //lastSearchView = rawSearchEntityArea.RawSearchView;
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(rawSearchEntityArea.RawSearchView, "خصوصیات", Enum_WindowSize.Big);

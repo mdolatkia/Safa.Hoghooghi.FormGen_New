@@ -16,7 +16,7 @@ namespace MyConnectionManager
         //    {
         //        if (request.EditRequest.EditPackages.Count > 0)
         //        {
-        //            using (var context = new MyProjectEntities())
+        //            using (var context = new MyIdeaEntities())
         //            {
         //                var entityID = request.EditRequest.EditPackages[0].TargetEntityID;
         //                var entity = context.TableDrivedEntity.First(x => x.ID == entityID);
@@ -29,7 +29,7 @@ namespace MyConnectionManager
         //    {
         //        if (request.SearchViewRequest.SearchPackages.Count > 0)
         //        {
-        //            using (var context = new MyProjectEntities())
+        //            using (var context = new MyIdeaEntities())
         //            {
         //                var entityID = request.SearchViewRequest.SearchPackages[0].TargetEntityID;
         //                var entity = context.TableDrivedEntity.First(x => x.ID == entityID);

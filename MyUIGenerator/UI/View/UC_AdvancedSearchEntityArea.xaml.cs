@@ -97,7 +97,7 @@ namespace MyUIGenerator.View
         //    get;
         //}
         public bool IsOpenedTemporary { set; get; }
-        public UIControlComposition UIControlPackageTreeItem { set; get; }
+        public EntityUICompositionDTO UICompositionDTO { set; get; }
 
         public void SetTooltip(string tooltip)
         {
@@ -152,6 +152,10 @@ namespace MyUIGenerator.View
             toolbar.Items.Add((item as MyUIGenerator.UIControlHelper.CommandManager).Button);
 
         }
+        public void ClearCommands()
+        {
+            toolbar.Items.Clear();
+        }
         //private void item_EnabledChanged(object sender, EventArgs e, Button btnCommand)
         //{
         //    btnCommand.IsEnabled = (sender as I_Command).Enabled;
@@ -162,6 +166,8 @@ namespace MyUIGenerator.View
         //        CommandExecuted(this, new Arg_CommandExecuted() { Command = (sender as Button).Tag as I_Command });
         //    ////  Controller.CommandExecuted(((sender as Button).Tag as I_EntityAreaCommand));
         //}
+
+
 
         public void SetBackgroundColor(string color)
         {
@@ -189,6 +195,8 @@ namespace MyUIGenerator.View
         {
             this.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
         }
+
+      
 
         //public bool AddControlPackageToHeader(object uiControlPackage, string title, InfoColor titleColor, string tooltip = "")
         //{

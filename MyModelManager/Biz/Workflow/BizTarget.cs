@@ -19,7 +19,7 @@ namespace MyModelManager
         //public List<TargetDTO> GetTargets()
         //{
         //    List<TargetDTO> result = new List<TargetDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var listTarget = projectContext.Target;
         //        foreach (var item in listTarget)
@@ -29,7 +29,7 @@ namespace MyModelManager
         //}
         //public TargetDTO GetTarget(int TargetsID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var Targets = projectContext.Target.First(x => x.ID == TargetsID);
         //        return ToTargetDTO(Targets);
@@ -46,7 +46,7 @@ namespace MyModelManager
         //}
         //public void UpdateTargets(TargetDTO message)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbTarget = projectContext.Target.FirstOrDefault(x => x.ID == message.ID);
         //        if (dbTarget == null)

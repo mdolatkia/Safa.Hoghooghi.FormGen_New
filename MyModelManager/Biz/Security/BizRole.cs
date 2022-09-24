@@ -12,7 +12,7 @@ namespace MyModelManager
     {
         //public List<RoleTypeDTO> GetAllRoleTypes()
         //{
-        //    var context = new MyProjectEntities();
+        //    var context = new MyIdeaEntities();
         //    return ToRoleDTOList(context.RoleType);
         //}
         //public List<RoleTypeDTO> ToRoleDTOList(IQueryable<RoleType> roleType)
@@ -28,7 +28,7 @@ namespace MyModelManager
         //}
         ////public RoleTypeDTO GetRoleType(int roleTypeID)
         ////{
-        ////    using (var context = new MyProjectEntities())
+        ////    using (var context = new MyIdeaEntities())
         ////    {
         ////        var role = context.RoleType.First(x => x.ID == roleTypeID);
         ////        return ToRoleTypeDTO(role);
@@ -47,7 +47,7 @@ namespace MyModelManager
 
         //public void SaveRole(RoleTypeDTO roleTypeDto)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        RoleType dbRoleType = null;
         //        if (roleTypeDto.ID == 0)
@@ -84,7 +84,7 @@ namespace MyModelManager
         //        item.Name = role.Name;
         //        result.Add(item);
         //    }
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var roleGroups = projectContext.RoleGroup.ToList();
         //        foreach (var group in roleGroups)
@@ -102,7 +102,7 @@ namespace MyModelManager
         //public List<RoleGroupDTO> GetRoleGroups()
         //{
         //    List<RoleGroupDTO> result = new List<RoleGroupDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.RoleGroup;
         //        foreach (var item in list)
@@ -114,7 +114,7 @@ namespace MyModelManager
         //public RoleGroupDTO GetRoleGroup(int id)
         //{
 
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var item = projectContext.RoleGroup.FirstOrDefault(x => x.ID == id);
         //        if (item != null)
@@ -141,7 +141,7 @@ namespace MyModelManager
 
         //public void UpdateRoleGroup(RoleGroupDTO message)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbItem = projectContext.RoleGroup.FirstOrDefault(x => x.ID == message.ID);
         //        if (dbItem == null)
@@ -165,7 +165,7 @@ namespace MyModelManager
         //public List<RoleDTO> GetRolesOfRoleGroup(int roleGroupID)
         //{
         //    List<RoleDTO> result = new List<RoleDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var item = projectContext.RoleGroup.FirstOrDefault(x => x.ID == roleGroupID);
         //        if (item != null)
@@ -180,7 +180,7 @@ namespace MyModelManager
         //}
         //////public List<RoleDTO> GetRolesByUser(int userID)
         //////{
-        //////    using (var context = new MyProjectEntities())
+        //////    using (var context = new MyIdeaEntities())
         //////    {
         //////        return ToRoleDTOList(context.Roles.Where(x => x.Users.Any(y => y.ID == userID)).ToList());
         //////    }
@@ -189,7 +189,7 @@ namespace MyModelManager
 
         //public void AddUserToRole(int roleID, int userID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var role = context.Roles.First(x => x.ID == roleID);
 
@@ -202,7 +202,7 @@ namespace MyModelManager
         //public List<RoleActionObjectDTO> GetActionsByObject(int objectID, int roleID)
         //{
         //    List<RoleActionObjectDTO> result = new List<RoleActionObjectDTO>();
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var roleActionObjectList = context.Role_Action_Object.Where(x => x.ObjectID == objectID && x.RoleID == roleID);
         //        foreach (var dbItem in roleActionObjectList)

@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class EntityListReportSubs
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntityListReportSubs()
         {
             this.EntityListReportSubsColumns = new HashSet<EntityListReportSubsColumns>();
@@ -29,6 +30,7 @@ namespace DataAccess
         public virtual EntityListReport EntityListReport { get; set; }
         public virtual EntityListReport EntityListReport1 { get; set; }
         public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityListReportSubsColumns> EntityListReportSubsColumns { get; set; }
     }
 }

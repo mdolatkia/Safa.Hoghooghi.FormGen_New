@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class UIActionActivity
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UIActionActivity()
         {
             this.EntityState_UIActionActivity = new HashSet<EntityState_UIActionActivity>();
@@ -26,9 +27,12 @@ namespace DataAccess
         public short Type { get; set; }
         public int TableDrivedEntityID { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityState_UIActionActivity> EntityState_UIActionActivity { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UIEnablityDetails> UIEnablityDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UIColumnValue> UIColumnValue { get; set; }
     }
 }

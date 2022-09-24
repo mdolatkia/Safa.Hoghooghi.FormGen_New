@@ -27,7 +27,7 @@ namespace MyProject
 
         private void SetArcGroupGrid()
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var entity = projectContext.TableDrivedEntity.First(x => x.ID == TableDrivedEntityID);
                 dtgArcGroup.DataSource = entity.ArcRelationshipGroup.ToList();
@@ -62,7 +62,7 @@ namespace MyProject
                     btnUpdateArcRelationships.Enabled = true;
                     dtgArcRelationships.Enabled = true;
                 }
-                using (var projectContext = new DataAccess.MyProjectEntities())
+                using (var projectContext = new DataAccess.MyIdeaEntities())
                 {
                     var listRel = projectContext.ArcRelationshipGroup_Relationship.Where(x => x.ArcRelationshipGroupID == arcGroup.ID);
                     dtgArcRelationships.DataSource = listRel.ToList();
@@ -81,7 +81,7 @@ namespace MyProject
         private void btnUpdateRuleOnValue_Click(object sender, EventArgs e)
         {
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var item in dtgArcGroup.DataSource as List<ArcRelationshipGroup>)
                 {
@@ -104,7 +104,7 @@ namespace MyProject
 
         private void btnUpdateArcRelationships_Click(object sender, EventArgs e)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = dtgArcRelationships.DataSource as List<ArcRelationshipGroup_Relationship>;
                 var arcGroup = dtgArcGroup.SelectedRows.First().DataBoundItem as ArcRelationshipGroup;

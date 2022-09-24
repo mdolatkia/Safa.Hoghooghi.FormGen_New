@@ -32,13 +32,13 @@ namespace MyUILibrary.EntityArea
         Popup
     }
 
-    public class TemporaryLinkState
-    {
-        public bool popup;
-        public bool quickSearch;
-        public bool edit;
-        public bool searchView;
-        public bool clear;
-        public bool info;
-    }
+    //public class TemporaryLinkState
+    //{
+    //    public bool popup;
+    //    public bool quickSearch;
+    //    public bool edit;
+    //    public bool searchView;
+    //    public bool clear;
+    //    public bool info;
+    //}
 }

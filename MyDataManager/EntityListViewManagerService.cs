@@ -21,16 +21,16 @@ namespace MyDataManagerService
         BizEntityListView bizEntityListView = new BizEntityListView();
         public List<EntityListViewDTO> GetEntityListViews(DR_Requester requester, int entitiyID)
         {
-            return bizEntityListView.GetEntityListViews( requester, entitiyID);
+            return bizEntityListView.GetEntityListViews(requester, entitiyID);
         }
         public EntityListViewDTO GetEntityListView(DR_Requester requester, int ID)
         {
-            return bizEntityListView.GetEntityListView(requester,ID);
+            return bizEntityListView.GetEntityListView(requester, ID);
         }
 
         public EntityListViewDTO GetDefaultEntityListView(DR_Requester requester, int entityID)
         {
-            return bizEntityListView.GetEntityDefaultListView(requester,entityID);
+            return bizEntityListView.GetOrCreateEntityListViewDTO(requester, entityID);
         }
     }
 }

@@ -260,7 +260,7 @@ namespace MyUIGenerator
             return controlManager;
         }
 
-        public I_RelationshipControlManagerOne GenerateRelationshipControlManagerForOneDataForm(I_View_Area view, RelationshipUISettingDTO relationshipUISetting)
+        public I_RelationshipControlManagerOne GenerateRelControlManagerForOneDataForm(I_View_Area view, RelationshipUISettingDTO relationshipUISetting)
         {
             var controlManager = new RelationshipControlManagerForOneDataForm(view, relationshipUISetting);
             //if (labelControlManager)
@@ -270,9 +270,9 @@ namespace MyUIGenerator
             return controlManager;
         }
 
-        public I_RelationshipControlManagerMultiple GenerateRelationshipControlManagerForMultipleDataForm(TemporaryLinkState temporaryLinkState, RelationshipUISettingDTO relationshipUISetting)
+        public I_RelationshipControlManagerMultiple GenerateRelControlManagerForMultiDataForm(I_View_TemporaryView temporaryView, RelationshipUISettingDTO relationshipUISetting)
         {
-            var controlManager = new RelationshipControlManagerForMultipleDataForm(temporaryLinkState, relationshipUISetting);
+            var controlManager = new RelationshipControlManagerForMultipleDataForm(temporaryView, relationshipUISetting);
             //if (labelControlManager)
             //{
             //    controlManager.LabelControlManager = new LabelControlManager(labelText, false);
@@ -419,7 +419,7 @@ namespace MyUIGenerator
 
 
 
-        public I_View_EditEntityAreaMultiple GenerateEditEntityAreaMultipleDataView()
+        public I_View_EditEntityAreaMultiple GenerateEditEntityAreaMultipleDataView(EntityUISettingDTO entityUISettingDTO)
         {
             I_View_EditEntityAreaMultiple view = new UC_EditEntityAreaMultiple();
             (view as UserControl).Margin = new Thickness(0, 0, 0, 5);
@@ -494,9 +494,9 @@ namespace MyUIGenerator
         {
             return new UC_WorkflowTransitionTargetSelection();
         }
-        public I_View_TemporaryView GenerateTemporaryLinkUI(TemporaryLinkState temporaryLinkState)
+        public I_View_TemporaryView GenerateTemporaryLinkUI()
         {
-            var view = new UC_TemporaryDataSearchLink(temporaryLinkState);
+            var view = new UC_TemporaryDataSearchLink();
             view.VerticalAlignment = VerticalAlignment.Center;
             return view;
         }

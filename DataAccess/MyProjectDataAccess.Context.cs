@@ -13,10 +13,10 @@ namespace DataAccess
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class MyProjectEntities : DbContext
+    public partial class MyIdeaEntities : DbContext
     {
-        public MyProjectEntities()
-            : base("name=MyProjectEntities")
+        public MyIdeaEntities()
+            : base("name=MyIdeaEntities")
         {
         }
     

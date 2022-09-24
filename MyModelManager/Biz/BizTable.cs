@@ -13,7 +13,7 @@ namespace MyModelManager
         public List<TableDTO> GetTables(int databaseID)
         {
             List<TableDTO> result = new List<TableDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                // string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
                 var list = projectContext.Table.Where(x => x.DBSchema.DatabaseInformationID== databaseID).ToList();
@@ -27,7 +27,7 @@ namespace MyModelManager
         public List<TableDTO> GetTablesWithManyToOneRelationships(int databaseID)
         {
             List<TableDTO> result = new List<TableDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //string catalogName = GeneralHelper.GetCatalogName(serverName, dbName);
                 var list = projectContext.Table.Where(x => x.DBSchema.DatabaseInformationID == databaseID);
@@ -43,7 +43,7 @@ namespace MyModelManager
         public TableDTO GetTable(int tableID)
         {
             List<TableDTO> result = new List<TableDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var table = projectContext.Table.First(x => x.ID == tableID);
                 return ToTableDTO(table);
@@ -60,7 +60,7 @@ namespace MyModelManager
         }
         //public void UpdateTables(List<TableDTO> tables)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        foreach (var table in tables)
         //        {

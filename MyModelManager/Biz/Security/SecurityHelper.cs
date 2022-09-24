@@ -12,7 +12,7 @@ namespace MyModelManager
 {
     public class SecurityHelper
     {
-        private List<SecurityAction> GetPersmissionByPosts(MyProjectEntities context, IQueryable<OrganizationPost> posts, SecurityObject securityObject, bool goUpward = true)
+        private List<SecurityAction> GetPersmissionByPosts(MyIdeaEntities context, IQueryable<OrganizationPost> posts, SecurityObject securityObject, bool goUpward = true)
         {
             var actions = new List<SecurityAction>();
 
@@ -186,7 +186,7 @@ namespace MyModelManager
             return result;
         }
 
-        private List<Tuple<int, SecurityAction>> GetPersmissionByPost(MyProjectEntities context, SecuritySubject securitySubject, SecurityObject securityObject, int level, bool goUpward = true, List<Tuple<int, SecurityAction>> distantactions = null)
+        private List<Tuple<int, SecurityAction>> GetPersmissionByPost(MyIdeaEntities context, SecuritySubject securitySubject, SecurityObject securityObject, int level, bool goUpward = true, List<Tuple<int, SecurityAction>> distantactions = null)
         {
             if (distantactions == null)
                 distantactions = new List<Tuple<int, SecurityAction>>();
@@ -221,7 +221,7 @@ namespace MyModelManager
             return distantactions;
         }
 
-        private List<SecurityAction> GetAssignedPermissions(MyProjectEntities context, SecurityObject securityObject, SecuritySubject securitySubject)
+        private List<SecurityAction> GetAssignedPermissions(MyIdeaEntities context, SecurityObject securityObject, SecuritySubject securitySubject)
         {
             //var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Permission, securitySubject.ID + "_" + securityObject.ID);
             //if (cachedItem != null)
@@ -437,7 +437,7 @@ namespace MyModelManager
 
 
 
-        //private bool? UserHasPermission(MyProjectEntities context, int userID, string ActionName, Object dbObject)
+        //private bool? UserHasPermission(MyIdeaEntities context, int userID, string ActionName, Object dbObject)
         //{
         //    var user = context.Users.First(x => x.ID == userID);
         //    foreach (var role in user.Roles)
@@ -465,7 +465,7 @@ namespace MyModelManager
 
         //////public bool UserHasRole(int userID, string roleName)
         //////{
-        //////    var context = new MyProjectEntities();
+        //////    var context = new MyIdeaEntities();
         //////    var user = context.Users.First(x => x.ID == userID);
         //////    return user.Roles.Any(p => p.RoleName == roleName);
         //////}
@@ -479,7 +479,7 @@ namespace MyModelManager
         {
             List<ImposePermissionResult> result = new List<ImposePermissionResult>();
 
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 //var user = context.Users.First(x => x.ID == requester.Identity);
                 IQueryable<OrganizationPost> organizationPosts = GetDBOrganizationPosts(context, requester);
@@ -513,7 +513,7 @@ namespace MyModelManager
 
 
 
-        //private IQueryable<ConditionalPermission> GetConditionalPermissions(MyProjectEntities context, int entityID, int securitySubjectID)
+        //private IQueryable<ConditionalPermission> GetConditionalPermissions(MyIdeaEntities context, int entityID, int securitySubjectID)
         //{
         //    return 
         //}
@@ -524,7 +524,7 @@ namespace MyModelManager
             var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Permission, requester.Identity.ToString(), securityObjectID.ToString(), withChildObjects.ToString());
             if (cachedItem != null)
                 return (cachedItem as AssignedPermissionDTO);
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 SecurityObject securityObject = context.SecurityObject.First(x => x.ID == securityObjectID);
 
@@ -561,7 +561,7 @@ namespace MyModelManager
             return result;
         }
 
-        private void SetChildPermissions(DR_Requester requester, MyProjectEntities context, AssignedPermissionDTO parentItem, List<SecurityObject> childObjects, IQueryable<OrganizationPost> posts)
+        private void SetChildPermissions(DR_Requester requester, MyIdeaEntities context, AssignedPermissionDTO parentItem, List<SecurityObject> childObjects, IQueryable<OrganizationPost> posts)
         {
             foreach (var childObject in childObjects)
             {
@@ -605,7 +605,7 @@ namespace MyModelManager
             }
         }
 
-        //private AssignedPermissionDTO GetAssignedPermissions(MyProjectEntities context, IQueryable<OrganizationPost> posts, SecurityObject securityObject, bool withChildObjects, List<SecurityAction> parentActions = null)
+        //private AssignedPermissionDTO GetAssignedPermissions(MyIdeaEntities context, IQueryable<OrganizationPost> posts, SecurityObject securityObject, bool withChildObjects, List<SecurityAction> parentActions = null)
         //{
         //    AssignedPermissionDTO result = new AssignedPermissionDTO();
         //    var permissions = GetPersmissionByPosts(context, posts, securityObject, (parentActions == null));
@@ -683,7 +683,7 @@ namespace MyModelManager
             }
             return result;
         }
-        private IQueryable<OrganizationPost> GetDBOrganizationPosts(MyProjectEntities context, DR_Requester requester)
+        private IQueryable<OrganizationPost> GetDBOrganizationPosts(MyIdeaEntities context, DR_Requester requester)
         {
 
             if (requester.PostIds != null && requester.PostIds.Any())
@@ -701,7 +701,7 @@ namespace MyModelManager
         //    List<OrganizationPostDTO> result = new List<OrganizationPostDTO>();
         //    BizOrganization bizOrganization = new BizOrganization();
 
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var posts = GetDBOrganizationPosts(context, requester);
         //        foreach (var dbpost in posts)
@@ -711,7 +711,7 @@ namespace MyModelManager
         //    }
         //    return result;
         //}
-        //private void GetChildPermissions(MyProjectEntities context, List<Role> roles, List<AssignedPermissionDTO> parentCollection, DatabaseObjectCategory objectCategory, string objectIdentity, List<ActionDTO> parentPermissions = null)
+        //private void GetChildPermissions(MyIdeaEntities context, List<Role> roles, List<AssignedPermissionDTO> parentCollection, DatabaseObjectCategory objectCategory, string objectIdentity, List<ActionDTO> parentPermissions = null)
         //{
 
         //    AssignedPermissionDTO result = new AssignedPermissionDTO();
@@ -755,7 +755,7 @@ namespace MyModelManager
 
         //public bool EntityHasSecurity(int entityID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var disrectSecurities = context.EntitySecurityDirect.Where(x => x.TableDrivedEntityID == entityID && x.Mode == (short)DataDirectSecurityMode.FetchData);
         //        if (disrectSecurities.Any())
@@ -787,7 +787,7 @@ namespace MyModelManager
         public LoginResult Login(string userName, string passWord)
         {
             LoginResult restul = new LoginResult();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var user = context.User.FirstOrDefault(x => x.UserName == userName && x.Password == passWord);
                 if (user != null)
@@ -809,7 +809,7 @@ namespace MyModelManager
             var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Permission, requester.Identity.ToString(), objectName);
             if (cachedItem != null)
                 return (cachedItem as AssignedPermissionDTO);
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var organizationPosts = GetDBOrganizationPosts(context, requester);
                 SecurityObject securityObject = context.SubSystems.FirstOrDefault(x => x.Name == objectName)?.SecurityObject;
@@ -833,7 +833,7 @@ namespace MyModelManager
 
         //public List<RoleDTO> GetAllOrganizationRoles(int organizationID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var roles = context.Role.Where(x => x.OrganizationUser_Role.Any(y => y.Organization_User.OrganizationID == organizationID));
         //        BizRole bizRole = new BizRole();
@@ -842,14 +842,14 @@ namespace MyModelManager
         //}
         //public List<int> GetAllOrganizationRoleIds(int organizationID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var roles = context.Role.Where(x => x.OrganizationUser_Role.Any(y => y.Organization_User.OrganizationID == organizationID));
         //        BizRole bizRole = new BizRole();
         //        return roles.Select(x => x.ID).ToList();
         //    }
         //}
-        //private List<Role> GetRoles(MyProjectEntities context, int userid, int organizationid)
+        //private List<Role> GetRoles(MyIdeaEntities context, int userid, int organizationid)
         //{
         //    List<Role> result = new List<Role>();
 

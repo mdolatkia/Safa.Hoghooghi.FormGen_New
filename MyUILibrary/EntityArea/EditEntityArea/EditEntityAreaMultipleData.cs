@@ -227,10 +227,15 @@ namespace MyUILibrary.EntityArea
         }
         public override void GenerateUIControlsByCompositionDTO(EntityUICompositionDTO UICompositions)
         {
+            //** 41575d0e-a2ce-41cb-a039-3c156446abf7
+            //DataView.ClearControls();
+            //SimpleColumnControls.Clear();
+            //RelationshipColumnControls.Clear();
             GenerateUIComposition(UICompositions);
         }
         private void GenerateUIComposition(EntityUICompositionDTO UICompositions)
         {
+
             foreach (var uiCompositionItem in UICompositions.ChildItems.OrderBy(x => x.Position))
             {
                 if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Entity)
@@ -251,21 +256,55 @@ namespace MyUILibrary.EntityArea
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Column)
                 {
-                    var columnControl = SimpleColumnControls.FirstOrDefault(x => x.Column.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity)) as SimpleColumnControlMultiple;
-                    if (columnControl != null)
-                    {
-                        DataView.AddUIControlPackage(columnControl.SimpleControlManager, columnControl.LabelControlManager);
-                        columnControl.Visited = true;
-                    }
+                    var column = uiCompositionItem.Column;
+                    bool hasRangeOfValues = column.ColumnValueRange != null && column.ColumnValueRange.Details.Any();
+
+                    var propertyControl = new SimpleColumnControlMultiple() { Column = uiCompositionItem.Column };
+
+                    (propertyControl as SimpleColumnControlMultiple).SimpleControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column, uiCompositionItem.ColumnUISetting, hasRangeOfValues);
+
+                    propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Column.Alias);
+                    AgentHelper.SetPropertyTitle(propertyControl);
+
+                    //    var info = column.ID + "," + column.Name;
+
+                    SimpleColumnControls.Add(propertyControl);
+
+
+                    DataView.AddUIControlPackage(propertyControl.SimpleControlManager, propertyControl.LabelControlManager);
+                    //     columnControl.Visited = true;
+
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Relationship)
                 {
-                    var columnControl = RelationshipColumnControls.FirstOrDefault(x => x.Relationship != null && x.Relationship.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity)) as RelationshipColumnControlMultiple;
-                    if (columnControl != null)
+                    var relationshipColumnControl = new RelationshipColumnControlMultiple();
+                    relationshipColumnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(uiCompositionItem.Relationship.Relationship.Alias);
+                    relationshipColumnControl.DataEntryRelationship = uiCompositionItem.Relationship;
+                    relationshipColumnControl.ParentEditArea = this;
+                    var relationshipAlias = relationshipColumnControl.Relationship.Alias;
+                    relationshipColumnControl.Alias = (string.IsNullOrEmpty(relationshipAlias) ? "" : relationshipAlias + " : ");
+
+                    //اینجا ادیت اریا رابطه و همچنین کنترل منیجر رابطه مشخص میشوند. اگر مثلا کاربر به موجودیت رابطه دسترسی نداشته باشد این مقادیر تولید نمی شوند و نال بر میگردد
+
+                    bool generated = GenerateRelationshipControlEditArea(relationshipColumnControl, uiCompositionItem.RelationshipUISetting);
+
+
+                    if (generated != false)
                     {
-                        DataView.AddView(columnControl.LabelControlManager, columnControl.RelationshipControlManager);
-                        columnControl.Visited = true;
+
+                        RelationshipColumnControls.Add(relationshipColumnControl);
+
+
+                        //برای ادمین فعال شود بد نیست
+                        //    var info = dataEntryRelationship.Relationship.ID + "," + dataEntryRelationship.Relationship.Name + Environment.NewLine + dataEntryRelationship.Relationship.TypeStr + Environment.NewLine + dataEntryRelationship.Relationship.Info;
+                        //AddColumnControlMessage(new ColumnControlMessageItem(relationshipColumnControl, ControlOrLabelAsTarget.Label) { Key = "relationshipinfo", Message = info });
+                        //    AddRelationshipColumnMessageItem(propertyControl, info, InfoColor.Black, "permanentCaption", null, true);
+
                     }
+
+                    DataView.AddView(relationshipColumnControl.LabelControlManager, relationshipColumnControl.RelationshipControlManager);
+                    //  columnControl.Visited = true;
+
                 }
                 //حالت تب اضافه شود
                 //uiControlPackageList.Add(item);
@@ -276,6 +315,8 @@ namespace MyUILibrary.EntityArea
 
             }
         }
+
+      
         //private void SearchViewEntityArea_DataSelected(object sender, DataSelectedEventArg e)
         //{
         //    foreach (var data in e.DataItem)
@@ -285,25 +326,25 @@ namespace MyUILibrary.EntityArea
         //        {
         //            result = AreaInitializer.EditAreaDataManager.GetFullDataFromDataViewSearch(AreaInitializer.EntityID, data, this);
 
-            //        }
-            //        else
-            //        {
-            //            result = AreaInitializer.EditAreaDataManager.ConvertDP_DataViewToDP_DataRepository(data, this);
-            //        }
+        //        }
+        //        else
+        //        {
+        //            result = AreaInitializer.EditAreaDataManager.ConvertDP_DataViewToDP_DataRepository(data, this);
+        //        }
 
-            //        if (result != null)
-            //        {
-            //            bool addResult = AddData(result, SearchViewEntityArea.IsCalledFromDataView);
-            //            if (!addResult)
-            //                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", data.ViewInfo, Temp.InfoColor.Red);
+        //        if (result != null)
+        //        {
+        //            bool addResult = AddData(result, SearchViewEntityArea.IsCalledFromDataView);
+        //            if (!addResult)
+        //                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", data.ViewInfo, Temp.InfoColor.Red);
 
-            //        }
-            //        else
-            //        {
-            //            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", e.DataItem.First().ViewInfo, Temp.InfoColor.Red);
-            //        }
-            //    }
-            //}
+        //        }
+        //        else
+        //        {
+        //            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", e.DataItem.First().ViewInfo, Temp.InfoColor.Red);
+        //        }
+        //    }
+        //}
         public I_View_EditEntityAreaMultiple DataView { set; get; }
 
         //public I_View_EditEntityAreaMultiple SpecializedDataView

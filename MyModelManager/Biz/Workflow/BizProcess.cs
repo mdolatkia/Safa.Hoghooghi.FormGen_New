@@ -17,7 +17,7 @@ namespace MyModelManager
         public List<ProcessDTO> GetProcesses(DR_Requester requester)
         {
             List<ProcessDTO> result = new List<ProcessDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listProcess = projectContext.Process;
                 foreach (var item in listProcess)
@@ -27,7 +27,7 @@ namespace MyModelManager
         }
         public ProcessDTO GetProcess(DR_Requester requester, int ProcesssID, bool withDetails)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var Processs = projectContext.Process.First(x => x.ID == ProcesssID);
                 if (DataIsAccessable(requester, Processs))
@@ -105,7 +105,7 @@ namespace MyModelManager
         public List<ProcessDTO> SearchProcess(DR_Requester requester, string singleFilterValue)
         {
             List<ProcessDTO> result = new List<ProcessDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = projectContext.Process as IQueryable<Process>;
                 if (singleFilterValue != "")
@@ -118,7 +118,7 @@ namespace MyModelManager
 
         //public List<int> GetProcessAdmins(int processID)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var process = projectContext.Process.First(x => x.ID == processID);
         //        return process.ProcessAdminRoleTypes.Select(x => x.RoleTypeID).ToList();
@@ -128,7 +128,7 @@ namespace MyModelManager
 
         public int UpdateProcesss(ProcessDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbProcess = projectContext.Process.FirstOrDefault(x => x.ID == message.ID);
                 if (dbProcess == null)
@@ -232,7 +232,7 @@ namespace MyModelManager
 
         public bool EntityHasAnyProcess(int targetEntityID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 return projectContext.Process.Any(x => x.TableDrivedEntityID == targetEntityID);
             }
@@ -241,7 +241,7 @@ namespace MyModelManager
         ////public List<RoleDTO> GetProcessAdminRoles(int processID)
         ////{
         ////    BizRole bizRole = new BizRole();
-        ////    using (var projectContext = new DataAccess.MyProjectEntities())
+        ////    using (var projectContext = new DataAccess.MyIdeaEntities())
         ////    {
         ////        var Processs = projectContext.Process.First(x => x.ID == processID);
         ////        return bizRole.GetRolesOfRoleGroup(Processs.AdminRoleGroupID);
@@ -253,7 +253,7 @@ namespace MyModelManager
         //public List<RoleDTO> GetProcessRoles(int iD)
         //{
         //    List<RoleDTO> result = new List<RoleDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        BizRole bizRole = new BizRole();
         //        var roles = projectContext.Process_Role.Where(x => x.ProcessID == iD);
@@ -267,7 +267,7 @@ namespace MyModelManager
 
         public string GetFlowSTR(int processID)
         {
-            using (var projectContext = new MyProjectEntities())
+            using (var projectContext = new MyIdeaEntities())
             {
                 return projectContext.Process
                     .First(x => x.ID == processID).TransitionFlowSTR;

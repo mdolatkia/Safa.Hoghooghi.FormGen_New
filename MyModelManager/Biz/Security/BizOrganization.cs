@@ -13,7 +13,7 @@ namespace MyModelManager
         public List<OrganizationDTO> GetAllOrganizations()
         {
             List<OrganizationDTO> result = new List<OrganizationDTO>();
-            var context = new MyProjectEntities();
+            var context = new MyIdeaEntities();
             var organizations = context.Organization;
             foreach (var item in organizations)
             {
@@ -24,7 +24,7 @@ namespace MyModelManager
         }
         public OrganizationDTO GetOrganization(int ID, bool withDetails)
         {
-            var context = new MyProjectEntities();
+            var context = new MyIdeaEntities();
             var organization = context.Organization.First(x => x.ID == ID);
             return ToOrganizationDTO(organization, withDetails);
         }
@@ -54,7 +54,7 @@ namespace MyModelManager
 
         public void SaveOrganization(OrganizationDTO organizationDto)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 Organization dbOrganization = null;
                 if (organizationDto.ID == 0)
@@ -106,7 +106,7 @@ namespace MyModelManager
 
         //public List<OrganizationDTO> GetOrganizationsByUser(int userID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        return ToOrganizationDTOList(context.Organization.Where(x => x.Organization_User.Any(y => y.UserID == userID)).ToList());
         //    }
@@ -115,7 +115,7 @@ namespace MyModelManager
 
         //public int AddUserToOrganization(int OrganizationID, int userID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var organizationUser = context.Organization_User.FirstOrDefault(x => x.OrganizationID == OrganizationID
         //        && x.UserID == userID);
@@ -130,7 +130,7 @@ namespace MyModelManager
 
         //public OrganizationUserDTO GetOrganizationsUser(int organizationID, int userID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        return ToOrganizationUserDTO(context.Organization_User.First(x => x.OrganizationID == organizationID && x.UserID == userID));
         //    }
@@ -148,7 +148,7 @@ namespace MyModelManager
         public OrganizationPostDTO GetOrganizationPostsByID(int organizationPostID)
         {
 
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var post = context.OrganizationPost.First(x => x.ID == organizationPostID);
                 return ToOrganizationPostDTO(post);
@@ -157,7 +157,7 @@ namespace MyModelManager
         public List<OrganizationPostDTO> GetOrganizationPostsByIDs(List<int> organizationPostIDs)
         {
             List<OrganizationPostDTO> result = new List<OrganizationPostDTO>();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 foreach (var organizationPostID in organizationPostIDs)
                 {
@@ -170,7 +170,7 @@ namespace MyModelManager
         public List<OrganizationPostDTO> GetOrganizationPostsByUserID(int userID)
         {
             List<OrganizationPostDTO> result = new List<OrganizationPostDTO>();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
 
                 var posts = context.OrganizationPost.Where(x => x.UserID == userID);
@@ -224,7 +224,7 @@ namespace MyModelManager
         public List<OrganizationPostDTO> GetOrganizationPosts(string searchText)
         {
             List<OrganizationPostDTO> result = new List<OrganizationPostDTO>();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
 
                 var posts = context.OrganizationPost.Where(x => x.Name.Contains(searchText));
@@ -239,7 +239,7 @@ namespace MyModelManager
         internal OrganizationPostDTO GetOrganizationPost(int id)
         {
             List<OrganizationPostDTO> result = new List<OrganizationPostDTO>();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
 
                 var post = context.OrganizationPost.First(x => x.ID == id);
@@ -250,7 +250,7 @@ namespace MyModelManager
         public List<OrganizationPostDTO> GetOrganizationPostsByOrganizationIds(string searchText, List<int> organizationIds)
         {
             List<OrganizationPostDTO> result = new List<OrganizationPostDTO>();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
 
                 var posts = context.OrganizationPost.Where(x => x.Name.Contains(searchText) && organizationIds.Contains(x.OrganizationID));
@@ -265,7 +265,7 @@ namespace MyModelManager
         public List<OrganizationPostDTO> GetOrganizationPostsByRoleTypeIds(string searchText, List<int> roleTypeIds)
         {
             List<OrganizationPostDTO> result = new List<OrganizationPostDTO>();
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
 
                 var posts = context.OrganizationPost.Where(x => x.Name.Contains(searchText) && roleTypeIds.Contains(x.OrganizationType_RoleType.RoleTypeID));
@@ -279,7 +279,7 @@ namespace MyModelManager
         }
         //public void AddOrganizationPost(int organizationUserID, int roleTypeID, string name)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var organizationPost = context.OrganizationPost.FirstOrDefault(x => x.OrganizationUserID == organizationUserID
         //        && x.OrganizationRoleTypeID == roleTypeID);
@@ -293,7 +293,7 @@ namespace MyModelManager
         //public List<OrganizationActionObjectDTO> GetOrganizationActionsByObject(int objectID, int OrganizationID)
         //{
         //    List<OrganizationActionObjectDTO> result = new List<OrganizationActionObjectDTO>();
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var OrganizationActionObjectList = context.Organization_Action_Object.Where(x => x.ObjectID == objectID && x.OrganizationID == OrganizationID);
         //        foreach (var dbItem in OrganizationActionObjectList)
@@ -311,7 +311,7 @@ namespace MyModelManager
         //public List<ActionDTO> GetOrganizationActionsByObject(string objectCategory,string    objectIdentity, int OrganizationID)
         //{
         //    List<ActionDTO> result = new List<ActionDTO>();
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        foreach (var dbItem in context.Actions)
         //        {
@@ -327,7 +327,7 @@ namespace MyModelManager
 
         //public void SaveOrganizationActoins(string objectCategory,string objectIdentity, int OrganizationID, List<ActionDTO> listActions)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var selectedActionIDs = listActions.Where(x => x.Selected == true).Select(x => x.ID).ToList();
         //        var removeList = context.Organization_Action_Object.Where(x => x.ObjectIdentity == objectIdentity && x.ObjectCategory == objectCategory && x.OrganizationID == OrganizationID && !selectedActionIDs.Any(y => y == x.ActionID));

@@ -26,7 +26,7 @@ namespace MyModelManager
         {
             List<DataMenuSettingDTO> result = new List<DataMenuSettingDTO>();
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var settings = projectContext.DataMenuSetting.Where(x => x.TableDrivedEntityID == entityID);
                 foreach (var item in settings)
@@ -38,7 +38,7 @@ namespace MyModelManager
         }
         public DataMenuSettingDTO GetDataMenuSetting(DR_Requester requester, int ID, bool withDetails)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var entity = projectContext.DataMenuSetting.FirstOrDefault(x => x.ID == ID);
                 if (entity != null)
@@ -51,7 +51,7 @@ namespace MyModelManager
         public DataMenuSettingDTO GetDefaultDataMenuSetting(DR_Requester requester, int entityID, bool withDetails)
         {
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.ID == entityID);
                 if (entity != null && entity.DataMenuSetting1 != null)
@@ -320,7 +320,7 @@ namespace MyModelManager
         public List<DataMenuSettingDTO> GetDataMenusOfRelationshipTail(DR_Requester requester, int relationshipTailID)
         {
             List<EntitySearchableReportDTO> result = new List<EntitySearchableReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
                 var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(requester, relationshipTailID);
@@ -331,7 +331,7 @@ namespace MyModelManager
         //public List<DataMenuSettingDTO> GetDataMenusOfRelationship(DR_Requester requester, int relationshipID)
         //{
         //    List<EntitySearchableReportDTO> result = new List<EntitySearchableReportDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        BizRelationship bizRelationship = new BizRelationship();
         //        var relationship = bizRelationship.GetRelationship(requester, relationshipTailID);
@@ -371,7 +371,7 @@ namespace MyModelManager
 
         public bool SetDefaultDataMenuSetting(int entityID, int iD)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbEntity = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.ID == entityID);
                 dbEntity.DataMenuSettingID = iD;
@@ -394,7 +394,7 @@ namespace MyModelManager
         //public List<EntityReportDataMenuRelationshipsDTO> GetEntityRelationshipReports(int entityID, bool withDetails)
         //{
         //    List<EntityReportDataMenuRelationshipsDTO> result = new List<EntityReportDataMenuRelationshipsDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var entityReportSetting = projectContext.EntityReportDataMenuSetting.FirstOrDefault(x => x.ID == entityID);
         //        if (entityReportSetting != null)
@@ -417,7 +417,7 @@ namespace MyModelManager
 
         public void UpdateEntityReportDataMenuSettings(DataMenuSettingDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 DataMenuSetting dbEntity = null;
                 if (message.ID != 0)

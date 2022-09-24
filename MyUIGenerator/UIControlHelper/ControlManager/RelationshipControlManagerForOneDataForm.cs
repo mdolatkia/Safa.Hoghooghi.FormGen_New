@@ -146,13 +146,13 @@ namespace MyUIGenerator.UIControlHelper
             MainControl.IsEnabled = enable;
         }
 
-        public void EnableDisable(object dataItem, TemporaryLinkType link, bool enable)
-        {
-            if (MainControl is I_View_TemporaryView)
-            {
-                (MainControl as I_View_TemporaryView).DisableEnable(link, enable);
-            }
-        }
+        //public void EnableDisable(object dataItem, TemporaryLinkType link, bool enable)
+        //{
+        //    if (MainControl is I_View_TemporaryView)
+        //    {
+        //        (MainControl as I_View_TemporaryView).DisableEnable(link, enable);
+        //    }
+        //}
         //public object GetUIControl(object dataItem)
         //{
         //    return MainControl;

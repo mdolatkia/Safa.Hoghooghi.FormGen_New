@@ -486,7 +486,7 @@ namespace MyProject_WPF
 
         void view_ManyToManyCreated(object sender, ManyToManyCreatedArg e)
         {
-            //using (var projectContext = new DataAccess.MyProjectEntities())
+            //using (var projectContext = new DataAccess.MyIdeaEntities())
             //{
             //    ManyToManyRelationshipType manyToManyRelationshipType = new ManyToManyRelationshipType();
             //    manyToManyRelationshipType.Name = e.Name;

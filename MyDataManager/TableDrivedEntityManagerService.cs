@@ -97,6 +97,7 @@ namespace MyDataManagerService
         {
             return bizTableDrivedEntity.GetDataEntryEntity(requester, entityID, parentRelationship);
         }
+       
         public TableDrivedEntityDTO GetPermissionedEntity(DR_Requester requester, int entityID)
         {
             return bizTableDrivedEntity.GetPermissionedEntity(requester, entityID);

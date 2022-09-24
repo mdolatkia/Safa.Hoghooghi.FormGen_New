@@ -62,17 +62,17 @@ namespace MyUILibrary.EntitySearchArea
             if (e.SelectedItem != null)
             {
                 var entity = e.SelectedItem as TableDrivedEntityDTO;
-                SearchArea = new SearchEntityArea();
-                var searchViewInitializer = new SearchEntityAreaInitializer();
+               
+                var searchViewInitializer = new SearchAreaInitializer();
                 searchViewInitializer.EntityID = entity.ID;
                 //searchViewInitializer.TempEntity = FullEntity;
                 searchViewInitializer.PreDefinedSearch = AreaInitializer.PreDefinedSearch;
                 if (AreaInitializer.PreDefinedSearch != null)
                 {
-                    searchViewInitializer.SearchEntityID = AreaInitializer.PreDefinedSearch.EntitySearchID;
+                    searchViewInitializer.EntitySearchID = AreaInitializer.PreDefinedSearch.EntitySearchID;
                 }
-
-                SearchArea.SetAreaInitializer(searchViewInitializer);
+                SearchArea = new SearchEntityArea(searchViewInitializer);
+             //   SearchArea.SetAreaInitializer();
                 SearchArea.SearchDataDefined += SearchArea_SearchDataDefined;
 
                 if (EntitySelected != null)

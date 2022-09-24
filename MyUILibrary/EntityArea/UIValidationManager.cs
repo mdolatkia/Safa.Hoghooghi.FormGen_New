@@ -530,11 +530,11 @@ namespace MyUILibrary.EntityArea
                     || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect
                     || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.Select)
                     {
-                        if (relationshipControl.GenericEditNdTypeArea.SearchViewEntityArea!=null && relationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.RelationshipFilters != null)
+                        if (relationshipControl.GenericEditNdTypeArea!=null && relationshipControl.GenericEditNdTypeArea.RelationshipFilters != null)
                         {
-                            if (relationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.RelationshipFilters.Any())
+                            if (relationshipControl.GenericEditNdTypeArea.RelationshipFilters.Any())
                             {
-                                foreach (var filter in relationshipControl.GenericEditNdTypeArea.SearchViewEntityArea.RelationshipFilters)
+                                foreach (var filter in relationshipControl.GenericEditNdTypeArea.RelationshipFilters)
                                 {
                                     if (data.ChildRelationshipDatas.Any(x => x.Relationship.ID == filter.RelationshipID && x.RelatedData.Any()))
                                     {

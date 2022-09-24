@@ -25,7 +25,8 @@ namespace MyUILibrary.EntityArea.Commands
             //else
             CommandManager.SetTitle("ذخیره");
             CommandManager.ImagePath = "Images//save.png";
-            CommandManager.Clicked += CommandManager_Clicked;
+            if (!editArea.AreaInitializer.Preview)
+                CommandManager.Clicked += CommandManager_Clicked;
         }
         private void CommandManager_Clicked(object sender, EventArgs e)
         {

@@ -19,7 +19,7 @@ namespace MyModelManager
         public List<TransitionDTO> GetTransitions(DR_Requester requester, int processID, bool withDetails)
         {
             List<TransitionDTO> result = new List<TransitionDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listTransition = projectContext.Transition.Where(x => x.ProcessID == processID);
                 foreach (var item in listTransition)
@@ -30,7 +30,7 @@ namespace MyModelManager
         //public TransitionDTO GetTransition(int TransitionsID, bool withDetails)
         //{
 
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbTransition = projectContext.Transition.First(x => x.ID == TransitionsID);
         //        return ToTransitionDTO(dbTransition, withDetails);
@@ -38,7 +38,7 @@ namespace MyModelManager
         //}
         public TransitionActionDTO GetTransitionAction(DR_Requester requester, int ID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbTransitionAction = projectContext.TransitionAction.First(x => x.ID == ID);
                 return ToTransitionAction(requester, dbTransitionAction, true);
@@ -47,7 +47,7 @@ namespace MyModelManager
         public List<TransitionActionDTO> GetTransitionActionsByProcessID(DR_Requester requester, int iD)
         {
             List<TransitionActionDTO> result = new List<TransitionActionDTO>();
-            using (var projectContext = new MyProjectEntities())
+            using (var projectContext = new MyIdeaEntities())
             {
                 var transitionActions = projectContext.Transition.SelectMany(x => x.TransitionAction);
                 foreach (var item in transitionActions)
@@ -157,7 +157,7 @@ namespace MyModelManager
             try
             {
                 //مهم و پیچیده نسبتا؟ اگر از جریان کار استفاده شده باشد امکان تغییر جریان کار بررسی شود
-                using (var projectContext = new MyProjectEntities())
+                using (var projectContext = new MyIdeaEntities())
                 {
 
                     var dbProcess = projectContext.Process.FirstOrDefault(x => x.ID == ProcessID);
@@ -351,7 +351,7 @@ namespace MyModelManager
         }
         //public int UpdateTransitions(TransitionDTO message)
         //{
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var dbTransition = projectContext.Transition.FirstOrDefault(x => x.ID == message.ID);
         //        if (dbTransition == null)

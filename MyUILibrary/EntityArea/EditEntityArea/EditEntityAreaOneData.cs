@@ -26,7 +26,7 @@ namespace MyUILibrary.EntityArea
         //StateHelper stateHelper = new StateHelper();
         public EditEntityAreaOneData(TableDrivedEntityDTO simpleEntity) : base(simpleEntity)
         {
-       //     UIControlPackageTree = new List<UIControlComposition>();
+            //     UIControlPackageTree = new List<UIControlComposition>();
             //SimpleColumnControls = new List<SimpleColumnControl>();
             //RelationshipColumnControls = new List<RelationshipColumnControl>();
         }
@@ -52,90 +52,128 @@ namespace MyUILibrary.EntityArea
 
         public override void GenerateUIControlsByCompositionDTO(EntityUICompositionDTO UICompositions)
         {
+            //** 9db57fdb-25e0-4e68-9f9e-ad8b0609f380
             I_View_GridContainer container = DataView;
-
-            GenerateUIComposition(UICompositions, container, UIControlComposition);
+            //container.ClearControls();
+            //SimpleColumnControls.Clear();
+            //RelationshipColumnControls.Clear();
+            GenerateUIComposition(UICompositions, container);
         }
-       
-        private void GenerateUIComposition(EntityUICompositionDTO UICompositions, I_View_GridContainer container, UIControlComposition parentUIControlComposition)
+
+        private void GenerateUIComposition(EntityUICompositionDTO UICompositions, I_View_GridContainer container)
         {
             //**49f4821e-b752-4cdd-87ca-45dffc84c044
             foreach (var uiCompositionItem in UICompositions.ChildItems.OrderBy(x => x.Position))
             {
-                UIControlComposition item = new UIControlComposition();
-                item.ParentItem = parentUIControlComposition;
-                item.Container = container;
+                // UIControlComposition item = new UIControlComposition();
+                //  item.ParentItem = parentUIControlComposition;
+                uiCompositionItem.Container = container;
 
                 if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Group)
                 {
                     var groupItem = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateGroup(uiCompositionItem.GroupUISetting);
-                    item.Item = groupItem;
-                    item.UIItem = groupItem.UIMainControl;
-                    groupItem.UIControlPackageTreeItem = item;
-                    GenerateUIComposition(uiCompositionItem, groupItem, item);
-                    if (item.ChildItems.Count != 0)
-                    {
-                        (container as I_View_GridContainer).AddGroup(groupItem, uiCompositionItem.Title, uiCompositionItem.GroupUISetting);
-                        parentUIControlComposition.ChildItems.Add(item);
-                    }
+                    uiCompositionItem.Item = groupItem;
+                    uiCompositionItem.UIItem = groupItem.UIMainControl;
+                    groupItem.UICompositionDTO = uiCompositionItem;
+                    GenerateUIComposition(uiCompositionItem, groupItem);
+                    (container as I_View_GridContainer).AddGroup(groupItem, uiCompositionItem.Title, uiCompositionItem.GroupUISetting);
+                    //if (item.ChildItems.Count != 0)
+                    //{
+                    //    
+                    //    parentUIControlComposition.ChildItems.Add(item);
+                    //}
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.TabControl)
                 {
                     var tabGroupContainer = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateTabGroup(uiCompositionItem.TabGroupUISetting);
-                    tabGroupContainer.UIControlPackageTreeItem = item;
-                    item.Item = tabGroupContainer;
-                    item.UIItem = tabGroupContainer.UIMainControl;
+                    uiCompositionItem.Item = tabGroupContainer;
+                    uiCompositionItem.UIItem = tabGroupContainer.UIMainControl;
+                    tabGroupContainer.UICompositionDTO = uiCompositionItem;
 
-                    GenerateUIComposition(uiCompositionItem, null, item);
-                    if (item.ChildItems.Count != 0)
-                    {
-                        (container as I_View_GridContainer).AddTabGroup(tabGroupContainer, uiCompositionItem.Title, uiCompositionItem.TabGroupUISetting);
-                        parentUIControlComposition.ChildItems.Add(item);
-                    }
+                    GenerateUIComposition(uiCompositionItem, null);
+                    (container as I_View_GridContainer).AddTabGroup(tabGroupContainer, uiCompositionItem.Title, uiCompositionItem.TabGroupUISetting);
+                    //if (item.ChildItems.Count != 0)
+                    //{
+                    //    
+                    //    parentUIControlComposition.ChildItems.Add(item);
+                    //}
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.TabPage)
                 {
                     var tabPage = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateTabPage(uiCompositionItem.TabPageUISetting);
-                    item.Item = tabPage;
-                    item.UIItem = tabPage.UIMainControl;
-                    tabPage.UIControlPackageTreeItem = item;
-                    GenerateUIComposition(uiCompositionItem, tabPage, item);
-                    if (item.ChildItems.Count != 0)
-                    {
-                        var parentTabGroupContainer = parentUIControlComposition.Item as I_TabGroupContainer;
-                        parentTabGroupContainer.AddTabPage(tabPage, uiCompositionItem.Title, uiCompositionItem.TabPageUISetting, tabPage.HasHeader);
-                        parentUIControlComposition.ChildItems.Add(item);
-                    }
+                    uiCompositionItem.Item = tabPage;
+                    uiCompositionItem.UIItem = tabPage.UIMainControl;
+                    tabPage.UICompositionDTO = uiCompositionItem;
+                    GenerateUIComposition(uiCompositionItem, tabPage);
+
+                    var parentTabGroupContainer = UICompositions.Item as I_TabGroupContainer;
+                    parentTabGroupContainer.AddTabPage(tabPage, uiCompositionItem.Title, uiCompositionItem.TabPageUISetting, tabPage.HasHeader);
+
+                  
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Column)
                 {
-                    var columnControl = SimpleColumnControls.FirstOrDefault(x => x.Column.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity)) as SimpleColumnControlOne;
-                    if (columnControl != null)
-                    {
-                        columnControl.UIControlPackageTreeItem = item;
-                        item.Item = columnControl.SimpleControlManager;
-                        item.UIItem = columnControl.SimpleControlManager.GetUIControlManager().GetUIControl();
-                        (container as I_View_GridContainer).AddUIControlPackage(columnControl.SimpleControlManager, columnControl.LabelControlManager);
-                        parentUIControlComposition.ChildItems.Add(item);
-                        columnControl.Visited = true;
-                    }
+                    var column = uiCompositionItem.Column;
+                    bool hasRangeOfValues = column.ColumnValueRange != null && column.ColumnValueRange.Details.Any();
+
+                    var propertyControl = new SimpleColumnControlOne() { Column = column };
+                    (propertyControl as SimpleColumnControlOne).SimpleControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(column, uiCompositionItem.ColumnUISetting, hasRangeOfValues, null);
+                    propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Column.Alias);
+                    AgentHelper.SetPropertyTitle(propertyControl);
+
+                    var info = column.ID + "," + column.Name;
+
+                    SimpleColumnControls.Add(propertyControl);
+
+
+
+                    uiCompositionItem.Item = propertyControl.SimpleControlManager;
+                    uiCompositionItem.UIItem = propertyControl.SimpleControlManager.GetUIControlManager().GetUIControl();
+                    propertyControl.UICompositionDTO = uiCompositionItem;
+
+                    (container as I_View_GridContainer).AddUIControlPackage(propertyControl.SimpleControlManager, propertyControl.LabelControlManager);
+                  //  parentUIControlComposition.ChildItems.Add(item);
+                    //   propertyControl.Visited = true;
+
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Relationship)
                 {
-                    var columnControl = RelationshipColumnControls.FirstOrDefault(x => x.Relationship != null && x.Relationship.ID == Convert.ToInt32(uiCompositionItem.ObjectIdentity)) as RelationshipColumnControlOne;
-                    if (columnControl != null)
+                    var relationshipColumnControl = new RelationshipColumnControlOne();
+                    relationshipColumnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(uiCompositionItem.Relationship.Relationship.Alias);
+                    relationshipColumnControl.DataEntryRelationship = uiCompositionItem.Relationship;
+                    relationshipColumnControl.ParentEditArea = this;
+                    var relationshipAlias = relationshipColumnControl.Relationship.Alias;
+                    relationshipColumnControl.Alias = (string.IsNullOrEmpty(relationshipAlias) ? "" : relationshipAlias + " : ");
+
+                    //اینجا ادیت اریا رابطه و همچنین کنترل منیجر رابطه مشخص میشوند. اگر مثلا کاربر به موجودیت رابطه دسترسی نداشته باشد این مقادیر تولید نمی شوند و نال بر میگردد
+
+                    bool generated = GenerateRelationshipControlEditArea(relationshipColumnControl, uiCompositionItem.RelationshipUISetting);
+
+
+                    if (generated != false)
                     {
-                        columnControl.UIControlPackageTreeItem = item;
-                        if (UICompositions.ChildItems.Count == 1 && parentUIControlComposition != null && parentUIControlComposition.Item is I_TabPageContainer)
-                        {
-                            columnControl.RelationshipControlManager.TabPageContainer = parentUIControlComposition.Item as I_TabPageContainer;
-                        }
-                        item.Item = columnControl.RelationshipControlManager;
-                        item.UIItem = columnControl.RelationshipControlManager.GetView();
-                        (container as I_View_GridContainer).AddView(columnControl.LabelControlManager, columnControl.RelationshipControlManager);
-                        parentUIControlComposition.ChildItems.Add(item);
-                        columnControl.Visited = true;
+
+                        RelationshipColumnControls.Add(relationshipColumnControl);
+
+                        //برای ادمین فعال شود بد نیست
+                        //var info = dataEntryRelationship.Relationship.ID + "," + dataEntryRelationship.Relationship.Name + Environment.NewLine + dataEntryRelationship.Relationship.TypeStr + Environment.NewLine + dataEntryRelationship.Relationship.Info;
+                        //AddColumnControlMessage(new ColumnControlMessageItem(relationshipColumnControl, ControlOrLabelAsTarget.Label) { Key = "relationshipinfo", Message = info });
+                        //    AddRelationshipColumnMessageItem(propertyControl, info, InfoColor.Black, "permanentCaption", null, true);
+
                     }
+
+                    
+                    if (UICompositions.ChildItems.Count == 1 && UICompositions.Item  is I_TabPageContainer)
+                    {
+                        relationshipColumnControl.RelationshipControlManager.TabPageContainer = UICompositions.Item as I_TabPageContainer;
+                    }
+                    uiCompositionItem.Item = relationshipColumnControl.RelationshipControlManager;
+                    uiCompositionItem.UIItem = relationshipColumnControl.RelationshipControlManager.GetView();
+                    relationshipColumnControl.UICompositionDTO = uiCompositionItem;
+                    (container as I_View_GridContainer).AddView(relationshipColumnControl.LabelControlManager, relationshipColumnControl.RelationshipControlManager);
+                //    parentUIControlComposition.ChildItems.Add(item);
+                    //   columnControl.Visited = true;
+
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.EmptySpace)
                 {
@@ -149,9 +187,9 @@ namespace MyUILibrary.EntityArea
                     //var emptyItem = SpecializedDataView.GenerateEmptySpace(setting);
                     //item.Item = emptyItem;
                      (container as I_View_GridContainer).AddEmptySpace(setting);
-                    parentUIControlComposition.ChildItems.Add(item);
+                    //parentUIControlComposition.ChildItems.Add(item);
                 }
-               
+
 
             }
 
@@ -159,18 +197,19 @@ namespace MyUILibrary.EntityArea
 
 
         }
+   
         public void CheckContainersVisiblity(List<BaseColumnControl> changedControls)
         {
             if (this is I_EditEntityAreaOneData)
             {
-                List<UIControlComposition> parentAsContainers = new List<UIControlComposition>();
+               List<EntityUICompositionDTO> parentAsContainers = new List<EntityUICompositionDTO>();
                 foreach (var item in changedControls)
                 {
-                    if (item.UIControlPackageTreeItem != null && item.UIControlPackageTreeItem.Container != null
-                        && item.UIControlPackageTreeItem.ParentItem != null)
+                    if (item.UICompositionDTO != null 
+                        && item.UICompositionDTO.ParentItem != null)
                     {
-                        if (!parentAsContainers.Any(x => x == item.UIControlPackageTreeItem.ParentItem))
-                            parentAsContainers.Add(item.UIControlPackageTreeItem.ParentItem);
+                        if (!parentAsContainers.Any(x => x == item.UICompositionDTO.ParentItem))
+                            parentAsContainers.Add(item.UICompositionDTO.ParentItem);
                     }
                 }
                 if (parentAsContainers.Any())
@@ -182,7 +221,7 @@ namespace MyUILibrary.EntityArea
                 }
             }
         }
-        public void CheckContainerVisiblity(UIControlComposition container)
+        public void CheckContainerVisiblity(EntityUICompositionDTO container)
         {
             if (container.ChildItems.Any(x => x.UIItem != null && AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ControlIsVisible(x.UIItem)))
             {
@@ -212,9 +251,9 @@ namespace MyUILibrary.EntityArea
         //}
         public I_View_EditEntityAreaDataView DataView { set; get; }
 
-        List<UIControlComposition> I_EditEntityAreaOneData.UIControlPackageTree { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  //      List<UIControlComposition> I_EditEntityAreaOneData.UIControlPackageTree { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        I_View_EditEntityAreaDataView I_EditEntityAreaOneData.SpecializedDataView => throw new NotImplementedException();
+     //   I_View_EditEntityAreaDataView I_EditEntityAreaOneData.SpecializedDataView => throw new NotImplementedException();
 
 
         public override I_View_Area DataViewGeneric

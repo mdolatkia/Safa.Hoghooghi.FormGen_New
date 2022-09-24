@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class NavigationTree
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public NavigationTree()
         {
             this.NavigationTree1 = new HashSet<NavigationTree>();
@@ -29,6 +30,7 @@ namespace DataAccess
         public string Name { get; set; }
     
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NavigationTree> NavigationTree1 { get; set; }
         public virtual NavigationTree NavigationTree2 { get; set; }
     }

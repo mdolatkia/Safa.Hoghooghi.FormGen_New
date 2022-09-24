@@ -19,7 +19,7 @@ namespace MyModelManager
         //public List<ConditionalPermissionDTO> GetConditionalPermissions()
         //{
         //    List<ConditionalPermissionDTO> result = new List<ConditionalPermissionDTO>();
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var list = context.ConditionalPermission;
         //        foreach (var dbitem in list)
@@ -31,7 +31,7 @@ namespace MyModelManager
         //}
         //public ConditionalPermissionDTO GetConditionalPermission(int id)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var dbitem = context.ConditionalPermission.First(x => x.ID == id);
         //        return (ToConditionalPermission(dbitem, true));
@@ -93,7 +93,7 @@ namespace MyModelManager
 
         //public int GetPermissionId(RoleOrRoleGroupDTO roleOrRoleGroup, DatabaseObjectCategory databaseObjectCategory, string objectID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
 
         //        Permission found = null;
@@ -125,7 +125,7 @@ namespace MyModelManager
         //    //List<ConditionalPermission> organizationTypeActions = new List<ConditionalPermission>();
 
         //    //List<ConditionalPermission> dbresult = new List<ConditionalPermission>();
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var organizationPosts = new BizRoleSecurity().GetDBOrganizationPosts(context, requester);
         //        foreach (var post in organizationPosts)
@@ -173,7 +173,7 @@ namespace MyModelManager
                 if (result.Any(x => x.ID == item.ID))
                     result.Add(item);
         }
-        //private List<ConditionalPermissionDTO> GetConditionalPermissions(MyProjectEntities context, int entityID, int securitySubjectID)
+        //private List<ConditionalPermissionDTO> GetConditionalPermissions(MyIdeaEntities context, int entityID, int securitySubjectID)
         //{
         //    var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.ConditionalPermission, securitySubjectID.ToString(), entityID.ToString());
         //    if (cachedItem != null)
@@ -191,7 +191,7 @@ namespace MyModelManager
         //}
         public PermissionDTO GetPermission(int securitySubjectID, int securityObjectID)
         {
-            using (var context = new MyProjectEntities())
+            using (var context = new MyIdeaEntities())
             {
                 var dbSecurityObject = context.SecurityObject.FirstOrDefault(x => x.ID == securityObjectID);
                 if (dbSecurityObject != null)
@@ -260,7 +260,7 @@ namespace MyModelManager
         //{
         //    List<ActionDTO> result = new List<ActionDTO>();
         //    var actions = SecurityHelper.GetActionsByCategory(objectCategory);
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        foreach (var action in actions)
         //        {
@@ -282,7 +282,7 @@ namespace MyModelManager
             BaseResult result = new BaseResult();
             try
             {
-                using (var context = new MyProjectEntities())
+                using (var context = new MyIdeaEntities())
                 {
                     if (permission.SecurityObjectCategory == DatabaseObjectCategory.Relationship)
                     {
@@ -330,7 +330,7 @@ namespace MyModelManager
             return result;
         }
 
-        private void SavePermission(MyProjectEntities context, PermissionDTO permission)
+        private void SavePermission(MyIdeaEntities context, PermissionDTO permission)
         {
             if (permission.SecurityObjectCategory == DatabaseObjectCategory.Column)
             {
@@ -372,7 +372,7 @@ namespace MyModelManager
 
         //public void SaveConditionalPermission(ConditionalPermissionDTO conditionalPermission)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        ConditionalPermission dbItem = null;
         //        if (conditionalPermission.ID != 0)

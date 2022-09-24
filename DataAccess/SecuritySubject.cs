@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class SecuritySubject
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public SecuritySubject()
         {
             this.TableDrivedEntityStateConditionSecuritySubject = new HashSet<TableDrivedEntityStateConditionSecuritySubject>();
@@ -23,11 +24,13 @@ namespace DataAccess
         public int ID { get; set; }
         public short Type { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TableDrivedEntityStateConditionSecuritySubject> TableDrivedEntityStateConditionSecuritySubject { get; set; }
         public virtual Organization Organization { get; set; }
         public virtual OrganizationPost OrganizationPost { get; set; }
         public virtual OrganizationType OrganizationType { get; set; }
         public virtual OrganizationType_RoleType OrganizationType_RoleType { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Permission> Permission { get; set; }
         public virtual RoleType RoleType { get; set; }
     }

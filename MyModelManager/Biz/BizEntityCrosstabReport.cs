@@ -17,7 +17,7 @@ namespace MyModelManager
         public List<EntityCrosstabReportDTO> GetEntityCrosstabReports(DR_Requester requester)
         {
             List<EntityCrosstabReportDTO> result = new List<EntityCrosstabReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityCrosstabReport = projectContext.EntityCrosstabReport;
                 foreach (var item in listEntityCrosstabReport)
@@ -33,7 +33,7 @@ namespace MyModelManager
             //    return (cachedItem as List<EntityCrosstabReportDTO>);
 
             List<EntityCrosstabReportDTO> result = new List<EntityCrosstabReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityCrosstabReport = projectContext.EntityCrosstabReport.Where(x => x.EntitySearchableReport.EntityReport.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityCrosstabReport)
@@ -46,7 +46,7 @@ namespace MyModelManager
         public EntityCrosstabReportDTO GetEntityCrosstabReport(DR_Requester requester, int EntityCrosstabReportsID, bool withDetails)
         {
             List<EntityCrosstabReportDTO> result = new List<EntityCrosstabReportDTO>();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var EntityCrosstabReports = projectContext.EntityCrosstabReport.First(x => x.ID == EntityCrosstabReportsID);
                 return ToEntityCrosstabReportDTO(requester, EntityCrosstabReports, withDetails);
@@ -127,7 +127,7 @@ namespace MyModelManager
         }
         public int UpdateEntityCrosstabReports(EntityCrosstabReportDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbEntitySpecifiedReport = projectContext.EntityCrosstabReport.FirstOrDefault(x => x.ID == message.ID);
                 if (dbEntitySpecifiedReport == null)

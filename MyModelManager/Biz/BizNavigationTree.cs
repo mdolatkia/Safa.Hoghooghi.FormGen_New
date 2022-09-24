@@ -18,7 +18,7 @@ namespace MyModelManager
         {
             //** 220a1cf0-bfce-4db2-8949-e807e75a4ae6
             NavigationTreeDTO result = new NavigationTreeDTO();
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = projectContext.NavigationTree.Where(x => x.ParentID == null);
                 foreach (var item in list)
@@ -105,7 +105,7 @@ namespace MyModelManager
         //public List<NavigationTreeDTO> GetNavigatoinTree(int? parentID)
         //{
         //    List<NavigationTreeDTO> result = new List<NavigationTreeDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.NavigationTree.Where(x => x.ParentID == parentID);
         //        foreach (var item in list)
@@ -123,7 +123,7 @@ namespace MyModelManager
 
         public void Save(List<NavigationItemDTO> items)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var existingIds = items.Where(x => x.ID != 0).Select(x => x.ID).ToList();
                 if (existingIds.Count > 0)
@@ -138,7 +138,7 @@ namespace MyModelManager
 
         }
 
-        private void CheckAddItems(List<NavigationItemDTO> items, NavigationItemDTO parentItem, NavigationTree parentDBItem, DataAccess.MyProjectEntities projectContext)
+        private void CheckAddItems(List<NavigationItemDTO> items, NavigationItemDTO parentItem, NavigationTree parentDBItem, DataAccess.MyIdeaEntities projectContext)
         {
             foreach (var item in items.Where(x => x.ParentItem == parentItem))
             {
@@ -175,7 +175,7 @@ namespace MyModelManager
             }
         }
 
-        private void RemoveItem(DataAccess.NavigationTree item, DataAccess.MyProjectEntities projectContext)
+        private void RemoveItem(DataAccess.NavigationTree item, DataAccess.MyIdeaEntities projectContext)
         {
             foreach (var cItem in item.NavigationTree1.ToList())
             {
@@ -186,7 +186,7 @@ namespace MyModelManager
 
         public bool HasEntityNotInNavigationTree(int databaseID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 return bizTableDrivedEntity.GetAllEntities(projectContext, false).Any(x => x.IsOrginal == true && x.IsView == false && x.IsDisabled == false && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IndependentDataEntry == true && !projectContext.NavigationTree.Any(y => y.Category == "Entity" && y.ItemIdentity == x.ID));
             }

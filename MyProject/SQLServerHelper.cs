@@ -35,7 +35,7 @@ namespace MyProject
             //{
 
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 bool dataBaseInforationExists = false;
                 using (SqlConnection testConn = new SqlConnection(connectionString))
@@ -183,7 +183,7 @@ namespace MyProject
             GenericResult<OperationResult> result = new GenericResult<OperationResult>();
             try
             {
-                using (var projectContext = new DataAccess.MyProjectEntities())
+                using (var projectContext = new DataAccess.MyIdeaEntities())
                 {
                     var list = projectContext.Table.Where(x => !x.TableDrivedEntity.Any(y => y.Criteria == "" || y.Criteria == null));
                     int count = list.Count();
@@ -235,7 +235,7 @@ namespace MyProject
 
             using (SqlConnection testConn = new SqlConnection(connectionString))
             {
-                using (var projectContext = new DataAccess.MyProjectEntities())
+                using (var projectContext = new DataAccess.MyIdeaEntities())
                 {
                     testConn.Open();
                     string groupStr = @"SELECT
@@ -525,7 +525,7 @@ namespace MyProject
         { //try
             //{
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 using (SqlConnection testConn = new SqlConnection(connectionString))
                 {
@@ -602,7 +602,7 @@ namespace MyProject
 
         internal bool GenerateKeyColumns(string connectionString, int columnID, bool valueFromKey)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = projectContext.Column.First(x => x.ID == columnID);
                 using (SqlConnection testConn = new SqlConnection(connectionString))

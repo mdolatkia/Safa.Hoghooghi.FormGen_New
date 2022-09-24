@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class UnionRelationshipType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UnionRelationshipType()
         {
             this.SubUnionToUnionRelationshipType = new HashSet<SubUnionToUnionRelationshipType>();
@@ -25,7 +26,9 @@ namespace DataAccess
         public bool IsTolatParticipation { get; set; }
         public bool UnionHoldsKeys { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SubUnionToUnionRelationshipType> SubUnionToUnionRelationshipType { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UnionToSubUnionRelationshipType> UnionToSubUnionRelationshipType { get; set; }
     }
 }

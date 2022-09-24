@@ -22,7 +22,7 @@ namespace MyUILibrary.EntityArea
         List<DP_DataView> GetSelectedData();
         void AddData(List<DP_DataView> data, bool show);
         void ShowData1(List<DP_DataView> specificDate);
-        void SetAreaInitializer(ViewEntityAreaInitializer initParam);
+  //      void SetAreaInitializer(ViewEntityAreaInitializer initParam);
         void OnDataSelected(List<DP_DataView> dataItems);
 
     }

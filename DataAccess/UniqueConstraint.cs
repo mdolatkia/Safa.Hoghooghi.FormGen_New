@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class UniqueConstraint
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UniqueConstraint()
         {
             this.Column = new HashSet<Column>();
@@ -24,6 +25,7 @@ namespace DataAccess
         public string Name { get; set; }
     
         public virtual Table Table { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Column> Column { get; set; }
     }
 }

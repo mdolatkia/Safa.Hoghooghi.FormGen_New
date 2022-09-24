@@ -15,7 +15,7 @@ namespace MyModelManager
         //public ColumnValueRangeDTO GetColumnValueRange(column)
         //{
         //    ColumnDTO result = new ColumnDTO();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var column = projectContext.ColumnValueRange.First(x => x.ID == id);
         //        return ToColumnValueRangeDTO(column);
@@ -24,7 +24,7 @@ namespace MyModelManager
 
         public void RemoveColumnValueRangeID(int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumnValueRange = projectContext.ColumnValueRange.FirstOrDefault(x => x.ID == columnID);
                 if (dbColumnValueRange != null)
@@ -39,7 +39,7 @@ namespace MyModelManager
 
         public ColumnValueRangeDTO GetColumnValueRange(int columnID)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = projectContext.ColumnValueRange.FirstOrDefault(x => x.ID == columnID);
                 if (column != null)
@@ -50,7 +50,7 @@ namespace MyModelManager
         }
         public List<string> GetColumnValueRangeValues(int columnValueRangeID, EnumColumnValueRangeTag tag)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var columnValueRange = projectContext.ColumnValueRange.FirstOrDefault(x => x.ID == columnValueRangeID);
                 if (tag == EnumColumnValueRangeTag.Title)
@@ -77,7 +77,7 @@ namespace MyModelManager
         //public ColumnValueRangeDTO GetColumnKeyValue(int columnID)
         //{
         //    //////ColumnValueRangeDTO result = new ColumnValueRangeDTO();
-        //    //////using (var projectContext = new DataAccess.MyProjectEntities())
+        //    //////using (var projectContext = new DataAccess.MyIdeaEntities())
         //    //////{
         //    //////    var column = projectContext.Column.FirstOrDefault(x => x.ID == columnID);
         //    //////    if (column.ColumnValueRange != null)
@@ -116,7 +116,7 @@ namespace MyModelManager
         }
         public bool UpdateColumnValueRange(ColumnValueRangeDTO message)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = projectContext.Column.First(x => x.ID == message.ID);
 

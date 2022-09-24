@@ -18,7 +18,8 @@ namespace MyUILibrary.EntityArea.Commands
             EditArea = editArea;
             CommandManager.SetTitle("گزارش لاگ");
             CommandManager.ImagePath = "Images//zoom_extend.png";
-            CommandManager.Clicked += CommandManager_Clicked;
+            if (!editArea.AreaInitializer.Preview)
+                CommandManager.Clicked += CommandManager_Clicked;
         }
 
         private void CommandManager_Clicked(object sender, EventArgs e)

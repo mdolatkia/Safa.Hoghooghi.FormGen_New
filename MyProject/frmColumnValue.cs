@@ -27,7 +27,7 @@ namespace MyProject
 
         private void SetColumnValueGrid()
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var column = projectContext.Column.First(x => x.ID == ColumnID);
                 dtgColumnValues.DataSource = column.ColumnValue.ToList();
@@ -70,7 +70,7 @@ namespace MyProject
                     pageRuleOnColumns.Enabled = true;
                     pageRuleOnRelationships.Enabled = true;
                 }
-                using (var projectContext = new DataAccess.MyProjectEntities())
+                using (var projectContext = new DataAccess.MyIdeaEntities())
                 {
                     var listCol = projectContext.ColumnValue_Column.Where(x => x.ColumnValueID == ColumnValue.ID);
                     dtgColumnValue_Columns.DataSource = listCol.ToList();
@@ -89,7 +89,7 @@ namespace MyProject
 
         private void btnUpdateColumnValue_Columns_Click(object sender, EventArgs e)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = dtgColumnValue_Columns.DataSource as List<ColumnValue_Column>;
                 var ColumnValue = dtgColumnValues.SelectedRows.First().DataBoundItem as ColumnValue;
@@ -107,7 +107,7 @@ namespace MyProject
         private void btnUpdateColumnValue_Click(object sender, EventArgs e)
         {
 
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var item in dtgColumnValues.DataSource as List<ColumnValue>)
                 {
@@ -130,7 +130,7 @@ namespace MyProject
 
         private void btnUpdateColumnValue_Relationships_Click(object sender, EventArgs e)
         {
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var list = dtgColumnValue_Relationships.DataSource as List<ColumnValue_Relationship>;
                 var ColumnValue = dtgColumnValues.SelectedRows.First().DataBoundItem as ColumnValue;

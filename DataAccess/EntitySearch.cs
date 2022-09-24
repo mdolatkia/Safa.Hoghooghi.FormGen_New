@@ -14,20 +14,22 @@ namespace DataAccess
     
     public partial class EntitySearch
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntitySearch()
         {
             this.SearchRepository = new HashSet<SearchRepository>();
-            this.TableDrivedEntity = new HashSet<TableDrivedEntity>();
             this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
         }
     
         public int ID { get; set; }
-        public int TableDrivedEntityID { get; set; }
         public string Title { get; set; }
+        public Nullable<bool> IsDefault { get; set; }
+        public int TableDrivedEntityID1 { get; set; }
     
+        public virtual TableDrivedEntity TableDrivedEntity { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SearchRepository> SearchRepository { get; set; }
-        public virtual ICollection<TableDrivedEntity> TableDrivedEntity { get; set; }
-        public virtual TableDrivedEntity TableDrivedEntity1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntitySearchColumns> EntitySearchColumns { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace MyModelManager
 
         //public  DatabaseDTO GetDatabaseDTO(int entityID)
         //{
-        //    using (var context = new MyProjectEntities())
+        //    using (var context = new MyIdeaEntities())
         //    {
         //        var entity = context.TableDrivedEntity.FirstOrDefault(x => x.ID == entityID);
         //        if (entity != null)
@@ -41,7 +41,7 @@ namespace MyModelManager
         //public List<DatabaseDTO> GetDatabases()
         //{
         //    List<DatabaseDTO> result = new List<DatabaseDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        var list = projectContext.DatabaseInformation;
         //        foreach (var item in list)
@@ -64,7 +64,7 @@ namespace MyModelManager
         //public List<SchemaDTO> GetSchemaDTO(string databaseName)
         //{
         //    List<SchemaDTO> result = new List<SchemaDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        foreach (var schema in projectContext.TableDrivedEntity.Where(x => x.Table.Catalog == databaseName).GroupBy(x => x.Table.RelatedSchema))
         //        {
@@ -88,7 +88,7 @@ namespace MyModelManager
         public List<ObjectDTO> GetDatabaseChildObjects(DatabaseObjectCategory parentCategory, string parentTitle, int parentIdentity)
         {
             List<ObjectDTO> result = new List<ObjectDTO>();
-            using (var myProjectContext = new MyProjectEntities())
+            using (var myProjectContext = new MyIdeaEntities())
             {
 
                 //foreach (var database in myProjectContext.DatabaseInformation)
@@ -229,7 +229,7 @@ namespace MyModelManager
         {
             if (objectCategory == DatabaseObjectCategory.Database)
                 return null;
-            using (var projectContext = new DataAccess.MyProjectEntities())
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 ObjectDTO result = null;
                 if (objectCategory == DatabaseObjectCategory.Schema)
@@ -259,7 +259,7 @@ namespace MyModelManager
         //    if (objectCategory == "Column")
         //        return null;
         //    var result = new List<ObjectDTO>();
-        //    using (var projectContext = new DataAccess.MyProjectEntities())
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
         //    {
         //        if (objectCategory == "Database")
         //        {

@@ -21,7 +21,8 @@ namespace MyUILibrary.EntityArea.Commands
             //else
             CommandManager.SetTitle("تایید و خروج");
             CommandManager.ImagePath = "Images//letter.png";
-            CommandManager.Clicked += CommandManager_Clicked;
+            if (!editArea.AreaInitializer.Preview)
+                CommandManager.Clicked += CommandManager_Clicked;
         }
 
         private void CommandManager_Clicked(object sender, EventArgs e)

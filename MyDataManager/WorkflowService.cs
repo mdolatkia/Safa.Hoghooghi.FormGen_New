@@ -65,15 +65,15 @@ namespace MyWorkflowService
         //    return bizProcess.GetProcessAdminRoles(processID);
         //}
 
-        //private void DoStateActivity(MyProjectEntities context, StateActivity stateActivity)
+        //private void DoStateActivity(MyIdeaEntities context, StateActivity stateActivity)
         //{
 
         //}
-        //private void DoTransitionActivity(MyProjectEntities context, TransitionActivity TransitionActivity)
+        //private void DoTransitionActivity(MyIdeaEntities context, TransitionActivity TransitionActivity)
         //{
 
         //}
-        //private int GetInitialState(MyProjectEntities context, int processID)
+        //private int GetInitialState(MyIdeaEntities context, int processID)
         //{
         //    var process = context.Process.First(x => x.ID == processID);
         //    return process.State.First().ID;

@@ -14,6 +14,7 @@ namespace DataAccess
     
     public partial class ColumnPhrase
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ColumnPhrase()
         {
             this.Phrase = new HashSet<Phrase>();
@@ -27,6 +28,7 @@ namespace DataAccess
     
         public virtual Column Column { get; set; }
         public virtual EntitySearchColumns EntitySearchColumns { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Phrase> Phrase { get; set; }
     }
 }
