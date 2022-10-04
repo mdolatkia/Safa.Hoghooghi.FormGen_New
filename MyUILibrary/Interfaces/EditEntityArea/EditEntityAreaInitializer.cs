@@ -50,6 +50,7 @@ namespace MyUILibrary.EntityArea
                 return _Datas;
             }
         }
+      //  public bool SearchViewIsMultiple { set; get; }
         public TemplateEntityUISettings UISettings { set; get; }
         public DataMode DataMode { set; get; }
         //public DirectionMode DirectionMode { set; get; }

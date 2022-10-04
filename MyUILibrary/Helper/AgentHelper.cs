@@ -1331,48 +1331,7 @@ namespace MyUILibrary
 
         //}
 
-        internal static DP_SearchRepository GetOrCreateSearchRepositoryFromRelationshipTail(LogicPhraseDTO result, EntityRelationshipTailDTO relationshipTail, DP_BaseData lastDataItem)
-        {
-            if (relationshipTail == null)
-            {
-
-                var searchRep = result as DP_SearchRepository;
-                if (lastDataItem != null)
-                {
-                    foreach (var property in lastDataItem.KeyProperties)
-                    {
-
-                        SearchProperty searchProperty = new SearchProperty();
-                        //searchProperty.SearchColumnID = relControl.EntitySearchColumn != null ? relControl.EntitySearchColumn.ID : 0;
-                        searchProperty.ColumnID = property.Column.ID;
-                        searchProperty.IsKey = property.Column.PrimaryKey;
-                        searchProperty.Value = property.Value;
-                        searchProperty.Operator = CommonOperator.Equals;
-                        searchRep.Phrases.Add(searchProperty);
-                    }
-                }
-                return searchRep;
-            }
-            else
-            {
-                if (result.Phrases.Any(x => x is DP_SearchRepository && (x as DP_SearchRepository).SourceRelationship.ID == relationshipTail.Relationship.ID))
-                {
-                    var childSearchPhrase = result.Phrases.First(x => x is DP_SearchRepository && (x as DP_SearchRepository).SourceRelationship.ID == relationshipTail.Relationship.ID);
-                    return GetOrCreateSearchRepositoryFromRelationshipTail(childSearchPhrase as LogicPhraseDTO, relationshipTail.ChildTail, lastDataItem);
-                }
-                else
-                {
-                    DP_SearchRepository childSearchPhrase = new DP_SearchRepository(relationshipTail.Relationship.EntityID2);
-                    childSearchPhrase.SourceRelationship = relationshipTail.Relationship;
-                    childSearchPhrase.Title = relationshipTail.EntityPath;
-                    //childSearchPhrase.TargetEntityID = ;
-                    //   childSearchPhrase.SourceToTargetRelationshipType = relationshipTail.Relationship.TypeEnum;
-                    //  childSearchPhrase.SourceToTargetMasterRelationshipType = relationshipTail.Relationship.MastertTypeEnum;
-                    result.Phrases.Add(childSearchPhrase);
-                    return GetOrCreateSearchRepositoryFromRelationshipTail(childSearchPhrase, relationshipTail.ChildTail, lastDataItem);
-                }
-            }
-        }
+       
 
         //private static List<EntityInstanceProperty> GetRelationshipColumnValues(DP_DataRepository foundData, RelationshipDTO relationship)
         //{

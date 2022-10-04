@@ -2334,7 +2334,8 @@ namespace MyModelCustomSetting
                 serviceConclusion.DataMenuSetting1 = conclusionDataMenuSetting;
                 conclusionDataMenuSetting.Name = "تنظیمات منوی صورتحساب و جزئیات";
                 conclusionDataMenuSetting.TableDrivedEntityID = serviceConclusion.ID;
-                conclusionDataMenuSetting.EntityListViewID = serviceConclusion.EntityListView.First(x => x.IsDefault == true).ID;
+                if (serviceConclusion.EntityListView.FirstOrDefault(x => x.IsDefault == true) != null)
+                    conclusionDataMenuSetting.EntityListViewID = serviceConclusion.EntityListView.FirstOrDefault(x => x.IsDefault == true).ID;
 
                 var conclusionToItemsRelMenu = new DataMenuGridViewRelationship();
                 var conclusionToItems = serviceConclusion.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusionItem.ID);
@@ -2593,22 +2594,24 @@ namespace MyModelCustomSetting
                 listReportWithSubs.EntitySearchableReport.EntityListReport.EntityListView = serviceConclusaionListView;
 
                 var listViewColumnID = serviceConclusaionListView.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "ID");
-                var listViewColumnFKID = serviceConclusionItem.EntityListView.First(x => x.IsDefault == true).EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "ServiceConclusionID");
-
-                var conclusionToItems = serviceConclusion.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusionItem.ID);
-                var tailconclusionToItemsRel = GetRelationshipTail(projectContext, serviceConclusion, serviceConclusionItem, conclusionToItems.ID.ToString());
-
-
-                if (listViewColumnID != null && listViewColumnFKID != null && tailconclusionToItemsRel != null)
+                if (serviceConclusionItem.EntityListView.FirstOrDefault(x => x.IsDefault == true) != null)
                 {
-                    var subItem = new EntityListReportSubs();
-                    subItem.EntityRelationshipTail = tailconclusionToItemsRel;
-                    subItem.EntityListReportSubsColumns.Add(new EntityListReportSubsColumns() { EntityListViewColumns1 = listViewColumnID, EntityListViewColumns = listViewColumnFKID });
-                    subItem.EntityListReport = conclusionItemlistReport.EntitySearchableReport.EntityListReport;
-                    subItem.Title = "رابطه بر اساس شناسه صورتحساب";
-                    listReportWithSubs.EntitySearchableReport.EntityListReport.EntityListReportSubs1.Add(subItem);
-                }
+                    var listViewColumnFKID = serviceConclusionItem.EntityListView.First(x => x.IsDefault == true).EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "ServiceConclusionID");
 
+                    var conclusionToItems = serviceConclusion.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusionItem.ID);
+                    var tailconclusionToItemsRel = GetRelationshipTail(projectContext, serviceConclusion, serviceConclusionItem, conclusionToItems.ID.ToString());
+
+
+                    if (listViewColumnID != null && listViewColumnFKID != null && tailconclusionToItemsRel != null)
+                    {
+                        var subItem = new EntityListReportSubs();
+                        subItem.EntityRelationshipTail = tailconclusionToItemsRel;
+                        subItem.EntityListReportSubsColumns.Add(new EntityListReportSubsColumns() { EntityListViewColumns1 = listViewColumnID, EntityListViewColumns = listViewColumnFKID });
+                        subItem.EntityListReport = conclusionItemlistReport.EntitySearchableReport.EntityListReport;
+                        subItem.Title = "رابطه بر اساس شناسه صورتحساب";
+                        listReportWithSubs.EntitySearchableReport.EntityListReport.EntityListReportSubs1.Add(subItem);
+                    }
+                }
                 projectContext.EntityReport.Add(listReportWithSubs);
 
             }
@@ -3724,7 +3727,7 @@ namespace MyModelCustomSetting
             var productType = projectContext.TableDrivedEntity.FirstOrDefault(x => x.Name == "ProductType");
             if (productType != null)
             {
-                if (productItem.EntityListView.Any(x => x.IsDefault == true) )
+                if (productItem.EntityListView.Any(x => x.IsDefault == true))
                 {
                     if (!productItem.EntityListView.First(x => x.IsDefault == true).EntityListViewColumns.Any(x => x.Alias == "نوع محصول"))
                     {

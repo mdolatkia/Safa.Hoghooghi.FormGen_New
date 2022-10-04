@@ -66,9 +66,7 @@
         <EntityTypeShape EntityType="MyIdeaModel.EntityRelationshipTailDataMenu" Width="1.5" PointX="20.25" PointY="206.875" />
         <EntityTypeShape EntityType="MyIdeaModel.EntityRelationshipTailDataMenuItems" Width="1.5" PointX="25.5" PointY="173.375" />
         <EntityTypeShape EntityType="MyIdeaModel.EntityReport" Width="1.5" PointX="18" PointY="151.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntitySearch" Width="1.5" PointX="18" PointY="188.375" />
         <EntityTypeShape EntityType="MyIdeaModel.EntitySearchableReport" Width="1.5" PointX="30.5" PointY="158.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntitySearchColumns" Width="1.5" PointX="23.25" PointY="176.625" />
         <EntityTypeShape EntityType="MyIdeaModel.EntityState_UIActionActivity" Width="1.5" PointX="20.25" PointY="210.625" />
         <EntityTypeShape EntityType="MyIdeaModel.EntityUIComposition" Width="1.5" PointX="18" PointY="141" />
         <EntityTypeShape EntityType="MyIdeaModel.EntityUISetting" Width="1.5" PointX="20.25" PointY="147.75" />
@@ -206,7 +204,6 @@
         <AssociationConnector Association="MyIdeaModel.FKDatabaseFu304987" />
         <AssociationConnector Association="MyIdeaModel.FKDateColumn74546" />
         <AssociationConnector Association="MyIdeaModel.FKEntityList404590" />
-        <AssociationConnector Association="MyIdeaModel.FKEntitySear524417" />
         <AssociationConnector Association="MyIdeaModel.FKFormulaIte729281" />
         <AssociationConnector Association="MyIdeaModel.FKNumericCol878005" />
         <AssociationConnector Association="MyIdeaModel.FKStringColu936883" />
@@ -215,7 +212,6 @@
         <AssociationConnector Association="MyIdeaModel.Relationship_FirstEntityColumns" />
         <AssociationConnector Association="MyIdeaModel.Relationship_SecondEntityColumns" />
         <AssociationConnector Association="MyIdeaModel.FK_ColumnCustomFormula_Formula" />
-        <AssociationConnector Association="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns" />
         <AssociationConnector Association="MyIdeaModel.FKPhrase552267" />
         <AssociationConnector Association="MyIdeaModel.FKColumnUISe822405" />
         <AssociationConnector Association="MyIdeaModel.FK_ColumnValueRange_EntityRelationshipTail" />
@@ -307,7 +303,6 @@
         <AssociationConnector Association="MyIdeaModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail" />
         <AssociationConnector Association="MyIdeaModel.FKEntityRela568378" />
         <AssociationConnector Association="MyIdeaModel.FKEntityRela831147" />
-        <AssociationConnector Association="MyIdeaModel.FKEntitySear748558" />
         <AssociationConnector Association="MyIdeaModel.FKRelationsh552099" />
         <AssociationConnector Association="MyIdeaModel.FK_EntityRelationshipTailListViewItems_EntityRelationshipTailListView" />
         <AssociationConnector Association="MyIdeaModel.FK_GraphDefinition_EntityRelationshipTail_EntityRelationshipTailDataMenu" />
@@ -315,9 +310,6 @@
         <AssociationConnector Association="MyIdeaModel.FK_EntitySearchableReport_EntityReport" />
         <AssociationConnector Association="MyIdeaModel.FKEntityRepo82108" />
         <AssociationConnector Association="MyIdeaModel.FKEntityRepo965698" />
-        <AssociationConnector Association="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" />
-        <AssociationConnector Association="MyIdeaModel.FK_SearchRepository_EntitySearch" />
-        <AssociationConnector Association="MyIdeaModel.FKEntitySear726002" />
         <AssociationConnector Association="MyIdeaModel.FK_EntitySearchableReport_SearchRepository" />
         <AssociationConnector Association="MyIdeaModel.FKEntityStat608686" />
         <AssociationConnector Association="MyIdeaModel.FKEntityStat936255" />
@@ -432,6 +424,14 @@
         <AssociationConnector Association="MyIdeaModel.FKTransition612866" />
         <AssociationConnector Association="MyIdeaModel.FKTransition636993" />
         <AssociationConnector Association="MyIdeaModel.UniqueConstraint_Column" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntitySearch" Width="1.5" PointX="18" PointY="162.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntitySearchColumns" Width="1.5" PointX="20.25" PointY="167.5" />
+        <AssociationConnector Association="MyIdeaModel.FKEntitySear524417" />
+        <AssociationConnector Association="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns" />
+        <AssociationConnector Association="MyIdeaModel.FKEntitySear748558" />
+        <AssociationConnector Association="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" />
+        <AssociationConnector Association="MyIdeaModel.FK_SearchRepository_EntitySearch" />
+        <AssociationConnector Association="MyIdeaModel.FKEntitySear726002" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

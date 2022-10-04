@@ -44,6 +44,8 @@ namespace MyModelManager
         }
         public EntitySearchDTO GetOrCreateEntitySearchDTO(DR_Requester requester, int entityID)
         {
+            entityID    66880   stackoverflow
+            //** 9f233c74-615c-4bd5-abf8-ec6a26985ad9
             EntitySearchDTO result = null;
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
@@ -113,9 +115,58 @@ namespace MyModelManager
             {
                 result.EntitySearchAllColumns.Remove(remove);
             }
+
+            result.EntityUISetting = new EntityUISettingDTO();
+            result.EntityUISetting.UIColumnsCount = 4;
+
+            foreach (var item in result.EntitySearchAllColumns)
+            {
+                if (item.Column == null)
+                {
+                    item.RelationshipUISetting = new RelationshipUISettingDTO();
+                    item.RelationshipUISetting.UIColumnsType = Enum_UIColumnsType.Half;
+                }
+                else
+                {
+                    item.ColumnUISetting = new ColumnUISettingDTO();
+                    item.ColumnUISetting.UIColumnsType = Enum_UIColumnsType.Normal;
+                    item.ColumnUISetting.UIRowsCount = 1;
+                    item.Operators = GetSimpleColumnOperators(item.Column);
+                }
+            }
             return result;
         }
+        private List<SimpleSearchOperator> GetSimpleColumnOperators(ColumnDTO column)
+        {
+            List<SimpleSearchOperator> result = new List<SimpleSearchOperator>();
+            if (column.ID != 0)
+            {
+                if (column.ColumnType == Enum_ColumnType.String)
+                {
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل", IsDefault = true });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.StartsWith, Title = "شروع شود با" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.EndsWith, Title = "تمام شود با" });
+                }
+                else if (column.ColumnType == Enum_ColumnType.Numeric)
+                {
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر", IsDefault = true });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.SmallerThan, Title = "کوچکتر از" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.BiggerThan, Title = "بزرگتر از" });
+                }
+                else if (column.ColumnType == Enum_ColumnType.Date)
+                {
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر", IsDefault = true });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.SmallerThan, Title = "کوچکتر از" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.BiggerThan, Title = "بزرگتر از" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.StartsWith, Title = "شروع شود با" });
+                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.EndsWith, Title = "تمام شود با" });
 
+                }
+            }
+            return result;
+        }
         private List<EntitySearchColumnsDTO> GenereateDefaultSearchColumns(TableDrivedEntityDTO entity, List<EntitySearchColumnsDTO> list = null, string relationshipPath = "", List<RelationshipDTO> relationships = null)
         {
             //** 8ab306e9-0d52-4be6-95c0-9e5b4c36a21c
@@ -129,72 +180,83 @@ namespace MyModelManager
                 List<RelationshipDTO> reviewedRels = new List<RelationshipDTO>();
                 foreach (var column in entity.Columns)
                 {
+                    bool shoudAddColumn = false;
+                    RelationshipDTO shoudAddRelationship = null;
+                    RelationshipDTO shoudCheckRelationship = null;
+
                     if (column.PrimaryKey)
                     {
-                        AddSearchColumns(entity, list, column, relationshipPath, relationships);
+                        shoudAddColumn = true;
                     }
-                    if (entity.Relationships.Any(x => x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID) &&
-                   (x.TypeEnum == Enum_RelationshipType.SubToSuper || x.TypeEnum == Enum_RelationshipType.ManyToOne || x.TypeEnum == Enum_RelationshipType.ExplicitOneToOne)))
+
+                    foreach (var newrelationship in entity.Relationships.Where(x => x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID) &&
+                 (x.TypeEnum == Enum_RelationshipType.SubToSuper || x.TypeEnum == Enum_RelationshipType.ManyToOne || x.TypeEnum == Enum_RelationshipType.ExplicitOneToOne)))
                     {
-                        var newrelationship = entity.Relationships.First(x => x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID) &&
-                          (x.TypeEnum == Enum_RelationshipType.SubToSuper || x.TypeEnum == Enum_RelationshipType.ManyToOne || x.TypeEnum == Enum_RelationshipType.ExplicitOneToOne));
+                        shoudAddColumn = true;
 
-                        بقیه موجودیت هارو ببینم خوب تولید شدن یا نه
-
-                        int distanceFromNonSubToSuper = 0;
-                        if (relationships != null)
+                        //جلوگیری از لوپ و همچنین رابطه چند ستونی
+                        if (!reviewedRels.Any(x => x.ID == newrelationship.ID)
+                            && (relationships == null || !relationships.Any(x => x.ID == newrelationship.ID)))
                         {
-                            distanceFromNonSubToSuper = relationships.Count(x => x.TypeEnum != Enum_RelationshipType.SubToSuper);
-                        }
-                        if (newrelationship.TypeEnum == Enum_RelationshipType.SubToSuper || distanceFromNonSubToSuper < 2)
-                        {
-                            if (!reviewedRels.Any(x => x.ID == newrelationship.ID))
+                            reviewedRels.Add(newrelationship);
+                            //         bool addRelationshipEntityToSearch = false;
+                            if (newrelationship.TypeEnum == Enum_RelationshipType.SubToSuper)
                             {
-                                if (relationships == null ||
-                                newrelationship.TypeEnum != Enum_RelationshipType.SubToSuper)
-                                {
-
-                                    string entityAlias = "";
-                                    if (relationships != null)
-                                    {
-                                        for (int i = relationships.Count - 1; i >= 0; i--)
-                                        {
-                                            entityAlias += (entityAlias == "" ? "" : ".") + relationships[i].Entity2Alias;
-                                        }
-                                    }
-
-                                    var resultColumn = new EntitySearchColumnsDTO();
-                                    resultColumn.CreateRelationshipTailPath = relationshipPath + (relationshipPath == "" ? "" : ",") + newrelationship.ID.ToString();
-                                    resultColumn.Alias = newrelationship.Entity2Alias + (entityAlias == "" ? "" : "." + entityAlias);
-                                    resultColumn.Tooltip = newrelationship.Entity2Alias + (entityAlias == "" ? "" : "." + entityAlias);
-                                    list.Add(resultColumn);
-                                }
+                                shoudCheckRelationship = newrelationship;
                             }
-                            AddSearchColumns(entity, list, column, relationshipPath, relationships);
-
-                            //جلوگیری از لوپ و همچنین رابطه چند ستونی
-                            if (!reviewedRels.Any(x => x.ID == newrelationship.ID)
-                                && (relationships == null || !relationships.Any(x => x.ID == newrelationship.ID)))
+                            else if (newrelationship.TypeEnum == Enum_RelationshipType.ManyToOne || newrelationship.TypeEnum == Enum_RelationshipType.ExplicitOneToOne)
                             {
-                                //به لیست جدید از روابط میسازیم چون ممکن از روابط چند شاخه شوند
-                                List<RelationshipDTO> relationshipsTail = new List<RelationshipDTO>();
+                                int distanceFromNonSubToSuper = 0;
                                 if (relationships != null)
                                 {
-                                    foreach (var relItem in relationships)
-                                        relationshipsTail.Add(relItem);
+                                    distanceFromNonSubToSuper = relationships.Count(x => x.TypeEnum != Enum_RelationshipType.SubToSuper);
                                 }
-                                relationshipsTail.Add(newrelationship);
-                                var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(newrelationship.EntityID2, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
-                                GenereateDefaultSearchColumns(entityDTO, list, relationshipPath + (relationshipPath == "" ? "" : ",") + newrelationship.ID.ToString(), relationshipsTail);
+                                if (relationships == null || distanceFromNonSubToSuper < 2)
+                                {
+                                    shoudAddRelationship = newrelationship;
+                                    shoudCheckRelationship = newrelationship;
+                                }
                             }
-                            reviewedRels.Add(newrelationship);
-
                         }
                     }
 
                     var key = string.IsNullOrEmpty(column.Alias) ? column.Name : column.Alias;
                     if (CheckColumnDetection(GetPriorityColumnNames(), key))
+                        shoudAddColumn = true;
+
+                    if (shoudAddRelationship != null)
+                    {
+                        var shoudAddRelationshipAlias = "";
+                        if (relationships != null)
+                        {
+                            for (int i = relationships.Count - 1; i >= 0; i--)
+                            {
+                                shoudAddRelationshipAlias += (shoudAddRelationshipAlias == "" ? "" : ".") + relationships[i].Entity2Alias;
+                            }
+                        }
+                        var resultColumn = new EntitySearchColumnsDTO();
+                        resultColumn.CreateRelationshipTailPath = relationshipPath + (relationshipPath == "" ? "" : ",") + shoudAddRelationship.ID.ToString();
+                        resultColumn.Alias = shoudAddRelationship.Entity2Alias + (shoudAddRelationshipAlias == "" ? "" : "." + shoudAddRelationshipAlias);
+                        resultColumn.Tooltip = shoudAddRelationship.Entity2Alias + (shoudAddRelationshipAlias == "" ? "" : "." + shoudAddRelationshipAlias);
+                        list.Add(resultColumn);
+                    }
+                    if (shoudAddColumn)
+                    {
                         AddSearchColumns(entity, list, column, relationshipPath, relationships);
+                    }
+                    if (shoudCheckRelationship != null)
+                    {
+                        //به لیست جدید از روابط میسازیم چون ممکن از روابط چند شاخه شوند
+                        List<RelationshipDTO> relationshipsTail = new List<RelationshipDTO>();
+                        if (relationships != null)
+                        {
+                            foreach (var relItem in relationships)
+                                relationshipsTail.Add(relItem);
+                        }
+                        relationshipsTail.Add(shoudCheckRelationship);
+                        var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(shoudCheckRelationship.EntityID2, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
+                        GenereateDefaultSearchColumns(entityDTO, list, relationshipPath + (relationshipPath == "" ? "" : ",") + shoudCheckRelationship.ID.ToString(), relationshipsTail);
+                    }
 
                 }
             }
@@ -307,6 +369,8 @@ namespace MyModelManager
                     else
                         rColumn.Alias = column.Alias ?? column.EntityRelationshipTail.TableDrivedEntity.Alias ?? column.EntityRelationshipTail.TableDrivedEntity.Name;
                     rColumn.OrderID = column.OrderID ?? 0;
+                    rColumn.ExcludeInQuickSearch = column.ExcludeInGeneralSearch == true;
+                    //  rColumn.ShowInSearchUI = column.ShowInSearchUI == true;
 
                     //rColumn.WidthUnit = column.WidthUnit ?? 0;
                     if (column.EntityRelationshipTailID != null)
@@ -373,6 +437,8 @@ namespace MyModelManager
                     rColumn.ColumnID = null;
                 rColumn.Alias = column.Alias;
                 rColumn.Tooltip = column.Tooltip;
+                rColumn.ExcludeInGeneralSearch = column.ExcludeInQuickSearch;
+                //    rColumn.ShowInSearchUI = column.ShowInSearchUI;
 
                 rColumn.OrderID = column.OrderID;
                 // rColumn.WidthUnit = column.WidthUnit;

@@ -391,83 +391,83 @@ namespace MyUILibrary.EntityArea
         //        typePropertyControl.SimpleControlManager.GetUIControlManager(dataItem).SetBinding(property);
         //}
 
-        public bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, string value)
-        {
+        //public bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, string value)
+        //{
 
-            //ColumnSetting columnSetting = new ColumnSetting();
+        //    //ColumnSetting columnSetting = new ColumnSetting();
 
-            //if (typePropertyControl.Column.PrimaryKey == true && (dataItem != null && !dataItem.IsNewItem))
-            //{
-            //    columnSetting.IsReadOnly = true;
-            //}
-            //else
-            //    columnSetting.IsReadOnly = typePropertyControl.ColumnSetting.IsReadOnly;
-            //بهتره جور دیگه نوشته بشه
-            //if (typePropertyControl.ControlPackage != null)
-            return typePropertyControl.SimpleControlManager.GetUIControlManager(dataItem).SetValue(value);
-            //else
-            //    return typePropertyControl.SetValue(value);
-            //AgentUICoreMediator.UIManager.ShowControlValue(typePropertyControl.ControlPackage, typePropertyControl.Column, value, columnSetting);
+        //    //if (typePropertyControl.Column.PrimaryKey == true && (dataItem != null && !dataItem.IsNewItem))
+        //    //{
+        //    //    columnSetting.IsReadOnly = true;
+        //    //}
+        //    //else
+        //    //    columnSetting.IsReadOnly = typePropertyControl.ColumnSetting.IsReadOnly;
+        //    //بهتره جور دیگه نوشته بشه
+        //    //if (typePropertyControl.ControlPackage != null)
+        //    return typePropertyControl.SimpleControlManager.GetUIControlManager(dataItem).SetValue(value);
+        //    //else
+        //    //    return typePropertyControl.SetValue(value);
+        //    //AgentUICoreMediator.UIManager.ShowControlValue(typePropertyControl.ControlPackage, typePropertyControl.Column, value, columnSetting);
 
-        }
-
-
-
-        public object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControlMultiple SimpleColumnControlMultipleData)
-        {
-            //if (AreaInitializer.DataMode == DataMode.Multiple)
-            return SimpleColumnControlMultipleData.SimpleControlManager.GetUIControlManager(dataRepository).GetValue();
-            //else
-            //    return SimpleColumnControlMultipleData.GetValue();
+        //}
 
 
-            //////if (typePropertyControl.EditNdTypeArea != null)
-            //////{
-            //////    //var relationSourceControl = (typePropertyControl as RelationSourceControl);
-            //////    if (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl != null)
-            //////    {
-            //////        if (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ManyToOne
-            //////            || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ExplicitOneToOne
-            //////            || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SubToSuper
-            //////            || (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.UnionToSubUnion_UnionHoldsKeys)
-            //////            || (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SubUnionToUnion_SubUnionHoldsKeys))
-            //////        {
-            //////            var data = typePropertyControl.EditNdTypeArea.AreaInitializer.Data.FirstOrDefault(x => x.SourceRelatedData == dataRepository);
-            //////            //AreaInitializer.DataMode == DataMode.Multiple
-            //////            //&& 
-            //////            if (data == null)
-            //////                return "";
-            //////            else
-            //////                return typePropertyControl.EditNdTypeArea.FetchTypePorpertyValue(data, typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipColumns.First().SecondSideColumn1);
-            //////        }
-            //////        else if (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.OneToMany
-            //////            || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ImplicitOneToOne
-            //////              || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SuperToSub)
-            //////        {
-            //////            //return FetchTypePorpertyValue(dataRepository, typePropertyControl.Column);
-            //////            throw (new Exception("asfsdf"));
-            //////        }
-            //////    }
-            //////    return "";
+
+        //public object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControlMultiple SimpleColumnControlMultipleData)
+        //{
+        //    //if (AreaInitializer.DataMode == DataMode.Multiple)
+        //    return SimpleColumnControlMultipleData.SimpleControlManager.GetUIControlManager(dataRepository).GetValue();
+        //    //else
+        //    //    return SimpleColumnControlMultipleData.GetValue();
 
 
-            //////}
-            //////else
-            //////{
+        //    //////if (typePropertyControl.EditNdTypeArea != null)
+        //    //////{
+        //    //////    //var relationSourceControl = (typePropertyControl as RelationSourceControl);
+        //    //////    if (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl != null)
+        //    //////    {
+        //    //////        if (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ManyToOne
+        //    //////            || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ExplicitOneToOne
+        //    //////            || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SubToSuper
+        //    //////            || (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.UnionToSubUnion_UnionHoldsKeys)
+        //    //////            || (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SubUnionToUnion_SubUnionHoldsKeys))
+        //    //////        {
+        //    //////            var data = typePropertyControl.EditNdTypeArea.AreaInitializer.Data.FirstOrDefault(x => x.SourceRelatedData == dataRepository);
+        //    //////            //AreaInitializer.DataMode == DataMode.Multiple
+        //    //////            //&& 
+        //    //////            if (data == null)
+        //    //////                return "";
+        //    //////            else
+        //    //////                return typePropertyControl.EditNdTypeArea.FetchTypePorpertyValue(data, typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipColumns.First().SecondSideColumn1);
+        //    //////        }
+        //    //////        else if (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.OneToMany
+        //    //////            || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ImplicitOneToOne
+        //    //////              || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SuperToSub)
+        //    //////        {
+        //    //////            //return FetchTypePorpertyValue(dataRepository, typePropertyControl.Column);
+        //    //////            throw (new Exception("asfsdf"));
+        //    //////        }
+        //    //////    }
+        //    //////    return "";
 
-            //////}
+
+        //    //////}
+        //    //////else
+        //    //////{
+
+        //    //////}
 
 
-            //if (typePropertyControl is RelationSourceControl)
-            //{
-            //    var relationSourceControl = (typePropertyControl as RelationSourceControl);
-            //    //////return relationSourceControl.EditNdTypeArea.FetchTypePorpertyValue(dataRepository, AgentHelper.GetRelationOperand(relationSourceControl.Relation, relationSourceControl.RelationSide == Enum_DP_RelationSide.FirstSide ? Enum_DP_RelationSide.SecondSide : Enum_DP_RelationSide.FirstSide));
-            //    return "";
-            //    // return FetchTypePropertyRelationSourceControl(typePropertyControl as RelationSourceControl);
-            //}
-            //else
-            //    return SpecializedDataView.FetchTypePropertyControlValue(dataRepository, typePropertyControl);
-        }
+        //    //if (typePropertyControl is RelationSourceControl)
+        //    //{
+        //    //    var relationSourceControl = (typePropertyControl as RelationSourceControl);
+        //    //    //////return relationSourceControl.EditNdTypeArea.FetchTypePorpertyValue(dataRepository, AgentHelper.GetRelationOperand(relationSourceControl.Relation, relationSourceControl.RelationSide == Enum_DP_RelationSide.FirstSide ? Enum_DP_RelationSide.SecondSide : Enum_DP_RelationSide.FirstSide));
+        //    //    return "";
+        //    //    // return FetchTypePropertyRelationSourceControl(typePropertyControl as RelationSourceControl);
+        //    //}
+        //    //else
+        //    //    return SpecializedDataView.FetchTypePropertyControlValue(dataRepository, typePropertyControl);
+        //}
 
 
 

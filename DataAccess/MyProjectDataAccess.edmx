@@ -612,6 +612,7 @@
           <Property Name="Alias" Type="varchar" MaxLength="128" />
           <Property Name="RelationshipTailSelectable" Type="bit" Nullable="false" />
           <Property Name="Tooltip" Type="varchar" MaxLength="1024" />
+          <Property Name="ExcludeInGeneralSearch" Type="bit" />
         </EntityType>
         <EntityType Name="EntityState_UIActionActivity">
           <Key>
@@ -6122,9 +6123,7 @@
           <EntitySet Name="EntityRelationshipTailDataMenu" EntityType="MyIdeaModel.EntityRelationshipTailDataMenu" />
           <EntitySet Name="EntityRelationshipTailDataMenuItems" EntityType="MyIdeaModel.EntityRelationshipTailDataMenuItems" />
           <EntitySet Name="EntityReport" EntityType="MyIdeaModel.EntityReport" />
-          <EntitySet Name="EntitySearch" EntityType="MyIdeaModel.EntitySearch" />
           <EntitySet Name="EntitySearchableReport" EntityType="MyIdeaModel.EntitySearchableReport" />
-          <EntitySet Name="EntitySearchColumns" EntityType="MyIdeaModel.EntitySearchColumns" />
           <EntitySet Name="EntityState_UIActionActivity" EntityType="MyIdeaModel.EntityState_UIActionActivity" />
           <EntitySet Name="EntityUIComposition" EntityType="MyIdeaModel.EntityUIComposition" />
           <EntitySet Name="EntityUISetting" EntityType="MyIdeaModel.EntityUISetting" />
@@ -6418,10 +6417,6 @@
             <End Role="Column" EntitySet="Column" />
             <End Role="EntityListViewColumns" EntitySet="EntityListViewColumns" />
           </AssociationSet>
-          <AssociationSet Name="FKEntitySear524417" Association="MyIdeaModel.FKEntitySear524417">
-            <End Role="Column" EntitySet="Column" />
-            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
-          </AssociationSet>
           <AssociationSet Name="FKFormulaIte729281" Association="MyIdeaModel.FKFormulaIte729281">
             <End Role="Column" EntitySet="Column" />
             <End Role="FormulaItems" EntitySet="FormulaItems" />
@@ -6453,10 +6448,6 @@
           <AssociationSet Name="FK_ColumnCustomFormula_Formula" Association="MyIdeaModel.FK_ColumnCustomFormula_Formula">
             <End Role="Formula" EntitySet="Formula" />
             <End Role="ColumnCustomFormula" EntitySet="ColumnCustomFormula" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ColumnPhrase_EntitySearchColumns" Association="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns">
-            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
-            <End Role="ColumnPhrase" EntitySet="ColumnPhrase" />
           </AssociationSet>
           <AssociationSet Name="FKPhrase552267" Association="MyIdeaModel.FKPhrase552267">
             <End Role="ColumnPhrase" EntitySet="ColumnPhrase" />
@@ -6822,10 +6813,6 @@
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
           </AssociationSet>
-          <AssociationSet Name="FKEntitySear748558" Association="MyIdeaModel.FKEntitySear748558">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
-          </AssociationSet>
           <AssociationSet Name="FKRelationsh552099" Association="MyIdeaModel.FKRelationsh552099">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="RelationshipSearchFilter" EntitySet="RelationshipSearchFilter" />
@@ -6853,18 +6840,6 @@
           <AssociationSet Name="FKEntityRepo965698" Association="MyIdeaModel.FKEntityRepo965698">
             <End Role="SecurityObject" EntitySet="SecurityObject" />
             <End Role="EntityReport" EntitySet="EntityReport" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntitySearch_TableDrivedEntity" Association="MyIdeaModel.FK_EntitySearch_TableDrivedEntity">
-            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
-            <End Role="EntitySearch" EntitySet="EntitySearch" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SearchRepository_EntitySearch" Association="MyIdeaModel.FK_SearchRepository_EntitySearch">
-            <End Role="EntitySearch" EntitySet="EntitySearch" />
-            <End Role="SearchRepository" EntitySet="SearchRepository" />
-          </AssociationSet>
-          <AssociationSet Name="FKEntitySear726002" Association="MyIdeaModel.FKEntitySear726002">
-            <End Role="EntitySearch" EntitySet="EntitySearch" />
-            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
           </AssociationSet>
           <AssociationSet Name="FK_EntitySearchableReport_SearchRepository" Association="MyIdeaModel.FK_EntitySearchableReport_SearchRepository">
             <End Role="SearchRepository" EntitySet="SearchRepository" />
@@ -7322,6 +7297,32 @@
             <End Role="UniqueConstraint" EntitySet="UniqueConstraint" />
             <End Role="Column" EntitySet="Column" />
           </AssociationSet>
+          <EntitySet Name="EntitySearch" EntityType="MyIdeaModel.EntitySearch" />
+          <EntitySet Name="EntitySearchColumns" EntityType="MyIdeaModel.EntitySearchColumns" />
+          <AssociationSet Name="FKEntitySear524417" Association="MyIdeaModel.FKEntitySear524417">
+            <End Role="Column" EntitySet="Column" />
+            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ColumnPhrase_EntitySearchColumns" Association="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns">
+            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
+            <End Role="ColumnPhrase" EntitySet="ColumnPhrase" />
+          </AssociationSet>
+          <AssociationSet Name="FKEntitySear748558" Association="MyIdeaModel.FKEntitySear748558">
+            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
+            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntitySearch_TableDrivedEntity" Association="MyIdeaModel.FK_EntitySearch_TableDrivedEntity">
+            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
+            <End Role="EntitySearch" EntitySet="EntitySearch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SearchRepository_EntitySearch" Association="MyIdeaModel.FK_SearchRepository_EntitySearch">
+            <End Role="EntitySearch" EntitySet="EntitySearch" />
+            <End Role="SearchRepository" EntitySet="SearchRepository" />
+          </AssociationSet>
+          <AssociationSet Name="FKEntitySear726002" Association="MyIdeaModel.FKEntitySear726002">
+            <End Role="EntitySearch" EntitySet="EntitySearch" />
+            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="ArchiveFolder">
           <Key>
@@ -7536,7 +7537,6 @@
           <NavigationProperty Name="DatabaseFunction_TableDrivedEntity_Columns" Relationship="MyIdeaModel.FKDatabaseFu304987" FromRole="Column" ToRole="DatabaseFunction_TableDrivedEntity_Columns" />
           <NavigationProperty Name="DateColumnType" Relationship="MyIdeaModel.FKDateColumn74546" FromRole="Column" ToRole="DateColumnType" />
           <NavigationProperty Name="EntityListViewColumns" Relationship="MyIdeaModel.FKEntityList404590" FromRole="Column" ToRole="EntityListViewColumns" />
-          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear524417" FromRole="Column" ToRole="EntitySearchColumns" />
           <NavigationProperty Name="FormulaItems" Relationship="MyIdeaModel.FKFormulaIte729281" FromRole="Column" ToRole="FormulaItems" />
           <NavigationProperty Name="NumericColumnType" Relationship="MyIdeaModel.FKNumericCol878005" FromRole="Column" ToRole="NumericColumnType" />
           <NavigationProperty Name="StringColumnType" Relationship="MyIdeaModel.FKStringColu936883" FromRole="Column" ToRole="StringColumnType" />
@@ -7545,6 +7545,7 @@
           <NavigationProperty Name="RelationshipColumns" Relationship="MyIdeaModel.Relationship_FirstEntityColumns" FromRole="Column" ToRole="RelationshipColumns" />
           <NavigationProperty Name="RelationshipColumns1" Relationship="MyIdeaModel.Relationship_SecondEntityColumns" FromRole="Column" ToRole="RelationshipColumns" />
           <NavigationProperty Name="UniqueConstraint" Relationship="MyIdeaModel.UniqueConstraint_Column" FromRole="Column" ToRole="UniqueConstraint" />
+          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear524417" FromRole="Column" ToRole="EntitySearchColumns" />
         </EntityType>
         <EntityType Name="ColumnCustomFormula">
           <Key>
@@ -7568,8 +7569,8 @@
           <Property Name="Operator" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
           <Property Name="EntitySearchColumnsID" Type="Int32" />
           <NavigationProperty Name="Column" Relationship="MyIdeaModel.FKColumnPhra124715" FromRole="ColumnPhrase" ToRole="Column" />
-          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns" FromRole="ColumnPhrase" ToRole="EntitySearchColumns" />
           <NavigationProperty Name="Phrase" Relationship="MyIdeaModel.FKPhrase552267" FromRole="ColumnPhrase" ToRole="Phrase" />
+          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns" FromRole="ColumnPhrase" ToRole="EntitySearchColumns" />
         </EntityType>
         <EntityType Name="ColumnUISetting">
           <Key>
@@ -8101,8 +8102,8 @@
           <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntityStateCondition" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FKEntityRela568378" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="TableDrivedEntity1" Relationship="MyIdeaModel.FKEntityRela831147" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear748558" FromRole="EntityRelationshipTail" ToRole="EntitySearchColumns" />
           <NavigationProperty Name="RelationshipSearchFilter" Relationship="MyIdeaModel.FKRelationsh552099" FromRole="EntityRelationshipTail" ToRole="RelationshipSearchFilter" />
+          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear748558" FromRole="EntityRelationshipTail" ToRole="EntitySearchColumns" />
         </EntityType>
         <EntityType Name="EntityRelationshipTailDataMenu">
           <Key>
@@ -8143,18 +8144,6 @@
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FKEntityRepo82108" FromRole="EntityReport" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="SecurityObject" Relationship="MyIdeaModel.FKEntityRepo965698" FromRole="EntityReport" ToRole="SecurityObject" />
         </EntityType>
-        <EntityType Name="EntitySearch">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Title" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="IsDefault" Type="Boolean" />
-          <Property Name="TableDrivedEntityID1" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" FromRole="EntitySearch" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="SearchRepository" Relationship="MyIdeaModel.FK_SearchRepository_EntitySearch" FromRole="EntitySearch" ToRole="SearchRepository" />
-          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear726002" FromRole="EntitySearch" ToRole="EntitySearchColumns" />
-        </EntityType>
         <EntityType Name="EntitySearchableReport">
           <Key>
             <PropertyRef Name="ID" />
@@ -8171,23 +8160,6 @@
           <NavigationProperty Name="EntityListReport" Relationship="MyIdeaModel.FK_EntityListReport_EntitySearchableReport" FromRole="EntitySearchableReport" ToRole="EntityListReport" />
           <NavigationProperty Name="EntityReport" Relationship="MyIdeaModel.FK_EntitySearchableReport_EntityReport" FromRole="EntitySearchableReport" ToRole="EntityReport" />
           <NavigationProperty Name="SearchRepository" Relationship="MyIdeaModel.FK_EntitySearchableReport_SearchRepository" FromRole="EntitySearchableReport" ToRole="SearchRepository" />
-        </EntityType>
-        <EntityType Name="EntitySearchColumns">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EntitySearchID" Type="Int32" Nullable="false" />
-          <Property Name="ColumnID" Type="Int32" />
-          <Property Name="EntityRelationshipTailID" Type="Int32" />
-          <Property Name="OrderID" Type="Int16" />
-          <Property Name="Alias" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="RelationshipTailSelectable" Type="Boolean" Nullable="false" />
-          <Property Name="Tooltip" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Column" Relationship="MyIdeaModel.FKEntitySear524417" FromRole="EntitySearchColumns" ToRole="Column" />
-          <NavigationProperty Name="ColumnPhrase" Relationship="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns" FromRole="EntitySearchColumns" ToRole="ColumnPhrase" />
-          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyIdeaModel.FKEntitySear748558" FromRole="EntitySearchColumns" ToRole="EntityRelationshipTail" />
-          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FKEntitySear726002" FromRole="EntitySearchColumns" ToRole="EntitySearch" />
         </EntityType>
         <EntityType Name="EntityState_UIActionActivity">
           <Key>
@@ -8661,11 +8633,11 @@
           <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
           <Property Name="EntitySearchID" Type="Int32" />
           <Property Name="Title" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FK_SearchRepository_EntitySearch" FromRole="SearchRepository" ToRole="EntitySearch" />
           <NavigationProperty Name="EntitySearchableReport" Relationship="MyIdeaModel.FK_EntitySearchableReport_SearchRepository" FromRole="SearchRepository" ToRole="EntitySearchableReport" />
           <NavigationProperty Name="LogicPhrase" Relationship="MyIdeaModel.FK_RelationshipPhrase_LogicPhrase" FromRole="SearchRepository" ToRole="LogicPhrase" />
           <NavigationProperty Name="Relationship" Relationship="MyIdeaModel.FK_SearchRepository_Relationship" FromRole="SearchRepository" ToRole="Relationship" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FK_SearchRepository_TableDrivedEntity" FromRole="SearchRepository" ToRole="TableDrivedEntity" />
+          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FK_SearchRepository_EntitySearch" FromRole="SearchRepository" ToRole="EntitySearch" />
         </EntityType>
         <EntityType Name="StringColumnType">
           <Key>
@@ -8798,7 +8770,6 @@
           <NavigationProperty Name="EntityRelationshipTail1" Relationship="MyIdeaModel.FKEntityRela831147" FromRole="TableDrivedEntity" ToRole="EntityRelationshipTail" />
           <NavigationProperty Name="EntityRelationshipTailDataMenuItems" Relationship="MyIdeaModel.FK_EntityRelationshipTailListViewItems_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="EntityRelationshipTailDataMenuItems" />
           <NavigationProperty Name="EntityReport" Relationship="MyIdeaModel.FKEntityRepo82108" FromRole="TableDrivedEntity" ToRole="EntityReport" />
-          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="EntitySearch" />
           <NavigationProperty Name="EntityUIComposition" Relationship="MyIdeaModel.FKEntityUICo461879" FromRole="TableDrivedEntity" ToRole="EntityUIComposition" />
           <NavigationProperty Name="EntityValidation" Relationship="MyIdeaModel.FKEntityVali365073" FromRole="TableDrivedEntity" ToRole="EntityValidation" />
           <NavigationProperty Name="Formula" Relationship="MyIdeaModel.FKFormula967405" FromRole="TableDrivedEntity" ToRole="Formula" />
@@ -8818,6 +8789,7 @@
           <NavigationProperty Name="SecurityObject" Relationship="MyIdeaModel.FKTableDrive36776" FromRole="TableDrivedEntity" ToRole="SecurityObject" />
           <NavigationProperty Name="TableDrivedEntity_Columns" Relationship="MyIdeaModel.FKTableDrive379163" FromRole="TableDrivedEntity" ToRole="TableDrivedEntity_Columns" />
           <NavigationProperty Name="TableDrivedEntityState" Relationship="MyIdeaModel.FKTableDrive764829" FromRole="TableDrivedEntity" ToRole="TableDrivedEntityState" />
+          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="EntitySearch" />
         </EntityType>
         <EntityType Name="TableDrivedEntity_Columns">
           <Key>
@@ -9930,18 +9902,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKEntitySear524417">
-          <End Type="MyIdeaModel.Column" Role="Column" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Column">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySearchColumns">
-              <PropertyRef Name="ColumnID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKFormulaIte729281">
           <End Type="MyIdeaModel.Column" Role="Column" Multiplicity="0..1" />
           <End Type="MyIdeaModel.FormulaItems" Role="FormulaItems" Multiplicity="*" />
@@ -10035,18 +9995,6 @@
             </Principal>
             <Dependent Role="ColumnCustomFormula">
               <PropertyRef Name="FormulaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ColumnPhrase_EntitySearchColumns">
-          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.ColumnPhrase" Role="ColumnPhrase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySearchColumns">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ColumnPhrase">
-              <PropertyRef Name="EntitySearchColumnsID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11142,18 +11090,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKEntitySear748558">
-          <End Type="MyIdeaModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySearchColumns">
-              <PropertyRef Name="EntityRelationshipTailID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKRelationsh552099">
           <End Type="MyIdeaModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="0..1" />
           <End Type="MyIdeaModel.RelationshipSearchFilter" Role="RelationshipSearchFilter" Multiplicity="*" />
@@ -11235,42 +11171,6 @@
             </Principal>
             <Dependent Role="EntityReport">
               <PropertyRef Name="ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntitySearch_TableDrivedEntity">
-          <End Type="MyIdeaModel.TableDrivedEntity" Role="TableDrivedEntity" Multiplicity="1" />
-          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntity">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySearch">
-              <PropertyRef Name="TableDrivedEntityID1" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SearchRepository_EntitySearch">
-          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.SearchRepository" Role="SearchRepository" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySearch">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SearchRepository">
-              <PropertyRef Name="EntitySearchID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKEntitySear726002">
-          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="1" />
-          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySearch">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySearchColumns">
-              <PropertyRef Name="EntitySearchID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -12634,6 +12534,108 @@
           <End Type="MyIdeaModel.UniqueConstraint" Role="UniqueConstraint" Multiplicity="*" />
           <End Type="MyIdeaModel.Column" Role="Column" Multiplicity="*" />
         </Association>
+        <EntityType Name="EntitySearch">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="IsDefault" Type="Boolean" />
+          <Property Name="TableDrivedEntityID1" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" FromRole="EntitySearch" ToRole="TableDrivedEntity" />
+          <NavigationProperty Name="SearchRepository" Relationship="MyIdeaModel.FK_SearchRepository_EntitySearch" FromRole="EntitySearch" ToRole="SearchRepository" />
+          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear726002" FromRole="EntitySearch" ToRole="EntitySearchColumns" />
+        </EntityType>
+        <EntityType Name="EntitySearchColumns">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntitySearchID" Type="Int32" Nullable="false" />
+          <Property Name="ColumnID" Type="Int32" />
+          <Property Name="EntityRelationshipTailID" Type="Int32" />
+          <Property Name="OrderID" Type="Int16" />
+          <Property Name="Alias" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="RelationshipTailSelectable" Type="Boolean" Nullable="false" />
+          <Property Name="Tooltip" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" />
+          <Property Name="ExcludeInGeneralSearch" Type="Boolean" />
+          <NavigationProperty Name="Column" Relationship="MyIdeaModel.FKEntitySear524417" FromRole="EntitySearchColumns" ToRole="Column" />
+          <NavigationProperty Name="ColumnPhrase" Relationship="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns" FromRole="EntitySearchColumns" ToRole="ColumnPhrase" />
+          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyIdeaModel.FKEntitySear748558" FromRole="EntitySearchColumns" ToRole="EntityRelationshipTail" />
+          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FKEntitySear726002" FromRole="EntitySearchColumns" ToRole="EntitySearch" />
+        </EntityType>
+        <Association Name="FKEntitySear524417">
+          <End Type="MyIdeaModel.Column" Role="Column" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Column">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySearchColumns">
+              <PropertyRef Name="ColumnID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ColumnPhrase_EntitySearchColumns">
+          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.ColumnPhrase" Role="ColumnPhrase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntitySearchColumns">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ColumnPhrase">
+              <PropertyRef Name="EntitySearchColumnsID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKEntitySear748558">
+          <End Type="MyIdeaModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityRelationshipTail">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySearchColumns">
+              <PropertyRef Name="EntityRelationshipTailID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntitySearch_TableDrivedEntity">
+          <End Type="MyIdeaModel.TableDrivedEntity" Role="TableDrivedEntity" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableDrivedEntity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySearch">
+              <PropertyRef Name="TableDrivedEntityID1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SearchRepository_EntitySearch">
+          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.SearchRepository" Role="SearchRepository" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntitySearch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SearchRepository">
+              <PropertyRef Name="EntitySearchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKEntitySear726002">
+          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntitySearch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySearchColumns">
+              <PropertyRef Name="EntitySearchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -13278,35 +13280,11 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="EntitySearch">
-            <EntityTypeMapping TypeName="MyIdeaModel.EntitySearch">
-              <MappingFragment StoreEntitySet="EntitySearch">
-                <ScalarProperty Name="TableDrivedEntityID1" ColumnName="TableDrivedEntityID1" />
-                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="EntitySearchableReport">
             <EntityTypeMapping TypeName="MyIdeaModel.EntitySearchableReport">
               <MappingFragment StoreEntitySet="EntitySearchableReport">
                 <ScalarProperty Name="SearchRepositoryID" ColumnName="SearchRepositoryID" />
                 <ScalarProperty Name="SearchableReportType" ColumnName="SearchableReportType" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EntitySearchColumns">
-            <EntityTypeMapping TypeName="MyIdeaModel.EntitySearchColumns">
-              <MappingFragment StoreEntitySet="EntitySearchColumns">
-                <ScalarProperty Name="Tooltip" ColumnName="Tooltip" />
-                <ScalarProperty Name="RelationshipTailSelectable" ColumnName="RelationshipTailSelectable" />
-                <ScalarProperty Name="Alias" ColumnName="Alias" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
-                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
-                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
-                <ScalarProperty Name="EntitySearchID" ColumnName="EntitySearchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -14217,6 +14195,31 @@
               <ScalarProperty Name="ID" ColumnName="UniqueConstraintID" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="EntitySearch">
+            <EntityTypeMapping TypeName="MyIdeaModel.EntitySearch">
+              <MappingFragment StoreEntitySet="EntitySearch">
+                <ScalarProperty Name="TableDrivedEntityID1" ColumnName="TableDrivedEntityID1" />
+                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntitySearchColumns">
+            <EntityTypeMapping TypeName="MyIdeaModel.EntitySearchColumns">
+              <MappingFragment StoreEntitySet="EntitySearchColumns">
+                <ScalarProperty Name="ExcludeInGeneralSearch" ColumnName="ExcludeInGeneralSearch" />
+                <ScalarProperty Name="Tooltip" ColumnName="Tooltip" />
+                <ScalarProperty Name="RelationshipTailSelectable" ColumnName="RelationshipTailSelectable" />
+                <ScalarProperty Name="Alias" ColumnName="Alias" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
+                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
+                <ScalarProperty Name="EntitySearchID" ColumnName="EntitySearchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

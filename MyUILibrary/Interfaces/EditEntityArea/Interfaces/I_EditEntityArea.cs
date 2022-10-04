@@ -71,7 +71,7 @@ namespace MyUILibrary.EntityArea
         void SearchConfirmed(DP_SearchRepository searchItems, bool select);
         void ShowSearchView(bool fromDataView);
         void SelectFromParent(bool isCalledFromDataView, RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues);
-        void SearchTextBox(string text);
+     //   void SearchTextBox(string text);
         void RemoveViewEntityAreaView();
 
     }
@@ -172,8 +172,8 @@ namespace MyUILibrary.EntityArea
         //    I_View_EditEntityAreaMultiple SpecializedDataView { get; }
         I_View_EditEntityAreaMultiple DataView { get; set; }
 
-        object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControlMultiple typePropertyControl);
-        bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, string value);
+     //   object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControlMultiple typePropertyControl);
+    //    bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, string value);
         List<DP_FormDataRepository> GetSelectedData();
     }
 

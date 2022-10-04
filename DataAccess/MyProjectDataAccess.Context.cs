@@ -86,9 +86,7 @@ namespace DataAccess
         public virtual DbSet<EntityRelationshipTailDataMenu> EntityRelationshipTailDataMenu { get; set; }
         public virtual DbSet<EntityRelationshipTailDataMenuItems> EntityRelationshipTailDataMenuItems { get; set; }
         public virtual DbSet<EntityReport> EntityReport { get; set; }
-        public virtual DbSet<EntitySearch> EntitySearch { get; set; }
         public virtual DbSet<EntitySearchableReport> EntitySearchableReport { get; set; }
-        public virtual DbSet<EntitySearchColumns> EntitySearchColumns { get; set; }
         public virtual DbSet<EntityState_UIActionActivity> EntityState_UIActionActivity { get; set; }
         public virtual DbSet<EntityUIComposition> EntityUIComposition { get; set; }
         public virtual DbSet<EntityUISetting> EntityUISetting { get; set; }
@@ -174,5 +172,7 @@ namespace DataAccess
         public virtual DbSet<TransitionAction_Formula> TransitionAction_Formula { get; set; }
         public virtual DbSet<TransitionActionTarget> TransitionActionTarget { get; set; }
         public virtual DbSet<TransitionActivity> TransitionActivity { get; set; }
+        public virtual DbSet<EntitySearch> EntitySearch { get; set; }
+        public virtual DbSet<EntitySearchColumns> EntitySearchColumns { get; set; }
     }
 }

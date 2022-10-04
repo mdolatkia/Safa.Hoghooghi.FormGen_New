@@ -1044,7 +1044,6 @@ namespace MyUILibrary
             editEntityAreaInitializer.EntityID = entityId;
             editEntityAreaInitializer.DataMode = dataMode;
             editEntityAreaInitializer.TailDataValidation = tailDataValidation;
-
             var editAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer);
             if (editAreaResult.Item1 == null)
             {

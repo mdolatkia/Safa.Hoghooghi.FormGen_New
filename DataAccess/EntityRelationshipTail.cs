@@ -31,8 +31,8 @@ namespace DataAccess
             this.GraphDefinition_EntityRelationshipTail = new HashSet<GraphDefinition_EntityRelationshipTail>();
             this.LetterTemplateRelationshipField = new HashSet<LetterTemplateRelationshipField>();
             this.TableDrivedEntityStateCondition = new HashSet<TableDrivedEntityStateCondition>();
-            this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
             this.RelationshipSearchFilter = new HashSet<RelationshipSearchFilter>();
+            this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
         }
     
         public int ID { get; set; }
@@ -71,8 +71,8 @@ namespace DataAccess
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntitySearchColumns> EntitySearchColumns { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntitySearchColumns> EntitySearchColumns { get; set; }
     }
 }

@@ -30,13 +30,13 @@ namespace DataAccess
             this.UIColumnValue = new HashSet<UIColumnValue>();
             this.DatabaseFunction_TableDrivedEntity_Columns = new HashSet<DatabaseFunction_TableDrivedEntity_Columns>();
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
-            this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
             this.FormulaItems = new HashSet<FormulaItems>();
             this.TableDrivedEntity_Columns = new HashSet<TableDrivedEntity_Columns>();
             this.UIEnablityDetails = new HashSet<UIEnablityDetails>();
             this.RelationshipColumns = new HashSet<RelationshipColumns>();
             this.RelationshipColumns1 = new HashSet<RelationshipColumns>();
             this.UniqueConstraint = new HashSet<UniqueConstraint>();
+            this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
         }
     
         public string Value { get; set; }
@@ -96,8 +96,6 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityListViewColumns> EntityListViewColumns { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntitySearchColumns> EntitySearchColumns { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
         public virtual NumericColumnType NumericColumnType { get; set; }
         public virtual StringColumnType StringColumnType { get; set; }
@@ -111,5 +109,7 @@ namespace DataAccess
         public virtual ICollection<RelationshipColumns> RelationshipColumns1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UniqueConstraint> UniqueConstraint { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntitySearchColumns> EntitySearchColumns { get; set; }
     }
 }

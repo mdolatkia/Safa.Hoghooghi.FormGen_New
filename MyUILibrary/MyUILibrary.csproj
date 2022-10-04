@@ -192,7 +192,7 @@
     <Compile Include="EntityArea\SearchEntityArea\AdvancedSearchEntityArea.cs" />
     <Compile Include="EntityArea\SearchEntityArea\SearchEntityArea.cs" />
     <Compile Include="EntityArea\SearchEntityArea\RawSearchEntityArea.cs" />
-    <Compile Include="EntityArea\SearchEntityArea\SimpleSearchEntityArea.cs" />
+    <Compile Include="EntityArea\SearchEntityArea\EntityDefinedSearchArea.cs" />
     <Compile Include="EntityArea\RelationshipFilterManager.cs" />
     <Compile Include="EntityArea\UIValidationManager.cs" />
     <Compile Include="EntityArea\UIFomulaManager.cs" />

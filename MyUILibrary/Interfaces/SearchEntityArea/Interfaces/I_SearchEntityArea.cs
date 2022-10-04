@@ -44,13 +44,13 @@ namespace MyUILibrary.EntityArea
         void OnSearchDataDefined(DP_SearchRepository logicPhrase);
         DP_SearchRepository GetSearchRepository();
         bool ShowSearchRepository(DP_SearchRepository item);
-        LogicPhraseDTO GetQuickSearchLogicPhrase(string text, EntitySearchDTO entitySearch);
+        DP_SearchRepository GetQuickSearchLogicPhrase(string text);
         event EventHandler<SearchDataArg> SearchDataDefined;
-        List<I_Command> SearchCommands
-        {
-            get;
-            set;
-        }
+        //List<I_Command> SearchCommands
+        //{
+        //    get;
+        //    set;
+        //}
 
         I_View_SimpleSearchEntityArea SimpleSearchView { set; get; }
 

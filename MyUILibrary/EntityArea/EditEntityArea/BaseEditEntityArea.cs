@@ -325,7 +325,7 @@ namespace MyUILibrary.EntityArea
             }
         }
         //  I_SearchViewEntityArea _SearchViewEntityArea;
-       // public I_SearchAndViewEntityArea SearchViewEntityArea { set; get; }
+        // public I_SearchAndViewEntityArea SearchViewEntityArea { set; get; }
 
 
         List<RelationshipColumnControlGeneral> _RelationshipColumnControls;
@@ -891,23 +891,8 @@ namespace MyUILibrary.EntityArea
             SearchConfirmed(searchItems, true);
         }
 
-        public async void SearchTextBox(string text)
-        {
-            SearchInitialyDone = true;
-            DP_SearchRepository searchItems = new DP_SearchRepository(AreaInitializer.EntityID);
-            var logicPhrase = SearchEntityArea.SimpleSearchEntityArea.GetQuickSearchLogicPhrase(text, SearchEntityArea.SimpleSearchEntityArea.EntitySearchDTO);
-            searchItems.Phrases.Add(logicPhrase);
-            var result = await SearchAsync(searchItems);
-            UseSearchResult(result, false);
-        }
-        private Task<DR_ResultSearchView> SearchAsync(DP_SearchRepository searchItems)
-        {
-            return Task.Run(() =>
-            {
-                var result = GetSearchResult(searchItems);
-                return result;
-            });
-        }
+
+
         public void RemoveViewEntityAreaView()
         {
             SearchAndView_View.RemoveViewAreaView(ViewEntityArea.ViewView);
@@ -2293,17 +2278,29 @@ namespace MyUILibrary.EntityArea
         //    //    rel.EditNdTypeArea.AreaInitializer.SecurityReadOnlyByParent = true;
         //    //}
         //}
-        public void TemporaryViewSearchTextChanged(I_View_TemporaryView view, Arg_TemporaryDisplaySerachText searchArg)
+        public async void TemporaryViewSearchTextChanged(I_View_TemporaryView view, Arg_TemporaryDisplaySerachText searchArg)
         {
+            //** 3e39d19c-ddcb-43ab-b51f-621f533c7e22
             if (!string.IsNullOrEmpty(searchArg.Text))
             {
-                SearchTextBox(searchArg.Text);
+                SearchInitialyDone = true;
+                var searchItems = SearchEntityArea.SimpleSearchEntityArea.GetQuickSearchLogicPhrase(searchArg.Text);
+                var result = await SearchAsync(searchItems);
+                UseSearchResult(result, false);
                 RemoveViewEntityAreaView();
                 if (!view.HasPopupView)
                     view.AddPopupView(ViewEntityArea.ViewView);
 
                 view.PopupVisibility = true;
             }
+        }
+        private Task<DR_ResultSearchView> SearchAsync(DP_SearchRepository searchItems)
+        {
+            return Task.Run(() =>
+            {
+                var result = GetSearchResult(searchItems);
+                return result;
+            });
         }
         public I_View_TemporaryView LastTemporaryView { set; get; }
 
@@ -2352,7 +2349,7 @@ namespace MyUILibrary.EntityArea
         }
         //public void ShowSearchView(bool fromDataView)
         //{
-           
+
         //    SearchViewEntityArea.ShowSearchView(fromDataView);
         //}
 

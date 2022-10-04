@@ -95,7 +95,7 @@ namespace ModelEntites
         public ColumnCustomFormulaDTO ColumnCustomFormula { set; get; }
         public bool ColumnsAdded { get; set; }
 
-     //   public ColumnUISettingDTO ColumnUISetting { get; set; }
+        //   public ColumnUISettingDTO ColumnUISetting { get; set; }
         public bool InvisibleInUI { get; set; }
         //public ColumnDTO Column { get; set; }
         //   public bool IsDescriptive { get; set; }
@@ -517,7 +517,7 @@ namespace ModelEntites
         public bool Entity1IsIndependent { get; set; }
         public bool Entity2IsIndependent { get; set; }
 
-      //  public bool IsDirectInUI { set; get; }
+        //  public bool IsDirectInUI { set; get; }
 
         public bool? FKReservedPosition { get; set; }
         //     public RelationshipUISettingDTO RelationshipUISetting { get; set; }
@@ -1405,7 +1405,7 @@ namespace ModelEntites
 
         public string CreateRelationshipTailPath { get; set; }
         public bool IsDescriptive { get; set; }
-      //  public bool AllRelationshipsAreSubToSuper { get; set; }
+        //  public bool AllRelationshipsAreSubToSuper { get; set; }
         public string Tooltip { get; set; }
 
         //public int CreateRelationshipID { get; set; }
@@ -1425,6 +1425,8 @@ namespace ModelEntites
         //public List<EntitySearchRelationshipTailDTO> EntitySearchRelationshipTails { set; get; }
         public List<EntitySearchColumnsDTO> EntitySearchAllColumns { set; get; }
         public bool IsDefault { get; set; }
+
+        public EntityUISettingDTO EntityUISetting { set; get; }
     }
     public class EntitySearchColumnsDTO
     {
@@ -1446,8 +1448,16 @@ namespace ModelEntites
 
         public bool RelationshipTailSelectable { set; get; }
         public string CreateRelationshipTailPath { get; set; }
-      //  public bool AllRelationshipsAreSubToSuper { get; set; }
+        //  public bool AllRelationshipsAreSubToSuper { get; set; }
         public string Tooltip { get; set; }
+
+        public bool ExcludeInQuickSearch { get; set; }
+
+        public ColumnUISettingDTO ColumnUISetting { get; set; }
+        public RelationshipUISettingDTO RelationshipUISetting { get; set; }
+
+        public List<SimpleSearchOperator> Operators { set; get; }
+        //    public bool ShowInSearchUI { get; set; }
         //public int CreateRelationshipTargetEntityID { get; set; }
     }
     //public class EntityListViewRelationshipTailDTO
@@ -3349,6 +3359,7 @@ namespace ModelEntites
     {
         public CommonOperator Operator { set; get; }
         public string Title { set; get; }
+        public bool IsDefault { get; set; }
     }
     public class SearchOperator
     {

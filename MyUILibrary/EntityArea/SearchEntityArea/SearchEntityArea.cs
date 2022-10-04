@@ -24,7 +24,6 @@ namespace MyUILibrary.EntityArea
             //** 0fa106fa-203c-4249-b43b-b5efe4a26994
             SearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchEntityArea();
             SimpleSearchEntityArea = new EntityDefinedSearchArea(SearchInitializer);
-            newAreaInitializer.EntitySearchID = newAreaInitializer.EntitySearchID;
             SimpleSearchEntityArea.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
             SearchView.AddSimpleSearchView(SimpleSearchEntityArea.SimpleSearchView);
 

@@ -14,8 +14,9 @@ namespace MyUILibrary.EntityArea
     {
 
 
+        bool QuickSearchVisiblity { set; get; }
 
-
+        string QuickSearchText { set; get; }
 
         //bool AddControlPackageToHeader(object uiControlPackage, string title, InfoColor titleColor, string tooltip = "");
 
@@ -54,7 +55,7 @@ namespace MyUILibrary.EntityArea
     public interface I_View_AdvancedSearchEntityArea : I_View_Area
     {
         I_AdvanceSearchNodeManager AddTreeItem();
-       void ClearTreeItems();
+        void ClearTreeItems();
     }
 
     public class AdvanceSearchNode
@@ -70,19 +71,26 @@ namespace MyUILibrary.EntityArea
         public AdvanceSearchNode ParentNode { set; get; }
         public List<AdvanceSearchNode> ChildItems { set; get; }
         public I_AdvanceSearchNodeManager NodeManager { set; get; }
-        public int EntityID { set; get; }
+   //     public int EntityID { set; get; }
     }
     public interface I_AdvanceSearchNodeManager
     {
+        event EventHandler<LogicComboBoxChangedEventArg> LogicComboBoxChanged;
         void SetHeader(string header);
         I_AdvanceSearchMenu AddMenu(string v);
         I_AdvanceSearchNodeManager AddChildItem();
         void AddExistingChildItem(I_AdvanceSearchNodeManager item);
         void RemoveItem(I_AdvanceSearchNodeManager nodeManager);
         void ClearItems();
+        void AddLogicComboBox(List<AndORListItem> andORListItems);
     }
     public interface I_AdvanceSearchMenu
     {
         event EventHandler Clicked;
+    }
+
+    public class LogicComboBoxChangedEventArg : EventArgs
+    {
+        public AndORListItem Item { set; get; }
     }
 }

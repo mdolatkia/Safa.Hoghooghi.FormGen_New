@@ -5,6 +5,7 @@ using MyUILibrary;
 using MyUILibrary.EntityArea;
 using MyUILibrary.EntityArea.Commands;
 using MyUILibrary.Temp;
+using ProxyLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace MyUIGenerator.View
 
             //View_Container = new View_Container(basicGridSetting);
             //if (AgentHelper.GetAppMode() != AppMode.Paper)
-                FlowDirection = System.Windows.FlowDirection.RightToLeft;
+            FlowDirection = System.Windows.FlowDirection.RightToLeft;
             //grdArea.Children.Add(View_Container.Grid);
 
 
@@ -196,7 +197,7 @@ namespace MyUIGenerator.View
             this.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
         }
 
-      
+
 
         //public bool AddControlPackageToHeader(object uiControlPackage, string title, InfoColor titleColor, string tooltip = "")
         //{
@@ -211,6 +212,9 @@ namespace MyUIGenerator.View
             Node = node;
         }
         ContextMenu contextMenu = new ContextMenu();
+
+        public event EventHandler<LogicComboBoxChangedEventArg> LogicComboBoxChanged;
+
         public I_AdvanceSearchMenu AddMenu(string header)
         {
             if (Node.ContextMenu == null)
@@ -230,8 +234,13 @@ namespace MyUIGenerator.View
 
         public void SetHeader(string header)
         {
-
-            Node.Header = header;
+            var headerObj = new StackPanel();
+            headerObj.Orientation = Orientation.Horizontal;
+            headerObj.Children.Add(new TextBlock() { Text = header });
+            var combobox = new ComboBox();
+            combobox.Visibility = Visibility.Collapsed;
+            headerObj.Children.Add(combobox);
+            Node.Header = headerObj;
 
         }
         public void RemoveItem(I_AdvanceSearchNodeManager nodeManager)
@@ -255,6 +264,26 @@ namespace MyUIGenerator.View
         public void ClearItems()
         {
             Node.Items.Clear();
+        }
+
+        public void AddLogicComboBox(List<AndORListItem> andORListItems)
+        {
+            var headerObj = Node.Header as StackPanel;
+            var combobox = headerObj.Children[1] as ComboBox;
+            combobox.Visibility = Visibility.Visible;
+            combobox.ItemsSource = andORListItems;
+            combobox.DisplayMemberPath = "Title";
+            combobox.SelectedItem = andORListItems.FirstOrDefault(x => x.IsDefault) ?? andORListItems.First();
+            combobox.SelectionChanged += Combobox_SelectionChanged;
+        }
+
+        private void Combobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+          if((sender as ComboBox).SelectedItem!=null)
+            {
+                if (LogicComboBoxChanged != null)
+                    LogicComboBoxChanged(this, new LogicComboBoxChangedEventArg() { Item = (sender as ComboBox).SelectedItem as AndORListItem });
+            }
         }
     }
     public class AdvanceSearchMenu : I_AdvanceSearchMenu

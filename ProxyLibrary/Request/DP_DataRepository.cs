@@ -980,6 +980,13 @@ namespace ProxyLibrary
         NotAnd,
         NotOr
     }
+    public class AndORListItem
+    {
+        public AndOREqualType AndOR { set; get; }
+        public string Title { set; get; }
+        public bool IsDefault { get; set; }
+    }
+
     public enum InORNotIn
     {
         In,

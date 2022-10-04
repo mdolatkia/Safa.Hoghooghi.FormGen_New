@@ -30,11 +30,11 @@ namespace DataAccess
         public Nullable<int> EntitySearchID { get; set; }
         public string Title { get; set; }
     
-        public virtual EntitySearch EntitySearch { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntitySearchableReport> EntitySearchableReport { get; set; }
         public virtual LogicPhrase LogicPhrase { get; set; }
         public virtual Relationship Relationship { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
+        public virtual EntitySearch EntitySearch { get; set; }
     }
 }

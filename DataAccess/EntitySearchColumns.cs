@@ -28,6 +28,7 @@ namespace DataAccess
         public string Alias { get; set; }
         public bool RelationshipTailSelectable { get; set; }
         public string Tooltip { get; set; }
+        public Nullable<bool> ExcludeInGeneralSearch { get; set; }
     
         public virtual Column Column { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

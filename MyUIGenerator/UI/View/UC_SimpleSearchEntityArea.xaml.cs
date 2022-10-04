@@ -27,7 +27,7 @@ namespace MyUIGenerator.View
     /// </summary>
     public partial class UC_SimpleSearchEntityArea : View_GridContainer, I_View_SimpleSearchEntityArea
     {
-   
+
 
         //View_Container View_Container { set; get; }
         public UC_SimpleSearchEntityArea(short columnsCount)
@@ -37,7 +37,7 @@ namespace MyUIGenerator.View
             grdArea.Children.Add(ContentScrollViewer as UIElement);
             //View_Container = new View_Container(basicGridSetting);
             //if (AgentHelper.GetAppMode() != AppMode.Paper)
-                FlowDirection = System.Windows.FlowDirection.RightToLeft;
+            FlowDirection = System.Windows.FlowDirection.RightToLeft;
             //grdArea.Children.Add(View_Container.Grid);
 
 
@@ -45,10 +45,10 @@ namespace MyUIGenerator.View
 
         }
 
-        public void EnableDisable(bool enable)
-        {
-            this.IsEnabled = enable;
-        }
+        //public void EnableDisable(bool enable)
+        //{
+        //    this.IsEnabled = enable;
+        //}
         //public override Expander Expander
         //{
         //    get
@@ -70,6 +70,20 @@ namespace MyUIGenerator.View
                 return grdArea;
             }
         }
+
+        public bool QuickSearchVisiblity
+        {
+            get { return grdQuickSearch.Visibility == Visibility.Visible; }
+            set { grdQuickSearch.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
+        public string QuickSearchText
+        {
+            get { return txtQuickSearch.Text; }
+            set { txtQuickSearch.Text = value; }
+        }
+
+       
         //public override Grid expanderHeader
         //{
         //    get
@@ -103,15 +117,15 @@ namespace MyUIGenerator.View
 
 
 
-        public bool AddControlPackageToHeader(object uiControlPackage, string title, InfoColor titleColor, string tooltip = "")
-        {
-            return false;
-            //////var labelControl = LabelHelper.GenerateLabelControl(title, tooltip, titleColor);
-            ////////////uiControlPackage.RelatedUIControls.Add(new AG_RelatedConttol() { RelationType = AG_ControlRelationType.Label, RelatedUIControl = labelControl });
-            //////stkHeaderControls.Children.Add(labelControl.Control as UIElement);
-            ////////////stkHeaderControls.Children.Add(uiControlPackage.UIControl.Control as UIElement);
-            //////return true;
-        }
+        //public bool AddControlPackageToHeader(object uiControlPackage, string title, InfoColor titleColor, string tooltip = "")
+        //{
+        //    return false;
+        //    //////var labelControl = LabelHelper.GenerateLabelControl(title, tooltip, titleColor);
+        //    ////////////uiControlPackage.RelatedUIControls.Add(new AG_RelatedConttol() { RelationType = AG_ControlRelationType.Label, RelatedUIControl = labelControl });
+        //    //////stkHeaderControls.Children.Add(labelControl.Control as UIElement);
+        //    ////////////stkHeaderControls.Children.Add(uiControlPackage.UIControl.Control as UIElement);
+        //    //////return true;
+        //}
 
         //public bool AddControlPackageToHeader(object uiControlPackage, string title, InfoColor titleColor, string tooltip = "")
         //{

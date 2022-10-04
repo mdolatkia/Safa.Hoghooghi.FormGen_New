@@ -27,8 +27,8 @@ namespace DataAccess
         public Nullable<int> EntitySearchColumnsID { get; set; }
     
         public virtual Column Column { get; set; }
-        public virtual EntitySearchColumns EntitySearchColumns { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Phrase> Phrase { get; set; }
+        public virtual EntitySearchColumns EntitySearchColumns { get; set; }
     }
 }
