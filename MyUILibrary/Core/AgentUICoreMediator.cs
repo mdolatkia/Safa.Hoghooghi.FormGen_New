@@ -627,7 +627,7 @@ namespace MyUILibrary
         //{
 
         //}
-        //private void ShowReportAreaFromMenu(int reportID, bool dialog, DP_SearchRepository initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewIte)
+        //private void ShowReportAreaFromMenu(int reportID, bool dialog, DP_SearchRepositoryMain initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewIte)
         //{
         //    var report = ReportManager.GetReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), reportID);
         //    if (report == null)
@@ -705,7 +705,7 @@ namespace MyUILibrary
                     UIManager.GetDialogWindow().ShowDialog(area.MainView, "گزارش", Enum_WindowSize.Maximized);
             }
         }
-        public void ShowSearchableReportArea(int reportID, bool dialog, DP_SearchRepository initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
+        public void ShowSearchableReportArea(int reportID, bool dialog, DP_SearchRepositoryMain initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
         {
             var report = ReportManager.GetReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), reportID);
             if (report == null)
@@ -715,11 +715,12 @@ namespace MyUILibrary
             }
             ShowSearchableReportArea(report, dialog, initializeSearchRepository, userCanChangeSearch, showInitializeSearchRepository, hostDataViewArea, defaultDataViewItem);
         }
-        private void ShowSearchableReportArea(EntityReportDTO report, bool dialog, DP_SearchRepository initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
+        private void ShowSearchableReportArea(EntityReportDTO report, bool dialog, DP_SearchRepositoryMain initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
         {
             if (hostDataViewArea == null && initializeSearchRepository == null)
             {
-                initializeSearchRepository = report.SearchRepository;
+                ////   initializeSearchRepository = report.SearchRepository;
+                ///اینجا چی باید فرستاده بشه ؟ SavedSearchRepositoryDTO یا DP_SearchRepositoryMain
             }
             if (report.SearchableReportType == SearchableReportType.DataView)
             {
@@ -757,7 +758,7 @@ namespace MyUILibrary
             }
         }
 
-        //private void ShowSearchableReportArea(EntitySearchableReportDTO report, bool dialog, bool userCanChange, DP_SearchRepository initializeSearchRepository, EntityPreDefinedSearchDTO preDefinedSearch)
+        //private void ShowSearchableReportArea(EntitySearchableReportDTO report, bool dialog, bool userCanChange, DP_SearchRepositoryMain initializeSearchRepository, EntityPreDefinedSearchDTO preDefinedSearch)
         //{
 
         //}
@@ -765,7 +766,7 @@ namespace MyUILibrary
 
 
 
-        //private void ShowDirectReport(int iD, string reportTitle, DP_SearchRepository initializeSearchRepository, bool dialog)
+        //private void ShowDirectReport(int iD, string reportTitle, DP_SearchRepositoryMain initializeSearchRepository, bool dialog)
         //{
 
         //    ////اگر ویو بود چی؟
@@ -793,7 +794,7 @@ namespace MyUILibrary
         //{
 
         //}
-        private void ShowListChartCrosstabReport(EntityReportDTO report, SearchableReportType reportType, bool userCanChange, DP_SearchRepository initializeSearchRepository, bool showInitializeSearchRepository, bool dialog)
+        private void ShowListChartCrosstabReport(EntityReportDTO report, SearchableReportType reportType, bool userCanChange, DP_SearchRepositoryMain initializeSearchRepository, bool showInitializeSearchRepository, bool dialog)
         {
             InternalReportAreaInitializer initializer = new InternalReportAreaInitializer();
             initializer.ReportID = report.ID;
@@ -814,7 +815,7 @@ namespace MyUILibrary
             }
         }
 
-        private void ShowExternalReport(EntityReportDTO report, bool userCanChange, DP_SearchRepository initializeSearchRepository, bool showInitializeSearchRepository, bool dialog)
+        private void ShowExternalReport(EntityReportDTO report, bool userCanChange, DP_SearchRepositoryMain initializeSearchRepository, bool showInitializeSearchRepository, bool dialog)
         {
 
 
@@ -882,9 +883,9 @@ namespace MyUILibrary
             }
         }
 
-        //public void ShowGridViewArea(int entityId, string title, bool dialog, bool userCanChangeSearch, DP_SearchRepository initializeSearchRepository = null, EntityPreDefinedSearchDTO preDefinedSearch = null, int entityListViewID = 0)
+        //public void ShowGridViewArea(int entityId, string title, bool dialog, bool userCanChangeSearch, DP_SearchRepositoryMain initializeSearchRepository = null, EntityPreDefinedSearchDTO preDefinedSearch = null, int entityListViewID = 0)
         //{
-        //    //DP_SearchRepository searchRepository = new DP_SearchRepository(EditArea.AreaInitializer.EntityID);
+        //    //DP_SearchRepositoryMain searchRepository = new DP_SearchRepositoryMain(EditArea.AreaInitializer.EntityID);
         //    //searchRepository = searchDP;
 
         //    //EditArea.DataViewAreaContainer = new DataViewArea.DataViewAreaContainer();
@@ -906,7 +907,7 @@ namespace MyUILibrary
 
 
         //}
-        public void ShowDataViewGridViewArea(int entityId, string title, bool dialog, bool userCanChangeSearch, bool dataViewOrGridView, DP_SearchRepository initializeSearchRepository, bool showInitializeSearchRepository, int dataMenuSettingID, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
+        public void ShowDataViewGridViewArea(int entityId, string title, bool dialog, bool userCanChangeSearch, bool dataViewOrGridView, DP_SearchRepositoryMain initializeSearchRepository, bool showInitializeSearchRepository, int dataMenuSettingID, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
         {
 
             if (hostDataViewArea != null)

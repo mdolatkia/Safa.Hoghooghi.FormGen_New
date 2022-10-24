@@ -2432,36 +2432,36 @@ namespace MyModelCustomSetting
 
                 projectContext.EntitySearch.Add(conclusionSearch);
             }
-            var serviceConclusionSearchRepository = projectContext.SearchRepository.FirstOrDefault(x => x.Title == "جستجوی صورتحساب از ابتدای سال");
+            var serviceConclusionSearchRepository = projectContext.SavedPreDefinedSearch.FirstOrDefault(x => x.SavedSearchRepository.Title == "جستجوی صورتحساب از ابتدای سال");
             if (serviceConclusionSearchRepository == null)
             {
-                serviceConclusionSearchRepository = new SearchRepository();
+                serviceConclusionSearchRepository = new SavedPreDefinedSearch();
+                serviceConclusionSearchRepository.SavedSearchRepository = new SavedSearchRepository();
                 serviceConclusionSearchRepository.EntitySearch = conclusionSearch;
-                serviceConclusionSearchRepository.TableDrivedEntityID = serviceConclusion.ID;
-                serviceConclusionSearchRepository.Title = "جستجوی صورتحساب از ابتدای سال";
-                serviceConclusionSearchRepository.IsSimpleSearch = true;
+                serviceConclusionSearchRepository.SavedSearchRepository.TableDrivedEntityID = serviceConclusion.ID;
+                serviceConclusionSearchRepository.SavedSearchRepository.Title = "جستجوی صورتحساب از ابتدای سال";
+                projectContext.SavedSearchRepository.Add(serviceConclusionSearchRepository.SavedSearchRepository);
 
-                serviceConclusionSearchRepository.LogicPhrase = new LogicPhrase();
+                //   serviceConclusionSearchRepository.IsSimpleSearch = true;
 
-                var phraseAz = new DataAccess.Phrase();
-                phraseAz.ColumnPhrase = new ColumnPhrase();
-                phraseAz.ColumnPhrase.ColumnID = persianDateColumn.ID;
-                if (searchColumnAzDate != null)
-                    phraseAz.ColumnPhrase.EntitySearchColumns = searchColumnAzDate;
-                phraseAz.ColumnPhrase.Value = "1400/01/01";
-                phraseAz.ColumnPhrase.Operator = CommonOperator.BiggerThan.ToString();
-                serviceConclusionSearchRepository.LogicPhrase.Phrase1.Add(phraseAz);
+                //serviceConclusionSearchRepository.LogicPhrase = new LogicPhrase();
 
-                var phraseTa = new DataAccess.Phrase();
-                phraseTa.ColumnPhrase = new ColumnPhrase();
-                phraseTa.ColumnPhrase.ColumnID = persianDateColumn.ID;
-                if (searchColumnTaDate != null)
-                    phraseTa.ColumnPhrase.EntitySearchColumns = searchColumnTaDate;
-                phraseTa.ColumnPhrase.Value = "1400/12/01";
-                phraseTa.ColumnPhrase.Operator = CommonOperator.SmallerThan.ToString();
-                serviceConclusionSearchRepository.LogicPhrase.Phrase1.Add(phraseTa);
+                var phraseAz = new SavedPreDefinedSearchSimpleColumn();
+                phraseAz.EntitySearchColumns = searchColumnAzDate;
 
-                projectContext.SearchRepository.Add(serviceConclusionSearchRepository);
+                //phraseAz.ColumnID = persianDateColumn.ID;
+                //if (searchColumnAzDate != null)
+                //    phraseAz.ColumnPhrase.EntitySearchColumns = searchColumnAzDate;
+                phraseAz.Value = "1400/01/01";
+                phraseAz.Operator = (short)CommonOperator.BiggerThan;
+                serviceConclusionSearchRepository.SavedPreDefinedSearchSimpleColumn.Add(phraseAz);
+
+                var phraseTa = new SavedPreDefinedSearchSimpleColumn();
+                phraseAz.EntitySearchColumns = searchColumnTaDate;
+                phraseTa.Value = "1400/12/01";
+                phraseTa.Operator = (short)CommonOperator.SmallerThan;
+                serviceConclusionSearchRepository.SavedPreDefinedSearchSimpleColumn.Add(phraseTa);
+
             }
             var dataViewReport = projectContext.EntityReport.FirstOrDefault(x => x.Title == "گزارش نمای داده صورتحساب" && x.TableDrivedEntityID == serviceConclusion.ID);
             if (dataViewReport == null)
@@ -2474,7 +2474,7 @@ namespace MyModelCustomSetting
                 dataViewReport.TableDrivedEntityID = serviceConclusion.ID;
                 dataViewReport.EntitySearchableReport = new EntitySearchableReport();
                 dataViewReport.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.DataView;
-                dataViewReport.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                dataViewReport.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
                 dataViewReport.EntitySearchableReport.EntityDataViewReport = new EntityDataViewReport();
                 dataViewReport.EntitySearchableReport.EntityDataViewReport.DataMenuSetting = conclusionDataMenuSetting;
 
@@ -2498,7 +2498,7 @@ namespace MyModelCustomSetting
                 gridViewReport.TableDrivedEntityID = serviceConclusion.ID;
                 gridViewReport.EntitySearchableReport = new EntitySearchableReport();
                 gridViewReport.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.GridView;
-                gridViewReport.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                gridViewReport.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 gridViewReport.EntitySearchableReport.EntityGridViewReport = new EntityGridViewReport();
                 gridViewReport.EntitySearchableReport.EntityGridViewReport.DataMenuSetting = conclusionDataMenuSetting;
@@ -2520,7 +2520,7 @@ namespace MyModelCustomSetting
                 conclusionListReport.TableDrivedEntityID = serviceConclusion.ID;
                 conclusionListReport.EntitySearchableReport = new EntitySearchableReport();
                 conclusionListReport.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.ListReport;
-                conclusionListReport.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                conclusionListReport.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 conclusionListReport.EntitySearchableReport.EntityListReport = new EntityListReport();
                 conclusionListReport.EntitySearchableReport.EntityListReport.EntityListView = serviceConclusaionListView;
@@ -2541,7 +2541,7 @@ namespace MyModelCustomSetting
                 listReportGrouped.TableDrivedEntityID = serviceConclusion.ID;
                 listReportGrouped.EntitySearchableReport = new EntitySearchableReport();
                 listReportGrouped.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.ListReport;
-                listReportGrouped.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                listReportGrouped.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 listReportGrouped.EntitySearchableReport.EntityListReport = new EntityListReport();
                 listReportGrouped.EntitySearchableReport.EntityListReport.EntityListView = serviceConclusaionListView;
@@ -2588,7 +2588,7 @@ namespace MyModelCustomSetting
                 listReportWithSubs.TableDrivedEntityID = serviceConclusion.ID;
                 listReportWithSubs.EntitySearchableReport = new EntitySearchableReport();
                 listReportWithSubs.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.ListReport;
-                listReportWithSubs.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                listReportWithSubs.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 listReportWithSubs.EntitySearchableReport.EntityListReport = new EntityListReport();
                 listReportWithSubs.EntitySearchableReport.EntityListReport.EntityListView = serviceConclusaionListView;
@@ -2630,7 +2630,7 @@ namespace MyModelCustomSetting
                 conclusionChartColumn.TableDrivedEntityID = serviceConclusion.ID;
                 conclusionChartColumn.EntitySearchableReport = new EntitySearchableReport();
                 conclusionChartColumn.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.ChartReport;
-                conclusionChartColumn.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                conclusionChartColumn.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 conclusionChartColumn.EntitySearchableReport.EntityChartReport = new EntityChartReport();
                 conclusionChartColumn.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Column;
@@ -2653,7 +2653,7 @@ namespace MyModelCustomSetting
                 conclusionChartPie.TableDrivedEntityID = serviceConclusion.ID;
                 conclusionChartPie.EntitySearchableReport = new EntitySearchableReport();
                 conclusionChartPie.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.ChartReport;
-                conclusionChartPie.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                conclusionChartPie.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 conclusionChartPie.EntitySearchableReport.EntityChartReport = new EntityChartReport();
                 conclusionChartPie.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Pie;
@@ -2677,7 +2677,7 @@ namespace MyModelCustomSetting
                 conclusionChartLine.TableDrivedEntityID = serviceConclusion.ID;
                 conclusionChartLine.EntitySearchableReport = new EntitySearchableReport();
                 conclusionChartLine.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.ChartReport;
-                conclusionChartLine.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                conclusionChartLine.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 conclusionChartLine.EntitySearchableReport.EntityChartReport = new EntityChartReport();
                 conclusionChartLine.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Line;
@@ -2701,7 +2701,7 @@ namespace MyModelCustomSetting
                 conclusionChartRadar.TableDrivedEntityID = serviceConclusion.ID;
                 conclusionChartRadar.EntitySearchableReport = new EntitySearchableReport();
                 conclusionChartRadar.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.ChartReport;
-                conclusionChartRadar.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                conclusionChartRadar.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 conclusionChartRadar.EntitySearchableReport.EntityChartReport = new EntityChartReport();
                 conclusionChartRadar.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Radar;
@@ -2732,7 +2732,7 @@ namespace MyModelCustomSetting
                     viewServiceRequestChartRadar.TableDrivedEntityID = viewServiceRequest.ID;
                     viewServiceRequestChartRadar.EntitySearchableReport = new EntitySearchableReport();
                     viewServiceRequestChartRadar.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.ChartReport;
-                    viewServiceRequestChartRadar.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                    viewServiceRequestChartRadar.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                     viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport = new EntityChartReport();
                     viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Pie;
@@ -2756,7 +2756,7 @@ namespace MyModelCustomSetting
                 conclusionCrossTab.TableDrivedEntityID = serviceConclusion.ID;
                 conclusionCrossTab.EntitySearchableReport = new EntitySearchableReport();
                 conclusionCrossTab.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.CrosstabReport;
-                conclusionCrossTab.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                conclusionCrossTab.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 conclusionCrossTab.EntitySearchableReport.EntityCrosstabReport = new EntityCrosstabReport();
                 conclusionCrossTab.EntitySearchableReport.EntityCrosstabReport.EntityListView = serviceConclusaionListView;
@@ -2803,7 +2803,7 @@ namespace MyModelCustomSetting
                 conclusionExternalReport.TableDrivedEntityID = serviceConclusion.ID;
                 conclusionExternalReport.EntitySearchableReport = new EntitySearchableReport();
                 conclusionExternalReport.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.ExternalReport;
-                conclusionExternalReport.EntitySearchableReport.SearchRepository = serviceConclusionSearchRepository;
+                conclusionExternalReport.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
                 conclusionExternalReport.EntitySearchableReport.EntityExternalReport = new EntityExternalReport();
                 conclusionExternalReport.EntitySearchableReport.EntityExternalReport.URL = "http://dolatkiam/ReportServer/Pages/ReportViewer.aspx?%2fRequestConclusionsByReportKey";
 
@@ -4220,7 +4220,7 @@ namespace MyModelCustomSetting
 
                 SearchRequestManager searchRequestManager = new SearchRequestManager();
                 DR_SearchViewRequest item = new DR_SearchViewRequest(requester,
-                     new DP_SearchRepository() { TargetEntityID = entity.ID });
+                     new DP_SearchRepositoryMain() { TargetEntityID = entity.ID });
                 item.MaxDataItems = 1;
                 // item.SecurityMode = SecurityMode.View;
 

@@ -70,7 +70,8 @@ namespace MyUILibrary.EntityArea
         public I_EditAreaLogManager EntityAreaLogManager { get; set; }
         public I_UIFomulaManager UIFomulaManager { get; set; }
         public I_UIValidationManager UIValidationManager { get; set; }
-        
+     //   public int EntitySearchID { get; internal set; }
+
         //  public bool RemoveInfo { get; set; }
 
         //      public EntityUICompositionCompositeDTO PreviewUICompositionItems { get; set; }

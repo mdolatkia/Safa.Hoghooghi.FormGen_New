@@ -35,8 +35,23 @@ namespace MyUILibrary.EntityArea
 
         }
 
+        EntitySearchDTO _EntitySearch;
+        public EntitySearchDTO EntitySearchDTO
+        {
+            get
+            {
+                if (_EntitySearch == null)
+                {
+                    if (SearchInitializer.EntitySearchID != 0)
+                        _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), SearchInitializer.EntitySearchID);
+                    else
+                        _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetDefaultEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), SearchInitializer.EntityID);
+                }
+                return _EntitySearch;
+            }
+        }
 
-        //  DP_SearchRepository firstRepository { set; get; }
+        //  DP_SearchRepositoryMain firstRepository { set; get; }
         public I_View_SimpleSearchEntityArea SimpleSearchView { set; get; }
 
         public SearchAreaInitializer SearchInitializer { set; get; }
@@ -54,21 +69,7 @@ namespace MyUILibrary.EntityArea
             get;
         }
 
-        EntitySearchDTO _EntitySearch;
-        public EntitySearchDTO EntitySearchDTO
-        {
-            get
-            {
-                if (_EntitySearch == null)
-                {
-                    if (SearchInitializer.EntitySearchID != 0)
-                        _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), SearchInitializer.EntitySearchID);
-                    else
-                        _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetDefaultEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), SearchInitializer.EntityID);
-                }
-                return _EntitySearch;
-            }
-        }
+
 
 
 
@@ -95,7 +96,7 @@ namespace MyUILibrary.EntityArea
                         var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
                         if (FirstSideEditEntityAreaResult.Item1 != null)
                         {
-                            propertyControl.EditNdTypeArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
+                            propertyControl.EditNdTypeArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaMultipleData;
                             propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelControlManagerForOneDataForm(propertyControl.EditNdTypeArea.TemporaryDisplayView, searchcolumn.RelationshipUISetting);
                             propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.EntitySearchColumn.Alias);
 
@@ -148,73 +149,75 @@ namespace MyUILibrary.EntityArea
             //}
         }
 
+
+
         public void ClearSearchData()
         {
 
 
 
         }
-        public bool ShowSearchRepository(DP_SearchRepository item)
+        public void ShowPreDefinedSearch(PreDefinedSearchDTO preDefinedSearch)
         {
             //** 2a9ef0e0-b74b-4502-85de-cd004ddc85ff
 
-            foreach (var phrase in item.Phrases)
+            SimpleSearchView.QuickSearchText = preDefinedSearch.QuickSearchValue;
+            foreach (var phrase in preDefinedSearch.SimpleSearchProperties)
             {
-                if (phrase is SearchProperty)
+                if (SimpleColumnControls.Any(x => x.EntitySearchColumn.ID == phrase.EntitySearchColumnsID))
                 {
-                    if (!SimpleColumnControls.Any(x => x.EntitySearchColumn.ID == (phrase as SearchProperty).SearchColumnID))
-                        return false;
+                    SimpleColumnControls.First(x => x.EntitySearchColumn.ID == phrase.EntitySearchColumnsID).ControlManager.GetUIControlManager().SetValue(phrase.Value);
+                    SimpleColumnControls.First(x => x.EntitySearchColumn.ID == phrase.EntitySearchColumnsID).ControlManager.GetUIControlManager().SetOperator(phrase.Operator);
                 }
-                else
-                    return false;
             }
-
-            foreach (SearchProperty phrase in item.Phrases)
+            foreach (var phrase in preDefinedSearch.RelationshipSearchProperties)
             {
-
-                var columnControl = SimpleColumnControls.FirstOrDefault(x => x.EntitySearchColumn.ID == (phrase as SearchProperty).SearchColumnID);
-
-                //برای عادی ها جواب میده اگر خودش کمنترل بود چی
-                columnControl.ControlManager.GetUIControlManager().SetValue(phrase.Value);
-                //  if (columnControl.ControlManager.HasOperator())
-                columnControl.ControlManager.GetUIControlManager().SetOperator(phrase.Operator);
-
+                if (RelationshipColumnControls.Any(x => x.EntitySearchColumn.ID == phrase.EntitySearchColumnsID))
+                {
+                    List<Dictionary<int, object>> items = new List<Dictionary<int, object>>();
+                    foreach (var item in phrase.DataItems)
+                    {
+                        Dictionary<int, object> data = new Dictionary<int, object>();
+                        foreach(var col in item.KeyProperties)
+                        {
+                            data.Add(col.ColumnID, col.Value);
+                        }
+                        items.Add(data);
+                     
+                    }
+                    RelationshipColumnControls.First(x => x.EntitySearchColumn.ID == phrase.EntitySearchColumnsID).EditNdTypeArea.SelectData(items);
+                }
             }
-            return true;
         }
 
 
-        private List<SearchProperty> GetSearchProperties(List<Phrase> phrase, List<SearchProperty> result = null)
-        {
-            if (result == null)
-                result = new List<SearchProperty>();
-            foreach (SearchProperty prop in phrase.Where(x => x is SearchProperty))
-            {
-                result.Add(prop);
-            }
-            foreach (LogicPhraseDTO logic in phrase.Where(x => x is LogicPhraseDTO))
-            {
-                return GetSearchProperties(logic.Phrases, result);
-            }
-            return result;
-        }
 
-        public DP_SearchRepository GetSearchRepository()
+        //private List<SearchProperty> GetSearchProperties(List<Phrase> phrase, List<SearchProperty> result = null)
+        //{
+        //    if (result == null)
+        //        result = new List<SearchProperty>();
+        //    foreach (SearchProperty prop in phrase.Where(x => x is SearchProperty))
+        //    {
+        //        result.Add(prop);
+        //    }
+        //    foreach (LogicPhraseDTO logic in phrase.Where(x => x is LogicPhraseDTO))
+        //    {
+        //        return GetSearchProperties(logic.Phrases, result);
+        //    }
+        //    return result;
+        //}
+
+        public DP_SearchRepositoryMain GetSearchRepository()
         {
             //** c056cb29-86d4-4003-b6dc-b1b5fa67fe2d
             //      if (firstRepository == null)
 
-            DP_SearchRepository quickSearchRepository = null;
-            if (!string.IsNullOrEmpty(SimpleSearchView.QuickSearchText))
-            {
-                quickSearchRepository = GetQuickSearchLogicPhrase(SimpleSearchView.QuickSearchText);
-            }
+        
 
-
-            var columnsSearchRepository = new DP_SearchRepository(SearchInitializer.EntityID);
+            var columnsSearchRepository = new DP_SearchRepositoryMain(SearchInitializer.EntityID);
             columnsSearchRepository.Title = SearchInitializer.Title;
-            columnsSearchRepository.IsSimpleSearch = true;
-            columnsSearchRepository.EntitySearchID = EntitySearchDTO == null ? 0 : EntitySearchDTO.ID;
+     //       columnsSearchRepository.IsSimpleSearch = true;
+       //     columnsSearchRepository.EntitySearchID = EntitySearchDTO == null ? 0 : EntitySearchDTO.ID;
             foreach (var property in SimpleColumnControls)
             {
                 var value = property.ControlManager.GetUIControlManager().GetValue();
@@ -224,10 +227,10 @@ namespace MyUILibrary.EntityArea
                     if (property.EntitySearchColumn.RelationshipTail == null)
                         logic = columnsSearchRepository;
                     else
-                        logic = GetOrCreateSearchRepositoryFromRelationshipTail(columnsSearchRepository, property.EntitySearchColumn.RelationshipTail);
+                        logic = AgentHelper.GetOrCreateSearchRepositoryFromRelationshipTail(columnsSearchRepository, property.EntitySearchColumn.RelationshipTail);
 
                     SearchProperty searchProperty = new SearchProperty();
-                    searchProperty.SearchColumnID = property.EntitySearchColumn != null ? property.EntitySearchColumn.ID : 0;
+                //    searchProperty.SearchColumnID = property.EntitySearchColumn != null ? property.EntitySearchColumn.ID : 0;
                     searchProperty.ColumnID = property.Column.ID;
                     searchProperty.IsKey = property.Column.PrimaryKey;
                     searchProperty.Value = value;
@@ -240,7 +243,7 @@ namespace MyUILibrary.EntityArea
             {
                 if (relControl.EditNdTypeArea.GetDataList().Any())
                 {
-                    var logic = GetOrCreateSearchRepositoryFromRelationshipTail(columnsSearchRepository, relControl.EntitySearchColumn.RelationshipTail);
+                    var logic = AgentHelper.GetOrCreateSearchRepositoryFromRelationshipTail(columnsSearchRepository, relControl.EntitySearchColumn.RelationshipTail);
                     logic.AndOrType = AndOREqualType.Or;
                     foreach (var data in relControl.EditNdTypeArea.GetDataList())
                     {
@@ -271,106 +274,69 @@ namespace MyUILibrary.EntityArea
                 //}
             }
 
+            return columnsSearchRepository;
 
 
+            //if (quickSearchRepository != null && quickSearchRepository.Phrases.Any() && !columnsSearchRepository.Phrases.Any())
+            //{
+            //    return quickSearchRepository;
+            //}
+            //else if ((quickSearchRepository == null || !quickSearchRepository.Phrases.Any()) && columnsSearchRepository.Phrases.Any())
+            //{
+            //    return columnsSearchRepository;
+            //}
 
-            if (quickSearchRepository != null && quickSearchRepository.Phrases.Any() && !columnsSearchRepository.Phrases.Any())
-            {
-                return quickSearchRepository;
-            }
-            else if ((quickSearchRepository == null || !quickSearchRepository.Phrases.Any()) && columnsSearchRepository.Phrases.Any())
-            {
-                return columnsSearchRepository;
-            }
-
-            var resultSearchRepository = new DP_SearchRepository(SearchInitializer.EntityID);
-            resultSearchRepository.Title = SearchInitializer.Title;
-            resultSearchRepository.IsSimpleSearch = true;
-            resultSearchRepository.EntitySearchID = EntitySearchDTO == null ? 0 : EntitySearchDTO.ID;
-            if ((quickSearchRepository != null && quickSearchRepository.Phrases.Any()) && columnsSearchRepository.Phrases.Any())
-            {
-                resultSearchRepository.Phrases.Add(quickSearchRepository);
-                resultSearchRepository.Phrases.Add(columnsSearchRepository);
-            }
-            return resultSearchRepository;
+            //var resultSearchRepository = new DP_SearchRepositoryMain(SearchInitializer.EntityID);
+            //resultSearchRepository.Title = SearchInitializer.Title;
+            //resultSearchRepository.IsSimpleSearch = true;
+            //resultSearchRepository.EntitySearchID = EntitySearchDTO == null ? 0 : EntitySearchDTO.ID;
+            //if ((quickSearchRepository != null && quickSearchRepository.Phrases.Any()) && columnsSearchRepository.Phrases.Any())
+            //{
+            //    resultSearchRepository.Phrases.Add(quickSearchRepository);
+            //    resultSearchRepository.Phrases.Add(columnsSearchRepository);
+            //}
+            //return resultSearchRepository;
         }
-        internal static DP_SearchRepository GetOrCreateSearchRepositoryFromRelationshipTail(LogicPhraseDTO result, EntityRelationshipTailDTO relationshipTail)
+
+
+        public PreDefinedSearchDTO GetSearchRepositoryForSave()
         {
-            if (relationshipTail == null)
+            var result = new PreDefinedSearchDTO();
+            result.EntitySearchID = EntitySearchDTO.ID;
+            result.QuickSearchValue = SimpleSearchView.QuickSearchText;
+            foreach (var property in SimpleColumnControls)
             {
-                var searchRep = result as DP_SearchRepository;
-                return searchRep;
-            }
-            else
-            {
-                if (result.Phrases.Any(x => x is DP_SearchRepository && (x as DP_SearchRepository).SourceRelationship.ID == relationshipTail.Relationship.ID))
-                {
-                    var childSearchPhrase = result.Phrases.First(x => x is DP_SearchRepository && (x as DP_SearchRepository).SourceRelationship.ID == relationshipTail.Relationship.ID);
-                    return GetOrCreateSearchRepositoryFromRelationshipTail(childSearchPhrase as LogicPhraseDTO, relationshipTail.ChildTail);
-                }
-                else
-                {
-                    DP_SearchRepository childSearchPhrase = new DP_SearchRepository(relationshipTail.Relationship.EntityID2);
-                    childSearchPhrase.SourceRelationship = relationshipTail.Relationship;
-                    childSearchPhrase.Title = relationshipTail.EntityPath;
-                    //childSearchPhrase.TargetEntityID = ;
-                    //   childSearchPhrase.SourceToTargetRelationshipType = relationshipTail.Relationship.TypeEnum;
-                    //  childSearchPhrase.SourceToTargetMasterRelationshipType = relationshipTail.Relationship.MastertTypeEnum;
-                    result.Phrases.Add(childSearchPhrase);
-                    return GetOrCreateSearchRepositoryFromRelationshipTail(childSearchPhrase, relationshipTail.ChildTail);
-                }
-            }
-        }
-        public DP_SearchRepository GetQuickSearchLogicPhrase(string text)
-        {
-            //** 2e5350c5-667f-40af-b346-8384c544000f
-            var quickSearchLogic = new DP_SearchRepository(SearchInitializer.EntityID);
-            quickSearchLogic.Title = SearchInitializer.Title;
-            quickSearchLogic.IsSimpleSearch = true;
-            quickSearchLogic.EntitySearchID = EntitySearchDTO == null ? 0 : EntitySearchDTO.ID;
-            quickSearchLogic.AndOrType = AndOREqualType.Or;
-            foreach (var item in EntitySearchDTO.EntitySearchAllColumns)
-            {
-                if (item.ColumnID != 0 && item.ExcludeInQuickSearch == false)
-                {
-                    SearchProperty searchProperty = new SearchProperty();
-                    searchProperty.SearchColumnID = item.ID;
-                    searchProperty.ColumnID = item.ColumnID;
-                    searchProperty.IsKey = item.Column.PrimaryKey;
-                    searchProperty.Value = text;
-                    DP_SearchRepository logic = null;
-                    if (item.RelationshipTail == null)
-                        logic = quickSearchLogic;
-                    else
-                    {
-                        logic = GetOrCreateSearchRepositoryFromRelationshipTail(quickSearchLogic, item.RelationshipTail);
-                        logic.AndOrType = AndOREqualType.Or;
-                    }
+                var value = property.ControlManager.GetUIControlManager().GetValue();
 
-                    int n;
-                    var isNumeric = int.TryParse(text, out n);
-                    DateTime a;
-                    var isDateTime = DateTime.TryParse(text, out a);
+                if (PropertyHasValue(property, value))
+                {
+                    List<object> values = new List<object>();
+                    values.Add(value);
+                    result.SimpleSearchProperties.Add(new DP_PreDefinedSearchSimpleColumn(){ EntitySearchColumnsID = property.EntitySearchColumn.ID, Value = values });
 
-                    if (item.Column.ColumnType == Enum_ColumnType.Numeric)
-                    {
-                        if (!isNumeric)
-                            continue;
-                        searchProperty.Operator = CommonOperator.Equals;
-                    }
-                    else if (item.Column.ColumnType == Enum_ColumnType.Date)
-                        continue;
-                    else if (item.Column.ColumnType == Enum_ColumnType.Boolean)
-                        continue;
-                    else if (item.Column.ColumnType == Enum_ColumnType.String)
-                        searchProperty.Operator = CommonOperator.Contains;
-                    else
-                        continue;
-                    logic.Phrases.Add(searchProperty);
                 }
             }
-            return quickSearchLogic;
+
+            foreach (var relControl in RelationshipColumnControls)
+            {
+                if (relControl.EditNdTypeArea.GetDataList().Any())
+                {
+                    var relItem = new DP_PreDefinedSearchRelationship();
+                    relItem.EntitySearchColumnsID = relControl.EntitySearchColumn.ID;
+                    foreach (var data in relControl.EditNdTypeArea.GetDataList())
+                    {
+                        var relData = new DP_PreDefinedSearchRelationshipData();
+                        foreach (var property in data.KeyProperties)
+                        {
+                            relData.KeyProperties.Add(new DP_PreDefinedSearchRelationshipColumns() { ColumnID= property .ColumnID,Value= property .Value} );
+                        }
+                        relItem.DataItems.Add(relData);
+                    }
+                }
+            }
+            return result;
         }
+
 
         private bool PropertyHasValue(SimpleSearchColumnControl property, object value)
         {
@@ -394,7 +360,7 @@ namespace MyUILibrary.EntityArea
 
 
 
-        public void OnSearchDataDefined(DP_SearchRepository searchData)
+        public void OnSearchDataDefined(DP_SearchRepositoryMain searchData)
         {
             if (SearchDataDefined != null)
             {

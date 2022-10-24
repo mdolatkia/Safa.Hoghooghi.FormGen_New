@@ -23,7 +23,7 @@ namespace MyUILibrary.EntityArea
             SearchInitializer = newAreaInitializer;
 
             AdvancedSearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfAdvancedSearch();
-            ManageAdvancedSearchView();
+
 
             var clearSearchcommand = new SearchClearCommand(this);
             AdvancedSearchView.AddCommand(clearSearchcommand.CommandManager);
@@ -37,8 +37,6 @@ namespace MyUILibrary.EntityArea
             set;
             get;
         }
-
-
         public SearchAreaInitializer SearchInitializer { set; get; }
 
         //public event EventHandler<Arg_PackageSelected> DataPackageSelected;
@@ -55,18 +53,18 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        public DP_SearchRepository RootSearchRepository { get; private set; }
+        public DP_SearchRepositoryMain RootSearchRepository { get; private set; }
 
         //     AdvanceSearchNode RootNode;
 
-        private void ManageAdvancedSearchView()
-        {
-            RootSearchRepository = new DP_SearchRepository(SearchInitializer.EntityID);
-            RootSearchRepository.Title = FullEntity.Alias;
-            AddNode(null, RootSearchRepository);
-        }
+        //public void GenerateSearchControls()
+        //{
+        //    RootSearchRepository = new DP_SearchRepositoryMain(SearchInitializer.EntityID);
+        //    RootSearchRepository.Title = FullEntity.Alias;
+        //    AddNode(null, RootSearchRepository);
+        //}
 
-        public bool ShowSearchRepository(DP_SearchRepository item)
+        public bool ShowSearchRepository(DP_SearchRepositoryMain item)
         {
             //   RootNode = null;
             RootSearchRepository = item;
@@ -87,9 +85,13 @@ namespace MyUILibrary.EntityArea
                 newnode.ParentNode = parentNode;
                 if (parentNode != null)
                     parentNode.ChildItems.Add(newnode);
-                if (logicPhrase is DP_SearchRepository)
+                if (logicPhrase is DP_SearchRepositoryMain)
                 {
-                    newnode.Title = (logicPhrase as DP_SearchRepository).Title;
+                    newnode.Title = (logicPhrase as DP_SearchRepositoryMain).Title;
+                }
+                else if (logicPhrase is DP_SearchRepositoryRelationship)
+                {
+                    newnode.Title = (logicPhrase as DP_SearchRepositoryRelationship).Title;
                 }
                 else
                 {
@@ -97,8 +99,8 @@ namespace MyUILibrary.EntityArea
                 }
                 //if (parentNode != null)
                 //{
-                //    if (logicPhrase is DP_SearchRepository)
-                //        newnode.EntityID = (logicPhrase as DP_SearchRepository).TargetEntityID;
+                //    if (logicPhrase is DP_SearchRepositoryMain)
+                //        newnode.EntityID = (logicPhrase as DP_SearchRepositoryMain).TargetEntityID;
                 //    else
                 //        newnode.EntityID = parentNode.EntityID;
                 //}
@@ -129,7 +131,7 @@ namespace MyUILibrary.EntityArea
                 simpleSearchMenu.Clicked += (sender1, e1) => RootAndMenu_Clicked1(sender1, e1, newnode, last);
 
 
-                var entity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetPermissionedEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), last.TargetEntityID);
+                var entity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetPermissionedEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), last);
                 foreach (var relationship in entity.Relationships)
                 {
                     I_AdvanceSearchMenu relationshipSearchMenu = newnode.NodeManager.AddMenu(relationship.Alias);
@@ -159,20 +161,25 @@ namespace MyUILibrary.EntityArea
             }
             //return null;
         }
-        private List<DP_SearchRepository> GetParentSearchRepositories(AdvanceSearchNode newnode)
+        private List<int> GetParentSearchRepositories(AdvanceSearchNode newnode)
         {
-            List<DP_SearchRepository> result = new List<DP_SearchRepository>();
+            List<int> result = new List<int>();
             GetParentSearchRepositories(newnode, result);
             result.Reverse();
             return result;
         }
-        private void GetParentSearchRepositories(AdvanceSearchNode newnode, List<DP_SearchRepository> result)
+        private void GetParentSearchRepositories(AdvanceSearchNode newnode, List<int> result)
         {
             if (result == null)
-                result = new List<DP_SearchRepository>();
-            if (newnode.Phrase is DP_SearchRepository)
+                result = new List<int>();
+            if (newnode.Phrase is DP_SearchRepositoryMain)
             {
-                result.Add(newnode.Phrase as DP_SearchRepository);
+                result.Add((newnode.Phrase as DP_SearchRepositoryMain).TargetEntityID);
+
+            }
+            else if (newnode.Phrase is DP_SearchRepositoryRelationship)
+            {
+                result.Add((newnode.Phrase as DP_SearchRepositoryRelationship).SourceRelationship.EntityID2);
 
             }
             if (newnode.ParentNode != null)
@@ -181,7 +188,7 @@ namespace MyUILibrary.EntityArea
             }
             else
             {
-                result.Add(RootSearchRepository);
+                result.Add(SearchInitializer.EntityID);
                 return;
             }
         }
@@ -209,7 +216,7 @@ namespace MyUILibrary.EntityArea
         private void Relationship_ClickedNew(object sender1, EventArgs e1, AdvanceSearchNode node
             , RelationshipDTO relationship)
         {
-            var relSearchRepository = new DP_SearchRepository(relationship.EntityID2);
+            var relSearchRepository = new DP_SearchRepositoryRelationship();
             relSearchRepository.Title = relationship.Alias;
             relSearchRepository.SourceRelationship = relationship;
 
@@ -232,14 +239,14 @@ namespace MyUILibrary.EntityArea
 
         //    AddNode(node, e.SearchItems);
         //}
-        //private void Relationship_ClickedEdit(object sender1, EventArgs e1, AdvanceSearchNode node, DP_SearchRepository dP_SearchRepository)
+        //private void Relationship_ClickedEdit(object sender1, EventArgs e1, AdvanceSearchNode node, DP_SearchRepositoryMain DP_SearchRepositoryMain)
         //{
 
         //    var searchViewInitializer = new SearchAreaInitializer();
-        //    searchViewInitializer.PreDefinedSearch = dP_SearchRepository;
-        //    searchViewInitializer.EntityID = dP_SearchRepository.TargetEntityID;
-        //    searchViewInitializer.Title = dP_SearchRepository.Title;
-        //    //   searchViewInitializer.SourceRelationship = dP_SearchRepository.SourceRelationship;
+        //    searchViewInitializer.PreDefinedSearch = DP_SearchRepositoryMain;
+        //    searchViewInitializer.EntityID = DP_SearchRepositoryMain.TargetEntityID;
+        //    searchViewInitializer.Title = DP_SearchRepositoryMain.Title;
+        //    //   searchViewInitializer.SourceRelationship = DP_SearchRepositoryMain.SourceRelationship;
         //    SearchEntityArea advancedAndRaw = new EntityArea.SearchEntityArea(searchViewInitializer);
         //    advancedAndRaw.SearchDataDefined += (sender, e) => AdvancedAndRaw_SearchDataDefinedEdit(sender, e, node, advancedAndRaw.SearchView);
         //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(advancedAndRaw.SearchView, searchViewInitializer.Title, Enum_WindowSize.Big);
@@ -261,9 +268,9 @@ namespace MyUILibrary.EntityArea
         //}
         //private bool GetParentSearchRepository(AdvanceSearchNode newnode)
         //{
-        //    if (newnode.Phrase is DP_SearchRepository)
+        //    if (newnode.Phrase is DP_SearchRepositoryMain)
         //    {
-        //        if ((newnode.Phrase as DP_SearchRepository) == firstRepository)
+        //        if ((newnode.Phrase as DP_SearchRepositoryMain) == firstRepository)
         //            return true;
         //        else
         //            return false;
@@ -271,9 +278,9 @@ namespace MyUILibrary.EntityArea
 
         //    if (newnode.ParentNode == null)
         //        return false;
-        //    else if (newnode.ParentNode.Phrase is DP_SearchRepository)
+        //    else if (newnode.ParentNode.Phrase is DP_SearchRepositoryMain)
         //    {
-        //        if ((newnode.ParentNode.Phrase as DP_SearchRepository) == firstRepository)
+        //        if ((newnode.ParentNode.Phrase as DP_SearchRepositoryMain) == firstRepository)
         //            return true;
         //        else return false;
         //    }
@@ -299,10 +306,11 @@ namespace MyUILibrary.EntityArea
 
         //Tuple<int,>
         //  object lastSearchView;
-        private void RootAndMenu_Clicked1(object sender1, EventArgs e1, AdvanceSearchNode andOrNode, DP_SearchRepository last)
+        private void RootAndMenu_Clicked1(object sender1, EventArgs e1, AdvanceSearchNode andOrNode, int entityID)
         {
             var searchViewInitializer = new SearchAreaInitializer();
-            searchViewInitializer.EntityID = last.TargetEntityID;
+
+            searchViewInitializer.EntityID = entityID;
             //if (SearchInitializer.TempEntity != null && SearchInitializer.TempEntity.ID == SearchInitializer.EntityID)
             //    searchViewInitializer.TempEntity = SearchInitializer.TempEntity;
             I_RawSearchEntityArea rawSearchEntityArea = new RawSearchEntityArea(searchViewInitializer);
@@ -311,6 +319,7 @@ namespace MyUILibrary.EntityArea
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(rawSearchEntityArea.RawSearchView, "خصوصیات", Enum_WindowSize.Big);
 
         }
+
         private void RawSearchEntityArea_SearchDataDefined(object sender, SearchPropertyArg e, AdvanceSearchNode andOrNode, object view)
         {
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(view);
@@ -320,11 +329,11 @@ namespace MyUILibrary.EntityArea
                 AddNode(andOrNode, phrase);
             }
         }
-        public DP_SearchRepository GetSearchRepository()
+        public DP_SearchRepositoryMain GetSearchRepository()
         {
             if (RootSearchRepository != null)
             {
-                RootSearchRepository.IsSimpleSearch = false;
+               
                 return RootSearchRepository;
             }
             return null;
@@ -344,7 +353,7 @@ namespace MyUILibrary.EntityArea
 
 
 
-        public void OnSearchDataDefined(DP_SearchRepository searchData)
+        public void OnSearchDataDefined(DP_SearchRepositoryMain searchData)
         {
             if (SearchDataDefined != null)
             {

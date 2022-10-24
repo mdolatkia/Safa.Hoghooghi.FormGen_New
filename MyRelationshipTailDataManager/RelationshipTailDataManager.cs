@@ -14,44 +14,41 @@ namespace MyRelationshipDataManager
     {
         BizRelationship bizRelationship = new BizRelationship();
         BizEntityRelationshipTail bizRelationshipTail = new BizEntityRelationshipTail();
-       // SecurityHelper securityHelper = new SecurityHelper();
+        // SecurityHelper securityHelper = new SecurityHelper();
         //public EntityRelationshipTailDTO GetRelationshipTail(int id)
         //{
         //    return bizRelationshipTail.GetEntityRelationshipTail(id);
         //}
         //مهم اینه که داده مبدا از ویو نباشد
-        public DP_SearchRepository GetTargetSearchItemFromRelationshipTail(DP_BaseData firstDataItem, EntityRelationshipTailDTO relationshipTail)
+        public DP_SearchRepositoryMain GetTargetSearchItemFromRelationshipTail(DP_BaseData firstDataItem, EntityRelationshipTailDTO relationshipTail)
         {
-            DP_SearchRepository searchItem = null;
+
             var linkedRelationshipTails = GetLinkedRelationshipTails(relationshipTail.ReverseRelationshipTail);
-            searchItem = GetSourceSideSearchItemFromRelationshipTail(linkedRelationshipTails.First, true, firstDataItem);
-            return searchItem;
+
+            DP_SearchRepositoryMain result = new DP_SearchRepositoryMain(firstDataItem.TargetEntityID);
+            foreach (var column in firstDataItem.KeyProperties)
+                result.Phrases.Add(new SearchProperty() { ColumnID = column.ColumnID, Value = column.Value });
+
+
+            GetSourceSideSearchItemFromRelationshipTail(linkedRelationshipTails.First, result);
+            return result;
         }
 
-            private DP_SearchRepository GetSourceSideSearchItemFromRelationshipTail(LinkedListNode<EntityRelationshipTailDTO> linkedListNode, bool addPreDefinedSearch, DP_BaseData lastDataItem)
+        private void GetSourceSideSearchItemFromRelationshipTail(LinkedListNode<EntityRelationshipTailDTO> linkedListNode, LogicPhraseDTO logicPhrase )
         {
 
             if (linkedListNode != null)
             {
-                DP_SearchRepository result = new DP_SearchRepository(linkedListNode.Value.Relationship.EntityID1);
-                var childPhrase = GetSourceSideSearchItemFromRelationshipTail(linkedListNode.Next, addPreDefinedSearch, lastDataItem);
-                childPhrase.SourceRelationship = linkedListNode.Value.Relationship;
-                result.Phrases.Add(childPhrase);
-                return result;
-            }
-            else
-            {
-                DP_SearchRepository result = new DP_SearchRepository(lastDataItem.TargetEntityID);
-                foreach (var column in lastDataItem.KeyProperties)
-                    result.Phrases.Add(new SearchProperty() { ColumnID = column.ColumnID, Value = column.Value });
-                return result;
+                DP_SearchRepositoryRelationship rel = new DP_SearchRepositoryRelationship();
+                rel.SourceRelationship = linkedListNode.Value.Relationship;
+                logicPhrase.Phrases.Add(rel);
 
+                GetSourceSideSearchItemFromRelationshipTail(linkedListNode.Next, logicPhrase);
             }
-                     
         }
-            
 
-      
+
+
         private LinkedList<EntityRelationshipTailDTO> GetLinkedRelationshipTails(EntityRelationshipTailDTO firstRelationshipTail)
         {
             LinkedList<EntityRelationshipTailDTO> result = new LinkedList<EntityRelationshipTailDTO>();

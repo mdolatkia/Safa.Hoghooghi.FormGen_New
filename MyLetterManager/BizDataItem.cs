@@ -117,7 +117,7 @@ namespace MyDataItemManager
             bool error = false;
             if (lastInfo)
             {
-                DP_SearchRepository searchDataItem = new DP_SearchRepository(dbDataItem.TableDrivedEntityID);
+                DP_SearchRepositoryMain searchDataItem = new DP_SearchRepositoryMain(dbDataItem.TableDrivedEntityID);
                 foreach (var property in dbDataItem.MyDataItemKeyColumns)
                     searchDataItem.Phrases.Add(new SearchProperty() { ColumnID = property.ColumnID, Value = property.Value });
                 DR_SearchViewRequest request = new DR_SearchViewRequest(requester, searchDataItem);

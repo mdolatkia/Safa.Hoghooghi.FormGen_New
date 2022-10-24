@@ -318,7 +318,7 @@ namespace MyFormulaFunctionStateFunctionLibrary
                     if (!relationshipProperties.Any(x => x.Value == null || string.IsNullOrEmpty(x.Value.ToString())))
                     {
                         SearchRequestManager searchProcessor = new SearchRequestManager();
-                        DP_SearchRepository searchItem = new DP_SearchRepository(relationship.EntityID2);
+                        DP_SearchRepositoryMain searchItem = new DP_SearchRepositoryMain(relationship.EntityID2);
                         foreach (var col in relationshipProperties)
                             searchItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
 

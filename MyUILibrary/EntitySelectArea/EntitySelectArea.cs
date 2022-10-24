@@ -114,7 +114,7 @@ namespace MyUILibrary.EntitySelectArea
 
         public void SelectData(DP_DataView dataInstance)
         {
-            //DP_SearchRepository searchItems = new DP_SearchRepository(dataInstance.TargetEntityID);
+            //DP_SearchRepositoryMain searchItems = new DP_SearchRepositoryMain(dataInstance.TargetEntityID);
             //foreach (var item in dataInstance.KeyProperties)
             //{
             //    searchItems.Phrases.Add(new SearchProperty() { ColumnID = item.ColumnID, Value = item.Value });

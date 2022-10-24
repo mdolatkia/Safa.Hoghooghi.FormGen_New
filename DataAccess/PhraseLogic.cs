@@ -12,22 +12,22 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class LogicPhrase
+    public partial class PhraseLogic
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public LogicPhrase()
+        public PhraseLogic()
         {
             this.Phrase = new HashSet<Phrase>();
-            this.Phrase1 = new HashSet<Phrase>();
+            this.SaveAdvancedSearch = new HashSet<SaveAdvancedSearch>();
         }
     
         public int ID { get; set; }
         public short AndOrType { get; set; }
     
-        public virtual SearchRepository SearchRepository { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Phrase> Phrase { get; set; }
+        public virtual PhraseRelationship PhraseRelationship { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Phrase> Phrase1 { get; set; }
+        public virtual ICollection<SaveAdvancedSearch> SaveAdvancedSearch { get; set; }
     }
 }

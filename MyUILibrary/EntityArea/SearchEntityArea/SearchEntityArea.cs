@@ -21,7 +21,6 @@ namespace MyUILibrary.EntityArea
         {
             SearchInitializer = newAreaInitializer;
 
-            //** 0fa106fa-203c-4249-b43b-b5efe4a26994
             SearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchEntityArea();
             SimpleSearchEntityArea = new EntityDefinedSearchArea(SearchInitializer);
             SimpleSearchEntityArea.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
@@ -30,14 +29,27 @@ namespace MyUILibrary.EntityArea
             AdvancedSearchEntityAre = new AdvancedSearchEntityArea(SearchInitializer);
             AdvancedSearchEntityAre.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
             SearchView.AddAdvancedSearchView(AdvancedSearchEntityAre.AdvancedSearchView);
-            
-            if (newAreaInitializer.PreDefinedSearch != null)
-            {
-                ShowSearchRepository(newAreaInitializer.PreDefinedSearch);
-            }
-        }
 
+            //if (SearchInitializer.PreDefinedSearch != null)
+            //{
+            //    ShowSearchRepository(SearchInitializer.PreDefinedSearch);
+            //}
+
+        }
         public I_View_SearchEntityArea SearchView { set; get; }
+        //I_View_SearchEntityArea _SearchView;
+        //public I_View_SearchEntityArea SearchView
+        //{
+        //    get
+        //    {
+        //        //** 0fa106fa-203c-4249-b43b-b5efe4a26994
+        //        if (_SearchView==null)
+        //        {
+
+        //        }
+        //        return _SearchView;
+        //    }
+        //}
 
         public I_EntityDefinedSearchArea SimpleSearchEntityArea
         {
@@ -54,32 +66,32 @@ namespace MyUILibrary.EntityArea
         public event EventHandler<SearchDataArg> SearchDataDefined;
 
 
-     
 
-        public void ShowSearchRepository(DP_SearchRepository searchRepository)
-        {
-            if (searchRepository == null)
-                return;
-            bool showInSimple = false;
-            if (searchRepository.IsSimpleSearch == true)
-            {
-                showInSimple = SimpleSearchEntityArea.ShowSearchRepository(searchRepository);
-                if (showInSimple)
-                    SearchView.IsSimpleSearchActiveOrAdvancedSearch = true;
-            }
-            if (!showInSimple)
-            {
-                if (!AdvancedSearchEntityAre.ShowSearchRepository(searchRepository))
-                {
-                    throw (new Exception("AsdasdasD"));
-                }
-                else
-                    SearchView.IsSimpleSearchActiveOrAdvancedSearch = false;
-            }
-        }
-        //private DP_SearchRepository ConvertPreDefinedSearch(EntityPreDefinedSearchDTO preDefinedSearch)
+
+        //public void ShowSearchRepository(DP_SearchRepositoryMain searchRepository)
         //{
-        //    //DP_SearchRepository result = new DP_SearchRepository();
+        //    if (searchRepository == null)
+        //        return;
+        //    bool showInSimple = false;
+        //    if (searchRepository.IsSimpleSearch == true)
+        //    {
+        //        showInSimple = SimpleSearchEntityArea.ShowSearchRepository(searchRepository);
+        //        if (showInSimple)
+        //            SearchView.IsSimpleSearchActiveOrAdvancedSearch = true;
+        //    }
+        //    if (!showInSimple)
+        //    {
+        //        if (!AdvancedSearchEntityAre.ShowSearchRepository(searchRepository))
+        //        {
+        //            throw (new Exception("AsdasdasD"));
+        //        }
+        //        else
+        //            SearchView.IsSimpleSearchActiveOrAdvancedSearch = false;
+        //    }
+        //}
+        //private DP_SearchRepositoryMain ConvertPreDefinedSearch(EntityPreDefinedSearchDTO preDefinedSearch)
+        //{
+        //    //DP_SearchRepositoryMain result = new DP_SearchRepositoryMain();
         //    //result.TargetEntityID
         //    return null; 
         //}
@@ -95,7 +107,7 @@ namespace MyUILibrary.EntityArea
 
         private void SimpleSearchEntityArea_SearchDataDefined(object sender, SearchDataArg e)
         {
-            //DP_SearchRepository searchData = new DP_SearchRepository(SearchInitializer.EntityID);
+            //DP_SearchRepositoryMain searchData = new DP_SearchRepositoryMain(SearchInitializer.EntityID);
             //if (e.SearchItems != null)
             //{
             //    searchData.AndOrType = e.SearchItems.AndOrType;
@@ -105,14 +117,14 @@ namespace MyUILibrary.EntityArea
 
             OnSearchDataDefined(e.SearchItems);
         }
-        public DP_SearchRepository LastSearch { set; get; }
-        public void OnSearchDataDefined(DP_SearchRepository searchData)
+        public DP_SearchRepositoryMain LastSearch { set; get; }
+        public void OnSearchDataDefined(DP_SearchRepositoryMain searchData)
         {
             //if (searchData == null)
-            //    searchData = new DP_SearchRepository(SearchInitializer.EntityID);
+            //    searchData = new DP_SearchRepositoryMain(SearchInitializer.EntityID);
 
             //var arg = new SearchDataArg();
-            //arg.SearchItems = new DP_SearchRepository(SearchInitializer.EntityID);
+            //arg.SearchItems = new DP_SearchRepositoryMain(SearchInitializer.EntityID);
             //arg.SearchItems.AndOrType = searchData.AndOrType;
             //arg.SearchItems.Phrases = searchData.Phrases;
             //LastSearch = arg.SearchItems;
@@ -126,22 +138,13 @@ namespace MyUILibrary.EntityArea
                 SearchDataDefined(this, new SearchDataArg() { SearchItems = searchData });
         }
 
-        public DP_SearchRepository GetSearchRepository()
-        {
-            if (SearchView.IsSimpleSearchActiveOrAdvancedSearch)
-            {
-                return SimpleSearchEntityArea.GetSearchRepository();
-            }
-            else
-                return AdvancedSearchEntityAre.GetSearchRepository();
-        }
-
+      
         public void ClearSearchData()
         {
             throw new NotImplementedException();
         }
 
-        //public DP_SearchRepository GetSearchRepository()
+        //public DP_SearchRepositoryMain GetSearchRepository()
         //{
         //    //باید آخرین سرچ انجام شده نگهداری و اینجا برگردانده شود
         //    return lastSearch;

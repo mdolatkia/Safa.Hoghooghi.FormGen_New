@@ -19,14 +19,17 @@ namespace MyUILibrary.EntityArea
         //public int MainEntitySourceRelationshipID;
         //public SearchAreaRelationSource SourceRelation { set; get; }
      //   public TemplateEntityUISettings UISettings { set; get; }
-    //    public DP_SearchRepository EditSearchRepository { set; get; }
+    //    public DP_SearchRepositoryMain EditSearchRepository { set; get; }
 
         public int EntityID { get; set; }
         //public TableDrivedEntityDTO TempEntity { get; set; }
 
         public string Title { set; get; }
         public int EntitySearchID { get; set; }
-        public DP_SearchRepository PreDefinedSearch { get; set; }
+
+      //  public EntitySearchDTO EntitySearchDTO { get; set; }
+
+        public DP_SearchRepositoryMain PreDefinedSearch { get; set; }
       //  public EntitySearchDTO SearchEntity { get; set; }
 
         //public int TargetEntityID;

@@ -168,7 +168,7 @@ namespace MyDataSearchManagerBusiness
         //    //else
         //    return bizTableDrivedEntity.GetTableDrivedEntity(targetEntityID, withSimpleColumns, withRelationships);
         //}
-        public Tuple<TableDrivedEntityDTO, EntityListViewDTO, DataTable> GetDataTableBySearchDataItems(DR_Requester requester, int entityID, DP_SearchRepository searchDataItem, EntityListViewDTO listView, int listViewID, int maxItems = 0, int orderColumnID = 0, Enum_OrderBy sortType = Enum_OrderBy.Ascending)
+        public Tuple<TableDrivedEntityDTO, EntityListViewDTO, DataTable> GetDataTableBySearchDataItems(DR_Requester requester, int entityID, DP_SearchRepositoryMain searchDataItem, EntityListViewDTO listView, int listViewID, int maxItems = 0, int orderColumnID = 0, Enum_OrderBy sortType = Enum_OrderBy.Ascending)
         {
             var queryParts = GetQueryParts(requester, entityID, searchDataItem, listView, listViewID, maxItems, orderColumnID, sortType);
             var commandStr = "select " + queryParts.Item3 + queryParts.Item4 + queryParts.Item5;
@@ -176,7 +176,7 @@ namespace MyDataSearchManagerBusiness
 
         }
 
-        private Tuple<TableDrivedEntityDTO, EntityListViewDTO, string, string, string> GetQueryParts(DR_Requester requester, int entityID, DP_SearchRepository searchDataItem
+        private Tuple<TableDrivedEntityDTO, EntityListViewDTO, string, string, string> GetQueryParts(DR_Requester requester, int entityID, DP_SearchRepositoryMain searchDataItem
             , EntityListViewDTO listView, int listViewID
             , int maxItems = 0, int orderColumnID = 0, Enum_OrderBy sortType = Enum_OrderBy.Ascending)
         {
@@ -192,7 +192,7 @@ namespace MyDataSearchManagerBusiness
 
 
 
-        public Tuple<string, string> GetSelectFromExternal(DR_Requester requester, int entityID, DP_SearchRepository searchDataItem, bool primaryKeys)
+        public Tuple<string, string> GetSelectFromExternal(DR_Requester requester, int entityID, DP_SearchRepositoryMain searchDataItem, bool primaryKeys)
         {
 
 
@@ -285,7 +285,7 @@ namespace MyDataSearchManagerBusiness
             return orderBy;
         }
 
-        private Tuple<TableDrivedEntityDTO, string> GetFromQuery(DR_Requester requester, int entityID, DP_SearchRepository searchDataItem)
+        private Tuple<TableDrivedEntityDTO, string> GetFromQuery(DR_Requester requester, int entityID, DP_SearchRepositoryMain searchDataItem)
         {
             var entity = bizTableDrivedEntity.GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
             if (entity == null)
@@ -365,64 +365,42 @@ namespace MyDataSearchManagerBusiness
             return new Tuple<TableDrivedEntityDTO, string>(entity, " from " + searchTableNameWithSchema + innerjoin);
 
         }
-        private string CheckSearchRepositoryPermission(DR_Requester requester, DP_SearchRepository searchDataItem)
+        private string CheckSearchRepositoryPermission(DR_Requester requester, DP_SearchRepositoryMain searchDataItem)
         {
 
             if (!bizTableDrivedEntity.DataIsAccessable(requester, searchDataItem.TargetEntityID))
                 return "عدم دسترسی به موجودیت به شناسه" + " " + searchDataItem.TargetEntityID;
 
-            List<DP_SearchRepository> relationshipPhrases = GetRelationshipPhrases(searchDataItem);
-            foreach (var item in relationshipPhrases)
-            {
-                if (!bizRElationship.DataIsAccessable(requester, item.SourceRelationship.ID, false, true))
-                    return "عدم دسترسی به رابطه به شناسه" + " " + item.SourceRelationship.ID;
+            return CheckLogicPhrasePermission(requester, searchDataItem);
 
-            }
 
-            List<SearchProperty> propertyPhrases = GetPropertyPhrase(searchDataItem);
-            foreach (var item in propertyPhrases)
-            {
-                if (!bizColumn.DataIsAccessable(requester, item.ColumnID))
-                    return "عدم دسترسی به خصوصیت به شناسه" + " " + item.ColumnID;
-            }
-            foreach (var item in relationshipPhrases)
-            {
-                return CheckSearchRepositoryPermission(requester, item as DP_SearchRepository);
-            }
-            return "";
         }
-        private List<SearchProperty> GetPropertyPhrase(Phrase phrase, List<SearchProperty> result = null)
+        private string CheckLogicPhrasePermission(DR_Requester requester, LogicPhraseDTO logicPhraseDTO)
         {
-            if (result == null) result = new List<SearchProperty>();
-            if (phrase is SearchProperty)
-                result.Add(phrase as SearchProperty);
-            else if (phrase is LogicPhraseDTO && !(phrase is DP_SearchRepository))
+            var result = "";
+            foreach (var phrase in logicPhraseDTO.Phrases)
             {
-                var logicPhrase = phrase as LogicPhraseDTO;
-                foreach (var item in logicPhrase.Phrases)
+                if (phrase is SearchProperty)
                 {
-                    GetPropertyPhrase(item, result);
+                    if (!bizColumn.DataIsAccessable(requester, (phrase as SearchProperty).ColumnID))
+                        result += (result == "" ? "" : Environment.NewLine) + "عدم دسترسی به خصوصیت به شناسه" + " " + (phrase as SearchProperty).ColumnID;
+                }
+                else if (phrase is DP_SearchRepositoryRelationship)
+                {
+                    if (!bizRElationship.DataIsAccessable(requester, (phrase as DP_SearchRepositoryRelationship).SourceRelationship.ID, false, true))
+                        result += (result == "" ? "" : Environment.NewLine) + "عدم دسترسی به رابطه به شناسه" + " " + (phrase as DP_SearchRepositoryRelationship).SourceRelationship.ID;
+                }
+
+                if (phrase is LogicPhraseDTO)
+                {
+                    var resultInner = CheckLogicPhrasePermission(requester, phrase as LogicPhraseDTO);
+                    if (!string.IsNullOrEmpty(resultInner))
+                        result += (result == "" ? "" : Environment.NewLine) + resultInner;
                 }
             }
             return result;
         }
-        private List<DP_SearchRepository> GetRelationshipPhrases(LogicPhraseDTO logicPhrase, List<DP_SearchRepository> result = null)
-        {
-            if (result == null) result = new List<DP_SearchRepository>();
-            foreach (var phrase in logicPhrase.Phrases)
-            {
-                if (phrase is DP_SearchRepository)
-                {
-                    result.Add(phrase as DP_SearchRepository);
-                }
-                else if (phrase is LogicPhraseDTO && !(phrase is DP_SearchRepository))
-                {
-                    GetRelationshipPhrases(phrase as LogicPhraseDTO, result);
-                }
-            }
-
-            return result;
-        }
+      
 
         private string GetDeterminerValues(TableDrivedEntityDTO mainEntity)
         {
@@ -491,7 +469,7 @@ namespace MyDataSearchManagerBusiness
 
 
 
-            DP_SearchRepository mainSearchDataItem = null;
+            DP_SearchRepositoryMain mainSearchDataItem = null;
             //if (securityItem.InDirectDataSecurity != null)
             //{
             //    //چرا همین که فرستاده میشود در فانکشن پر نمیشود؟   mainDataItem.Phrase
@@ -506,7 +484,7 @@ namespace MyDataSearchManagerBusiness
             //}
             //else
             //{
-            mainSearchDataItem = new DP_SearchRepository(mainEntity.ID);
+            mainSearchDataItem = new DP_SearchRepositoryMain(mainEntity.ID);
             //}
 
 
@@ -614,7 +592,7 @@ namespace MyDataSearchManagerBusiness
             return commandStr;
         }
 
-        private DP_SearchRepository CreateChildSearchRepository(LogicPhraseDTO parentRepository, EntityRelationshipTailDTO relationshipTail)
+        private DP_SearchRepositoryRelationship CreateChildSearchRepository(LogicPhraseDTO parentRepository, EntityRelationshipTailDTO relationshipTail)
         {
             if (relationshipTail != null)
             {
@@ -624,10 +602,10 @@ namespace MyDataSearchManagerBusiness
                 //    phrase = new LogicPhrase();
                 //    parentRepository.Phrase = phrase;
                 //}
-                var newRepository = parentRepository.Phrases.FirstOrDefault(x => x is DP_SearchRepository && (x as DP_SearchRepository).SourceRelationship.ID == relationshipTail.Relationship.ID) as DP_SearchRepository;
+                var newRepository = parentRepository.Phrases.FirstOrDefault(x => x is DP_SearchRepositoryRelationship && (x as DP_SearchRepositoryRelationship).SourceRelationship.ID == relationshipTail.Relationship.ID) as DP_SearchRepositoryRelationship;
                 if (newRepository == null)
                 {
-                    newRepository = new DP_SearchRepository(relationshipTail.Relationship.EntityID2);
+                    newRepository = new DP_SearchRepositoryRelationship();
                     //newRepository.TargetEntityID = ;
                     newRepository.SourceRelationship = relationshipTail.Relationship;
 
@@ -816,7 +794,7 @@ namespace MyDataSearchManagerBusiness
 
         //}
 
-        private Tuple<string, string> GetSearchQuery(DR_Requester requester, TableDrivedEntityDTO entity, DP_SearchRepository searchDataItem)
+        private Tuple<string, string> GetSearchQuery(DR_Requester requester, TableDrivedEntityDTO entity, DP_SearchRepositoryMain searchDataItem)
         {
             List<DP_DataRepository> result = new List<DP_DataRepository>();
 
@@ -850,9 +828,9 @@ namespace MyDataSearchManagerBusiness
             {
                 return GetPartialWhere((phrase as SearchProperty), entity, tableAlias);
             }
-            else if (phrase is DP_SearchRepository && (phrase as DP_SearchRepository).SourceRelationship != null)
+            else if (phrase is DP_SearchRepositoryRelationship )
             {
-                var searchRepository = (phrase as DP_SearchRepository);
+                var searchRepository = (phrase as DP_SearchRepositoryRelationship);
 
                 //return GetWhereClause(entity, searchRepository, tableAlias, tableIndex);
                 //else
@@ -974,11 +952,11 @@ namespace MyDataSearchManagerBusiness
 
         }
 
-        private string GetRelatedSearchParams(DR_Requester requester, DP_SearchRepository dataItem, string parentSearchTableAlias, int parentSearchTableIndex, TableDrivedEntityDTO connectionEntity)
+        private string GetRelatedSearchParams(DR_Requester requester, DP_SearchRepositoryRelationship dataItem, string parentSearchTableAlias, int parentSearchTableIndex, TableDrivedEntityDTO connectionEntity)
         {
             if (dataItem.SourceRelationship == null)
                 return "";
-            var entity = bizTableDrivedEntity.GetSimpleEntityWithColumns(requester, dataItem.TargetEntityID);
+            var entity = bizTableDrivedEntity.GetSimpleEntityWithColumns(requester, dataItem.SourceRelationship.EntityID2);
 
 
             var currentTableIndex = parentSearchTableIndex + 1;
@@ -1419,7 +1397,7 @@ namespace MyDataSearchManagerBusiness
             return result;
         }
 
-        private List<DP_DataRepository> GetFullDataResult(DR_Requester requester, DP_SearchRepository searchDataItem)
+        private List<DP_DataRepository> GetFullDataResult(DR_Requester requester, DP_SearchRepositoryMain searchDataItem)
         {
             BizEntityListView bizEntityListView = new BizEntityListView();
             var editListView = bizEntityListView.GetEntityListViewWithAllColumns(requester, searchDataItem.TargetEntityID);

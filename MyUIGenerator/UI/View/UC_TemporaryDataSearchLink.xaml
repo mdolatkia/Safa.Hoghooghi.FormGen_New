@@ -15,8 +15,8 @@
             <ColumnDefinition  Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <ComboBox x:Name="cmbItems" HorizontalAlignment="Stretch" ></ComboBox>
-        <TextBox  BorderThickness="0,0,1,0" BorderBrush="Gray"  x:Name="txtSearch"  HorizontalAlignment="Stretch" ></TextBox>
-        <TextBox  BorderThickness="0,0,1,0" BorderBrush="Gray" Background="#FFF4F4F4" x:Name="txtInfo" IsReadOnly="True"  HorizontalAlignment="Stretch" ></TextBox>
+        <!--<TextBox  BorderThickness="0,0,1,0" BorderBrush="Gray"  x:Name="txtSearch"  HorizontalAlignment="Stretch" ></TextBox>-->
+        <TextBox  BorderThickness="0,0,1,0" BorderBrush="Gray" x:Name="txtInfo" HorizontalAlignment="Stretch"></TextBox>
 
         <StackPanel  Grid.Column="1" Orientation="Horizontal" >
             <Button  ToolTip="جستجو" x:Name="btnPopup" Margin="2,0,0,0" Click="btnPopup_Click" >
@@ -27,14 +27,14 @@
                     </StackPanel>-->
                 </Button.Content>
             </Button>
-            <Button  ToolTip="جستجو" x:Name="btnQuickSearch" Margin="2,0,0,0" Click="btnQuickSearch_Click" >
+            <!--<Button  ToolTip="جستجو" x:Name="btnQuickSearch" Margin="2,0,0,0" Click="btnQuickSearch_Click" >
                 <Button.Content>
-                    <!--<StackPanel Orientation="Horizontal">-->
+                    --><!--<StackPanel Orientation="Horizontal">--><!--
                     <Image  MaxWidth="20" MaxHeight="20" Source="/MyUIGenerator;component/Images/zoom_extend.png"></Image>
-                    <!--<Label FontSize="10" Content="Data Link"></Label>
-                    </StackPanel>-->
+                    --><!--<Label FontSize="10" Content="Data Link"></Label>
+                    </StackPanel>--><!--
                 </Button.Content>
-            </Button>
+            </Button>-->
             <Button  ToolTip="اصلاح" x:Name="btnDataEdit" Margin="2,0,0,0" Click="btnLink_Click" >
                 <Button.Content>
                     <!--<StackPanel Orientation="Horizontal">-->

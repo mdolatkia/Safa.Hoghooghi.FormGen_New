@@ -154,7 +154,7 @@ namespace MyUILibrary.EntityArea
 
         private DP_FormDataRepository SearchDataForEditFromExternalSource(int entityID, DP_BaseData searchViewData, I_EditEntityArea editEntityArea)
         {
-            DP_SearchRepository searchDataItem = new DP_SearchRepository(entityID);
+            DP_SearchRepositoryMain searchDataItem = new DP_SearchRepositoryMain(entityID);
             foreach (var col in searchViewData.KeyProperties)
             {
                 searchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
@@ -174,7 +174,7 @@ namespace MyUILibrary.EntityArea
         }
         private DP_FormDataRepository SearchDataForViewFromExternalSource(int entityID, DP_BaseData searchViewData, I_EditEntityArea editEntityArea)
         {
-            DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
+            DP_SearchRepositoryMain SearchDataItem = new DP_SearchRepositoryMain(entityID);
             foreach (var col in searchViewData.KeyProperties)
             {
                 SearchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
@@ -373,7 +373,21 @@ namespace MyUILibrary.EntityArea
                 return _FullEntity;
             }
         }
-
+        EntitySearchDTO _EntitySearch;
+        public EntitySearchDTO EntitySearchDTO
+        {
+            get
+            {
+                if (_EntitySearch == null)
+                {
+                    //if (AreaInitializer.EntitySearchID != 0)
+                    //    _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntitySearchID);
+                    //else
+                    _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetDefaultEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+                }
+                return _EntitySearch;
+            }
+        }
         DataEntryEntityDTO _DataEntryEntity;
         public DataEntryEntityDTO DataEntryEntity
         {
@@ -601,27 +615,88 @@ namespace MyUILibrary.EntityArea
                 GenerateTempView();
             }
 
-            if (AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect ||
-         AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect ||
-          AreaInitializer.IntracionMode == IntracionMode.Select)
-            {
-                GenerateSearchViewEntityArea();
-            }
+            GenerateViewEntityArea();
 
             if (UIGenerated != null)
                 UIGenerated(this, null);
             //}
         }
 
-        private void GenerateSearchViewEntityArea()
+        public void ShowSearchView(bool fromDataView)
+        {
+            //CalculateFilterValues();
+            //bool filtersChanged = false;
+            //if (CurrentValues.Any(x => !LastFilterValues.Any(y => x.Item1 == y.Item1 && x.Item2 == y.Item2)) ||
+            // LastFilterValues.Any(x => !CurrentValues.Any(y => x.Item1 == y.Item1 && x.Item2 == y.Item2)))
+            //    filtersChanged = true;
+            ////بعدا که حالت کمبو هم اضافه شد اینها اعمال شوند
+            //if (filtersChanged)
+            //{
+            //    searchInitialyDone = false;
+            //    ViewEntityArea.AddData(new List<DP_DataView>(), true);
+            //}
+
+
+            //if (searchInitialyDone)
+            //    sarchInitially = false;
+            //if (sarchInitially == true)
+            //{
+            //    if (RelationshipFilters == null || RelationshipFilters.Count == 0)
+            //    {
+            //        if (searchInitialyDone)
+            //            sarchInitially = false;
+            //    }
+            //}
+            // if (ViewEntityArea == null)
+
+
+            if (ViewEntityArea.LastTemporaryView != null && ViewEntityArea.LastTemporaryView.HasPopupView)
+                ViewEntityArea.LastTemporaryView.RemovePopupView(ViewEntityArea.ViewForViewEntityArea);
+
+            if (ViewForSearchAndView == null)
+                ViewForSearchAndView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchViewEntityArea();
+
+            if (SearchEntityArea == null)
+            {
+                //** 32685ae3-5af2-4da5-806e-54e3b4a36ac9
+                var searchViewInitializer = new SearchAreaInitializer();
+                searchViewInitializer.EntityID = AreaInitializer.EntityID;
+                SearchEntityArea = new SearchEntityArea(searchViewInitializer);
+                SearchEntityArea.SearchDataDefined += SearchEntityArea_SearchDataDefined;
+                ViewForSearchAndView.AddSearchAreaView(SearchEntityArea.SearchView);
+            }
+
+            IsCalledFromDataView = fromDataView;
+
+            if (!ViewForSearchAndView.HaseViewAreaView)
+                ViewForSearchAndView.AddViewAreaView(ViewEntityArea.ViewForViewEntityArea);
+            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(ViewForSearchAndView, SimpleEntity.Alias, Enum_WindowSize.Big);
+        }
+
+        //public void RemoveViewEntityAreaView()
+        //{
+
+        //    //
+        //}
+
+        public void ShowTemproraryUIViewArea(I_View_TemporaryView view)
+        {
+            //   if (ViewEntityArea == null)
+            //       GenerateViewEntityArea();
+            if (ViewEntityArea.LastTemporaryView != null && ViewEntityArea.LastTemporaryView.HasPopupView)
+                ViewEntityArea.LastTemporaryView.RemovePopupView(ViewEntityArea.ViewForViewEntityArea);
+            if (ViewForSearchAndView != null && ViewForSearchAndView.HaseViewAreaView)
+                ViewForSearchAndView.RemoveViewAreaView(ViewEntityArea.ViewForViewEntityArea);
+            if (!view.HasPopupView)
+            {
+                ViewEntityArea.LastTemporaryView = view;
+                view.AddPopupView(ViewEntityArea.ViewForViewEntityArea);
+            }
+            view.PopupVisibility = true;
+        }
+        private void GenerateViewEntityArea()
         {
             //** 32685ae3-5af2-4da5-806e-54e3b4a36ac9
-            var searchViewInitializer = new SearchAreaInitializer();
-            searchViewInitializer.EntityID = AreaInitializer.EntityID;
-            SearchEntityArea = new SearchEntityArea(searchViewInitializer);
-            SearchEntityArea.SearchDataDefined += SearchEntityArea_SearchDataDefined;
-
-
             var viewAreaInitializer = new ViewEntityAreaInitializer();
             viewAreaInitializer.EntityID = AreaInitializer.EntityID;
             viewAreaInitializer.MultipleSelection = this is I_EditEntityAreaMultipleData;
@@ -629,25 +704,25 @@ namespace MyUILibrary.EntityArea
             ViewEntityArea.DataSelected += ViewEntityArea_DataSelected;
 
 
-            SearchAndView_View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchViewEntityArea();
-            SearchAndView_View.AddSearchAreaView(SearchEntityArea.SearchView);
-            SearchAndView_View.AddViewAreaView(ViewEntityArea.ViewView);
 
-            CheckSearchInitially();
+            //ViewForSearchAndView.AddViewAreaView(ViewEntityArea.ViewForViewEntityArea);
 
-            DataSelected += SearchViewEntityArea_DataSelected;
+            //  CheckSearchInitially();
+
+            //DataSelected += SearchViewEntityArea_DataSelected;
 
         }
 
 
         private void ViewEntityArea_DataSelected(object sender, DataViewDataSelectedEventArg e)
         {
-            if (DataSelected != null)
-            {
-                if (SearchAndView_View.HaseViewAreaView)
-                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(SearchAndView_View);
-                DataSelected(this, new DataSelectedEventArg(e.DataItem, IsCalledFromDataView));
-            }
+            //if (DataSelected != null)
+            //{
+            if (ViewForSearchAndView != null && ViewForSearchAndView.HaseViewAreaView)
+                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(ViewForSearchAndView);
+            SearchViewEntityArea_DataSelected(new DataSelectedEventArg(e.DataItem, IsCalledFromDataView));
+
+            //  }
         }
 
         private void SearchEntityArea_SearchDataDefined(object sender, SearchDataArg e)
@@ -656,7 +731,7 @@ namespace MyUILibrary.EntityArea
         }
         public List<Tuple<int, object>> LastFilterValues = new List<Tuple<int, object>>();
         public List<Tuple<int, object>> CurrentValues = new List<Tuple<int, object>>();
-        private DR_ResultSearchView GetSearchResult(DP_SearchRepository searchItems)
+        private DR_ResultSearchView GetSearchResult(DP_SearchRepositoryMain searchItems)
         {
             CalculateFilterValues();
             if (FilterCalculationError != null)
@@ -676,7 +751,7 @@ namespace MyUILibrary.EntityArea
                     // var value = AgentHelper.GetValueSomeHow(AreaInitializer.SourceEditArea.ChildRelationshipInfo.ParentData, filter.ValueRelationshipTail, filter.ValueColumnID);
                     if (valueRow == null)
                         return null;
-                    DP_SearchRepository searchItem = CreateSearchItem(searchItems, filter.SearchRelationshipTail);
+                    DP_SearchRepositoryRelationship searchItem = CreateSearchItem(searchItems, filter.SearchRelationshipTail);
                     //var searchColumn = searchItem.Phrases.FirstOrDefault(x => x is SearchProperty && (x as SearchProperty).ColumnID == filter.SearchColumnID) as SearchProperty;
                     //if (searchColumn == null)
                     //{
@@ -696,7 +771,7 @@ namespace MyUILibrary.EntityArea
             var result = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(request);
             return result;
         }
-        public void SearchConfirmed(DP_SearchRepository searchItems, bool select)
+        public void SearchConfirmed(DP_SearchRepositoryMain searchItems, bool select)
         {
             //try
             //{
@@ -721,10 +796,11 @@ namespace MyUILibrary.EntityArea
                         ViewEntityArea.AddData(result.ResultDataItems, true);
                     else
                     {
-                        if (DataSelected != null)
-                        {
-                            DataSelected(this, new DataSelectedEventArg(result.ResultDataItems, IsCalledFromDataView));
-                        }
+                        SearchViewEntityArea_DataSelected(new DataSelectedEventArg(result.ResultDataItems, IsCalledFromDataView));
+                        //if (DataSelected != null)
+                        //{
+                        //   DataSelected(this,);
+                        //  }
                     }
                 }
             }
@@ -734,23 +810,23 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        private DP_SearchRepository CreateSearchItem(DP_SearchRepository mainItem, EntityRelationshipTailDTO searchRelationshipTail)
+        private DP_SearchRepositoryRelationship CreateSearchItem(LogicPhraseDTO logicPhrase, EntityRelationshipTailDTO searchRelationshipTail)
         {
             if (searchRelationshipTail == null)
-                return mainItem;
+                return logicPhrase as DP_SearchRepositoryRelationship;
             else
             {
-                var foundItem = new DP_SearchRepository(searchRelationshipTail.Relationship.EntityID2);
+                var foundItem = new DP_SearchRepositoryRelationship();
                 foundItem.SourceRelationship = searchRelationshipTail.Relationship;
                 //foundItem.SourceEntityID = searchRelationshipTail.Relationship.EntityID1;
                 //foundItem.SourceToTargetRelationshipType = searchRelationshipTail.Relationship.TypeEnum;
                 //foundItem.SourceToTargetMasterRelationshipType = searchRelationshipTail.Relationship.MastertTypeEnum;
-                mainItem.Phrases.Add(foundItem);
+                logicPhrase.Phrases.Add(foundItem);
                 return CreateSearchItem(foundItem, searchRelationshipTail.ChildTail);
             }
         }
 
-        public I_View_SearchViewEntityArea SearchAndView_View
+        public I_View_SearchViewEntityArea ViewForSearchAndView
         {
             set; get;
         }
@@ -794,40 +870,10 @@ namespace MyUILibrary.EntityArea
 
 
 
-        public event EventHandler<DataSelectedEventArg> DataSelected;
+        // public event EventHandler<DataSelectedEventArg> DataSelected;
 
         public bool SearchInitialyDone { get; set; }
-        public void ShowSearchView(bool fromDataView)
-        {
-            //CalculateFilterValues();
-            //bool filtersChanged = false;
-            //if (CurrentValues.Any(x => !LastFilterValues.Any(y => x.Item1 == y.Item1 && x.Item2 == y.Item2)) ||
-            // LastFilterValues.Any(x => !CurrentValues.Any(y => x.Item1 == y.Item1 && x.Item2 == y.Item2)))
-            //    filtersChanged = true;
-            ////بعدا که حالت کمبو هم اضافه شد اینها اعمال شوند
-            //if (filtersChanged)
-            //{
-            //    searchInitialyDone = false;
-            //    ViewEntityArea.AddData(new List<DP_DataView>(), true);
-            //}
 
-
-            //if (searchInitialyDone)
-            //    sarchInitially = false;
-            //if (sarchInitially == true)
-            //{
-            //    if (RelationshipFilters == null || RelationshipFilters.Count == 0)
-            //    {
-            //        if (searchInitialyDone)
-            //            sarchInitially = false;
-            //    }
-            //}
-            IsCalledFromDataView = fromDataView;
-            SearchAndView_View.RemoveViewAreaView(ViewEntityArea.ViewView);
-            if (!SearchAndView_View.HaseViewAreaView)
-                SearchAndView_View.AddViewAreaView(ViewEntityArea.ViewView);
-            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(SearchAndView_View, SimpleEntity.Alias, Enum_WindowSize.Big);
-        }
 
         public void CheckSearchInitially()
         {
@@ -844,7 +890,7 @@ namespace MyUILibrary.EntityArea
 
         public void SearchInitialy()
         {
-            DP_SearchRepository searchItems = new DP_SearchRepository(AreaInitializer.EntityID);
+            DP_SearchRepositoryMain searchItems = new DP_SearchRepositoryMain(AreaInitializer.EntityID);
             SearchInitialyDone = true;
             SearchConfirmed(searchItems, false);
         }
@@ -880,7 +926,7 @@ namespace MyUILibrary.EntityArea
         public void SelectFromParent(bool isCalledFromDataView, RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues)
         {
             IsCalledFromDataView = isCalledFromDataView;
-            DP_SearchRepository searchItems = new DP_SearchRepository(AreaInitializer.EntityID);
+            DP_SearchRepositoryMain searchItems = new DP_SearchRepositoryMain(AreaInitializer.EntityID);
             foreach (var item in relationship.RelationshipColumns)
             {
                 if (colAndValues.ContainsKey(item.FirstSideColumnID))
@@ -892,11 +938,21 @@ namespace MyUILibrary.EntityArea
         }
 
 
-
-        public void RemoveViewEntityAreaView()
+        public void SelectData(List<Dictionary<int, object>> items)
         {
-            SearchAndView_View.RemoveViewAreaView(ViewEntityArea.ViewView);
+            DP_SearchRepositoryMain searchItems = new DP_SearchRepositoryMain(AreaInitializer.EntityID);
+            searchItems.AndOrType = AndOREqualType.Or;
+            foreach (var item in items)
+            {
+                LogicPhraseDTO logic = new LogicPhraseDTO();
+                foreach (var col in item)
+                    logic.Phrases.Add(new SearchProperty() { ColumnID = col.Key, Value = col.Value });
+
+                searchItems.Phrases.Add(logic);
+            }
+            SearchConfirmed(searchItems, true);
         }
+
         public I_SearchEntityArea SearchEntityArea
         {
             set; get;
@@ -977,12 +1033,18 @@ namespace MyUILibrary.EntityArea
 
             TemporaryDisplayView.ButtonInfoVisible = true;
             TemporaryDisplayView.ButtonClearVisible = true;
+
+            TemporaryDisplayView.ButtonSearchFormVisible = false;
+            TemporaryDisplayView.ButtonPopupVisible = false;
+            //   TemporaryDisplayView.ButtonQuickSearchVisible = false;
+            TemporaryDisplayView.ButtonDataEditVisible = false;
+            //    TemporaryDisplayView.InfoTextboxVisible = false;
             if (AreaInitializer.IntracionMode == IntracionMode.Select || AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect)
             {
                 TemporaryDisplayView.ButtonSearchFormVisible = true;
                 TemporaryDisplayView.ButtonPopupVisible = true;
-                TemporaryDisplayView.ButtonQuickSearchVisible = true;
-
+                //   TemporaryDisplayView.ButtonQuickSearchVisible = true;
+                //    TemporaryDisplayView.InfoTextboxVisible = true;
                 if (!AreaInitializer.Preview)
                     TemporaryDisplayView.SearchTextChanged += TemporaryDisplayView_TextChanged;
 
@@ -1002,9 +1064,48 @@ namespace MyUILibrary.EntityArea
         void TemporaryDisplayView_TemporaryDisplayViewRequested(object sender, Arg_TemporaryDisplayViewRequested e)
         {
             if (AreaInitializer.SourceRelationColumnControl == null)
-                TemporaryViewActionRequestedInternal(sender as I_View_TemporaryView, e.LinkType);
+            {
+                var TemporaryView = sender as I_View_TemporaryView;
+                if (e.LinkType == TemporaryLinkType.DataView)
+                {
+                    throw new Exception("Asdasdas");
+                }
+                else if (e.LinkType == TemporaryLinkType.SerachView)
+                {
+
+                    ShowSearchView(false);
+                }
+                //else if (e.LinkType == TemporaryLinkType.QuickSearch)
+                //{
+                //    TemporaryView.QuickSearchVisibility = !TemporaryView.QuickSearchVisibility;
+                //    if (TemporaryView.QuickSearchVisibility)
+                //        TemporaryView.QuickSearchSelectAll();
+                //}
+                else if (e.LinkType == TemporaryLinkType.Popup)
+                {
+                    if (!TemporaryView.PopupVisibility)
+                    {
+                        ShowTemproraryUIViewArea(TemporaryView);
+                    }
+                    else
+                        TemporaryView.PopupVisibility = false;
+                }
+                else if (e.LinkType == TemporaryLinkType.Clear)
+                {
+                    ClearData();
+                }
+                else if (e.LinkType == TemporaryLinkType.Info)
+                {
+                    AgentHelper.ShowEditEntityAreaInfo(this);
+                }
+            }
             else
+            {
+
+                // throw new Exception("inja miad??");
                 ChildRelationshipInfoBinded.TemporaryViewActionRequested(sender as I_View_TemporaryView, e.LinkType);
+
+            }
 
         }
         private void TemporaryDisplayView_FocusLost(object sender, EventArgs e)
@@ -2284,17 +2385,14 @@ namespace MyUILibrary.EntityArea
             if (!string.IsNullOrEmpty(searchArg.Text))
             {
                 SearchInitialyDone = true;
-                var searchItems = SearchEntityArea.SimpleSearchEntityArea.GetQuickSearchLogicPhrase(searchArg.Text);
+                var searchItems = AgentHelper.GetQuickSearchLogicPhrase(EntitySearchDTO, AreaInitializer.EntityID, searchArg.Text);
                 var result = await SearchAsync(searchItems);
                 UseSearchResult(result, false);
-                RemoveViewEntityAreaView();
-                if (!view.HasPopupView)
-                    view.AddPopupView(ViewEntityArea.ViewView);
-
-                view.PopupVisibility = true;
+                ShowTemproraryUIViewArea(view);
             }
         }
-        private Task<DR_ResultSearchView> SearchAsync(DP_SearchRepository searchItems)
+
+        private Task<DR_ResultSearchView> SearchAsync(DP_SearchRepositoryMain searchItems)
         {
             return Task.Run(() =>
             {
@@ -2302,51 +2400,18 @@ namespace MyUILibrary.EntityArea
                 return result;
             });
         }
-        public I_View_TemporaryView LastTemporaryView { set; get; }
+        // public I_View_TemporaryView LastTemporaryView { set; get; }
 
-        private void TemporaryViewActionRequestedInternal(I_View_TemporaryView TemporaryView, TemporaryLinkType linkType)
-        {
-            if (LastTemporaryView != null)
-            {
-                if (LastTemporaryView.HasPopupView)
-                    LastTemporaryView.RemovePopupView(ViewEntityArea.ViewView);
-            }
-            LastTemporaryView = TemporaryView;
-            if (linkType == TemporaryLinkType.DataView)
-            {
-                throw new Exception("Asdasdas");
-            }
-            else if (linkType == TemporaryLinkType.SerachView)
-            {
-                if (LastTemporaryView != null)
-                    LastTemporaryView.RemovePopupView(ViewEntityArea.ViewView);
-                ShowSearchView(false);
-            }
-            else if (linkType == TemporaryLinkType.QuickSearch)
-            {
-                TemporaryView.QuickSearchVisibility = !TemporaryView.QuickSearchVisibility;
-                if (TemporaryView.QuickSearchVisibility)
-                    TemporaryView.QuickSearchSelectAll();
-            }
-            else if (linkType == TemporaryLinkType.Popup)
-            {
-                if (!TemporaryView.PopupVisibility)
-                {
-                    RemoveViewEntityAreaView();
-                    if (!TemporaryView.HasPopupView)
-                        TemporaryView.AddPopupView(ViewEntityArea.ViewView);
-                }
-                TemporaryView.PopupVisibility = !TemporaryView.PopupVisibility;
-            }
-            else if (linkType == TemporaryLinkType.Clear)
-            {
-                ClearData();
-            }
-            else if (linkType == TemporaryLinkType.Info)
-            {
-                AgentHelper.ShowEditEntityAreaInfo(this);
-            }
-        }
+        //private void TemporaryViewActionRequestedInternal(I_View_TemporaryView TemporaryView, TemporaryLinkType linkType)
+        //{
+        //    //if (LastTemporaryView != null)
+        //    //{
+        //    //    if (LastTemporaryView.HasPopupView)
+        //    //        LastTemporaryView.RemovePopupView(ViewEntityArea.ViewForViewEntityArea);
+        //    //}
+        //    // LastTemporaryView = TemporaryView;
+
+        //}
         //public void ShowSearchView(bool fromDataView)
         //{
 
@@ -2354,7 +2419,7 @@ namespace MyUILibrary.EntityArea
         //}
 
 
-        private void SearchViewEntityArea_DataSelected(object sender, DataSelectedEventArg e)
+        private void SearchViewEntityArea_DataSelected(DataSelectedEventArg e)
         {
             if (e.DataItem.Count > 1 && AreaInitializer.SourceRelationColumnControl != null)
             {
@@ -2367,7 +2432,7 @@ namespace MyUILibrary.EntityArea
                 foreach (var dataItem in e.DataItem)
                 {
                     //سکوریتی داده اعمال میشود
-                    DP_SearchRepository SearchDataItem = new DP_SearchRepository(AreaInitializer.EntityID);
+                    DP_SearchRepositoryMain SearchDataItem = new DP_SearchRepositoryMain(AreaInitializer.EntityID);
                     foreach (var col in dataItem.Properties.Where(x => x.IsKey))
                     {
                         SearchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });

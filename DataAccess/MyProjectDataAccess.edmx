@@ -170,16 +170,6 @@
           <Property Name="OnlyOnNewData" Type="bit" Nullable="false" />
           <Property Name="OnlyOnEmptyValue" Type="bit" Nullable="false" />
         </EntityType>
-        <EntityType Name="ColumnPhrase">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ColumnID" Type="int" Nullable="false" />
-          <Property Name="Value" Type="varchar" MaxLength="512" Nullable="false" />
-          <Property Name="Operator" Type="varchar" MaxLength="128" Nullable="false" />
-          <Property Name="EntitySearchColumnsID" Type="int" />
-        </EntityType>
         <EntityType Name="ColumnUISetting">
           <Key>
             <PropertyRef Name="ID" />
@@ -598,7 +588,7 @@
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="SearchableReportType" Type="smallint" />
-          <Property Name="SearchRepositoryID" Type="int" />
+          <Property Name="SavedSearchRepositoryID" Type="int" />
         </EntityType>
         <EntityType Name="EntitySearchColumns">
           <Key>
@@ -805,13 +795,6 @@
           <Property Name="SourceDBServerID" Type="int" Nullable="false" />
           <Property Name="TargetDBServerID" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="LogicPhrase">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="AndOrType" Type="smallint" Nullable="false" />
-        </EntityType>
         <EntityType Name="MainLetterTemplate">
           <Key>
             <PropertyRef Name="ID" />
@@ -879,9 +862,33 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ParentLogicPhraseID" Type="int" />
-          <Property Name="ColumnPhraseID" Type="int" />
-          <Property Name="LogicPhraseID" Type="int" />
           <Property Name="Type" Type="smallint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PhraseColumn">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ColumnID" Type="int" Nullable="false" />
+          <Property Name="Value" Type="varchar" MaxLength="512" Nullable="false" />
+          <Property Name="Operator" Type="varchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PhraseLogic">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="AndOrType" Type="smallint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PhraseRelationship">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="SourceRelationID" Type="int" />
+          <Property Name="HasNotRelationshipCheck" Type="bit" />
+          <Property Name="RelationshipFromCount" Type="int" />
+          <Property Name="RelationshipToCount" Type="int" />
         </EntityType>
         <EntityType Name="Relationship">
           <Key>
@@ -956,19 +963,58 @@
           <Property Name="EntityListReportID" Type="int" Nullable="false" />
           <Property Name="EntityListViewColumnsID" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="SearchRepository">
+        <EntityType Name="SaveAdvancedSearch">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
-          <Property Name="SourceRelationID" Type="int" />
-          <Property Name="HasNotRelationshipCheck" Type="bit" />
-          <Property Name="RelationshipFromCount" Type="int" />
-          <Property Name="RelationshipToCount" Type="int" />
-          <Property Name="IsSimpleSearch" Type="bit" />
-          <Property Name="TableDrivedEntityID" Type="int" Nullable="false" />
+          <Property Name="PhraseLogicID" Type="int" Nullable="false" />
+          <Property Name="Temp" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="SavedPreDefinedSearch">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="EntitySearchID" Type="int" />
-          <Property Name="Title" Type="varchar" MaxLength="256" />
+          <Property Name="QuickSearchValue" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="SavedPreDefinedSearchRelationship">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PreDefinedSearchID" Type="int" />
+          <Property Name="EntitySearchColumnsID" Type="int" />
+        </EntityType>
+        <EntityType Name="SavedPreDefinedSearchRelationshipData">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SavedPreDefinedSearchRelationshipID" Type="int" Nullable="false" />
+          <Property Name="DataGroup" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="KeyColumnID" Type="int" Nullable="false" />
+          <Property Name="Value" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SavedPreDefinedSearchSimpleColumn">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PreDefinedSearchID" Type="int" Nullable="false" />
+          <Property Name="Value" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="EntitySearchColumnsID" Type="int" Nullable="false" />
+          <Property Name="Operator" Type="smallint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SavedSearchRepository">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsPreDefinedOrAdvanced" Type="bit" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="TableDrivedEntityID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="StringColumnType">
           <Key>
@@ -1546,18 +1592,6 @@
             </Principal>
             <Dependent Role="ColumnCustomFormula">
               <PropertyRef Name="FormulaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ColumnPhrase_EntitySearchColumns">
-          <End Role="EntitySearchColumns" Type="Self.EntitySearchColumns" Multiplicity="0..1" />
-          <End Role="ColumnPhrase" Type="Self.ColumnPhrase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySearchColumns">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ColumnPhrase">
-              <PropertyRef Name="EntitySearchColumnsID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2185,15 +2219,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntitySearchableReport_SearchRepository">
-          <End Role="SearchRepository" Type="Self.SearchRepository" Multiplicity="0..1" />
+        <Association Name="FK_EntitySearchableReport_SavedSearchRepository">
+          <End Role="SavedSearchRepository" Type="Self.SavedSearchRepository" Multiplicity="0..1" />
           <End Role="EntitySearchableReport" Type="Self.EntitySearchableReport" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="SearchRepository">
+            <Principal Role="SavedSearchRepository">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EntitySearchableReport">
-              <PropertyRef Name="SearchRepositoryID" />
+              <PropertyRef Name="SavedSearchRepositoryID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2413,6 +2447,102 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Phrase_PhraseLogic">
+          <End Role="PhraseLogic" Type="Self.PhraseLogic" Multiplicity="0..1" />
+          <End Role="Phrase" Type="Self.Phrase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhraseLogic">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Phrase">
+              <PropertyRef Name="ParentLogicPhraseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PhraseColumn_Phrase">
+          <End Role="Phrase" Type="Self.Phrase" Multiplicity="1" />
+          <End Role="PhraseColumn" Type="Self.PhraseColumn" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Phrase">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PhraseColumn">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PhraseRelationship_PhraseLogic">
+          <End Role="PhraseLogic" Type="Self.PhraseLogic" Multiplicity="1" />
+          <End Role="PhraseRelationship" Type="Self.PhraseRelationship" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="PhraseLogic">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PhraseRelationship">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreDefinedSearch_SavedSearchRepository">
+          <End Role="SavedSearchRepository" Type="Self.SavedSearchRepository" Multiplicity="1" />
+          <End Role="SavedPreDefinedSearch" Type="Self.SavedPreDefinedSearch" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="SavedSearchRepository">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearch">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreDefinedSearchRelationship_EntitySearchColumns">
+          <End Role="EntitySearchColumns" Type="Self.EntitySearchColumns" Multiplicity="0..1" />
+          <End Role="SavedPreDefinedSearchRelationship" Type="Self.SavedPreDefinedSearchRelationship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntitySearchColumns">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchRelationship">
+              <PropertyRef Name="EntitySearchColumnsID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreDefinedSearchRelationship_PreDefinedSearch">
+          <End Role="SavedPreDefinedSearch" Type="Self.SavedPreDefinedSearch" Multiplicity="0..1" />
+          <End Role="SavedPreDefinedSearchRelationship" Type="Self.SavedPreDefinedSearchRelationship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SavedPreDefinedSearch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchRelationship">
+              <PropertyRef Name="PreDefinedSearchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreDefinedSearchSimpleColumn_EntitySearchColumns">
+          <End Role="EntitySearchColumns" Type="Self.EntitySearchColumns" Multiplicity="1" />
+          <End Role="SavedPreDefinedSearchSimpleColumn" Type="Self.SavedPreDefinedSearchSimpleColumn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntitySearchColumns">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchSimpleColumn">
+              <PropertyRef Name="EntitySearchColumnsID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreDefinedSearchSimpleColumn_PreDefinedSearch">
+          <End Role="SavedPreDefinedSearch" Type="Self.SavedPreDefinedSearch" Multiplicity="1" />
+          <End Role="SavedPreDefinedSearchSimpleColumn" Type="Self.SavedPreDefinedSearchSimpleColumn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SavedPreDefinedSearch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchSimpleColumn">
+              <PropertyRef Name="PreDefinedSearchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Process_TableDrivedEntity">
           <End Role="TableDrivedEntity" Type="Self.TableDrivedEntity" Multiplicity="0..1" />
           <End Role="Process" Type="Self.Process" Multiplicity="*" />
@@ -2449,18 +2579,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_RelationshipPhrase_LogicPhrase">
-          <End Role="LogicPhrase" Type="Self.LogicPhrase" Multiplicity="1" />
-          <End Role="SearchRepository" Type="Self.SearchRepository" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="LogicPhrase">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SearchRepository">
-              <PropertyRef Name="ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_RelationshipSearchFilter_Column">
           <End Role="Column" Type="Self.Column" Multiplicity="1" />
           <End Role="RelationshipSearchFilter" Type="Self.RelationshipSearchFilter" Multiplicity="*" />
@@ -2485,39 +2603,87 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SearchRepository_EntitySearch">
+        <Association Name="FK_SaveAdvancedSearch_PhraseLogic">
+          <End Role="PhraseLogic" Type="Self.PhraseLogic" Multiplicity="1" />
+          <End Role="SaveAdvancedSearch" Type="Self.SaveAdvancedSearch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhraseLogic">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SaveAdvancedSearch">
+              <PropertyRef Name="PhraseLogicID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaveAdvancedSearch_SavedSearchRepository">
+          <End Role="SavedSearchRepository" Type="Self.SavedSearchRepository" Multiplicity="1" />
+          <End Role="SaveAdvancedSearch" Type="Self.SaveAdvancedSearch" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="SavedSearchRepository">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SaveAdvancedSearch">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SavedPreDefinedSearch_EntitySearch">
           <End Role="EntitySearch" Type="Self.EntitySearch" Multiplicity="0..1" />
-          <End Role="SearchRepository" Type="Self.SearchRepository" Multiplicity="*" />
+          <End Role="SavedPreDefinedSearch" Type="Self.SavedPreDefinedSearch" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="EntitySearch">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="SearchRepository">
+            <Dependent Role="SavedPreDefinedSearch">
               <PropertyRef Name="EntitySearchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SavedPreDefinedSearchRelationshipData_Column">
+          <End Role="Column" Type="Self.Column" Multiplicity="1" />
+          <End Role="SavedPreDefinedSearchRelationshipData" Type="Self.SavedPreDefinedSearchRelationshipData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Column">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchRelationshipData">
+              <PropertyRef Name="KeyColumnID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SavedPreDefinedSearchRelationshipData_SavedPreDefinedSearchRelationship">
+          <End Role="SavedPreDefinedSearchRelationship" Type="Self.SavedPreDefinedSearchRelationship" Multiplicity="1" />
+          <End Role="SavedPreDefinedSearchRelationshipData" Type="Self.SavedPreDefinedSearchRelationshipData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SavedPreDefinedSearchRelationship">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchRelationshipData">
+              <PropertyRef Name="SavedPreDefinedSearchRelationshipID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SavedSearchRepository_TableDrivedEntity">
+          <End Role="TableDrivedEntity" Type="Self.TableDrivedEntity" Multiplicity="1" />
+          <End Role="SavedSearchRepository" Type="Self.SavedSearchRepository" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableDrivedEntity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedSearchRepository">
+              <PropertyRef Name="TableDrivedEntityID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_SearchRepository_Relationship">
           <End Role="Relationship" Type="Self.Relationship" Multiplicity="0..1" />
-          <End Role="SearchRepository" Type="Self.SearchRepository" Multiplicity="*" />
+          <End Role="PhraseRelationship" Type="Self.PhraseRelationship" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Relationship">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="SearchRepository">
+            <Dependent Role="PhraseRelationship">
               <PropertyRef Name="SourceRelationID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SearchRepository_TableDrivedEntity">
-          <End Role="TableDrivedEntity" Type="Self.TableDrivedEntity" Multiplicity="1" />
-          <End Role="SearchRepository" Type="Self.SearchRepository" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntity">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SearchRepository">
-              <PropertyRef Name="TableDrivedEntityID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3003,12 +3169,12 @@
         </Association>
         <Association Name="FKColumnPhra124715">
           <End Role="Column" Type="Self.Column" Multiplicity="1" />
-          <End Role="ColumnPhrase" Type="Self.ColumnPhrase" Multiplicity="*" />
+          <End Role="PhraseColumn" Type="Self.PhraseColumn" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Column">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="ColumnPhrase">
+            <Dependent Role="PhraseColumn">
               <PropertyRef Name="ColumnID" />
             </Dependent>
           </ReferentialConstraint>
@@ -4165,42 +4331,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKPhrase543572">
-          <End Role="LogicPhrase" Type="Self.LogicPhrase" Multiplicity="0..1" />
-          <End Role="Phrase" Type="Self.Phrase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LogicPhrase">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Phrase">
-              <PropertyRef Name="LogicPhraseID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKPhrase552267">
-          <End Role="ColumnPhrase" Type="Self.ColumnPhrase" Multiplicity="0..1" />
-          <End Role="Phrase" Type="Self.Phrase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ColumnPhrase">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Phrase">
-              <PropertyRef Name="ColumnPhraseID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKPhrase614152">
-          <End Role="LogicPhrase" Type="Self.LogicPhrase" Multiplicity="0..1" />
-          <End Role="Phrase" Type="Self.Phrase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LogicPhrase">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Phrase">
-              <PropertyRef Name="ParentLogicPhraseID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKRelationsh12338">
           <End Role="EntityUIComposition" Type="Self.EntityUIComposition" Multiplicity="1" />
           <End Role="RelationshipUISetting" Type="Self.RelationshipUISetting" Multiplicity="0..1" />
@@ -4806,7 +4936,6 @@
           <EntitySet Name="CodeFunctionParameter" EntityType="Self.CodeFunctionParameter" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Column" EntityType="Self.Column" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ColumnCustomFormula" EntityType="Self.ColumnCustomFormula" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ColumnPhrase" EntityType="Self.ColumnPhrase" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ColumnUISetting" EntityType="Self.ColumnUISetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ColumnValueRange" EntityType="Self.ColumnValueRange" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ColumnValueRangeDetails" EntityType="Self.ColumnValueRangeDetails" Schema="dbo" store:Type="Tables" />
@@ -4874,7 +5003,6 @@
           <EntitySet Name="LetterType" EntityType="Self.LetterType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LinearFormula" EntityType="Self.LinearFormula" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LinkedServer" EntityType="Self.LinkedServer" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="LogicPhrase" EntityType="Self.LogicPhrase" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MainLetterTemplate" EntityType="Self.MainLetterTemplate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ManyToManyRelationshipType" EntityType="Self.ManyToManyRelationshipType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ManyToOneRelationshipType" EntityType="Self.ManyToOneRelationshipType" Schema="dbo" store:Type="Tables" />
@@ -4883,13 +5011,21 @@
           <EntitySet Name="OneToManyRelationshipType" EntityType="Self.OneToManyRelationshipType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PartialLetterTemplate" EntityType="Self.PartialLetterTemplate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Phrase" EntityType="Self.Phrase" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhraseColumn" EntityType="Self.PhraseColumn" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhraseLogic" EntityType="Self.PhraseLogic" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhraseRelationship" EntityType="Self.PhraseRelationship" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Relationship" EntityType="Self.Relationship" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RelationshipColumns" EntityType="Self.RelationshipColumns" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RelationshipSearchFilter" EntityType="Self.RelationshipSearchFilter" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RelationshipType" EntityType="Self.RelationshipType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RelationshipUISetting" EntityType="Self.RelationshipUISetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ReportGroups" EntityType="Self.ReportGroups" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SearchRepository" EntityType="Self.SearchRepository" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SaveAdvancedSearch" EntityType="Self.SaveAdvancedSearch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SavedPreDefinedSearch" EntityType="Self.SavedPreDefinedSearch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SavedPreDefinedSearchRelationship" EntityType="Self.SavedPreDefinedSearchRelationship" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SavedPreDefinedSearchRelationshipData" EntityType="Self.SavedPreDefinedSearchRelationshipData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SavedPreDefinedSearchSimpleColumn" EntityType="Self.SavedPreDefinedSearchSimpleColumn" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SavedSearchRepository" EntityType="Self.SavedSearchRepository" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StringColumnType" EntityType="Self.StringColumnType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubSystems" EntityType="Self.SubSystems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubToSuperRelationshipType" EntityType="Self.SubToSuperRelationshipType" Schema="dbo" store:Type="Tables" />
@@ -4975,10 +5111,6 @@
           <AssociationSet Name="FK_ColumnCustomFormula_Formula" Association="Self.FK_ColumnCustomFormula_Formula">
             <End Role="Formula" EntitySet="Formula" />
             <End Role="ColumnCustomFormula" EntitySet="ColumnCustomFormula" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ColumnPhrase_EntitySearchColumns" Association="Self.FK_ColumnPhrase_EntitySearchColumns">
-            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
-            <End Role="ColumnPhrase" EntitySet="ColumnPhrase" />
           </AssociationSet>
           <AssociationSet Name="FK_ColumnValueRange_Column" Association="Self.FK_ColumnValueRange_Column">
             <End Role="Column" EntitySet="Column" />
@@ -5188,8 +5320,8 @@
             <End Role="EntityReport" EntitySet="EntityReport" />
             <End Role="EntitySearchableReport" EntitySet="EntitySearchableReport" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntitySearchableReport_SearchRepository" Association="Self.FK_EntitySearchableReport_SearchRepository">
-            <End Role="SearchRepository" EntitySet="SearchRepository" />
+          <AssociationSet Name="FK_EntitySearchableReport_SavedSearchRepository" Association="Self.FK_EntitySearchableReport_SavedSearchRepository">
+            <End Role="SavedSearchRepository" EntitySet="SavedSearchRepository" />
             <End Role="EntitySearchableReport" EntitySet="EntitySearchableReport" />
           </AssociationSet>
           <AssociationSet Name="FK_EntitySecurityDirect_TableDrivedEntityState" Association="Self.FK_EntitySecurityDirect_TableDrivedEntityState">
@@ -5264,6 +5396,38 @@
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="LetterType" EntitySet="LetterType" />
           </AssociationSet>
+          <AssociationSet Name="FK_Phrase_PhraseLogic" Association="Self.FK_Phrase_PhraseLogic">
+            <End Role="PhraseLogic" EntitySet="PhraseLogic" />
+            <End Role="Phrase" EntitySet="Phrase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PhraseColumn_Phrase" Association="Self.FK_PhraseColumn_Phrase">
+            <End Role="Phrase" EntitySet="Phrase" />
+            <End Role="PhraseColumn" EntitySet="PhraseColumn" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PhraseRelationship_PhraseLogic" Association="Self.FK_PhraseRelationship_PhraseLogic">
+            <End Role="PhraseLogic" EntitySet="PhraseLogic" />
+            <End Role="PhraseRelationship" EntitySet="PhraseRelationship" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreDefinedSearch_SavedSearchRepository" Association="Self.FK_PreDefinedSearch_SavedSearchRepository">
+            <End Role="SavedSearchRepository" EntitySet="SavedSearchRepository" />
+            <End Role="SavedPreDefinedSearch" EntitySet="SavedPreDefinedSearch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreDefinedSearchRelationship_EntitySearchColumns" Association="Self.FK_PreDefinedSearchRelationship_EntitySearchColumns">
+            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
+            <End Role="SavedPreDefinedSearchRelationship" EntitySet="SavedPreDefinedSearchRelationship" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreDefinedSearchRelationship_PreDefinedSearch" Association="Self.FK_PreDefinedSearchRelationship_PreDefinedSearch">
+            <End Role="SavedPreDefinedSearch" EntitySet="SavedPreDefinedSearch" />
+            <End Role="SavedPreDefinedSearchRelationship" EntitySet="SavedPreDefinedSearchRelationship" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreDefinedSearchSimpleColumn_EntitySearchColumns" Association="Self.FK_PreDefinedSearchSimpleColumn_EntitySearchColumns">
+            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
+            <End Role="SavedPreDefinedSearchSimpleColumn" EntitySet="SavedPreDefinedSearchSimpleColumn" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreDefinedSearchSimpleColumn_PreDefinedSearch" Association="Self.FK_PreDefinedSearchSimpleColumn_PreDefinedSearch">
+            <End Role="SavedPreDefinedSearch" EntitySet="SavedPreDefinedSearch" />
+            <End Role="SavedPreDefinedSearchSimpleColumn" EntitySet="SavedPreDefinedSearchSimpleColumn" />
+          </AssociationSet>
           <AssociationSet Name="FK_Process_TableDrivedEntity" Association="Self.FK_Process_TableDrivedEntity">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="Process" EntitySet="Process" />
@@ -5276,10 +5440,6 @@
             <End Role="SecurityObject" EntitySet="SecurityObject" />
             <End Role="Relationship" EntitySet="Relationship" />
           </AssociationSet>
-          <AssociationSet Name="FK_RelationshipPhrase_LogicPhrase" Association="Self.FK_RelationshipPhrase_LogicPhrase">
-            <End Role="LogicPhrase" EntitySet="LogicPhrase" />
-            <End Role="SearchRepository" EntitySet="SearchRepository" />
-          </AssociationSet>
           <AssociationSet Name="FK_RelationshipSearchFilter_Column" Association="Self.FK_RelationshipSearchFilter_Column">
             <End Role="Column" EntitySet="Column" />
             <End Role="RelationshipSearchFilter" EntitySet="RelationshipSearchFilter" />
@@ -5288,17 +5448,33 @@
             <End Role="Column" EntitySet="Column" />
             <End Role="RelationshipSearchFilter" EntitySet="RelationshipSearchFilter" />
           </AssociationSet>
-          <AssociationSet Name="FK_SearchRepository_EntitySearch" Association="Self.FK_SearchRepository_EntitySearch">
+          <AssociationSet Name="FK_SaveAdvancedSearch_PhraseLogic" Association="Self.FK_SaveAdvancedSearch_PhraseLogic">
+            <End Role="PhraseLogic" EntitySet="PhraseLogic" />
+            <End Role="SaveAdvancedSearch" EntitySet="SaveAdvancedSearch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaveAdvancedSearch_SavedSearchRepository" Association="Self.FK_SaveAdvancedSearch_SavedSearchRepository">
+            <End Role="SavedSearchRepository" EntitySet="SavedSearchRepository" />
+            <End Role="SaveAdvancedSearch" EntitySet="SaveAdvancedSearch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SavedPreDefinedSearch_EntitySearch" Association="Self.FK_SavedPreDefinedSearch_EntitySearch">
             <End Role="EntitySearch" EntitySet="EntitySearch" />
-            <End Role="SearchRepository" EntitySet="SearchRepository" />
+            <End Role="SavedPreDefinedSearch" EntitySet="SavedPreDefinedSearch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SavedPreDefinedSearchRelationshipData_Column" Association="Self.FK_SavedPreDefinedSearchRelationshipData_Column">
+            <End Role="Column" EntitySet="Column" />
+            <End Role="SavedPreDefinedSearchRelationshipData" EntitySet="SavedPreDefinedSearchRelationshipData" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SavedPreDefinedSearchRelationshipData_SavedPreDefinedSearchRelationship" Association="Self.FK_SavedPreDefinedSearchRelationshipData_SavedPreDefinedSearchRelationship">
+            <End Role="SavedPreDefinedSearchRelationship" EntitySet="SavedPreDefinedSearchRelationship" />
+            <End Role="SavedPreDefinedSearchRelationshipData" EntitySet="SavedPreDefinedSearchRelationshipData" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SavedSearchRepository_TableDrivedEntity" Association="Self.FK_SavedSearchRepository_TableDrivedEntity">
+            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
+            <End Role="SavedSearchRepository" EntitySet="SavedSearchRepository" />
           </AssociationSet>
           <AssociationSet Name="FK_SearchRepository_Relationship" Association="Self.FK_SearchRepository_Relationship">
             <End Role="Relationship" EntitySet="Relationship" />
-            <End Role="SearchRepository" EntitySet="SearchRepository" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SearchRepository_TableDrivedEntity" Association="Self.FK_SearchRepository_TableDrivedEntity">
-            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
-            <End Role="SearchRepository" EntitySet="SearchRepository" />
+            <End Role="PhraseRelationship" EntitySet="PhraseRelationship" />
           </AssociationSet>
           <AssociationSet Name="FK_StringTimeColumnType_Column" Association="Self.FK_StringTimeColumnType_Column">
             <End Role="Column" EntitySet="Column" />
@@ -5462,7 +5638,7 @@
           </AssociationSet>
           <AssociationSet Name="FKColumnPhra124715" Association="Self.FKColumnPhra124715">
             <End Role="Column" EntitySet="Column" />
-            <End Role="ColumnPhrase" EntitySet="ColumnPhrase" />
+            <End Role="PhraseColumn" EntitySet="PhraseColumn" />
           </AssociationSet>
           <AssociationSet Name="FKColumnUISe822405" Association="Self.FKColumnUISe822405">
             <End Role="EntityUIComposition" EntitySet="EntityUIComposition" />
@@ -5848,18 +6024,6 @@
             <End Role="SecurityObject" EntitySet="SecurityObject" />
             <End Role="Permission" EntitySet="Permission" />
           </AssociationSet>
-          <AssociationSet Name="FKPhrase543572" Association="Self.FKPhrase543572">
-            <End Role="LogicPhrase" EntitySet="LogicPhrase" />
-            <End Role="Phrase" EntitySet="Phrase" />
-          </AssociationSet>
-          <AssociationSet Name="FKPhrase552267" Association="Self.FKPhrase552267">
-            <End Role="ColumnPhrase" EntitySet="ColumnPhrase" />
-            <End Role="Phrase" EntitySet="Phrase" />
-          </AssociationSet>
-          <AssociationSet Name="FKPhrase614152" Association="Self.FKPhrase614152">
-            <End Role="LogicPhrase" EntitySet="LogicPhrase" />
-            <End Role="Phrase" EntitySet="Phrase" />
-          </AssociationSet>
           <AssociationSet Name="FKRelationsh12338" Association="Self.FKRelationsh12338">
             <End Role="EntityUIComposition" EntitySet="EntityUIComposition" />
             <End Role="RelationshipUISetting" EntitySet="RelationshipUISetting" />
@@ -6078,7 +6242,6 @@
           <EntitySet Name="CodeFunctionParameter" EntityType="MyIdeaModel.CodeFunctionParameter" />
           <EntitySet Name="Column" EntityType="MyIdeaModel.Column" />
           <EntitySet Name="ColumnCustomFormula" EntityType="MyIdeaModel.ColumnCustomFormula" />
-          <EntitySet Name="ColumnPhrase" EntityType="MyIdeaModel.ColumnPhrase" />
           <EntitySet Name="ColumnUISetting" EntityType="MyIdeaModel.ColumnUISetting" />
           <EntitySet Name="ColumnValueRange" EntityType="MyIdeaModel.ColumnValueRange" />
           <EntitySet Name="ColumnValueRangeDetails" EntityType="MyIdeaModel.ColumnValueRangeDetails" />
@@ -6123,7 +6286,9 @@
           <EntitySet Name="EntityRelationshipTailDataMenu" EntityType="MyIdeaModel.EntityRelationshipTailDataMenu" />
           <EntitySet Name="EntityRelationshipTailDataMenuItems" EntityType="MyIdeaModel.EntityRelationshipTailDataMenuItems" />
           <EntitySet Name="EntityReport" EntityType="MyIdeaModel.EntityReport" />
+          <EntitySet Name="EntitySearch" EntityType="MyIdeaModel.EntitySearch" />
           <EntitySet Name="EntitySearchableReport" EntityType="MyIdeaModel.EntitySearchableReport" />
+          <EntitySet Name="EntitySearchColumns" EntityType="MyIdeaModel.EntitySearchColumns" />
           <EntitySet Name="EntityState_UIActionActivity" EntityType="MyIdeaModel.EntityState_UIActionActivity" />
           <EntitySet Name="EntityUIComposition" EntityType="MyIdeaModel.EntityUIComposition" />
           <EntitySet Name="EntityUISetting" EntityType="MyIdeaModel.EntityUISetting" />
@@ -6144,7 +6309,6 @@
           <EntitySet Name="LetterType" EntityType="MyIdeaModel.LetterType" />
           <EntitySet Name="LinearFormula" EntityType="MyIdeaModel.LinearFormula" />
           <EntitySet Name="LinkedServer" EntityType="MyIdeaModel.LinkedServer" />
-          <EntitySet Name="LogicPhrase" EntityType="MyIdeaModel.LogicPhrase" />
           <EntitySet Name="MainLetterTemplate" EntityType="MyIdeaModel.MainLetterTemplate" />
           <EntitySet Name="ManyToManyRelationshipType" EntityType="MyIdeaModel.ManyToManyRelationshipType" />
           <EntitySet Name="ManyToOneRelationshipType" EntityType="MyIdeaModel.ManyToOneRelationshipType" />
@@ -6153,13 +6317,21 @@
           <EntitySet Name="OneToManyRelationshipType" EntityType="MyIdeaModel.OneToManyRelationshipType" />
           <EntitySet Name="PartialLetterTemplate" EntityType="MyIdeaModel.PartialLetterTemplate" />
           <EntitySet Name="Phrase" EntityType="MyIdeaModel.Phrase" />
+          <EntitySet Name="PhraseColumn" EntityType="MyIdeaModel.PhraseColumn" />
+          <EntitySet Name="PhraseLogic" EntityType="MyIdeaModel.PhraseLogic" />
+          <EntitySet Name="PhraseRelationship" EntityType="MyIdeaModel.PhraseRelationship" />
           <EntitySet Name="Relationship" EntityType="MyIdeaModel.Relationship" />
           <EntitySet Name="RelationshipColumns" EntityType="MyIdeaModel.RelationshipColumns" />
           <EntitySet Name="RelationshipSearchFilter" EntityType="MyIdeaModel.RelationshipSearchFilter" />
           <EntitySet Name="RelationshipType" EntityType="MyIdeaModel.RelationshipType" />
           <EntitySet Name="RelationshipUISetting" EntityType="MyIdeaModel.RelationshipUISetting" />
           <EntitySet Name="ReportGroups" EntityType="MyIdeaModel.ReportGroups" />
-          <EntitySet Name="SearchRepository" EntityType="MyIdeaModel.SearchRepository" />
+          <EntitySet Name="SaveAdvancedSearch" EntityType="MyIdeaModel.SaveAdvancedSearch" />
+          <EntitySet Name="SavedPreDefinedSearch" EntityType="MyIdeaModel.SavedPreDefinedSearch" />
+          <EntitySet Name="SavedPreDefinedSearchRelationship" EntityType="MyIdeaModel.SavedPreDefinedSearchRelationship" />
+          <EntitySet Name="SavedPreDefinedSearchRelationshipData" EntityType="MyIdeaModel.SavedPreDefinedSearchRelationshipData" />
+          <EntitySet Name="SavedPreDefinedSearchSimpleColumn" EntityType="MyIdeaModel.SavedPreDefinedSearchSimpleColumn" />
+          <EntitySet Name="SavedSearchRepository" EntityType="MyIdeaModel.SavedSearchRepository" />
           <EntitySet Name="StringColumnType" EntityType="MyIdeaModel.StringColumnType" />
           <EntitySet Name="SubSystems" EntityType="MyIdeaModel.SubSystems" />
           <EntitySet Name="SubToSuperRelationshipType" EntityType="MyIdeaModel.SubToSuperRelationshipType" />
@@ -6369,6 +6541,10 @@
             <End Role="Column" EntitySet="Column" />
             <End Role="RelationshipSearchFilter" EntitySet="RelationshipSearchFilter" />
           </AssociationSet>
+          <AssociationSet Name="FK_SavedPreDefinedSearchRelationshipData_Column" Association="MyIdeaModel.FK_SavedPreDefinedSearchRelationshipData_Column">
+            <End Role="Column" EntitySet="Column" />
+            <End Role="SavedPreDefinedSearchRelationshipData" EntitySet="SavedPreDefinedSearchRelationshipData" />
+          </AssociationSet>
           <AssociationSet Name="FK_StringTimeColumnType_Column" Association="MyIdeaModel.FK_StringTimeColumnType_Column">
             <End Role="Column" EntitySet="Column" />
             <End Role="TimeColumnType" EntitySet="TimeColumnType" />
@@ -6399,7 +6575,7 @@
           </AssociationSet>
           <AssociationSet Name="FKColumnPhra124715" Association="MyIdeaModel.FKColumnPhra124715">
             <End Role="Column" EntitySet="Column" />
-            <End Role="ColumnPhrase" EntitySet="ColumnPhrase" />
+            <End Role="PhraseColumn" EntitySet="PhraseColumn" />
           </AssociationSet>
           <AssociationSet Name="FKColumnValu491864" Association="MyIdeaModel.FKColumnValu491864">
             <End Role="Column" EntitySet="Column" />
@@ -6416,6 +6592,10 @@
           <AssociationSet Name="FKEntityList404590" Association="MyIdeaModel.FKEntityList404590">
             <End Role="Column" EntitySet="Column" />
             <End Role="EntityListViewColumns" EntitySet="EntityListViewColumns" />
+          </AssociationSet>
+          <AssociationSet Name="FKEntitySear524417" Association="MyIdeaModel.FKEntitySear524417">
+            <End Role="Column" EntitySet="Column" />
+            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
           </AssociationSet>
           <AssociationSet Name="FKFormulaIte729281" Association="MyIdeaModel.FKFormulaIte729281">
             <End Role="Column" EntitySet="Column" />
@@ -6448,10 +6628,6 @@
           <AssociationSet Name="FK_ColumnCustomFormula_Formula" Association="MyIdeaModel.FK_ColumnCustomFormula_Formula">
             <End Role="Formula" EntitySet="Formula" />
             <End Role="ColumnCustomFormula" EntitySet="ColumnCustomFormula" />
-          </AssociationSet>
-          <AssociationSet Name="FKPhrase552267" Association="MyIdeaModel.FKPhrase552267">
-            <End Role="ColumnPhrase" EntitySet="ColumnPhrase" />
-            <End Role="Phrase" EntitySet="Phrase" />
           </AssociationSet>
           <AssociationSet Name="FKColumnUISe822405" Association="MyIdeaModel.FKColumnUISe822405">
             <End Role="EntityUIComposition" EntitySet="EntityUIComposition" />
@@ -6813,6 +6989,10 @@
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
           </AssociationSet>
+          <AssociationSet Name="FKEntitySear748558" Association="MyIdeaModel.FKEntitySear748558">
+            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
+            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
+          </AssociationSet>
           <AssociationSet Name="FKRelationsh552099" Association="MyIdeaModel.FKRelationsh552099">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
             <End Role="RelationshipSearchFilter" EntitySet="RelationshipSearchFilter" />
@@ -6841,9 +7021,29 @@
             <End Role="SecurityObject" EntitySet="SecurityObject" />
             <End Role="EntityReport" EntitySet="EntityReport" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntitySearchableReport_SearchRepository" Association="MyIdeaModel.FK_EntitySearchableReport_SearchRepository">
-            <End Role="SearchRepository" EntitySet="SearchRepository" />
+          <AssociationSet Name="FK_EntitySearch_TableDrivedEntity" Association="MyIdeaModel.FK_EntitySearch_TableDrivedEntity">
+            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
+            <End Role="EntitySearch" EntitySet="EntitySearch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SavedPreDefinedSearch_EntitySearch" Association="MyIdeaModel.FK_SavedPreDefinedSearch_EntitySearch">
+            <End Role="EntitySearch" EntitySet="EntitySearch" />
+            <End Role="SavedPreDefinedSearch" EntitySet="SavedPreDefinedSearch" />
+          </AssociationSet>
+          <AssociationSet Name="FKEntitySear726002" Association="MyIdeaModel.FKEntitySear726002">
+            <End Role="EntitySearch" EntitySet="EntitySearch" />
+            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntitySearchableReport_SavedSearchRepository" Association="MyIdeaModel.FK_EntitySearchableReport_SavedSearchRepository">
+            <End Role="SavedSearchRepository" EntitySet="SavedSearchRepository" />
             <End Role="EntitySearchableReport" EntitySet="EntitySearchableReport" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreDefinedSearchRelationship_EntitySearchColumns" Association="MyIdeaModel.FK_PreDefinedSearchRelationship_EntitySearchColumns">
+            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
+            <End Role="SavedPreDefinedSearchRelationship" EntitySet="SavedPreDefinedSearchRelationship" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreDefinedSearchSimpleColumn_EntitySearchColumns" Association="MyIdeaModel.FK_PreDefinedSearchSimpleColumn_EntitySearchColumns">
+            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
+            <End Role="SavedPreDefinedSearchSimpleColumn" EntitySet="SavedPreDefinedSearchSimpleColumn" />
           </AssociationSet>
           <AssociationSet Name="FKEntityStat608686" Association="MyIdeaModel.FKEntityStat608686">
             <End Role="UIActionActivity" EntitySet="UIActionActivity" />
@@ -6981,18 +7181,6 @@
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="LetterType" EntitySet="LetterType" />
           </AssociationSet>
-          <AssociationSet Name="FK_RelationshipPhrase_LogicPhrase" Association="MyIdeaModel.FK_RelationshipPhrase_LogicPhrase">
-            <End Role="LogicPhrase" EntitySet="LogicPhrase" />
-            <End Role="SearchRepository" EntitySet="SearchRepository" />
-          </AssociationSet>
-          <AssociationSet Name="FKPhrase543572" Association="MyIdeaModel.FKPhrase543572">
-            <End Role="LogicPhrase" EntitySet="LogicPhrase" />
-            <End Role="Phrase" EntitySet="Phrase" />
-          </AssociationSet>
-          <AssociationSet Name="FKPhrase614152" Association="MyIdeaModel.FKPhrase614152">
-            <End Role="LogicPhrase" EntitySet="LogicPhrase" />
-            <End Role="Phrase" EntitySet="Phrase" />
-          </AssociationSet>
           <AssociationSet Name="FKManyToOneR998042" Association="MyIdeaModel.FKManyToOneR998042">
             <End Role="ManyToManyRelationshipType" EntitySet="ManyToManyRelationshipType" />
             <End Role="ManyToOneRelationshipType" EntitySet="ManyToOneRelationshipType" />
@@ -7013,6 +7201,26 @@
             <End Role="RelationshipType" EntitySet="RelationshipType" />
             <End Role="OneToManyRelationshipType" EntitySet="OneToManyRelationshipType" />
           </AssociationSet>
+          <AssociationSet Name="FK_Phrase_PhraseLogic" Association="MyIdeaModel.FK_Phrase_PhraseLogic">
+            <End Role="PhraseLogic" EntitySet="PhraseLogic" />
+            <End Role="Phrase" EntitySet="Phrase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PhraseColumn_Phrase" Association="MyIdeaModel.FK_PhraseColumn_Phrase">
+            <End Role="Phrase" EntitySet="Phrase" />
+            <End Role="PhraseColumn" EntitySet="PhraseColumn" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PhraseRelationship_PhraseLogic" Association="MyIdeaModel.FK_PhraseRelationship_PhraseLogic">
+            <End Role="PhraseLogic" EntitySet="PhraseLogic" />
+            <End Role="PhraseRelationship" EntitySet="PhraseRelationship" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaveAdvancedSearch_PhraseLogic" Association="MyIdeaModel.FK_SaveAdvancedSearch_PhraseLogic">
+            <End Role="PhraseLogic" EntitySet="PhraseLogic" />
+            <End Role="SaveAdvancedSearch" EntitySet="SaveAdvancedSearch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SearchRepository_Relationship" Association="MyIdeaModel.FK_SearchRepository_Relationship">
+            <End Role="Relationship" EntitySet="Relationship" />
+            <End Role="PhraseRelationship" EntitySet="PhraseRelationship" />
+          </AssociationSet>
           <AssociationSet Name="FK_Relationship_Relationship" Association="MyIdeaModel.FK_Relationship_Relationship">
             <End Role="Relationship" EntitySet="Relationship" />
             <End Role="Relationship1" EntitySet="Relationship" />
@@ -7020,10 +7228,6 @@
           <AssociationSet Name="FK_Relationship_SecurityObject" Association="MyIdeaModel.FK_Relationship_SecurityObject">
             <End Role="SecurityObject" EntitySet="SecurityObject" />
             <End Role="Relationship" EntitySet="Relationship" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SearchRepository_Relationship" Association="MyIdeaModel.FK_SearchRepository_Relationship">
-            <End Role="Relationship" EntitySet="Relationship" />
-            <End Role="SearchRepository" EntitySet="SearchRepository" />
           </AssociationSet>
           <AssociationSet Name="FK_UIEnablityDetails_Relationship" Association="MyIdeaModel.FK_UIEnablityDetails_Relationship">
             <End Role="Relationship" EntitySet="Relationship" />
@@ -7065,9 +7269,29 @@
             <End Role="RelationshipType" EntitySet="RelationshipType" />
             <End Role="UnionToSubUnionRelationshipType" EntitySet="UnionToSubUnionRelationshipType" />
           </AssociationSet>
-          <AssociationSet Name="FK_SearchRepository_TableDrivedEntity" Association="MyIdeaModel.FK_SearchRepository_TableDrivedEntity">
+          <AssociationSet Name="FK_SaveAdvancedSearch_SavedSearchRepository" Association="MyIdeaModel.FK_SaveAdvancedSearch_SavedSearchRepository">
+            <End Role="SavedSearchRepository" EntitySet="SavedSearchRepository" />
+            <End Role="SaveAdvancedSearch" EntitySet="SaveAdvancedSearch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreDefinedSearch_SavedSearchRepository" Association="MyIdeaModel.FK_PreDefinedSearch_SavedSearchRepository">
+            <End Role="SavedSearchRepository" EntitySet="SavedSearchRepository" />
+            <End Role="SavedPreDefinedSearch" EntitySet="SavedPreDefinedSearch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreDefinedSearchRelationship_PreDefinedSearch" Association="MyIdeaModel.FK_PreDefinedSearchRelationship_PreDefinedSearch">
+            <End Role="SavedPreDefinedSearch" EntitySet="SavedPreDefinedSearch" />
+            <End Role="SavedPreDefinedSearchRelationship" EntitySet="SavedPreDefinedSearchRelationship" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreDefinedSearchSimpleColumn_PreDefinedSearch" Association="MyIdeaModel.FK_PreDefinedSearchSimpleColumn_PreDefinedSearch">
+            <End Role="SavedPreDefinedSearch" EntitySet="SavedPreDefinedSearch" />
+            <End Role="SavedPreDefinedSearchSimpleColumn" EntitySet="SavedPreDefinedSearchSimpleColumn" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SavedPreDefinedSearchRelationshipData_SavedPreDefinedSearchRelationship" Association="MyIdeaModel.FK_SavedPreDefinedSearchRelationshipData_SavedPreDefinedSearchRelationship">
+            <End Role="SavedPreDefinedSearchRelationship" EntitySet="SavedPreDefinedSearchRelationship" />
+            <End Role="SavedPreDefinedSearchRelationshipData" EntitySet="SavedPreDefinedSearchRelationshipData" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SavedSearchRepository_TableDrivedEntity" Association="MyIdeaModel.FK_SavedSearchRepository_TableDrivedEntity">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
-            <End Role="SearchRepository" EntitySet="SearchRepository" />
+            <End Role="SavedSearchRepository" EntitySet="SavedSearchRepository" />
           </AssociationSet>
           <AssociationSet Name="FKSubSystems137775" Association="MyIdeaModel.FKSubSystems137775">
             <End Role="SecurityObject" EntitySet="SecurityObject" />
@@ -7297,32 +7521,6 @@
             <End Role="UniqueConstraint" EntitySet="UniqueConstraint" />
             <End Role="Column" EntitySet="Column" />
           </AssociationSet>
-          <EntitySet Name="EntitySearch" EntityType="MyIdeaModel.EntitySearch" />
-          <EntitySet Name="EntitySearchColumns" EntityType="MyIdeaModel.EntitySearchColumns" />
-          <AssociationSet Name="FKEntitySear524417" Association="MyIdeaModel.FKEntitySear524417">
-            <End Role="Column" EntitySet="Column" />
-            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ColumnPhrase_EntitySearchColumns" Association="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns">
-            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
-            <End Role="ColumnPhrase" EntitySet="ColumnPhrase" />
-          </AssociationSet>
-          <AssociationSet Name="FKEntitySear748558" Association="MyIdeaModel.FKEntitySear748558">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntitySearch_TableDrivedEntity" Association="MyIdeaModel.FK_EntitySearch_TableDrivedEntity">
-            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
-            <End Role="EntitySearch" EntitySet="EntitySearch" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SearchRepository_EntitySearch" Association="MyIdeaModel.FK_SearchRepository_EntitySearch">
-            <End Role="EntitySearch" EntitySet="EntitySearch" />
-            <End Role="SearchRepository" EntitySet="SearchRepository" />
-          </AssociationSet>
-          <AssociationSet Name="FKEntitySear726002" Association="MyIdeaModel.FKEntitySear726002">
-            <End Role="EntitySearch" EntitySet="EntitySearch" />
-            <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
-          </AssociationSet>
         </EntityContainer>
         <EntityType Name="ArchiveFolder">
           <Key>
@@ -7525,6 +7723,7 @@
           <NavigationProperty Name="EntityDirectlReportParameters" Relationship="MyIdeaModel.FK_EntityDirectlReportParameters_Column" FromRole="Column" ToRole="EntityDirectlReportParameters" />
           <NavigationProperty Name="RelationshipSearchFilter" Relationship="MyIdeaModel.FK_RelationshipSearchFilter_Column" FromRole="Column" ToRole="RelationshipSearchFilter" />
           <NavigationProperty Name="RelationshipSearchFilter1" Relationship="MyIdeaModel.FK_RelationshipSearchFilter_Column1" FromRole="Column" ToRole="RelationshipSearchFilter" />
+          <NavigationProperty Name="SavedPreDefinedSearchRelationshipData" Relationship="MyIdeaModel.FK_SavedPreDefinedSearchRelationshipData_Column" FromRole="Column" ToRole="SavedPreDefinedSearchRelationshipData" />
           <NavigationProperty Name="TimeColumnType" Relationship="MyIdeaModel.FK_StringTimeColumnType_Column" FromRole="Column" ToRole="TimeColumnType" />
           <NavigationProperty Name="SuperToSubRelationshipType" Relationship="MyIdeaModel.FK_SuperToSubRelationshipType_Column" FromRole="Column" ToRole="SuperToSubRelationshipType" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FK_TableDrivedEntity_Column" FromRole="Column" ToRole="TableDrivedEntity" />
@@ -7532,11 +7731,12 @@
           <NavigationProperty Name="UnionToSubUnionRelationshipType" Relationship="MyIdeaModel.FK_UnionToSubUnionRelationshipType_Column" FromRole="Column" ToRole="UnionToSubUnionRelationshipType" />
           <NavigationProperty Name="Table" Relationship="MyIdeaModel.FKColumn659222" FromRole="Column" ToRole="Table" />
           <NavigationProperty Name="SecurityObject" Relationship="MyIdeaModel.FKColumn689451" FromRole="Column" ToRole="SecurityObject" />
-          <NavigationProperty Name="ColumnPhrase" Relationship="MyIdeaModel.FKColumnPhra124715" FromRole="Column" ToRole="ColumnPhrase" />
+          <NavigationProperty Name="PhraseColumn" Relationship="MyIdeaModel.FKColumnPhra124715" FromRole="Column" ToRole="PhraseColumn" />
           <NavigationProperty Name="UIColumnValue" Relationship="MyIdeaModel.FKColumnValu491864" FromRole="Column" ToRole="UIColumnValue" />
           <NavigationProperty Name="DatabaseFunction_TableDrivedEntity_Columns" Relationship="MyIdeaModel.FKDatabaseFu304987" FromRole="Column" ToRole="DatabaseFunction_TableDrivedEntity_Columns" />
           <NavigationProperty Name="DateColumnType" Relationship="MyIdeaModel.FKDateColumn74546" FromRole="Column" ToRole="DateColumnType" />
           <NavigationProperty Name="EntityListViewColumns" Relationship="MyIdeaModel.FKEntityList404590" FromRole="Column" ToRole="EntityListViewColumns" />
+          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear524417" FromRole="Column" ToRole="EntitySearchColumns" />
           <NavigationProperty Name="FormulaItems" Relationship="MyIdeaModel.FKFormulaIte729281" FromRole="Column" ToRole="FormulaItems" />
           <NavigationProperty Name="NumericColumnType" Relationship="MyIdeaModel.FKNumericCol878005" FromRole="Column" ToRole="NumericColumnType" />
           <NavigationProperty Name="StringColumnType" Relationship="MyIdeaModel.FKStringColu936883" FromRole="Column" ToRole="StringColumnType" />
@@ -7545,7 +7745,6 @@
           <NavigationProperty Name="RelationshipColumns" Relationship="MyIdeaModel.Relationship_FirstEntityColumns" FromRole="Column" ToRole="RelationshipColumns" />
           <NavigationProperty Name="RelationshipColumns1" Relationship="MyIdeaModel.Relationship_SecondEntityColumns" FromRole="Column" ToRole="RelationshipColumns" />
           <NavigationProperty Name="UniqueConstraint" Relationship="MyIdeaModel.UniqueConstraint_Column" FromRole="Column" ToRole="UniqueConstraint" />
-          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear524417" FromRole="Column" ToRole="EntitySearchColumns" />
         </EntityType>
         <EntityType Name="ColumnCustomFormula">
           <Key>
@@ -7558,19 +7757,6 @@
           <Property Name="OnlyOnEmptyValue" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Column" Relationship="MyIdeaModel.FK_ColumnCustomFormula_Column" FromRole="ColumnCustomFormula" ToRole="Column" />
           <NavigationProperty Name="Formula" Relationship="MyIdeaModel.FK_ColumnCustomFormula_Formula" FromRole="ColumnCustomFormula" ToRole="Formula" />
-        </EntityType>
-        <EntityType Name="ColumnPhrase">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ColumnID" Type="Int32" Nullable="false" />
-          <Property Name="Value" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="false" />
-          <Property Name="Operator" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="EntitySearchColumnsID" Type="Int32" />
-          <NavigationProperty Name="Column" Relationship="MyIdeaModel.FKColumnPhra124715" FromRole="ColumnPhrase" ToRole="Column" />
-          <NavigationProperty Name="Phrase" Relationship="MyIdeaModel.FKPhrase552267" FromRole="ColumnPhrase" ToRole="Phrase" />
-          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns" FromRole="ColumnPhrase" ToRole="EntitySearchColumns" />
         </EntityType>
         <EntityType Name="ColumnUISetting">
           <Key>
@@ -8102,8 +8288,8 @@
           <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntityStateCondition" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FKEntityRela568378" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="TableDrivedEntity1" Relationship="MyIdeaModel.FKEntityRela831147" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="RelationshipSearchFilter" Relationship="MyIdeaModel.FKRelationsh552099" FromRole="EntityRelationshipTail" ToRole="RelationshipSearchFilter" />
           <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear748558" FromRole="EntityRelationshipTail" ToRole="EntitySearchColumns" />
+          <NavigationProperty Name="RelationshipSearchFilter" Relationship="MyIdeaModel.FKRelationsh552099" FromRole="EntityRelationshipTail" ToRole="RelationshipSearchFilter" />
         </EntityType>
         <EntityType Name="EntityRelationshipTailDataMenu">
           <Key>
@@ -8144,13 +8330,25 @@
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FKEntityRepo82108" FromRole="EntityReport" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="SecurityObject" Relationship="MyIdeaModel.FKEntityRepo965698" FromRole="EntityReport" ToRole="SecurityObject" />
         </EntityType>
+        <EntityType Name="EntitySearch">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="IsDefault" Type="Boolean" />
+          <Property Name="TableDrivedEntityID1" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" FromRole="EntitySearch" ToRole="TableDrivedEntity" />
+          <NavigationProperty Name="SavedPreDefinedSearch" Relationship="MyIdeaModel.FK_SavedPreDefinedSearch_EntitySearch" FromRole="EntitySearch" ToRole="SavedPreDefinedSearch" />
+          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear726002" FromRole="EntitySearch" ToRole="EntitySearchColumns" />
+        </EntityType>
         <EntityType Name="EntitySearchableReport">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="SearchableReportType" Type="Int16" />
-          <Property Name="SearchRepositoryID" Type="Int32" />
+          <Property Name="SavedSearchRepositoryID" Type="Int32" />
           <NavigationProperty Name="DataMenuSearchableReportRelationship" Relationship="MyIdeaModel.FK_EntityReportDataMenuRelationships_EntityReport" FromRole="EntitySearchableReport" ToRole="DataMenuSearchableReportRelationship" />
           <NavigationProperty Name="EntityChartReport" Relationship="MyIdeaModel.FK_EntityChartReport_EntitySearchableReport" FromRole="EntitySearchableReport" ToRole="EntityChartReport" />
           <NavigationProperty Name="EntityCrosstabReport" Relationship="MyIdeaModel.FK_EntityCrosstabReport_EntityListView" FromRole="EntitySearchableReport" ToRole="EntityCrosstabReport" />
@@ -8159,7 +8357,26 @@
           <NavigationProperty Name="EntityGridViewReport" Relationship="MyIdeaModel.FK_EntityGridViewReport_EntitySearchableReport" FromRole="EntitySearchableReport" ToRole="EntityGridViewReport" />
           <NavigationProperty Name="EntityListReport" Relationship="MyIdeaModel.FK_EntityListReport_EntitySearchableReport" FromRole="EntitySearchableReport" ToRole="EntityListReport" />
           <NavigationProperty Name="EntityReport" Relationship="MyIdeaModel.FK_EntitySearchableReport_EntityReport" FromRole="EntitySearchableReport" ToRole="EntityReport" />
-          <NavigationProperty Name="SearchRepository" Relationship="MyIdeaModel.FK_EntitySearchableReport_SearchRepository" FromRole="EntitySearchableReport" ToRole="SearchRepository" />
+          <NavigationProperty Name="SavedSearchRepository" Relationship="MyIdeaModel.FK_EntitySearchableReport_SavedSearchRepository" FromRole="EntitySearchableReport" ToRole="SavedSearchRepository" />
+        </EntityType>
+        <EntityType Name="EntitySearchColumns">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntitySearchID" Type="Int32" Nullable="false" />
+          <Property Name="ColumnID" Type="Int32" />
+          <Property Name="EntityRelationshipTailID" Type="Int32" />
+          <Property Name="OrderID" Type="Int16" />
+          <Property Name="Alias" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="RelationshipTailSelectable" Type="Boolean" Nullable="false" />
+          <Property Name="Tooltip" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" />
+          <Property Name="ExcludeInGeneralSearch" Type="Boolean" />
+          <NavigationProperty Name="Column" Relationship="MyIdeaModel.FKEntitySear524417" FromRole="EntitySearchColumns" ToRole="Column" />
+          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyIdeaModel.FKEntitySear748558" FromRole="EntitySearchColumns" ToRole="EntityRelationshipTail" />
+          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FKEntitySear726002" FromRole="EntitySearchColumns" ToRole="EntitySearch" />
+          <NavigationProperty Name="SavedPreDefinedSearchRelationship" Relationship="MyIdeaModel.FK_PreDefinedSearchRelationship_EntitySearchColumns" FromRole="EntitySearchColumns" ToRole="SavedPreDefinedSearchRelationship" />
+          <NavigationProperty Name="SavedPreDefinedSearchSimpleColumn" Relationship="MyIdeaModel.FK_PreDefinedSearchSimpleColumn_EntitySearchColumns" FromRole="EntitySearchColumns" ToRole="SavedPreDefinedSearchSimpleColumn" />
         </EntityType>
         <EntityType Name="EntityState_UIActionActivity">
           <Key>
@@ -8420,16 +8637,6 @@
           <NavigationProperty Name="DBServer" Relationship="MyIdeaModel.FKLinkedServ770687" FromRole="LinkedServer" ToRole="DBServer" />
           <NavigationProperty Name="DBServer1" Relationship="MyIdeaModel.FKLinkedServ812468" FromRole="LinkedServer" ToRole="DBServer" />
         </EntityType>
-        <EntityType Name="LogicPhrase">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AndOrType" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="SearchRepository" Relationship="MyIdeaModel.FK_RelationshipPhrase_LogicPhrase" FromRole="LogicPhrase" ToRole="SearchRepository" />
-          <NavigationProperty Name="Phrase" Relationship="MyIdeaModel.FKPhrase543572" FromRole="LogicPhrase" ToRole="Phrase" />
-          <NavigationProperty Name="Phrase1" Relationship="MyIdeaModel.FKPhrase614152" FromRole="LogicPhrase" ToRole="Phrase" />
-        </EntityType>
         <EntityType Name="MainLetterTemplate">
           <Key>
             <PropertyRef Name="ID" />
@@ -8508,12 +8715,42 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ParentLogicPhraseID" Type="Int32" />
-          <Property Name="ColumnPhraseID" Type="Int32" />
-          <Property Name="LogicPhraseID" Type="Int32" />
           <Property Name="Type" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="ColumnPhrase" Relationship="MyIdeaModel.FKPhrase552267" FromRole="Phrase" ToRole="ColumnPhrase" />
-          <NavigationProperty Name="LogicPhrase" Relationship="MyIdeaModel.FKPhrase543572" FromRole="Phrase" ToRole="LogicPhrase" />
-          <NavigationProperty Name="LogicPhrase1" Relationship="MyIdeaModel.FKPhrase614152" FromRole="Phrase" ToRole="LogicPhrase" />
+          <NavigationProperty Name="PhraseLogic" Relationship="MyIdeaModel.FK_Phrase_PhraseLogic" FromRole="Phrase" ToRole="PhraseLogic" />
+          <NavigationProperty Name="PhraseColumn" Relationship="MyIdeaModel.FK_PhraseColumn_Phrase" FromRole="Phrase" ToRole="PhraseColumn" />
+        </EntityType>
+        <EntityType Name="PhraseColumn">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ColumnID" Type="Int32" Nullable="false" />
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="false" />
+          <Property Name="Operator" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Column" Relationship="MyIdeaModel.FKColumnPhra124715" FromRole="PhraseColumn" ToRole="Column" />
+          <NavigationProperty Name="Phrase" Relationship="MyIdeaModel.FK_PhraseColumn_Phrase" FromRole="PhraseColumn" ToRole="Phrase" />
+        </EntityType>
+        <EntityType Name="PhraseLogic">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="AndOrType" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="Phrase" Relationship="MyIdeaModel.FK_Phrase_PhraseLogic" FromRole="PhraseLogic" ToRole="Phrase" />
+          <NavigationProperty Name="PhraseRelationship" Relationship="MyIdeaModel.FK_PhraseRelationship_PhraseLogic" FromRole="PhraseLogic" ToRole="PhraseRelationship" />
+          <NavigationProperty Name="SaveAdvancedSearch" Relationship="MyIdeaModel.FK_SaveAdvancedSearch_PhraseLogic" FromRole="PhraseLogic" ToRole="SaveAdvancedSearch" />
+        </EntityType>
+        <EntityType Name="PhraseRelationship">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="SourceRelationID" Type="Int32" />
+          <Property Name="HasNotRelationshipCheck" Type="Boolean" />
+          <Property Name="RelationshipFromCount" Type="Int32" />
+          <Property Name="RelationshipToCount" Type="Int32" />
+          <NavigationProperty Name="PhraseLogic" Relationship="MyIdeaModel.FK_PhraseRelationship_PhraseLogic" FromRole="PhraseRelationship" ToRole="PhraseLogic" />
+          <NavigationProperty Name="Relationship" Relationship="MyIdeaModel.FK_SearchRepository_Relationship" FromRole="PhraseRelationship" ToRole="Relationship" />
         </EntityType>
         <EntityType Name="Relationship">
           <Key>
@@ -8540,10 +8777,10 @@
           <NavigationProperty Name="ArcRelationshipGroup_Relationship" Relationship="MyIdeaModel.FKArcRelatio150451" FromRole="Relationship" ToRole="ArcRelationshipGroup_Relationship" />
           <NavigationProperty Name="DataMenuForViewEntity" Relationship="MyIdeaModel.FK_DataMenuForViewEntity_Relationship" FromRole="Relationship" ToRole="DataMenuForViewEntity" />
           <NavigationProperty Name="FormulaItems" Relationship="MyIdeaModel.FKFormulaIte675108" FromRole="Relationship" ToRole="FormulaItems" />
+          <NavigationProperty Name="PhraseRelationship" Relationship="MyIdeaModel.FK_SearchRepository_Relationship" FromRole="Relationship" ToRole="PhraseRelationship" />
           <NavigationProperty Name="Relationship1" Relationship="MyIdeaModel.FK_Relationship_Relationship" FromRole="Relationship" ToRole="Relationship1" />
           <NavigationProperty Name="Relationship2" Relationship="MyIdeaModel.FK_Relationship_Relationship" FromRole="Relationship1" ToRole="Relationship" />
           <NavigationProperty Name="SecurityObject" Relationship="MyIdeaModel.FK_Relationship_SecurityObject" FromRole="Relationship" ToRole="SecurityObject" />
-          <NavigationProperty Name="SearchRepository" Relationship="MyIdeaModel.FK_SearchRepository_Relationship" FromRole="Relationship" ToRole="SearchRepository" />
           <NavigationProperty Name="UIEnablityDetails" Relationship="MyIdeaModel.FK_UIEnablityDetails_Relationship" FromRole="Relationship" ToRole="UIEnablityDetails" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FKRelationsh250123" FromRole="Relationship" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="TableDrivedEntity1" Relationship="MyIdeaModel.FKRelationsh250124" FromRole="Relationship" ToRole="TableDrivedEntity" />
@@ -8620,24 +8857,75 @@
           <NavigationProperty Name="EntityListReport" Relationship="MyIdeaModel.FKReportGrou456286" FromRole="ReportGroups" ToRole="EntityListReport" />
           <NavigationProperty Name="EntityListViewColumns" Relationship="MyIdeaModel.FKReportGrou631678" FromRole="ReportGroups" ToRole="EntityListViewColumns" />
         </EntityType>
-        <EntityType Name="SearchRepository">
+        <EntityType Name="SaveAdvancedSearch">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="SourceRelationID" Type="Int32" />
-          <Property Name="HasNotRelationshipCheck" Type="Boolean" />
-          <Property Name="RelationshipFromCount" Type="Int32" />
-          <Property Name="RelationshipToCount" Type="Int32" />
-          <Property Name="IsSimpleSearch" Type="Boolean" />
-          <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
+          <Property Name="PhraseLogicID" Type="Int32" Nullable="false" />
+          <Property Name="Temp" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PhraseLogic" Relationship="MyIdeaModel.FK_SaveAdvancedSearch_PhraseLogic" FromRole="SaveAdvancedSearch" ToRole="PhraseLogic" />
+          <NavigationProperty Name="SavedSearchRepository" Relationship="MyIdeaModel.FK_SaveAdvancedSearch_SavedSearchRepository" FromRole="SaveAdvancedSearch" ToRole="SavedSearchRepository" />
+        </EntityType>
+        <EntityType Name="SavedPreDefinedSearch">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="EntitySearchID" Type="Int32" />
-          <Property Name="Title" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EntitySearchableReport" Relationship="MyIdeaModel.FK_EntitySearchableReport_SearchRepository" FromRole="SearchRepository" ToRole="EntitySearchableReport" />
-          <NavigationProperty Name="LogicPhrase" Relationship="MyIdeaModel.FK_RelationshipPhrase_LogicPhrase" FromRole="SearchRepository" ToRole="LogicPhrase" />
-          <NavigationProperty Name="Relationship" Relationship="MyIdeaModel.FK_SearchRepository_Relationship" FromRole="SearchRepository" ToRole="Relationship" />
-          <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FK_SearchRepository_TableDrivedEntity" FromRole="SearchRepository" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FK_SearchRepository_EntitySearch" FromRole="SearchRepository" ToRole="EntitySearch" />
+          <Property Name="QuickSearchValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FK_SavedPreDefinedSearch_EntitySearch" FromRole="SavedPreDefinedSearch" ToRole="EntitySearch" />
+          <NavigationProperty Name="SavedSearchRepository" Relationship="MyIdeaModel.FK_PreDefinedSearch_SavedSearchRepository" FromRole="SavedPreDefinedSearch" ToRole="SavedSearchRepository" />
+          <NavigationProperty Name="SavedPreDefinedSearchRelationship" Relationship="MyIdeaModel.FK_PreDefinedSearchRelationship_PreDefinedSearch" FromRole="SavedPreDefinedSearch" ToRole="SavedPreDefinedSearchRelationship" />
+          <NavigationProperty Name="SavedPreDefinedSearchSimpleColumn" Relationship="MyIdeaModel.FK_PreDefinedSearchSimpleColumn_PreDefinedSearch" FromRole="SavedPreDefinedSearch" ToRole="SavedPreDefinedSearchSimpleColumn" />
+        </EntityType>
+        <EntityType Name="SavedPreDefinedSearchRelationship">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PreDefinedSearchID" Type="Int32" />
+          <Property Name="EntitySearchColumnsID" Type="Int32" />
+          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FK_PreDefinedSearchRelationship_EntitySearchColumns" FromRole="SavedPreDefinedSearchRelationship" ToRole="EntitySearchColumns" />
+          <NavigationProperty Name="SavedPreDefinedSearch" Relationship="MyIdeaModel.FK_PreDefinedSearchRelationship_PreDefinedSearch" FromRole="SavedPreDefinedSearchRelationship" ToRole="SavedPreDefinedSearch" />
+          <NavigationProperty Name="SavedPreDefinedSearchRelationshipData" Relationship="MyIdeaModel.FK_SavedPreDefinedSearchRelationshipData_SavedPreDefinedSearchRelationship" FromRole="SavedPreDefinedSearchRelationship" ToRole="SavedPreDefinedSearchRelationshipData" />
+        </EntityType>
+        <EntityType Name="SavedPreDefinedSearchRelationshipData">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SavedPreDefinedSearchRelationshipID" Type="Int32" Nullable="false" />
+          <Property Name="DataGroup" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="KeyColumnID" Type="Int32" Nullable="false" />
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Column" Relationship="MyIdeaModel.FK_SavedPreDefinedSearchRelationshipData_Column" FromRole="SavedPreDefinedSearchRelationshipData" ToRole="Column" />
+          <NavigationProperty Name="SavedPreDefinedSearchRelationship" Relationship="MyIdeaModel.FK_SavedPreDefinedSearchRelationshipData_SavedPreDefinedSearchRelationship" FromRole="SavedPreDefinedSearchRelationshipData" ToRole="SavedPreDefinedSearchRelationship" />
+        </EntityType>
+        <EntityType Name="SavedPreDefinedSearchSimpleColumn">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PreDefinedSearchID" Type="Int32" Nullable="false" />
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EntitySearchColumnsID" Type="Int32" Nullable="false" />
+          <Property Name="Operator" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FK_PreDefinedSearchSimpleColumn_EntitySearchColumns" FromRole="SavedPreDefinedSearchSimpleColumn" ToRole="EntitySearchColumns" />
+          <NavigationProperty Name="SavedPreDefinedSearch" Relationship="MyIdeaModel.FK_PreDefinedSearchSimpleColumn_PreDefinedSearch" FromRole="SavedPreDefinedSearchSimpleColumn" ToRole="SavedPreDefinedSearch" />
+        </EntityType>
+        <EntityType Name="SavedSearchRepository">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsPreDefinedOrAdvanced" Type="Boolean" Nullable="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EntitySearchableReport" Relationship="MyIdeaModel.FK_EntitySearchableReport_SavedSearchRepository" FromRole="SavedSearchRepository" ToRole="EntitySearchableReport" />
+          <NavigationProperty Name="SaveAdvancedSearch" Relationship="MyIdeaModel.FK_SaveAdvancedSearch_SavedSearchRepository" FromRole="SavedSearchRepository" ToRole="SaveAdvancedSearch" />
+          <NavigationProperty Name="SavedPreDefinedSearch" Relationship="MyIdeaModel.FK_PreDefinedSearch_SavedSearchRepository" FromRole="SavedSearchRepository" ToRole="SavedPreDefinedSearch" />
+          <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FK_SavedSearchRepository_TableDrivedEntity" FromRole="SavedSearchRepository" ToRole="TableDrivedEntity" />
         </EntityType>
         <EntityType Name="StringColumnType">
           <Key>
@@ -8770,6 +9058,7 @@
           <NavigationProperty Name="EntityRelationshipTail1" Relationship="MyIdeaModel.FKEntityRela831147" FromRole="TableDrivedEntity" ToRole="EntityRelationshipTail" />
           <NavigationProperty Name="EntityRelationshipTailDataMenuItems" Relationship="MyIdeaModel.FK_EntityRelationshipTailListViewItems_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="EntityRelationshipTailDataMenuItems" />
           <NavigationProperty Name="EntityReport" Relationship="MyIdeaModel.FKEntityRepo82108" FromRole="TableDrivedEntity" ToRole="EntityReport" />
+          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="EntitySearch" />
           <NavigationProperty Name="EntityUIComposition" Relationship="MyIdeaModel.FKEntityUICo461879" FromRole="TableDrivedEntity" ToRole="EntityUIComposition" />
           <NavigationProperty Name="EntityValidation" Relationship="MyIdeaModel.FKEntityVali365073" FromRole="TableDrivedEntity" ToRole="EntityValidation" />
           <NavigationProperty Name="Formula" Relationship="MyIdeaModel.FKFormula967405" FromRole="TableDrivedEntity" ToRole="Formula" />
@@ -8779,7 +9068,7 @@
           <NavigationProperty Name="NavigationTree" Relationship="MyIdeaModel.FKNavigation155968" FromRole="TableDrivedEntity" ToRole="NavigationTree" />
           <NavigationProperty Name="Relationship" Relationship="MyIdeaModel.FKRelationsh250123" FromRole="TableDrivedEntity" ToRole="Relationship" />
           <NavigationProperty Name="Relationship1" Relationship="MyIdeaModel.FKRelationsh250124" FromRole="TableDrivedEntity" ToRole="Relationship" />
-          <NavigationProperty Name="SearchRepository" Relationship="MyIdeaModel.FK_SearchRepository_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="SearchRepository" />
+          <NavigationProperty Name="SavedSearchRepository" Relationship="MyIdeaModel.FK_SavedSearchRepository_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="SavedSearchRepository" />
           <NavigationProperty Name="SuperToSubRelationshipType" Relationship="MyIdeaModel.FK_TableDrivedEntity_SuperToSubRelationshipType" FromRole="TableDrivedEntity" ToRole="SuperToSubRelationshipType" />
           <NavigationProperty Name="Table" Relationship="MyIdeaModel.FKTableDrive311898" FromRole="TableDrivedEntity" ToRole="Table" />
           <NavigationProperty Name="Process" Relationship="MyIdeaModel.FK_Process_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="Process" />
@@ -8789,7 +9078,6 @@
           <NavigationProperty Name="SecurityObject" Relationship="MyIdeaModel.FKTableDrive36776" FromRole="TableDrivedEntity" ToRole="SecurityObject" />
           <NavigationProperty Name="TableDrivedEntity_Columns" Relationship="MyIdeaModel.FKTableDrive379163" FromRole="TableDrivedEntity" ToRole="TableDrivedEntity_Columns" />
           <NavigationProperty Name="TableDrivedEntityState" Relationship="MyIdeaModel.FKTableDrive764829" FromRole="TableDrivedEntity" ToRole="TableDrivedEntityState" />
-          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="EntitySearch" />
         </EntityType>
         <EntityType Name="TableDrivedEntity_Columns">
           <Key>
@@ -9758,6 +10046,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SavedPreDefinedSearchRelationshipData_Column">
+          <End Type="MyIdeaModel.Column" Role="Column" Multiplicity="1" />
+          <End Type="MyIdeaModel.SavedPreDefinedSearchRelationshipData" Role="SavedPreDefinedSearchRelationshipData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Column">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchRelationshipData">
+              <PropertyRef Name="KeyColumnID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_StringTimeColumnType_Column">
           <End Type="MyIdeaModel.Column" Role="Column" Multiplicity="1" />
           <End Type="MyIdeaModel.TimeColumnType" Role="TimeColumnType" Multiplicity="0..1" />
@@ -9844,12 +10144,12 @@
         </Association>
         <Association Name="FKColumnPhra124715">
           <End Type="MyIdeaModel.Column" Role="Column" Multiplicity="1" />
-          <End Type="MyIdeaModel.ColumnPhrase" Role="ColumnPhrase" Multiplicity="*" />
+          <End Type="MyIdeaModel.PhraseColumn" Role="PhraseColumn" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Column">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="ColumnPhrase">
+            <Dependent Role="PhraseColumn">
               <PropertyRef Name="ColumnID" />
             </Dependent>
           </ReferentialConstraint>
@@ -9898,6 +10198,18 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EntityListViewColumns">
+              <PropertyRef Name="ColumnID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKEntitySear524417">
+          <End Type="MyIdeaModel.Column" Role="Column" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Column">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySearchColumns">
               <PropertyRef Name="ColumnID" />
             </Dependent>
           </ReferentialConstraint>
@@ -9995,18 +10307,6 @@
             </Principal>
             <Dependent Role="ColumnCustomFormula">
               <PropertyRef Name="FormulaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKPhrase552267">
-          <End Type="MyIdeaModel.ColumnPhrase" Role="ColumnPhrase" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.Phrase" Role="Phrase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ColumnPhrase">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Phrase">
-              <PropertyRef Name="ColumnPhraseID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11090,6 +11390,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FKEntitySear748558">
+          <End Type="MyIdeaModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityRelationshipTail">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySearchColumns">
+              <PropertyRef Name="EntityRelationshipTailID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKRelationsh552099">
           <End Type="MyIdeaModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="0..1" />
           <End Type="MyIdeaModel.RelationshipSearchFilter" Role="RelationshipSearchFilter" Multiplicity="*" />
@@ -11174,15 +11486,75 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntitySearchableReport_SearchRepository">
-          <End Type="MyIdeaModel.SearchRepository" Role="SearchRepository" Multiplicity="0..1" />
+        <Association Name="FK_EntitySearch_TableDrivedEntity">
+          <End Type="MyIdeaModel.TableDrivedEntity" Role="TableDrivedEntity" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableDrivedEntity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySearch">
+              <PropertyRef Name="TableDrivedEntityID1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SavedPreDefinedSearch_EntitySearch">
+          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.SavedPreDefinedSearch" Role="SavedPreDefinedSearch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntitySearch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearch">
+              <PropertyRef Name="EntitySearchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKEntitySear726002">
+          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntitySearch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySearchColumns">
+              <PropertyRef Name="EntitySearchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntitySearchableReport_SavedSearchRepository">
+          <End Type="MyIdeaModel.SavedSearchRepository" Role="SavedSearchRepository" Multiplicity="0..1" />
           <End Type="MyIdeaModel.EntitySearchableReport" Role="EntitySearchableReport" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="SearchRepository">
+            <Principal Role="SavedSearchRepository">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EntitySearchableReport">
-              <PropertyRef Name="SearchRepositoryID" />
+              <PropertyRef Name="SavedSearchRepositoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreDefinedSearchRelationship_EntitySearchColumns">
+          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.SavedPreDefinedSearchRelationship" Role="SavedPreDefinedSearchRelationship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntitySearchColumns">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchRelationship">
+              <PropertyRef Name="EntitySearchColumnsID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreDefinedSearchSimpleColumn_EntitySearchColumns">
+          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="1" />
+          <End Type="MyIdeaModel.SavedPreDefinedSearchSimpleColumn" Role="SavedPreDefinedSearchSimpleColumn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntitySearchColumns">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchSimpleColumn">
+              <PropertyRef Name="EntitySearchColumnsID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11594,42 +11966,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_RelationshipPhrase_LogicPhrase">
-          <End Type="MyIdeaModel.LogicPhrase" Role="LogicPhrase" Multiplicity="1" />
-          <End Type="MyIdeaModel.SearchRepository" Role="SearchRepository" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="LogicPhrase">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SearchRepository">
-              <PropertyRef Name="ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKPhrase543572">
-          <End Type="MyIdeaModel.LogicPhrase" Role="LogicPhrase" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.Phrase" Role="Phrase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LogicPhrase">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Phrase">
-              <PropertyRef Name="LogicPhraseID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKPhrase614152">
-          <End Type="MyIdeaModel.LogicPhrase" Role="LogicPhrase" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.Phrase" Role="Phrase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LogicPhrase">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Phrase">
-              <PropertyRef Name="ParentLogicPhraseID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FKManyToOneR998042">
           <End Type="MyIdeaModel.ManyToManyRelationshipType" Role="ManyToManyRelationshipType" Multiplicity="0..1" />
           <End Type="MyIdeaModel.ManyToOneRelationshipType" Role="ManyToOneRelationshipType" Multiplicity="*" />
@@ -11690,6 +12026,66 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Phrase_PhraseLogic">
+          <End Type="MyIdeaModel.PhraseLogic" Role="PhraseLogic" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.Phrase" Role="Phrase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhraseLogic">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Phrase">
+              <PropertyRef Name="ParentLogicPhraseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PhraseColumn_Phrase">
+          <End Type="MyIdeaModel.Phrase" Role="Phrase" Multiplicity="1" />
+          <End Type="MyIdeaModel.PhraseColumn" Role="PhraseColumn" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Phrase">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PhraseColumn">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PhraseRelationship_PhraseLogic">
+          <End Type="MyIdeaModel.PhraseLogic" Role="PhraseLogic" Multiplicity="1" />
+          <End Type="MyIdeaModel.PhraseRelationship" Role="PhraseRelationship" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="PhraseLogic">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PhraseRelationship">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaveAdvancedSearch_PhraseLogic">
+          <End Type="MyIdeaModel.PhraseLogic" Role="PhraseLogic" Multiplicity="1" />
+          <End Type="MyIdeaModel.SaveAdvancedSearch" Role="SaveAdvancedSearch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhraseLogic">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SaveAdvancedSearch">
+              <PropertyRef Name="PhraseLogicID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SearchRepository_Relationship">
+          <End Type="MyIdeaModel.Relationship" Role="Relationship" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.PhraseRelationship" Role="PhraseRelationship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Relationship">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PhraseRelationship">
+              <PropertyRef Name="SourceRelationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Relationship_Relationship">
           <End Type="MyIdeaModel.Relationship" Role="Relationship" Multiplicity="0..1" />
           <End Type="MyIdeaModel.Relationship" Role="Relationship1" Multiplicity="*" />
@@ -11711,18 +12107,6 @@
             </Principal>
             <Dependent Role="Relationship">
               <PropertyRef Name="ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SearchRepository_Relationship">
-          <End Type="MyIdeaModel.Relationship" Role="Relationship" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.SearchRepository" Role="SearchRepository" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Relationship">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SearchRepository">
-              <PropertyRef Name="SourceRelationID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11846,14 +12230,74 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SearchRepository_TableDrivedEntity">
+        <Association Name="FK_SaveAdvancedSearch_SavedSearchRepository">
+          <End Type="MyIdeaModel.SavedSearchRepository" Role="SavedSearchRepository" Multiplicity="1" />
+          <End Type="MyIdeaModel.SaveAdvancedSearch" Role="SaveAdvancedSearch" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="SavedSearchRepository">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SaveAdvancedSearch">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreDefinedSearch_SavedSearchRepository">
+          <End Type="MyIdeaModel.SavedSearchRepository" Role="SavedSearchRepository" Multiplicity="1" />
+          <End Type="MyIdeaModel.SavedPreDefinedSearch" Role="SavedPreDefinedSearch" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="SavedSearchRepository">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearch">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreDefinedSearchRelationship_PreDefinedSearch">
+          <End Type="MyIdeaModel.SavedPreDefinedSearch" Role="SavedPreDefinedSearch" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.SavedPreDefinedSearchRelationship" Role="SavedPreDefinedSearchRelationship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SavedPreDefinedSearch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchRelationship">
+              <PropertyRef Name="PreDefinedSearchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreDefinedSearchSimpleColumn_PreDefinedSearch">
+          <End Type="MyIdeaModel.SavedPreDefinedSearch" Role="SavedPreDefinedSearch" Multiplicity="1" />
+          <End Type="MyIdeaModel.SavedPreDefinedSearchSimpleColumn" Role="SavedPreDefinedSearchSimpleColumn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SavedPreDefinedSearch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchSimpleColumn">
+              <PropertyRef Name="PreDefinedSearchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SavedPreDefinedSearchRelationshipData_SavedPreDefinedSearchRelationship">
+          <End Type="MyIdeaModel.SavedPreDefinedSearchRelationship" Role="SavedPreDefinedSearchRelationship" Multiplicity="1" />
+          <End Type="MyIdeaModel.SavedPreDefinedSearchRelationshipData" Role="SavedPreDefinedSearchRelationshipData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SavedPreDefinedSearchRelationship">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SavedPreDefinedSearchRelationshipData">
+              <PropertyRef Name="SavedPreDefinedSearchRelationshipID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SavedSearchRepository_TableDrivedEntity">
           <End Type="MyIdeaModel.TableDrivedEntity" Role="TableDrivedEntity" Multiplicity="1" />
-          <End Type="MyIdeaModel.SearchRepository" Role="SearchRepository" Multiplicity="*" />
+          <End Type="MyIdeaModel.SavedSearchRepository" Role="SavedSearchRepository" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TableDrivedEntity">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="SearchRepository">
+            <Dependent Role="SavedSearchRepository">
               <PropertyRef Name="TableDrivedEntityID" />
             </Dependent>
           </ReferentialConstraint>
@@ -12534,108 +12978,6 @@
           <End Type="MyIdeaModel.UniqueConstraint" Role="UniqueConstraint" Multiplicity="*" />
           <End Type="MyIdeaModel.Column" Role="Column" Multiplicity="*" />
         </Association>
-        <EntityType Name="EntitySearch">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Title" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="IsDefault" Type="Boolean" />
-          <Property Name="TableDrivedEntityID1" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" FromRole="EntitySearch" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="SearchRepository" Relationship="MyIdeaModel.FK_SearchRepository_EntitySearch" FromRole="EntitySearch" ToRole="SearchRepository" />
-          <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear726002" FromRole="EntitySearch" ToRole="EntitySearchColumns" />
-        </EntityType>
-        <EntityType Name="EntitySearchColumns">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EntitySearchID" Type="Int32" Nullable="false" />
-          <Property Name="ColumnID" Type="Int32" />
-          <Property Name="EntityRelationshipTailID" Type="Int32" />
-          <Property Name="OrderID" Type="Int16" />
-          <Property Name="Alias" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="RelationshipTailSelectable" Type="Boolean" Nullable="false" />
-          <Property Name="Tooltip" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" />
-          <Property Name="ExcludeInGeneralSearch" Type="Boolean" />
-          <NavigationProperty Name="Column" Relationship="MyIdeaModel.FKEntitySear524417" FromRole="EntitySearchColumns" ToRole="Column" />
-          <NavigationProperty Name="ColumnPhrase" Relationship="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns" FromRole="EntitySearchColumns" ToRole="ColumnPhrase" />
-          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyIdeaModel.FKEntitySear748558" FromRole="EntitySearchColumns" ToRole="EntityRelationshipTail" />
-          <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FKEntitySear726002" FromRole="EntitySearchColumns" ToRole="EntitySearch" />
-        </EntityType>
-        <Association Name="FKEntitySear524417">
-          <End Type="MyIdeaModel.Column" Role="Column" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Column">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySearchColumns">
-              <PropertyRef Name="ColumnID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ColumnPhrase_EntitySearchColumns">
-          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.ColumnPhrase" Role="ColumnPhrase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySearchColumns">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ColumnPhrase">
-              <PropertyRef Name="EntitySearchColumnsID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKEntitySear748558">
-          <End Type="MyIdeaModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySearchColumns">
-              <PropertyRef Name="EntityRelationshipTailID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntitySearch_TableDrivedEntity">
-          <End Type="MyIdeaModel.TableDrivedEntity" Role="TableDrivedEntity" Multiplicity="1" />
-          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntity">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySearch">
-              <PropertyRef Name="TableDrivedEntityID1" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SearchRepository_EntitySearch">
-          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.SearchRepository" Role="SearchRepository" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySearch">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SearchRepository">
-              <PropertyRef Name="EntitySearchID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKEntitySear726002">
-          <End Type="MyIdeaModel.EntitySearch" Role="EntitySearch" Multiplicity="1" />
-          <End Type="MyIdeaModel.EntitySearchColumns" Role="EntitySearchColumns" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntitySearch">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySearchColumns">
-              <PropertyRef Name="EntitySearchID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -12818,17 +13160,6 @@
                 <ScalarProperty Name="OnlyOnNewData" ColumnName="OnlyOnNewData" />
                 <ScalarProperty Name="CalculateFormulaAsDefault" ColumnName="CalculateFormulaAsDefault" />
                 <ScalarProperty Name="FormulaID" ColumnName="FormulaID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ColumnPhrase">
-            <EntityTypeMapping TypeName="MyIdeaModel.ColumnPhrase">
-              <MappingFragment StoreEntitySet="ColumnPhrase">
-                <ScalarProperty Name="EntitySearchColumnsID" ColumnName="EntitySearchColumnsID" />
-                <ScalarProperty Name="Operator" ColumnName="Operator" />
-                <ScalarProperty Name="Value" ColumnName="Value" />
-                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -13280,11 +13611,36 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="EntitySearch">
+            <EntityTypeMapping TypeName="MyIdeaModel.EntitySearch">
+              <MappingFragment StoreEntitySet="EntitySearch">
+                <ScalarProperty Name="TableDrivedEntityID1" ColumnName="TableDrivedEntityID1" />
+                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="EntitySearchableReport">
             <EntityTypeMapping TypeName="MyIdeaModel.EntitySearchableReport">
               <MappingFragment StoreEntitySet="EntitySearchableReport">
-                <ScalarProperty Name="SearchRepositoryID" ColumnName="SearchRepositoryID" />
+                <ScalarProperty Name="SavedSearchRepositoryID" ColumnName="SavedSearchRepositoryID" />
                 <ScalarProperty Name="SearchableReportType" ColumnName="SearchableReportType" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntitySearchColumns">
+            <EntityTypeMapping TypeName="MyIdeaModel.EntitySearchColumns">
+              <MappingFragment StoreEntitySet="EntitySearchColumns">
+                <ScalarProperty Name="ExcludeInGeneralSearch" ColumnName="ExcludeInGeneralSearch" />
+                <ScalarProperty Name="Tooltip" ColumnName="Tooltip" />
+                <ScalarProperty Name="RelationshipTailSelectable" ColumnName="RelationshipTailSelectable" />
+                <ScalarProperty Name="Alias" ColumnName="Alias" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
+                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
+                <ScalarProperty Name="EntitySearchID" ColumnName="EntitySearchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -13500,14 +13856,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="LogicPhrase">
-            <EntityTypeMapping TypeName="MyIdeaModel.LogicPhrase">
-              <MappingFragment StoreEntitySet="LogicPhrase">
-                <ScalarProperty Name="AndOrType" ColumnName="AndOrType" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MainLetterTemplate">
             <EntityTypeMapping TypeName="MyIdeaModel.MainLetterTemplate">
               <MappingFragment StoreEntitySet="MainLetterTemplate">
@@ -13580,9 +13928,36 @@
             <EntityTypeMapping TypeName="MyIdeaModel.Phrase">
               <MappingFragment StoreEntitySet="Phrase">
                 <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="LogicPhraseID" ColumnName="LogicPhraseID" />
-                <ScalarProperty Name="ColumnPhraseID" ColumnName="ColumnPhraseID" />
                 <ScalarProperty Name="ParentLogicPhraseID" ColumnName="ParentLogicPhraseID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhraseColumn">
+            <EntityTypeMapping TypeName="MyIdeaModel.PhraseColumn">
+              <MappingFragment StoreEntitySet="PhraseColumn">
+                <ScalarProperty Name="Operator" ColumnName="Operator" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhraseLogic">
+            <EntityTypeMapping TypeName="MyIdeaModel.PhraseLogic">
+              <MappingFragment StoreEntitySet="PhraseLogic">
+                <ScalarProperty Name="AndOrType" ColumnName="AndOrType" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhraseRelationship">
+            <EntityTypeMapping TypeName="MyIdeaModel.PhraseRelationship">
+              <MappingFragment StoreEntitySet="PhraseRelationship">
+                <ScalarProperty Name="RelationshipToCount" ColumnName="RelationshipToCount" />
+                <ScalarProperty Name="RelationshipFromCount" ColumnName="RelationshipFromCount" />
+                <ScalarProperty Name="HasNotRelationshipCheck" ColumnName="HasNotRelationshipCheck" />
+                <ScalarProperty Name="SourceRelationID" ColumnName="SourceRelationID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -13665,17 +14040,61 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="SearchRepository">
-            <EntityTypeMapping TypeName="MyIdeaModel.SearchRepository">
-              <MappingFragment StoreEntitySet="SearchRepository">
-                <ScalarProperty Name="Title" ColumnName="Title" />
+          <EntitySetMapping Name="SaveAdvancedSearch">
+            <EntityTypeMapping TypeName="MyIdeaModel.SaveAdvancedSearch">
+              <MappingFragment StoreEntitySet="SaveAdvancedSearch">
+                <ScalarProperty Name="Temp" ColumnName="Temp" />
+                <ScalarProperty Name="PhraseLogicID" ColumnName="PhraseLogicID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SavedPreDefinedSearch">
+            <EntityTypeMapping TypeName="MyIdeaModel.SavedPreDefinedSearch">
+              <MappingFragment StoreEntitySet="SavedPreDefinedSearch">
+                <ScalarProperty Name="QuickSearchValue" ColumnName="QuickSearchValue" />
                 <ScalarProperty Name="EntitySearchID" ColumnName="EntitySearchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SavedPreDefinedSearchRelationship">
+            <EntityTypeMapping TypeName="MyIdeaModel.SavedPreDefinedSearchRelationship">
+              <MappingFragment StoreEntitySet="SavedPreDefinedSearchRelationship">
+                <ScalarProperty Name="EntitySearchColumnsID" ColumnName="EntitySearchColumnsID" />
+                <ScalarProperty Name="PreDefinedSearchID" ColumnName="PreDefinedSearchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SavedPreDefinedSearchRelationshipData">
+            <EntityTypeMapping TypeName="MyIdeaModel.SavedPreDefinedSearchRelationshipData">
+              <MappingFragment StoreEntitySet="SavedPreDefinedSearchRelationshipData">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="KeyColumnID" ColumnName="KeyColumnID" />
+                <ScalarProperty Name="DataGroup" ColumnName="DataGroup" />
+                <ScalarProperty Name="SavedPreDefinedSearchRelationshipID" ColumnName="SavedPreDefinedSearchRelationshipID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SavedPreDefinedSearchSimpleColumn">
+            <EntityTypeMapping TypeName="MyIdeaModel.SavedPreDefinedSearchSimpleColumn">
+              <MappingFragment StoreEntitySet="SavedPreDefinedSearchSimpleColumn">
+                <ScalarProperty Name="Operator" ColumnName="Operator" />
+                <ScalarProperty Name="EntitySearchColumnsID" ColumnName="EntitySearchColumnsID" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="PreDefinedSearchID" ColumnName="PreDefinedSearchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SavedSearchRepository">
+            <EntityTypeMapping TypeName="MyIdeaModel.SavedSearchRepository">
+              <MappingFragment StoreEntitySet="SavedSearchRepository">
                 <ScalarProperty Name="TableDrivedEntityID" ColumnName="TableDrivedEntityID" />
-                <ScalarProperty Name="IsSimpleSearch" ColumnName="IsSimpleSearch" />
-                <ScalarProperty Name="RelationshipToCount" ColumnName="RelationshipToCount" />
-                <ScalarProperty Name="RelationshipFromCount" ColumnName="RelationshipFromCount" />
-                <ScalarProperty Name="HasNotRelationshipCheck" ColumnName="HasNotRelationshipCheck" />
-                <ScalarProperty Name="SourceRelationID" ColumnName="SourceRelationID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="IsPreDefinedOrAdvanced" ColumnName="IsPreDefinedOrAdvanced" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -14195,31 +14614,6 @@
               <ScalarProperty Name="ID" ColumnName="UniqueConstraintID" />
             </EndProperty>
           </AssociationSetMapping>
-          <EntitySetMapping Name="EntitySearch">
-            <EntityTypeMapping TypeName="MyIdeaModel.EntitySearch">
-              <MappingFragment StoreEntitySet="EntitySearch">
-                <ScalarProperty Name="TableDrivedEntityID1" ColumnName="TableDrivedEntityID1" />
-                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EntitySearchColumns">
-            <EntityTypeMapping TypeName="MyIdeaModel.EntitySearchColumns">
-              <MappingFragment StoreEntitySet="EntitySearchColumns">
-                <ScalarProperty Name="ExcludeInGeneralSearch" ColumnName="ExcludeInGeneralSearch" />
-                <ScalarProperty Name="Tooltip" ColumnName="Tooltip" />
-                <ScalarProperty Name="RelationshipTailSelectable" ColumnName="RelationshipTailSelectable" />
-                <ScalarProperty Name="Alias" ColumnName="Alias" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
-                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
-                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
-                <ScalarProperty Name="EntitySearchID" ColumnName="EntitySearchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

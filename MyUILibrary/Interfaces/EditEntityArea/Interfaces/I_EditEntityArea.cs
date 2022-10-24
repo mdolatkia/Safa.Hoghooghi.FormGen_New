@@ -46,10 +46,11 @@ namespace MyUILibrary.EntityArea
         void ShowDataFromExternalSource(DP_BaseData dataRepository = null);
         void ShowDataFromExternalSource(List<DP_BaseData> specificDate);
         void GenerateUIControlsByCompositionDTO(EntityUICompositionDTO UICompositions);
+        void ShowTemproraryUIViewArea(I_View_TemporaryView view);
         EditEntityAreaInitializer AreaInitializer { get; set; }
         List<RelationshipColumnControlGeneral> RelationshipColumnControls { get; }
         List<SimpleColumnControlGenerel> SimpleColumnControls { get; }
-        I_View_TemporaryView LastTemporaryView { set; get; }
+        //     I_View_TemporaryView LastTemporaryView { set; get; }
         UpdateResult UpdateDataAndValidate(List<DP_FormDataRepository> datas);
         void UpdateData(List<DP_FormDataRepository> datas);
         bool ValidateData(List<DP_FormDataRepository> datas);
@@ -60,19 +61,20 @@ namespace MyUILibrary.EntityArea
         ChildRelationshipInfo ChildRelationshipInfoBinded { get; set; }
 
         I_SearchEntityArea SearchEntityArea { get; set; }
-        I_ViewEntityArea ViewEntityArea { get; set; }
+        I_ViewEntityArea ViewEntityArea { get; }
 
-        event EventHandler<DataSelectedEventArg> DataSelected;
-        I_View_SearchViewEntityArea SearchAndView_View { set; get; }
+        //   event EventHandler<DataSelectedEventArg> DataSelected;
+        I_View_SearchViewEntityArea ViewForSearchAndView { set; get; }
         void CheckSearchInitially();
         List<RelationshipFilterDTO> RelationshipFilters { set; get; }
         void SearchInitialy();
         bool SearchInitialyDone { get; set; }
-        void SearchConfirmed(DP_SearchRepository searchItems, bool select);
+        void SearchConfirmed(DP_SearchRepositoryMain searchItems, bool select);
         void ShowSearchView(bool fromDataView);
         void SelectFromParent(bool isCalledFromDataView, RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues);
-     //   void SearchTextBox(string text);
-        void RemoveViewEntityAreaView();
+        void SelectData(List<Dictionary<int, object>> items);
+        //   void SearchTextBox(string text);
+        // void RemoveViewEntityAreaView();
 
     }
     public enum ImposeControlState
@@ -172,8 +174,8 @@ namespace MyUILibrary.EntityArea
         //    I_View_EditEntityAreaMultiple SpecializedDataView { get; }
         I_View_EditEntityAreaMultiple DataView { get; set; }
 
-     //   object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControlMultiple typePropertyControl);
-    //    bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, string value);
+        //   object FetchTypePropertyControlValue(DP_FormDataRepository dataRepository, SimpleColumnControlMultiple typePropertyControl);
+        //    bool ShowTypePropertyControlValue(DP_FormDataRepository dataItem, SimpleColumnControlMultiple typePropertyControl, string value);
         List<DP_FormDataRepository> GetSelectedData();
     }
 

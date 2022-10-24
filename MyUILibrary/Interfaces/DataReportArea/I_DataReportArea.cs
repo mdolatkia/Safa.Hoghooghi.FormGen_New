@@ -15,7 +15,7 @@ namespace MyUILibraryInterfaces.DataReportArea
         DataListReportAreaContainerInitializer AreaInitializer { set; get; }
         void SetAreaInitializer(DataListReportAreaContainerInitializer initParam);
         I_SearchEntityArea SearchEntityArea { set; get; }
-        DP_SearchRepository SearchRepository { set; get; }
+        DP_SearchRepositoryMain SearchRepository { set; get; }
         List<I_DataListReportArea> DataListReportAreas { set; get; }
     }
     public interface I_DataListReportArea
@@ -78,19 +78,19 @@ namespace MyUILibraryInterfaces.DataReportArea
         public EntityRelationshipTailDTO CausingRelationshipTail { set; get; }
         public int EntitiyID { set; get; }
         //public TableDrivedEntityDTO Entitiy { set; get; }
-        public DP_SearchRepository SearchRepository { set; get; }
+        public DP_SearchRepositoryMain SearchRepository { set; get; }
     }
     public class DataListReportAreaContainerInitializer
     {
         public string Title { set; get; }
         public int EntitiyID { set; get; }
-        public DP_SearchRepository SearchRepository { set; get; }
+        public DP_SearchRepositoryMain SearchRepository { set; get; }
     }
     public class DataReportAreaRequestedArg : EventArgs
     {
         public MyDataObject SourceDataReportItem { set; get; }
         public string Title { set; get; }
-        public DP_SearchRepository SearchRepository { set; get; }
+        public DP_SearchRepositoryMain SearchRepository { set; get; }
 
         public RelationshipDTO Relationship { set; get; }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }

@@ -40,13 +40,13 @@ namespace MyDataManagerService
 
      
 
-        //public DP_SearchRepository GetSearchDataItemByRelationship(RelationshipSreachType searchType, DP_DataView dataView, int relationshipID)
+        //public DP_SearchRepositoryMain GetSearchDataItemByRelationship(RelationshipSreachType searchType, DP_DataView dataView, int relationshipID)
         //{//firstSideDataItem باید داری فیلد های کلید اصلی باشد
            
         //    return relationshipDataManager.GetSearchDataItemByRelationship(searchType, dataRepository, relationshipID);
         //}
 
-        //public DP_SearchRepository GetSearchDataItemByRelationship(RelationshipSreachType searchType, DP_DataRepository dataItem, int relationshipID)
+        //public DP_SearchRepositoryMain GetSearchDataItemByRelationship(RelationshipSreachType searchType, DP_DataRepository dataItem, int relationshipID)
         //{//firstSideDataItem باید داری فیلد های کلید اصلی باشد
         //    RelationshipDataManager relationshipDataManager = new RelationshipDataManager();
         //    return relationshipDataManager.GetSearchDataItemByRelationship(searchType, dataItem, relationshipID);

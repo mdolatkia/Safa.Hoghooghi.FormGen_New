@@ -33,6 +33,7 @@ namespace DataAccess
             this.EntityRelationshipTail1 = new HashSet<EntityRelationshipTail>();
             this.EntityRelationshipTailDataMenuItems = new HashSet<EntityRelationshipTailDataMenuItems>();
             this.EntityReport = new HashSet<EntityReport>();
+            this.EntitySearch = new HashSet<EntitySearch>();
             this.EntityUIComposition = new HashSet<EntityUIComposition>();
             this.EntityValidation = new HashSet<EntityValidation>();
             this.Formula = new HashSet<Formula>();
@@ -41,14 +42,13 @@ namespace DataAccess
             this.NavigationTree = new HashSet<NavigationTree>();
             this.Relationship = new HashSet<Relationship>();
             this.Relationship1 = new HashSet<Relationship>();
-            this.SearchRepository = new HashSet<SearchRepository>();
+            this.SavedSearchRepository = new HashSet<SavedSearchRepository>();
             this.Process = new HashSet<Process>();
             this.TableDrivedEntity_EntityCommand = new HashSet<TableDrivedEntity_EntityCommand>();
             this.UIActionActivity = new HashSet<UIActionActivity>();
             this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
             this.TableDrivedEntity_Columns = new HashSet<TableDrivedEntity_Columns>();
             this.TableDrivedEntityState = new HashSet<TableDrivedEntityState>();
-            this.EntitySearch = new HashSet<EntitySearch>();
         }
     
         public int ID { get; set; }
@@ -112,6 +112,8 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityReport> EntityReport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntitySearch> EntitySearch { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityUIComposition> EntityUIComposition { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityValidation> EntityValidation { get; set; }
@@ -129,7 +131,7 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Relationship> Relationship1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SearchRepository> SearchRepository { get; set; }
+        public virtual ICollection<SavedSearchRepository> SavedSearchRepository { get; set; }
         public virtual SuperToSubRelationshipType SuperToSubRelationshipType { get; set; }
         public virtual Table Table { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -145,7 +147,5 @@ namespace DataAccess
         public virtual ICollection<TableDrivedEntity_Columns> TableDrivedEntity_Columns { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TableDrivedEntityState> TableDrivedEntityState { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntitySearch> EntitySearch { get; set; }
     }
 }

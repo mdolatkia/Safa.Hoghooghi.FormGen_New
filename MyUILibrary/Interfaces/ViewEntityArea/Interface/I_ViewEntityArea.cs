@@ -11,13 +11,15 @@ namespace MyUILibrary.EntityArea
         event EventHandler<DataViewDataSelectedEventArg> DataSelected;
         ViewEntityAreaInitializer ViewInitializer { set; get; }
         List<SimpleViewColumnControl> ViewColumnControls { set; get; }
-        I_View_ViewEntityArea ViewView { set; get; }
+        I_View_ViewEntityArea ViewForViewEntityArea { set; get; }
         EntityListViewDTO EntityListView { get; }
         List<I_ViewAreaCommand> ViewCommands
         {
             get;
             set;
         }
+        I_View_TemporaryView LastTemporaryView { get; set; }
+
         void ClearSelectedData();
         List<DP_DataView> GetSelectedData();
         void AddData(List<DP_DataView> data, bool show);

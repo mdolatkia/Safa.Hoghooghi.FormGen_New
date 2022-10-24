@@ -13,22 +13,22 @@ namespace MyUILibrary.EntityArea
     }
     public interface I_SearchEntityArea : I_BaseSearchEntityArea
     {
-        void OnSearchDataDefined(DP_SearchRepository logicPhrase);
-        DP_SearchRepository LastSearch { set; get; }
+        void OnSearchDataDefined(DP_SearchRepositoryMain logicPhrase);
+        DP_SearchRepositoryMain LastSearch { set; get; }
 
         event EventHandler<SearchDataArg> SearchDataDefined;
         I_View_SearchEntityArea SearchView { set; get; }
         I_EntityDefinedSearchArea SimpleSearchEntityArea { set; get; }
         I_AdvancedSearchEntityArea AdvancedSearchEntityAre { set; get; }
         bool IsSimpleSearchActiveOrAdvancedSearch { get; }
-        void ShowSearchRepository(DP_SearchRepository searchRepository);
+        //     void ShowSearchRepository(DP_SearchRepositoryMain searchRepository);
 
     }
     public interface I_AdvancedAndRawSearchEntityArea : I_BaseSearchEntityArea
     {
         //باید از این ایونت استفاده شود بجای کار با متغیر های داخلی مانندRawSearchEntityArea 
         //بهتر است در اینشیالایزر رابطه گنجانده شود و به هنگام بازگرداندن 
-        //DP_SearchRepository
+        //DP_SearchRepositoryMain
         //در صورت وجود رابطه مقادیر سورس ریلیشن و .. ست وشود
 
         event EventHandler<SearchDataArg> SearchDataDefined;
@@ -41,11 +41,13 @@ namespace MyUILibrary.EntityArea
     public interface I_EntityDefinedSearchArea : I_BaseSearchEntityArea
     {
         EntitySearchDTO EntitySearchDTO { get; }
-        void OnSearchDataDefined(DP_SearchRepository logicPhrase);
-        DP_SearchRepository GetSearchRepository();
-        bool ShowSearchRepository(DP_SearchRepository item);
-        DP_SearchRepository GetQuickSearchLogicPhrase(string text);
+        void OnSearchDataDefined(DP_SearchRepositoryMain logicPhrase);
+        DP_SearchRepositoryMain GetSearchRepository();
+        void ShowPreDefinedSearch(PreDefinedSearchDTO preDefinedSearch);
+
         event EventHandler<SearchDataArg> SearchDataDefined;
+
+        PreDefinedSearchDTO GetSearchRepositoryForSave();
         //List<I_Command> SearchCommands
         //{
         //    get;
@@ -66,7 +68,7 @@ namespace MyUILibrary.EntityArea
         }
 
         //  bool PreDefinedSearchIsApplicable(EntityPreDefinedSearchDTO message);
-  //      bool ApplyPreDefinedSearch(EntityPreDefinedSearchDTO message);
+        //      bool ApplyPreDefinedSearch(EntityPreDefinedSearchDTO message);
         //List<PreDefinedSearchColumns> GetSearchColumns();
     }
     public interface I_RawSearchEntityArea : I_BaseSearchEntityArea
@@ -90,11 +92,11 @@ namespace MyUILibrary.EntityArea
     }
     public interface I_AdvancedSearchEntityArea : I_BaseSearchEntityArea
     {
-        void OnSearchDataDefined(DP_SearchRepository logicPhrase);
-        DP_SearchRepository GetSearchRepository();
+        void OnSearchDataDefined(DP_SearchRepositoryMain logicPhrase);
+        DP_SearchRepositoryMain GetSearchRepository();
 
-        bool ShowSearchRepository(DP_SearchRepository item);
-      //  void ApplyPreDefinedSearch(EntityPreDefinedSearchDTO message);
+        bool ShowSearchRepository(DP_SearchRepositoryMain item);
+        //  void ApplyPreDefinedSearch(EntityPreDefinedSearchDTO message);
 
         event EventHandler<SearchDataArg> SearchDataDefined;
         List<I_Command> SearchCommands
@@ -134,7 +136,7 @@ namespace MyUILibrary.EntityArea
 
         public I_RelationshipControlManagerOne ControlManager { get; set; }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }
-    
+
         //public bool IsFake { set; get; }
         //public SearchEnumerableType SearchEnumerableType { get; set; }
 
@@ -194,7 +196,7 @@ namespace MyUILibrary.EntityArea
     //{
     //    public SearchAreaRelationSource()
     //    {
-    //        //RelationData = new List<DP_SearchRepository>();
+    //        //RelationData = new List<DP_SearchRepositoryMain>();
     //        //SourceRelationColumns = new List<ColumnDTO>();
     //        //RelationshipColumns = new List<RelationshipColumnDTO>();
     //    }
@@ -220,7 +222,7 @@ namespace MyUILibrary.EntityArea
     //        }
     //    }
     //    public I_SearchEntityArea SourceSearchArea { set; get; }
-    //    public DP_SearchRepository RelatedData { set; get; }
+    //    public DP_SearchRepositoryMain RelatedData { set; get; }
 
     //    public bool TargetSideIsMandatory { set; get; }
 
@@ -230,7 +232,7 @@ namespace MyUILibrary.EntityArea
 
     public class SearchDataArg : EventArgs
     {
-        public DP_SearchRepository SearchItems
+        public DP_SearchRepositoryMain SearchItems
         {
             get;
             set;

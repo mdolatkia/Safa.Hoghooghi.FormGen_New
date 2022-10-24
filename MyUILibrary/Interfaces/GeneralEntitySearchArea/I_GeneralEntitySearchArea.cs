@@ -40,7 +40,7 @@ namespace MyUILibraryInterfaces.EntityArea
         public bool LockEntitySelector { get; set; }
 
        public object ExternalView { get; set; }
-        public DP_SearchRepository PreDefinedSearch { get; set; }
+        public DP_SearchRepositoryMain PreDefinedSearch { get; set; }
         public List<SecurityAction> SpecificActions { get; set; }
     }
 }

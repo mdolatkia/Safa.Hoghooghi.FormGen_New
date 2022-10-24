@@ -13,7 +13,7 @@ namespace MyExternalReportLibrary
 {
     public class MyExternalReportHandler
     {
-        public long GetExternalReportKey(DR_Requester requester, int reportID, int entityID, DP_SearchRepository searchItem)
+        public long GetExternalReportKey(DR_Requester requester, int reportID, int entityID, DP_SearchRepositoryMain searchItem)
         {
             BizEntityExternalReport bizEntityExternalReport = new BizEntityExternalReport();
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();

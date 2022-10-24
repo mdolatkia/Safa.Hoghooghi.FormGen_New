@@ -114,7 +114,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var dbColumn = GetColumn(columnID);
+                var dbColumn = GetColumn(projectContext, columnID);
                 if (dbColumn.ColumnCustomFormula == null)
                     return null;
                 else
@@ -126,7 +126,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var dbColumn = GetColumn(columnID);
+                var dbColumn = GetColumn(projectContext, columnID);
 
 
                 if (dbColumn.ColumnCustomFormula == null)
@@ -139,7 +139,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var dbColumn = GetColumn(columnID);
+                var dbColumn = GetColumn(projectContext, columnID);
 
 
                 if (dbColumn.ColumnCustomFormula == null)
@@ -187,7 +187,7 @@ namespace MyModelManager
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var column = GetColumn(columnID);
+                var column = GetColumn(projectContext, columnID);
                 return ToColumnDTO(column, simple);
             }
         }
@@ -197,7 +197,7 @@ namespace MyModelManager
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var column = GetColumn(columnID);
+                var column = GetColumn(projectContext,columnID);
                 if (column.StringColumnType != null)
                     return ToStringColumTypeDTO(column.StringColumnType);
             }
@@ -230,7 +230,7 @@ namespace MyModelManager
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var column = GetColumn(columnID);
+                var column = GetColumn(projectContext, columnID);
                 if (column.NumericColumnType != null)
                     return ToNumericColumTypeDTO(column.NumericColumnType);
             }
@@ -256,7 +256,7 @@ namespace MyModelManager
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var column = GetColumn(columnID);
+                var column = GetColumn(projectContext, columnID);
                 if (column.DateColumnType != null)
                     return ToDateColumTypeDTO(column.DateColumnType, true);
             }
@@ -312,7 +312,7 @@ namespace MyModelManager
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var column = GetColumn(columnID);
+                var column = GetColumn(projectContext, columnID);
                 if (column.TimeColumnType != null)
                     return ToTimeColumTypeDTO(column.TimeColumnType, true);
             }
@@ -360,7 +360,7 @@ namespace MyModelManager
             ColumnDTO result = new ColumnDTO();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var column = GetColumn(columnID);
+                var column = GetColumn(projectContext, columnID);
                 if (column.DateTimeColumnType != null)
                     return ToDateTimeColumTypeDTO(column.DateTimeColumnType, true);
             }
@@ -545,14 +545,13 @@ namespace MyModelManager
                 return columns;
             }
         }
-        private Column GetColumn(int columnID)
+        private Column GetColumn(MyIdeaEntities projectContext,int columnID)
         {
-            using (var projectContext = new DataAccess.MyIdeaEntities())
-            {
-                BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+            
+                //BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
 
                 return projectContext.Column.FirstOrDefault(x => x.ID == columnID && x.Removed == false && x.IsDisabled == false);
-            }
+          
         }
         public List<ColumnDTO> GetAllColumnsDTO(int entityID, bool simple, bool evenDisabled)
         {
@@ -842,7 +841,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var dbColumn = GetColumn(columnID);
+                var dbColumn = GetColumn(projectContext, columnID);
                 return DataIsAccessable(requester, dbColumn);
             }
         }
@@ -872,7 +871,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var dbColumn = GetColumn(columnID);
+                var dbColumn = GetColumn(projectContext, columnID);
                 return DataIsReadonly(requester, dbColumn);
             }
         }

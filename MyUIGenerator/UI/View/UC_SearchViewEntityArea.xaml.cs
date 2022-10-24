@@ -34,16 +34,25 @@ namespace MyUIGenerator.View
         {
             InitializeComponent();
             //if (AgentHelper.GetAppMode() != AppMode.Paper)
-                FlowDirection = System.Windows.FlowDirection.RightToLeft;
+            FlowDirection = System.Windows.FlowDirection.RightToLeft;
         }
 
         public bool HaseViewAreaView
         {
             get
             {
-              return  grdViewArea.Children.Count != 0;
+                return grdViewArea.Children.Count != 0;
             }
         }
+        public bool HasSearchAreaView
+        {
+            get
+            {
+                return grdSearchArea.Children.Count != 0;
+            }
+        }
+
+        public I_View_TemporaryView LastTemporaryView { set; get; }
 
         public void AddSearchAreaView(I_View_SearchEntityArea view)
         {

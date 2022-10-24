@@ -5,13 +5,13 @@ namespace ProxyLibrary
 {
     public class DR_SearchViewRequest : BaseRequest
     {
-        public DR_SearchViewRequest(DR_Requester Requester, DP_SearchRepository searchDataItems) : base(Requester)
+        public DR_SearchViewRequest(DR_Requester Requester, DP_SearchRepositoryMain searchDataItems) : base(Requester)
         {
             SearchDataItems = searchDataItems;
             //  
         }
       //  public bool CheckStates { set; get; }
-        public DP_SearchRepository SearchDataItems;
+        public DP_SearchRepositoryMain SearchDataItems;
         //public int EntityID;
         public int EntityViewID { set; get; }
         public int OrderByEntityViewColumnID { set; get; }
@@ -22,7 +22,7 @@ namespace ProxyLibrary
 
     public class DR_SearchEditViewRequest : DR_SearchViewRequest
     {
-        public DR_SearchEditViewRequest(DR_Requester Requester, DP_SearchRepository searchDataItems, int toParentRelationshipID) : base(Requester, searchDataItems)
+        public DR_SearchEditViewRequest(DR_Requester Requester, DP_SearchRepositoryMain searchDataItems, int toParentRelationshipID) : base(Requester, searchDataItems)
         {
             ToParentRelationshipID = toParentRelationshipID;
             //  
@@ -46,7 +46,7 @@ namespace ProxyLibrary
         {
             //
         }
-        public DP_SearchRepository SearchDataItems;
+        public DP_SearchRepositoryMain SearchDataItems;
         public int EntityID;
     }
     public class DR_SearchCountRequest : BaseRequest
@@ -55,7 +55,7 @@ namespace ProxyLibrary
         {
 
         }
-        public DP_SearchRepository SearchDataItems;
+        public DP_SearchRepositoryMain SearchDataItems;
         public int EntityID;
     }
     //public class DR_SearchByRelationViewRequest : BaseRequest
@@ -70,7 +70,7 @@ namespace ProxyLibrary
 
     public class DR_SearchEditRequest : BaseRequest
     {
-        public DR_SearchEditRequest(DR_Requester Requester, DP_SearchRepository searchDataItem) : base(Requester)
+        public DR_SearchEditRequest(DR_Requester Requester, DP_SearchRepositoryMain searchDataItem) : base(Requester)
         {
             SearchDataItem = searchDataItem;
             //CheckStates = checkStates;
@@ -90,12 +90,12 @@ namespace ProxyLibrary
 
         //    //Properties = new List<List<EntityInstanceProperty>>();
         //}
-        public DP_SearchRepository SearchDataItem;
+        public DP_SearchRepositoryMain SearchDataItem;
 
     }
     public class DR_SearchFullDataRequest : BaseRequest
     {
-        public DR_SearchFullDataRequest(DR_Requester Requester, DP_SearchRepository searchDataItem) : base(Requester)
+        public DR_SearchFullDataRequest(DR_Requester Requester, DP_SearchRepositoryMain searchDataItem) : base(Requester)
         {
 
             SearchDataItem = searchDataItem;
@@ -105,17 +105,17 @@ namespace ProxyLibrary
 
         //    //Properties = new List<List<EntityInstanceProperty>>();
         //}
-        public DP_SearchRepository SearchDataItem;
+        public DP_SearchRepositoryMain SearchDataItem;
 
     }
     public class DR_SearchKeysOnlyRequest : BaseRequest
     {
-        public DR_SearchKeysOnlyRequest(DR_Requester Requester, DP_SearchRepository searchDataItem) : base(Requester)
+        public DR_SearchKeysOnlyRequest(DR_Requester Requester, DP_SearchRepositoryMain searchDataItem) : base(Requester)
         {
 
             SearchDataItem = searchDataItem;
         }
-        public DP_SearchRepository SearchDataItem;
+        public DP_SearchRepositoryMain SearchDataItem;
     }
     //بهتره این حذف شه. یعنی ابتدا مثل خیلی از جاها سرچ آیتم ساخته شه و بعد بر حسب نیاز هر کدوم از جستجو ها صدا زده بشه
     //public class DR_SearchByRelationshipTailRequest : BaseRequest

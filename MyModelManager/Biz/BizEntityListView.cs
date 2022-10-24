@@ -88,7 +88,7 @@ namespace MyModelManager
             }
 
             List<EntityListViewColumnsDTO> removeList = new List<ModelEntites.EntityListViewColumnsDTO>();
-            foreach (var columnGroup in result.EntityListViewAllColumns.GroupBy(x => x.CreateRelationshipTailPath))
+            foreach (var columnGroup in result.EntityListViewAllColumns.GroupBy(x => x.RelationshipPath))
             {
                 bool pathPermission = true;
                 if (string.IsNullOrEmpty(columnGroup.Key))
@@ -130,12 +130,13 @@ namespace MyModelManager
         }
 
 
-        private List<EntityListViewColumnsDTO> GenereateDefaultListViewColumns(TableDrivedEntityDTO entity, List<EntityListViewColumnsDTO> list = null, string relationshipPath = "", List<RelationshipDTO> relationships = null)
+        private List<EntityListViewColumnsDTO> GenereateDefaultListViewColumns(TableDrivedEntityDTO firstEntity, TableDrivedEntityDTO entity = null, List<EntityListViewColumnsDTO> list = null, string relationshipPath = "", List<RelationshipDTO> relationships = null)
         {
             //** 8ab306e9-0d52-4be6-95c0-9e5b4c36a21c
             if (list == null)
                 list = new List<EntityListViewColumnsDTO>();
-
+            if (entity == null)
+                entity = firstEntity;
             //AddListViewColumns(entity, list, relationshipPath, relationships);
             if (entity.IsView == false)
             {
@@ -144,7 +145,7 @@ namespace MyModelManager
                 {
                     if (column.PrimaryKey)
                     {
-                        AddListViewColumns(entity, list, column, relationshipPath, relationships);
+                        AddListViewColumns(firstEntity, entity, list, column, relationshipPath, relationships);
                     }
 
                     if (entity.Relationships.Any(x => x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID) &&
@@ -153,7 +154,7 @@ namespace MyModelManager
                         var newrelationship = entity.Relationships.First(x => x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID) &&
                      (x.TypeEnum == Enum_RelationshipType.SubToSuper || x.TypeEnum == Enum_RelationshipType.ManyToOne || x.TypeEnum == Enum_RelationshipType.ExplicitOneToOne));
 
-                      
+
 
                         int distanceFromNonSubToSuper = 0;
                         if (relationships != null)
@@ -163,12 +164,12 @@ namespace MyModelManager
                         if (newrelationship.TypeEnum == Enum_RelationshipType.SubToSuper || distanceFromNonSubToSuper < 2)
                         {
 
-                            AddListViewColumns(entity, list, column, relationshipPath, relationships);
+                            AddListViewColumns(firstEntity, entity, list, column, relationshipPath, relationships);
                             //جلوگیری از لوپ و همچنین رابطه چند ستونی
                             if (!reviewedRels.Any(x => x.ID == newrelationship.ID)
                                 && (relationships == null || !relationships.Any(x => x.ID == newrelationship.ID)))
                             {
-                              
+
                                 //به لیست جدید از روابط میسازیم چون ممکن از روابط چند شاخه شوند
                                 List<RelationshipDTO> relationshipsTail = new List<RelationshipDTO>();
                                 if (relationships != null)
@@ -178,7 +179,7 @@ namespace MyModelManager
                                 }
                                 relationshipsTail.Add(newrelationship);
                                 var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(newrelationship.EntityID2, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
-                                GenereateDefaultListViewColumns(entityDTO, list, relationshipPath + (relationshipPath == "" ? "" : ",") + newrelationship.ID.ToString(), relationshipsTail);
+                                GenereateDefaultListViewColumns(firstEntity, entityDTO, list, relationshipPath + (relationshipPath == "" ? "" : ",") + newrelationship.ID.ToString(), relationshipsTail);
                             }
                         }
                         reviewedRels.Add(newrelationship);
@@ -186,7 +187,7 @@ namespace MyModelManager
 
                     var key = string.IsNullOrEmpty(column.Alias) ? column.Name : column.Alias;
                     if (CheckColumnDetection(GetPriorityColumnNames(), key))
-                        AddListViewColumns(entity, list, column, relationshipPath, relationships);
+                        AddListViewColumns(firstEntity, entity, list, column, relationshipPath, relationships);
 
                 }
             }
@@ -194,7 +195,7 @@ namespace MyModelManager
             {
                 foreach (var column in entity.Columns)
                 {
-                    AddListViewColumns(entity, list, column, relationshipPath, relationships);
+                    AddListViewColumns(firstEntity, entity, list, column, relationshipPath, relationships);
                 }
             }
 
@@ -209,7 +210,7 @@ namespace MyModelManager
             return list;
         }
 
-        private void AddListViewColumns(TableDrivedEntityDTO entity, List<EntityListViewColumnsDTO> list, ColumnDTO column, string relationshipPath, List<RelationshipDTO> relationships)
+        private void AddListViewColumns(TableDrivedEntityDTO firstEntity, TableDrivedEntityDTO entity, List<EntityListViewColumnsDTO> list, ColumnDTO column, string relationshipPath, List<RelationshipDTO> relationships)
         {
             if (list.Any(x => x.ColumnID == column.ID))
                 return;
@@ -219,7 +220,8 @@ namespace MyModelManager
             var resultColumn = new EntityListViewColumnsDTO();
             resultColumn.ColumnID = column.ID;
             resultColumn.Column = column;
-            resultColumn.CreateRelationshipTailPath = relationshipPath;
+            if (!string.IsNullOrEmpty(relationshipPath))
+                resultColumn.RelationshipTail = new EntityRelationshipTailDTO(firstEntity.ID, relationshipPath, entity.ID);
 
             string entityAlias = "";
             string entityTooltip = "";
@@ -466,19 +468,20 @@ namespace MyModelManager
                 rColumn.Tooltip = column.Tooltip;
                 rColumn.IsDescriptive = column.IsDescriptive;
                 rColumn.WidthUnit = column.WidthUnit;
-                if (string.IsNullOrEmpty(column.CreateRelationshipTailPath))
-                    rColumn.EntityRelationshipTailID = column.RelationshipTailID == 0 ? (int?)null : column.RelationshipTailID;
-                else
+
+                rColumn.EntityRelationshipTailID = column.RelationshipTailID == 0 ? (int?)null : column.RelationshipTailID;
+                if (column.RelationshipTail != null && column.RelationshipTail.ID == 0)
                 {
-                    if (createdRelationshipTails.Any(x => x.TableDrivedEntityID == message.TableDrivedEntityID && x.RelationshipPath == column.CreateRelationshipTailPath))
-                        rColumn.EntityRelationshipTail = createdRelationshipTails.First(x => x.TableDrivedEntityID == message.TableDrivedEntityID && x.RelationshipPath == column.CreateRelationshipTailPath);
+                    if (createdRelationshipTails.Any(x => x.TableDrivedEntityID == message.TableDrivedEntityID && x.RelationshipPath == column.RelationshipTail.RelationshipIDPath))
+                        rColumn.EntityRelationshipTail = createdRelationshipTails.First(x => x.TableDrivedEntityID == message.TableDrivedEntityID && x.RelationshipPath == column.RelationshipTail.RelationshipIDPath);
                     else
                     {
-                        var relationshipTail = bizEntityRelationshipTail.GetOrCreateEntityRelationshipTail(projectContext, message.TableDrivedEntityID, column.CreateRelationshipTailPath);
+                        var relationshipTail = bizEntityRelationshipTail.GetOrCreateEntityRelationshipTail(projectContext, message.TableDrivedEntityID, column.RelationshipTail.RelationshipIDPath);
                         createdRelationshipTails.Add(relationshipTail);
                         rColumn.EntityRelationshipTail = relationshipTail;
                     }
                 }
+
                 dbEntityListView.EntityListViewColumns.Add(rColumn);
             }
             if (dbEntityListView.ID == 0)

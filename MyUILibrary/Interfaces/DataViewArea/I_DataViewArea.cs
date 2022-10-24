@@ -18,9 +18,9 @@ namespace MyUILibraryInterfaces.DataViewArea
         DataViewAreaContainerInitializer AreaInitializer { set; get; }
         //    void SetAreaInitializer(DataViewAreaContainerInitializer initParam);
         //I_SearchEntityArea SearchEntityArea { set; get; }
-        //DP_SearchRepository SearchRepository { set; get; }
+        //DP_SearchRepositoryMain SearchRepository { set; get; }
         I_GeneralEntitySearchArea GeneralEntitySearchArea { set; get; }
-        void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepository searchRepository, I_DataViewItem defaultDataViewItem, bool dataViewOrGridView, int dataMenuSettingID);
+        void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepositoryMain searchRepository, I_DataViewItem defaultDataViewItem, bool dataViewOrGridView, int dataMenuSettingID);
     }
     public interface I_DataArea
     {
@@ -28,7 +28,7 @@ namespace MyUILibraryInterfaces.DataViewArea
         I_DataViewAreaContainer DataViewAreaContainer { set; get; }
         DataViewAreaInitializer AreaInitializer { set; get; }
         void SetAreaInitializer(DataViewAreaInitializer initParam);
-        void GetDataItemsBySearchRepository(DP_SearchRepository searchRepository);
+        void GetDataItemsBySearchRepository(DP_SearchRepositoryMain searchRepository);
         I_View_DataArea View { get; }
     }
     public interface I_DataViewArea : I_DataArea
@@ -118,7 +118,7 @@ namespace MyUILibraryInterfaces.DataViewArea
     //    public bool UserCanChangeSearch { set; get; }
     //    public int EntityID { set; get; }
     //    public int EntityListViewID { get; set; }
-    //    public DP_SearchRepository SearchRepository { set; get; }
+    //    public DP_SearchRepositoryMain SearchRepository { set; get; }
     //    public EntityPreDefinedSearchDTO PreDefinedSearch { get; set; }
     //}
     public class DataViewAreaInitializer
@@ -127,16 +127,16 @@ namespace MyUILibraryInterfaces.DataViewArea
         public int EntityID { set; get; }
         public int DataMenuSettingID { get; set; }
         //public TableDrivedEntityDTO Entitiy { set; get; }
-        //public DP_SearchRepository SearchRepository { set; get; }
+        //public DP_SearchRepositoryMain SearchRepository { set; get; }
     }
     public class DataViewAreaContainerInitializer
     {
         public string Title { set; get; }
         public int EntityID { set; get; }
         public bool DataViewOrGridView { set; get; }
-        public DP_SearchRepository InitialSearchRepository { set; get; }
+        public DP_SearchRepositoryMain InitialSearchRepository { set; get; }
         public bool UserCanChangeSearchRepository { get; set; }
-        //public DP_SearchRepository PreDefinedSearch { get; set; }
+        //public DP_SearchRepositoryMain PreDefinedSearch { get; set; }
         public bool ShowInitializeSearchRepository { get; set; }
         public int DataMenuSettingID { get; set; }
         //public bool InitialSearchShouldBeIncluded { get; set; }
@@ -145,7 +145,7 @@ namespace MyUILibraryInterfaces.DataViewArea
     {
         public I_DataViewItem SourceDataViewItem { set; get; }
         public string Title { set; get; }
-        public DP_SearchRepository SearchRepository { set; get; }
+        public DP_SearchRepositoryMain SearchRepository { set; get; }
 
         public RelationshipDTO Relationship { set; get; }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }

@@ -215,7 +215,7 @@ namespace MyUILibrary.WorkflowArea
                         AgentUICoreMediator.GetAgentUICoreMediator.ShowEditEntityArea(wfRequest.DataItem.TargetEntityID, true, CommonDefinitions.UISettings.DataMode.One, initializeData);
 
                         //سکوریتی داده اعمال میشود
-                        //DP_SearchRepository searchRepository = new DP_SearchRepository(dataItem.TargetEntityID);
+                        //DP_SearchRepositoryMain searchRepository = new DP_SearchRepositoryMain(dataItem.TargetEntityID);
                         //foreach (var col in dataItem.KeyProperties)
                         //{
                         //    searchRepository.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });

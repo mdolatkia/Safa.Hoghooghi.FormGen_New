@@ -54,7 +54,7 @@ namespace MyProject_WPF
         }
         private void btnSelect_Click(object sender, RoutedEventArgs e)
         {
-            var item = dtgItems.SelectedItem as DP_SearchRepository;
+            var item = dtgItems.SelectedItem as DP_SearchRepositoryMain;
             if (item != null)
             {
                 if (PreDefinedSearchSelected != null)

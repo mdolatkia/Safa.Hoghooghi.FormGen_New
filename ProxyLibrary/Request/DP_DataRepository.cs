@@ -863,62 +863,95 @@ namespace ProxyLibrary
         }
         //public int EntityListViewColumnsID { get; set; }
     }
-
-    public class DP_SearchRepository : LogicPhraseDTO /*: RootPhrase*/
+    public class PreDefinedSearchDTO : SavedSearchRepositoryDTO
     {
-        public DP_SearchRepository()
+        public PreDefinedSearchDTO()
+        {
+            SimpleSearchProperties = new List<DP_PreDefinedSearchSimpleColumn>();
+            RelationshipSearchProperties = new List<DP_PreDefinedSearchRelationship>();
+        }
+        public int EntitySearchID { get; set; }
+        public string QuickSearchValue { get; set; }
+        public List<DP_PreDefinedSearchSimpleColumn> SimpleSearchProperties { get; set; }
+        public List<DP_PreDefinedSearchRelationship> RelationshipSearchProperties { get; set; }
+    }
+    public class DP_PreDefinedSearchSimpleColumn
+    {
+        public List<object> Value { get; set; }
+        public CommonOperator Operator { set; get; }
+        public int EntitySearchColumnsID { get; set; }
+    }
+    public class DP_PreDefinedSearchRelationship
+    {
+        public List<DP_PreDefinedSearchRelationshipData> DataItems { get; set; }
+        public int EntitySearchColumnsID { get; set; }
+    }
+    public class DP_PreDefinedSearchRelationshipData
+    {
+        public List<DP_PreDefinedSearchRelationshipColumns> KeyProperties { get; set; }
+
+    }
+    public class DP_PreDefinedSearchRelationshipColumns
+    {
+        public int ColumnID { get; set; }
+        public object Value { get; set; }
+    }
+
+    public class AdvancedSearchDTO : SavedSearchRepositoryDTO
+    {
+        public AdvancedSearchDTO()
+        {
+         
+        }
+      public DP_SearchRepositoryMain SearchRepositoryMain { set; get; }
+    }
+
+    public class SavedSearchRepositoryDTO
+    {
+        public int ID { set; get; }
+        public string Title { set; get; }
+        public int EntityID { set; get; }
+        public bool IsPreDefinedOrAdvanced { get; set; }
+
+        
+    }
+    public class DP_SearchRepositoryMain : LogicPhraseDTO /*: RootPhrase*/
+    {
+        public DP_SearchRepositoryMain()
         {
             //فقط برای سریالیز شدن در گزارشات
         }
-        public DP_SearchRepository(int targetEntityID)
+        public DP_SearchRepositoryMain(int targetEntityID)
         {
             TargetEntityID = targetEntityID;
-            //      Phrase = new LogicPhrase();
-            //AndOrProperties = new List<List<ProxyLibrary.EntityInstanceProperty>>();
-            //Properties = new List<ProxyLibrary.SearchProperty>();
-            //RelationshipColumns = new List<ModelEntites.RelationshipColumnDTO>();
-            //ChildItems = new Tuple<AndORType, List<SearchProperty>, List<DP_SearchRepository>>();
+
         }
-        public bool? IsSimpleSearch { set; get; }
-        public int EntitySearchID { set; get; }
-
         public string Title { get; set; }
-
-        //  public int ID { set; get; }
-        //public bool? HasRelationshipCheck { set; get; }
-        public bool? HasNotRelationshipCheck { set; get; }
-
-        public int? RelationshipFromCount { set; get; }
-        public int? RelationshipToCount { set; get; }
-
-        //public List<List<EntityInstanceProperty>> AndOrProperties;
-
-        //public List<SearchProperty> Properties { set; get; }
-
-        //    public int SourceEntityID;
-
-        //     int _TargetEntityID;
+      
         public int TargetEntityID
         { set; get; }
-        //public int SourceTableID;
-        //public int TargetTableID;
-        //public AndORType ParentAndOrType { set; get; }
-        //public DP_SearchRepository SourceRelatedData;
-        //public int SourceRelationID;
-        ////public List<RelationshipColumnDTO> RelationshipColumns;
-        ////public List<int> TargetColumnIDs;
-        //public Enum_RelationshipType SourceToTargetRelationshipType;
-        //public Enum_MasterRelationshipType SourceToTargetMasterRelationshipType;
-        public RelationshipDTO SourceRelationship { set; get; }
-
-
+     
         public Guid GUID;
-
-        //public LogicPhrase Phrase { set; get; }
-        //public List<LogicPhrase> LogicPhrases { set; get; }
-        //public Tuple<AndORType, List<SearchProperty>, List<DP_SearchRepository>> ChildItems { set; get; }
-
     }
+
+    public class DP_SearchRepositoryRelationship : LogicPhraseDTO /*: RootPhrase*/
+    {
+        public DP_SearchRepositoryRelationship()
+        {
+            //فقط برای سریالیز شدن در گزارشات
+        }
+       
+        public string Title { get; set; }
+        public bool? HasNotRelationshipCheck { set; get; }
+        public int? RelationshipFromCount { set; get; }
+        public int? RelationshipToCount { set; get; }
+     //   public int TargetEntityID
+       // { set; get; }
+        public RelationshipDTO SourceRelationship { set; get; }
+        public Guid GUID;
+    }
+
+
     //public class DP_SearchGroup
     //{
     //    public DP_SearchGroup()
@@ -963,7 +996,7 @@ namespace ProxyLibrary
         //public AndORType AndORType { set; get; }
         public CommonOperator Operator { set; get; }
         public SearchEnumerableType SearchEnumerableType { set; get; }
-        public int SearchColumnID { get; set; }
+        //   public int SearchColumnID { get; set; }
         public bool NotIgnoreZeroValue { set; get; }
         //public Tuple<AndORType, List<SearchProperty>> ChildProperties { set; get; }
     }

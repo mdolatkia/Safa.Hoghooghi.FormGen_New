@@ -132,7 +132,7 @@ namespace MyDataEditManagerBusiness
         {
             var newrequester = new DR_Requester();
             newrequester.SkipSecurity = true;
-            DP_SearchRepository searchDataViewItem = new DP_SearchRepository(data.TargetEntityID);
+            DP_SearchRepositoryMain searchDataViewItem = new DP_SearchRepositoryMain(data.TargetEntityID);
             foreach (var col in data.KeyProperties)
             {
                 searchDataViewItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });

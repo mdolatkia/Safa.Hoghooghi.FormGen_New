@@ -28,13 +28,15 @@ namespace MyProject_WPF
 
     public partial class frmSearchRepository : UserControl
     {
-        DP_SearchRepository Message { set; get; }
-        SearchEntityArea SearchEntityArea;
+        PreDefinedSearchDTO PreDefinedSearchMessage { set; get; }
+        AdvancedSearchDTO AdvancedSearchDTOMessage { set; get; }
+        EntityDefinedSearchArea EntityDefinedSearchArea;
+        AdvancedSearchEntityArea AdvancedSearchEntityArea;
         BizSearchRepository bizSearchRepository = new BizSearchRepository();
         public event EventHandler<EntityPreDefinedSearchUpdatedArg> EntityPreDefinedSearchUpdated;
         int EntityID { set; get; }
         //int SearchEntityID { set; get; }
-        public frmSearchRepository(int entityID, int preDefinedSearchID)
+        public frmSearchRepository(int entityID, int savedSearchRepositoryID)
         {
             InitializeComponent();
             EntityID = entityID;
@@ -46,10 +48,9 @@ namespace MyProject_WPF
 
             SetEntitySearchList();
 
-            if (preDefinedSearchID != 0)
+            if (savedSearchRepositoryID != 0)
             {
-                GetSearchRepositoryh(preDefinedSearchID);
-                //   ShowMessage();
+                GetSearchRepositoryh(savedSearchRepositoryID);
             }
             else
             {
@@ -60,31 +61,42 @@ namespace MyProject_WPF
 
         private void LokEntitySearch_SelectionChanged(object sender, SelectionChangedArg e)
         {
-            ShowSearchArea();
-        }
+            grdPreDefinedView.Children.Clear();
+            if (lokEntitySearch.SelectedItem != null)
+            {
+                int entitySearchID = lokEntitySearch.SelectedItem == null ? 0 : (int)lokEntitySearch.SelectedValue;
 
-        private void ShowSearchArea()
-        {
-            int entitySearchID = lokEntitySearch.SelectedItem == null ? 0 : (int)lokEntitySearch.SelectedValue;
-            //if (SearchEntityArea == null || SearchEntityArea.SearchInitializer.SearchEntityID != entitySearchID)
-            //{
+                var searchViewInitializer = new SearchAreaInitializer();
+                searchViewInitializer.EntityID = EntityID;
+                searchViewInitializer.EntitySearchID = entitySearchID;
+                EntityDefinedSearchArea = new EntityDefinedSearchArea(searchViewInitializer);
+                grdPreDefinedView.Children.Add(EntityDefinedSearchArea.SimpleSearchView as UIElement);
 
-            var searchViewInitializer = new SearchAreaInitializer();
-            searchViewInitializer.EntityID = EntityID;
-            searchViewInitializer.EntitySearchID = entitySearchID;
-            SearchEntityArea = new SearchEntityArea(searchViewInitializer);
 
-            grdSearch.Children.Clear();
-            grdSearch.Children.Add(SearchEntityArea.SearchView as UIElement);
+            }
+
+
             //}
 
-            SearchEntityArea.ShowSearchRepository(Message);
+
         }
+
+
 
         private void GetSearchRepositoryh(int id)
         {
-            Message = bizSearchRepository.GetSearchRepository(id);
-            ShowMessage();
+            var message = bizSearchRepository.GetSavedSearchRepository(id);
+            if (message.IsPreDefinedOrAdvanced)
+            {
+                PreDefinedSearchMessage = bizSearchRepository.GetPreDefinedSearch(id);
+                ShowPreDefinedSearchMessage();
+            }
+            else
+            {
+                AdvancedSearchDTOMessage = bizSearchRepository.GetAdvancedSearch(id);
+                ShowAdvancedSearchMessage();
+            }
+
         }
 
         private void SetEntitySearchList()
@@ -120,15 +132,20 @@ namespace MyProject_WPF
             lookup.SelectedValue = e.ID;
         }
 
-        private void ShowMessage()
+
+        private void ShowPreDefinedSearchMessage()
         {
-            txtTitle.Text = Message.Title;
-            lokEntitySearch.SelectedValue = Message.EntitySearchID;
-            ShowSearchArea();
-
-
+            txtTitle.Text = PreDefinedSearchMessage.Title;
+            optPreDefined.IsChecked = true;
+            lokEntitySearch.SelectedValue = PreDefinedSearchMessage.EntitySearchID;
+            EntityDefinedSearchArea.ShowPreDefinedSearch(PreDefinedSearchMessage);
         }
-
+        private void ShowAdvancedSearchMessage()
+        {
+            txtTitle.Text = AdvancedSearchDTOMessage.Title;
+            optAdvanced.IsChecked = true;
+            AdvancedSearchEntityArea.ShowSearchRepository(AdvancedSearchDTOMessage.SearchRepositoryMain);
+        }
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             if (txtTitle.Text == "")
@@ -142,8 +159,32 @@ namespace MyProject_WPF
             //  Message.IsSimpleSearch = true;
             //   Message.SimpleColumns = SearchEntityArea.SimpleSearchEntityArea.GetSearchColumns();
             //  Message.SearchRepository = null;
-            Message = SearchEntityArea.GetSearchRepository();
-            Message.Title = txtTitle.Text;
+
+            if (optPreDefined.IsChecked == true)
+            {
+                var message = EntityDefinedSearchArea.GetSearchRepositoryForSave();
+                message.Title = txtTitle.Text;
+                message.EntityID = EntityID;
+                message.ID = PreDefinedSearchMessage.ID;
+                PreDefinedSearchMessage.ID = bizSearchRepository.UpdatePreDefinedSearch(message);
+                MessageBox.Show("اطلاعات ثبت شد");
+
+                if (EntityPreDefinedSearchUpdated != null)
+                    EntityPreDefinedSearchUpdated(this, new MyProject_WPF.EntityPreDefinedSearchUpdatedArg() { ID = PreDefinedSearchMessage.ID });
+            }
+            else if (optAdvanced.IsChecked == true)
+            {
+                AdvancedSearchDTOMessage.Title = txtTitle.Text;
+                AdvancedSearchDTOMessage.EntityID = EntityID;
+                AdvancedSearchDTOMessage.SearchRepositoryMain = AdvancedSearchEntityArea.GetSearchRepository();
+                AdvancedSearchDTOMessage.ID = bizSearchRepository.UpdateAdvancedSearch(AdvancedSearchDTOMessage);
+                MessageBox.Show("اطلاعات ثبت شد");
+
+                if (EntityPreDefinedSearchUpdated != null)
+                    EntityPreDefinedSearchUpdated(this, new MyProject_WPF.EntityPreDefinedSearchUpdatedArg() { ID = AdvancedSearchDTOMessage.ID });
+            }
+
+
             // }
             // else
             // {
@@ -155,11 +196,8 @@ namespace MyProject_WPF
             //    Message.EntitySearchID = (int)lokEntitySearch.SelectedValue;
             //else
             //    Message.EntitySearchID = 0;
-            Message.ID = bizSearchRepository.Update(Message);
-            MessageBox.Show("اطلاعات ثبت شد");
 
-            if (EntityPreDefinedSearchUpdated != null)
-                EntityPreDefinedSearchUpdated(this, new MyProject_WPF.EntityPreDefinedSearchUpdatedArg() { ID = Message.ID });
+
         }
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)
@@ -175,9 +213,15 @@ namespace MyProject_WPF
 
         private void SetNewItem()
         {
-            Message = new DP_SearchRepository(EntityID);
-            Message.Title = "جستجوی جدید";
-            ShowMessage();
+            //Message = new DP_SearchRepositoryMain(EntityID);
+            //Message.Title = "جستجوی جدید";
+            //ShowMessage();
+
+            optPreDefined.IsChecked = true;
+            txtTitle.Text = "";
+            lokEntitySearch.SelectedValue = 0;
+            PreDefinedSearchMessage = new PreDefinedSearchDTO();
+            AdvancedSearchDTOMessage = new AdvancedSearchDTO();
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
@@ -192,6 +236,22 @@ namespace MyProject_WPF
             if (e.SearchRepositoryID != 0)
             {
                 GetSearchRepositoryh(e.SearchRepositoryID);
+            }
+        }
+
+
+
+        private void optPreDefined_Checked(object sender, RoutedEventArgs e)
+        {
+            if (optAdvanced.IsChecked == true)
+            {
+                tabAdvanced.IsSelected = true;
+                tabPreDefined.IsEnabled = false;
+            }
+            else if (optPreDefined.IsChecked == true)
+            {
+                tabPreDefined.IsSelected = true;
+                tabAdvanced.IsEnabled = false;
             }
         }
     }

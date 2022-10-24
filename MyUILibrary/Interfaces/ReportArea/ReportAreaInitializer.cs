@@ -10,9 +10,9 @@ namespace MyUILibrary.EntityArea
     public class InternalReportAreaInitializer
     {
         public int EntityID;
-        public DP_SearchRepository InitialSearchRepository { set; get; }
+        public DP_SearchRepositoryMain InitialSearchRepository { set; get; }
         public int ReportID { get; set; }
-        //   public DP_SearchRepository PreDefinedSearch { get; set; }
+        //   public DP_SearchRepositoryMain PreDefinedSearch { get; set; }
         public bool ShowInitializeSearchRepository { set; get; }
         public bool UserCanChangeSearch { get; set; }
         public string Title { get; set; }
@@ -23,7 +23,7 @@ namespace MyUILibrary.EntityArea
     public class ExternalReportAreaInitializer
     {
         public int EntityID;
-        public DP_SearchRepository InitialSearchRepository { set; get; }
+        public DP_SearchRepositoryMain InitialSearchRepository { set; get; }
         public int ReportID { get; set; }
         public bool ShowInitializeSearchRepository { set; get; }
         public bool UserCanChangeSearch { get; set; }

@@ -97,7 +97,7 @@ namespace MyFormulaFunctionStateFunctionLibrary
             if (getDataItem)
             {
                 SearchRequestManager searchProcessor = new SearchRequestManager();
-                DP_SearchRepository searchDataItem = new DP_SearchRepository(dataItem.TargetEntityID);
+                DP_SearchRepositoryMain searchDataItem = new DP_SearchRepositoryMain(dataItem.TargetEntityID);
                 foreach (var property in dataItem.KeyProperties)
                     searchDataItem.Phrases.Add(new SearchProperty() { ColumnID = property.ColumnID, Value = property.Value });
 

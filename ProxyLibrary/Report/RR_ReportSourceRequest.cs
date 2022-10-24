@@ -17,7 +17,7 @@ namespace ProxyLibrary
         public Enum_OrderBy SortType { set; get; }
         public int ReportID;
 
-        public DP_SearchRepository SearchDataItems;
+        public DP_SearchRepositoryMain SearchDataItems;
 
     }
 

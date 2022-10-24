@@ -43,7 +43,7 @@ namespace MyUILibrary.DataViewArea
 
         public event EventHandler DataItemsSearchedByUser;
         I_View_ReportList ViewReports { set; get; }
-        //DP_SearchRepository InitialSearchRepository { set; get; }
+        //DP_SearchRepositoryMain InitialSearchRepository { set; get; }
 
      
 
@@ -168,7 +168,7 @@ namespace MyUILibrary.DataViewArea
                 //    defaultListViewID = EntityDataView.EntityListViewID;
                 //if (listViewID != defaultListViewID)
                 //{
-                //    var seatchItem = new DP_SearchRepository(AreaInitializer.EntitiyID);
+                //    var seatchItem = new DP_SearchRepositoryMain(AreaInitializer.EntitiyID);
                 //    var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
                 //    //سکوریتی داده اعمال میشود
                 //    var searchRequest = new DR_SearchViewRequest(requester, seatchItem);

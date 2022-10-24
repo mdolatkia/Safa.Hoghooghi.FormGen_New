@@ -118,7 +118,7 @@ namespace MyUILibrary.EntityArea
             //بعدا بررسی شود.کلا روش خوبی نیست.بهتره تو همون سرچ ادیت یه پارامتری سرچ بشه و دیتاویو ساخته بشه
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
 
-            DP_SearchRepository searchDataViewItem = new DP_SearchRepository(data.TargetEntityID);
+            DP_SearchRepositoryMain searchDataViewItem = new DP_SearchRepositoryMain(data.TargetEntityID);
             foreach (var col in data.KeyProperties)
             {
                 searchDataViewItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
@@ -171,7 +171,7 @@ namespace MyUILibrary.EntityArea
         //public List<DP_FormDataRepository> SearchDataForEditFromExternalSource(int entityID, List<DP_FormDataRepository> searchViewData, I_EditEntityArea editEntityArea)
         //{
 
-        //    DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
+        //    DP_SearchRepositoryMain SearchDataItem = new DP_SearchRepositoryMain(entityID);
         //    List<DP_FormDataRepository> result = new List<DP_FormDataRepository>();
         //    foreach (var item in searchViewData)
         //    {
@@ -197,7 +197,7 @@ namespace MyUILibrary.EntityArea
         //public List<DP_DataView> SearchDataForViewFromExternalSource(int entityID, List<DP_FormDataRepository> searchViewData, I_EditEntityArea editEntityArea)
         //{
         //    //اوکی نشده
-        //    DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
+        //    DP_SearchRepositoryMain SearchDataItem = new DP_SearchRepositoryMain(entityID);
         //    List<DP_DataView> result = new List<DP_DataView>();
         //    foreach (var item in searchViewData)
         //    {
@@ -226,7 +226,7 @@ namespace MyUILibrary.EntityArea
         //    List<DP_FormDataRepository> result = new List<DP_FormDataRepository>();
         //    foreach (var item in searchViewData)
         //    {
-        //        DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
+        //        DP_SearchRepositoryMain SearchDataItem = new DP_SearchRepositoryMain(entityID);
         //        foreach (var col in item.Properties.Where(x => x.IsKey))
         //        {
         //            SearchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });

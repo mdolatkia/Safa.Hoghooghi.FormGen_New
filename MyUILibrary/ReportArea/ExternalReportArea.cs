@@ -24,7 +24,7 @@ namespace MyUILibrary.EntityArea
     {
         //   ReportResolver reportResolver = new ReportResolver();
         //  EntityReportDTO Report { set; get; }
-        //    DP_SearchRepository InitialSearchRepository { set; get; }
+        //    DP_SearchRepositoryMain InitialSearchRepository { set; get; }
         public bool SecurityNoAccess { set; get; }
         public bool SecurityReadonly { set; get; }
         public bool SecurityEdit { set; get; }
@@ -125,8 +125,8 @@ namespace MyUILibrary.EntityArea
         //{
         //    set; get;
         //}
-        DP_SearchRepository SearchRepository { set; get; }
-        private void SetReport(DP_SearchRepository searchRepository)
+        DP_SearchRepositoryMain SearchRepository { set; get; }
+        private void SetReport(DP_SearchRepositoryMain searchRepository)
         {
             SearchRepository = searchRepository;
 
@@ -210,7 +210,7 @@ namespace MyUILibrary.EntityArea
 
         //    //////ViewEntityArea.ShowReport(reuslt.ResultDataItems, true);
         //}
-        //private DP_SearchRepository FindOrCreateSearchItem(List<DP_SearchRepository> dataList, DP_SearchRepository mainItem, EntityRelationshipTailDTO searchRelationshipTail)
+        //private DP_SearchRepositoryMain FindOrCreateSearchItem(List<DP_SearchRepositoryMain> dataList, DP_SearchRepositoryMain mainItem, EntityRelationshipTailDTO searchRelationshipTail)
         //{
         //    if (searchRelationshipTail == null)
         //        return mainItem;
@@ -222,7 +222,7 @@ namespace MyUILibrary.EntityArea
         //       ////    //sourcecolumn , target کجا ست میشوند؟؟
         //       ////    //فهمیدم اول کار  CreateDefaultData(); برای هر فرم صدا زده میشود
         //       ////    //بهتر شود که دوباره کاری نشود
-        //       ////    foundItem = new DP_SearchRepository();
+        //       ////    foundItem = new DP_SearchRepositoryMain();
         //       ////    foundItem.SourceRelatedData = mainItem;
         //       ////    foundItem.TargetEntityID = searchRelationshipTail.RelationshipTargetEntityID;
         //       ////    foundItem.SourceToTargetRelationshipType = searchRelationshipTail.SourceToTargetRelationshipType;

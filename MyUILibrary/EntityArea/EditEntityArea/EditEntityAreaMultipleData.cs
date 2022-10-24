@@ -80,7 +80,8 @@ namespace MyUILibrary.EntityArea
         //}
         public void RemoveDataContainer(DP_FormDataRepository dataItem)
         {
-            (DataViewGeneric as I_View_EditEntityAreaMultiple).RemoveDataContainer(dataItem);
+            if (DataViewGeneric != null)
+                (DataViewGeneric as I_View_EditEntityAreaMultiple).RemoveDataContainer(dataItem);
             //if (DataItemRemoved != null)
             //    DataItemRemoved(this, new EditAreaDataItemArg() { DataItem = dataItem });
         }
@@ -316,7 +317,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-      
+
         //private void SearchViewEntityArea_DataSelected(object sender, DataSelectedEventArg e)
         //{
         //    foreach (var data in e.DataItem)

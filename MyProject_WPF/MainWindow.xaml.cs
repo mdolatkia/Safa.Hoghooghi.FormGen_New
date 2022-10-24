@@ -186,7 +186,7 @@ namespace MyProject_WPF
         //            {
         //                SearchRequestManager searchRequestManager = new SearchRequestManager();
         //                DR_SearchViewRequest item = new DR_SearchViewRequest(MyProjectManager.GetMyProjectManager.GetRequester(),
-        //                     new DP_SearchRepository() { TargetEntityID = serviceRequest.ID });
+        //                     new DP_SearchRepositoryMain() { TargetEntityID = serviceRequest.ID });
         //                item.MaxDataItems = 1;
         //                item.SecurityMode = SecurityMode.View;
 

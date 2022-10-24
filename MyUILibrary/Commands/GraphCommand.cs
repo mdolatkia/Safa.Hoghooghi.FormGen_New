@@ -26,7 +26,7 @@ namespace MyUILibrary.EntityArea.Commands
         {
             if (EditArea != null)
             {
-                var searchDP = EditArea.SearchEntityArea.LastSearch;
+           //     var searchDP = EditArea.SearchEntityArea.LastSearch;
                 DP_DataRepository dataInstance = null;
                 if (EditArea.AreaInitializer.DataMode != DataMode.Multiple)
                 {

@@ -12,29 +12,23 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class SearchRepository
+    public partial class SavedSearchRepository
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public SearchRepository()
+        public SavedSearchRepository()
         {
             this.EntitySearchableReport = new HashSet<EntitySearchableReport>();
         }
     
         public int ID { get; set; }
-        public Nullable<int> SourceRelationID { get; set; }
-        public Nullable<bool> HasNotRelationshipCheck { get; set; }
-        public Nullable<int> RelationshipFromCount { get; set; }
-        public Nullable<int> RelationshipToCount { get; set; }
-        public Nullable<bool> IsSimpleSearch { get; set; }
-        public int TableDrivedEntityID { get; set; }
-        public Nullable<int> EntitySearchID { get; set; }
+        public bool IsPreDefinedOrAdvanced { get; set; }
         public string Title { get; set; }
+        public int TableDrivedEntityID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntitySearchableReport> EntitySearchableReport { get; set; }
-        public virtual LogicPhrase LogicPhrase { get; set; }
-        public virtual Relationship Relationship { get; set; }
+        public virtual SaveAdvancedSearch SaveAdvancedSearch { get; set; }
+        public virtual SavedPreDefinedSearch SavedPreDefinedSearch { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        public virtual EntitySearch EntitySearch { get; set; }
     }
 }

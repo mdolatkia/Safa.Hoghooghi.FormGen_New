@@ -12,24 +12,21 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class EntitySearch
+    public partial class SavedPreDefinedSearchRelationship
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public EntitySearch()
+        public SavedPreDefinedSearchRelationship()
         {
-            this.SavedPreDefinedSearch = new HashSet<SavedPreDefinedSearch>();
-            this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
+            this.SavedPreDefinedSearchRelationshipData = new HashSet<SavedPreDefinedSearchRelationshipData>();
         }
     
         public int ID { get; set; }
-        public string Title { get; set; }
-        public Nullable<bool> IsDefault { get; set; }
-        public int TableDrivedEntityID1 { get; set; }
+        public Nullable<int> PreDefinedSearchID { get; set; }
+        public Nullable<int> EntitySearchColumnsID { get; set; }
     
-        public virtual TableDrivedEntity TableDrivedEntity { get; set; }
+        public virtual EntitySearchColumns EntitySearchColumns { get; set; }
+        public virtual SavedPreDefinedSearch SavedPreDefinedSearch { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SavedPreDefinedSearch> SavedPreDefinedSearch { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntitySearchColumns> EntitySearchColumns { get; set; }
+        public virtual ICollection<SavedPreDefinedSearchRelationshipData> SavedPreDefinedSearchRelationshipData { get; set; }
     }
 }

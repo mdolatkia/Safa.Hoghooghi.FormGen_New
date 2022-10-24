@@ -12,13 +12,15 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class Phrase
+    public partial class SavedPreDefinedSearchRelationshipData
     {
         public int ID { get; set; }
-        public Nullable<int> ParentLogicPhraseID { get; set; }
-        public short Type { get; set; }
+        public int SavedPreDefinedSearchRelationshipID { get; set; }
+        public string DataGroup { get; set; }
+        public int KeyColumnID { get; set; }
+        public string Value { get; set; }
     
-        public virtual PhraseLogic PhraseLogic { get; set; }
-        public virtual PhraseColumn PhraseColumn { get; set; }
+        public virtual Column Column { get; set; }
+        public virtual SavedPreDefinedSearchRelationship SavedPreDefinedSearchRelationship { get; set; }
     }
 }

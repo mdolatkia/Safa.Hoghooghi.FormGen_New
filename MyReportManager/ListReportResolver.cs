@@ -331,7 +331,7 @@ namespace MyReportManager
                 newrequest.Identity = Request.Identity;
                 newrequest.Name = Request.Name;
                 var tail = bizEntityRelationshipTail.GetEntityRelationshipTail(requester, subDTO.EntityRelationshipTailID);
-                newrequest.SearchDataItems = new DP_SearchRepository(tail.TargetEntityID);
+                newrequest.SearchDataItems = new DP_SearchRepositoryMain(tail.TargetEntityID);
 
                 var entityListReport = bizEntityListReport.GetEntityListReport( requester, subDTO.EntityListReportID, true);
                 newrequest.ReportID = entityListReport.ID;

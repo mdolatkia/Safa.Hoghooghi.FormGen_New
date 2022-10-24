@@ -41,7 +41,6 @@ namespace DataAccess
         public virtual DbSet<CodeFunctionParameter> CodeFunctionParameter { get; set; }
         public virtual DbSet<Column> Column { get; set; }
         public virtual DbSet<ColumnCustomFormula> ColumnCustomFormula { get; set; }
-        public virtual DbSet<ColumnPhrase> ColumnPhrase { get; set; }
         public virtual DbSet<ColumnUISetting> ColumnUISetting { get; set; }
         public virtual DbSet<ColumnValueRange> ColumnValueRange { get; set; }
         public virtual DbSet<ColumnValueRangeDetails> ColumnValueRangeDetails { get; set; }
@@ -86,7 +85,9 @@ namespace DataAccess
         public virtual DbSet<EntityRelationshipTailDataMenu> EntityRelationshipTailDataMenu { get; set; }
         public virtual DbSet<EntityRelationshipTailDataMenuItems> EntityRelationshipTailDataMenuItems { get; set; }
         public virtual DbSet<EntityReport> EntityReport { get; set; }
+        public virtual DbSet<EntitySearch> EntitySearch { get; set; }
         public virtual DbSet<EntitySearchableReport> EntitySearchableReport { get; set; }
+        public virtual DbSet<EntitySearchColumns> EntitySearchColumns { get; set; }
         public virtual DbSet<EntityState_UIActionActivity> EntityState_UIActionActivity { get; set; }
         public virtual DbSet<EntityUIComposition> EntityUIComposition { get; set; }
         public virtual DbSet<EntityUISetting> EntityUISetting { get; set; }
@@ -107,7 +108,6 @@ namespace DataAccess
         public virtual DbSet<LetterType> LetterType { get; set; }
         public virtual DbSet<LinearFormula> LinearFormula { get; set; }
         public virtual DbSet<LinkedServer> LinkedServer { get; set; }
-        public virtual DbSet<LogicPhrase> LogicPhrase { get; set; }
         public virtual DbSet<MainLetterTemplate> MainLetterTemplate { get; set; }
         public virtual DbSet<ManyToManyRelationshipType> ManyToManyRelationshipType { get; set; }
         public virtual DbSet<ManyToOneRelationshipType> ManyToOneRelationshipType { get; set; }
@@ -116,13 +116,21 @@ namespace DataAccess
         public virtual DbSet<OneToManyRelationshipType> OneToManyRelationshipType { get; set; }
         public virtual DbSet<PartialLetterTemplate> PartialLetterTemplate { get; set; }
         public virtual DbSet<Phrase> Phrase { get; set; }
+        public virtual DbSet<PhraseColumn> PhraseColumn { get; set; }
+        public virtual DbSet<PhraseLogic> PhraseLogic { get; set; }
+        public virtual DbSet<PhraseRelationship> PhraseRelationship { get; set; }
         public virtual DbSet<Relationship> Relationship { get; set; }
         public virtual DbSet<RelationshipColumns> RelationshipColumns { get; set; }
         public virtual DbSet<RelationshipSearchFilter> RelationshipSearchFilter { get; set; }
         public virtual DbSet<RelationshipType> RelationshipType { get; set; }
         public virtual DbSet<RelationshipUISetting> RelationshipUISetting { get; set; }
         public virtual DbSet<ReportGroups> ReportGroups { get; set; }
-        public virtual DbSet<SearchRepository> SearchRepository { get; set; }
+        public virtual DbSet<SaveAdvancedSearch> SaveAdvancedSearch { get; set; }
+        public virtual DbSet<SavedPreDefinedSearch> SavedPreDefinedSearch { get; set; }
+        public virtual DbSet<SavedPreDefinedSearchRelationship> SavedPreDefinedSearchRelationship { get; set; }
+        public virtual DbSet<SavedPreDefinedSearchRelationshipData> SavedPreDefinedSearchRelationshipData { get; set; }
+        public virtual DbSet<SavedPreDefinedSearchSimpleColumn> SavedPreDefinedSearchSimpleColumn { get; set; }
+        public virtual DbSet<SavedSearchRepository> SavedSearchRepository { get; set; }
         public virtual DbSet<StringColumnType> StringColumnType { get; set; }
         public virtual DbSet<SubSystems> SubSystems { get; set; }
         public virtual DbSet<SubToSuperRelationshipType> SubToSuperRelationshipType { get; set; }
@@ -172,7 +180,5 @@ namespace DataAccess
         public virtual DbSet<TransitionAction_Formula> TransitionAction_Formula { get; set; }
         public virtual DbSet<TransitionActionTarget> TransitionActionTarget { get; set; }
         public virtual DbSet<TransitionActivity> TransitionActivity { get; set; }
-        public virtual DbSet<EntitySearch> EntitySearch { get; set; }
-        public virtual DbSet<EntitySearchColumns> EntitySearchColumns { get; set; }
     }
 }

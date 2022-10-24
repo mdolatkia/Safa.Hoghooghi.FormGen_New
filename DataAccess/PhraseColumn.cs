@@ -12,23 +12,14 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class ColumnPhrase
+    public partial class PhraseColumn
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ColumnPhrase()
-        {
-            this.Phrase = new HashSet<Phrase>();
-        }
-    
         public int ID { get; set; }
         public int ColumnID { get; set; }
         public string Value { get; set; }
         public string Operator { get; set; }
-        public Nullable<int> EntitySearchColumnsID { get; set; }
     
         public virtual Column Column { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Phrase> Phrase { get; set; }
-        public virtual EntitySearchColumns EntitySearchColumns { get; set; }
+        public virtual Phrase Phrase { get; set; }
     }
 }

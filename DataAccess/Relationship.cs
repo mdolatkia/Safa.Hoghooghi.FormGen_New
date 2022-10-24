@@ -20,8 +20,8 @@ namespace DataAccess
             this.ArcRelationshipGroup_Relationship = new HashSet<ArcRelationshipGroup_Relationship>();
             this.DataMenuForViewEntity = new HashSet<DataMenuForViewEntity>();
             this.FormulaItems = new HashSet<FormulaItems>();
+            this.PhraseRelationship = new HashSet<PhraseRelationship>();
             this.Relationship1 = new HashSet<Relationship>();
-            this.SearchRepository = new HashSet<SearchRepository>();
             this.UIEnablityDetails = new HashSet<UIEnablityDetails>();
             this.RelationshipSearchFilter = new HashSet<RelationshipSearchFilter>();
             this.RelationshipColumns = new HashSet<RelationshipColumns>();
@@ -53,11 +53,11 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PhraseRelationship> PhraseRelationship { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Relationship> Relationship1 { get; set; }
         public virtual Relationship Relationship2 { get; set; }
         public virtual SecurityObject SecurityObject { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SearchRepository> SearchRepository { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UIEnablityDetails> UIEnablityDetails { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }

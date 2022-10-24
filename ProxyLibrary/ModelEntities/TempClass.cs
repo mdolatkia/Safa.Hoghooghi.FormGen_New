@@ -1241,7 +1241,7 @@ namespace ModelEntites
         public ReportType ReportType { set; get; }
         public SearchableReportType SearchableReportType { set; get; }
         public DataItemReportType DataItemReportType { set; get; }
-        public DP_SearchRepository SearchRepository { set; get; }
+        public SavedSearchRepositoryDTO SearchRepository { set; get; }
         //public EntityListReportDTO EntityListReport { set; get; }
         //public EntityListReportGroupedDTO EntityListReportGrouped { set; get; }
         //public EntityChartReportDTO EntityChartReport { set; get; }
@@ -1392,6 +1392,16 @@ namespace ModelEntites
         public string EntityPath { set; get; }
         //public int EntityListViewRelationshipTailsID { set; get; }
         public int RelationshipTailID { set; get; }
+        public string RelationshipPath
+        {
+            get
+            {
+                if (RelationshipTail == null)
+                    return "";
+                else
+                    return RelationshipTail.RelationshipIDPath;
+            }
+        }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }
 
         //string _RelativeColumnName;
@@ -1403,7 +1413,7 @@ namespace ModelEntites
             }
         }
 
-        public string CreateRelationshipTailPath { get; set; }
+        //    public string CreateRelationshipTailPath { get; set; }
         public bool IsDescriptive { get; set; }
         //  public bool AllRelationshipsAreSubToSuper { get; set; }
         public string Tooltip { get; set; }
@@ -1441,21 +1451,26 @@ namespace ModelEntites
         public short OrderID { set; get; }
         public short WidthUnit { set; get; }
         public string Alias { set; get; }
-        public string RelationshipPath { set; get; }
+        public string RelationshipPath
+        {
+            get
+            {
+                if (RelationshipTail == null)
+                    return "";
+                else
+                    return RelationshipTail.RelationshipIDPath;
+            }
+        }
         //public int EntitySearchRelationshipTailsID { set; get; }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }
         public int RelationshipTailID { set; get; }
-
         public bool RelationshipTailSelectable { set; get; }
-        public string CreateRelationshipTailPath { get; set; }
+        //     public string CreateRelationshipTailPath { get; set; }
         //  public bool AllRelationshipsAreSubToSuper { get; set; }
         public string Tooltip { get; set; }
-
         public bool ExcludeInQuickSearch { get; set; }
-
         public ColumnUISettingDTO ColumnUISetting { get; set; }
         public RelationshipUISettingDTO RelationshipUISetting { get; set; }
-
         public List<SimpleSearchOperator> Operators { set; get; }
         //    public bool ShowInSearchUI { get; set; }
         //public int CreateRelationshipTargetEntityID { get; set; }
@@ -2834,6 +2849,11 @@ namespace ModelEntites
     public class EntityRelationshipTailDTO
     {
         public EntityRelationshipTailDTO()
+        {
+            //RelationshipColumns = new List<ModelEntites.RelationshipColumnDTO>();
+
+        }
+        public EntityRelationshipTailDTO(int InitialEntityID, string RelationshipIDPath, int TargetEntityID)
         {
             //RelationshipColumns = new List<ModelEntites.RelationshipColumnDTO>();
 

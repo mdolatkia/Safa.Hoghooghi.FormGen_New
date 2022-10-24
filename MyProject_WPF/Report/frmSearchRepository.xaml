@@ -25,9 +25,39 @@
             <TextBlock Text="عنوان"/>
             <TextBox Grid.Column="1" x:Name="txtTitle"/>
             <TextBlock Grid.Column="0" Grid.Row="1" Text="نوع جستجو"/>
-            <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" NewItemEnabled="True" EditItemEnabled="True"  x:Name="lokEntitySearch"  />
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" >
+                <RadioButton VerticalAlignment="Center" Name="optPreDefined" Checked="optPreDefined_Checked" Content="جستجوی از پیش تعریف شده"></RadioButton>
+                <RadioButton VerticalAlignment="Center" Name="optAdvanced" Checked="optPreDefined_Checked" Content="جستجوی از پیش تعریف شده"></RadioButton>
+            </StackPanel>
         </Grid>
-        <Grid Grid.Row="1" x:Name="grdSearch"></Grid>
+        <Grid Grid.Row="1" x:Name="grdSearch">
+            <TabControl>
+                <TabItem Name="tabPreDefined" Header="جستجوی از پیش تعریف شده">
+                    <Grid  x:Name="grdPredefined">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid Margin="10">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"  Text="نوع جستجو"/>
+                            <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" NewItemEnabled="True" EditItemEnabled="True"  x:Name="lokEntitySearch"  />
+                        </Grid>
+                        <Grid Grid.Row="1" x:Name="grdPreDefinedView"></Grid>
+                    </Grid>
+                </TabItem>
+                <TabItem Name="tabAdvanced" Header="جستجوی پیشرفته">
+                    <Grid Grid.Row="1" x:Name="grdAdvancedSearchView"></Grid>
+                </TabItem>
+            </TabControl>
+
+        </Grid>
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="ثبت" x:Name="btnSave" Click="btnSave_Click"></Button>
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="جدید" x:Name="btnNew" Click="btnNew_Click"></Button>

@@ -110,7 +110,7 @@ namespace MyUILibrary.EntityArea.Commands
                     EditArea.ClearData();
                     EditArea.ShowDataFromExternalSource(reuslt.UpdatedItems);
 
-                    //DP_SearchRepository searchDataItem = new DP_SearchRepository(EditArea.AreaInitializer.EntityID);
+                    //DP_SearchRepositoryMain searchDataItem = new DP_SearchRepositoryMain(EditArea.AreaInitializer.EntityID);
                     //foreach (var item in reuslt.UpdatedItems)
                     //{
                     //    var listProperties = new List<EntityInstanceProperty>();

@@ -76,14 +76,14 @@ namespace MyModelManager
         {
             var result = new EntitySearchableReport();
             result.EntityReport = bizEntityReport.ToNewEntityReport(message);
-            result.SearchRepositoryID = message.SearchRepositoryID == 0 ? (Int32?)null : message.SearchRepositoryID;
+            result.SavedSearchRepositoryID = message.SearchRepositoryID == 0 ? (Int32?)null : message.SearchRepositoryID;
             result.SearchableReportType = (short)message.SearchableReportType;
             return result;
         }
         internal void ToUpdateEntitySearchableReport(EntitySearchableReport entitySearchableReport, EntitySearchableReportDTO message)
         {
             bizEntityReport.ToUpdateEntityReport(entitySearchableReport.EntityReport, message);
-            entitySearchableReport.SearchRepositoryID = message.SearchRepositoryID == 0 ? (Int32?)null : message.SearchRepositoryID;
+            entitySearchableReport.SavedSearchRepositoryID = message.SearchRepositoryID == 0 ? (Int32?)null : message.SearchRepositoryID;
         }
     }
 

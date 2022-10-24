@@ -110,8 +110,8 @@ namespace MyModelManager
                 entityReportDTO.SearchableReportType = (SearchableReportType)entityReport.EntitySearchableReport.SearchableReportType;
                 if (withDetails == true)
                 {
-                    if (entityReport.EntitySearchableReport.SearchRepository != null)
-                        entityReportDTO.SearchRepository = new BizSearchRepository().ToSearchRepositoryDTO(entityReport.EntitySearchableReport.SearchRepository);
+                    if (entityReport.EntitySearchableReport.SavedSearchRepository != null)
+                        entityReportDTO.SearchRepository = new BizSearchRepository().ToSavedSearchRepositoryDTO(entityReport.EntitySearchableReport.SavedSearchRepository);
                 }
             }
             if (entityReport.EntityDataItemReport != null)

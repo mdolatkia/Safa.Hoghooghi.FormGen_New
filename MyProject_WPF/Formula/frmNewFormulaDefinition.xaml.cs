@@ -1484,7 +1484,7 @@ namespace MyProject_WPF
                 //child.Relationship = new BizRelationship().GetRelationship(33);
 
                 //SearchRequestManager searchProcessor = new SearchRequestManager();
-                //DP_SearchRepository searchItem = new DP_SearchRepository(75);
+                //DP_SearchRepositoryMain searchItem = new DP_SearchRepositoryMain(75);
                 //searchItem.Phrases.Add(new SearchProperty() { ColumnID = 68, Value = "بانک تجارت" });
 
                 //DP_DataRepository childdata = null;
@@ -1646,7 +1646,7 @@ namespace MyProject_WPF
         //private void View_DataSelected(object sender, DataSelectedArg e)
         //{
         //    SearchRequestManager searchProcessor = new SearchRequestManager();
-        //    DP_SearchRepository searchDataItem = new DP_SearchRepository(Entity.ID);
+        //    DP_SearchRepositoryMain searchDataItem = new DP_SearchRepositoryMain(Entity.ID);
         //    foreach (var property in e.Columns)
         //        searchDataItem.Phrases.Add(new SearchProperty() { ColumnID = property.ColumnID, Value = property.Value });
         //    //سکوریتی داده اعمال میشود

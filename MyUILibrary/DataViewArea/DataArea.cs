@@ -32,9 +32,9 @@ namespace MyUILibrary.DataViewArea
         {
             set; get;
         }
-        DP_SearchRepository SearchRepository { set; get; }
+        DP_SearchRepositoryMain SearchRepository { set; get; }
 
-        public void GetDataItemsBySearchRepository(DP_SearchRepository searchRepository)
+        public void GetDataItemsBySearchRepository(DP_SearchRepositoryMain searchRepository)
         {
             SearchRepository = searchRepository;
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();

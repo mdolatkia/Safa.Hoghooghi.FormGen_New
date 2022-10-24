@@ -44,7 +44,7 @@ namespace MyModelManager
         }
         public EntitySearchDTO GetOrCreateEntitySearchDTO(DR_Requester requester, int entityID)
         {
-            entityID    66880   stackoverflow
+            //entityID    66880   stackoverflow
             //** 9f233c74-615c-4bd5-abf8-ec6a26985ad9
             EntitySearchDTO result = null;
             using (var projectContext = new DataAccess.MyIdeaEntities())
@@ -61,7 +61,7 @@ namespace MyModelManager
                     result.TableDrivedEntityID = entityID;
                     result.Title = "لیست جستجوی پیش فرض";
                     result.IsDefault = true;
-                    result.EntitySearchAllColumns = GenereateDefaultSearchColumns(entityDTO, null);
+                    result.EntitySearchAllColumns = GenereateDefaultSearchColumns(entityDTO);
                 }
 
             }
@@ -167,11 +167,14 @@ namespace MyModelManager
             }
             return result;
         }
-        private List<EntitySearchColumnsDTO> GenereateDefaultSearchColumns(TableDrivedEntityDTO entity, List<EntitySearchColumnsDTO> list = null, string relationshipPath = "", List<RelationshipDTO> relationships = null)
+        private List<EntitySearchColumnsDTO> GenereateDefaultSearchColumns(TableDrivedEntityDTO firstEntity, TableDrivedEntityDTO entity = null, List<EntitySearchColumnsDTO> list = null, string relationshipPath = "", List<RelationshipDTO> relationships = null)
         {
             //** 8ab306e9-0d52-4be6-95c0-9e5b4c36a21c
+
             if (list == null)
                 list = new List<EntitySearchColumnsDTO>();
+            if (entity == null)
+                entity = firstEntity;
             //   AddSearchColumns(entity, list, relationshipPath, relationships);
             if (entity.IsView == false)
             {
@@ -235,14 +238,14 @@ namespace MyModelManager
                             }
                         }
                         var resultColumn = new EntitySearchColumnsDTO();
-                        resultColumn.CreateRelationshipTailPath = relationshipPath + (relationshipPath == "" ? "" : ",") + shoudAddRelationship.ID.ToString();
+                        resultColumn.RelationshipTail = new EntityRelationshipTailDTO(firstEntity.ID, relationshipPath + (relationshipPath == "" ? "" : ",") + shoudAddRelationship.ID.ToString(), shoudAddRelationship.EntityID2);
                         resultColumn.Alias = shoudAddRelationship.Entity2Alias + (shoudAddRelationshipAlias == "" ? "" : "." + shoudAddRelationshipAlias);
                         resultColumn.Tooltip = shoudAddRelationship.Entity2Alias + (shoudAddRelationshipAlias == "" ? "" : "." + shoudAddRelationshipAlias);
                         list.Add(resultColumn);
                     }
                     if (shoudAddColumn)
                     {
-                        AddSearchColumns(entity, list, column, relationshipPath, relationships);
+                        AddSearchColumns(firstEntity, entity, list, column, relationshipPath, relationships);
                     }
                     if (shoudCheckRelationship != null)
                     {
@@ -255,7 +258,7 @@ namespace MyModelManager
                         }
                         relationshipsTail.Add(shoudCheckRelationship);
                         var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(shoudCheckRelationship.EntityID2, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
-                        GenereateDefaultSearchColumns(entityDTO, list, relationshipPath + (relationshipPath == "" ? "" : ",") + shoudCheckRelationship.ID.ToString(), relationshipsTail);
+                        GenereateDefaultSearchColumns(firstEntity, entityDTO, list, relationshipPath + (relationshipPath == "" ? "" : ",") + shoudCheckRelationship.ID.ToString(), relationshipsTail);
                     }
 
                 }
@@ -264,7 +267,7 @@ namespace MyModelManager
             {
                 foreach (var column in entity.Columns)
                 {
-                    AddSearchColumns(entity, list, column, relationshipPath, relationships);
+                    AddSearchColumns(firstEntity, entity, list, column, relationshipPath, relationships);
                 }
             }
 
@@ -278,7 +281,7 @@ namespace MyModelManager
             return list;
         }
 
-        private void AddSearchColumns(TableDrivedEntityDTO entity, List<EntitySearchColumnsDTO> list, ColumnDTO column, string relationshipPath, List<RelationshipDTO> relationships)
+        private void AddSearchColumns(TableDrivedEntityDTO firstEntity, TableDrivedEntityDTO entity, List<EntitySearchColumnsDTO> list, ColumnDTO column, string relationshipPath, List<RelationshipDTO> relationships)
         {
             if (list.Any(x => x.ColumnID == column.ID))
                 return;
@@ -288,7 +291,8 @@ namespace MyModelManager
             var resultColumn = new EntitySearchColumnsDTO();
             resultColumn.ColumnID = column.ID;
             resultColumn.Column = column;
-            resultColumn.CreateRelationshipTailPath = relationshipPath;
+            if (!string.IsNullOrEmpty(relationshipPath))
+                resultColumn.RelationshipTail = new EntityRelationshipTailDTO(firstEntity.ID, relationshipPath, entity.ID);
             string entityAlias = "";
             string entityTooltip = "";
             if (relationships != null)
@@ -443,15 +447,16 @@ namespace MyModelManager
                 rColumn.OrderID = column.OrderID;
                 // rColumn.WidthUnit = column.WidthUnit;
 
-                if (string.IsNullOrEmpty(column.CreateRelationshipTailPath))
-                    rColumn.EntityRelationshipTailID = column.RelationshipTailID == 0 ? (int?)null : column.RelationshipTailID;
-                else
+
+
+                rColumn.EntityRelationshipTailID = column.RelationshipTailID == 0 ? (int?)null : column.RelationshipTailID;
+                if (column.RelationshipTail != null && column.RelationshipTail.ID == 0)
                 {
-                    if (createdRelationshipTails.Any(x => x.TableDrivedEntityID == message.TableDrivedEntityID && x.RelationshipPath == column.CreateRelationshipTailPath))
-                        rColumn.EntityRelationshipTail = createdRelationshipTails.First(x => x.TableDrivedEntityID == message.TableDrivedEntityID && x.RelationshipPath == column.CreateRelationshipTailPath);
+                    if (createdRelationshipTails.Any(x => x.TableDrivedEntityID == message.TableDrivedEntityID && x.RelationshipPath == column.RelationshipTail.RelationshipIDPath))
+                        rColumn.EntityRelationshipTail = createdRelationshipTails.First(x => x.TableDrivedEntityID == message.TableDrivedEntityID && x.RelationshipPath == column.RelationshipTail.RelationshipIDPath);
                     else
                     {
-                        var relationshipTail = bizEntityRelationshipTail.GetOrCreateEntityRelationshipTail(projectContext, message.TableDrivedEntityID, column.CreateRelationshipTailPath);
+                        var relationshipTail = bizEntityRelationshipTail.GetOrCreateEntityRelationshipTail(projectContext, message.TableDrivedEntityID, column.RelationshipTail.RelationshipIDPath);
                         createdRelationshipTails.Add(relationshipTail);
                         rColumn.EntityRelationshipTail = relationshipTail;
                     }

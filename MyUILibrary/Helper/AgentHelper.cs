@@ -286,7 +286,7 @@ namespace MyUILibrary
 
 
 
-        //internal static DP_SearchRepository ExtractSearchAreaInitializerData(SearchEntityAreaInitializer areaInitializer, DP_SearchRepository sourceRelatedData = null)
+        //internal static DP_SearchRepositoryMain ExtractSearchAreaInitializerData(SearchEntityAreaInitializer areaInitializer, DP_SearchRepositoryMain sourceRelatedData = null)
         //{
         //    //int relationID = 0;
 
@@ -297,7 +297,7 @@ namespace MyUILibrary
         //            sourceRelatedData = AreaInitializer.SourceRelationColumnControl.RelatedData;
         //        }
 
-        //    DP_SearchRepository dataResult = null;
+        //    DP_SearchRepositoryMain dataResult = null;
         //    //foreach (var data in areaInitializer.SearchData)
         //    //{
         //    if (sourceRelatedData == null)
@@ -637,15 +637,15 @@ namespace MyUILibrary
             return false;
         }
 
-        //internal static DP_SearchRepository CreateNewSearchRepository(SearchEntityAreaInitializer areaInitializer)
+        //internal static DP_SearchRepositoryMain CreateNewSearchRepository(SearchEntityAreaInitializer areaInitializer)
         //{
 
 
         //}
-        //internal static DP_SearchRepository CreateAreaInitializerNewData(SearchEntityAreaInitializer areaInitializer)
+        //internal static DP_SearchRepositoryMain CreateAreaInitializerNewData(SearchEntityAreaInitializer areaInitializer)
         //{
 
-        //    ////var result = new DP_SearchRepository();
+        //    ////var result = new DP_SearchRepositoryMain();
         //    ////if (areaInitializer.SourceRelationID != 0)
         //    ////{
         //    ////    //result.SourceRelatedData = AreaInitializer.SourceRelationColumnControl.RelatedData;
@@ -906,7 +906,7 @@ namespace MyUILibrary
         //    throw new Exception("asdsadaa");
         //}
 
-        //internal static string GetTypePropertyValue(DP_SearchRepository dataRepository, ColumnDTO typeProperty)
+        //internal static string GetTypePropertyValue(DP_SearchRepositoryMain dataRepository, ColumnDTO typeProperty)
         //{
         //    foreach (SearchProperty prop in dataRepository.Phrases.Where(x => x is SearchProperty))
         //    {
@@ -1280,8 +1280,83 @@ namespace MyUILibrary
             return result;
 
         }
+        public static DP_SearchRepositoryMain GetQuickSearchLogicPhrase(EntitySearchDTO entitySearchDTO, int entityID, string text)
+        {
+            //** 2e5350c5-667f-40af-b346-8384c544000f
+            var quickSearchLogic = new DP_SearchRepositoryMain(entityID);
+            //  quickSearchLogic.Title = SearchInitializer.Title;
+            //quickSearchLogic.IsSimpleSearch = true;
+            //quickSearchLogic.EntitySearchID = entitySearchDTO.ID;
+            quickSearchLogic.AndOrType = AndOREqualType.Or;
+            foreach (var item in entitySearchDTO.EntitySearchAllColumns)
+            {
+                if (item.ColumnID != 0 && item.ExcludeInQuickSearch == false)
+                {
+                    SearchProperty searchProperty = new SearchProperty();
+             //       searchProperty.SearchColumnID = item.ID;
+                    searchProperty.ColumnID = item.ColumnID;
+                    searchProperty.IsKey = item.Column.PrimaryKey;
+                    searchProperty.Value = text;
+                    LogicPhraseDTO logic = null;
+                    if (item.RelationshipTail == null)
+                        logic = quickSearchLogic;
+                    else
+                    {
+                        logic = AgentHelper.GetOrCreateSearchRepositoryFromRelationshipTail(quickSearchLogic, item.RelationshipTail);
+                        logic.AndOrType = AndOREqualType.Or;
+                    }
 
+                    int n;
+                    var isNumeric = int.TryParse(text, out n);
+                    DateTime a;
+                    var isDateTime = DateTime.TryParse(text, out a);
 
+                    if (item.Column.ColumnType == Enum_ColumnType.Numeric)
+                    {
+                        if (!isNumeric)
+                            continue;
+                        searchProperty.Operator = CommonOperator.Equals;
+                    }
+                    else if (item.Column.ColumnType == Enum_ColumnType.Date)
+                        continue;
+                    else if (item.Column.ColumnType == Enum_ColumnType.Boolean)
+                        continue;
+                    else if (item.Column.ColumnType == Enum_ColumnType.String)
+                        searchProperty.Operator = CommonOperator.Contains;
+                    else
+                        continue;
+                    logic.Phrases.Add(searchProperty);
+                }
+            }
+            return quickSearchLogic;
+        }
+        internal static DP_SearchRepositoryRelationship GetOrCreateSearchRepositoryFromRelationshipTail(LogicPhraseDTO result, EntityRelationshipTailDTO relationshipTail)
+        {
+            if (relationshipTail == null)
+            {
+                var searchRep = result as DP_SearchRepositoryRelationship;
+                return searchRep;
+            }
+            else
+            {
+                if (result.Phrases.Any(x => x is DP_SearchRepositoryRelationship && (x as DP_SearchRepositoryRelationship).SourceRelationship.ID == relationshipTail.Relationship.ID))
+                {
+                    var childSearchPhrase = result.Phrases.First(x => x is DP_SearchRepositoryRelationship && (x as DP_SearchRepositoryRelationship).SourceRelationship.ID == relationshipTail.Relationship.ID);
+                    return GetOrCreateSearchRepositoryFromRelationshipTail(childSearchPhrase as LogicPhraseDTO, relationshipTail.ChildTail);
+                }
+                else
+                {
+                    DP_SearchRepositoryRelationship childSearchPhrase = new DP_SearchRepositoryRelationship();
+                    childSearchPhrase.SourceRelationship = relationshipTail.Relationship;
+                    childSearchPhrase.Title = relationshipTail.EntityPath;
+                    //childSearchPhrase.TargetEntityID = ;
+                    //   childSearchPhrase.SourceToTargetRelationshipType = relationshipTail.Relationship.TypeEnum;
+                    //  childSearchPhrase.SourceToTargetMasterRelationshipType = relationshipTail.Relationship.MastertTypeEnum;
+                    result.Phrases.Add(childSearchPhrase);
+                    return GetOrCreateSearchRepositoryFromRelationshipTail(childSearchPhrase, relationshipTail.ChildTail);
+                }
+            }
+        }
         //private static EditEntityAreaWithDataByRelationshipTail GetFirstEntityAreaWithExistingDataByRelationshipTail(I_EditEntityArea editEntityArea, EntityRelationshipTailDTO entityRelationshipTail, DP_DataRepository relatedData)
         //{
 
@@ -1331,7 +1406,7 @@ namespace MyUILibrary
 
         //}
 
-       
+
 
         //private static List<EntityInstanceProperty> GetRelationshipColumnValues(DP_DataRepository foundData, RelationshipDTO relationship)
         //{

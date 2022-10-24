@@ -22,7 +22,7 @@ namespace MyLetterGenerator
         public byte[] GenerateLetter(int letterTemplateID, List<EntityInstanceProperty> keyProperties, DR_Requester requester)
         {
             var letterTemplete = bizLetterTemplate.GetMainLetterTepmplate(requester, letterTemplateID);
-            DP_SearchRepository searchDataItem = new DP_SearchRepository(letterTemplete.TableDrivedEntityID);
+            DP_SearchRepositoryMain searchDataItem = new DP_SearchRepositoryMain(letterTemplete.TableDrivedEntityID);
             foreach (var property in keyProperties)
                 searchDataItem.Phrases.Add(new SearchProperty() { ColumnID = property.ColumnID, Value = property.Value });
 

@@ -65,14 +65,15 @@ namespace MyUILibrary.EntitySearchArea
                
                 var searchViewInitializer = new SearchAreaInitializer();
                 searchViewInitializer.EntityID = entity.ID;
-                //searchViewInitializer.TempEntity = FullEntity;
+            
                 searchViewInitializer.PreDefinedSearch = AreaInitializer.PreDefinedSearch;
                 if (AreaInitializer.PreDefinedSearch != null)
                 {
-                    searchViewInitializer.EntitySearchID = AreaInitializer.PreDefinedSearch.EntitySearchID;
+                 ////   searchViewInitializer.EntitySearchID = AreaInitializer.PreDefinedSearch.EntitySearchID;
+                ////اینجا چطور؟؟؟
                 }
                 SearchArea = new SearchEntityArea(searchViewInitializer);
-             //   SearchArea.SetAreaInitializer();
+         
                 SearchArea.SearchDataDefined += SearchArea_SearchDataDefined;
 
                 if (EntitySelected != null)
@@ -81,14 +82,11 @@ namespace MyUILibrary.EntitySearchArea
             else
             {
                 SearchArea = null;
-                //if (SearchDataDefined != null)
-                //    SearchDataDefined(this, null);
+             
 
                 if (EntitySelected != null)
                     EntitySelected(this, null);
-                //View.RemoveDataSelector();
-                //if (DataItemSelected != null)
-                //    DataItemSelected(this, new EditAreaDataItemArg() { DataItem = null });
+             
             }
         }
 

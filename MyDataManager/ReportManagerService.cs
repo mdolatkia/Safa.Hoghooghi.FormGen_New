@@ -59,7 +59,7 @@ namespace MyDataManagerService
         //{
         //    return bizEntityDataLinkReport.GetEntityDataLinkReport(reportID, true);
         //}
-        public long GetExternalReportKey(DR_Requester requester, int reportID, int entityID, DP_SearchRepository searchItem)
+        public long GetExternalReportKey(DR_Requester requester, int reportID, int entityID, DP_SearchRepositoryMain searchItem)
         {
             return myExternalReportHandler.GetExternalReportKey(requester, reportID, entityID, searchItem);
         }

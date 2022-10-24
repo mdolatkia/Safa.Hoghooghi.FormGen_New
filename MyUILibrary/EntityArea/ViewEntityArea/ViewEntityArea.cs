@@ -21,18 +21,33 @@ namespace MyUILibrary.EntityArea
             ViewCommands = new List<I_ViewAreaCommand>();
             ViewColumnControls = new List<SimpleViewColumnControl>();
             ViewInitializer = initParam;
+
+            ViewForViewEntityArea = AgentUICoreMediator.UIManager.GenerateViewOfViewEntityArea();
+            ViewForViewEntityArea.MultipleSelection = ViewInitializer.MultipleSelection;
+            var selectcommand = new SelectCommand(this);
+            ViewForViewEntityArea.AddCommand(selectcommand.CommandManager);
+            ViewForViewEntityArea.DataContainerLoaded += ViewView_DataContainerLoaded;
+            ViewForViewEntityArea.ItemDoubleClicked += ViewView_ItemDoubleClicked;
+
+            ManageViewView();
+
             //if (initParam.TempEntity != null)
             //    _FullEntity = initParam.TempEntity;
 
-            GenerateView();
+
         }
-      
+
         public ViewEntityAreaInitializer ViewInitializer { set; get; }
         //public I_EditEntityArea SourceEditEntityArea
         //{
         //    set;
         //    get;
         //}
+
+        public I_View_ViewEntityArea ViewForViewEntityArea
+        {
+            set; get;
+        }
 
 
         public List<I_ViewAreaCommand> ViewCommands
@@ -47,7 +62,7 @@ namespace MyUILibrary.EntityArea
                 return AgentUICoreMediator.GetAgentUICoreMediator;
             }
         }
-      
+
 
         //internal static void ShowReport(List<DP_DataRepository> resultDataItems, bool v)
         //{
@@ -130,31 +145,7 @@ namespace MyUILibrary.EntityArea
         //    AgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(SearchViewArea, ViewInitializer.SearchEntity.Alias);
         //}
 
-      
-        private void GenerateView()
-        {
-            ViewView = AgentUICoreMediator.UIManager.GenerateViewOfViewEntityArea();
-            ViewView.MultipleSelection = ViewInitializer.MultipleSelection;
-            var selectcommand = new SelectCommand(this);
-            ViewView.AddCommand(selectcommand.CommandManager);
-            ViewView.DataContainerLoaded += ViewView_DataContainerLoaded;
-            ViewView.ItemDoubleClicked += ViewView_ItemDoubleClicked;
 
-            //  ViewView.CommandExecuted += ViewView_CommandExecuted;
-            //ViewView.DataSelected += ViewView_DataSelected;
-
-            //if (ViewInitializer.ViewEntity.Columns.Count == 0)
-            //{
-
-            //    var result = GetFullEntity(ViewInitializer.ViewEntity.ID);
-            //    ViewInitializer.ViewEntity = result.Entity;
-            //    ViewInitializer.Permissoins = result.Permissoins;
-            //    ViewInitializer.UICompositions = result.UICompositions;
-
-            //}
-
-            ManageViewView();
-        }
 
         private void ViewView_ItemDoubleClicked(object sender, DataContainerLoadedArg e)
         {
@@ -199,9 +190,9 @@ namespace MyUILibrary.EntityArea
             foreach (var columnControl in ViewColumnControls)
             {
 
-            //    columnControl.Visited = true;
+                //    columnControl.Visited = true;
                 var simpleColumn = (columnControl as SimpleViewColumnControl);
-                ViewView.AddUIControlPackage(simpleColumn.ControlManager, simpleColumn.LabelControlManager);
+                ViewForViewEntityArea.AddUIControlPackage(simpleColumn.ControlManager, simpleColumn.LabelControlManager);
             }
         }
 
@@ -394,7 +385,7 @@ namespace MyUILibrary.EntityArea
 
         //public I_View_SearchEntityArea SearchView { set; get; }
 
-        public I_View_ViewEntityArea ViewView { set; get; }
+
 
         //////public IAG_View_TemporaryView TemporarySearchView { set; get; }
 
@@ -472,7 +463,7 @@ namespace MyUILibrary.EntityArea
             // ShowTypePropertyData(ViewInitializer.ViewData);
 
             List<DP_DataView> selectedData = new List<DP_DataView>();
-            var viewSelectedData = ViewView.GetSelectedData();
+            var viewSelectedData = ViewForViewEntityArea.GetSelectedData();
 
 
             if (ViewInitializer.MultipleSelection == false)
@@ -491,7 +482,7 @@ namespace MyUILibrary.EntityArea
         }
         public void ClearSelectedData()
         {
-            ViewView.SetSelectedData(null);
+            ViewForViewEntityArea.SetSelectedData(null);
         }
         public void AddData(List<DP_DataView> data, bool show)
         {
@@ -502,7 +493,7 @@ namespace MyUILibrary.EntityArea
 
             }
             ViewInitializer.ViewData.Clear();
-            ViewView.RemoveDataContainers();
+            ViewForViewEntityArea.RemoveDataContainers();
             ViewInitializer.ViewData.AddRange(data);
 
             if (show)
@@ -515,7 +506,7 @@ namespace MyUILibrary.EntityArea
                 throw new Exception("sdf");
             foreach (var item in specificDatas)
             {
-                ViewView.AddDataContainer(item);
+                ViewForViewEntityArea.AddDataContainer(item);
                 ShowTypePropertyData(item);
             }
 
@@ -651,6 +642,9 @@ namespace MyUILibrary.EntityArea
                 return _EntityListView;
             }
         }
+
+        public I_View_TemporaryView LastTemporaryView { set; get; }
+
         //private bool CheckRelationshipTailPermission(EntityRelationshipTailDTO relationshipTail, bool first = true)
         //{
         //    if (first)

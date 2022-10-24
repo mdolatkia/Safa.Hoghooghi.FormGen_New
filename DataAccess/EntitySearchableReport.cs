@@ -22,7 +22,7 @@ namespace DataAccess
     
         public int ID { get; set; }
         public Nullable<short> SearchableReportType { get; set; }
-        public Nullable<int> SearchRepositoryID { get; set; }
+        public Nullable<int> SavedSearchRepositoryID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
@@ -33,6 +33,6 @@ namespace DataAccess
         public virtual EntityGridViewReport EntityGridViewReport { get; set; }
         public virtual EntityListReport EntityListReport { get; set; }
         public virtual EntityReport EntityReport { get; set; }
-        public virtual SearchRepository SearchRepository { get; set; }
+        public virtual SavedSearchRepository SavedSearchRepository { get; set; }
     }
 }

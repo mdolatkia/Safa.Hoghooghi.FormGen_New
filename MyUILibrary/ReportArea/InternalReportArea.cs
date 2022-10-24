@@ -24,7 +24,7 @@ namespace MyUILibrary.EntityArea
     {
         ReportResolver reportResolver = new ReportResolver();
         //  EntityReportDTO Report { set; get; }
-        //    DP_SearchRepository InitialSearchRepository { set; get; }
+        //    DP_SearchRepositoryMain InitialSearchRepository { set; get; }
         public bool SecurityNoAccess { set; get; }
         public bool SecurityReadonly { set; get; }
         public bool SecurityEdit { set; get; }
@@ -39,8 +39,8 @@ namespace MyUILibrary.EntityArea
             //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + initParam.ReportID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
             //    return;
             //}
-           
-              View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfInternalReportArea();
+
+            View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfInternalReportArea();
             View.Title = AreaInitializer.Title;
             View.OrderColumnsChanged += View_OrderColumnsChanged;
             View.ExceptionThrown += View_ExceptionThrown;
@@ -156,8 +156,8 @@ namespace MyUILibrary.EntityArea
         //{
         //    set; get;
         //}
-        DP_SearchRepository SearchRepository { set; get; }
-        private void SetReport(DP_SearchRepository searchRepository)
+        DP_SearchRepositoryMain SearchRepository { set; get; }
+        private void SetReport(DP_SearchRepositoryMain searchRepository)
         {
             SearchRepository = searchRepository;
 
@@ -188,7 +188,7 @@ namespace MyUILibrary.EntityArea
                 }
                 var reportEngineConnection = "engine=RestService;uri=http://localhost/MyReportRestServices/api/reports;useDefaultCredentials=True";
                 List<Type> types = new List<Type>();
-                types.Add(typeof(DP_SearchRepository));
+                types.Add(typeof(DP_SearchRepositoryMain));
                 //types.Add(typeof(LogicPhrase));
                 types.Add(typeof(SearchProperty));
                 RemoveUnWantedTypes(request.SearchDataItems);
@@ -210,11 +210,11 @@ namespace MyUILibrary.EntityArea
 
         }
 
-        private void RemoveUnWantedTypes(DP_SearchRepository searchRepository)
+        private void RemoveUnWantedTypes(LogicPhraseDTO searchRepository)
         {
-            if (searchRepository.SourceRelationship != null)
+            if ((searchRepository is DP_SearchRepositoryRelationship) && (searchRepository as DP_SearchRepositoryRelationship).SourceRelationship != null)
             {
-                foreach (var column in searchRepository.SourceRelationship.RelationshipColumns)
+                foreach (var column in (searchRepository as DP_SearchRepositoryRelationship).SourceRelationship.RelationshipColumns)
                 {
                     if (column.FirstSideColumn != null)
                         column.FirstSideColumn.DotNetType = null;
@@ -224,15 +224,9 @@ namespace MyUILibrary.EntityArea
             }
             foreach (var item in searchRepository.Phrases)
             {
-                if (item is DP_SearchRepository)
-                    RemoveUnWantedTypes(item as DP_SearchRepository);
-                else if (item is LogicPhraseDTO)
+                if (item is LogicPhraseDTO)
                 {
-                    foreach (var log in (item as LogicPhraseDTO).Phrases)
-                    {
-                        if (log is DP_SearchRepository)
-                            RemoveUnWantedTypes(log as DP_SearchRepository);
-                    }
+                    RemoveUnWantedTypes(item as LogicPhraseDTO);
                 }
             }
         }
@@ -289,7 +283,7 @@ namespace MyUILibrary.EntityArea
 
         //    //////ViewEntityArea.ShowReport(reuslt.ResultDataItems, true);
         //}
-        //private DP_SearchRepository FindOrCreateSearchItem(List<DP_SearchRepository> dataList, DP_SearchRepository mainItem, EntityRelationshipTailDTO searchRelationshipTail)
+        //private DP_SearchRepositoryMain FindOrCreateSearchItem(List<DP_SearchRepositoryMain> dataList, DP_SearchRepositoryMain mainItem, EntityRelationshipTailDTO searchRelationshipTail)
         //{
         //    if (searchRelationshipTail == null)
         //        return mainItem;
@@ -301,7 +295,7 @@ namespace MyUILibrary.EntityArea
         //       ////    //sourcecolumn , target کجا ست میشوند؟؟
         //       ////    //فهمیدم اول کار  CreateDefaultData(); برای هر فرم صدا زده میشود
         //       ////    //بهتر شود که دوباره کاری نشود
-        //       ////    foundItem = new DP_SearchRepository();
+        //       ////    foundItem = new DP_SearchRepositoryMain();
         //       ////    foundItem.SourceRelatedData = mainItem;
         //       ////    foundItem.TargetEntityID = searchRelationshipTail.RelationshipTargetEntityID;
         //       ////    foundItem.SourceToTargetRelationshipType = searchRelationshipTail.SourceToTargetRelationshipType;

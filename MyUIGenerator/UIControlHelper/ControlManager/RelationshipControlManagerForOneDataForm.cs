@@ -275,13 +275,13 @@ namespace MyUIGenerator.UIControlHelper
 
 
 
-        public void SetQuickSearchVisibility(object parentData, bool v)
-        {
-            if (MainControl is I_View_TemporaryView)
-            {
-                (MainControl as I_View_TemporaryView).QuickSearchVisibility = v;
-            }
-        }
+        //public void SetQuickSearchVisibility(object parentData, bool v)
+        //{
+        //    if (MainControl is I_View_TemporaryView)
+        //    {
+        //        (MainControl as I_View_TemporaryView).QuickSearchVisibility = v;
+        //    }
+        //}
 
         public void SetTooltip(string tooltip)
         {

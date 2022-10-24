@@ -48,7 +48,7 @@ namespace MyUILibraryInterfaces.DataReportArea
         //public EntityRelationshipTailDTO CausingRelationshipTail { set; get; }
         public int EntitiyID { set; get; }
         //public TableDrivedEntityDTO Entitiy { set; get; }
-        public DP_SearchRepository SearchRepository { set; get; }
+        public DP_SearchRepositoryMain SearchRepository { set; get; }
     }
   
    

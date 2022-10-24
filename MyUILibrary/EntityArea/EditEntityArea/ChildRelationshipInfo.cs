@@ -218,7 +218,7 @@ namespace MyUILibrary.EntityArea
                     tempView.ButtonClearEnabled = clearCommandEnablity;
                     tempView.ButtonSearchFormEnabled = searchCommandEnablity;
                     tempView.ButtonPopupEnabled = searchCommandEnablity;
-                    tempView.ButtonQuickSearchEnabled = searchCommandEnablity;
+                    tempView.InfoTextboxReadOnly = !searchCommandEnablity;
 
                     //bool quickSearchEnablity = true;
                     //if (!searchCommandEnablity)
@@ -1462,7 +1462,7 @@ namespace MyUILibrary.EntityArea
         private bool ConvertDataViewToFullData(int entityID, DP_FormDataRepository dataITem, I_EditEntityArea editEntityArea)
         {
             //اوکی نشده
-            DP_SearchRepository SearchDataItem = new DP_SearchRepository(entityID);
+            DP_SearchRepositoryMain SearchDataItem = new DP_SearchRepositoryMain(entityID);
             foreach (var col in dataITem.KeyProperties)
             {
                 SearchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
@@ -1489,18 +1489,18 @@ namespace MyUILibrary.EntityArea
                 return false;
             }
         }
-        public I_View_TemporaryView LastTemporaryView { set; get; }
+       // public I_View_TemporaryView LastTemporaryView { set; get; }
         public bool DateSecurityIssue { get; private set; }
 
         public void TemporaryViewActionRequested(I_View_TemporaryView TemporaryView, TemporaryLinkType linkType)
         {
             RelationshipControl.GenericEditNdTypeArea.ChildRelationshipInfoBinded = this;
-            if (LastTemporaryView != null)
-            {
-                if (LastTemporaryView.HasPopupView)
-                    LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.ViewView);
-            }
-            LastTemporaryView = TemporaryView;
+            //if (LastTemporaryView != null)
+            //{
+            //    if (LastTemporaryView.HasPopupView)
+            //        LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.ViewForViewEntityArea);
+            //}
+         //   LastTemporaryView = TemporaryView;
             if (linkType == TemporaryLinkType.DataView)
             {
                 DataViewRequested();
@@ -1509,22 +1509,30 @@ namespace MyUILibrary.EntityArea
             {
                 ShowSearchView(false);
             }
-            else if (linkType == TemporaryLinkType.QuickSearch)
-            {
+            //else if (linkType == TemporaryLinkType.QuickSearch)
+            //{
 
-                TemporaryView.QuickSearchVisibility = !TemporaryView.QuickSearchVisibility;
-                if (TemporaryView.QuickSearchVisibility)
-                    TemporaryView.QuickSearchSelectAll();
-            }
+            //    TemporaryView.QuickSearchVisibility = !TemporaryView.QuickSearchVisibility;
+            //    if (TemporaryView.QuickSearchVisibility)
+            //        TemporaryView.QuickSearchSelectAll();
+            //}
             else if (linkType == TemporaryLinkType.Popup)
             {
+                ////if (!TemporaryView.PopupVisibility)
+                ////{
+                //    RelationshipControl.GenericEditNdTypeArea.ShowTemproraryUIViewArea(TemporaryView);
+                ////    if (!TemporaryView.HasPopupView)
+                ////        TemporaryView.AddPopupView(RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.ViewForViewEntityArea);
+                ////}
+                //TemporaryView.PopupVisibility = !TemporaryView.PopupVisibility;
+
                 if (!TemporaryView.PopupVisibility)
                 {
-                    RelationshipControl.GenericEditNdTypeArea.RemoveViewEntityAreaView();
-                    if (!TemporaryView.HasPopupView)
-                        TemporaryView.AddPopupView(RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.ViewView);
+                    RelationshipControl.GenericEditNdTypeArea.ShowTemproraryUIViewArea(TemporaryView);
                 }
-                TemporaryView.PopupVisibility = !TemporaryView.PopupVisibility;
+                else
+                    TemporaryView.PopupVisibility = false;
+
             }
             else if (linkType == TemporaryLinkType.Clear)
             {
@@ -1539,8 +1547,8 @@ namespace MyUILibrary.EntityArea
 
         public void ShowSearchView(bool fromDataView)
         {
-            if (LastTemporaryView != null)
-                LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.ViewView);
+            //if (LastTemporaryView != null)
+            //    LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.ViewForViewEntityArea);
             RelationshipControl.GenericEditNdTypeArea.ShowSearchView(fromDataView);
         }
         //List<ColumnControlColorItem> GeneralColumnControlColorItems = new List<ColumnControlColorItem>();

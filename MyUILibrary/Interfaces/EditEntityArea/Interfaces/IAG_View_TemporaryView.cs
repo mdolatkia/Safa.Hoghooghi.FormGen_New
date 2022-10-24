@@ -30,19 +30,19 @@ namespace MyUILibrary.EntityArea
         void AddPopupView(I_View_ViewEntityArea viewView);
         void RemovePopupView(I_View_ViewEntityArea viewView);
         bool PopupVisibility { set; get; }
-        bool QuickSearchVisibility { set; get; }
+    //    bool QuickSearchVisibility { set; get; }
         void QuickSearchSelectAll();
 
         bool ButtonPopupVisible { set; get; }
-        bool ButtonQuickSearchVisible { set; get; }
-        bool SearchTextboxVisible { set; get; }
+   //     bool ButtonQuickSearchVisible { set; get; }
+        bool InfoTextboxReadOnly { set; get; }
         bool ButtonDataEditVisible { set; get; }
         bool ButtonSearchFormVisible { set; get; }
         bool ButtonClearVisible { set; get; }
         bool ButtonInfoVisible { set; get; }
 
         bool ButtonPopupEnabled { set; get; }
-        bool ButtonQuickSearchEnabled { set; get; }
+   //     bool ButtonQuickSearchEnabled { set; get; }
         bool ButtonDataEditEnabled { set; get; }
         bool ButtonSearchFormEnabled { set; get; }
         bool ButtonClearEnabled { set; get; }

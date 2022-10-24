@@ -5,153 +5,161 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="1113b070eca644f9abf0b28edeb36b4c" Name="Diagram1">
-        <EntityTypeShape EntityType="MyIdeaModel.ArchiveFolder" Width="1.5" PointX="18" PointY="210.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.ArchiveTag" Width="1.5" PointX="18" PointY="220.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityArchiveRelationshipTails" Width="1.5" PointX="20.25" PointY="172.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityLetterRelationshipTails" Width="1.5" PointX="20.25" PointY="175.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.ArcRelationshipGroup" Width="1.5" PointX="18" PointY="179.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.ArcRelationshipGroup_Relationship" Width="1.5" PointX="25.25" PointY="162.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.BackendActionActivity" Width="1.5" PointX="23.25" PointY="153.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.CharetReportCategories" Width="1.5" PointX="31.5" PointY="207.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.CharetReportSeries" Width="1.5" PointX="31.5" PointY="204.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.CharetReportValues" Width="1.5" PointX="28.5" PointY="207.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.CodeFunction" Width="1.5" PointX="0.75" PointY="142.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.CodeFunction_TableDrivedEntity" Width="1.5" PointX="21" PointY="153.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.CodeFunction_TableDrivedEntity_Parameters" Width="1.5" PointX="11.25" PointY="152.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.CodeFunctionParameter" Width="1.5" PointX="9" PointY="162.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.Column" Width="1.5" PointX="6" PointY="144" />
-        <EntityTypeShape EntityType="MyIdeaModel.ColumnCustomFormula" Width="1.5" PointX="8.25" PointY="142.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.ColumnPhrase" Width="1.5" PointX="30.5" PointY="163.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.ColumnUISetting" Width="1.5" PointX="20.25" PointY="142.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.ColumnValueRange" Width="1.5" PointX="11.25" PointY="144.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.ColumnValueRangeDetails" Width="1.5" PointX="13.5" PointY="144.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.CrosstabReportColumns" Width="1.5" PointX="28.5" PointY="204.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.CrosstabReportRows" Width="1.5" PointX="28.5" PointY="198.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.CrosstabReportValues" Width="1.5" PointX="28.5" PointY="201.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.DatabaseFunction" Width="1.5" PointX="10.5" PointY="155.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.DatabaseFunction_TableDrivedEntity" Width="1.5" PointX="21" PointY="157.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.DatabaseFunction_TableDrivedEntity_Columns" Width="1.5" PointX="23.25" PointY="157.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.DatabaseFunctionParameter" Width="1.5" PointX="12.75" PointY="155.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.DatabaseInformation" Width="1.5" PointX="3" PointY="151.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.DatabaseUISetting" Width="1.5" PointX="5.25" PointY="159.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.DataLinkDefinition" Width="1.5" PointX="18" PointY="158.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.DataLinkDefinition_EntityRelationshipTail" Width="1.5" PointX="22.5" PointY="188.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.DataMenuDataItemReportRelationship" Width="1.5" PointX="22.5" PointY="173.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.DataMenuDataViewRelationship" Width="1.5" PointX="22.5" PointY="193.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.DataMenuForViewEntity" Width="1.5" PointX="28.25" PointY="165.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.DataMenuGridViewRelationship" Width="1.5" PointX="25.5" PointY="194.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.DataMenuSearchableReportRelationship" Width="1.5" PointX="32.75" PointY="181.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.DataMenuSetting" Width="1.5" PointX="20.25" PointY="182.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.DateColumnType" Width="1.5" PointX="8.25" PointY="167.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.DateTimeColumnType" Width="1.5" PointX="8.25" PointY="158.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.DBSchema" Width="1.5" PointX="8.25" PointY="155.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.DBServer" Width="1.5" PointX="0.75" PointY="152.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.EmptySpaceUISetting" Width="1.5" PointX="20.25" PointY="137" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityChartReport" Width="1.5" PointX="23.25" PointY="221" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityCommand" Width="1.5" PointX="3" PointY="145.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityCrosstabReport" Width="1.5" PointX="20.25" PointY="217.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityDataItemReport" Width="1.5" PointX="20.25" PointY="161.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityDataViewReport" Width="1.5" PointX="32.75" PointY="169.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityDeterminer" Width="1.5" PointX="18" PointY="119" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityDirectlReport" Width="1.5" PointX="22.5" PointY="161.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityDirectlReportParameters" Width="1.5" PointX="8.25" PointY="152.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityExternalReport" Width="1.5" PointX="32.75" PointY="159.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityGridViewReport" Width="1.5" PointX="32.75" PointY="172.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityListReport" Width="1.5" PointX="23.25" PointY="217.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityListReportSubs" Width="1.5" PointX="25.5" PointY="208.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityListReportSubsColumns" Width="1.5" PointX="31.5" PointY="197.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityListView" Width="1.5" PointX="18" PointY="216.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityListViewColumns" Width="1.5" PointX="26.25" PointY="185.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityRelationshipTail" Width="1.5" PointX="18" PointY="201.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityRelationshipTailDataMenu" Width="1.5" PointX="20.25" PointY="206.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityRelationshipTailDataMenuItems" Width="1.5" PointX="25.5" PointY="173.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityReport" Width="1.5" PointX="18" PointY="151.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntitySearchableReport" Width="1.5" PointX="30.5" PointY="158.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityState_UIActionActivity" Width="1.5" PointX="20.25" PointY="210.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityUIComposition" Width="1.5" PointX="18" PointY="141" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityUISetting" Width="1.5" PointX="20.25" PointY="147.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityValidation" Width="1.5" PointX="30.5" PointY="155.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.ExplicitOneToOneRelationshipType" Width="1.5" PointX="27.5" PointY="157.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.Formula" Width="1.5" PointX="25.25" PointY="141.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.FormulaItems" Width="1.5" PointX="28.5" PointY="172.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.GraphDefinition" Width="1.5" PointX="22.5" PointY="170.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.GraphDefinition_EntityRelationshipTail" Width="1.5" PointX="30.75" PointY="192.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.GroupUISetting" Width="1.5" PointX="20.25" PointY="139.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.ImplicitOneToOneRelationshipType" Width="1.5" PointX="27.5" PointY="162.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.ISARelationship" Width="1.5" PointX="6" PointY="140" />
-        <EntityTypeShape EntityType="MyIdeaModel.LetterEnabledEntities" Width="1.5" PointX="18" PointY="171.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.LetterSetting" Width="1.5" PointX="3" PointY="140.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.LetterTemplate" Width="1.5" PointX="23.25" PointY="184.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.LetterTemplatePlainField" Width="1.5" PointX="30.5" PointY="167.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.LetterTemplateRelationshipField" Width="1.5" PointX="27.75" PointY="194.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.LetterType" Width="1.5" PointX="18" PointY="121.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.LinearFormula" Width="1.5" PointX="23" PointY="141.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.LinkedServer" Width="1.5" PointX="3" PointY="156.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.LogicPhrase" Width="1.5" PointX="23" PointY="167" />
-        <EntityTypeShape EntityType="MyIdeaModel.MainLetterTemplate" Width="1.5" PointX="25.5" PointY="181.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.ManyToManyRelationshipType" Width="1.5" PointX="28.25" PointY="155" />
-        <EntityTypeShape EntityType="MyIdeaModel.ManyToOneRelationshipType" Width="1.5" PointX="30.5" PointY="151.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.NavigationTree" Width="1.5" PointX="18" PointY="197.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.NumericColumnType" Width="1.5" PointX="8.25" PointY="172.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.OneToManyRelationshipType" Width="1.5" PointX="27.5" PointY="152.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.PartialLetterTemplate" Width="1.5" PointX="25.5" PointY="191.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.Phrase" Width="1.5" PointX="32.75" PointY="163.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.Relationship" Width="1.5" PointX="23" PointY="145.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.RelationshipColumns" Width="1.5" PointX="28.25" PointY="148.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.RelationshipSearchFilter" Width="1.5" PointX="11.25" PointY="148" />
-        <EntityTypeShape EntityType="MyIdeaModel.RelationshipType" Width="1.5" PointX="25.25" PointY="147.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.RelationshipUISetting" Width="1.5" PointX="20.25" PointY="134" />
-        <EntityTypeShape EntityType="MyIdeaModel.ReportGroups" Width="1.5" PointX="31.5" PointY="201.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.SearchRepository" Width="1.5" PointX="25.25" PointY="166.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.StringColumnType" Width="1.5" PointX="8.25" PointY="149.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.SubSystems" Width="1.5" PointX="3" PointY="172.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.SubToSuperRelationshipType" Width="1.5" PointX="30.5" PointY="144.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.SubUnionToUnionRelationshipType" Width="1.5" PointX="27.5" PointY="144.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.SuperToSubDeterminerValue" Width="1.5" PointX="10.5" PointY="214.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.SuperToSubRelationshipType" Width="1.5" PointX="8.25" PointY="146.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.TabGroupUISetting" Width="1.5" PointX="20.25" PointY="150" />
-        <EntityTypeShape EntityType="MyIdeaModel.Table" Width="1.5" PointX="10.5" PointY="159" />
-        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntity" Width="1.5" PointX="15.75" PointY="146.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntity_Columns" Width="1.5" PointX="18" PointY="147.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntity_EntityCommand" Width="1.5" PointX="18" PointY="155.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntityState" Width="1.5" PointX="18" PointY="207.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntityStateCondition" Width="1.5" PointX="28.5" PointY="178" />
-        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntityStateConditionSecuritySubject" Width="1.5" PointX="30.75" PointY="175.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntityStateConditionValues" Width="1.5" PointX="30.75" PointY="178.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.TabPageUISetting" Width="1.5" PointX="20.25" PointY="145.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.TimeColumnType" Width="1.5" PointX="8.25" PointY="170.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.UIActionActivity" Width="1.5" PointX="18" PointY="213.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.UIColumnValue" Width="1.5" PointX="23.25" PointY="180.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.UIEnablityDetails" Width="1.5" PointX="26.25" PointY="177.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.UnionRelationshipType" Width="1.5" PointX="25.25" PointY="137.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.UnionToSubUnionRelationshipType" Width="1.5" PointX="30.5" PointY="148.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.UniqueConstraint" Width="1.5" PointX="12.75" PointY="159.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntitySecurityDirect" Width="1.5" PointX="20.25" PointY="178.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.Organization" Width="1.5" PointX="33" PointY="141" />
-        <EntityTypeShape EntityType="MyIdeaModel.OrganizationPost" Width="1.5" PointX="35.25" PointY="164.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.OrganizationType" Width="1.5" PointX="30.75" PointY="141.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.OrganizationType_RoleType" Width="1.5" PointX="33" PointY="188.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.Permission" Width="1.5" PointX="3" PointY="148.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.Permission_Action" Width="1.5" PointX="5.25" PointY="156.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.RoleType" Width="1.5" PointX="22.5" PointY="237" />
-        <EntityTypeShape EntityType="MyIdeaModel.SecurityObject" Width="1.5" PointX="0.75" PointY="147.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.SecuritySubject" Width="1.5" PointX="28.5" PointY="140.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.User" Width="1.5" PointX="33" PointY="155.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.Activity" Width="1.5" PointX="20.25" PointY="223.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.ActivityTarget" Width="1.5" PointX="22.5" PointY="226.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.ActivityTarget_RoleType" Width="1.5" PointX="24.75" PointY="226.375" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityGroup" Width="1.5" PointX="20.25" PointY="226.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntityGroup_Relationship" Width="1.5" PointX="22.5" PointY="214.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.Process" Width="1.5" PointX="18" PointY="226.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.State" Width="1.5" PointX="20.25" PointY="229.75" />
-        <EntityTypeShape EntityType="MyIdeaModel.State_Formula" Width="1.5" PointX="28.5" PointY="185.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.StateActivity" Width="1.5" PointX="22.5" PointY="229.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.Transition" Width="1.5" PointX="22.5" PointY="233.125" />
-        <EntityTypeShape EntityType="MyIdeaModel.TransitionAction" Width="1.5" PointX="24.75" PointY="233.25" />
-        <EntityTypeShape EntityType="MyIdeaModel.TransitionAction_EntityGroup" Width="1.5" PointX="25.5" PointY="229.875" />
-        <EntityTypeShape EntityType="MyIdeaModel.TransitionAction_Formula" Width="1.5" PointX="28.5" PointY="189.625" />
-        <EntityTypeShape EntityType="MyIdeaModel.TransitionActionTarget" Width="1.5" PointX="27" PointY="233.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.TransitionActivity" Width="1.5" PointX="25.5" PointY="223.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.ArchiveFolder" Width="1.5" PointX="24" PointY="124.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.ArchiveTag" Width="1.5" PointX="24" PointY="230.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityArchiveRelationshipTails" Width="1.5" PointX="29.25" PointY="163.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityLetterRelationshipTails" Width="1.5" PointX="26.25" PointY="162.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.ArcRelationshipGroup" Width="1.5" PointX="24" PointY="206.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.ArcRelationshipGroup_Relationship" Width="1.5" PointX="32.25" PointY="177.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.BackendActionActivity" Width="1.5" PointX="31.25" PointY="157.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.CharetReportCategories" Width="1.5" PointX="31.5" PointY="209" />
+        <EntityTypeShape EntityType="MyIdeaModel.CharetReportSeries" Width="1.5" PointX="34.5" PointY="209.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.CharetReportValues" Width="1.5" PointX="34.5" PointY="199.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.CodeFunction" Width="1.5" PointX="26.75" PointY="170.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.CodeFunction_TableDrivedEntity" Width="1.5" PointX="29" PointY="159.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.CodeFunction_TableDrivedEntity_Parameters" Width="1.5" PointX="11.25" PointY="155.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.CodeFunctionParameter" Width="1.5" PointX="9" PointY="148" />
+        <EntityTypeShape EntityType="MyIdeaModel.Column" Width="1.5" PointX="9" PointY="151.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.ColumnCustomFormula" Width="1.5" PointX="11.25" PointY="159.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.ColumnUISetting" Width="1.5" PointX="26.25" PointY="187.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.ColumnValueRange" Width="1.5" PointX="11.25" PointY="149.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.ColumnValueRangeDetails" Width="1.5" PointX="13.5" PointY="147.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.CrosstabReportColumns" Width="1.5" PointX="34.5" PointY="206.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.CrosstabReportRows" Width="1.5" PointX="31.5" PointY="205.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.CrosstabReportValues" Width="1.5" PointX="34.5" PointY="203.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.DatabaseFunction" Width="1.5" PointX="16.5" PointY="162.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.DatabaseFunction_TableDrivedEntity" Width="1.5" PointX="27" PointY="155.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.DatabaseFunction_TableDrivedEntity_Columns" Width="1.5" PointX="35.25" PointY="153" />
+        <EntityTypeShape EntityType="MyIdeaModel.DatabaseFunctionParameter" Width="1.5" PointX="18.75" PointY="162.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.DatabaseInformation" Width="1.5" PointX="6" PointY="155" />
+        <EntityTypeShape EntityType="MyIdeaModel.DatabaseUISetting" Width="1.5" PointX="8.25" PointY="163.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.DataLinkDefinition" Width="1.5" PointX="27" PointY="151.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.DataLinkDefinition_EntityRelationshipTail" Width="1.5" PointX="32.25" PointY="153.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.DataMenuDataItemReportRelationship" Width="1.5" PointX="31.5" PointY="181.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.DataMenuDataViewRelationship" Width="1.5" PointX="31.5" PointY="168.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.DataMenuForViewEntity" Width="1.5" PointX="37.25" PointY="169.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.DataMenuGridViewRelationship" Width="1.5" PointX="37.5" PointY="173.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.DataMenuSearchableReportRelationship" Width="1.5" PointX="37.5" PointY="179.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.DataMenuSetting" Width="1.5" PointX="29.25" PointY="189.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.DateColumnType" Width="1.5" PointX="11.25" PointY="180.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.DateTimeColumnType" Width="1.5" PointX="11.25" PointY="177.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.DBSchema" Width="1.5" PointX="14.25" PointY="162.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.DBServer" Width="1.5" PointX="3.75" PointY="159.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.EmptySpaceUISetting" Width="1.5" PointX="26.25" PointY="195.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityChartReport" Width="1.5" PointX="26.25" PointY="224.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityCommand" Width="1.5" PointX="3" PointY="155.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityCrosstabReport" Width="1.5" PointX="29.25" PointY="223.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityDataItemReport" Width="1.5" PointX="26.25" PointY="166.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityDataViewReport" Width="1.5" PointX="34.5" PointY="195.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityDeterminer" Width="1.5" PointX="24" PointY="220.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityDirectlReport" Width="1.5" PointX="28.5" PointY="166.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityDirectlReportParameters" Width="1.5" PointX="11.25" PointY="152.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityExternalReport" Width="1.5" PointX="34.5" PointY="186.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityGridViewReport" Width="1.5" PointX="37.5" PointY="194.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityListReport" Width="1.5" PointX="29.25" PointY="219.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityListReportSubs" Width="1.5" PointX="31.5" PointY="186" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityListReportSubsColumns" Width="1.5" PointX="36.75" PointY="184.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityListView" Width="1.5" PointX="24" PointY="223.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityListViewColumns" Width="1.5" PointX="29.25" PointY="183" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityRelationshipTail" Width="1.5" PointX="24" PointY="155.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityRelationshipTailDataMenu" Width="1.5" PointX="26.25" PointY="159.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityRelationshipTailDataMenuItems" Width="1.5" PointX="31.5" PointY="172.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityReport" Width="1.5" PointX="24" PointY="161.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntitySearch" Width="1.5" PointX="24" PointY="215" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntitySearchableReport" Width="1.5" PointX="32.25" PointY="197.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntitySearchColumns" Width="1.5" PointX="26.25" PointY="182.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityState_UIActionActivity" Width="1.5" PointX="29.25" PointY="180.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityUIComposition" Width="1.5" PointX="24" PointY="194.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityUISetting" Width="1.5" PointX="26.25" PointY="190" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityValidation" Width="1.5" PointX="39.5" PointY="158.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.ExplicitOneToOneRelationshipType" Width="1.5" PointX="34.5" PointY="175.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.Formula" Width="1.5" PointX="37.25" PointY="157.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.FormulaItems" Width="1.5" PointX="39.5" PointY="139.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.GraphDefinition" Width="1.5" PointX="34.5" PointY="180.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.GraphDefinition_EntityRelationshipTail" Width="1.5" PointX="39.75" PointY="166.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.GroupUISetting" Width="1.5" PointX="26.25" PointY="192.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.ImplicitOneToOneRelationshipType" Width="1.5" PointX="34.5" PointY="177.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.ISARelationship" Width="1.5" PointX="12" PointY="163.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.LetterEnabledEntities" Width="1.5" PointX="24" PointY="232.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.LetterSetting" Width="1.5" PointX="29" PointY="171.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.LetterTemplate" Width="1.5" PointX="32.25" PointY="190.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.LetterTemplatePlainField" Width="1.5" PointX="40.5" PointY="171.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.LetterTemplateRelationshipField" Width="1.5" PointX="39.75" PointY="176.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.LetterType" Width="1.5" PointX="24" PointY="218.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.LinearFormula" Width="1.5" PointX="35" PointY="169.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.LinkedServer" Width="1.5" PointX="6" PointY="159.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.MainLetterTemplate" Width="1.5" PointX="34.5" PointY="189.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.ManyToManyRelationshipType" Width="1.5" PointX="35.25" PointY="150.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.ManyToOneRelationshipType" Width="1.5" PointX="37.5" PointY="164.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.NavigationTree" Width="1.5" PointX="24" PointY="235" />
+        <EntityTypeShape EntityType="MyIdeaModel.NumericColumnType" Width="1.5" PointX="11.25" PointY="186" />
+        <EntityTypeShape EntityType="MyIdeaModel.OneToManyRelationshipType" Width="1.5" PointX="34.5" PointY="173.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.PartialLetterTemplate" Width="1.5" PointX="34.5" PointY="192.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.Phrase" Width="1.5" PointX="12" PointY="167.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.PhraseColumn" Width="1.5" PointX="14.25" PointY="159.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.PhraseLogic" Width="1.5" PointX="30" PointY="122.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.PhraseRelationship" Width="1.5" PointX="32.25" PointY="149.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.Relationship" Width="1.5" PointX="30" PointY="149.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.RelationshipColumns" Width="1.5" PointX="34.25" PointY="156.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.RelationshipSearchFilter" Width="1.5" PointX="17.25" PointY="155.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.RelationshipType" Width="1.5" PointX="32.25" PointY="163" />
+        <EntityTypeShape EntityType="MyIdeaModel.RelationshipUISetting" Width="1.5" PointX="26.25" PointY="201" />
+        <EntityTypeShape EntityType="MyIdeaModel.ReportGroups" Width="1.5" PointX="31.5" PointY="202.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.SaveAdvancedSearch" Width="1.5" PointX="26.25" PointY="228.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.SavedPreDefinedSearch" Width="1.5" PointX="26.25" PointY="221.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.SavedPreDefinedSearchRelationship" Width="1.5" PointX="28.5" PointY="201.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.SavedPreDefinedSearchRelationshipData" Width="1.5" PointX="14.25" PointY="151.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.SavedPreDefinedSearchSimpleColumn" Width="1.5" PointX="28.5" PointY="204.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.SavedSearchRepository" Width="1.5" PointX="24" PointY="227" />
+        <EntityTypeShape EntityType="MyIdeaModel.StringColumnType" Width="1.5" PointX="11.25" PointY="175" />
+        <EntityTypeShape EntityType="MyIdeaModel.SubSystems" Width="1.5" PointX="3" PointY="179.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.SubToSuperRelationshipType" Width="1.5" PointX="34.5" PointY="164" />
+        <EntityTypeShape EntityType="MyIdeaModel.SubUnionToUnionRelationshipType" Width="1.5" PointX="34.5" PointY="167" />
+        <EntityTypeShape EntityType="MyIdeaModel.SuperToSubDeterminerValue" Width="1.5" PointX="16.5" PointY="159.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.SuperToSubRelationshipType" Width="1.5" PointX="14.25" PointY="155.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.TabGroupUISetting" Width="1.5" PointX="26.25" PointY="198" />
+        <EntityTypeShape EntityType="MyIdeaModel.Table" Width="1.5" PointX="16.5" PointY="166.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntity" Width="1.5" PointX="21.75" PointY="153.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntity_Columns" Width="1.5" PointX="24" PointY="151.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntity_EntityCommand" Width="1.5" PointX="24" PointY="165.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntityState" Width="1.5" PointX="24" PointY="127.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntityStateCondition" Width="1.5" PointX="42.5" PointY="145.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntityStateConditionSecuritySubject" Width="1.5" PointX="44.75" PointY="146.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.TableDrivedEntityStateConditionValues" Width="1.5" PointX="44.75" PointY="149.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.TabPageUISetting" Width="1.5" PointX="26.25" PointY="203.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.TimeColumnType" Width="1.5" PointX="11.25" PointY="183.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.UIActionActivity" Width="1.5" PointX="24" PointY="238.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.UIColumnValue" Width="1.5" PointX="29.25" PointY="196" />
+        <EntityTypeShape EntityType="MyIdeaModel.UIEnablityDetails" Width="1.5" PointX="32.25" PointY="194" />
+        <EntityTypeShape EntityType="MyIdeaModel.UnionRelationshipType" Width="1.5" PointX="32.25" PointY="146" />
+        <EntityTypeShape EntityType="MyIdeaModel.UnionToSubUnionRelationshipType" Width="1.5" PointX="34.5" PointY="159.875" />
+        <EntityTypeShape EntityType="MyIdeaModel.UniqueConstraint" Width="1.5" PointX="18.75" PointY="166.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntitySecurityDirect" Width="1.5" PointX="26.25" PointY="145.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.Organization" Width="1.5" PointX="5.25" PointY="148.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.OrganizationPost" Width="1.5" PointX="35.25" PointY="144.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.OrganizationType" Width="1.5" PointX="3" PointY="149.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.OrganizationType_RoleType" Width="1.5" PointX="33" PointY="138.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.Permission" Width="1.5" PointX="3" PointY="152.5" />
+        <EntityTypeShape EntityType="MyIdeaModel.Permission_Action" Width="1.5" PointX="5.25" PointY="151.75" />
+        <EntityTypeShape EntityType="MyIdeaModel.RoleType" Width="1.5" PointX="30.75" PointY="126.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.SecurityObject" Width="1.5" PointX="0.75" PointY="155" />
+        <EntityTypeShape EntityType="MyIdeaModel.SecuritySubject" Width="1.5" PointX="0.75" PointY="151.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.User" Width="1.5" PointX="33" PointY="127.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.Activity" Width="1.5" PointX="26.25" PointY="137.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.ActivityTarget" Width="1.5" PointX="28.5" PointY="143.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.ActivityTarget_RoleType" Width="1.5" PointX="30.75" PointY="143.125" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityGroup" Width="1.5" PointX="26.25" PointY="134.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.EntityGroup_Relationship" Width="1.5" PointX="28.5" PointY="146.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.Process" Width="1.5" PointX="24" PointY="134" />
+        <EntityTypeShape EntityType="MyIdeaModel.State" Width="1.5" PointX="26.25" PointY="130.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.State_Formula" Width="1.5" PointX="39.5" PointY="148.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.StateActivity" Width="1.5" PointX="31.5" PointY="134.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.Transition" Width="1.5" PointX="28.5" PointY="132.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.TransitionAction" Width="1.5" PointX="30.75" PointY="130.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.TransitionAction_EntityGroup" Width="1.5" PointX="28.5" PointY="136.375" />
+        <EntityTypeShape EntityType="MyIdeaModel.TransitionAction_Formula" Width="1.5" PointX="39.5" PointY="145.25" />
+        <EntityTypeShape EntityType="MyIdeaModel.TransitionActionTarget" Width="1.5" PointX="33" PointY="130.625" />
+        <EntityTypeShape EntityType="MyIdeaModel.TransitionActivity" Width="1.5" PointX="30.75" PointY="137.125" />
         <AssociationConnector Association="MyIdeaModel.FKArchiveFol695820" />
         <AssociationConnector Association="MyIdeaModel.FK_ArchiveTag_EntityArchive" />
         <AssociationConnector Association="MyIdeaModel.FKEntityArch437336" />
@@ -192,6 +200,7 @@
         <AssociationConnector Association="MyIdeaModel.FK_EntityDirectlReportParameters_Column" />
         <AssociationConnector Association="MyIdeaModel.FK_RelationshipSearchFilter_Column" />
         <AssociationConnector Association="MyIdeaModel.FK_RelationshipSearchFilter_Column1" />
+        <AssociationConnector Association="MyIdeaModel.FK_SavedPreDefinedSearchRelationshipData_Column" />
         <AssociationConnector Association="MyIdeaModel.FK_StringTimeColumnType_Column" />
         <AssociationConnector Association="MyIdeaModel.FK_SuperToSubRelationshipType_Column" />
         <AssociationConnector Association="MyIdeaModel.FK_TableDrivedEntity_Column" />
@@ -204,6 +213,7 @@
         <AssociationConnector Association="MyIdeaModel.FKDatabaseFu304987" />
         <AssociationConnector Association="MyIdeaModel.FKDateColumn74546" />
         <AssociationConnector Association="MyIdeaModel.FKEntityList404590" />
+        <AssociationConnector Association="MyIdeaModel.FKEntitySear524417" />
         <AssociationConnector Association="MyIdeaModel.FKFormulaIte729281" />
         <AssociationConnector Association="MyIdeaModel.FKNumericCol878005" />
         <AssociationConnector Association="MyIdeaModel.FKStringColu936883" />
@@ -212,7 +222,6 @@
         <AssociationConnector Association="MyIdeaModel.Relationship_FirstEntityColumns" />
         <AssociationConnector Association="MyIdeaModel.Relationship_SecondEntityColumns" />
         <AssociationConnector Association="MyIdeaModel.FK_ColumnCustomFormula_Formula" />
-        <AssociationConnector Association="MyIdeaModel.FKPhrase552267" />
         <AssociationConnector Association="MyIdeaModel.FKColumnUISe822405" />
         <AssociationConnector Association="MyIdeaModel.FK_ColumnValueRange_EntityRelationshipTail" />
         <AssociationConnector Association="MyIdeaModel.FK_ColumnValueRangeDetails_ColumnValueRangeDetails" />
@@ -303,6 +312,7 @@
         <AssociationConnector Association="MyIdeaModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail" />
         <AssociationConnector Association="MyIdeaModel.FKEntityRela568378" />
         <AssociationConnector Association="MyIdeaModel.FKEntityRela831147" />
+        <AssociationConnector Association="MyIdeaModel.FKEntitySear748558" />
         <AssociationConnector Association="MyIdeaModel.FKRelationsh552099" />
         <AssociationConnector Association="MyIdeaModel.FK_EntityRelationshipTailListViewItems_EntityRelationshipTailListView" />
         <AssociationConnector Association="MyIdeaModel.FK_GraphDefinition_EntityRelationshipTail_EntityRelationshipTailDataMenu" />
@@ -310,7 +320,12 @@
         <AssociationConnector Association="MyIdeaModel.FK_EntitySearchableReport_EntityReport" />
         <AssociationConnector Association="MyIdeaModel.FKEntityRepo82108" />
         <AssociationConnector Association="MyIdeaModel.FKEntityRepo965698" />
-        <AssociationConnector Association="MyIdeaModel.FK_EntitySearchableReport_SearchRepository" />
+        <AssociationConnector Association="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" />
+        <AssociationConnector Association="MyIdeaModel.FK_SavedPreDefinedSearch_EntitySearch" />
+        <AssociationConnector Association="MyIdeaModel.FKEntitySear726002" />
+        <AssociationConnector Association="MyIdeaModel.FK_EntitySearchableReport_SavedSearchRepository" />
+        <AssociationConnector Association="MyIdeaModel.FK_PreDefinedSearchRelationship_EntitySearchColumns" />
+        <AssociationConnector Association="MyIdeaModel.FK_PreDefinedSearchSimpleColumn_EntitySearchColumns" />
         <AssociationConnector Association="MyIdeaModel.FKEntityStat608686" />
         <AssociationConnector Association="MyIdeaModel.FKEntityStat936255" />
         <AssociationConnector Association="MyIdeaModel.FKEntityUICo258285" />
@@ -345,17 +360,18 @@
         <AssociationConnector Association="MyIdeaModel.FKLetterTemp854440" />
         <AssociationConnector Association="MyIdeaModel.FKLetterTemp803911" />
         <AssociationConnector Association="MyIdeaModel.FK_LetterType_TableDrivedEntity" />
-        <AssociationConnector Association="MyIdeaModel.FK_RelationshipPhrase_LogicPhrase" />
-        <AssociationConnector Association="MyIdeaModel.FKPhrase543572" />
-        <AssociationConnector Association="MyIdeaModel.FKPhrase614152" />
         <AssociationConnector Association="MyIdeaModel.FKManyToOneR998042" />
         <AssociationConnector Association="MyIdeaModel.FKManyToOneR336195" />
         <AssociationConnector Association="MyIdeaModel.FKNavigation155968" />
         <AssociationConnector Association="MyIdeaModel.FKNavigation977409" />
         <AssociationConnector Association="MyIdeaModel.FKOneToManyR245498" />
+        <AssociationConnector Association="MyIdeaModel.FK_Phrase_PhraseLogic" />
+        <AssociationConnector Association="MyIdeaModel.FK_PhraseColumn_Phrase" />
+        <AssociationConnector Association="MyIdeaModel.FK_PhraseRelationship_PhraseLogic" />
+        <AssociationConnector Association="MyIdeaModel.FK_SaveAdvancedSearch_PhraseLogic" />
+        <AssociationConnector Association="MyIdeaModel.FK_SearchRepository_Relationship" />
         <AssociationConnector Association="MyIdeaModel.FK_Relationship_Relationship" />
         <AssociationConnector Association="MyIdeaModel.FK_Relationship_SecurityObject" />
-        <AssociationConnector Association="MyIdeaModel.FK_SearchRepository_Relationship" />
         <AssociationConnector Association="MyIdeaModel.FK_UIEnablityDetails_Relationship" />
         <AssociationConnector Association="MyIdeaModel.FKRelationsh250123" />
         <AssociationConnector Association="MyIdeaModel.FKRelationsh250124" />
@@ -366,7 +382,12 @@
         <AssociationConnector Association="MyIdeaModel.FKSubUnionTo818068" />
         <AssociationConnector Association="MyIdeaModel.FKSuperToSub305547" />
         <AssociationConnector Association="MyIdeaModel.FKUnionToSub14902" />
-        <AssociationConnector Association="MyIdeaModel.FK_SearchRepository_TableDrivedEntity" />
+        <AssociationConnector Association="MyIdeaModel.FK_SaveAdvancedSearch_SavedSearchRepository" />
+        <AssociationConnector Association="MyIdeaModel.FK_PreDefinedSearch_SavedSearchRepository" />
+        <AssociationConnector Association="MyIdeaModel.FK_PreDefinedSearchRelationship_PreDefinedSearch" />
+        <AssociationConnector Association="MyIdeaModel.FK_PreDefinedSearchSimpleColumn_PreDefinedSearch" />
+        <AssociationConnector Association="MyIdeaModel.FK_SavedPreDefinedSearchRelationshipData_SavedPreDefinedSearchRelationship" />
+        <AssociationConnector Association="MyIdeaModel.FK_SavedSearchRepository_TableDrivedEntity" />
         <AssociationConnector Association="MyIdeaModel.FKSubSystems137775" />
         <AssociationConnector Association="MyIdeaModel.FKSubUnionTo235113" />
         <AssociationConnector Association="MyIdeaModel.FK_SuperToSubDeterminerValue_SuperToSubRelationshipType" />
@@ -424,14 +445,6 @@
         <AssociationConnector Association="MyIdeaModel.FKTransition612866" />
         <AssociationConnector Association="MyIdeaModel.FKTransition636993" />
         <AssociationConnector Association="MyIdeaModel.UniqueConstraint_Column" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntitySearch" Width="1.5" PointX="18" PointY="162.5" />
-        <EntityTypeShape EntityType="MyIdeaModel.EntitySearchColumns" Width="1.5" PointX="20.25" PointY="167.5" />
-        <AssociationConnector Association="MyIdeaModel.FKEntitySear524417" />
-        <AssociationConnector Association="MyIdeaModel.FK_ColumnPhrase_EntitySearchColumns" />
-        <AssociationConnector Association="MyIdeaModel.FKEntitySear748558" />
-        <AssociationConnector Association="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" />
-        <AssociationConnector Association="MyIdeaModel.FK_SearchRepository_EntitySearch" />
-        <AssociationConnector Association="MyIdeaModel.FKEntitySear726002" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

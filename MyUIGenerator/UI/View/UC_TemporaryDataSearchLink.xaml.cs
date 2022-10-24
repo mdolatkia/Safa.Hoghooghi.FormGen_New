@@ -27,22 +27,22 @@ namespace MyUIGenerator.View
     /// </summary>
     public partial class UC_TemporaryDataSearchLink : UserControl, I_View_TemporaryView
     {
-        DispatcherTimer timer = new DispatcherTimer();
+      //  DispatcherTimer timer = new DispatcherTimer();
         public Brush DefaultBorderBrush { get; }
         public Thickness DefaultBorderThickness { get; }
         public Brush DefaultBackground { get; }
         public Brush DefaultForeground { get; }
 
         public bool ButtonPopupVisible { get => btnPopup.Visibility == Visibility.Visible; set => btnPopup.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
-        public bool ButtonQuickSearchVisible { get => btnQuickSearch.Visibility == Visibility.Visible; set => btnQuickSearch.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
-        public bool SearchTextboxVisible { get => txtSearch.Visibility == Visibility.Visible; set => txtSearch.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
+        //   public bool ButtonQuickSearchVisible { get => btnQuickSearch.Visibility == Visibility.Visible; set => btnQuickSearch.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
+        public bool InfoTextboxReadOnly { get => txtInfo.IsReadOnly; set => txtInfo.IsReadOnly = value; }
         public bool ButtonDataEditVisible { get => btnDataEdit.Visibility == Visibility.Visible; set => btnDataEdit.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
         public bool ButtonSearchFormVisible { get => btnSearchForm.Visibility == Visibility.Visible; set => btnSearchForm.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
         public bool ButtonClearVisible { get => btnLinkClear.Visibility == Visibility.Visible; set => btnLinkClear.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
         public bool ButtonInfoVisible { get => btnLinkInfo.Visibility == Visibility.Visible; set => btnLinkInfo.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
 
         public bool ButtonPopupEnabled { get => btnPopup.IsEnabled; set => btnPopup.IsEnabled = value; }
-        public bool ButtonQuickSearchEnabled { get => btnQuickSearch.IsEnabled; set => btnQuickSearch.IsEnabled = value; }
+        //    public bool ButtonQuickSearchEnabled { get => btnQuickSearch.IsEnabled; set => btnQuickSearch.IsEnabled = value; }
         public bool ButtonDataEditEnabled { get => btnDataEdit.IsEnabled; set => btnDataEdit.IsEnabled = value; }
         public bool ButtonSearchFormEnabled { get => btnSearchForm.IsEnabled; set => btnSearchForm.IsEnabled = value; }
         public bool ButtonClearEnabled { get => btnLinkClear.IsEnabled; set => btnLinkClear.IsEnabled = value; }
@@ -60,15 +60,26 @@ namespace MyUIGenerator.View
 
             this.LostFocus += UC_TemporaryDataSearchLink_LostFocus;
 
-            txtSearch.TextChanged += TxtSearch_TextChanged;
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
-            timer.Tick += Timer_Tick;
+            //txtInfo.TextChanged += TxtSearch_TextChanged;
+            txtInfo.KeyUp += TxtInfo_KeyUp;
+          //  timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+        //    timer.Tick += Timer_Tick;
 
             DefaultBorderBrush = this.BorderBrush;
             DefaultBorderThickness = this.BorderThickness;
             DefaultBackground = this.Background;
             DefaultForeground = this.Foreground;
         }
+
+        private void TxtInfo_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                if (SearchTextChanged != null)
+                    SearchTextChanged(this, new Arg_TemporaryDisplaySerachText() { Text = txtInfo.Text });
+            }
+        }
+
         public UC_TemporaryDataSearchLink(I_View_TemporaryView mainView)
         {
             InitializeComponent();
@@ -78,8 +89,8 @@ namespace MyUIGenerator.View
             //btnLinkClear.Visibility = Visibility.Collapsed;
             //btnLinkInfo.Visibility = Visibility.Collapsed;
             ButtonPopupVisible = mainView.ButtonPopupVisible;
-            ButtonQuickSearchVisible = mainView.ButtonQuickSearchVisible;
-            SearchTextboxVisible = mainView.SearchTextboxVisible;
+            //    ButtonQuickSearchVisible = mainView.ButtonQuickSearchVisible;
+            InfoTextboxReadOnly = mainView.InfoTextboxReadOnly;
             ButtonDataEditVisible = mainView.ButtonDataEditVisible;
             ButtonSearchFormVisible = mainView.ButtonSearchFormVisible;
             ButtonClearVisible = mainView.ButtonClearVisible;
@@ -87,9 +98,10 @@ namespace MyUIGenerator.View
 
             this.LostFocus += UC_TemporaryDataSearchLink_LostFocus;
 
-            txtSearch.TextChanged += TxtSearch_TextChanged;
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
-            timer.Tick += Timer_Tick;
+            //   txtInfo.TextChanged += TxtSearch_TextChanged;
+            txtInfo.KeyUp += TxtInfo_KeyUp;
+          //  timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+          //  timer.Tick += Timer_Tick;
 
             DefaultBorderBrush = this.BorderBrush;
             DefaultBorderThickness = this.BorderThickness;
@@ -137,18 +149,18 @@ namespace MyUIGenerator.View
             }
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            (sender as DispatcherTimer).Stop();
-            if (SearchTextChanged != null)
-                SearchTextChanged(this, new Arg_TemporaryDisplaySerachText() { Text = txtSearch.Text });
+        //private void Timer_Tick(object sender, EventArgs e)
+        //{
+        //    (sender as DispatcherTimer).Stop();
+        //    if (SearchTextChanged != null)
+        //        SearchTextChanged(this, new Arg_TemporaryDisplaySerachText() { Text = txtInfo.Text });
 
 
-        }
-        private void TxtSearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            timer.Start();
-        }
+        //}
+        //private void TxtSearch_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    timer.Start();
+        //}
         public event EventHandler FocusLost;
         public event EventHandler<Arg_TemporaryDisplayViewRequested> TemporaryDisplayViewRequested;
         public event EventHandler<Arg_TemporaryDisplaySerachText> SearchTextChanged;
@@ -300,7 +312,7 @@ namespace MyUIGenerator.View
 
         public string GetSearchText()
         {
-            return txtSearch.Text;
+            return txtInfo.Text;
         }
 
         public void RemovePopupView(I_View_ViewEntityArea viewView)
@@ -328,18 +340,18 @@ namespace MyUIGenerator.View
             }
         }
 
-        public bool QuickSearchVisibility
-        {
-            get
-            {
-                return txtSearch.Visibility == Visibility.Visible;
-            }
+        //public bool QuickSearchVisibility
+        //{
+        //    get
+        //    {
+        //        return txtSearch.Visibility == Visibility.Visible;
+        //    }
 
-            set
-            {
-                txtSearch.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
+        //    set
+        //    {
+        //        txtSearch.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+        //    }
+        //}
 
         public bool IsOpenedTemporary { set; get; }
         public EntityUICompositionDTO UICompositionDTO { set; get; }
@@ -393,14 +405,14 @@ namespace MyUIGenerator.View
             popup1.Child = viewView as UIElement;
         }
 
-        private void btnQuickSearch_Click(object sender, RoutedEventArgs e)
-        {
-            if (TemporaryDisplayViewRequested != null)
-            {
-                TemporaryDisplayViewRequested(this, new Arg_TemporaryDisplayViewRequested() { LinkType = TemporaryLinkType.QuickSearch });
+        //private void btnQuickSearch_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (TemporaryDisplayViewRequested != null)
+        //    {
+        //        TemporaryDisplayViewRequested(this, new Arg_TemporaryDisplayViewRequested() { LinkType = TemporaryLinkType.QuickSearch });
 
-            }
-        }
+        //    }
+        //}
 
         private void btnPopup_Click(object sender, RoutedEventArgs e)
         {
@@ -412,13 +424,13 @@ namespace MyUIGenerator.View
 
         public void QuickSearchSelectAll()
         {
-            txtSearch.SelectAll();
-            txtSearch.Focus();
+            txtInfo.SelectAll();
+            txtInfo.Focus();
         }
 
         public void ClearSearchText()
         {
-            txtSearch.Text = "";
+            txtInfo.Text = "";
         }
 
         public void DeHighlightCommands()

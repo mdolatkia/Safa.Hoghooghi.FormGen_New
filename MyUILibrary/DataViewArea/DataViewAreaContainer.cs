@@ -166,14 +166,14 @@ namespace MyUILibrary.DataViewArea
             AddDataViewArea(GeneralEntitySearchArea.SelectedEntity.ID, GeneralEntitySearchArea.SelectedEntity.Alias, null, AreaInitializer.DataMenuSettingID, AreaInitializer.DataViewOrGridView);
             FirstDataView = DataViewAreas[0];
         }
-        public void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepository searchRepository, I_DataViewItem causingDataViewItem, bool dataViewOrGridView, int dataMenuSettingID)
+        public void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepositoryMain searchRepository, I_DataViewItem causingDataViewItem, bool dataViewOrGridView, int dataMenuSettingID)
         {
             if (CurrentDataViewArea != null && CurrentDataViewArea is I_DataViewArea)
                 (CurrentDataViewArea as I_DataViewArea).DefaultDataViewItem = causingDataViewItem;
 
             AddDataViewArea(entityID, title, searchRepository, dataMenuSettingID, dataViewOrGridView);
         }
-        private void AddDataViewArea(int entityID, string title, DP_SearchRepository searchRepository, int dataMenuSettingID, bool dataViewOrGridView)
+        private void AddDataViewArea(int entityID, string title, DP_SearchRepositoryMain searchRepository, int dataMenuSettingID, bool dataViewOrGridView)
         {
             DataArea dataArea = null;
             if (dataViewOrGridView)

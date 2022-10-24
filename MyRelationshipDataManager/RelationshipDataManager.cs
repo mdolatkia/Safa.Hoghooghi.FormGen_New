@@ -13,13 +13,13 @@ namespace MyRelationshipDataManager
     public class RelationshipDataManager
     {
         BizRelationship bizRelationship = new BizRelationship();
-        public DP_SearchRepository GetSecondSideSearchDataItemByRelationship(DP_BaseData firstSideDataItem, int relationshipID)
+        public DP_SearchRepositoryMain GetSecondSideSearchDataItemByRelationship(DP_BaseData firstSideDataItem, int relationshipID)
         {
             var relationship = bizRelationship.GetRelationship(relationshipID);
             return GetSecondSideSearchItemByRelationship(firstSideDataItem, relationship);
         }
 
-        private DP_SearchRepository GetSecondSideSearchItemByRelationship(DP_BaseData firstSideDataItem, RelationshipDTO relationship)
+        private DP_SearchRepositoryMain GetSecondSideSearchItemByRelationship(DP_BaseData firstSideDataItem, RelationshipDTO relationship)
         {
             var relationshipFirstSideColumnExist = true;
 
@@ -32,7 +32,7 @@ namespace MyRelationshipDataManager
             if (relationshipFirstSideColumnExist)
             {
                 List<EntityInstanceProperty> properties = new List<EntityInstanceProperty>();
-                DP_SearchRepository resultDataItem = new DP_SearchRepository(relationship.EntityID2);
+                DP_SearchRepositoryMain resultDataItem = new DP_SearchRepositoryMain(relationship.EntityID2);
                 foreach (var col in relationship.RelationshipColumns)
                 {
 
@@ -46,10 +46,10 @@ namespace MyRelationshipDataManager
             else if (relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign
                 || relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary)
             {
-                DP_SearchRepository resultDataItem = new DP_SearchRepository(relationship.EntityID2);
+                DP_SearchRepositoryMain resultDataItem = new DP_SearchRepositoryMain(relationship.EntityID2);
                 if (firstSideDataItem.KeyProperties.Any() && firstSideDataItem.KeyProperties.All(x => x.Value!=null &&  !string.IsNullOrEmpty(x.Value.ToString())))
                 {
-                    DP_SearchRepository searchItem = new DP_SearchRepository(relationship.EntityID1);
+                    DP_SearchRepositoryMain searchItem = new DP_SearchRepositoryMain(relationship.EntityID1);
                     foreach (var col in firstSideDataItem.KeyProperties)
                         searchItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
                     var requester = new DR_Requester();
