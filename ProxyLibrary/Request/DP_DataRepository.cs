@@ -851,7 +851,7 @@ namespace ProxyLibrary
 
         public bool ValueIsEmptyOrDefaultValue()
         {
-            //**9b38140b-d290-4157-a617-b1b659034738
+            //** EntityInstanceProperty.ValueIsEmptyOrDefaultValue: 9b38140b-d290-4157-a617-b1b659034738
             return ValueIsEmpty() || Value.ToString() == Column.DefaultValue;
         }
         public bool ValueIsEmpty()
@@ -877,23 +877,43 @@ namespace ProxyLibrary
     }
     public class DP_PreDefinedSearchSimpleColumn
     {
-        public List<object> Value { get; set; }
+        public DP_PreDefinedSearchSimpleColumn()
+        {
+       //     Value = new List<object>();
+        }
+        public object Value { get; set; }
+        public int FormulaID { get; set; }
+        public FormulaDTO Formula { get; set; }
         public CommonOperator Operator { set; get; }
         public int EntitySearchColumnsID { get; set; }
+        public string Tooltip { get; set; }
     }
     public class DP_PreDefinedSearchRelationship
     {
+        public DP_PreDefinedSearchRelationship()
+        {
+            DataItems = new List<DP_PreDefinedSearchRelationshipData>();
+        }
+
         public List<DP_PreDefinedSearchRelationshipData> DataItems { get; set; }
         public int EntitySearchColumnsID { get; set; }
     }
     public class DP_PreDefinedSearchRelationshipData
     {
+        public DP_PreDefinedSearchRelationshipData()
+        {
+            KeyProperties = new List<DP_PreDefinedSearchRelationshipColumns>();
+        }
         public List<DP_PreDefinedSearchRelationshipColumns> KeyProperties { get; set; }
 
     }
     public class DP_PreDefinedSearchRelationshipColumns
     {
-        public int ColumnID { get; set; }
+        public DP_PreDefinedSearchRelationshipColumns()
+        {
+
+        }
+        public ColumnDTO Column { get; set; }
         public object Value { get; set; }
     }
 
@@ -901,9 +921,9 @@ namespace ProxyLibrary
     {
         public AdvancedSearchDTO()
         {
-         
+
         }
-      public DP_SearchRepositoryMain SearchRepositoryMain { set; get; }
+        public DP_SearchRepositoryMain SearchRepositoryMain { set; get; }
     }
 
     public class SavedSearchRepositoryDTO
@@ -913,7 +933,7 @@ namespace ProxyLibrary
         public int EntityID { set; get; }
         public bool IsPreDefinedOrAdvanced { get; set; }
 
-        
+
     }
     public class DP_SearchRepositoryMain : LogicPhraseDTO /*: RootPhrase*/
     {
@@ -927,10 +947,10 @@ namespace ProxyLibrary
 
         }
         public string Title { get; set; }
-      
+
         public int TargetEntityID
         { set; get; }
-     
+
         public Guid GUID;
     }
 
@@ -940,13 +960,13 @@ namespace ProxyLibrary
         {
             //فقط برای سریالیز شدن در گزارشات
         }
-       
+
         public string Title { get; set; }
         public bool? HasNotRelationshipCheck { set; get; }
         public int? RelationshipFromCount { set; get; }
         public int? RelationshipToCount { set; get; }
-     //   public int TargetEntityID
-       // { set; get; }
+        //   public int TargetEntityID
+        // { set; get; }
         public RelationshipDTO SourceRelationship { set; get; }
         public Guid GUID;
     }
@@ -986,8 +1006,27 @@ namespace ProxyLibrary
     }
     public class SearchProperty : Phrase
     {
+        public SearchProperty(int _columnID)
+        {
+            _ColumnID = _columnID;
+        }
+        public SearchProperty(ColumnDTO column)
+        {
+            Column = column;
+        }
+        public ColumnDTO Column;
+        private int _ColumnID;
         public int ID;
-        public int ColumnID;
+        public int ColumnID
+        {
+            get
+            {
+                if (Column != null)
+                    return Column.ID;
+                else
+                    return ColumnID;
+            }
+        }
 
 
         public string Name;
@@ -995,9 +1034,14 @@ namespace ProxyLibrary
         public bool IsKey { set; get; }
         //public AndORType AndORType { set; get; }
         public CommonOperator Operator { set; get; }
+
+        public int FormulaID { get; set; }
+        public FormulaDTO Formula { get; set; }
+
         public SearchEnumerableType SearchEnumerableType { set; get; }
         //   public int SearchColumnID { get; set; }
         public bool NotIgnoreZeroValue { set; get; }
+        public string Tooltip { get; set; }
         //public Tuple<AndORType, List<SearchProperty>> ChildProperties { set; get; }
     }
 

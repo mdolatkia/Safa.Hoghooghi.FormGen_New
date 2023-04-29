@@ -35,8 +35,10 @@ namespace MyUILibrary.DataViewArea
             selectAreaInitializer.EntityID = AreaInitializer.EntityID;
             if (AreaInitializer.EntityID != 0)
                 selectAreaInitializer.LockEntitySelector = true;
-            if (initParam.InitialSearchRepository != null && !initParam.ShowInitializeSearchRepository)
-                selectAreaInitializer.PreDefinedSearch = AreaInitializer.InitialSearchRepository;
+            //اینجا باید عوض شه و هر دو حالت جستجو
+            //////if (initParam.InitialSearchRepository != null && !initParam.ShowInitializeSearchRepository)
+            //////    selectAreaInitializer.PreDefinedSearch = AreaInitializer.InitialSearchRepository;
+            ///
             GeneralEntitySearchArea = new GeneralEntitySearchArea();
             GeneralEntitySearchArea.SearchDataDefined += GeneralEntitySearchArea_SearchDataDefined;
             GeneralEntitySearchArea.EntitySelected += GeneralEntitySearchArea_EntitySelected;
@@ -56,7 +58,7 @@ namespace MyUILibrary.DataViewArea
             }
             if (AreaInitializer.InitialSearchRepository != null && initParam.ShowInitializeSearchRepository)
             {
-                GeneralEntitySearchArea_SearchDataDefined(this, new SearchDataArg() { SearchItems = AreaInitializer.InitialSearchRepository });
+                GeneralEntitySearchArea_SearchDataDefined(this,  AreaInitializer.InitialSearchRepository);
             }
             //    //    دیتا ویوها با سرچ یا بدون سرچ بصورت سکوریتی آبجت ذخبره شود برای دسترسی و منو
             //}
@@ -78,14 +80,14 @@ namespace MyUILibrary.DataViewArea
             }
         }
 
-        private void GeneralEntitySearchArea_SearchDataDefined(object sender, SearchDataArg e)
+        private void GeneralEntitySearchArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
         {
             foreach (var item in DataViewAreas.Where(x => x != FirstDataView).ToList())
                 DataViewAreas.Remove(item);
             CurrentDataViewArea = FirstDataView;
             View.AddDataViewArea(FirstDataView.View);
             SetLinks();
-            FirstDataView.GetDataItemsBySearchRepository(e.SearchItems);
+            FirstDataView.GetDataItemsBySearchRepository(e);
         }
 
         //AssignedPermissionDTO _Permission;

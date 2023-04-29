@@ -304,10 +304,9 @@ namespace MyDataSearchManagerBusiness
             {
                 if (entity.InternalSuperToSubRelationship.SuperEntityDeterminerColumn != null && entity.InternalSuperToSubRelationship.DeterminerColumnValues.Any())
                 {
-                    searchDataItem.Phrases.Add(new SearchProperty()
+                    searchDataItem.Phrases.Add(new SearchProperty(new ColumnDTO() { ID= entity.InternalSuperToSubRelationship.SuperEntityDeterminerColumnID })
                     {
                         Operator = CommonOperator.InValues,
-                        ColumnID = entity.InternalSuperToSubRelationship.SuperEntityDeterminerColumnID,
                         Name = entity.InternalSuperToSubRelationship.SuperEntityDeterminerColumn.Name,
                         Value = GetDeterminerValues(entity)
                     });
@@ -519,8 +518,8 @@ namespace MyDataSearchManagerBusiness
 
         private void AddConditionPhrase(DR_Requester requester, EntityStateConditionDTO conditionDTO, LogicPhraseDTO logicPhrase)
         {
-            var searchProperty = new SearchProperty();
-            searchProperty.ColumnID = conditionDTO.ColumnID;
+            var searchProperty = new SearchProperty(conditionDTO.Column);
+       //     searchProperty.ColumnID = conditionDTO.ColumnID;
             searchProperty.IsKey = conditionDTO.Column.PrimaryKey;
             searchProperty.Name = conditionDTO.Column.Name;
             string value = "";

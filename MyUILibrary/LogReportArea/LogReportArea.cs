@@ -184,7 +184,7 @@ namespace MyUILibrary.EntityArea
                 }
                 else
                 {
-                    var entities = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.SearchEntities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), e.SingleFilterValue,false);
+                    var entities = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.SearchEntitiesExceptViews(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), e.SingleFilterValue);
                     e.ResultItemsSource = entities;
                 }
             }

@@ -52,15 +52,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomObject.cs" />
-    <Compile Include="DynamicExpressoInterpreter.cs" />
-    <Compile Include="DataitemRelatedColumnValueHandler.cs" />
-    <Compile Include="FormulaFunctionHandler.cs" />
-    <Compile Include="FormulaHelper.cs" />
-    <Compile Include="FormulaInstanceInternalHelper.cs" />
-    <Compile Include="FormulaInstanceItemsHelper.cs" />
-    <Compile Include="MyCustomData.cs" />
-    <Compile Include="StateHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

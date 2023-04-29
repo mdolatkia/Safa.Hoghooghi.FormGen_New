@@ -22,7 +22,7 @@ namespace DataAccess
         }
     
         public int ID { get; set; }
-        public Nullable<int> EntitySearchID { get; set; }
+        public int EntitySearchID { get; set; }
         public string QuickSearchValue { get; set; }
     
         public virtual EntitySearch EntitySearch { get; set; }

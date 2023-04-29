@@ -7,7 +7,7 @@ namespace MyUILibrary.EntityArea
 {
     public interface I_View_SearchViewEntityArea
     {
-        bool HaseViewAreaView { get;  }
+        bool HasViewAreaView { get;  }
         bool HasSearchAreaView { get; }
       //  I_View_TemporaryView LastTemporaryView { get; set; }
 

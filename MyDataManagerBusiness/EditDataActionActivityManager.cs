@@ -1,7 +1,7 @@
 ﻿using ModelEntites;
-using MyCodeFunctionLibrary;
+
 using MyConnectionManager;
-using MyDatabaseFunctionLibrary;
+
 using MyModelManager;
 using ProxyLibrary;
 using System;

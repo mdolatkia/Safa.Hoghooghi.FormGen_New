@@ -51,7 +51,7 @@ namespace MyUILibrary.EntityArea
             if (SimpleColumnControl.Column.ColumnValueRange != null && SimpleColumnControl.Column.ColumnValueRange.Details.Any())
             {
                 ColumnValueRange = SimpleColumnControl.Column.ColumnValueRange.Details;
-                GetUIControlManager.SetColumnValueRange(SimpleColumnControl.Column.ColumnValueRange.Details);
+                GetUIControlManager.SetColumnValueRange(SimpleColumnControl.Column.ColumnValueRange.Details,false);
             }
             //CheckColumnReadonly();
         }
@@ -61,7 +61,7 @@ namespace MyUILibrary.EntityArea
             GetUIControlManager.SetBinding(this.Property);
 
             //این اضافیه چون تو وضعیها بصورت داینامیک فقط تعیین میشه و اونجا هم ریست میشه اما جهت محکم کاری بد نیست
-            DecideControl();
+            SetControlUIDetails();
 
             //CheckColumnReadonly();
             //SetMessageAndColor();
@@ -84,7 +84,7 @@ namespace MyUILibrary.EntityArea
         {
             get
             {
-                //**7a082dc6-eb74-4622-8062-1eac557339df
+                //**ChildSimpleContorlProperty.IsReadonly: 7a082dc6-eb74-4622-8062-1eac557339df
                 return SimpleColumnControl.Column.IsReadonly || ControlReadonlyStateItems.Any();
 
                 //|| (Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary &&
@@ -114,11 +114,12 @@ namespace MyUILibrary.EntityArea
                 ControlHiddenStateItems.Remove(ControlHiddenStateItems.First(x => x.Key == key));
             ControlHiddenStateItems.Add(new ControlStateItem(key, message, permanent));
 
-            DecideControl();
+            SetControlUIDetails();
         }
 
-        private void DecideControl()
+        private void SetControlUIDetails()
         {
+            // ChildSimpleContorlProperty.SetControlUIDetails: ffee3df3-b262-4bb8-88ba-2b095307e547
             if (IsHiddenOnState)
             {
                 GetUIControlManager.Visiblity(false);
@@ -171,7 +172,7 @@ namespace MyUILibrary.EntityArea
             if (ControlHiddenStateItems.Any(x => x.Key == key))
                 ControlHiddenStateItems.RemoveAll(x => x.Key == key);
 
-            DecideControl();
+            SetControlUIDetails();
             // SetMessageAndColor();
         }
 
@@ -254,7 +255,7 @@ namespace MyUILibrary.EntityArea
                 if (!IsHiddenOnState && !IsReadonly)
                 {
                     ColumnValueRange = details;
-                    GetUIControlManager.SetColumnValueRange(details);
+                    GetUIControlManager.SetColumnValueRange(details,false);
                 }
             }
         }
@@ -265,7 +266,7 @@ namespace MyUILibrary.EntityArea
                 if (!IsHiddenOnState && !IsReadonly)
                 {
                     ColumnValueRange = null;
-                    GetUIControlManager.SetColumnValueRange(SimpleColumnControl.Column.ColumnValueRange.Details);
+                    GetUIControlManager.SetColumnValueRange(SimpleColumnControl.Column.ColumnValueRange.Details, false);
                 }
             }
         }
@@ -354,7 +355,7 @@ namespace MyUILibrary.EntityArea
             if (!PropertyFormulaCommentItems.Any(x => x.Key == key))
                 PropertyFormulaCommentItems.Add(new PropertyFormulaComment(key, message));
 
-            DecideControl();
+            SetControlUIDetails();
 
         }
         public void RemovePropertyFormulaComment(string key)
@@ -362,7 +363,7 @@ namespace MyUILibrary.EntityArea
             if (PropertyFormulaCommentItems.Any(x => x.Key == key))
                 PropertyFormulaCommentItems.RemoveAll(x => x.Key == key);
 
-            DecideControl();
+            SetControlUIDetails();
 
         }
 

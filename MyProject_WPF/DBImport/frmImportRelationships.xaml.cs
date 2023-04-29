@@ -275,7 +275,7 @@ namespace MyProject_WPF
         {
             return Task.Run(() =>
             {
-                var result = bizTableDrivedEntity.GetOrginalEntities(Database.ID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships, false);
+                var result = bizTableDrivedEntity.GetAllOrginalEntitiesExceptViewsDTO(Database.ID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
                 return result;
             });
         }

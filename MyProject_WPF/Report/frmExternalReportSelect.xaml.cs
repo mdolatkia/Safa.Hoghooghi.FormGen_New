@@ -1,6 +1,6 @@
 ﻿
 using ModelEntites;
-using MyFormulaFunctionStateFunctionLibrary;
+
 using MyModelManager;
 using System;
 using System.Collections.Generic;
@@ -48,7 +48,7 @@ namespace MyProject_WPF
      
         private void GetEntityExternalReports()
         {
-            var listEntityExternalReports = bizEntityExternalReport.GetEntityExternalReports(EntityID);
+            var listEntityExternalReports = bizEntityExternalReport.GetEntityExternalReports(MyProjectManager.GetMyProjectManager.GetRequester(),EntityID);
             dtgItems.ItemsSource = listEntityExternalReports;
         }
         private void btnClose_Click(object sender, RoutedEventArgs e)

@@ -121,7 +121,7 @@ namespace MyUILibrary.EntityArea
             DP_SearchRepositoryMain searchDataViewItem = new DP_SearchRepositoryMain(data.TargetEntityID);
             foreach (var col in data.KeyProperties)
             {
-                searchDataViewItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
+                searchDataViewItem.Phrases.Add(new SearchProperty(col.Column) {  Value = col.Value });
             }
             DR_SearchViewRequest requestDataView = new DR_SearchViewRequest(requester, searchDataViewItem);
             //requestDataView.EntityViewID = listViewID;

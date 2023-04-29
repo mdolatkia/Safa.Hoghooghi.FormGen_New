@@ -9,10 +9,11 @@ using MyUILibrary.EntityArea;
 using ProxyLibrary;
 using ModelEntites;
 using MyUILibraryInterfaces.DataLinkArea;
-using MyRelationshipDataManager;
+
 using MyUILibraryInterfaces.DataMenuArea;
 
 using MyCommonWPFControls;
+using MyRelationshipDataManager;
 
 namespace MyUILibrary.DataLinkArea
 {
@@ -273,7 +274,7 @@ namespace MyUILibrary.DataLinkArea
                 var searchDataTuple = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipTailDataManager.GetTargetSearchItemFromRelationshipTail(OtherData, tail.RelationshipTail.ReverseRelationshipTail);
                 foreach (var item in FirstData.KeyProperties)
                 {
-                    searchDataTuple.Phrases.Add(new SearchProperty() { ColumnID = item.ColumnID, Value = item.Value });
+                    searchDataTuple.Phrases.Add(new SearchProperty(item.Column) { Value = item.Value });
                 }
                 var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
                 //سکوریتی داده اعمال میشود

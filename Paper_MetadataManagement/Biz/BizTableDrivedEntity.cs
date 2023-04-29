@@ -10,9 +10,6 @@ namespace Paper_MetadataManagement
     public class BizTableDrivedEntity
     {
 
-
-
-
         public bool IndependentDataEntry(int entityID)
         {
             using (var projectContext = new MyIdeaEntities())

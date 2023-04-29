@@ -19,6 +19,8 @@ namespace DataAccess
         {
             this.ColumnCustomFormula = new HashSet<ColumnCustomFormula>();
             this.EntityValidation = new HashSet<EntityValidation>();
+            this.PhraseColumn = new HashSet<PhraseColumn>();
+            this.SavedPreDefinedSearchSimpleColumn = new HashSet<SavedPreDefinedSearchSimpleColumn>();
             this.TableDrivedEntityStateCondition = new HashSet<TableDrivedEntityStateCondition>();
             this.FormulaItems = new HashSet<FormulaItems>();
             this.FormulaItems1 = new HashSet<FormulaItems>();
@@ -45,6 +47,10 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityValidation> EntityValidation { get; set; }
         public virtual LinearFormula LinearFormula { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PhraseColumn> PhraseColumn { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SavedPreDefinedSearchSimpleColumn> SavedPreDefinedSearchSimpleColumn { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TableDrivedEntityStateCondition> TableDrivedEntityStateCondition { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }

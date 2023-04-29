@@ -26,6 +26,7 @@ namespace DataAccess
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Phrase> Phrase { get; set; }
+        public virtual Phrase Phrase1 { get; set; }
         public virtual PhraseRelationship PhraseRelationship { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SaveAdvancedSearch> SaveAdvancedSearch { get; set; }

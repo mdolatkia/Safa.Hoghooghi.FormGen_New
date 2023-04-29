@@ -19,8 +19,10 @@ namespace DataAccess
         public string Value { get; set; }
         public int EntitySearchColumnsID { get; set; }
         public short Operator { get; set; }
+        public Nullable<int> FormulaID { get; set; }
     
         public virtual EntitySearchColumns EntitySearchColumns { get; set; }
+        public virtual Formula Formula { get; set; }
         public virtual SavedPreDefinedSearch SavedPreDefinedSearch { get; set; }
     }
 }

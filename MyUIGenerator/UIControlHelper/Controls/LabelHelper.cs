@@ -91,7 +91,10 @@ namespace MyUIGenerator.UIControlHelper
         {
             return textBox.Text;
         }
-
+        public void ClearValue()
+        {
+            textBox.Text = "";
+        }
         public CommonOperator GetOperator()
         {
             if (cmbOperators != null)
@@ -164,7 +167,7 @@ namespace MyUIGenerator.UIControlHelper
         //}
 
 
-        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details, bool multiselect)
         {
             throw new NotImplementedException();
         }

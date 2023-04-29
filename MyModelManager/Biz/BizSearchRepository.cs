@@ -12,6 +12,7 @@ namespace MyModelManager
 {
     public class BizSearchRepository
     {
+        BizColumn bizColumn = new BizColumn();
         public List<SavedSearchRepositoryDTO> GetSearchRepositories(int entityID)
         {
             List<SavedSearchRepositoryDTO> result = new List<SavedSearchRepositoryDTO>();
@@ -23,22 +24,22 @@ namespace MyModelManager
             }
             return result;
         }
-        public PreDefinedSearchDTO GetPreDefinedSearch(int ID)
+        public PreDefinedSearchDTO GetPreDefinedSearch(DR_Requester requester, int ID, bool forDefinition)
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var item = projectContext.SavedPreDefinedSearch.First(x => x.ID == ID);
 
-                return ToPreDefinedSearchDTO(item);
+                return ToPreDefinedSearchDTO(requester, item, forDefinition);
             }
         }
-        public AdvancedSearchDTO GetAdvancedSearch(int ID)
+        public AdvancedSearchDTO GetAdvancedSearch(DR_Requester requester, int ID, bool forDefinition)
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var item = projectContext.SaveAdvancedSearch.First(x => x.ID == ID);
 
-                return ToAdvancedSearch(item);
+                return ToAdvancedSearchDTO(requester, item, forDefinition);
             }
         }
         public SavedSearchRepositoryDTO GetSavedSearchRepository(int ID)
@@ -63,7 +64,7 @@ namespace MyModelManager
                     {
                         dbItem = new DataAccess.SavedPreDefinedSearch();
                         dbItem.SavedSearchRepository = new SavedSearchRepository();
-                        projectContext.SavedSearchRepository.Add(dbItem.SavedSearchRepository);
+                        projectContext.SavedPreDefinedSearch.Add(dbItem);
 
                     }
                     dbItem.SavedSearchRepository.IsPreDefinedOrAdvanced = true;
@@ -78,8 +79,11 @@ namespace MyModelManager
                         projectContext.SavedPreDefinedSearchSimpleColumn.Remove(dbItem.SavedPreDefinedSearchSimpleColumn.First());
                     foreach (var dbCol in preDefinedSearchDTO.SimpleSearchProperties)
                     {
+                        //  string value = "";
+                        //  foreach (var val in dbCol.Value)
+                        //      value += (value == "" ? "" : "@") + val.ToString();
                         dbItem.SavedPreDefinedSearchSimpleColumn.Add(
-                            new SavedPreDefinedSearchSimpleColumn() { EntitySearchColumnsID = dbCol.EntitySearchColumnsID, Value = dbCol.Value?.ToString(), Operator = (short)dbCol.Operator });
+                            new SavedPreDefinedSearchSimpleColumn() { EntitySearchColumnsID = dbCol.EntitySearchColumnsID, Value = dbCol.Value?.ToString(), FormulaID = dbCol.FormulaID == 0 ? null : (int?)dbCol.FormulaID, Operator = (short)dbCol.Operator });
                     }
 
                     while (dbItem.SavedPreDefinedSearchRelationship.Any())
@@ -98,10 +102,11 @@ namespace MyModelManager
                         {
                             foreach (var column in data.KeyProperties)
                             {
-                                dbRel.SavedPreDefinedSearchRelationshipData.Add(new SavedPreDefinedSearchRelationshipData() { DataGroup = group.ToString(), KeyColumnID = column.ColumnID, Value = column.Value?.ToString() });
+                                dbRel.SavedPreDefinedSearchRelationshipData.Add(new SavedPreDefinedSearchRelationshipData() { DataGroup = group.ToString(), KeyColumnID = column.Column.ID, Value = column.Value?.ToString() });
                             }
                             group++;
                         }
+                        dbItem.SavedPreDefinedSearchRelationship.Add(dbRel);
                     }
 
 
@@ -137,7 +142,7 @@ namespace MyModelManager
                     {
                         dbItem = new DataAccess.SaveAdvancedSearch();
                         dbItem.SavedSearchRepository = new SavedSearchRepository();
-                        projectContext.SavedSearchRepository.Add(dbItem.SavedSearchRepository);
+                        projectContext.SaveAdvancedSearch.Add(dbItem);
 
                     }
                     dbItem.SavedSearchRepository.IsPreDefinedOrAdvanced = false;
@@ -147,7 +152,7 @@ namespace MyModelManager
                     if (dbItem.PhraseLogic != null)
                         RemovePhraseLogic(projectContext, dbItem.PhraseLogic);
 
-                    dbItem.PhraseLogic = CreatePhraseLogic(projectContext, advancedSearchDTO.SearchRepositoryMain);
+                    dbItem.PhraseLogic = CreatePhraseLogic(projectContext, advancedSearchDTO.SearchRepositoryMain).PhraseLogic1;
 
 
                     projectContext.SaveChanges();
@@ -170,42 +175,45 @@ namespace MyModelManager
             }
         }
 
-
-
-
-
-        private PhraseLogic CreatePhraseLogic(MyIdeaEntities projectContext, LogicPhraseDTO logicPhraseDTO)
+        private DataAccess.Phrase CreatePhraseLogic(MyIdeaEntities projectContext, LogicPhraseDTO logicPhraseDTO)
         {
             DataAccess.Phrase phrase = new DataAccess.Phrase();
             //  phrase.Type = 2;
             projectContext.Phrase.Add(phrase);
-            phrase.PhraseLogic = new PhraseLogic();
-            phrase.PhraseLogic.AndOrType = (short)logicPhraseDTO.AndOrType;
+            phrase.PhraseLogic1 = new PhraseLogic();
+            phrase.PhraseLogic1.AndOrType = (short)logicPhraseDTO.AndOrType;
             foreach (var phraseDTO in logicPhraseDTO.Phrases)
             {
+
                 if (phraseDTO is SearchProperty)
-                    CreateColumnPhrase(projectContext, phraseDTO as SearchProperty);
+                {
+                    var created = CreateColumnPhrase(projectContext, phraseDTO as SearchProperty);
+                    phrase.PhraseLogic1.Phrase.Add(created);
+                }
                 else if (phraseDTO is LogicPhraseDTO)
-                    CreatePhraseLogic(projectContext, phraseDTO as LogicPhraseDTO);
+                {
+                    var created = CreatePhraseLogic(projectContext, phraseDTO as LogicPhraseDTO);
+                    phrase.PhraseLogic1.Phrase.Add(created);
+                }
             }
 
             if (logicPhraseDTO is DP_SearchRepositoryRelationship)
             {
-                phrase.PhraseLogic.PhraseRelationship = new PhraseRelationship();
-                phrase.PhraseLogic.PhraseRelationship.HasNotRelationshipCheck = (logicPhraseDTO as DP_SearchRepositoryRelationship).HasNotRelationshipCheck;
+                phrase.PhraseLogic1.PhraseRelationship = new PhraseRelationship();
+                phrase.PhraseLogic1.PhraseRelationship.HasNotRelationshipCheck = (logicPhraseDTO as DP_SearchRepositoryRelationship).HasNotRelationshipCheck;
                 //dbSearchRepository.HasRelationshipCheck = searchRepository.HasRelationshipCheck;
-                phrase.PhraseLogic.PhraseRelationship.RelationshipFromCount = (logicPhraseDTO as DP_SearchRepositoryRelationship).RelationshipFromCount;
-                phrase.PhraseLogic.PhraseRelationship.RelationshipToCount = (logicPhraseDTO as DP_SearchRepositoryRelationship).RelationshipToCount;
+                phrase.PhraseLogic1.PhraseRelationship.RelationshipFromCount = (logicPhraseDTO as DP_SearchRepositoryRelationship).RelationshipFromCount;
+                phrase.PhraseLogic1.PhraseRelationship.RelationshipToCount = (logicPhraseDTO as DP_SearchRepositoryRelationship).RelationshipToCount;
                 if ((logicPhraseDTO as DP_SearchRepositoryRelationship).SourceRelationship != null)
-                    phrase.PhraseLogic.PhraseRelationship.SourceRelationID = (logicPhraseDTO as DP_SearchRepositoryRelationship).SourceRelationship.ID;
+                    phrase.PhraseLogic1.PhraseRelationship.SourceRelationID = (logicPhraseDTO as DP_SearchRepositoryRelationship).SourceRelationship.ID;
                 else
-                    phrase.PhraseLogic.PhraseRelationship.SourceRelationID = null;
+                    phrase.PhraseLogic1.PhraseRelationship.SourceRelationID = null;
             }
 
 
-            return phrase.PhraseLogic;
+            return phrase;
         }
-        private PhraseColumn CreateColumnPhrase(MyIdeaEntities projectContext, SearchProperty searchProperty)
+        private DataAccess.Phrase CreateColumnPhrase(MyIdeaEntities projectContext, SearchProperty searchProperty)
         {
             DataAccess.Phrase phrase = new DataAccess.Phrase();
             phrase.Type = 3;
@@ -213,9 +221,9 @@ namespace MyModelManager
             phrase.PhraseColumn = new PhraseColumn();
             phrase.PhraseColumn.ColumnID = searchProperty.ColumnID;
             phrase.PhraseColumn.Operator = searchProperty.Operator.ToString();
-            phrase.PhraseColumn.Value = searchProperty.Value == null ? null : searchProperty.Value.ToString();
-
-            return phrase.PhraseColumn;
+            phrase.PhraseColumn.Value = searchProperty.Value?.ToString();
+            phrase.PhraseColumn.FormulaID = searchProperty.FormulaID == 0 ? null : (int?)searchProperty.FormulaID;
+            return phrase;
         }
 
 
@@ -267,12 +275,13 @@ namespace MyModelManager
         //}
         private void RemovePhraseLogic(MyIdeaEntities projectContext, PhraseLogic phraseLogic)
         {
-            if (phraseLogic.Phrase.Any())
-                RemovePhrase(projectContext, phraseLogic.Phrase.First());
+            foreach (var phrase in phraseLogic.Phrase.ToList())
+                RemovePhrase(projectContext, phrase);
 
             if (phraseLogic.PhraseRelationship != null)
                 projectContext.PhraseRelationship.Remove(phraseLogic.PhraseRelationship);
 
+            projectContext.Phrase.Remove(phraseLogic.Phrase1);
             projectContext.PhraseLogic.Remove(phraseLogic);
         }
         private void RemovePhrase(MyIdeaEntities projectContext, DataAccess.Phrase item)
@@ -280,6 +289,7 @@ namespace MyModelManager
             if (item.PhraseColumn != null)
             {
                 projectContext.PhraseColumn.Remove(item.PhraseColumn);
+                projectContext.Phrase.Remove(item);
                 //  item.ColumnPhrase = null;
             }
             //else if (item.SearchRepositoryID != null)
@@ -290,14 +300,14 @@ namespace MyModelManager
 
             //    // item.SearchRepository = null;
             //}
-            else if (item.PhraseLogic != null)
+            else if (item.PhraseLogic1 != null)
             {
-                RemovePhraseLogic(projectContext, item.PhraseLogic);
+                RemovePhraseLogic(projectContext, item.PhraseLogic1);
 
-                projectContext.PhraseLogic.Remove(item.PhraseLogic);
+                //   projectContext.PhraseLogic.Remove(item.PhraseLogic);
                 //    item.LogicPhrase = null;
             }
-            projectContext.Phrase.Remove(item);
+
         }
 
 
@@ -336,45 +346,55 @@ namespace MyModelManager
             result.EntityID = savedSearchRepository.TableDrivedEntityID;
             result.Title = savedSearchRepository.Title;
             result.IsPreDefinedOrAdvanced = savedSearchRepository.IsPreDefinedOrAdvanced;
-          
+
             return result;
         }
 
-        private AdvancedSearchDTO ToAdvancedSearch(SaveAdvancedSearch saveAdvancedSearch)
+        public AdvancedSearchDTO ToAdvancedSearchDTO(DR_Requester requester, SaveAdvancedSearch saveAdvancedSearch, bool forDefinition)
         {
             var result = new AdvancedSearchDTO();
             result.SearchRepositoryMain = new DP_SearchRepositoryMain(saveAdvancedSearch.SavedSearchRepository.TableDrivedEntityID);
-            SetLogicPhraseDTO(saveAdvancedSearch.PhraseLogic, result.SearchRepositoryMain);
+            result.SearchRepositoryMain.Title = "عبارت جستجو";
+            result.IsPreDefinedOrAdvanced = false;
+            result.ID = saveAdvancedSearch.ID;
+            result.Title = saveAdvancedSearch.SavedSearchRepository.Title;
+            result.EntityID = saveAdvancedSearch.SavedSearchRepository.TableDrivedEntityID;
+
+            SetLogicPhraseDTO(requester, saveAdvancedSearch.PhraseLogic, result.SearchRepositoryMain, forDefinition);
             return result;
         }
-        private void SetLogicPhraseDTO(DataAccess.PhraseLogic logicPhrase, ProxyLibrary.LogicPhraseDTO logicPhraseDTO)
+        private void SetLogicPhraseDTO(DR_Requester requester, DataAccess.PhraseLogic logicPhrase, ProxyLibrary.LogicPhraseDTO logicPhraseDTO, bool forDefinition)
         {
             logicPhraseDTO.AndOrType = (AndOREqualType)logicPhrase.AndOrType;
 
-            if (logicPhrase.PhraseRelationship != null)
-            {
-                var phraseRelationship = logicPhrase.PhraseRelationship;
-                var relDTO = new BizRelationship().ToRelationshipDTO(phraseRelationship.Relationship);
-                logicPhraseDTO = new DP_SearchRepositoryRelationship();
-                (logicPhraseDTO as DP_SearchRepositoryRelationship).Title = relDTO.Name;
-                (logicPhraseDTO as DP_SearchRepositoryRelationship).HasNotRelationshipCheck = phraseRelationship.HasNotRelationshipCheck;
-                (logicPhraseDTO as DP_SearchRepositoryRelationship).RelationshipFromCount = phraseRelationship.RelationshipFromCount;
-                (logicPhraseDTO as DP_SearchRepositoryRelationship).RelationshipToCount = phraseRelationship.RelationshipToCount;
-                //searchRepository.SourceEntityID = relDTO.EntityID1;
-                (logicPhraseDTO as DP_SearchRepositoryRelationship).SourceRelationship = relDTO;
-                (logicPhraseDTO as DP_SearchRepositoryRelationship).ID = phraseRelationship.ID;
-
-            }
 
             foreach (var dbPhrase in logicPhrase.Phrase)
             {
                 if (dbPhrase.PhraseColumn != null)
-                    logicPhraseDTO.Phrases.Add(ToColumnPhraseDTO(dbPhrase.PhraseColumn));
-                else if (dbPhrase.PhraseLogic != null)
+                    logicPhraseDTO.Phrases.Add(ToColumnPhraseDTO(requester, dbPhrase.PhraseColumn, forDefinition));
+                else if (dbPhrase.PhraseLogic1 != null)
                 {
-                    var newLogicPhrase = new LogicPhraseDTO();
-                    logicPhraseDTO.Phrases.Add(newLogicPhrase);
-                    SetLogicPhraseDTO(dbPhrase.PhraseLogic, newLogicPhrase);
+                    if (dbPhrase.PhraseLogic1.PhraseRelationship != null)
+                    {
+                        var newLogicPhrase = new DP_SearchRepositoryRelationship();
+                        var phraseRelationship = dbPhrase.PhraseLogic1.PhraseRelationship;
+                        var relDTO = new BizRelationship().ToRelationshipDTO(phraseRelationship.Relationship);
+                        newLogicPhrase.Title = relDTO.Alias;
+                        newLogicPhrase.HasNotRelationshipCheck = phraseRelationship.HasNotRelationshipCheck;
+                        newLogicPhrase.RelationshipFromCount = phraseRelationship.RelationshipFromCount;
+                        newLogicPhrase.RelationshipToCount = phraseRelationship.RelationshipToCount;
+                        //searchRepository.SourceEntityID = relDTO.EntityID1;
+                        newLogicPhrase.SourceRelationship = relDTO;
+                        newLogicPhrase.ID = phraseRelationship.ID;
+                        logicPhraseDTO.Phrases.Add(newLogicPhrase);
+                        SetLogicPhraseDTO(requester, dbPhrase.PhraseLogic1, newLogicPhrase, forDefinition);
+                    }
+                    else
+                    {
+                        var newLogicPhrase = new LogicPhraseDTO();
+                        logicPhraseDTO.Phrases.Add(newLogicPhrase);
+                        SetLogicPhraseDTO(requester, dbPhrase.PhraseLogic1, newLogicPhrase, forDefinition);
+                    }
                 }
             }
 
@@ -435,17 +455,44 @@ namespace MyModelManager
         //    }
         //    return result;
         //}
-        private PreDefinedSearchDTO ToPreDefinedSearchDTO(SavedPreDefinedSearch savedPreDefinedSearch)
+        public PreDefinedSearchDTO ToPreDefinedSearchDTO(DR_Requester requester, SavedPreDefinedSearch savedPreDefinedSearch, bool forDefinition)
         {
             PreDefinedSearchDTO result = new PreDefinedSearchDTO();
             result.QuickSearchValue = savedPreDefinedSearch.QuickSearchValue;
-            result.EntitySearchID = savedPreDefinedSearch.EntitySearchID ?? 0;
+            result.EntitySearchID = savedPreDefinedSearch.EntitySearchID;
+            result.IsPreDefinedOrAdvanced = true;
+            result.ID = savedPreDefinedSearch.ID;
+            result.Title = savedPreDefinedSearch.SavedSearchRepository.Title;
+            result.EntityID = savedPreDefinedSearch.SavedSearchRepository.TableDrivedEntityID;
+            BizFormula bizFormula = new BizFormula();
             foreach (var item in savedPreDefinedSearch.SavedPreDefinedSearchSimpleColumn)
             {
-                List<object> values = new List<object>();
-                foreach (var val in item.Value.Split('@'))
-                    values.Add(val);
-                result.SimpleSearchProperties.Add(new DP_PreDefinedSearchSimpleColumn() { EntitySearchColumnsID = item.EntitySearchColumnsID, Value = values, Operator = (CommonOperator)item.Operator });
+                //List<object> values = new List<object>();
+                //foreach (var val in item.Value.Split('@'))
+                //    values.Add(val);
+
+                var nItem = new DP_PreDefinedSearchSimpleColumn();
+                nItem.EntitySearchColumnsID = item.EntitySearchColumnsID;
+                nItem.Value = item.Value;
+                if (item.FormulaID != null)
+                {
+                    nItem.FormulaID = item.FormulaID.Value;
+                    nItem.Formula = bizFormula.ToFormulaDTO(item.Formula, true);
+                    if (!forDefinition)
+                    {
+                        FormulaFunctionHandler formulaFunctionHandler = new FormulaFunctionHandler();
+                        var resultF = formulaFunctionHandler.CalculateFormula(nItem.FormulaID, null, requester);
+                        if (resultF.Exception == null)
+                            nItem.Value = resultF.Result;
+                        else
+                        {
+                            nItem.Tooltip = resultF.Exception.Message;
+                        }
+                    }
+                }
+                nItem.Operator = (CommonOperator)item.Operator;
+
+                result.SimpleSearchProperties.Add(nItem);
             }
             foreach (var dbItem in savedPreDefinedSearch.SavedPreDefinedSearchRelationship)
             {
@@ -460,11 +507,11 @@ namespace MyModelManager
                     dataItem.KeyProperties = new List<DP_PreDefinedSearchRelationshipColumns>();
                     foreach (var col in data)
                     {
-                        dataItem.KeyProperties.Add(new DP_PreDefinedSearchRelationshipColumns() { ColumnID = col.KeyColumnID, Value = col.Value });
+                        dataItem.KeyProperties.Add(new DP_PreDefinedSearchRelationshipColumns() { Column = bizColumn.ToColumnDTO(col.Column, true), Value = col.Value });
                     }
                     item.DataItems.Add(dataItem);
                 }
-
+                result.RelationshipSearchProperties.Add(item);
             }
             return result;
         }
@@ -488,13 +535,31 @@ namespace MyModelManager
         //    return searchRepository;
         //}
 
-        private ProxyLibrary.Phrase ToColumnPhraseDTO(PhraseColumn columnPhrase)
+        private ProxyLibrary.Phrase ToColumnPhraseDTO(DR_Requester requester, PhraseColumn columnPhrase, bool forDefinition)
         {
-            SearchProperty property = new SearchProperty();
-            property.ColumnID = columnPhrase.ColumnID;
+            var columnDTO = bizColumn.ToColumnDTO(columnPhrase.Column, true);
+            SearchProperty property = new SearchProperty(columnDTO);
             //property.SearchColumnID = columnPhrase.EntitySearchColumnsID ?? 0;
             property.Operator = (CommonOperator)Enum.Parse(typeof(CommonOperator), columnPhrase.Operator);
             property.Value = columnPhrase.Value;
+            BizFormula bizFormula = new BizFormula();
+            if (columnPhrase.FormulaID != null)
+            {
+                property.FormulaID = columnPhrase.FormulaID.Value;
+                property.Formula = bizFormula.ToFormulaDTO(columnPhrase.Formula, true);
+                if (!forDefinition)
+                {
+                    FormulaFunctionHandler formulaFunctionHandler = new FormulaFunctionHandler();
+                    var resultF = formulaFunctionHandler.CalculateFormula(property.FormulaID, null, requester);
+                    if (resultF.Exception == null)
+                        property.Value = resultF.Result;
+                    else
+                    {
+                        property.Tooltip = resultF.Exception.Message;
+                    }
+                }
+
+            }
             return property;
         }
     }

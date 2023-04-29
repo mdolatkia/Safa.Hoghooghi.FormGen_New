@@ -126,17 +126,20 @@ namespace MyUIGenerator.UIControlHelper
         {
             I_UIControlManager MyControlHelper = null;
             if (HasRangeOfValues)
+            {
                 MyControlHelper = ControlHelper.KeyValueControlHelper(Column);
+                MyControlHelper.SetColumnValueRange(ColumnValueRange, false);
+            }
             else
                 MyControlHelper = ControlHelper.GetControlHelper(Column, ColumnSetting, null);
             MyControlHelper.SetReadonly(IsReadOnly);
-            if (MyControlHelper is I_ControlHelperValueRange)
-            {
-                if (ColumnValueRange != null)
-                {
-                    (MyControlHelper as I_ControlHelperValueRange).SetColumnValueRange(ColumnValueRange);
-                }
-            }
+            //if (MyControlHelper is I_ControlHelperValueRange)
+            //{
+            //    if (ColumnValueRange != null)
+            //    {
+
+            //    }
+            //}
             // cell.Tag = MyControlHelper;
             if (ButtonMenus.Any())
             {
@@ -567,82 +570,104 @@ namespace MyUIGenerator.UIControlHelper
         //}
     }
 
-    public class tempMutipleUIManager : I_UIControlManager
-    {
-        public void AddButtonMenu(ConrolPackageMenu menu)
-        {
-            throw new NotImplementedException();
-        }
+    //public class tempMutipleUIManager : I_UIControlManager
+    //{
+    //    public void AddButtonMenu(ConrolPackageMenu menu)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public CommonOperator GetOperator()
-        {
-            throw new NotImplementedException();
-        }
+    //    public void ClearMenuColor()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public object GetUIControl()
-        {
-            throw new NotImplementedException();
-        }
+    //    public void ClearValue()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public object GetValue()
-        {
-            throw new NotImplementedException();
-        }
+    //    public List<ConrolPackageMenu> GetButtonMenus()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void RemoveButtonMenu(string name)
-        {
-            throw new NotImplementedException();
-        }
+    //    public CommonOperator GetOperator()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void SetBackgroundColor(InfoColor color)
-        {
-            throw new NotImplementedException();
-        }
+    //    public object GetUIControl()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void SetBinding(EntityInstanceProperty property)
-        {
-            throw new NotImplementedException();
-        }
+    //    public object GetValue()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void SetBorderColor(InfoColor color)
-        {
-            throw new NotImplementedException();
-        }
+    //    public void RemoveButtonMenu(string name)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //    public void RemoveButtonMenus()
+    //    {
+    //    }
+    //        public void SetBackgroundColor(InfoColor color)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
-        {
-            throw new NotImplementedException();
-        }
+    //    public void SetBinding(EntityInstanceProperty property)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void SetForegroundColor(InfoColor color)
-        {
-            throw new NotImplementedException();
-        }
+    //    public void SetBorderColor(InfoColor color)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void SetOperator(CommonOperator operatorValue)
-        {
-            throw new NotImplementedException();
-        }
+    //    public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details, bool multiselect)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void SetReadonly(bool isreadonly)
-        {
-            throw new NotImplementedException();
-        }
+    //    public void SetForegroundColor(InfoColor color)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void SetTooltip(string tooltip)
-        {
-            throw new NotImplementedException();
-        }
+    //    public void SetMenuColor(InfoColor green)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public bool SetValue(object value)
-        {
-            throw new NotImplementedException();
-        }
+    //    public void SetOperator(CommonOperator operatorValue)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public void Visiblity(bool visible)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    //    public void SetReadonly(bool isreadonly)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    public void SetTooltip(string tooltip)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    public bool SetValue(object value)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    public void Visiblity(bool visible)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
 
 }

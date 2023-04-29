@@ -37,10 +37,10 @@ namespace MyUIGenerator.UIControlHelper
             return MyControlHelper;
         }
         public I_UIControlManager MyControlHelper { set; get; }
-        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates)
-        {
-            (MyControlHelper as I_ControlHelperValueRange).SetColumnValueRange(candidates);
-        }
+        //public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates)
+        //{
+        //    (MyControlHelper as I_ControlHelperValueRange).SetColumnValueRange(candidates);
+        //}
 
         //public bool IsVisible
         //{

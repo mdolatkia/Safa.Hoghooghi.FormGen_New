@@ -57,7 +57,7 @@ namespace MyUILibrary.EntitySelectArea
                 }
                 else
                 {
-                    var entities = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.SearchEntities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), e.SingleFilterValue, false, EntitySelectAreaInitializer.SpecificActions);
+                    var entities = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.SearchEntities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), e.SingleFilterValue, EntitySelectAreaInitializer.SpecificActions);
                     e.ResultItemsSource = entities;
                 }
             }

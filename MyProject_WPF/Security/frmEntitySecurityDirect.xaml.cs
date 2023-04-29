@@ -278,7 +278,7 @@ namespace MyProject_WPF
             {
                 if (!e.FilterBySelectedValue)
                 {
-                    var list = bizTableDrivedEntity.GetAllEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false, null);
+                    var list = bizTableDrivedEntity.GetAllEnbaledEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue);
                     e.ResultItemsSource = list;
                 }
                 else

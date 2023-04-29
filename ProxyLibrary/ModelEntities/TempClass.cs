@@ -55,7 +55,7 @@ namespace ModelEntites
         public string DefaultValue { get; set; }
         public bool IsSimpleColumn
         {
-            //** edeace71-ffce-4695-8fa8-993db3be8ad4
+            //** ColumnDTO.IsSimpleColumn: edeace71-ffce-4695-8fa8-993db3be8ad4
             get { return DataEntryEnabled && IsDBCalculatedColumn == false && IsIdentity == false && PrimaryKey == false && ForeignKey == false; }
         }
         public bool IsMandatory { get; set; }
@@ -1241,7 +1241,11 @@ namespace ModelEntites
         public ReportType ReportType { set; get; }
         public SearchableReportType SearchableReportType { set; get; }
         public DataItemReportType DataItemReportType { set; get; }
-        public SavedSearchRepositoryDTO SearchRepository { set; get; }
+    //    public SavedSearchRepositoryDTO SearchRepository { set; get; }
+
+        public PreDefinedSearchDTO PreDefinedSearch { set; get; }
+
+        public AdvancedSearchDTO AdvancedSearch { set; get; }
         //public EntityListReportDTO EntityListReport { set; get; }
         //public EntityListReportGroupedDTO EntityListReportGrouped { set; get; }
         //public EntityChartReportDTO EntityChartReport { set; get; }
@@ -2781,9 +2785,11 @@ namespace ModelEntites
         public int SearchRelationshipTailID { set; get; }
         public EntityRelationshipTailDTO ValueRelationshipTail { set; get; }
         public EntityRelationshipTailDTO SearchRelationshipTail { set; get; }
-        public int ValueColumnID { set; get; }
-        public int SearchColumnID { set; get; }
+        public int ValueColumnID { get { return ValueColumn.ID; } }
+        public int SearchColumnID { get { return SearchColumn.ID; } }
 
+        public ColumnDTO ValueColumn { set; get; }
+        public ColumnDTO SearchColumn { set; get; }
         public List<ColumnDTO> vwValueColumns { set; get; }
         public List<ColumnDTO> vwSearchColumns { set; get; }
         //public int SearchRelationshipTailID { set; get; }
@@ -2853,9 +2859,12 @@ namespace ModelEntites
             //RelationshipColumns = new List<ModelEntites.RelationshipColumnDTO>();
 
         }
-        public EntityRelationshipTailDTO(int InitialEntityID, string RelationshipIDPath, int TargetEntityID)
+        public EntityRelationshipTailDTO(int initialEntityID, string relationshipIDPath, int targetEntityID)
         {
             //RelationshipColumns = new List<ModelEntites.RelationshipColumnDTO>();
+            InitialEntityID = initialEntityID;
+            TargetEntityID = targetEntityID;
+            RelationshipIDPath = relationshipIDPath;
 
         }
         public int ID { set; get; }

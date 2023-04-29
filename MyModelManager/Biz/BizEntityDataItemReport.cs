@@ -29,7 +29,7 @@ namespace MyModelManager
                     if (bizEntityReport.DataIsAccessable(requester, item.EntityReport))
                     {
                         var nItem = new EntityDataItemReportDTO();
-                        ToEntityDataItemReportDTO(item, nItem, false);
+                        ToEntityDataItemReportDTO( requester, item, nItem, false);
                         result.Add(nItem);
                     }
                 }
@@ -37,9 +37,9 @@ namespace MyModelManager
             return result;
         }
 
-        internal void ToEntityDataItemReportDTO(EntityDataItemReport entityDataItemReport, EntityDataItemReportDTO entityDataItemReportDTO, bool withDetails)
+        internal void ToEntityDataItemReportDTO(DR_Requester requester, EntityDataItemReport entityDataItemReport, EntityDataItemReportDTO entityDataItemReportDTO, bool withDetails)
         {
-            bizEntityReport.ToEntityReportDTO(entityDataItemReport.EntityReport, entityDataItemReportDTO, withDetails);
+            bizEntityReport.ToEntityReportDTO( requester, entityDataItemReport.EntityReport, entityDataItemReportDTO, withDetails);
             //entityDataItemReportDTO.SearchRepositoryID = entityDataItemReport.SearchRepositoryID ?? 0;
             //if (entityDataItemReport.SearchRepository != null)
             //    entityDataItemReportDTO.SearchRepository = bizSearchRepository.ToSearchRepositoryDTO(entityDataItemReport.SearchRepository);

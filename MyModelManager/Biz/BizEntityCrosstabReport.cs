@@ -70,7 +70,7 @@ namespace MyModelManager
         {
             EntityCrosstabReportDTO result = new EntityCrosstabReportDTO();
             result.ID = item.ID;
-            bizEntitySearchableReport.ToEntitySearchableReportDTO(item.EntitySearchableReport, result, withDetails);
+            bizEntitySearchableReport.ToEntitySearchableReportDTO( requester, item.EntitySearchableReport, result, withDetails);
             result.EntityListViewID = item.EntityListViewID;
             if (withDetails)
             {

@@ -36,7 +36,7 @@ namespace MyModelManager
                     if (DataIsAccessable(requester, dbItem))
                     {
                         var nItem = new EntityReportDTO();
-                        ToEntityReportDTO(dbItem, nItem, false);
+                        ToEntityReportDTO( requester, dbItem, nItem, false);
                         result.Add(nItem);
                     }
                 }
@@ -45,7 +45,7 @@ namespace MyModelManager
             //CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.Validation, entityID.ToString());
             return result;
         }
-        public EntityReportDTO GetEntityReport(DR_Requester requester, int EntityReportID,bool withDetails)
+        public EntityReportDTO GetEntityReport(DR_Requester requester, int EntityReportID, bool withDetails)
         {
             //withSearchInfo این یجوریه! حذف بشه
             using (var projectContext = new DataAccess.MyIdeaEntities())
@@ -54,7 +54,7 @@ namespace MyModelManager
                 if (DataIsAccessable(requester, dbItem))
                 {
                     var nItem = new EntityReportDTO();
-                    ToEntityReportDTO(dbItem, nItem, withDetails);
+                    ToEntityReportDTO( requester, dbItem, nItem, withDetails);
                     return nItem;
                 }
                 else
@@ -99,7 +99,7 @@ namespace MyModelManager
         //        return result;
         //}
 
-        internal void ToEntityReportDTO(EntityReport entityReport, EntityReportDTO entityReportDTO, bool withDetails)
+        internal void ToEntityReportDTO(DR_Requester requester, EntityReport entityReport, EntityReportDTO entityReportDTO, bool withDetails)
         {
             entityReportDTO.ID = entityReport.ID;
             entityReportDTO.ReportType = (ReportType)entityReport.ReportType;
@@ -111,7 +111,18 @@ namespace MyModelManager
                 if (withDetails == true)
                 {
                     if (entityReport.EntitySearchableReport.SavedSearchRepository != null)
-                        entityReportDTO.SearchRepository = new BizSearchRepository().ToSavedSearchRepositoryDTO(entityReport.EntitySearchableReport.SavedSearchRepository);
+                    {
+                        var bizSearchRepository = new BizSearchRepository();
+                        if (entityReport.EntitySearchableReport.SavedSearchRepository.IsPreDefinedOrAdvanced)
+                        {
+                            entityReportDTO.PreDefinedSearch = bizSearchRepository.ToPreDefinedSearchDTO(requester, entityReport.EntitySearchableReport.SavedSearchRepository.SavedPreDefinedSearch, false);
+                        }
+                        else
+                        {
+                            entityReportDTO.AdvancedSearch = bizSearchRepository.ToAdvancedSearchDTO(requester, entityReport.EntitySearchableReport.SavedSearchRepository.SaveAdvancedSearch, false);
+                        }
+
+                    }
                 }
             }
             if (entityReport.EntityDataItemReport != null)

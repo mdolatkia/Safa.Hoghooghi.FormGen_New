@@ -102,7 +102,7 @@ namespace MyProject_WPF
             listDeleted = new List<TableImportItem>();
             listExisting = new List<TableImportItem>();
             listException = new List<TableImportItem>();
-            var originalEntities = bizTableDrivedEntity.GetOrginalEntities(Database.ID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithoutRelationships, false);
+            var originalEntities = bizTableDrivedEntity.GetAllOrginalEntitiesExceptViewsDTO(Database.ID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithoutRelationships);
             foreach (var item in result.Where(x => x.Exception == false))
             {
                 if (originalEntities.Any(x => x.Name.ToLower() == item.Entity.Name.ToLower()))
@@ -292,13 +292,13 @@ namespace MyProject_WPF
                     result += (result == "" ? "" : Environment.NewLine) + "ستون" + " " + column.Name + " " + "اضافه شده است";
                 }
             }
-            if (existingEntity.Columns.Where(x => !x.IsDisabled).Any(x => !dbItem.Entity.Columns.Any(y => y.Name.Replace("ي", "ی") == x.Name.Replace("ي", "ی"))))
+            if (existingEntity.Columns.Any(x => !dbItem.Entity.Columns.Any(y => y.Name.Replace("ي", "ی") == x.Name.Replace("ي", "ی"))))
             {
                 foreach (var column in existingEntity.Columns.Where(x => !dbItem.Entity.Columns.Any(y => y.Name.Replace("ي", "ی") == x.Name.Replace("ي", "ی"))))
                     result += (result == "" ? "" : Environment.NewLine) + "ستون" + " " + column.Name + " " + "حذف شده است";
             }
 
-            foreach (var column in existingEntity.Columns.Where(x => !x.IsDisabled && dbItem.Entity.Columns.Any(y => y.Name == x.Name)))
+            foreach (var column in existingEntity.Columns.Where(x =>  dbItem.Entity.Columns.Any(y => y.Name == x.Name)))
             {
                 var dbColumn = dbItem.Entity.Columns.First(y => y.Name == column.Name);
                 if (column.DataType != dbColumn.DataType)
@@ -398,7 +398,7 @@ namespace MyProject_WPF
         {
             return Task.Run(() =>
             {
-                bizTableDrivedEntity.UpdateModel(databaseID, listNew, listEdit, listDeleted);
+                bizTableDrivedEntity.UpdateModelFromTargetDB(databaseID, listNew, listEdit, listDeleted);
             });
 
         }

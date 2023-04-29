@@ -1,6 +1,5 @@
 ﻿using ModelEntites;
 using MyDataManagerBusiness;
-using MyFormulaFunctionStateFunctionLibrary;
 using MyModelManager;
 
 using ProxyLibrary;
@@ -26,7 +25,11 @@ namespace MyFormulaManagerService
             BizFormula bizFormula = new BizFormula();
             return bizFormula.GetFormula(requester,formulaID, true);
         }
-
+        public List<FormulaDTO> GetFormulas(DR_Requester requester, int entityID)
+        {
+            BizFormula bizFormula = new BizFormula();
+            return bizFormula.GetFormulas(entityID, true);
+        }
         public object GetValueSomeHow(DR_Requester requester, DP_DataRepository sourceData, EntityRelationshipTailDTO valueRelationshipTail, int valueColumnID)
         {
             DataitemRelatedColumnValueHandler dataitemRelatedColumnValueHandler = new DataitemRelatedColumnValueHandler();

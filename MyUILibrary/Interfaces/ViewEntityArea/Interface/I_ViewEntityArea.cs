@@ -11,7 +11,7 @@ namespace MyUILibrary.EntityArea
         event EventHandler<DataViewDataSelectedEventArg> DataSelected;
         ViewEntityAreaInitializer ViewInitializer { set; get; }
         List<SimpleViewColumnControl> ViewColumnControls { set; get; }
-        I_View_ViewEntityArea ViewForViewEntityArea { set; get; }
+        I_View_ViewEntityArea ViewForViewEntityArea { get; }
         EntityListViewDTO EntityListView { get; }
         List<I_ViewAreaCommand> ViewCommands
         {
@@ -19,18 +19,19 @@ namespace MyUILibrary.EntityArea
             set;
         }
         I_View_TemporaryView LastTemporaryView { get; set; }
+        bool IsCalledFromDataView { get; set; }
 
         void ClearSelectedData();
         List<DP_DataView> GetSelectedData();
-        void AddData(List<DP_DataView> data, bool show);
+        void AddData(List<DP_DataView> data);
         void ShowData1(List<DP_DataView> specificDate);
-  //      void SetAreaInitializer(ViewEntityAreaInitializer initParam);
+        //      void SetAreaInitializer(ViewEntityAreaInitializer initParam);
         void OnDataSelected(List<DP_DataView> dataItems);
 
     }
     public class DataSelectedEventArg : EventArgs
     {
-        public DataSelectedEventArg(List<DP_DataView> dataItem, bool fromDataView )
+        public DataSelectedEventArg(List<DP_DataView> dataItem, bool fromDataView)
         {
             DataItem = dataItem;
             FromDataView = fromDataView;
@@ -41,11 +42,15 @@ namespace MyUILibrary.EntityArea
 
     public class DataViewDataSelectedEventArg : EventArgs
     {
-        public DataViewDataSelectedEventArg(List<DP_DataView> dataItem)
+        public DataViewDataSelectedEventArg(List<DP_DataView> dataItem, bool isCalledFromDataView)
         {
             DataItem = dataItem;
+            IsCalledFromDataView = isCalledFromDataView;
         }
         public List<DP_DataView> DataItem { set; get; }
+
+        public bool IsCalledFromDataView { set; get; }
+
     }
     public class SimpleViewColumnControl : BaseColumnControl
     {

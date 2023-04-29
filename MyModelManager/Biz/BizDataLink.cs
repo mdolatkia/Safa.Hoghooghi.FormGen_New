@@ -28,7 +28,7 @@ namespace MyModelManager
                 if (!DataIsAccessable(requester, dbItem))
                     return null;
                 else
-                    return ToDataLinkDTO(dbItem, true);
+                    return ToDataLinkDTO( requester, dbItem, true);
             }
         }
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
@@ -61,7 +61,7 @@ namespace MyModelManager
                 foreach (var dbItem in items)
                 {
                     if (DataIsAccessable(requester, dbItem))
-                        result.Add(ToDataLinkDTO(dbItem, false));
+                        result.Add(ToDataLinkDTO( requester, dbItem, false));
                 }
             }
 
@@ -78,7 +78,7 @@ namespace MyModelManager
                 foreach (var dbItem in items)
                 {
                     if (DataIsAccessable(requester, dbItem))
-                        result.Add(ToDataLinkDTO(dbItem, false));
+                        result.Add(ToDataLinkDTO( requester, dbItem, false));
                 }
             }
             return result;
@@ -86,10 +86,10 @@ namespace MyModelManager
 
 
 
-        private DataLinkDTO ToDataLinkDTO(DataLinkDefinition item, bool withDetails)
+        private DataLinkDTO ToDataLinkDTO(DR_Requester requester, DataLinkDefinition item, bool withDetails)
         {
             DataLinkDTO result = new DataLinkDTO();
-            bizEntityReport.ToEntityReportDTO(item.EntityDataItemReport.EntityReport, result, withDetails);
+            bizEntityReport.ToEntityReportDTO( requester, item.EntityDataItemReport.EntityReport, result, withDetails);
             result.SecondSideEntityID = item.SecondSideEntityID;
             result.NotJointEntities = item.NotJointEntities == true;
             result.FirstSideDataMenuID = item.FirstSideDataMenuID ?? 0;

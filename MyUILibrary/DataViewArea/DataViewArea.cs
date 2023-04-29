@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using MyUILibrary.EntityArea;
 using ProxyLibrary;
 using ModelEntites;
-using MyRelationshipDataManager;
+
 using MyUILibraryInterfaces.DataMenuArea;
 using MyUILibraryInterfaces.EntityArea;
 using MyUILibrary.EntitySearchArea;
@@ -33,7 +33,7 @@ namespace MyUILibrary.DataViewArea
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetViewOfDataViewArea();
         }
 
-        SearchEntityArea SearchEntityArea { set; get; }
+   //     SearchEntityArea SearchEntityArea { set; get; }
         //  int LastSelectedListViewID { set; get; }
         I_DataViewItem LastSelectedDataViewItem { set; get; }
         public I_DataViewItem DefaultDataViewItem { get; set; }
@@ -94,32 +94,32 @@ namespace MyUILibrary.DataViewArea
 
        
 
-        private void View_SearchCommandRequested(object sender, EventArgs e)
-        {
-            if (SearchEntityArea == null)
-            {
+        //private void View_SearchCommandRequested(object sender, EventArgs e)
+        //{
+        //    if (SearchEntityArea == null)
+        //    {
                 
-                var searchViewInitializer = new SearchAreaInitializer();
+        //        var searchViewInitializer = new SearchAreaInitializer();
 
-                searchViewInitializer.EntityID = AreaInitializer.EntityID;
-                //if (AreaInitializer.Entitiy==null)
-                //{
-                //    AreaInitializer.Entitiy = AgentUICoreMediator.GetAgentUICoreMediator.GetEntity(AreaInitializer.EntitiyID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships, false, false);
-                //}
-                SearchEntityArea = new SearchEntityArea(searchViewInitializer);
-                //SearchEntityArea.GenerateSearchView();
-                SearchEntityArea.SearchDataDefined += SearchEntityArea_SearchDataDefined;
+        //        searchViewInitializer.EntityID = AreaInitializer.EntityID;
+        //        //if (AreaInitializer.Entitiy==null)
+        //        //{
+        //        //    AreaInitializer.Entitiy = AgentUICoreMediator.GetAgentUICoreMediator.GetEntity(AreaInitializer.EntitiyID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships, false, false);
+        //        //}
+        //        SearchEntityArea = new SearchEntityArea(searchViewInitializer);
+        //        //SearchEntityArea.GenerateSearchView();
+        //        SearchEntityArea.SearchDataDefined += SearchEntityArea_SearchDataDefined;
 
-            }
-            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(SearchEntityArea.SearchView, "جستجو");
-        }
+        //    }
+        //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(SearchEntityArea.SearchView, "جستجو");
+        //}
 
-        private void SearchEntityArea_SearchDataDefined(object sender, SearchDataArg e)
-        {
-            GetDataItemsBySearchRepository(e.SearchItems);
-            if (DataItemsSearchedByUser != null)
-                DataItemsSearchedByUser(this, null);
-        }
+        //private void SearchEntityArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
+        //{
+        //    GetDataItemsBySearchRepository(e.SearchItems);
+        //    if (DataItemsSearchedByUser != null)
+        //        DataItemsSearchedByUser(this, null);
+        //}
 
 
 

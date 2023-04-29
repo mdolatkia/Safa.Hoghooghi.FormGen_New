@@ -85,10 +85,12 @@ namespace MyFormulaFunctionStateFunctionLibrary
 
         private static DP_DataRepository GetMainDateItem(DR_Requester requester, DP_BaseData dataItem)
         {
+            if (dataItem == null)
+                return null;
             bool getDataItem = false;
             if (dataItem is DP_DataView)
                 getDataItem = true;
-            else 
+            else
             {
                 if (!(dataItem as DP_DataRepository).IsNewItem && MyDataHelper.DataItemPrimaryKeysHaveValue((dataItem as DP_DataRepository)) && !MyDataHelper.DataItemNonPrimaryKeysHaveValues((dataItem as DP_DataRepository)))
                     getDataItem = true;
@@ -99,7 +101,7 @@ namespace MyFormulaFunctionStateFunctionLibrary
                 SearchRequestManager searchProcessor = new SearchRequestManager();
                 DP_SearchRepositoryMain searchDataItem = new DP_SearchRepositoryMain(dataItem.TargetEntityID);
                 foreach (var property in dataItem.KeyProperties)
-                    searchDataItem.Phrases.Add(new SearchProperty() { ColumnID = property.ColumnID, Value = property.Value });
+                    searchDataItem.Phrases.Add(new SearchProperty(property.Column) { Value = property.Value });
 
                 //سکوریتی داده اعمال میشود
                 //یعنی ممکن است به خود داده دسترسی نداشته باشد و یا حتی به بعضی از فیلدها و روابط

@@ -1,6 +1,6 @@
 ﻿using ModelEntites;
 
-using MyFormulaFunctionStateFunctionLibrary;
+
 
 using MyModelManager;
 using System;
@@ -148,7 +148,7 @@ namespace MyProject_WPF
             {
                 if (!e.FilterBySelectedValue)
                 {
-                    var list = bizTableDrivedEntity.GetAllEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false, false);
+                    var list = bizTableDrivedEntity.GetAllEnabledEntitiesExceptViewsDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue);
                     e.ResultItemsSource = list;
                 }
                 else

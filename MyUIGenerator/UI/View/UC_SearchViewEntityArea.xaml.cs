@@ -37,7 +37,7 @@ namespace MyUIGenerator.View
             FlowDirection = System.Windows.FlowDirection.RightToLeft;
         }
 
-        public bool HaseViewAreaView
+        public bool HasViewAreaView
         {
             get
             {

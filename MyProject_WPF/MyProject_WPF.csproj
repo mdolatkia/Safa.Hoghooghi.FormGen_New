@@ -242,6 +242,9 @@
       <DependentUpon>FormulaAutoComplete.xaml</DependentUpon>
     </Compile>
     <Compile Include="Formula\FormulaHelper.cs" />
+    <Compile Include="Formula\frmFormulaSelectGeneral.xaml.cs">
+      <DependentUpon>frmFormulaSelectGeneral.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Formula\frmPropertySelector.xaml.cs">
       <DependentUpon>frmPropertySelector.xaml</DependentUpon>
     </Compile>
@@ -618,6 +621,10 @@
     <Page Include="Formula\FormulaAutoComplete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Formula\frmFormulaSelectGeneral.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Formula\frmPropertySelector.xaml">
       <SubType>Designer</SubType>

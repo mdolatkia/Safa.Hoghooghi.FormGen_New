@@ -129,7 +129,7 @@ namespace MyUILibrary.EntityArea
         private void CheckAccessValidation(DP_FormDataRepository dataITem)
         {
 
-            //** 511a49ba-1a7c-47d0-8b6f-3b7eb162083e
+            //**UIValidationManager.CheckAccessValidation: 511a49ba-1a7c-47d0-8b6f-3b7eb162083e
             if (dataITem.IsNewItem)
             {
                 if (EditArea.FullEntity.Columns.Any(x => x.DataEntryEnabled && x.IsMandatory &&
@@ -585,7 +585,7 @@ namespace MyUILibrary.EntityArea
 
         private void ValidateSimpleColumn(DP_FormDataRepository dataItem, ChildSimpleContorlProperty childSimpleContorlProperty)
         {
-            //** 54ed40be-5fa9-46ee-a27b-2d60cd226e9e
+            //**UIValidationManager.ValidateSimpleColumn: 54ed40be-5fa9-46ee-a27b-2d60cd226e9e
             var simplePropertyControl = childSimpleContorlProperty.SimpleColumnControl;
             var dataColumn = childSimpleContorlProperty.Property;
             if (simplePropertyControl.Column.IsMandatory == true)

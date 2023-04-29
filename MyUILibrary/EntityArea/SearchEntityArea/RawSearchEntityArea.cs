@@ -5,7 +5,7 @@ using ModelEntites;
 using MyUILibrary;
 using MyUILibrary.EntityArea;
 using MyUILibrary.EntityArea.Commands;
-
+using MyUILibrary.Temp;
 using ProxyLibrary;
 using System;
 using System.Collections.Generic;
@@ -17,11 +17,12 @@ namespace MyUILibrary.EntityArea
 {
     public class RawSearchEntityArea : I_RawSearchEntityArea
     {
+        public event EventHandler<SimpleSearchColumnControl> FormulaSelectionRequested;
         public RawSearchEntityArea(SearchAreaInitializer newAreaInitializer)
         {
             SearchCommands = new List<I_Command>();
             SimpleColumnControls = new List<SimpleSearchColumnControl>();
-            SearchInitializer = newAreaInitializer;
+            AreaInitializer = newAreaInitializer;
             GenerateSearchView();
         }
         public I_View_SimpleSearchEntityArea RawSearchView { set; get; }
@@ -32,7 +33,7 @@ namespace MyUILibrary.EntityArea
             get;
         }
 
-        public SearchAreaInitializer SearchInitializer { set; get; }
+        public SearchAreaInitializer AreaInitializer { set; get; }
 
         //public event EventHandler<Arg_PackageSelected> DataPackageSelected;
         public event EventHandler<SearchPropertyArg> SearchDataDefined;
@@ -59,7 +60,7 @@ namespace MyUILibrary.EntityArea
                     if (FullEntity != null)
                         return FullEntity;
                     else
-                        _SimpleEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetSimpleEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), SearchInitializer.EntityID);
+                        _SimpleEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetSimpleEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
                 }
                 return _SimpleEntity;
             }
@@ -71,8 +72,8 @@ namespace MyUILibrary.EntityArea
             get
             {
                 if (_FullEntity == null)
-                    _FullEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetPermissionedEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), SearchInitializer.EntityID);
-             
+                    _FullEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetPermissionedEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+
                 //if (AreaInitializer.SourceRelationColumnControl != null)
                 //    _FullEntity.Relationships.Clear();
                 return _FullEntity;
@@ -92,7 +93,7 @@ namespace MyUILibrary.EntityArea
         //        return _Permission;
         //    }
         //}
-      
+
         private void GenerateSearchView()
         {
             RawSearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchEntityArea(GetEntityUISetting());
@@ -107,29 +108,42 @@ namespace MyUILibrary.EntityArea
 
         private void ManageSimpleSearchView()
         {
-
             foreach (var column in FullEntity.Columns.OrderBy(x => x.Position))
             {
                 var propertyControl = new SimpleSearchColumnControl();
                 propertyControl.Column = column;
                 SimpleColumnControls.Add(propertyControl);
             }
-
             foreach (var columnControl in SimpleColumnControls)
             {
                 columnControl.Operators = GetSimpleColumnOperators(columnControl.Column);
-              //  columnControl.ControlPackage = new UIControlPackageForSimpleColumn();
-                columnControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(columnControl.Column, GetColumnUISetting(columnControl.Column), false, columnControl.Operators);
+                //  columnControl.ControlPackage = new UIControlPackageForSimpleColumn();
+                bool hasRangeOfValues = columnControl.Column.ColumnValueRange != null && columnControl.Column.ColumnValueRange.Details.Any();
+                columnControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(columnControl.Column, GetColumnUISetting(columnControl.Column), hasRangeOfValues, columnControl.Operators);
                 columnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(columnControl.Column.Alias);
-                var operator1 = columnControl.Operators.FirstOrDefault(x => x.Operator == GetDefaultOperator(columnControl.Column));
-                if (operator1 != null)
-                    columnControl.ControlManager.GetUIControlManager().SetOperator(operator1.Operator);
+
+                if (hasRangeOfValues)
+                {
+                    columnControl.ControlManager.GetUIControlManager().SetColumnValueRange(columnControl.Column.ColumnValueRange.Details, true);
+                }
+                else
+                {
+                    if (columnControl.Operators.Any(x => x.IsDefault))
+                        columnControl.ControlManager.GetUIControlManager().SetOperator(columnControl.Operators.First(x => x.IsDefault).Operator);
+                }
+                columnControl.FormulaSelectionRequested += PropertyControl_FormulaSelectionRequested;
+                if (AreaInitializer.ForSave)
+                    columnControl.SetSimpleColumnFormulaSelection();
+
+
                 RawSearchView.AddUIControlPackage(columnControl.ControlManager, columnControl.LabelControlManager);
             }
-           
-
         }
-
+        private void PropertyControl_FormulaSelectionRequested(object sender, SimpleSearchColumnControl e)
+        {
+            if (FormulaSelectionRequested != null)
+                FormulaSelectionRequested(sender, e);
+        }
         private CommonOperator GetDefaultOperator(ColumnDTO column)
         {
 
@@ -147,19 +161,28 @@ namespace MyUILibrary.EntityArea
         private List<SimpleSearchOperator> GetSimpleColumnOperators(ColumnDTO column)
         {
             List<SimpleSearchOperator> result = new List<SimpleSearchOperator>();
-            if (column.ColumnType == Enum_ColumnType.String)
-            {
-                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر" });
-                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل" });
-                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.StartsWith, Title = "شروع شود با" });
-                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.EndsWith, Title = "تمام شود با" });
-            }
-            else if (column.ColumnType == Enum_ColumnType.Numeric)
-            {
-                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر" });
-                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.SmallerThan, Title = "کوچکتر از" });
-                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.BiggerThan, Title = "بزرگتر از" });
-            }
+            //if (column.ColumnType == Enum_ColumnType.String)
+            //{
+            //    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر" });
+            //    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل" });
+            //    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.StartsWith, Title = "شروع شود با" });
+            //    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.EndsWith, Title = "تمام شود با" });
+            //}
+            //else if (column.ColumnType == Enum_ColumnType.Numeric)
+            //{
+            //    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر" });
+            //    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.SmallerThan, Title = "کوچکتر از" });
+            //    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.BiggerThan, Title = "بزرگتر از" });
+            //}
+            result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر", IsDefault = true });
+            result.Add(new SimpleSearchOperator() { Operator = CommonOperator.NotEquals, Title = "نابرابر" });
+            result.Add(new SimpleSearchOperator() { Operator = CommonOperator.InValues, Title = "در مقادیر" });
+            result.Add(new SimpleSearchOperator() { Operator = CommonOperator.NotInValues, Title = "عدم وجود در مقادیر" });
+            result.Add(new SimpleSearchOperator() { Operator = CommonOperator.SmallerThan, Title = "کوچکتر از" });
+            result.Add(new SimpleSearchOperator() { Operator = CommonOperator.BiggerThan, Title = "بزرگتر از" });
+            result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل" });
+            result.Add(new SimpleSearchOperator() { Operator = CommonOperator.StartsWith, Title = "شروع شود با" });
+            result.Add(new SimpleSearchOperator() { Operator = CommonOperator.EndsWith, Title = "تمام شود با" });
             return result;
         }
 
@@ -202,6 +225,8 @@ namespace MyUILibrary.EntityArea
 
         public List<SearchProperty> GetSearchRepository()
         {
+
+            //** 23709caa-6bdc-4d4c-a4e7-79a3cc81a307
             List<SearchProperty> result = new List<SearchProperty>();
             foreach (var property in SimpleColumnControls)
             {
@@ -209,10 +234,18 @@ namespace MyUILibrary.EntityArea
                 if (PropertyHasValue(property, value))
                 {
 
-                    SearchProperty searchProperty = new SearchProperty();
-                    searchProperty.ColumnID = property.Column.ID;
+                    SearchProperty searchProperty = new SearchProperty(property.Column);
                     searchProperty.IsKey = property.Column.PrimaryKey;
                     searchProperty.Value = value;
+                    searchProperty.Operator = property.ControlManager.GetUIControlManager().GetOperator();
+                    result.Add(searchProperty);
+                }
+                else if (property.Formula != null)
+                {
+                    SearchProperty searchProperty = new SearchProperty(property.Column);
+                    searchProperty.IsKey = property.Column.PrimaryKey;
+                    searchProperty.Formula = property.Formula;
+                    searchProperty.FormulaID = property.Formula.ID;
                     searchProperty.Operator = property.ControlManager.GetUIControlManager().GetOperator();
                     result.Add(searchProperty);
                 }
@@ -233,11 +266,11 @@ namespace MyUILibrary.EntityArea
         private bool SearchValueIsEmpty(SimpleSearchColumnControl typePropertyControl, string value)
         {
             if (typePropertyControl is NullColumnControl)
-                return string.IsNullOrEmpty(value)  || value == "false" || value == "0";
+                return string.IsNullOrEmpty(value) || value == "false" || value == "0";
             else if (typePropertyControl is RelationCheckColumnControl || typePropertyControl is RelationCountCheckColumnControl)
                 return string.IsNullOrEmpty(value) || value == "false" || value == "0";
             else
-                return string.IsNullOrEmpty(value)  || value == "0";
+                return string.IsNullOrEmpty(value) || value == "0";
         }
 
 

@@ -16,7 +16,7 @@ using System.Windows.Media;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public class KeyValueControlHelper : BaseControlHelper, I_UIControlManager, I_ControlHelperValueRange
+    public class KeyValueControlHelper : BaseControlHelper, I_UIControlManager
     {
         ComboBox combo;
         ComboBox cmbOperators;
@@ -24,7 +24,7 @@ namespace MyUIGenerator.UIControlHelper
         public override FrameworkElement MainControl { get { return combo; } }
         public KeyValueControlHelper()
         {
-        //    ValueIsTitleOrValue = valueIsTitleOrValue;
+            //    ValueIsTitleOrValue = valueIsTitleOrValue;
             theGrid = new Grid();
             theGrid.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
@@ -120,10 +120,10 @@ namespace MyUIGenerator.UIControlHelper
             //    combo.Text = value==null?"":value.ToString();
             //else
             //{
-                if (value == null)
-                    combo.SelectedValue = null;
-                else
-                    combo.SelectedValue = Convert.ToInt32(value);
+            if (value == null)
+                combo.SelectedValue = null;
+            else
+                combo.SelectedValue = Convert.ToInt32(value);
             //}
             //if (columnSetting != null)
             //{
@@ -166,7 +166,7 @@ namespace MyUIGenerator.UIControlHelper
             //if (ValueIsTitleOrValue)
             //    return text;
             //else
-                return value;
+            return value;
             //else
             //    if (combo.SelectedValue != null)
             //        return combo.SelectedValue.ToString();
@@ -174,12 +174,15 @@ namespace MyUIGenerator.UIControlHelper
             //        return "";
             //}
         }
-
+        public void ClearValue()
+        {
+            combo.SelectedItem = null;
+        }
         public void EnableDisable(bool enable)
         {
             combo.IsEnabled = enable;
         }
-       
+
         public bool IsVisible()
         {
             return combo.Visibility == Visibility.Visible;
@@ -200,8 +203,9 @@ namespace MyUIGenerator.UIControlHelper
         }
         public void SetOperator(CommonOperator searchOperator)
         {
-            cmbOperators.SelectedValue = searchOperator;
-          //  return false;
+            if (cmbOperators != null)
+                cmbOperators.SelectedValue = searchOperator;
+            //  return false;
         }
         public bool HasOperator()
         {
@@ -263,7 +267,7 @@ namespace MyUIGenerator.UIControlHelper
             //if (ValueIsTitleOrValue)
             //    combo.SetBinding(ComboBox.TextProperty, binding);
             //else
-                combo.SetBinding(ComboBox.SelectedValueProperty, binding);
+            combo.SetBinding(ComboBox.SelectedValueProperty, binding);
 
 
 
@@ -285,8 +289,9 @@ namespace MyUIGenerator.UIControlHelper
         //    menu.OnMenuClicked(sender, arg);
         //}
 
-        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates)
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates, bool multiselect)
         {
+            
             combo.ItemsSource = candidates;
         }
     }

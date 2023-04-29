@@ -87,6 +87,7 @@ namespace MyModelManager
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         public List<ObjectDTO> GetDatabaseChildObjects(DatabaseObjectCategory parentCategory, string parentTitle, int parentIdentity)
         {
+            // BizDatabaseToObject.GetDatabaseChildObjects: a5eceb3c-172f-4a51-91be-c1e9819478c9
             List<ObjectDTO> result = new List<ObjectDTO>();
             using (var myProjectContext = new MyIdeaEntities())
             {
@@ -114,7 +115,7 @@ namespace MyModelManager
                 else if (parentCategory == DatabaseObjectCategory.Schema)
                 {
                     //var res = GetDBNameSchemaName(parentIdentity);
-                    foreach (var entity in bizTableDrivedEntity.GetAllEntities(myProjectContext, false).Where(x =>  x.Table.DBSchemaID == parentIdentity))
+                    foreach (var entity in bizTableDrivedEntity.GetAllEnabledEntities(myProjectContext).Where(x =>  x.Table.DBSchemaID == parentIdentity))
                     {
                         if (IgnoreNotIndependentOrAlreadyInNavigationTree)
                             if (entity.IndependentDataEntry != true || myProjectContext.NavigationTree.Any(x => x.Category == "Entity" && x.ItemIdentity == entity.ID))
@@ -129,10 +130,10 @@ namespace MyModelManager
                 else if (parentCategory == DatabaseObjectCategory.Entity)
                 {
                     int id = Convert.ToInt32(parentIdentity);
-                    var dbEntity = bizTableDrivedEntity.GetAllEntities(myProjectContext, false).First(x => x.ID == id);
+                    var dbEntity = bizTableDrivedEntity.GetAllEnabledEntities(myProjectContext).First(x => x.ID == id);
                     if (!IgnoreColumns)
                     {
-                        var columns = bizColumn.GetAllColumns(dbEntity, false);
+                        var columns = bizColumn.GetAllEnabledColumns(dbEntity);
                         foreach (var column in columns)
                         {
                             bool skipColumn = false;
@@ -144,7 +145,7 @@ namespace MyModelManager
                             if (HideFKRelationshipColumns)
                             {
                                 var type = (int)Enum_MasterRelationshipType.FromForeignToPrimary;
-                                if (bizRelationship.GetAllRelationships(myProjectContext, false, false).Any(x => x.MasterTypeEnum == type && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID && y.Column.PrimaryKey == false)))
+                                if (bizRelationship.GetAllEnabledRelationships(myProjectContext, false).Any(x => x.MasterTypeEnum == type && x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID && y.Column.PrimaryKey == false)))
                                     skipColumn = true;
                             }
                             if (!skipColumn)
@@ -242,7 +243,7 @@ namespace MyModelManager
                 else if (objectCategory == DatabaseObjectCategory.Entity)
                 {
                     //int id = Convert.ToInt32(objectIdentity);
-                    var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == objectIdentity);
+                    var entity = bizTableDrivedEntity.GetAllEnabledEntities(projectContext).First(x => x.ID == objectIdentity);
                     result = ToObjectDTO(DatabaseObjectCategory.Schema, entity.Table.DBSchemaID, entity.Table.DBSchema.Name, "", 0);
                 }
                 else if (objectCategory == DatabaseObjectCategory.Column)

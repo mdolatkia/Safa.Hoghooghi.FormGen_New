@@ -232,7 +232,10 @@ namespace MyUIGenerator.UIControlHelper
             return ReadValueFromControl((textBox as MyDateTimePicker).SelectedDateTime, GetConverterParameter());
 
         }
-
+        public void ClearValue()
+        {
+            (textBox as MyDateTimePicker).SelectedDateTime = null;
+        }
         public static object ReadValueFromControl(DateTime? selectedDateTime, DateConverterParameter param)
         {
             //اینجا درسته که اگر نوع خصوصیت تایم اسپن باشه ولی چون کوئری بصورت رشته اعمال میشه اگر تاریخ و زمان هم باشه در دیتابیس فقط زمان ثبت میشود
@@ -430,7 +433,7 @@ namespace MyUIGenerator.UIControlHelper
         //    textBox.Foreground = UIManager.GetColorFromInfoColor(color);
         //}
 
-        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details, bool multiselect)
         {
             throw new NotImplementedException();
         }

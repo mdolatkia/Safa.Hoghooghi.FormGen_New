@@ -50,8 +50,8 @@ namespace MyUILibrary.EntityArea
             selectAreaInitializer.EntityID = AreaInitializer.EntityID;
             if (AreaInitializer.EntityID != 0)
                 selectAreaInitializer.LockEntitySelector = true;
-            if (initParam.InitialSearchRepository != null && !initParam.ShowInitializeSearchRepository)
-                selectAreaInitializer.PreDefinedSearch = AreaInitializer.InitialSearchRepository;
+            //////if (initParam.InitialSearchRepository != null && !initParam.ShowInitializeSearchRepository)
+            //////    selectAreaInitializer.PreDefinedSearch = AreaInitializer.InitialSearchRepository;
             GeneralEntitySearchArea = new GeneralEntitySearchArea();
             GeneralEntitySearchArea.SearchDataDefined += GeneralEntitySearchArea_SearchDataDefined;
             GeneralEntitySearchArea.SetInitializer(selectAreaInitializer);
@@ -98,9 +98,9 @@ namespace MyUILibrary.EntityArea
             View.SetOrderColumns(columns);
             View.SetOrderSorts(new List<string>() { "Ascending", "Descending" });
         }
-        private void GeneralEntitySearchArea_SearchDataDefined(object sender, SearchDataArg e)
+        private void GeneralEntitySearchArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
         {
-            SetReport(e.SearchItems);
+            SetReport(e);
         }
 
         //AssignedPermissionDTO _Permission;
@@ -260,12 +260,12 @@ namespace MyUILibrary.EntityArea
         //    }
         //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(SearchEntityArea.SearchView, "جستجو");
         //}
-        //private void SearchEntityArea_SearchDataDefined(object sender, SearchDataArg e)
+        //private void SearchEntityArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
         //{
         //    SetReport(e.SearchItems);
 
         //}
-        //private void SearchEntityArea_SearchDataDefined(object sender, SearchDataArg e)
+        //private void SearchEntityArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
         //{
         //    //RR_ReportSourceRequest request = new RR_ReportSourceRequest();
         //    //request.ReportID = AreaInitializer.TemplateReport.ID;

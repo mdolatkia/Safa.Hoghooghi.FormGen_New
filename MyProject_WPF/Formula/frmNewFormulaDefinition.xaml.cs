@@ -1,6 +1,6 @@
 ﻿
 using ModelEntites;
-using MyFormulaFunctionStateFunctionLibrary;
+
 using MyModelManager;
 using System;
 using System.Collections.Generic;
@@ -1478,7 +1478,7 @@ namespace MyProject_WPF
         {
             try
             {
-                FormulaFunctionHandler handler = new MyFormulaFunctionStateFunctionLibrary.FormulaFunctionHandler();
+                FormulaFunctionHandler handler = new FormulaFunctionHandler();
 
                 //var child = new ChildRelationshipInfo();
                 //child.Relationship = new BizRelationship().GetRelationship(33);

@@ -33,7 +33,7 @@ namespace MyModelManager
             {
                 listEntities.Add(bizTableDrivedEntity.GetTableDrivedEntity(requester, id, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships));
             }
-            var allEntities = bizTableDrivedEntity.GetOrginalEntities(listEntities.First().DatabaseID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships, false);
+            var allEntities = bizTableDrivedEntity.GetAllOrginalEntitiesExceptViewsDTO(listEntities.First().DatabaseID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships);
 
             UpdateDefaultSettingsInModel(entityIDs, entityIDs, entityIDs, entityIDs, allEntities);
         }
@@ -44,7 +44,7 @@ namespace MyModelManager
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
             bizTableDrivedEntity.ItemImportingStarted += BizTableDrivedEntity_ItemImportingStarted;
 
-            var allEntities = bizTableDrivedEntity.GetAllEntitiesDTO(databaseID, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships, false, false);
+            var allEntities = bizTableDrivedEntity.GetAllEntitiesDTO(databaseID);
 
             var uiCompositionEntities = bizTableDrivedEntity.GetOrginalEntitiesWithoutUIComposition(databaseID);
             var listViewEntities = bizTableDrivedEntity.GetOrginalEntitiesWithoutEntityListView(databaseID);

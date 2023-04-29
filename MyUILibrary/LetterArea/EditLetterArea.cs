@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ModelEntites;
 using ProxyLibrary;
-using MyCodeFunctionLibrary;
-using MyCommonWPFControls;
 
+using MyCommonWPFControls;
+using MyModelManager;
 
 namespace MyUILibrary.EntityArea
 {

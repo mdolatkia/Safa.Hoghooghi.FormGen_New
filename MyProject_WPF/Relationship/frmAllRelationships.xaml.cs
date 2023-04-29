@@ -832,7 +832,7 @@ namespace MyProject_WPF
                     BizColumn bizColumn = new BizColumn();
                     if (iSARelationship.SuperEntityID != 0)
                     {
-                        var clomuns = bizColumn.GetAllColumnsDTO(iSARelationship.SuperEntityID, true, false);
+                        var clomuns = bizColumn.GetAllEnabledColumnsDTO(iSARelationship.SuperEntityID, true);
                         ControlHelper.AddComboColumnItemsSource(dtgSuperToSub, "DeterminerColumnID", clomuns as IEnumerable, "Alias", "ID");
                     }
                     dtgSuperToSub.ItemsSource = biz.GetSuperToSubRelationship(iSARelationship.ID);
@@ -885,7 +885,7 @@ namespace MyProject_WPF
                     BizColumn bizColumn = new BizColumn();
                     if (UnionRelationship.SuperEntityID != 0)
                     {
-                        var clomuns = bizColumn.GetAllColumnsDTO(UnionRelationship.SuperEntityID, true,false);
+                        var clomuns = bizColumn.GetAllEnabledColumnsDTO(UnionRelationship.SuperEntityID, true);
                         ControlHelper.AddComboColumnItemsSource(dtgUnionToSubUnion, "DeterminerColumnID", clomuns as IEnumerable, "Alias", "ID");
                     }
                     dtgUnionToSubUnion.ItemsSource = biz.GetSuperUnionToSubUnionRelationship(UnionRelationship.ID);

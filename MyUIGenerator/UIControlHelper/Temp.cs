@@ -20,10 +20,10 @@ namespace MyUIGenerator.UIControlHelper
 
     //}
    
-    public interface I_ControlHelperValueRange
-    {
-        void SetColumnValueRange( List<ColumnValueRangeDetailsDTO> candidates);
-    }
+    //public interface I_ControlHelperValueRange
+    //{
+    //    void SetColumnValueRange( List<ColumnValueRangeDetailsDTO> candidates, bool multiselect);
+    //}
     //public interface I_SimpleControlHelper: I_ControlHelper
     //{
     //    UISingleControl GenerateControl(ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null);

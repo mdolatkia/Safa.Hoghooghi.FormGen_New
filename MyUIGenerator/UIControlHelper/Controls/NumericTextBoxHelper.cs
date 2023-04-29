@@ -25,7 +25,7 @@ namespace MyUIGenerator.UIControlHelper
 
         public NumericTextBoxHelper(ColumnDTO correspondingTypeProperty, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {
-            //**f8981e30-c94d-44be-80e0-0ba321de6d67
+            //** NumericTextBoxHelper.NumericTextBoxHelper:  f8981e30-c94d-44be-80e0-0ba321de6d67
             theGrid = new Grid();
             theGrid.ColumnDefinitions.Add(new ColumnDefinition());
             theGrid.VerticalAlignment = System.Windows.VerticalAlignment.Center;
@@ -45,15 +45,14 @@ namespace MyUIGenerator.UIControlHelper
             //    || correspondingTypeProperty.DataType.Contains("decimal")
             //    || correspondingTypeProperty.DataType.Contains("double"))
             //{
+
             if (correspondingTypeProperty.NumericColumnType != null && correspondingTypeProperty.NumericColumnType.Precision != 0
                 && correspondingTypeProperty.NumericColumnType.Scale != 0)
             {
                 textBox.Mask = "#" + (correspondingTypeProperty.NumericColumnType.Precision - correspondingTypeProperty.NumericColumnType.Scale);
                 textBox.Mask += "." + correspondingTypeProperty.NumericColumnType.Scale;
                 textBox.FormatString = "";
-
             }
-
             else
             {
                 //اگر اعشار خواست از پرسیجن و اسکیل استفاده شود
@@ -208,10 +207,13 @@ namespace MyUIGenerator.UIControlHelper
             if (textBox.Value == null)
                 return null;
             else
-                return textBox.Value.ToString();
+                return textBox.Value;
             //}
         }
-
+        public void ClearValue()
+        {
+            textBox.Value = null;
+        }
         public void EnableDisable(bool enable)
         {
             textBox.IsEnabled = enable;
@@ -306,7 +308,7 @@ namespace MyUIGenerator.UIControlHelper
             textBox.SetBinding(RadMaskedNumericInput.ValueProperty, binding);
         }
 
-        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details, bool multiselect)
         {
             throw new NotImplementedException();
         }

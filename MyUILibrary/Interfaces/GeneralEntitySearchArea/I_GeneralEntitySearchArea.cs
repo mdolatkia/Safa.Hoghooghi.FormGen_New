@@ -14,12 +14,12 @@ namespace MyUILibraryInterfaces.EntityArea
     {
         event EventHandler<int?> EntitySelected;
 
-        event EventHandler<SearchDataArg> SearchDataDefined;
+        event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;
         GeneralEntitySearchAreaInitializer AreaInitializer { set; get; }
         I_View_GeneralEntitySearchArea View { set; get; }
         I_SearchEntityArea SearchArea { set; get; }
 
-    void    SetInitializer(GeneralEntitySearchAreaInitializer areaInitializer);
+        void SetInitializer(GeneralEntitySearchAreaInitializer areaInitializer);
         void EnableDisableSearchArea(bool v);
         TableDrivedEntityDTO SelectedEntity { get; }
         //  void SelectData(DP_DataRepository dataInstance);
@@ -39,8 +39,12 @@ namespace MyUILibraryInterfaces.EntityArea
         public int EntityID { set; get; }
         public bool LockEntitySelector { get; set; }
 
-       public object ExternalView { get; set; }
-        public DP_SearchRepositoryMain PreDefinedSearch { get; set; }
+        public object ExternalView { get; set; }
+        //    public DP_SearchRepositoryMain PreDefinedSearch { get; set; }
+
+        public PreDefinedSearchDTO PreDefinedSearchMessage { set; get; }
+        public AdvancedSearchDTO AdvancedSearchDTOMessage { set; get; }
+
         public List<SecurityAction> SpecificActions { get; set; }
     }
 }

@@ -232,7 +232,7 @@ namespace MyUIGenerator.View
             advanceSearchMenu.OnClicked();
         }
 
-        public void SetHeader(string header)
+        public void SetHeader(string header, string tooltip)
         {
             var headerObj = new StackPanel();
             headerObj.Orientation = Orientation.Horizontal;
@@ -241,6 +241,9 @@ namespace MyUIGenerator.View
             combobox.Visibility = Visibility.Collapsed;
             headerObj.Children.Add(combobox);
             Node.Header = headerObj;
+
+            if (!string.IsNullOrEmpty(tooltip))
+                ToolTipService.SetToolTip(Node, tooltip);
 
         }
         public void RemoveItem(I_AdvanceSearchNodeManager nodeManager)
@@ -279,11 +282,18 @@ namespace MyUIGenerator.View
 
         private void Combobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-          if((sender as ComboBox).SelectedItem!=null)
+            if ((sender as ComboBox).SelectedItem != null)
             {
                 if (LogicComboBoxChanged != null)
                     LogicComboBoxChanged(this, new LogicComboBoxChangedEventArg() { Item = (sender as ComboBox).SelectedItem as AndORListItem });
             }
+        }
+
+        public void SetLogicComboBoxValue(AndORListItem andOrType)
+        {
+            var headerObj = Node.Header as StackPanel;
+            var combobox = headerObj.Children[1] as ComboBox;
+            combobox.SelectedItem = andOrType;
         }
     }
     public class AdvanceSearchMenu : I_AdvanceSearchMenu

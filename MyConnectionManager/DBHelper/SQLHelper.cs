@@ -116,7 +116,8 @@ namespace MyConnectionManager
             }
             catch (Exception)
             {
-                throw;
+                return null;
+              //  throw;
             }
         }
 

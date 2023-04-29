@@ -68,7 +68,7 @@ namespace MyConnectionManager
                             dbHelper = dbHelpers.First(x => x.Item1 == queryItem.TargetEntity.DatabaseID).Item2;
 
                         dbHelper.ExecuteNonQuery(queryItem.Query);
-                        //**74d5cc97-f11a-4579-b922-9475f2414cf3
+                        //** ConnectionManager.ExecuteTransactionalQueryItems: 74d5cc97-f11a-4579-b922-9475f2414cf3
                         if (queryItem.DataItem != null && queryItem.DataItem.GetProperties().Any(x => x.Column.IsIdentity))
                         {
                             if (queryItem.DataItem.IsNewItem)

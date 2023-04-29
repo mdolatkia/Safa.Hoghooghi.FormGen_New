@@ -13,6 +13,7 @@ namespace MyModelManager
     public class BizRelationshipFilter
     {
         BizRelationship bizRelationship = new BizRelationship();
+        BizColumn bizColumn = new BizColumn();
         public List<RelationshipFilterDTO> GetRelationshipFilters(DR_Requester requester, int relationshipID)
         {
             List<RelationshipFilterDTO> result = new List<RelationshipFilterDTO>();
@@ -47,8 +48,8 @@ namespace MyModelManager
             //    result.SearchRelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
             //}
             result.RelationshipID = item.RelationshipID;
-            result.SearchColumnID = item.SearchColumnID;
-            result.ValueColumnID = item.ValueColumnID;
+            result.SearchColumn = bizColumn.ToColumnDTO(item.Column1, true);
+            result.ValueColumn = bizColumn.ToColumnDTO(item.Column, true);
             result.ValueRelationshipTailID = item.ValueRelationshipTailID ?? 0;
             if (item.EntityRelationshipTail != null)
                 result.ValueRelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);

@@ -28,7 +28,7 @@ namespace MyModelManager
                 if (!DataIsAccessable(requester, dbItem))
                     return null;
                 else
-                    return ToGraphDTO(dbItem, true);
+                    return ToGraphDTO( requester, dbItem, true);
             }
         }
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
@@ -59,7 +59,7 @@ namespace MyModelManager
                 foreach (var dbItem in items)
                 {
                     if (DataIsAccessable(requester, dbItem))
-                        result.Add(ToGraphDTO(dbItem, false));
+                        result.Add(ToGraphDTO( requester, dbItem, false));
                 }
             }
 
@@ -76,7 +76,7 @@ namespace MyModelManager
                 foreach (var dbItem in items)
                 {
                     if (DataIsAccessable(requester, dbItem))
-                        result.Add(ToGraphDTO(dbItem, false));
+                        result.Add(ToGraphDTO( requester, dbItem, false));
                 }
             }
             return result;
@@ -84,10 +84,10 @@ namespace MyModelManager
 
 
 
-        private GraphDTO ToGraphDTO(GraphDefinition item, bool withDetails)
+        private GraphDTO ToGraphDTO(DR_Requester requester, GraphDefinition item, bool withDetails)
         {
             GraphDTO result = new GraphDTO();
-            bizEntityReport.ToEntityReportDTO(item.EntityDataItemReport.EntityReport, result, withDetails);
+            bizEntityReport.ToEntityReportDTO( requester, item.EntityDataItemReport.EntityReport, result, withDetails);
             result.NotJointEntities = item.NotJointEntities == true;
             result.FirstSideDataMenuID = item.FirstSideDataMenuID ?? 0;
             if (withDetails)

@@ -224,9 +224,9 @@ namespace MyProject_WPF
         //    MyProjectManager.GetMyProjectManager.ShowDialog(SearchEntityArea.SearchView, "جستجو");
         //}
 
-        private void SearchEntityArea_SearchDataDefined(object sender, SearchDataArg e)
-        {
-            throw new NotImplementedException();
-        }
+        //private void SearchEntityArea_SearchDataDefined(object sender, SearchDataArg e)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

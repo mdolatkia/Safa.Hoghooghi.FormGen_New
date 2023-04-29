@@ -60,19 +60,19 @@ namespace MyUILibrary.EntityArea
         List<UIActionActivityDTO> RunningActionActivities { get; set; }
         ChildRelationshipInfo ChildRelationshipInfoBinded { get; set; }
 
-        I_SearchEntityArea SearchEntityArea { get; set; }
+        I_SearchEntityArea SearchEntityArea { get;  }
         I_ViewEntityArea ViewEntityArea { get; }
 
         //   event EventHandler<DataSelectedEventArg> DataSelected;
         I_View_SearchViewEntityArea ViewForSearchAndView { set; get; }
         void CheckSearchInitially();
         List<RelationshipFilterDTO> RelationshipFilters { set; get; }
-        void SearchInitialy();
+      //  void SearchInitialy();
         bool SearchInitialyDone { get; set; }
-        void SearchConfirmed(DP_SearchRepositoryMain searchItems, bool select);
+     //   void SearchConfirmed(DP_SearchRepositoryMain searchItems, bool select);
         void ShowSearchView(bool fromDataView);
-        void SelectFromParent(bool isCalledFromDataView, RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues);
-        void SelectData(List<Dictionary<int, object>> items);
+        void SelectFromParent( RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues);
+        void SelectData(List<Dictionary<ColumnDTO, object>> items);
         //   void SearchTextBox(string text);
         // void RemoveViewEntityAreaView();
 
@@ -151,7 +151,7 @@ namespace MyUILibrary.EntityArea
 
 
         void CreateDefaultData();
-        void TemporaryViewSearchTextChanged(I_View_TemporaryView view, Arg_TemporaryDisplaySerachText searchArg);
+     //   void TemporaryViewSearchTextChanged(I_View_TemporaryView view, Arg_TemporaryDisplaySerachText searchArg);
         //     I_View_EditEntityAreaDataView SpecializedDataView { get; }
         I_View_EditEntityAreaDataView DataView { get; set; }
 
@@ -557,20 +557,24 @@ namespace MyUILibrary.EntityArea
     public interface I_UIControlManager : I_UIElementManager
     {
         void SetBinding(EntityInstanceProperty property);
-
         //void SetBorderColor(InfoColor color);
         //void SetBackgroundColor(InfoColor color);
         //void SetForegroundColor(InfoColor color);
         void AddButtonMenu(ConrolPackageMenu menu);
+        List<ConrolPackageMenu> GetButtonMenus();
+        void EnableDisable(bool enable);
         void SetReadonly(bool isreadonly);
         void RemoveButtonMenu(string name);
+        void RemoveButtonMenus();
         bool SetValue(object value);
         object GetValue();
         object GetUIControl();
-        void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
-
+        void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details,bool multiselect);
         void SetOperator(CommonOperator operatorValue);
         CommonOperator GetOperator();
+        void ClearValue();
+        void SetMenuColor(InfoColor color);
+        void ClearMenuColor();
         //    {
         //        ControlManager.SetOperator(operatorValue);
         //    }

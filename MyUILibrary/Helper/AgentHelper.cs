@@ -493,6 +493,7 @@ namespace MyUILibrary
         //یک قلم داده جدید ایجاد میکند
         internal static DP_FormDataRepository CreateAreaInitializerNewData(I_EditEntityArea editEntityArea)
         {
+            //**AgentHelper.CreateAreaInitializerNewData: c8c4ca7a-9a7c-4469-a872-193cdabb907a
             if (editEntityArea is I_EditEntityAreaMultipleData)
             {
                 if (editEntityArea.DataEntryEntity.IsReadonly)
@@ -566,7 +567,7 @@ namespace MyUILibrary
             //columns= editEntityArea.FullEntity.Columns;
             //همه ستونها؟؟؟
 
-            //** c8c4ca7a-9a7c-4469-a872-193cdabb907a
+
             foreach (var column in columns)
             {
                 object value = null;
@@ -1292,9 +1293,9 @@ namespace MyUILibrary
             {
                 if (item.ColumnID != 0 && item.ExcludeInQuickSearch == false)
                 {
-                    SearchProperty searchProperty = new SearchProperty();
-             //       searchProperty.SearchColumnID = item.ID;
-                    searchProperty.ColumnID = item.ColumnID;
+                    SearchProperty searchProperty = new SearchProperty(item.Column);
+                    //       searchProperty.SearchColumnID = item.ID;
+                    //       searchProperty.ColumnID = item.ColumnID;
                     searchProperty.IsKey = item.Column.PrimaryKey;
                     searchProperty.Value = text;
                     LogicPhraseDTO logic = null;

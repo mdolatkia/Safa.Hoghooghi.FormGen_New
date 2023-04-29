@@ -20,7 +20,7 @@ namespace MyUIGenerator.UIControlHelper
     public class CheckBoxHelper : BaseControlHelper, I_UIControlManager
     {
 
-     
+
         CheckBox checkbox;
         public override FrameworkElement MainControl { get { return checkbox; } }
 
@@ -38,7 +38,7 @@ namespace MyUIGenerator.UIControlHelper
             theGrid.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
             theGrid.ColumnDefinitions.Add(new ColumnDefinition());
-             checkbox = new CheckBox();
+            checkbox = new CheckBox();
             checkbox.Name = "txtControl";
             checkbox.Checked += (sender, e) => control_Checked(sender, e);
             if (correspondingTypeProperty.IsNull)
@@ -85,7 +85,7 @@ namespace MyUIGenerator.UIControlHelper
 
         public bool SetValue(object value)
         {
-            if ( value == null)
+            if (value == null)
                 checkbox.IsChecked = null;
             else
             {
@@ -113,7 +113,7 @@ namespace MyUIGenerator.UIControlHelper
             }
         }
 
-        public void EnableDisable( bool enable)
+        public void EnableDisable(bool enable)
         {
             checkbox.IsEnabled = enable;
         }
@@ -121,8 +121,8 @@ namespace MyUIGenerator.UIControlHelper
         {
             return checkbox.Visibility == Visibility.Visible;
         }
-      
-        public void SetReadonly( bool isreadonly)
+
+        public void SetReadonly(bool isreadonly)
         {
             checkbox.IsEnabled = !isreadonly;
         }
@@ -130,9 +130,9 @@ namespace MyUIGenerator.UIControlHelper
         {
             return CommonOperator.Equals;
         }
-        public void SetOperator( CommonOperator searchOperator)
+        public void SetOperator(CommonOperator searchOperator)
         {
-          //  return false;
+            //  return false;
         }
         public bool HasOperator()
         {
@@ -175,19 +175,27 @@ namespace MyUIGenerator.UIControlHelper
                 checkbox.Foreground = DefaultForeground;
             }
         }
-        public void SetBinding( EntityInstanceProperty property)
+        public void SetBinding(EntityInstanceProperty property)
         {
             Binding binding = new Binding("Value");
             binding.Source = property;
             checkbox.SetBinding(CheckBox.IsCheckedProperty, binding);
         }
 
-        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details)
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details, bool multiselect)
         {
             throw new NotImplementedException();
         }
 
+        public void ClearValue()
+        {
+            checkbox.IsChecked = null;
+        }
+
      
+
+
+
 
         //public void AddButtonMenu( ConrolPackageMenu menu)
         //{

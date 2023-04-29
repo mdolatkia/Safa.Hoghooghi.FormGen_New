@@ -1,8 +1,8 @@
 ﻿
 using ModelEntites;
-using MyCodeFunctionLibrary;
+
 using MyConnectionManager;
-using MyDatabaseFunctionLibrary;
+
 using MyDataManagerBusiness;
 using MyDataSearchManagerBusiness;
 using MyModelManager;
@@ -135,7 +135,7 @@ namespace MyDataEditManagerBusiness
             DP_SearchRepositoryMain searchDataViewItem = new DP_SearchRepositoryMain(data.TargetEntityID);
             foreach (var col in data.KeyProperties)
             {
-                searchDataViewItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
+                searchDataViewItem.Phrases.Add(new SearchProperty(col.Column) { Value = col.Value });
             }
             DR_SearchViewRequest searchViewRequest = new DR_SearchViewRequest(newrequester, searchDataViewItem);
             var searchViewResult = SearchRequestManager.Process(searchViewRequest);

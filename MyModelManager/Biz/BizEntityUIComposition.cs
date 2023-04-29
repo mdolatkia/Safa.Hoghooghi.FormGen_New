@@ -39,6 +39,7 @@ namespace MyModelManager
         //}
         public EntityUICompositionDTO GetOrCreateEntityUIComposition(int entityID)
         {
+            // BizEntityUIComposition.GetOrCreateEntityUIComposition: 3adc6e16-aff9-4bc6-a425-33f45647385a
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
             DR_Requester requester = new DR_Requester();
             requester.SkipSecurity = true;
@@ -353,7 +354,7 @@ namespace MyModelManager
 
         private void AddColumnUICompositionItem(EntityUICompositionDTO parentItem, ColumnDTO column, int index)
         {
-            //**ad8db1ea-07d5-481a-95fd-5c93e6562e87
+            //** BizEntityUIComposition.AddColumnUICompositionItem: ad8db1ea-07d5-481a-95fd-5c93e6562e87
             var childItem = new EntityUICompositionDTO();
             childItem.ObjectCategory = DatabaseObjectCategory.Column;
             childItem.ObjectIdentity = column.ID.ToString();
@@ -662,7 +663,7 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-                return bizTableDrivedEntity.GetAllEntities(projectContext, false).First(x => x.ID == entity.ID).EntityUIComposition.Any();
+                return bizTableDrivedEntity.GetAllEnabledEntities(projectContext).First(x => x.ID == entity.ID).EntityUIComposition.Any();
             }
         }
 

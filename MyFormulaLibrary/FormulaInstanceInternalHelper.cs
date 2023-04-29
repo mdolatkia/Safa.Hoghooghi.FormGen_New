@@ -348,11 +348,16 @@ namespace MyFormulaFunctionStateFunctionLibrary
         //}
         public static I_ExpressionEvaluator GetExpressionEvaluator(DP_DataRepository mainDataItem, DR_Requester requester, bool definition, List<int> usedFormulaIDs)
         {
-            var entity = bizTableDrivedEntity.GetPermissionedEntity(requester, mainDataItem.TargetEntityID);
-            var properties = GetProperties(requester, entity, null, definition);
+            Dictionary<string, MyPropertyInfo> properties = new Dictionary<string, MyPropertyInfo>();
+            List<object> variables = new List<object>();
+            if (mainDataItem != null)
+            {
+                var entity = bizTableDrivedEntity.GetPermissionedEntity(requester, mainDataItem.TargetEntityID);
+                properties = GetProperties(requester, entity, null, definition);
+                variables = GetRefObjects(entity, requester);
+            }
             MyCustomSingleData formulaObject = new MyCustomSingleData(mainDataItem, requester, definition, properties, usedFormulaIDs);
             var refTypes = GetRefTypes();
-            var variables = GetRefObjects(entity, requester);
             var expressionEcaluator = GetExpressionHandler.GetExpressionEvaluator(formulaObject, refTypes, variables);
             formulaObject.PropertyCalled += (sender, e) => FormulaObject_PropertyCalled(sender, e, expressionEcaluator);
             return expressionEcaluator;

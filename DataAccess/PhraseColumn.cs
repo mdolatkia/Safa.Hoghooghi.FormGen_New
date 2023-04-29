@@ -18,8 +18,10 @@ namespace DataAccess
         public int ColumnID { get; set; }
         public string Value { get; set; }
         public string Operator { get; set; }
+        public Nullable<int> FormulaID { get; set; }
     
         public virtual Column Column { get; set; }
+        public virtual Formula Formula { get; set; }
         public virtual Phrase Phrase { get; set; }
     }
 }

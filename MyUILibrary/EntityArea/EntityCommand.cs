@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using CommonDefinitions.UISettings;
 using ModelEntites;
 using MyUILibrary.EntityArea.Commands;
-using MyCodeFunctionLibrary;
 using ProxyLibrary;
 using MyUILibrary.EntityArea;
 using MyUILibraryInterfaces.EditEntityArea;
 using MyUILibraryInterfaces;
+using MyModelManager;
 
 namespace MyUILibrary.EntityArea
 {

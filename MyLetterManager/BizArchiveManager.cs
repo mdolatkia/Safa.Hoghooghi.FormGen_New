@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
 using ProxyLibrary;
-using MyCodeFunctionLibrary;
+
 using ProxyLibrary.Request;
 using MyLogManager;
 using MyModelManager;

@@ -217,7 +217,7 @@ namespace MyProject_WPF
                     listAllEntitis = await GetOrginalEntities();
                     listAllEnabledRelationships = await GetEnabledRelationships();
 
-                    foreach (var entity in listAllEntitis.Where(x => !x.IsDisabled && x.IndependentDataEntry == null))
+                    foreach (var entity in listAllEntitis.Where(x => x.IndependentDataEntry == null))
                     {
                         var relationships = new List<RelationshipDTO>();
                         foreach (var rel in listAllEnabledRelationships.Where(x => x.EntityID2 == entity.ID))
@@ -286,7 +286,7 @@ namespace MyProject_WPF
         {
             return Task.Run(() =>
             {
-                var result = bizTableDrivedEntity.GetOrginalEntities(Database.ID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships, false);
+                var result = bizTableDrivedEntity.GetAllEnbaledOrginalEntitiesExceptViewsDTO(Database.ID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
                 return result;
             });
         }

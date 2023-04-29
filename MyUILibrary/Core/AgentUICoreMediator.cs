@@ -4,7 +4,7 @@ using ModelEntites;
 using MyDataManagerService;
 using MyFormulaManagerService;
 
-using MyRelationshipDataManager;
+
 
 using MyUILibrary;
 using MyUILibrary.DataViewArea;
@@ -26,6 +26,7 @@ using MyDataManager;
 using MyUILibraryInterfaces.LogReportArea;
 using MyUILibraryInterfaces.DataViewArea;
 using MyUILibraryInterfaces.DataLinkArea;
+using MyRelationshipDataManager;
 
 namespace MyUILibrary
 {
@@ -41,7 +42,7 @@ namespace MyUILibrary
         public LogManagerService logManagerService = new LogManagerService();
         public SecurityManagerService securityManagerService = new SecurityManagerService();
         //SecurityService securityManager = new SecurityService();
-    //    public EntityUICompositionService entityUICompositionService = new EntityUICompositionService();
+        //    public EntityUICompositionService entityUICompositionService = new EntityUICompositionService();
         public TableDrivedEntityManagerService tableDrivedEntityManagerService = new TableDrivedEntityManagerService();
         public EntityValidationManagerService entityValidationManagerService = new EntityValidationManagerService();
         //public PackageManagerService packageManager = new PackageManagerService();
@@ -717,11 +718,21 @@ namespace MyUILibrary
         }
         private void ShowSearchableReportArea(EntityReportDTO report, bool dialog, DP_SearchRepositoryMain initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
         {
-            if (hostDataViewArea == null && initializeSearchRepository == null)
+            DP_SearchRepositoryMain advanceSearchRepository = null;
+            PreDefinedSearchDTO preDefinedSearch = null;
+            if (initializeSearchRepository == null)
             {
-                ////   initializeSearchRepository = report.SearchRepository;
-                ///اینجا چی باید فرستاده بشه ؟ SavedSearchRepositoryDTO یا DP_SearchRepositoryMain
+                advanceSearchRepository = report.AdvancedSearch.SearchRepositoryMain;
+                preDefinedSearch = report.PreDefinedSearch;
+
             }
+            else
+            {
+                advanceSearchRepository = initializeSearchRepository;
+            }
+
+            //اینجا باید عوض شه یعنی هم 
+            //advanceSearchRepository در نظر گرفته شه و هم preDefinedSearch
             if (report.SearchableReportType == SearchableReportType.DataView)
             {
                 var dvreport = ReportManager.GetDataViewReport(GetRequester(), report.ID);
@@ -747,14 +758,49 @@ namespace MyUILibrary
             }
             else if (report.SearchableReportType == SearchableReportType.ExternalReport)
             {
-                ShowExternalReport(report, userCanChangeSearch, initializeSearchRepository, showInitializeSearchRepository, dialog);
+                ExternalReportAreaInitializer initializer = new ExternalReportAreaInitializer();
+                initializer.ReportID = report.ID;
+                initializer.UserCanChangeSearch = userCanChangeSearch;
+                initializer.EntityID = report.TableDrivedEntityID;
+                initializer.Title = report.ReportTitle;
+                initializer.InitialSearchRepository = initializeSearchRepository;
+                initializer.ShowInitializeSearchRepository = showInitializeSearchRepository;
+                I_ExternalReportArea reportArea = new ExternalReportArea(initializer);
+                if (reportArea.View != null)
+                {
+                    if (!dialog)
+                        UIManager.ShowPane(reportArea.MainView, report.ReportTitle);
+                    else
+                        UIManager.GetDialogWindow().ShowDialog(reportArea.View, report.ReportTitle, Enum_WindowSize.Maximized);
+                }
+
+                //ShowExternalReport(report, userCanChangeSearch, initializeSearchRepository, showInitializeSearchRepository, dialog);
             }
             else if (report.SearchableReportType == SearchableReportType.ChartReport ||
                 report.SearchableReportType == SearchableReportType.CrosstabReport ||
                 report.SearchableReportType == SearchableReportType.ListReport)
 
             {
-                ShowListChartCrosstabReport(report, report.SearchableReportType, userCanChangeSearch, initializeSearchRepository, showInitializeSearchRepository, dialog);
+                // ShowListChartCrosstabReport(report, report.SearchableReportType, userCanChangeSearch, initializeSearchRepository, showInitializeSearchRepository, dialog);
+
+                InternalReportAreaInitializer initializer = new InternalReportAreaInitializer();
+                initializer.ReportID = report.ID;
+                initializer.ReportType = report.SearchableReportType;
+                initializer.UserCanChangeSearch = userCanChangeSearch;
+                initializer.EntityID = report.TableDrivedEntityID;
+                initializer.InitialSearchRepository = initializeSearchRepository;
+                initializer.Title = report.ReportTitle;
+                initializer.ShowInitializeSearchRepository = showInitializeSearchRepository;
+
+                I_InternalReportArea reportArea = new InternalReportArea(initializer);
+                if (reportArea.MainView != null)
+                {
+                    if (!dialog)
+                        UIManager.ShowPane(reportArea.MainView, report.ReportTitle);
+                    else
+                        UIManager.GetDialogWindow().ShowDialog(reportArea.MainView, report.ReportTitle, Enum_WindowSize.Maximized);
+                }
+
             }
         }
 
@@ -794,47 +840,17 @@ namespace MyUILibrary
         //{
 
         //}
-        private void ShowListChartCrosstabReport(EntityReportDTO report, SearchableReportType reportType, bool userCanChange, DP_SearchRepositoryMain initializeSearchRepository, bool showInitializeSearchRepository, bool dialog)
-        {
-            InternalReportAreaInitializer initializer = new InternalReportAreaInitializer();
-            initializer.ReportID = report.ID;
-            initializer.ReportType = reportType;
-            initializer.UserCanChangeSearch = userCanChange;
-            initializer.EntityID = report.TableDrivedEntityID;
-            initializer.InitialSearchRepository = initializeSearchRepository;
-            initializer.Title = report.ReportTitle;
-            initializer.ShowInitializeSearchRepository = showInitializeSearchRepository;
+        //private void ShowListChartCrosstabReport(EntityReportDTO report, SearchableReportType reportType, bool userCanChange, DP_SearchRepositoryMain initializeSearchRepository, bool showInitializeSearchRepository, bool dialog)
+        //{
 
-            I_InternalReportArea reportArea = new InternalReportArea(initializer);
-            if (reportArea.MainView != null)
-            {
-                if (!dialog)
-                    UIManager.ShowPane(reportArea.MainView, report.ReportTitle);
-                else
-                    UIManager.GetDialogWindow().ShowDialog(reportArea.MainView, report.ReportTitle, Enum_WindowSize.Maximized);
-            }
-        }
+        //}
 
-        private void ShowExternalReport(EntityReportDTO report, bool userCanChange, DP_SearchRepositoryMain initializeSearchRepository, bool showInitializeSearchRepository, bool dialog)
-        {
+        //private void ShowExternalReport(EntityReportDTO report, bool userCanChange, DP_SearchRepositoryMain initializeSearchRepository, bool showInitializeSearchRepository, bool dialog)
+        //{
 
 
-            ExternalReportAreaInitializer initializer = new ExternalReportAreaInitializer();
-            initializer.ReportID = report.ID;
-            initializer.UserCanChangeSearch = userCanChange;
-            initializer.EntityID = report.TableDrivedEntityID;
-            initializer.Title = report.ReportTitle;
-            initializer.InitialSearchRepository = initializeSearchRepository;
-            initializer.ShowInitializeSearchRepository = showInitializeSearchRepository;
-            I_ExternalReportArea reportArea = new ExternalReportArea(initializer);
-            if (reportArea.View != null)
-            {
-                if (!dialog)
-                    UIManager.ShowPane(reportArea.MainView, report.ReportTitle);
-                else
-                    UIManager.GetDialogWindow().ShowDialog(reportArea.View, report.ReportTitle, Enum_WindowSize.Maximized);
-            }
-        }
+
+        //}
 
 
         //private RR_ReportResult GetReport(RR_ReportRequest request, bool withDetails)
@@ -1054,7 +1070,7 @@ namespace MyUILibrary
                 return;
             }
             var MainEntityArea = editAreaResult.Item1;
-        //    MainEntityArea.SetAreaInitializer(editEntityAreaInitializer);
+            //    MainEntityArea.SetAreaInitializer(editEntityAreaInitializer);
 
             MainEntityArea.ShowDataFromExternalSource(initializeData);
 

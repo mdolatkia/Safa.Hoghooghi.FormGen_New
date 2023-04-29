@@ -1,7 +1,7 @@
 ﻿using Microsoft.Win32;
 using ModelEntites;
 using MyCommonWPFControls;
-using MyFormulaFunctionStateFunctionLibrary;
+
 
 using MyModelManager;
 using System;
@@ -54,7 +54,7 @@ namespace MyProject_WPF
             BizColumn bizColumn = new BizColumn();
             colColumn.SelectedValueMemberPath = "ID";
             colColumn.DisplayMemberPath = "Name";
-            colColumn.ItemsSource = bizColumn.GetAllColumnsDTO(EntityID, true,false).Where(x => x.PrimaryKey).ToList();
+            colColumn.ItemsSource = bizColumn.GetAllEnabledColumnsDTO(EntityID, true).Where(x => x.PrimaryKey).ToList();
         }
 
         private void GetEntityDirectReport(int entityViewReportID)

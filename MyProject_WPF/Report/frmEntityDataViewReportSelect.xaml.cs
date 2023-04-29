@@ -1,6 +1,6 @@
 ﻿
 using ModelEntites;
-using MyFormulaFunctionStateFunctionLibrary;
+
 using MyModelManager;
 using System;
 using System.Collections.Generic;
@@ -44,7 +44,7 @@ namespace MyProject_WPF
      
         private void GetEntityDataViewReports()
         {
-            var listEntityDataViewReports = bizEntityDataViewReport.GetEntityDataViewReports(EntityID);
+            var listEntityDataViewReports = bizEntityDataViewReport.GetEntityDataViewReports(MyProjectManager.GetMyProjectManager.GetRequester(),EntityID);
             dtgItems.ItemsSource = listEntityDataViewReports;
         }
         private void btnClose_Click(object sender, RoutedEventArgs e)

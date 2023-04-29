@@ -1,5 +1,5 @@
 ﻿using MyDataSearchManagerBusiness;
-using MyFormulaFunctionStateFunctionLibrary;
+
 using MyModelManager;
 using ProxyLibrary;
 using System;
@@ -24,7 +24,7 @@ namespace MyLetterGenerator
             var letterTemplete = bizLetterTemplate.GetMainLetterTepmplate(requester, letterTemplateID);
             DP_SearchRepositoryMain searchDataItem = new DP_SearchRepositoryMain(letterTemplete.TableDrivedEntityID);
             foreach (var property in keyProperties)
-                searchDataItem.Phrases.Add(new SearchProperty() { ColumnID = property.ColumnID, Value = property.Value });
+                searchDataItem.Phrases.Add(new SearchProperty(property.Column) { Value = property.Value });
 
             DP_DataView dataviewItem = null;
             //سکوریتی داده اعمال میشود

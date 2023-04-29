@@ -19,19 +19,19 @@ namespace MyModelManager
         }
         BizEntitySearchableReport bizEntitySearchableReport = new BizEntitySearchableReport();
 
-        public List<EntityGridViewReportDTO> GetEntityGridViewReports()
+        public List<EntityGridViewReportDTO> GetEntityGridViewReports(DR_Requester requester)
         {
             List<EntityGridViewReportDTO> result = new List<EntityGridViewReportDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityGridViewReport = projectContext.EntityGridViewReport;
                 foreach (var item in listEntityGridViewReport)
-                    result.Add(ToEntityGridViewReportDTO(item, false));
+                    result.Add(ToEntityGridViewReportDTO( requester, item, false));
 
             }
             return result;
         }
-        public List<EntityGridViewReportDTO> GetEntityGridViewReports(int entityID)
+        public List<EntityGridViewReportDTO> GetEntityGridViewReports(DR_Requester requester, int entityID)
         {
             //var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Validation, entityID.ToString());
             //if (cachedItem != null)
@@ -42,7 +42,7 @@ namespace MyModelManager
             {
                 var listEntityGridViewReport = projectContext.EntityGridViewReport.Where(x => x.EntitySearchableReport.EntityReport.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityGridViewReport)
-                    result.Add(ToEntityGridViewReportDTO(item, false));
+                    result.Add(ToEntityGridViewReportDTO( requester, item, false));
 
             }
             //CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.Validation, entityID.ToString());
@@ -56,7 +56,7 @@ namespace MyModelManager
                 var dbItem = projectContext.EntityGridViewReport.First(x => x.ID == EntityGridViewReportsID);
                 if (bizEntityReport.DataIsAccessable(requester, dbItem.EntitySearchableReport.EntityReport))
                 {
-                    return ToEntityGridViewReportDTO(dbItem, withDetails);
+                    return ToEntityGridViewReportDTO( requester, dbItem, withDetails);
                 }
                 else
                     return null;
@@ -64,10 +64,10 @@ namespace MyModelManager
         }
         BizEntityReport bizEntityReport = new MyModelManager.BizEntityReport();
 
-        public EntityGridViewReportDTO ToEntityGridViewReportDTO(EntityGridViewReport item, bool withDetails)
+        public EntityGridViewReportDTO ToEntityGridViewReportDTO(DR_Requester requester, EntityGridViewReport item, bool withDetails)
         {
             EntityGridViewReportDTO result = new EntityGridViewReportDTO();
-            bizEntitySearchableReport.ToEntitySearchableReportDTO(item.EntitySearchableReport, result, withDetails);
+            bizEntitySearchableReport.ToEntitySearchableReportDTO( requester, item.EntitySearchableReport, result, withDetails);
             result.DataMenuSettingID = item.DataMenuSettingID;
 
             return result;

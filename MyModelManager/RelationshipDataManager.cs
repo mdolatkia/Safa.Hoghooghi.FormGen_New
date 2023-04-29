@@ -39,7 +39,7 @@ namespace MyRelationshipDataManager
                     var value = firstSideDataItem.GetProperty(col.FirstSideColumnID).Value;
                     if (value == null)
                         return null;
-                    resultDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.SecondSideColumnID, Value = value });
+                    resultDataItem.Phrases.Add(new SearchProperty(col.SecondSideColumn) { Value = value });
                 }
                 return resultDataItem;
             }
@@ -47,11 +47,11 @@ namespace MyRelationshipDataManager
                 || relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary)
             {
                 DP_SearchRepositoryMain resultDataItem = new DP_SearchRepositoryMain(relationship.EntityID2);
-                if (firstSideDataItem.KeyProperties.Any() && firstSideDataItem.KeyProperties.All(x => x.Value!=null &&  !string.IsNullOrEmpty(x.Value.ToString())))
+                if (firstSideDataItem.KeyProperties.Any() && firstSideDataItem.KeyProperties.All(x => x.Value != null && !string.IsNullOrEmpty(x.Value.ToString())))
                 {
                     DP_SearchRepositoryMain searchItem = new DP_SearchRepositoryMain(relationship.EntityID1);
                     foreach (var col in firstSideDataItem.KeyProperties)
-                        searchItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
+                        searchItem.Phrases.Add(new SearchProperty(col.Column) { Value = col.Value });
                     var requester = new DR_Requester();
                     requester.SkipSecurity = true;
                     DR_SearchFullDataRequest request = new DR_SearchFullDataRequest(requester, searchItem);
@@ -70,7 +70,7 @@ namespace MyRelationshipDataManager
                         var value = firstSideDataItem.GetProperty(col.FirstSideColumnID).Value;
                         if (value == null)
                             return null;
-                        resultDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.SecondSideColumnID, Value = value });
+                        resultDataItem.Phrases.Add(new SearchProperty(col.SecondSideColumn) {  Value = value });
 
                     }
                     return resultDataItem;

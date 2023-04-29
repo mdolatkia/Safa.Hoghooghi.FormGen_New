@@ -28,7 +28,7 @@ namespace MyModelManager
         //    }
         //    return result;
         //}
-        public List<EntityExternalReportDTO> GetEntityExternalReports(int entityID)
+        public List<EntityExternalReportDTO> GetEntityExternalReports(DR_Requester requester, int entityID)
         {
             //var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Validation, entityID.ToString());
             //if (cachedItem != null)
@@ -39,29 +39,29 @@ namespace MyModelManager
             {
                 var listEntityListReport = projectContext.EntityExternalReport.Where(x => x.EntitySearchableReport.EntityReport.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityListReport)
-                    result.Add(ToEntityExternalReportDTO(item, false));
+                    result.Add(ToEntityExternalReportDTO( requester, item, false));
 
             }
             //CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.Validation, entityID.ToString());
             return result;
         }
-        public EntityExternalReportDTO GetEntityExternalReport(int EntityListReportsID, bool withDetails)
+        public EntityExternalReportDTO GetEntityExternalReport(DR_Requester requester, int EntityListReportsID, bool withDetails)
         {
             List<EntityExternalReportDTO> result = new List<EntityExternalReportDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var EntityListReports = projectContext.EntityExternalReport.First(x => x.ID == EntityListReportsID);
-                return ToEntityExternalReportDTO(EntityListReports, withDetails);
+                return ToEntityExternalReportDTO( requester, EntityListReports, withDetails);
             }
         }
         BizEntityReport bizEntityReport = new MyModelManager.BizEntityReport();
 
-        public EntityExternalReportDTO ToEntityExternalReportDTO(EntityExternalReport item, bool withDetails)
+        public EntityExternalReportDTO ToEntityExternalReportDTO(DR_Requester requester, EntityExternalReport item, bool withDetails)
         {
             EntityExternalReportDTO result = new EntityExternalReportDTO();
             result.ID = item.ID;
             result.URL = item.URL;
-            bizEntitySearchableReport.ToEntitySearchableReportDTO(item.EntitySearchableReport, result, withDetails);
+            bizEntitySearchableReport.ToEntitySearchableReportDTO( requester, item.EntitySearchableReport, result, withDetails);
 
 
             return result;

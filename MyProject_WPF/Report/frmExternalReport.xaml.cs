@@ -2,6 +2,7 @@
 using MyCommonWPFControls;
 
 using MyModelManager;
+using ProxyLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -138,7 +139,7 @@ namespace MyProject_WPF
 
         private void GetEntityExternalReport(int entityListReportID)
         {
-            Message = bizEntityExternalReport.GetEntityExternalReport(entityListReportID, true);
+            Message = bizEntityExternalReport.GetEntityExternalReport(MyProjectManager.GetMyProjectManager.GetRequester(), entityListReportID, true);
             ShowMessage();
         }
     }

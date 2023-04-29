@@ -30,7 +30,7 @@ namespace MyUILibrary.EntityArea
         public bool MultipleSelection { set; get; }
         //public TableDrivedEntityDTO TempEntity { set; get; }
         public List<DP_DataView> ViewData { set; get; }
-        public int EntityListViewID { set; get; }
+      //  public int EntityListViewID { set; get; }
         public List<EntityUICompositionDTO> UICompositions { get; set; }
         public AssignedPermissionDTO Permissoins { set; get; }
         public int EntityID { get; set; }

@@ -76,13 +76,14 @@ namespace MyUILibrary.EntityArea
     public interface I_AdvanceSearchNodeManager
     {
         event EventHandler<LogicComboBoxChangedEventArg> LogicComboBoxChanged;
-        void SetHeader(string header);
+        void SetHeader(string header, string tooltip);
         I_AdvanceSearchMenu AddMenu(string v);
         I_AdvanceSearchNodeManager AddChildItem();
         void AddExistingChildItem(I_AdvanceSearchNodeManager item);
         void RemoveItem(I_AdvanceSearchNodeManager nodeManager);
         void ClearItems();
         void AddLogicComboBox(List<AndORListItem> andORListItems);
+        void SetLogicComboBoxValue(AndORListItem andOrType);
     }
     public interface I_AdvanceSearchMenu
     {

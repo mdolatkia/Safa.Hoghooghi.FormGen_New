@@ -19,7 +19,7 @@ namespace MyModelManager
         }
         BizEntitySearchableReport bizEntitySearchableReport = new BizEntitySearchableReport();
 
-        public List<EntityDataViewReportDTO> GetEntityDataViewReports(int entityID)
+        public List<EntityDataViewReportDTO> GetEntityDataViewReports(DR_Requester requester, int entityID)
         {
             //var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Validation, entityID.ToString());
             //if (cachedItem != null)
@@ -30,7 +30,7 @@ namespace MyModelManager
             {
                 var listEntityDataViewReport = projectContext.EntityDataViewReport.Where(x => x.EntitySearchableReport.EntityReport.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityDataViewReport)
-                    result.Add(ToEntityDataViewReportDTO(item, false));
+                    result.Add(ToEntityDataViewReportDTO( requester, item, false));
 
             }
             //CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.Validation, entityID.ToString());
@@ -44,7 +44,7 @@ namespace MyModelManager
                 var dbItem = projectContext.EntityDataViewReport.First(x => x.ID == EntityDataViewReportsID);
                 if (bizEntityReport.DataIsAccessable(requester, dbItem.EntitySearchableReport.EntityReport))
                 {
-                    return ToEntityDataViewReportDTO(dbItem, withDetails);
+                    return ToEntityDataViewReportDTO( requester, dbItem, withDetails);
                 }
                 else
                     return null;
@@ -52,10 +52,10 @@ namespace MyModelManager
         }
         BizEntityReport bizEntityReport = new MyModelManager.BizEntityReport();
 
-        public EntityDataViewReportDTO ToEntityDataViewReportDTO(EntityDataViewReport item, bool withDetails)
+        public EntityDataViewReportDTO ToEntityDataViewReportDTO(DR_Requester requester, EntityDataViewReport item, bool withDetails)
         {
             EntityDataViewReportDTO result = new EntityDataViewReportDTO();
-            bizEntitySearchableReport.ToEntitySearchableReportDTO(item.EntitySearchableReport, result, withDetails);
+            bizEntitySearchableReport.ToEntitySearchableReportDTO( requester, item.EntitySearchableReport, result, withDetails);
             result.DataMenuSettingID = item.DataMenuSettingID;
    //         result.SearchRepositoryID = item.EntitySearchableReport.SearchRepositoryID ?? 0;
             return result;

@@ -1,6 +1,6 @@
 ﻿using ModelEntites;
 
-using MyFormulaFunctionStateFunctionLibrary;
+
 
 using MyModelManager;
 using System;
@@ -140,7 +140,7 @@ namespace MyProject_WPF
                 }
                 else
                 {
-                    e.ResultItemsSource = bizTableDrivedEntity.GetAllEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false, false);
+                    e.ResultItemsSource = bizTableDrivedEntity.GetAllEnabledEntitiesExceptViewsDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue);
                 }
             }
             //else if (e.Filters.Count > 0)

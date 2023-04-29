@@ -13,6 +13,7 @@ namespace MyDataItemManager
 {
     public class BizDataItem
     {
+        BizColumn bizColumn = new BizColumn();
         public bool SetDataItemDTO(DP_BaseData dataItem)
         {
             if (dataItem.DataItemID != 0)
@@ -119,7 +120,9 @@ namespace MyDataItemManager
             {
                 DP_SearchRepositoryMain searchDataItem = new DP_SearchRepositoryMain(dbDataItem.TableDrivedEntityID);
                 foreach (var property in dbDataItem.MyDataItemKeyColumns)
-                    searchDataItem.Phrases.Add(new SearchProperty() { ColumnID = property.ColumnID, Value = property.Value });
+                {
+                    searchDataItem.Phrases.Add(new SearchProperty(bizColumn.GetColumnDTO(property.ColumnID, true)) { Value = property.Value });
+                }
                 DR_SearchViewRequest request = new DR_SearchViewRequest(requester, searchDataItem);
                 var searchResult = searchRequestManager.Process(request);
                 if (searchResult.Result == Enum_DR_ResultType.SeccessfullyDone)

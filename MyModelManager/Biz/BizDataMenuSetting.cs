@@ -53,7 +53,7 @@ namespace MyModelManager
 
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var entity = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.ID == entityID);
+                var entity = bizTableDrivedEntity.GetAllEnabledEntities(projectContext).FirstOrDefault(x => x.ID == entityID);
                 if (entity != null && entity.DataMenuSetting1 != null)
                 {
                     return ToDataMenuSettingDTO(requester, entity.DataMenuSetting1, withDetails);
@@ -76,7 +76,7 @@ namespace MyModelManager
                         {
                             var tail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
                             var entityReportDTO = new EntitySearchableReportDTO();
-                            bizEntitySearchableReport.ToEntitySearchableReportDTO(item.EntitySearchableReport, entityReportDTO,  withDetails);
+                            bizEntitySearchableReport.ToEntitySearchableReportDTO( requester, item.EntitySearchableReport, entityReportDTO,  withDetails);
                             result.SearchableReportRelationships.Add(ToDataMenuSearchableReportRelationshipDTO(item, tail, entityReportDTO));
                         }
                     }
@@ -102,7 +102,7 @@ namespace MyModelManager
                     if (bizEntityReport.DataIsAccessable(requester, item.EntityDataItemReportID))
                     {
                         var entityReportDTO = new EntityDataItemReportDTO();
-                        bizEntityDataItemReport.ToEntityDataItemReportDTO(item.EntityDataItemReport, entityReportDTO,false);
+                        bizEntityDataItemReport.ToEntityDataItemReportDTO(requester, item.EntityDataItemReport, entityReportDTO,false);
                         result.DataItemReports.Add(ToDataMenuDataItemReportRelationshipDTO(item, entityReportDTO));
                     }
                 }
@@ -191,7 +191,7 @@ namespace MyModelManager
             if (dataMenuSetting != null)
                 result.DataMenuSettingName = dataMenuSetting.Name;
 
-            //** 1677d2a6-f3cf-43f9-b61b-f6bf4c34c203
+            //** BizDataMenuSetting.GetDataMenu: 1677d2a6-f3cf-43f9-b61b-f6bf4c34c203
             if (simpleEntity.IsView)
             {
                 if (dataMenuSetting != null)
@@ -373,7 +373,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var dbEntity = bizTableDrivedEntity.GetAllEntities(projectContext, false).FirstOrDefault(x => x.ID == entityID);
+                var dbEntity = bizTableDrivedEntity.GetAllEnabledEntities(projectContext).FirstOrDefault(x => x.ID == entityID);
                 dbEntity.DataMenuSettingID = iD;
                 projectContext.SaveChanges();
             }

@@ -28,7 +28,7 @@ namespace MyUIGenerator.UIControlHelper
         {
             if (MainControl is Control)
             {
-            
+
             }
             else if (MainControl is TextBlock)
             {
@@ -51,7 +51,7 @@ namespace MyUIGenerator.UIControlHelper
                 var listitem = new ListBoxItem();
                 dropDownButton.HorizontalAlignment = HorizontalAlignment.Right;
 
-                theGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                theGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width= GridLength .Auto});
                 Grid.SetColumn(dropDownButton, theGrid.ColumnDefinitions.Count);
                 theGrid.Children.Add(dropDownButton);
 
@@ -61,6 +61,7 @@ namespace MyUIGenerator.UIControlHelper
 
             var menuButton = new Button();
             menuButton.Name = menu.Name;
+            menuButton.Width = 80;
             menuButton.Content = menu.Title;
             if (!string.IsNullOrEmpty(menu.Tooltip))
                 ToolTipService.SetToolTip(menuButton, menu.Tooltip);
@@ -99,6 +100,23 @@ namespace MyUIGenerator.UIControlHelper
             }
             removeButtons.ForEach(x => listBox.Items.Remove(x));
         }
+        public List<ConrolPackageMenu> GetButtonMenus()
+        {
+            throw new NotImplementedException();
+        }
+        public void RemoveButtonMenus()
+        {
+            listBox.Items.Clear();
+        }
+        public void SetMenuColor(InfoColor color)
+        {
+            dropDownButton.Background = UIManager.GetColorFromInfoColor(color);
+        }
+
+        public void ClearMenuColor()
+        {
+            dropDownButton.Background = null;
+        }
 
         public void Visiblity(bool visible)
         {
@@ -120,8 +138,8 @@ namespace MyUIGenerator.UIControlHelper
         //}
 
 
-     
-     
+
+
 
         public object GetUIControl()
         {

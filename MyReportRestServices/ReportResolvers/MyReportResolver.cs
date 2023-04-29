@@ -201,7 +201,8 @@ namespace MyReportRestServices.ReportResolvers
 
             //////            return new Telerik.Reporting.InstanceReportSource { ReportDocument = newreport };
             List<Type> types = new List<Type>();
-            types.Add(typeof(DP_SearchRepository));
+            types.Add(typeof(DP_SearchRepositoryMain));
+            types.Add(typeof(DP_SearchRepositoryRelationship));
             types.Add(typeof(LogicPhraseDTO));
             types.Add(typeof(SearchProperty));
 

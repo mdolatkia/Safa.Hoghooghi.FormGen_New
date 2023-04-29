@@ -47,6 +47,7 @@ namespace MyModelManager
 
         public EntityListViewDTO GetOrCreateEntityListViewDTO(DR_Requester requester, int entityID)
         {
+            //** 4aecc037-4825-4e44-926a-3462d35bf2fc
             EntityListViewDTO result = null;
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
@@ -132,7 +133,7 @@ namespace MyModelManager
 
         private List<EntityListViewColumnsDTO> GenereateDefaultListViewColumns(TableDrivedEntityDTO firstEntity, TableDrivedEntityDTO entity = null, List<EntityListViewColumnsDTO> list = null, string relationshipPath = "", List<RelationshipDTO> relationships = null)
         {
-            //** 8ab306e9-0d52-4be6-95c0-9e5b4c36a21c
+            //** BizEntityListView.GenereateDefaultListViewColumns: 35838f12-76ec-4a3a-8f4d-e0b50248b309
             if (list == null)
                 list = new List<EntityListViewColumnsDTO>();
             if (entity == null)
@@ -221,7 +222,10 @@ namespace MyModelManager
             resultColumn.ColumnID = column.ID;
             resultColumn.Column = column;
             if (!string.IsNullOrEmpty(relationshipPath))
-                resultColumn.RelationshipTail = new EntityRelationshipTailDTO(firstEntity.ID, relationshipPath, entity.ID);
+            {
+                var bizEntityRelationshipTail = new BizEntityRelationshipTail();
+                resultColumn.RelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(firstEntity.ID, relationshipPath);
+            }
 
             string entityAlias = "";
             string entityTooltip = "";
@@ -240,6 +244,45 @@ namespace MyModelManager
             resultColumn.IsDescriptive = CheckIsDescriptive(column, relationshipPath);
             list.Add(resultColumn);
         }
+
+        //private EntityRelationshipTailDTO CreateRelationshipTail(int firstEntityID, string relationshipPath, int lastEntityID, List<RelationshipDTO> relationships)
+        //{
+        //    if (!string.IsNullOrEmpty(relationshipPath))
+        //    {
+        //        var result = new EntityRelationshipTailDTO();
+        //        result.InitialEntityID = initialiEntityID;
+        //        result.InitialiEntityAlias = initialiEntityAlias;
+        //        result.TargetEntityID = targetEntityID;
+        //        result.TargetEntityAlias = targetEntityAlias;
+        //        result.RelationshipIDPath = relationshipPath;
+
+        //        int relationshipID = 0;
+        //        string rest = "";
+        //        if (relationshipPath.Contains(","))
+        //        {
+        //            var splt = relationshipPath.Split(',');
+        //            relationshipID = Convert.ToInt32(splt[0]);
+        //            for (int i = 1; i <= splt.Count() - 1; i++)
+        //            {
+        //                rest += (rest == "" ? "" : ",") + splt[i];
+        //            }
+        //        }
+        //        else
+        //        {
+        //            relationshipID = Convert.ToInt32(relationshipPath);
+        //        }
+
+        //        result.Relationship = bizRelationship.GetRelationship(relationshipID);
+        //        if (rest != "")
+        //        {
+        //            result.ChildTail = ToEntityRelationshipTailDTO(projectContext, rest, initialiEntityID, initialiEntityAlias, targetEntityID, targetEntityAlias, null);
+        //            //result.LastRelationship = result.ChildTail.LastRelationship;
+        //        }
+        //    }
+        //    else
+        //        return null;
+        //}
+
         List<PriorityColumnDetection> _GetPriorityColumnNames;
         List<PriorityColumnDetection> GetPriorityColumnNames()
         {

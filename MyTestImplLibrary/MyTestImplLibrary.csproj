@@ -67,6 +67,10 @@
       <Project>{8abc6369-3f6e-40fb-a354-5106930cb07c}</Project>
       <Name>MyInterfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MyModelManager\MyModelManager.csproj">
+      <Project>{C85C5486-CA1A-4963-8594-C85E441CEBC2}</Project>
+      <Name>MyModelManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProxyLibrary\ProxyLibrary.csproj">
       <Project>{2ad586dd-c9be-42d3-8ef7-e9657f992503}</Project>
       <Name>ProxyLibrary</Name>

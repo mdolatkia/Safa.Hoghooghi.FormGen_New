@@ -19,24 +19,33 @@ namespace MyUILibrary.EntityArea
     {
         public SearchEntityArea(SearchAreaInitializer newAreaInitializer)
         {
-            SearchInitializer = newAreaInitializer;
-
-            SearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchEntityArea();
-            SimpleSearchEntityArea = new EntityDefinedSearchArea(SearchInitializer);
-            SimpleSearchEntityArea.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
-            SearchView.AddSimpleSearchView(SimpleSearchEntityArea.SimpleSearchView);
-
-            AdvancedSearchEntityAre = new AdvancedSearchEntityArea(SearchInitializer);
-            AdvancedSearchEntityAre.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
-            SearchView.AddAdvancedSearchView(AdvancedSearchEntityAre.AdvancedSearchView);
-
+            AreaInitializer = newAreaInitializer;
             //if (SearchInitializer.PreDefinedSearch != null)
             //{
             //    ShowSearchRepository(SearchInitializer.PreDefinedSearch);
             //}
 
         }
-        public I_View_SearchEntityArea SearchView { set; get; }
+        I_View_SearchEntityArea _SearchView;
+        public I_View_SearchEntityArea SearchView
+        {
+            //** 08908f25-303b-409c-becb-3100cfe8e22f
+            get
+            {
+                if (_SearchView == null)
+                {
+                    _SearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchEntityArea();
+                    SimpleSearchEntityArea = new EntityDefinedSearchArea(AreaInitializer);
+                    SimpleSearchEntityArea.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
+                    SearchView.AddSimpleSearchView(SimpleSearchEntityArea.SimpleSearchView);
+
+                    AdvancedSearchEntityAre = new AdvancedSearchEntityArea(AreaInitializer);
+                    AdvancedSearchEntityAre.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
+                    SearchView.AddAdvancedSearchView(AdvancedSearchEntityAre.AdvancedSearchView);
+                }
+                return _SearchView;
+            }
+        }
         //I_View_SearchEntityArea _SearchView;
         //public I_View_SearchEntityArea SearchView
         //{
@@ -61,9 +70,9 @@ namespace MyUILibrary.EntityArea
             set; get;
         }
 
-        public SearchAreaInitializer SearchInitializer { set; get; }
+        public SearchAreaInitializer AreaInitializer { set; get; }
 
-        public event EventHandler<SearchDataArg> SearchDataDefined;
+        public event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;
 
 
 
@@ -105,8 +114,10 @@ namespace MyUILibrary.EntityArea
         //    ShowSearchRepository(message.SearchRepository);
         //}
 
-        private void SimpleSearchEntityArea_SearchDataDefined(object sender, SearchDataArg e)
+        private void SimpleSearchEntityArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
         {
+            //** 294e2816-e090-40db-96a7-661edde3000b
+
             //DP_SearchRepositoryMain searchData = new DP_SearchRepositoryMain(SearchInitializer.EntityID);
             //if (e.SearchItems != null)
             //{
@@ -115,7 +126,7 @@ namespace MyUILibrary.EntityArea
             //}
             //OnSearchDataDefined(searchData);
 
-            OnSearchDataDefined(e.SearchItems);
+            OnSearchDataDefined(e);
         }
         public DP_SearchRepositoryMain LastSearch { set; get; }
         public void OnSearchDataDefined(DP_SearchRepositoryMain searchData)
@@ -123,7 +134,7 @@ namespace MyUILibrary.EntityArea
             //if (searchData == null)
             //    searchData = new DP_SearchRepositoryMain(SearchInitializer.EntityID);
 
-            //var arg = new SearchDataArg();
+            //var arg = new DP_SearchRepositoryMain();
             //arg.SearchItems = new DP_SearchRepositoryMain(SearchInitializer.EntityID);
             //arg.SearchItems.AndOrType = searchData.AndOrType;
             //arg.SearchItems.Phrases = searchData.Phrases;
@@ -131,14 +142,13 @@ namespace MyUILibrary.EntityArea
             //if (SearchDataDefined != null)
             //    SearchDataDefined(this, searchData);
 
-
             LastSearch = searchData;
 
             if (SearchDataDefined != null)
-                SearchDataDefined(this, new SearchDataArg() { SearchItems = searchData });
+                SearchDataDefined(this, searchData);
         }
 
-      
+
         public void ClearSearchData()
         {
             throw new NotImplementedException();

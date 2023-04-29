@@ -44,7 +44,7 @@ namespace MyModelManager
                 foreach (var item in listEntityReport)
                 {
                     var nItem = new EntitySearchableReportDTO();
-                    ToEntitySearchableReportDTO(item, nItem, false);
+                    ToEntitySearchableReportDTO( requester, item, nItem, false);
                     result.Add(nItem);
                 }
             }
@@ -63,9 +63,9 @@ namespace MyModelManager
 
         //    return result;
         //}
-        internal void ToEntitySearchableReportDTO(EntitySearchableReport entitySearchableReport, EntitySearchableReportDTO entitySearchableReportDTO,bool withDetails)
+        internal void ToEntitySearchableReportDTO(DR_Requester requester, EntitySearchableReport entitySearchableReport, EntitySearchableReportDTO entitySearchableReportDTO,bool withDetails)
         {
-            bizEntityReport.ToEntityReportDTO(entitySearchableReport.EntityReport, entitySearchableReportDTO,  withDetails);
+            bizEntityReport.ToEntityReportDTO( requester, entitySearchableReport.EntityReport, entitySearchableReportDTO,  withDetails);
             //entitySearchableReportDTO.SearchRepositoryID = entitySearchableReport.SearchRepositoryID ?? 0;
             //if (entitySearchableReport.SearchRepository != null)
             //    entitySearchableReportDTO.SearchRepository = bizSearchRepository.ToSearchRepositoryDTO(entitySearchableReport.SearchRepository);

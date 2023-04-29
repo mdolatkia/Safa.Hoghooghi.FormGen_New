@@ -141,35 +141,39 @@ namespace MyModelManager
             List<SimpleSearchOperator> result = new List<SimpleSearchOperator>();
             if (column.ID != 0)
             {
-                if (column.ColumnType == Enum_ColumnType.String)
-                {
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر" });
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل", IsDefault = true });
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.StartsWith, Title = "شروع شود با" });
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.EndsWith, Title = "تمام شود با" });
-                }
-                else if (column.ColumnType == Enum_ColumnType.Numeric)
-                {
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر", IsDefault = true });
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.SmallerThan, Title = "کوچکتر از" });
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.BiggerThan, Title = "بزرگتر از" });
-                }
-                else if (column.ColumnType == Enum_ColumnType.Date)
-                {
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر", IsDefault = true });
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.SmallerThan, Title = "کوچکتر از" });
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.BiggerThan, Title = "بزرگتر از" });
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل" });
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.StartsWith, Title = "شروع شود با" });
-                    result.Add(new SimpleSearchOperator() { Operator = CommonOperator.EndsWith, Title = "تمام شود با" });
-
-                }
+                //if (column.ColumnType == Enum_ColumnType.String)
+                //{
+                //result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر" });
+                //result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل", IsDefault = true });
+                //result.Add(new SimpleSearchOperator() { Operator = CommonOperator.StartsWith, Title = "شروع شود با" });
+                //result.Add(new SimpleSearchOperator() { Operator = CommonOperator.EndsWith, Title = "تمام شود با" });
+                //}
+                //else if (column.ColumnType == Enum_ColumnType.Numeric)
+                //{
+                //result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر", IsDefault = true });
+                //result.Add(new SimpleSearchOperator() { Operator = CommonOperator.SmallerThan, Title = "کوچکتر از" });
+                //result.Add(new SimpleSearchOperator() { Operator = CommonOperator.BiggerThan, Title = "بزرگتر از" });
+                //}
+                //else if (column.ColumnType == Enum_ColumnType.Date)
+                //{
+                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Equals, Title = "برابر", IsDefault = true });
+                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.NotEquals, Title = "نابرابر" });
+                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.InValues, Title = "در مقادیر" });
+                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.NotInValues, Title = "عدم وجود در مقادیر" });
+                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.SmallerThan, Title = "کوچکتر از" });
+                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.BiggerThan, Title = "بزرگتر از" });
+                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.Contains, Title = "شامل" });
+                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.StartsWith, Title = "شروع شود با" });
+                result.Add(new SimpleSearchOperator() { Operator = CommonOperator.EndsWith, Title = "تمام شود با" });
+              
+               
+                //}
             }
             return result;
         }
         private List<EntitySearchColumnsDTO> GenereateDefaultSearchColumns(TableDrivedEntityDTO firstEntity, TableDrivedEntityDTO entity = null, List<EntitySearchColumnsDTO> list = null, string relationshipPath = "", List<RelationshipDTO> relationships = null)
         {
-            //** 8ab306e9-0d52-4be6-95c0-9e5b4c36a21c
+            //** BizEntitySearch.GenereateDefaultSearchColumns: 8ab306e9-0d52-4be6-95c0-9e5b4c36a21c
 
             if (list == null)
                 list = new List<EntitySearchColumnsDTO>();
@@ -292,7 +296,10 @@ namespace MyModelManager
             resultColumn.ColumnID = column.ID;
             resultColumn.Column = column;
             if (!string.IsNullOrEmpty(relationshipPath))
-                resultColumn.RelationshipTail = new EntityRelationshipTailDTO(firstEntity.ID, relationshipPath, entity.ID);
+            {
+                var bizEntityRelationshipTail = new BizEntityRelationshipTail();
+                resultColumn.RelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(firstEntity.ID, relationshipPath);
+            }
             string entityAlias = "";
             string entityTooltip = "";
             if (relationships != null)
@@ -367,7 +374,7 @@ namespace MyModelManager
                     rColumn.ID = column.ID;
                     rColumn.ColumnID = column.ColumnID ?? 0;
                     if (column.Column != null)
-                        rColumn.Column = bizColumn.ToColumnDTO(column.Column, true);
+                        rColumn.Column = bizColumn.ToColumnDTO(column.Column, false);
                     if (column.ColumnID != null)
                         rColumn.Alias = column.Alias ?? column.Column.Alias ?? column.Column.Name;
                     else

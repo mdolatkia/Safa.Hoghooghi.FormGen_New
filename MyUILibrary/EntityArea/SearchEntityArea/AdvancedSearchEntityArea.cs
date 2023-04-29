@@ -17,18 +17,30 @@ namespace MyUILibrary.EntityArea
 {
     public class AdvancedSearchEntityArea : I_AdvancedSearchEntityArea
     {
+        public event EventHandler<SimpleSearchColumnControl> FormulaSelectionRequested;
+
         public AdvancedSearchEntityArea(SearchAreaInitializer newAreaInitializer)
         {
             SearchCommands = new List<I_Command>();
-            SearchInitializer = newAreaInitializer;
+            AreaInitializer = newAreaInitializer;
 
             AdvancedSearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfAdvancedSearch();
 
 
             var clearSearchcommand = new SearchClearCommand(this);
             AdvancedSearchView.AddCommand(clearSearchcommand.CommandManager);
-            var searchConfirmcommand = new AdvancedSearchConfirmCommand(this);
-            AdvancedSearchView.AddCommand(searchConfirmcommand.CommandManager);
+            if (!newAreaInitializer.ForSave)
+            {
+                var searchConfirmcommand = new AdvancedSearchConfirmCommand(this);
+                AdvancedSearchView.AddCommand(searchConfirmcommand.CommandManager);
+            }
+
+            if (newAreaInitializer.AdvancedSearchDTOMessage == null)
+                ClearSearchData();
+            else
+                ShowSearchRepository(newAreaInitializer.AdvancedSearchDTOMessage.SearchRepositoryMain);
+
+
         }
         public I_View_AdvancedSearchEntityArea AdvancedSearchView { set; get; }
 
@@ -37,10 +49,10 @@ namespace MyUILibrary.EntityArea
             set;
             get;
         }
-        public SearchAreaInitializer SearchInitializer { set; get; }
+        public SearchAreaInitializer AreaInitializer { set; get; }
 
         //public event EventHandler<Arg_PackageSelected> DataPackageSelected;
-        public event EventHandler<SearchDataArg> SearchDataDefined;
+        public event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;
 
         TableDrivedEntityDTO _FullEntity;
         public TableDrivedEntityDTO FullEntity
@@ -48,7 +60,7 @@ namespace MyUILibrary.EntityArea
             get
             {
                 if (_FullEntity == null)
-                    _FullEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetPermissionedEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), SearchInitializer.EntityID);
+                    _FullEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetPermissionedEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
                 return _FullEntity;
             }
         }
@@ -76,6 +88,7 @@ namespace MyUILibrary.EntityArea
 
         private void AddNode(AdvanceSearchNode parentNode, Phrase phrase)
         {
+            // ** ac0b73ce-dd1d-4a62-8719-dc5ef44a6503
             if (phrase is LogicPhraseDTO)
             {
                 var logicPhrase = phrase as LogicPhraseDTO;
@@ -107,14 +120,16 @@ namespace MyUILibrary.EntityArea
                 //else
                 //    newnode.EntityID = SearchInitializer.EntityID;
 
-                var searchRepositories = GetParentSearchRepositories(newnode);
+
                 if (parentNode != null)
                     newnode.NodeManager = parentNode.NodeManager.AddChildItem();
                 else
                     newnode.NodeManager = AdvancedSearchView.AddTreeItem();
 
-                newnode.NodeManager.SetHeader(newnode.Title);
-                newnode.NodeManager.AddLogicComboBox(GetAndOrList());
+                newnode.NodeManager.SetHeader(newnode.Title, "");
+                var list = GetAndOrList();
+                newnode.NodeManager.AddLogicComboBox(list);
+                newnode.NodeManager.SetLogicComboBoxValue(list.FirstOrDefault(x => x.AndOR == logicPhrase.AndOrType));
                 newnode.NodeManager.LogicComboBoxChanged += (sender, e) => LogicComboBoxChanged(sender, e, newnode, logicPhrase);
 
                 foreach (var item in logicPhrase.Phrases)
@@ -123,19 +138,20 @@ namespace MyUILibrary.EntityArea
                 }
 
                 I_AdvanceSearchMenu rootAndMenu = newnode.NodeManager.AddMenu("Add Logic Phrase");
-                rootAndMenu.Clicked += (sender, e) => AddLogicPhraseClicked(sender, e, newnode);
+                rootAndMenu.Clicked += (sender, e) => AddLogicPhraseClicked(sender, e, newnode, logicPhrase);
 
+                var searchRepositories = GetParentSearchRepositories(newnode);
                 var last = searchRepositories.Last();
 
                 I_AdvanceSearchMenu simpleSearchMenu = newnode.NodeManager.AddMenu("افزودن لیست خصوصیات");
-                simpleSearchMenu.Clicked += (sender1, e1) => RootAndMenu_Clicked1(sender1, e1, newnode, last);
+                simpleSearchMenu.Clicked += (sender1, e1) => RootAndMenu_Clicked1(sender1, e1, newnode, logicPhrase, last);
 
 
                 var entity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetPermissionedEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), last);
                 foreach (var relationship in entity.Relationships)
                 {
                     I_AdvanceSearchMenu relationshipSearchMenu = newnode.NodeManager.AddMenu(relationship.Alias);
-                    relationshipSearchMenu.Clicked += (sender1, e1) => Relationship_ClickedNew(sender1, e1, newnode, relationship);
+                    relationshipSearchMenu.Clicked += (sender1, e1) => Relationship_ClickedNew(sender1, e1, newnode, logicPhrase, relationship);
                 }
                 if (parentNode != null)
                 {
@@ -149,10 +165,25 @@ namespace MyUILibrary.EntityArea
                 var propertyPhrase = phrase as SearchProperty;
                 var newnode = new AdvanceSearchNode();
                 newnode.ParentNode = parentNode;
-                newnode.Title = propertyPhrase.ColumnID.ToString();
+                if (AreaInitializer.ForSave)
+                {
+                    if (PropertyHasValue(propertyPhrase))
+                    {
+                        newnode.Title = propertyPhrase.Column.Alias + " , " + propertyPhrase.Operator.ToString() + " : " + propertyPhrase.Value;
+                    }
+                    else if (propertyPhrase.Formula != null)
+                    {
+                        newnode.Title = propertyPhrase.Column.Alias + " , " + propertyPhrase.Operator.ToString() + " : " + propertyPhrase.Formula.Title;
+                    }
+                }
+                else
+                {
+                    newnode.Title = propertyPhrase.Column.Alias + " , " + propertyPhrase.Operator.ToString() + " : " + propertyPhrase.Value;
+                }
+
                 parentNode.ChildItems.Add(newnode);
                 newnode.NodeManager = parentNode.NodeManager.AddChildItem();
-                newnode.NodeManager.SetHeader(newnode.Title);
+                newnode.NodeManager.SetHeader(newnode.Title, propertyPhrase.Tooltip);
                 newnode.Phrase = phrase;
 
                 I_AdvanceSearchMenu removeMenu = newnode.NodeManager.AddMenu("حذف");
@@ -160,6 +191,10 @@ namespace MyUILibrary.EntityArea
                 //   return newnode;
             }
             //return null;
+        }
+        private bool PropertyHasValue(SearchProperty property)
+        {
+            return property.Value != null && !string.IsNullOrEmpty(property.ToString()) && property.ToString().ToLower() != "0";
         }
         private List<int> GetParentSearchRepositories(AdvanceSearchNode newnode)
         {
@@ -188,7 +223,7 @@ namespace MyUILibrary.EntityArea
             }
             else
             {
-                result.Add(SearchInitializer.EntityID);
+                result.Add(AreaInitializer.EntityID);
                 return;
             }
         }
@@ -208,19 +243,23 @@ namespace MyUILibrary.EntityArea
             return result;
         }
 
-        private void AddLogicPhraseClicked(object sender, EventArgs e, AdvanceSearchNode newnode)
+        private void AddLogicPhraseClicked(object sender, EventArgs e, AdvanceSearchNode parentNode, LogicPhraseDTO parentLogicPhrase)
         {
-            AddNode(newnode, new LogicPhraseDTO());
+            var newLogicPhrase = new LogicPhraseDTO();
+            parentLogicPhrase.Phrases.Add(newLogicPhrase);
+            AddNode(parentNode, newLogicPhrase);
         }
 
-        private void Relationship_ClickedNew(object sender1, EventArgs e1, AdvanceSearchNode node
+        private void Relationship_ClickedNew(object sender1, EventArgs e1, AdvanceSearchNode parentNode, LogicPhraseDTO parentLogicPhrase
             , RelationshipDTO relationship)
         {
             var relSearchRepository = new DP_SearchRepositoryRelationship();
             relSearchRepository.Title = relationship.Alias;
             relSearchRepository.SourceRelationship = relationship;
 
-            AddNode(node, relSearchRepository);
+            parentLogicPhrase.Phrases.Add(relSearchRepository);
+
+            AddNode(parentNode, relSearchRepository);
             //var searchViewInitializer = new SearchAreaInitializer();
             //searchViewInitializer.EntityID = relationship.EntityID2;
             //searchViewInitializer.Title = relationship.Alias;
@@ -230,7 +269,7 @@ namespace MyUILibrary.EntityArea
 
             //AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(advancedAndRaw.SearchView, searchViewInitializer.Title, Enum_WindowSize.Big);
         }
-        //private void AdvancedAndRaw_SearchDataDefinedNew(object sender, SearchDataArg e, RelationshipDTO relationship, AdvanceSearchNode node, object view)
+        //private void AdvancedAndRaw_SearchDataDefinedNew(object sender, DP_SearchRepositoryMain e, RelationshipDTO relationship, AdvanceSearchNode node, object view)
         //{
         //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(view);
 
@@ -251,7 +290,7 @@ namespace MyUILibrary.EntityArea
         //    advancedAndRaw.SearchDataDefined += (sender, e) => AdvancedAndRaw_SearchDataDefinedEdit(sender, e, node, advancedAndRaw.SearchView);
         //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(advancedAndRaw.SearchView, searchViewInitializer.Title, Enum_WindowSize.Big);
         //}
-        //private void AdvancedAndRaw_SearchDataDefinedEdit(object sender, SearchDataArg e, AdvanceSearchNode node, object view)
+        //private void AdvancedAndRaw_SearchDataDefinedEdit(object sender, DP_SearchRepositoryMain e, AdvanceSearchNode node, object view)
         //{
         //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(view);
 
@@ -303,64 +342,58 @@ namespace MyUILibrary.EntityArea
                 }
             }
         }
-
-        //Tuple<int,>
-        //  object lastSearchView;
-        private void RootAndMenu_Clicked1(object sender1, EventArgs e1, AdvanceSearchNode andOrNode, int entityID)
+        private void RootAndMenu_Clicked1(object sender1, EventArgs e1, AdvanceSearchNode parentNode, LogicPhraseDTO parentLogicPhrase, int entityID)
         {
+            //** 247d4428-042e-4038-9c89-c1729589c7ea
             var searchViewInitializer = new SearchAreaInitializer();
 
             searchViewInitializer.EntityID = entityID;
             //if (SearchInitializer.TempEntity != null && SearchInitializer.TempEntity.ID == SearchInitializer.EntityID)
             //    searchViewInitializer.TempEntity = SearchInitializer.TempEntity;
-            I_RawSearchEntityArea rawSearchEntityArea = new RawSearchEntityArea(searchViewInitializer);
-            rawSearchEntityArea.SearchDataDefined += (sender, e) => RawSearchEntityArea_SearchDataDefined(sender, e, andOrNode, rawSearchEntityArea.RawSearchView);
+            searchViewInitializer.ForSave = AreaInitializer.ForSave;
+            RawSearchEntityArea rawSearchEntityArea = new RawSearchEntityArea(searchViewInitializer);
+            rawSearchEntityArea.FormulaSelectionRequested += RawSearchEntityArea_FormulaSelectionRequested;
+            rawSearchEntityArea.SearchDataDefined += (sender, e) => RawSearchEntityArea_SearchDataDefined(sender, e, parentNode, parentLogicPhrase, rawSearchEntityArea.RawSearchView);
             //lastSearchView = rawSearchEntityArea.RawSearchView;
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(rawSearchEntityArea.RawSearchView, "خصوصیات", Enum_WindowSize.Big);
 
         }
 
-        private void RawSearchEntityArea_SearchDataDefined(object sender, SearchPropertyArg e, AdvanceSearchNode andOrNode, object view)
+        private void RawSearchEntityArea_FormulaSelectionRequested(object sender, SimpleSearchColumnControl e)
+        {
+            if (FormulaSelectionRequested != null)
+                FormulaSelectionRequested(this, e);
+        }
+
+        private void RawSearchEntityArea_SearchDataDefined(object sender, SearchPropertyArg e, AdvanceSearchNode parentNode, LogicPhraseDTO parentLogicPhrase
+            , object view)
         {
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(view);
             foreach (var phrase in e.SearchItems)
             {
-                (andOrNode.Phrase as LogicPhraseDTO).Phrases.Add(phrase);
-                AddNode(andOrNode, phrase);
+                (parentNode.Phrase as LogicPhraseDTO).Phrases.Add(phrase);
+                AddNode(parentNode, phrase);
             }
         }
         public DP_SearchRepositoryMain GetSearchRepository()
         {
             if (RootSearchRepository != null)
             {
-               
+
                 return RootSearchRepository;
             }
             return null;
         }
-
-
-
         public void ClearSearchData()
         {
-
-
+            ShowSearchRepository(new DP_SearchRepositoryMain() { Title = "عبارت جستجو", TargetEntityID = AreaInitializer.EntityID });
         }
-
-
-
-
-
-
-
         public void OnSearchDataDefined(DP_SearchRepositoryMain searchData)
         {
             if (SearchDataDefined != null)
             {
-                SearchDataDefined(this, new SearchDataArg() { SearchItems = searchData });
+                SearchDataDefined(this, searchData );
             }
         }
-
-
     }
 }

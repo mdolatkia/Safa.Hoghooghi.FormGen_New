@@ -1,6 +1,5 @@
 ﻿using ModelEntites;
 using MyCommonWPFControls;
-using MyFormulaFunctionStateFunctionLibrary;
 using MyModelGenerator;
 using MyModelManager;
 using System;
@@ -382,7 +381,7 @@ namespace MyProject_WPF
                 tabColumns.Visibility = Visibility.Visible;
                 tabRelationships.Visibility = Visibility.Visible;
 
-                var columns = bizColumn.GetAllColumnsDTO(entity.ID, true, true);
+                var columns = bizColumn.GetAllColumnsDTO(entity.ID, true);
                 //بهتره ستونها کامل گرفته نشوند و تک به تک کامل شوند
                 dtgColumns.ItemsSource = columns;
                 SetColumnTabs();
@@ -424,7 +423,7 @@ namespace MyProject_WPF
         {
             btnUpdateColumns.IsEnabled = false;
             TableDrivedEntityDTO entity = dtgRuleEntity.SelectedItem as TableDrivedEntityDTO;
-            bizColumn.UpdateColumns(entity.ID, dtgColumns.ItemsSource as List<ColumnDTO>);
+            bizColumn.UpdateColumnsFromUI(entity.ID, dtgColumns.ItemsSource as List<ColumnDTO>);
             btnUpdateColumns.IsEnabled = true;
         }
         void dtgColumns_SelectionChanged(object sender, RoutedEventArgs e)
@@ -1126,7 +1125,7 @@ namespace MyProject_WPF
         {
             BizTableDrivedEntity biz = new BizTableDrivedEntity();
             btnUpdateEntities.IsEnabled = false;
-            biz.Save(dtgRuleEntity.ItemsSource as List<TableDrivedEntityDTO>);
+            biz.UpdateFromUI(dtgRuleEntity.ItemsSource as List<TableDrivedEntityDTO>);
             btnUpdateEntities.IsEnabled = true;
         }
 
@@ -1155,7 +1154,7 @@ namespace MyProject_WPF
         {
             return Task.Run(() =>
             {
-                var result = bizTableDrivedEntity.GetAllEntitiesDTO(DatabaseID, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships, true, null);
+                var result = bizTableDrivedEntity.GetAllEntitiesDTO(DatabaseID);
                 return result;
             });
         }

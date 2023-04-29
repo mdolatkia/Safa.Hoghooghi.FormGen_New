@@ -53,11 +53,14 @@ namespace MyDataManagerService
         //    return bizTableDrivedEntity.GetTableDrivedEntity(entityID, entityColumnInfoType, entityRelationshipInfoType);
         //}
 
-        public List<TableDrivedEntityDTO> SearchEntities(DR_Requester requester, string singleFilterValue, bool? isView, List<SecurityAction> specificActions = null)
+        public List<TableDrivedEntityDTO> SearchEntities(DR_Requester requester, string singleFilterValue, List<SecurityAction> specificActions = null)
         {
-            return bizTableDrivedEntity.GetAllEntitiesDTO(requester, singleFilterValue, false, isView, specificActions);
+            return bizTableDrivedEntity.GetAllEnbaledEntitiesDTO(requester, singleFilterValue, specificActions);
         }
-
+        public List<TableDrivedEntityDTO> SearchEntitiesExceptViews(DR_Requester requester, string singleFilterValue, List<SecurityAction> specificActions = null)
+        {
+            return bizTableDrivedEntity.GetAllEnabledEntitiesExceptViewsDTO(requester, singleFilterValue, specificActions);
+        }
         //public DP_EntitySearchResult GetEntitySearch(DP_EntitySearchRequest request)
         //{
         //    return bizPackageManager.GetEntitySearch(request);

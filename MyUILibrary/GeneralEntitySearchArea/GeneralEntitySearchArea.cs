@@ -19,6 +19,7 @@ namespace MyUILibrary.EntitySearchArea
 
         public GeneralEntitySearchArea()
         {
+            //** 4afa9fa9-38f7-4665-bd64-33b533adf734
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfGeneralEntitySearchArea();
             entitySearchLookup = new MySearchLookup();
             entitySearchLookup.DisplayMember = "Alias";
@@ -52,13 +53,14 @@ namespace MyUILibrary.EntitySearchArea
                 }
                 else
                 {
-                    var entities = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.SearchEntities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), e.SingleFilterValue, null, AreaInitializer.SpecificActions);
+                    var entities = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.SearchEntities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), e.SingleFilterValue, AreaInitializer.SpecificActions);
                     e.ResultItemsSource = entities;
                 }
             }
         }
         private void EntitySearchLookup_SelectionChanged(object sender, SelectionChangedArg e)
         {
+
             if (e.SelectedItem != null)
             {
                 var entity = e.SelectedItem as TableDrivedEntityDTO;
@@ -66,12 +68,13 @@ namespace MyUILibrary.EntitySearchArea
                 var searchViewInitializer = new SearchAreaInitializer();
                 searchViewInitializer.EntityID = entity.ID;
             
-                searchViewInitializer.PreDefinedSearch = AreaInitializer.PreDefinedSearch;
-                if (AreaInitializer.PreDefinedSearch != null)
-                {
-                 ////   searchViewInitializer.EntitySearchID = AreaInitializer.PreDefinedSearch.EntitySearchID;
-                ////اینجا چطور؟؟؟
-                }
+                searchViewInitializer.AdvancedSearchDTOMessage = AreaInitializer.AdvancedSearchDTOMessage;
+                searchViewInitializer.PreDefinedSearchMessage = AreaInitializer.PreDefinedSearchMessage;
+                //if (AreaInitializer.PreDefinedSearch != null)
+                //{
+                // ////   searchViewInitializer.EntitySearchID = AreaInitializer.PreDefinedSearch.EntitySearchID;
+                //////اینجا چطور؟؟؟
+                //}
                 SearchArea = new SearchEntityArea(searchViewInitializer);
          
                 SearchArea.SearchDataDefined += SearchArea_SearchDataDefined;
@@ -95,10 +98,10 @@ namespace MyUILibrary.EntitySearchArea
             if (SearchArea != null)
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(SearchArea.SearchView, "جستجو", Enum_WindowSize.Big);
         }
-        public event EventHandler<SearchDataArg> SearchDataDefined;
+        public event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;
         public event EventHandler<int?> EntitySelected;
 
-        private void SearchArea_SearchDataDefined(object sender, SearchDataArg e)
+        private void SearchArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
         {
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(SearchArea.SearchView);
             if (SearchDataDefined != null)

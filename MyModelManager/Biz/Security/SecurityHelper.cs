@@ -678,7 +678,7 @@ namespace MyModelManager
             else if (type == DatabaseObjectCategory.Entity)
             {//گزارش و ستون چی؟
                 BizColumn bizColumn = new BizColumn();
-                result = bizColumn.GetAllColumns(securityObject.TableDrivedEntity, false).Select(x => x.SecurityObject).ToList();
+                result = bizColumn.GetAllEnabledColumns(securityObject.TableDrivedEntity).Select(x => x.SecurityObject).ToList();
                 result.AddRange(securityObject.TableDrivedEntity.Relationship.Select(x => x.SecurityObject).ToList());
             }
             return result;

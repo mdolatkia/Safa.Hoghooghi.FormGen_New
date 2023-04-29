@@ -48,7 +48,7 @@ namespace MyModelManager
             }
             if (category == DatabaseObjectCategory.Letter)
             {
-                if (!bizTableDrivedEntity.DataIsAccessable(requester, navigationTree.TableDrivedEntity, new List<SecurityAction>() { SecurityAction.LetterView, SecurityAction.LetterEdit })) 
+                if (!bizTableDrivedEntity.DataIsAccessable(requester, navigationTree.TableDrivedEntity, new List<SecurityAction>() { SecurityAction.LetterView, SecurityAction.LetterEdit }))
                     return false;
             }
             if (category == DatabaseObjectCategory.Archive)
@@ -95,8 +95,8 @@ namespace MyModelManager
                 {
 
 
-                     if (DataIsAccessable(requester, citem))
-                         ToNavigationTreeDTO(requester, treeItems, citem, result, true);
+                    if (DataIsAccessable(requester, citem))
+                        ToNavigationTreeDTO(requester, treeItems, citem, result, true);
                 }
             }
 
@@ -188,7 +188,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                return bizTableDrivedEntity.GetAllEntities(projectContext, false).Any(x => x.IsOrginal == true && x.IsView == false && x.IsDisabled == false && x.Table.DBSchema.DatabaseInformationID == databaseID && x.IndependentDataEntry == true && !projectContext.NavigationTree.Any(y => y.Category == "Entity" && y.ItemIdentity == x.ID));
+                return bizTableDrivedEntity.GetAllEnabledOrginalEntitiesExceptViews(projectContext).Any(x => x.Table.DBSchema.DatabaseInformationID == databaseID && x.IndependentDataEntry == true && !projectContext.NavigationTree.Any(y => y.Category == "Entity" && y.ItemIdentity == x.ID));
             }
         }
     }

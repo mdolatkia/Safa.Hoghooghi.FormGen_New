@@ -2,7 +2,7 @@
 using ModelEntites;
 using MyCommonWPFControls;
 
-using MyFormulaFunctionStateFunctionLibrary;
+
 
 using MyModelManager;
 using System;
@@ -194,7 +194,7 @@ namespace MyProject_WPF
             {
                 if (!e.FilterBySelectedValue)
                 {
-                    var list = bizTableDrivedEntity.GetAllEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false, false);
+                    var list = bizTableDrivedEntity.GetAllEnbaledEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue);
                     e.ResultItemsSource = list;
                 }
                 else
@@ -218,7 +218,7 @@ namespace MyProject_WPF
             {
                 if (!e.FilterBySelectedValue)
                 {
-                    var list = bizTableDrivedEntity.GetAllEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false, false);
+                    var list = bizTableDrivedEntity.GetAllEnbaledEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue);
                     e.ResultItemsSource = list;
                 }
                 else

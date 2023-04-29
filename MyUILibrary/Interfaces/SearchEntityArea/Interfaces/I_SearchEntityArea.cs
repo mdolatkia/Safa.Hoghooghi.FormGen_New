@@ -1,6 +1,6 @@
 ﻿using ModelEntites;
 using MyUILibrary.EntityArea.Commands;
-
+using MyUILibrary.Temp;
 using ProxyLibrary;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace MyUILibrary.EntityArea
 {
     public interface I_BaseSearchEntityArea
     {
-        SearchAreaInitializer SearchInitializer { set; get; }
+        SearchAreaInitializer AreaInitializer { set; get; }
         void ClearSearchData();
     }
     public interface I_SearchEntityArea : I_BaseSearchEntityArea
@@ -16,8 +16,8 @@ namespace MyUILibrary.EntityArea
         void OnSearchDataDefined(DP_SearchRepositoryMain logicPhrase);
         DP_SearchRepositoryMain LastSearch { set; get; }
 
-        event EventHandler<SearchDataArg> SearchDataDefined;
-        I_View_SearchEntityArea SearchView { set; get; }
+        event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;
+        I_View_SearchEntityArea SearchView { get; }
         I_EntityDefinedSearchArea SimpleSearchEntityArea { set; get; }
         I_AdvancedSearchEntityArea AdvancedSearchEntityAre { set; get; }
         bool IsSimpleSearchActiveOrAdvancedSearch { get; }
@@ -31,7 +31,7 @@ namespace MyUILibrary.EntityArea
         //DP_SearchRepositoryMain
         //در صورت وجود رابطه مقادیر سورس ریلیشن و .. ست وشود
 
-        event EventHandler<SearchDataArg> SearchDataDefined;
+        event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;
         //event EventHandler<AdvanceOrRawArg> SearchDataDefined;
         I_View_SearchEntityArea SearchView { set; get; }
         I_RawSearchEntityArea RawSearchEntityArea { set; get; }
@@ -45,7 +45,7 @@ namespace MyUILibrary.EntityArea
         DP_SearchRepositoryMain GetSearchRepository();
         void ShowPreDefinedSearch(PreDefinedSearchDTO preDefinedSearch);
 
-        event EventHandler<SearchDataArg> SearchDataDefined;
+        event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;
 
         PreDefinedSearchDTO GetSearchRepositoryForSave();
         //List<I_Command> SearchCommands
@@ -98,7 +98,7 @@ namespace MyUILibrary.EntityArea
         bool ShowSearchRepository(DP_SearchRepositoryMain item);
         //  void ApplyPreDefinedSearch(EntityPreDefinedSearchDTO message);
 
-        event EventHandler<SearchDataArg> SearchDataDefined;
+        event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;
         List<I_Command> SearchCommands
         {
             get;
@@ -109,6 +109,7 @@ namespace MyUILibrary.EntityArea
     }
     public class SimpleSearchColumnControl : BaseColumnControl
     {
+        public event EventHandler<SimpleSearchColumnControl> FormulaSelectionRequested;
         public SimpleSearchColumnControl()
         {
 
@@ -118,6 +119,73 @@ namespace MyUILibrary.EntityArea
         public EntitySearchColumnsDTO EntitySearchColumn { get; set; }
         public I_SimpleControlManagerOne ControlManager { get; set; }
         public List<SimpleSearchOperator> Operators { get; set; }
+        public FormulaDTO Formula { get; internal set; }
+
+
+
+        public void SetSimpleColumnFormulaSelection()
+        {
+            var cpMenuFormulaCalculation = new ConrolPackageMenu();
+            cpMenuFormulaCalculation.Name = "mnuFormulaCalculation";
+            cpMenuFormulaCalculation.Title = "انتخاب فرمول";
+            // cpMenuFormulaCalculation.Tooltip = columnControl.Column.ColumnCustomFormula.Formula.Tooltip;
+            ControlManager.GetUIControlManager().AddButtonMenu(cpMenuFormulaCalculation);
+            cpMenuFormulaCalculation.MenuClicked += (sender1, e1) => CpMenuFormulaCalculation_MenuClicked(sender1, e1, cpMenuFormulaCalculation);
+
+        }
+        public void AddSimpleColumnFormula(FormulaDTO formula)
+        {
+            ControlManager.GetUIControlManager().RemoveButtonMenus();
+
+            Formula = formula;
+            var cpMenuFormulaCalculation = new ConrolPackageMenu();
+            cpMenuFormulaCalculation.Name = "mnuFormulaCalculation";
+            cpMenuFormulaCalculation.Title = formula.Title;
+            cpMenuFormulaCalculation.Tooltip = formula.Tooltip;
+            // cpMenuFormulaCalculation.Tooltip = columnControl.Column.ColumnCustomFormula.Formula.Tooltip;
+            ControlManager.GetUIControlManager().AddButtonMenu(cpMenuFormulaCalculation);
+            ControlManager.GetUIControlManager().SetMenuColor(InfoColor.Green);
+
+            ControlManager.GetUIControlManager().ClearValue();
+            ControlManager.GetUIControlManager().EnableDisable(false);
+
+            ControlManager.GetUIControlManager().SetTooltip(formula.Tooltip);
+
+
+            var cpMenuFormulaCalculationDelete = new ConrolPackageMenu();
+            cpMenuFormulaCalculationDelete.Name = "mnuFormulaCalculationDelete";
+            cpMenuFormulaCalculationDelete.Title = "حذف فرمول";
+            // cpMenuFormulaCalculation.Tooltip = columnControl.Column.ColumnCustomFormula.Formula.Tooltip;
+            ControlManager.GetUIControlManager().AddButtonMenu(cpMenuFormulaCalculationDelete);
+
+
+
+            cpMenuFormulaCalculationDelete.MenuClicked += (sender1, e1) => CpMenuFormulaCalculation_MenuClickedDelete(sender1, e1, cpMenuFormulaCalculation);
+
+
+        }
+        private void CpMenuFormulaCalculation_MenuClickedDelete(object sender1, ConrolPackageMenuArg e1, ConrolPackageMenu conrolPackageMenu)
+        {
+            RemoveSimpleColumnFormula();
+        }
+
+        public void RemoveSimpleColumnFormula()
+        {
+            ControlManager.GetUIControlManager().SetTooltip(null);
+            ControlManager.GetUIControlManager().ClearMenuColor();
+            ControlManager.GetUIControlManager().EnableDisable(true);
+            Formula = null;
+            ControlManager.GetUIControlManager().RemoveButtonMenus();
+            SetSimpleColumnFormulaSelection();
+        }
+
+        private void CpMenuFormulaCalculation_MenuClicked(object sender1, ConrolPackageMenuArg e1, ConrolPackageMenu conrolPackageMenu)
+        {
+            if (FormulaSelectionRequested != null)
+            {
+                FormulaSelectionRequested(sender1, this);
+            }
+        }
         //public SearchEnumerableType SearchEnumerableType { get; set; }
     }
     public class RelationshipSearchColumnControl : BaseColumnControl
@@ -230,17 +298,17 @@ namespace MyUILibrary.EntityArea
     //}
 
 
-    public class SearchDataArg : EventArgs
-    {
-        public DP_SearchRepositoryMain SearchItems
-        {
-            get;
-            set;
-        }
+    //public class DP_SearchRepositoryMain : EventArgs
+    //{
+    //    public DP_SearchRepositoryMain SearchItems
+    //    {
+    //        get;
+    //        set;
+    //    }
 
 
 
-    }
+    //}
     public class SearchLogicArg : EventArgs
     {
         public LogicPhraseDTO SearchItems

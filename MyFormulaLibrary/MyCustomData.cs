@@ -320,7 +320,7 @@ namespace MyFormulaFunctionStateFunctionLibrary
                         SearchRequestManager searchProcessor = new SearchRequestManager();
                         DP_SearchRepositoryMain searchItem = new DP_SearchRepositoryMain(relationship.EntityID2);
                         foreach (var col in relationshipProperties)
-                            searchItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
+                            searchItem.Phrases.Add(new SearchProperty(col.Column) { Value = col.Value });
 
                         //سکوریتی داده اعمال میشود
                         DR_SearchFullDataRequest request = new DR_SearchFullDataRequest(Requester, searchItem);

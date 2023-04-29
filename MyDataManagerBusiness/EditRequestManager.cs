@@ -1,8 +1,8 @@
 ﻿
 using ModelEntites;
-using MyCodeFunctionLibrary;
+
 using MyConnectionManager;
-using MyDatabaseFunctionLibrary;
+
 using MyDataItemManager;
 using MyGeneralLibrary;
 using MyLogManager;
@@ -26,6 +26,8 @@ namespace MyDataEditManagerBusiness
         BizLogManager bizLogManager = new BizLogManager();
         public DR_ResultEdit Process(DR_EditRequest request)
         {
+            //**EditRequestManager.Process: adb34385-d2d1-4b29-a147-0cbaba268135
+
             DR_ResultEdit result = new DR_ResultEdit();
             var preEditQueryResults = new List<EditQueryPreItem>();
             foreach (var item in request.EditPackages)
@@ -80,7 +82,7 @@ namespace MyDataEditManagerBusiness
                         if (!string.IsNullOrEmpty(logResult))
                             result.Details.Add(ToResultDetail("خطا در ثبت لاگ", "", logResult));
 
-                        //**adb34385-d2d1-4b29-a147-0cbaba268135
+                      
                         foreach (var item in request.EditPackages)
                         {
                             var baseData = new DP_BaseData(item.TargetEntityID, item.TargetEntityAlias);
@@ -150,7 +152,7 @@ namespace MyDataEditManagerBusiness
                     var entity = allQueryItems.First(x => x.TargetEntity.ID == entityGroup.Key).TargetEntity;
                     result.Details.Add(ToResultDetail("عدم دسترسی", "عدم دسترسی ثبت به موجودیت" + " " + entity.Alias, ""));
                 }
-                else if (bizTableDrivedEntity.DataIsReadonly(requester, entityGroup.Key))
+                else if (bizTableDrivedEntity.EntityIsReadonly(requester, entityGroup.Key))
                 {
                     permission = false;
                     var entity = allQueryItems.First(x => x.TargetEntity.ID == entityGroup.Key).TargetEntity;

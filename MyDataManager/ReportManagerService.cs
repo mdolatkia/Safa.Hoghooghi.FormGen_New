@@ -64,9 +64,9 @@ namespace MyDataManagerService
             return myExternalReportHandler.GetExternalReportKey(requester, reportID, entityID, searchItem);
         }
 
-        public EntityExternalReportDTO GetExternalReport(int iD)
+        public EntityExternalReportDTO GetExternalReport(DR_Requester requester, int iD)
         {
-            return bizEntityExternalReport.GetEntityExternalReport(iD, true);
+            return bizEntityExternalReport.GetEntityExternalReport( requester, iD, true);
         }
 
         //public List<EntityDirectReportDTO> GetEntityDirectReports(DR_Requester requester, int entityID)

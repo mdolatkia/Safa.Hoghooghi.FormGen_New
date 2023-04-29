@@ -1184,7 +1184,18 @@ namespace MyUILibrary.EntityArea
                         var childInfo = ChildRelationshipDatas.FirstOrDefault(x => x.Relationship.ID == item.Item2.Relationship.ID);
                         if (childInfo != null)
                         {
-                            childInfo.SelectFromParent(item.Item3);
+                            //childInfo.SelectFromParent(item.Item3);
+
+
+                            if ((childInfo.SourceData as DP_FormDataRepository).DataIsInEditMode())
+                            {
+                                if (!childInfo.IsReadonly && !childInfo.IsHidden)
+                                {
+                                    //    RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(this);
+                                    childInfo.RelationshipControl.GenericEditNdTypeArea.SelectFromParent( childInfo.Relationship, childInfo.SourceData, item.Item3);
+                                }
+                            }
+
                         }
                     }
                 }

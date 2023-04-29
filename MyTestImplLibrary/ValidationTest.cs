@@ -27,7 +27,7 @@ namespace MyTestImplLibrary
                         DP_SearchRepositoryMain SearchDataItem = new DP_SearchRepositoryMain(dataItem.TargetEntityID);
                         foreach (var col in dataItem.KeyProperties)
                         {
-                            SearchDataItem.Phrases.Add(new SearchProperty() { ColumnID = col.ColumnID, Value = col.Value });
+                            SearchDataItem.Phrases.Add(new SearchProperty(col.Column) {  Value = col.Value });
                         }
                         var requester = new DR_Requester() { SkipSecurity = true };
                         var request = new DR_SearchFullDataRequest(requester, SearchDataItem);

@@ -20,5 +20,6 @@ namespace DataAccess
     
         public virtual PhraseLogic PhraseLogic { get; set; }
         public virtual PhraseColumn PhraseColumn { get; set; }
+        public virtual PhraseLogic PhraseLogic1 { get; set; }
     }
 }

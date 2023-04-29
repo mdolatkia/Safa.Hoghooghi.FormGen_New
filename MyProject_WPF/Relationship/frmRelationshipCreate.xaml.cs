@@ -124,7 +124,7 @@ namespace MyProject_WPF
                 }
                 else
                 {
-                    var entities = bizTableDrivedEntity.GetAllEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false, false);
+                    var entities = bizTableDrivedEntity.GetAllEnabledEntitiesExceptViewsDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue);
                     e.ResultItemsSource = entities;
                 }
             }
@@ -189,7 +189,7 @@ namespace MyProject_WPF
                 }
                 else
                 {
-                    var entities = bizTableDrivedEntity.GetAllEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, false, null);
+                    var entities = bizTableDrivedEntity.GetAllEnbaledEntitiesDTO(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue);
                     e.ResultItemsSource = entities;
                 }
             }
@@ -268,12 +268,12 @@ namespace MyProject_WPF
                 if (!bizDatabase.LinkedServerExists(secondEntity.ServerID, firstEntity.ServerID))
                     linkedServerMessage += (linkedServerMessage == "" ? "" : Environment.NewLine) + "لینک سرور از طرف موجودیت" + " '" + secondEntity.Alias + "' " + "به موجودیت" + " '" + firstEntity.Alias + "' " + "تعریف نشده است";
             }
-            if(!string.IsNullOrEmpty(linkedServerMessage))
+            if (!string.IsNullOrEmpty(linkedServerMessage))
             {
                 var message = linkedServerMessage;
                 message += Environment.NewLine + "به منظور استفاده از این رابطه در نمایش و جستجوی داده ها و عدم بروز خطا لینک سرورها تعریف شوند";
                 MessageBox.Show(message);
-       //         return;
+                //         return;
             }
             if (!firstEntity.IsView && !secondEntity.IsView)
             {

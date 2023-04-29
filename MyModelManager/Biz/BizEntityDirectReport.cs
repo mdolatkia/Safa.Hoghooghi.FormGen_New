@@ -50,7 +50,7 @@ namespace MyModelManager
         public EntityDirectReportDTO ToEntityDirectReportDTO(DR_Requester requester, EntityDirectlReport dbRel, bool withDetails)
         {
             var result = new EntityDirectReportDTO();
-            bizEntityReport.ToEntityReportDTO(dbRel.EntityDataItemReport.EntityReport, result, withDetails);
+            bizEntityReport.ToEntityReportDTO( requester, dbRel.EntityDataItemReport.EntityReport, result, withDetails);
             result.URL = dbRel.URL;
             foreach (var item in dbRel.EntityDirectlReportParameters)
             {

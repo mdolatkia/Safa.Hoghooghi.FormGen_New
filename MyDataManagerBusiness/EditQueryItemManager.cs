@@ -1,8 +1,8 @@
 ﻿
 using ModelEntites;
-using MyCodeFunctionLibrary;
+
 using MyConnectionManager;
-using MyDatabaseFunctionLibrary;
+
 using MyGeneralLibrary;
 using MyModelManager;
 using ProxyLibrary;
@@ -138,9 +138,9 @@ namespace MyDataEditManagerBusiness
             return result;
         }
         private QueryItem SetSortedTree(DR_Requester requester, List<QueryItem> result, DP_DataRepository item, QueryItem parentQueryItem = null, ChildRelationshipData parentChildRelationshipInfo = null)
-        {  
-            
-            //**b6bbadec-6c6a-4b8c-a604-9703604e81b5
+        {
+
+            //** EditQueryItemManager.SetSortedTree: b6bbadec-6c6a-4b8c-a604-9703604e81b5
             List<EntityInstanceProperty> editingProperties = new List<EntityInstanceProperty>();
 
             foreach (var child in item.ChildRelationshipDatas.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
@@ -276,7 +276,7 @@ namespace MyDataEditManagerBusiness
 
         private void GetUpdateQueryItems(DR_Requester requester, List<QueryItem> sortedList)
         {
-            //**be3c95de-74cf-4838-aa97-c6809a1b6f29
+            //**EditQueryItemManager.GetUpdateQueryItems: be3c95de-74cf-4838-aa97-c6809a1b6f29
             List<QueryItem> removeList = new List<QueryItem>();
             foreach (var queryItem in sortedList)
             {
