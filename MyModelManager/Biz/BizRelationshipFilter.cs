@@ -68,7 +68,7 @@ namespace MyModelManager
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                var relationship = bizRelationship.GetAllRelationships(projectContext, false, false).FirstOrDefault(x => x.ID == relationshipID);
+                var relationship = bizRelationship.GetAllEnabledRelationships(projectContext, false).FirstOrDefault(x => x.ID == relationshipID);
                 while (relationship.RelationshipSearchFilter.Any())
                     projectContext.RelationshipSearchFilter.Remove(relationship.RelationshipSearchFilter.First());
                 foreach (var item in RelationshipSearchFilter)

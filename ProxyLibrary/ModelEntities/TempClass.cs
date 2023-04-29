@@ -144,14 +144,14 @@ namespace ModelEntites
         public int ColumnID { set; get; }
         public bool? ShowMiladiDateInUI { set; get; }
         public bool DBValueIsString { set; get; }
-        public bool? DBValueIsStringMiladi { set; get; }
+        public bool? DBStringValueIsMiladi { set; get; }
     }
     public class DateTimeColumnTypeDTO
     {
         public int ColumnID { set; get; }
         public bool DBValueIsString { set; get; }
         public bool? ShowMiladiDateInUI { set; get; }
-        public bool? DBValueIsStringMiladi { set; get; }
+        public bool? DBStringValueIsMiladi { set; get; }
         public StringTimeFormat DBValueStringTimeFormat { get; set; }
     }
     public class TimeColumnTypeDTO

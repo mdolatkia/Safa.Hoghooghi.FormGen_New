@@ -54,7 +54,7 @@ namespace MyUIGenerator.UIControlHelper
 
                 valueIsString = correspondingTypeProperty.DateTimeColumnType.DBValueIsString;
                 //   stringTimeFormat = correspondingTypeProperty.DateTimeColumnType.StringTimeISAMPMFormat;
-                stringDateIsMiladi = correspondingTypeProperty.DateTimeColumnType.DBValueIsStringMiladi == true;
+                stringDateIsMiladi = correspondingTypeProperty.DateTimeColumnType.DBStringValueIsMiladi == true;
                 stringTimeFormat = correspondingTypeProperty.DateTimeColumnType.DBValueStringTimeFormat;
                 //   hideTimePicker = false;
             }
@@ -63,7 +63,7 @@ namespace MyUIGenerator.UIControlHelper
                 //??نباید DateColumnType نال باشد. فعلا ایف گذاشته شد
                 if (correspondingTypeProperty.DateColumnType != null)
                 {
-                    //**cbeb78f5-f3ac-41d8-b615-c2f50657509c
+                    //**DateTimePickerHelper: cbeb78f5-f3ac-41d8-b615-c2f50657509c
                     if (correspondingTypeProperty.DateColumnType.ShowMiladiDateInUI == true)
                         hideShamsiDatePicker = true;
                     else

@@ -265,7 +265,7 @@ namespace MyModelManager
 
         private DateColumnTypeDTO ToDateColumTypeDTO(DataAccess.DateColumnType item, bool withNullValues)
         {
-            //**5bd4e7ec-d66f-4476-a4e7-0c4c410b98b1
+            //**BizColumn.ToDateColumTypeDTO: 5bd4e7ec-d66f-4476-a4e7-0c4c410b98b1
             DateColumnTypeDTO result = new DateColumnTypeDTO();
             result.ColumnID = item.ColumnID;
             result.DBValueIsString = item.DBValueIsString;
@@ -368,7 +368,7 @@ namespace MyModelManager
         }
         private DateTimeColumnTypeDTO ToDateTimeColumTypeDTO(DataAccess.DateTimeColumnType item, bool withNullValues)
         {
-            //**113afb35-1b98-401a-82dd-4bf13b0175a4
+            //**BizColumn.ToDateTimeColumTypeDTO: 113afb35-1b98-401a-82dd-4bf13b0175a4
             DateTimeColumnTypeDTO result = new DateTimeColumnTypeDTO();
             result.ColumnID = item.ColumnID;
             result.DBValueIsString = item.DBValueIsString;
@@ -382,7 +382,7 @@ namespace MyModelManager
                     result.DBValueStringTimeFormat = StringTimeFormat.Unknown;
 
                 result.ShowMiladiDateInUI = item.ShowMiladiDateInUI;
-                result.DBValueIsStringMiladi = item.DBValueIsStringMiladi;
+                result.DBStringValueIsMiladi = item.DBValueIsStringMiladi;
             }
             else
             {
@@ -411,15 +411,15 @@ namespace MyModelManager
                         result.ShowMiladiDateInUI = false;
                 }
                 if (item.DBValueIsStringMiladi != null)
-                    result.DBValueIsStringMiladi = item.DBValueIsStringMiladi.Value;
+                    result.DBStringValueIsMiladi = item.DBValueIsStringMiladi.Value;
                 else
                 {
                     if (item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting != null)
                     {
-                        result.DBValueIsStringMiladi = item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringDateColumnIsMiladi;
+                        result.DBStringValueIsMiladi = item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringDateColumnIsMiladi;
                     }
                     else
-                        result.DBValueIsStringMiladi = false;
+                        result.DBStringValueIsMiladi = false;
                 }
             }
 
@@ -469,26 +469,17 @@ namespace MyModelManager
         //        projectContext.SaveChanges();
         //    }
         //}
-        public void ConvertStringColumnToDateTimeColumn(TableDrivedEntityDTO entity, ColumnDTO column, Enum_ColumnType columnType)
-        {
-            //**559a48c0-417b-4813-8b9e-b6ad00bdd936
-            using (var projectContext = new DataAccess.MyIdeaEntities())
-            {
-                var dbColumn = projectContext.Column.First(x => x.ID == column.ID);
-                CreateNewDateTimeColumnOriginallyString(entity, dbColumn, column, columnType);
-                projectContext.SaveChanges();
-            }
-        }
+
 
         public void ConvertColumnToStringColumnType(TableDrivedEntityDTO entity, ColumnDTO column)
         {
-            //**8351e66f-a105-44ba-8a5c-7715aa287708
+            //** BizColumn.ConvertColumnToStringColumnType: 8351e66f-a105-44ba-8a5c-7715aa287708
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
 
                 var dbColumn = projectContext.Column.First(x => x.ID == column.ID);
                 RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>() { Enum_ColumnType.String });
-             
+
                 //CreateNewStringColumn(dbColumn, column);
 
                 dbColumn.TypeEnum = Convert.ToByte(Enum_ColumnType.String);
@@ -919,6 +910,7 @@ namespace MyModelManager
 
         public void UpdateDateColumnType(List<DateColumnTypeDTO> columnTypes)
         {
+            //BizColumn.UpdateDateColumnType: 1589bf82d5ee
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in columnTypes)
@@ -943,6 +935,7 @@ namespace MyModelManager
 
         public void UpdateDateTimeColumnType(List<DateTimeColumnTypeDTO> columnTypes)
         {
+            // BizColumn.UpdateDateTimeColumnType: 1ac95507-c845-4f42-b8c5-c28d005177f0
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in columnTypes)
@@ -950,7 +943,7 @@ namespace MyModelManager
                     var dbColumn = projectContext.DateTimeColumnType.First(x => x.ColumnID == column.ColumnID);
 
                     dbColumn.ShowMiladiDateInUI = column.ShowMiladiDateInUI;
-                    dbColumn.DBValueIsStringMiladi = column.DBValueIsStringMiladi;
+                    dbColumn.DBValueIsStringMiladi = column.DBStringValueIsMiladi;
                     dbColumn.DBValueStringTimeFormat = (short)column.DBValueStringTimeFormat;
 
                     //dbColumn.ShowMiladiDateInUI = column.ShowMiladiDateInUI;
@@ -1190,13 +1183,40 @@ namespace MyModelManager
 
         private void CreateNewStringDateTimeColumn(TableDrivedEntityDTO entity, Column dbColumn, ColumnDTO column, Enum_ColumnType columnType)
         {
+            //BizColumn.CreateNewStringDateTimeColumn: e740a7d8-1456-422f-b766-2b8bb6df4790
             CreateNewStringColumn(dbColumn, column);
             CreateNewDateTimeColumnOriginallyString(entity, dbColumn, column, columnType);
         }
 
+
+
+
+        private void CreateNewDateTimeColumn(Column dbColumn, ColumnDTO column, Enum_ColumnType columnType)
+        {
+            //**BizColumn.CreateNewDateTimeColumn: 5a4645cf-0487-48d5-89bb-65590717ebfd
+            ModelDataHelper dataHelper = new ModelDataHelper();
+            dbColumn.OriginalTypeEnum = Convert.ToByte(columnType);
+            dbColumn.TypeEnum = Convert.ToByte(columnType);
+
+            if (columnType == Enum_ColumnType.DateTime)
+            {
+                dbColumn.DateTimeColumnType = new DateTimeColumnType();
+                dbColumn.DateTimeColumnType.DBValueIsString = false;
+            }
+            else if (columnType == Enum_ColumnType.Date)
+            {
+                dbColumn.DateColumnType = new DateColumnType();
+                dbColumn.DateColumnType.DBValueIsString = false;
+            }
+            else if (columnType == Enum_ColumnType.Time)
+            {
+                dbColumn.TimeColumnType = new TimeColumnType();
+                dbColumn.TimeColumnType.DBValueIsString = false;
+            }
+        }
         private void CreateNewDateTimeColumnOriginallyString(TableDrivedEntityDTO entity, Column dbColumn, ColumnDTO column, Enum_ColumnType columnType)
         {
-            //**e0a2dd6f-ec52-4430-b15f-9e272e60f7cb
+            //**BizColumn.CreateNewDateTimeColumnOriginallyString: e0a2dd6f-ec52-4430-b15f-9e272e60f7cb
             ModelDataHelper dataHelper = new ModelDataHelper();
             dbColumn.TypeEnum = Convert.ToByte(columnType);
 
@@ -1223,29 +1243,14 @@ namespace MyModelManager
                 dbColumn.TimeColumnType.DBValueStringTimeFormat = (short)DBValueStringTimeFormat(value);
             }
         }
-
-
-        private void CreateNewDateTimeColumn(Column dbColumn, ColumnDTO column, Enum_ColumnType columnType)
+        public void ConvertStringColumnToDateTimeColumn(TableDrivedEntityDTO entity, ColumnDTO column, Enum_ColumnType columnType)
         {
-            //**5a4645cf-0487-48d5-89bb-65590717ebfd
-            ModelDataHelper dataHelper = new ModelDataHelper();
-            dbColumn.OriginalTypeEnum = Convert.ToByte(columnType);
-            dbColumn.TypeEnum = Convert.ToByte(columnType);
-
-            if (columnType == Enum_ColumnType.DateTime)
+            //**BizColumn.ConvertStringColumnToDateTimeColumn: 559a48c0-417b-4813-8b9e-b6ad00bdd936
+            using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                dbColumn.DateTimeColumnType = new DateTimeColumnType();
-                dbColumn.DateTimeColumnType.DBValueIsString = false;
-            }
-            else if (columnType == Enum_ColumnType.Date)
-            {
-                dbColumn.DateColumnType = new DateColumnType();
-                dbColumn.DateColumnType.DBValueIsString = false;
-            }
-            else if (columnType == Enum_ColumnType.Time)
-            {
-                dbColumn.TimeColumnType = new TimeColumnType();
-                dbColumn.TimeColumnType.DBValueIsString = false;
+                var dbColumn = projectContext.Column.First(x => x.ID == column.ID);
+                CreateNewDateTimeColumnOriginallyString(entity, dbColumn, column, columnType);
+                projectContext.SaveChanges();
             }
         }
         private void CreateNewNumericColumn(Column dbColumn, ColumnDTO column)
@@ -1321,6 +1326,7 @@ namespace MyModelManager
 
         private bool? DBValueIsStringMiladi(object value)
         {
+            //4034e423-2440-4466-ac7e-922ad4df7105
             if (value != null)
             {
                 var splt = value.ToString().Split('/');
