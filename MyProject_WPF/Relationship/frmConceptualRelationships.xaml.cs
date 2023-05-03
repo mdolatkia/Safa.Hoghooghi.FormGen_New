@@ -25,7 +25,7 @@ namespace MyProject_WPF
     /// <summary>
     /// Interaction logic for frmRelationship.xaml
     /// </summary>
-    public partial class frmAllRelationships : UserControl
+    public partial class frmConceptualRelationships : UserControl
     {
         //ModelGenerator_sql ModelGenerator = new ModelGenerator_sql();
         BizRelationship bizRelationship = new BizRelationship();
@@ -34,8 +34,9 @@ namespace MyProject_WPF
         BizUniqueConstraints bizUniqueConstraint = new BizUniqueConstraints();
         BizRelationshipConverter bizRelationshipConverter = new BizRelationshipConverter();
         DatabaseDTO Database { set; get; }
-        public frmAllRelationships(DatabaseDTO database)
+        public frmConceptualRelationships(DatabaseDTO database)
         {
+            // frmConceptualRelationships: fdf71cf178e5
             InitializeComponent();
             Database = database;
             //     formRelationships.SetRelatoinships(database);
@@ -397,7 +398,7 @@ namespace MyProject_WPF
                 //    relationshipTypeMenu.Click += (sender1, EventArgs) => MnuRelationshipType_Click(sender, EventArgs, (source.DataContext as RelationshipDTO).ID);
                 //}
 
-                //** eb4cff7d-b2a8-416a-bc92-04618a5382fe
+                //**frmAllRelationships.dtgRelationships_ContextMenuOpening: 04618a5382fe
                 if (relationship.Created == true)
                 {
                     var relationshipEditMenu = AddMenu(contextMenu.Items, "اصلاح رابطه", "", "../Images/edit.png");

@@ -82,6 +82,7 @@ namespace ModelEntites
         public int ColumnValueRangeID { set; get; }
         public ColumnValueRangeDTO ColumnValueRange { set; get; }
 
+        public bool HasValueRange { get { return ColumnValueRange != null && ColumnValueRange.Details.Any(); } }
         public string DBCalculateFormula { get; set; }
         public bool IsDBCalculatedColumn
         {
@@ -152,7 +153,7 @@ namespace ModelEntites
         public bool DBValueIsString { set; get; }
         public bool? ShowMiladiDateInUI { set; get; }
         public bool? DBStringValueIsMiladi { set; get; }
-        public StringTimeFormat DBValueStringTimeFormat { get; set; }
+        public StringTimeFormat DBStringValueTimeFormat { get; set; }
     }
     public class TimeColumnTypeDTO
     {
@@ -160,7 +161,7 @@ namespace ModelEntites
         //public int MaxLength { get; set; }
         //public bool ShowAMPMFormat { set; get; }
         //public bool ShowMiladiTime { set; get; }
-        public StringTimeFormat DBValueStringTimeFormat { get; set; }
+        public StringTimeFormat DBStringValueTimeFormat { get; set; }
         public bool DBValueIsString { get; set; }
         //     public bool StringValueIsMiladi { set; get; }
 
@@ -1241,7 +1242,7 @@ namespace ModelEntites
         public ReportType ReportType { set; get; }
         public SearchableReportType SearchableReportType { set; get; }
         public DataItemReportType DataItemReportType { set; get; }
-    //    public SavedSearchRepositoryDTO SearchRepository { set; get; }
+        //    public SavedSearchRepositoryDTO SearchRepository { set; get; }
 
         public PreDefinedSearchDTO PreDefinedSearch { set; get; }
 

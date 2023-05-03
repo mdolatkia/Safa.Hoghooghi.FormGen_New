@@ -129,7 +129,7 @@ namespace MyUILibrary.EntityArea
         private void CheckAccessValidation(DP_FormDataRepository dataITem)
         {
 
-            //**UIValidationManager.CheckAccessValidation: 511a49ba-1a7c-47d0-8b6f-3b7eb162083e
+            //**UIValidationManager.CheckAccessValidation: 3b7eb162083e
             if (dataITem.IsNewItem)
             {
                 if (EditArea.FullEntity.Columns.Any(x => x.DataEntryEnabled && x.IsMandatory &&
@@ -155,7 +155,6 @@ namespace MyUILibrary.EntityArea
                     AddDataValidationMessage(message, dataITem);
                 }
 
-                //** a2c0b0ee-ee1d-4f4f-a2a5-048593ae6651
                 if (EditArea.FullEntity.Relationships.Any(x => x.DataEntryEnabled == true && x.IsOtherSideMandatory == true &&
               (!EditArea.RelationshipColumnControls.Any(r => r.Relationship.ID == x.ID) && (EditArea.AreaInitializer.SourceRelationColumnControl == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID != x.ID))))
                 {  //اگر غیر از این باشه و بخوایم روابطی که دسترسی دارند را از آنهایی که ندارند جدا کرده و بررسی کنیم قضیه خلی پیچیده میشود. 
@@ -504,7 +503,7 @@ namespace MyUILibrary.EntityArea
         }
         private void ValidateRelationshipColumn(DP_FormDataRepository dataItem, ChildRelationshipInfo childRelationshipInfo, RelationshipColumnControlGeneral relationshipControl)
         {
-            //** 91e61718-d072-43c4-8aa6-dec468052171
+            //** UIValidationManager.ValidateRelationshipColumn: dec468052171
             if (!childRelationshipInfo.IsHidden)
             {
                 if (relationshipControl.Relationship.IsOtherSideMandatory == true)
@@ -585,7 +584,7 @@ namespace MyUILibrary.EntityArea
 
         private void ValidateSimpleColumn(DP_FormDataRepository dataItem, ChildSimpleContorlProperty childSimpleContorlProperty)
         {
-            //**UIValidationManager.ValidateSimpleColumn: 54ed40be-5fa9-46ee-a27b-2d60cd226e9e
+            //**UIValidationManager.ValidateSimpleColumn: 2d60cd226e9e
             var simplePropertyControl = childSimpleContorlProperty.SimpleColumnControl;
             var dataColumn = childSimpleContorlProperty.Property;
             if (simplePropertyControl.Column.IsMandatory == true)
@@ -679,8 +678,7 @@ namespace MyUILibrary.EntityArea
 
 
 
-                if (simplePropertyControl.Column.ColumnValueRange != null
-                    && simplePropertyControl.Column.ColumnValueRange.Details.Any())
+                if (simplePropertyControl.Column.HasValueRange)
                 {
 
                     List<ColumnValueRangeDetailsDTO> validValueRange = childSimpleContorlProperty.ColumnValueRange;

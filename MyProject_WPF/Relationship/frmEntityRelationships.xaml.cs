@@ -25,7 +25,7 @@ namespace MyProject_WPF
     /// <summary>
     /// Interaction logic for frmRelationship.xaml
     /// </summary>
-    public partial class frmRelationships : UserControl
+    public partial class frmEntityRelationships : UserControl
     {
         //ModelGenerator_sql ModelGenerator = new ModelGenerator_sql();
         BizRelationship bizRelationship = new BizRelationship();
@@ -34,7 +34,7 @@ namespace MyProject_WPF
         BizUniqueConstraints bizUniqueConstraint = new BizUniqueConstraints();
         BizRelationshipConverter bizRelationshipConverter = new BizRelationshipConverter();
         //DatabaseDTO Database { set; get; }
-        public frmRelationships()
+        public frmEntityRelationships()
         {
             InitializeComponent();
 
@@ -228,6 +228,7 @@ namespace MyProject_WPF
 
         void dtgRelationships_ContextMenuOpening(object sender, RoutedEventArgs e)
         {
+            // frmEntityRelationships.dtgRelationships_ContextMenuOpening: 1ce825701244
             var contextMenu = sender as RadContextMenu;
             contextMenu.Items.Clear();
             var source = contextMenu.GetClickedElement<GridViewRow>();

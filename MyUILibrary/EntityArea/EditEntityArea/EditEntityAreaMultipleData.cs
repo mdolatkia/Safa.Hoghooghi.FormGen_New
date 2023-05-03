@@ -236,7 +236,7 @@ namespace MyUILibrary.EntityArea
         }
         private void GenerateUIComposition(EntityUICompositionDTO UICompositions)
         {
-
+            //dbc86c4272eb
             foreach (var uiCompositionItem in UICompositions.ChildItems.OrderBy(x => x.Position))
             {
                 if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Entity)
@@ -258,11 +258,11 @@ namespace MyUILibrary.EntityArea
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Column)
                 {
                     var column = uiCompositionItem.Column;
-                    bool hasRangeOfValues = column.ColumnValueRange != null && column.ColumnValueRange.Details.Any();
+                    //bool hasRangeOfValues = column.ColumnValueRange != null && column.ColumnValueRange.Details.Any();
 
                     var propertyControl = new SimpleColumnControlMultiple() { Column = uiCompositionItem.Column };
 
-                    (propertyControl as SimpleColumnControlMultiple).SimpleControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column, uiCompositionItem.ColumnUISetting, hasRangeOfValues);
+                    (propertyControl as SimpleColumnControlMultiple).SimpleControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column, uiCompositionItem.ColumnUISetting);
 
                     propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Column.Alias);
                     AgentHelper.SetPropertyTitle(propertyControl);

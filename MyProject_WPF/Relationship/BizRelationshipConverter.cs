@@ -18,7 +18,7 @@ namespace MyProject_WPF.Biz
         //DatabaseDTO Database { set; get; }
         public void ConvertRelationship(RelationshipDTO relationship, Enum_RelationshipType targetRaltionshipType)
         {
-            //** 9d4ddd67-32b8-4c50-b0b0-abce7e19b235
+            //** BizRelationshipConverter.ConvertRelationship: abce7e19b235
             ModelDataHelper dataHelper = new ModelDataHelper();
             var relationshinInfo = dataHelper.GetRelationshipsInfoWithEntityIds(MyProjectManager.GetMyProjectManager.GetRequester(), relationship);
 
@@ -132,7 +132,7 @@ namespace MyProject_WPF.Biz
 
         public List<Enum_RelationshipType> GetRelationshipConvertOptions(RelationshipDTO relationship)
         {
-            //** 83513bc7-3157-45f1-8421-6c1571817afe
+            //** BizRelationshipConverter.GetRelationshipConvertOptions: 6c1571817afe
             List<Enum_RelationshipType> result = new List<Enum_RelationshipType>();
             if (relationship.TypeEnum == Enum_RelationshipType.OneToMany)
             {

@@ -16,7 +16,7 @@ using System.Windows.Media;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public class KeyValueControlHelper : BaseControlHelper, I_UIControlManager
+    public class KeyValueControlHelper : BaseControlHelper, I_UIControlManager, I_UIControlManager_ColumnValueRange
     {
         ComboBox combo;
         ComboBox cmbOperators;
@@ -289,10 +289,13 @@ namespace MyUIGenerator.UIControlHelper
         //    menu.OnMenuClicked(sender, arg);
         //}
 
-        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates, bool multiselect)
+        public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates)
         {
-            
             combo.ItemsSource = candidates;
+        }
+        public void SetMultiSelect(bool multiselect)
+        {
+
         }
     }
 }

@@ -60,18 +60,18 @@ namespace MyUILibrary.EntityArea
         List<UIActionActivityDTO> RunningActionActivities { get; set; }
         ChildRelationshipInfo ChildRelationshipInfoBinded { get; set; }
 
-        I_SearchEntityArea SearchEntityArea { get;  }
+        I_SearchEntityArea SearchEntityArea { get; }
         I_ViewEntityArea ViewEntityArea { get; }
 
         //   event EventHandler<DataSelectedEventArg> DataSelected;
         I_View_SearchViewEntityArea ViewForSearchAndView { set; get; }
         void CheckSearchInitially();
         List<RelationshipFilterDTO> RelationshipFilters { set; get; }
-      //  void SearchInitialy();
+        //  void SearchInitialy();
         bool SearchInitialyDone { get; set; }
-     //   void SearchConfirmed(DP_SearchRepositoryMain searchItems, bool select);
+        //   void SearchConfirmed(DP_SearchRepositoryMain searchItems, bool select);
         void ShowSearchView(bool fromDataView);
-        void SelectFromParent( RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues);
+        void SelectFromParent(RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues);
         void SelectData(List<Dictionary<ColumnDTO, object>> items);
         //   void SearchTextBox(string text);
         // void RemoveViewEntityAreaView();
@@ -151,7 +151,7 @@ namespace MyUILibrary.EntityArea
 
 
         void CreateDefaultData();
-     //   void TemporaryViewSearchTextChanged(I_View_TemporaryView view, Arg_TemporaryDisplaySerachText searchArg);
+        //   void TemporaryViewSearchTextChanged(I_View_TemporaryView view, Arg_TemporaryDisplaySerachText searchArg);
         //     I_View_EditEntityAreaDataView SpecializedDataView { get; }
         I_View_EditEntityAreaDataView DataView { get; set; }
 
@@ -569,7 +569,7 @@ namespace MyUILibrary.EntityArea
         bool SetValue(object value);
         object GetValue();
         object GetUIControl();
-        void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details,bool multiselect);
+
         void SetOperator(CommonOperator operatorValue);
         CommonOperator GetOperator();
         void ClearValue();
@@ -583,6 +583,11 @@ namespace MyUILibrary.EntityArea
         //void SetBackgroundColor(InfoColor color);
         //void SetForegroundColor(InfoColor color);
 
+    }
+    public interface I_UIControlManager_ColumnValueRange : I_UIControlManager
+    {
+        void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> details);
+        void SetMultiSelect(bool multiselect);
     }
     //public interface I_UIControlManager : I_UIControlManager
     //{
@@ -662,7 +667,8 @@ namespace MyUILibrary.EntityArea
     {
 
         I_UIControlManager GetUIControlManager();
-
+        bool UIControlManagerIsKeyValueList { get; }
+        I_UIControlManager_ColumnValueRange GetUIControlManager_ColumnValueRange();
         // 
 
         //  void SetBorderColor(object dataItem, InfoColor color);

@@ -87,7 +87,7 @@ namespace MyModelManager
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         public List<ObjectDTO> GetDatabaseChildObjects(DatabaseObjectCategory parentCategory, string parentTitle, int parentIdentity)
         {
-            // BizDatabaseToObject.GetDatabaseChildObjects: a5eceb3c-172f-4a51-91be-c1e9819478c9
+            // BizDatabaseToObject.GetDatabaseChildObjects: c1e9819478c9
             List<ObjectDTO> result = new List<ObjectDTO>();
             using (var myProjectContext = new MyIdeaEntities())
             {
@@ -157,7 +157,7 @@ namespace MyModelManager
                     }
                     if (!IgnoreRelationships)
                     {
-                        foreach (var relationship in dbEntity.Relationship.Where(x => x.Removed != true))
+                        foreach (var relationship in bizRelationship.GetEnabledRelationships(dbEntity)) 
                         {
                             ObjectDTO relationshipObject = ToObjectDTO(DatabaseObjectCategory.Relationship, relationship.ID, string.IsNullOrEmpty(relationship.Alias) ? relationship.Name : relationship.Alias, relationship.Name, id);
                             result.Add(relationshipObject);

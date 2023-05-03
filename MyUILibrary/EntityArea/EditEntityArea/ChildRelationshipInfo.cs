@@ -124,8 +124,11 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        public void DecideButtonsEnablity1()
+        public void CheckRelationshipUI()
         {
+
+            //** ChildRelationshipInfo.CheckRelationshipUI: a579903e12bd
+
             if (IsHidden)
             {
                 foreach (var item in GetUIControlManager)
@@ -237,7 +240,7 @@ namespace MyUILibrary.EntityArea
 
                 List<ColumnControlColorItem> columnControlColorItems = new List<ColumnControlColorItem>();
                 List<ColumnControlMessageItem> columnControlMessageItems = new List<ColumnControlMessageItem>();
-                //**5410c49f-5d04-40f3-8b48-a579903e12bd
+              
                 if (RelationshipControl.Relationship.IsOtherSideMandatory)
                     columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
 
@@ -386,7 +389,7 @@ namespace MyUILibrary.EntityArea
             }
             //CheckDataParentRelationship(dataItem);
 
-            DecideButtonsEnablity1();
+            CheckRelationshipUI();
         }
 
         private void ShowDataInDataView(DP_FormDataRepository dataItem)
@@ -571,7 +574,7 @@ namespace MyUILibrary.EntityArea
                         CreateDefaultData();
                     }
                 }
-                DecideButtonsEnablity1();
+                CheckRelationshipUI();
                 return true;
             }
             else
@@ -875,7 +878,7 @@ namespace MyUILibrary.EntityArea
             get
             {
 
-                //** 4a3e4287-2824-4019-ad03-e276ef44e0fb
+                //** ChildRelationshipInfo.IsReadonly: e276ef44e0fb
 
 
                 return Relationship.IsReadonly || ControlReadonlyStateItems.Any() || DataIsOneAndReadonly;
@@ -1080,7 +1083,7 @@ namespace MyUILibrary.EntityArea
                         if (dbSearch.Item1)
                         {
                             DateSecurityIssue = true;
-                            DecideButtonsEnablity1();
+                            CheckRelationshipUI();
                             return false;
                             //   AddHiddenState("DataIssue", "عدم دسترسی به داده", true, true);
 
@@ -1107,7 +1110,7 @@ namespace MyUILibrary.EntityArea
                 {
                     GetTempView.TemporaryDisplayViewRequested += GetTempView_TemporaryDisplayViewRequested;
                 }
-                DecideButtonsEnablity1();
+                CheckRelationshipUI();
                 return true;
 
                 //}
@@ -1341,7 +1344,7 @@ namespace MyUILibrary.EntityArea
 
             //   DecideVisiblity();
             //SetMessageAndColor();
-            DecideButtonsEnablity1();
+            CheckRelationshipUI();
 
         }
         public void RemoveHiddenState(string key)
@@ -1349,7 +1352,7 @@ namespace MyUILibrary.EntityArea
             if (ControlHiddenStateItems.Any(x => x.Key == key))
                 ControlHiddenStateItems.RemoveAll(x => x.Key == key);
 
-            DecideButtonsEnablity1();
+            CheckRelationshipUI();
             //  DecideVisiblity();
             //  SetMessageAndColor();
 
@@ -1434,7 +1437,7 @@ namespace MyUILibrary.EntityArea
                     ShowDataInDataView(data);
                 }
             }
-            DecideButtonsEnablity1();
+            CheckRelationshipUI();
             var dialogManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow();
             dialogManager.WindowClosed += DialogManager_WindowClosed;
             dialogManager.ShowDialog(RelationshipControl.GenericEditNdTypeArea.DataViewGeneric, RelationshipControl.GenericEditNdTypeArea.SimpleEntity.Alias, Enum_WindowSize.Big);

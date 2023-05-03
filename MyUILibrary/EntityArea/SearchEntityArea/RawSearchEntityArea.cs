@@ -97,7 +97,7 @@ namespace MyUILibrary.EntityArea
         private void GenerateSearchView()
         {
             RawSearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchEntityArea(GetEntityUISetting());
-            ManageSimpleSearchView();
+            GenerateUIControls();
 
             var searchClearCommand = new SearchClearCommand(this);
             RawSearchView.AddCommand(searchClearCommand.CommandManager);
@@ -106,8 +106,9 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        private void ManageSimpleSearchView()
+        private void GenerateUIControls()
         {
+            //RawSearchEntityArea.GenerateUIControls: 527171b12fdc
             foreach (var column in FullEntity.Columns.OrderBy(x => x.Position))
             {
                 var propertyControl = new SimpleSearchColumnControl();
@@ -118,13 +119,13 @@ namespace MyUILibrary.EntityArea
             {
                 columnControl.Operators = GetSimpleColumnOperators(columnControl.Column);
                 //  columnControl.ControlPackage = new UIControlPackageForSimpleColumn();
-                bool hasRangeOfValues = columnControl.Column.ColumnValueRange != null && columnControl.Column.ColumnValueRange.Details.Any();
-                columnControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(columnControl.Column, GetColumnUISetting(columnControl.Column), hasRangeOfValues, columnControl.Operators);
+                //bool hasRangeOfValues = columnControl.Column.ColumnValueRange != null && columnControl.Column.ColumnValueRange.Details.Any();
+                columnControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(columnControl.Column, GetColumnUISetting(columnControl.Column), columnControl.Operators);
                 columnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(columnControl.Column.Alias);
 
-                if (hasRangeOfValues)
+                if (columnControl.ControlManager.UIControlManagerIsKeyValueList)
                 {
-                    columnControl.ControlManager.GetUIControlManager().SetColumnValueRange(columnControl.Column.ColumnValueRange.Details, true);
+                    columnControl.ControlManager.GetUIControlManager_ColumnValueRange().SetMultiSelect(true);
                 }
                 else
                 {

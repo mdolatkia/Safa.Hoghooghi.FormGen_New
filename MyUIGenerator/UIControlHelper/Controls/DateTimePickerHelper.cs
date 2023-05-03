@@ -40,6 +40,7 @@ namespace MyUIGenerator.UIControlHelper
         //   bool showMiladiDate;
         public DateTimePickerHelper(ColumnDTO correspondingTypeProperty, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {
+            //**DateTimePickerHelper: cbeb78f5-f3ac-41d8-b615-c2f50657509c
             theGrid = new Grid();
             theGrid.ColumnDefinitions.Add(new ColumnDefinition());
             theGrid.VerticalAlignment = System.Windows.VerticalAlignment.Center;
@@ -55,7 +56,7 @@ namespace MyUIGenerator.UIControlHelper
                 valueIsString = correspondingTypeProperty.DateTimeColumnType.DBValueIsString;
                 //   stringTimeFormat = correspondingTypeProperty.DateTimeColumnType.StringTimeISAMPMFormat;
                 stringDateIsMiladi = correspondingTypeProperty.DateTimeColumnType.DBStringValueIsMiladi == true;
-                stringTimeFormat = correspondingTypeProperty.DateTimeColumnType.DBValueStringTimeFormat;
+                stringTimeFormat = correspondingTypeProperty.DateTimeColumnType.DBStringValueTimeFormat;
                 //   hideTimePicker = false;
             }
             else if (correspondingTypeProperty.ColumnType == Enum_ColumnType.Date)
@@ -63,14 +64,14 @@ namespace MyUIGenerator.UIControlHelper
                 //??نباید DateColumnType نال باشد. فعلا ایف گذاشته شد
                 if (correspondingTypeProperty.DateColumnType != null)
                 {
-                    //**DateTimePickerHelper: cbeb78f5-f3ac-41d8-b615-c2f50657509c
+                    
                     if (correspondingTypeProperty.DateColumnType.ShowMiladiDateInUI == true)
                         hideShamsiDatePicker = true;
                     else
                         hideMiladiDatePicker = true;
 
                     valueIsString = correspondingTypeProperty.DateColumnType.DBValueIsString;
-                    stringDateIsMiladi = correspondingTypeProperty.DateColumnType.DBValueIsStringMiladi == true;
+                    stringDateIsMiladi = correspondingTypeProperty.DateColumnType.DBStringValueIsMiladi == true;
 
                 }
                 hasnotTimePicker = true;
@@ -79,7 +80,7 @@ namespace MyUIGenerator.UIControlHelper
             else if (correspondingTypeProperty.ColumnType == Enum_ColumnType.Time)
             {
                 //   showMiladiTime = correspondingTypeProperty.TimeColumnType.ShowMiladiTime;
-                stringTimeFormat = correspondingTypeProperty.TimeColumnType.DBValueStringTimeFormat;
+                stringTimeFormat = correspondingTypeProperty.TimeColumnType.DBStringValueTimeFormat;
                 valueIsString = correspondingTypeProperty.TimeColumnType.DBValueIsString;
 
                 //      stringTimeIsMiladi = correspondingTypeProperty.TimeColumnType.StringTimeIsMiladi;

@@ -114,10 +114,10 @@ namespace MyUILibrary.EntityArea
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Column)
                 {
                     var column = uiCompositionItem.Column;
-                    bool hasRangeOfValues = column.ColumnValueRange != null && column.ColumnValueRange.Details.Any();
+                    //bool hasRangeOfValues = column.ColumnValueRange != null && column.ColumnValueRange.Details.Any();
 
                     var propertyControl = new SimpleColumnControlOne() { Column = column };
-                    (propertyControl as SimpleColumnControlOne).SimpleControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(column, uiCompositionItem.ColumnUISetting, hasRangeOfValues, null);
+                    (propertyControl as SimpleColumnControlOne).SimpleControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(column, uiCompositionItem.ColumnUISetting, null);
                     propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Column.Alias);
                     AgentHelper.SetPropertyTitle(propertyControl);
 

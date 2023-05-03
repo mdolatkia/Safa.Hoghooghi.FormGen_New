@@ -28,7 +28,7 @@ namespace MyUIGenerator.UIControlHelper
         public ColumnDTO Column { set; get; }
         public ColumnUISettingDTO ColumnSetting { set; get; }
 
-        bool HasRangeOfValues;
+        //bool HasRangeOfValues;
         //   bool ValueIsTitleOrValue;
 
         ConrolPackageMenu CPMenu { set; get; }
@@ -40,13 +40,13 @@ namespace MyUIGenerator.UIControlHelper
         }
 
 
-        public SimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues)
+        public SimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting)
         {
 
             ColumnSetting = columnSetting;
 
             Column = column;
-            HasRangeOfValues = hasRangeOfValues;
+          //  HasRangeOfValues = hasRangeOfValues;
             //     ValueIsTitleOrValue = valueIsTitleOrValue;
             if (columnSetting != null)
             {
@@ -125,10 +125,10 @@ namespace MyUIGenerator.UIControlHelper
         internal void AddDataItem(object dataItem)
         {
             I_UIControlManager MyControlHelper = null;
-            if (HasRangeOfValues)
+            if (Column.HasValueRange)
             {
-                MyControlHelper = ControlHelper.KeyValueControlHelper(Column);
-                MyControlHelper.SetColumnValueRange(ColumnValueRange, false);
+                var keyValueControlHelper = ControlHelper.KeyValueControlHelper(Column);
+                MyControlHelper = keyValueControlHelper;
             }
             else
                 MyControlHelper = ControlHelper.GetControlHelper(Column, ColumnSetting, null);

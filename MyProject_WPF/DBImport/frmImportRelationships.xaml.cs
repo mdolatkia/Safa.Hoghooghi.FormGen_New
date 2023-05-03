@@ -353,6 +353,7 @@ namespace MyProject_WPF
 
         private Task DetermineRelationshipType(List<RelationshipImportItem> listNew, List<TableDrivedEntityDTO> entities)
         {
+            // frmImportRelationships.DetermineRelationshipType: 390db5fb494d
             return Task.Run(() =>
            {
                BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
@@ -547,6 +548,7 @@ namespace MyProject_WPF
 
         async private void UpdateModel()
         {
+            //frmImportRelationships.UpdateModel: a851065d8960
             bool updated = false;
             try
             {
@@ -616,7 +618,7 @@ namespace MyProject_WPF
         {
             return Task.Run(() =>
             {
-                bizRelationship.UpdateModel(MyProjectManager.GetMyProjectManager.GetRequester(), databaseID, listNew, listDeleted, listEdited);
+                bizRelationship.UpdateRelationshipInModel(MyProjectManager.GetMyProjectManager.GetRequester(), databaseID, listNew, listDeleted, listEdited);
             });
         }
 

@@ -32,9 +32,8 @@ namespace MyProject_WPF
         // List<RelationshipColumnDTO> RelationshipColumns = new List<RelationshipColumnDTO>();
         public frmRelationshipCreate(int relatoinshipID)
         {
+            // frmRelationshipCreate: cb74ea91b9d3
             InitializeComponent();
-
-
             SetEntities();
             ControlHelper.GenerateContextMenu(dtgRelationshipColumns);
             cmbRelationshipType.ItemsSource = Enum.GetValues(typeof(CreateRelationshipType));
@@ -47,7 +46,6 @@ namespace MyProject_WPF
             {
                 GetRelationship(relatoinshipID);
             }
-
         }
 
         private void GetRelationship(int relatoinshipID)

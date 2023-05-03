@@ -81,9 +81,12 @@ namespace MyUIGenerator.UIControlHelper
         //        return TextboxHelper;
         //}
 
-        public static I_UIControlManager KeyValueControlHelper(ColumnDTO column)
+        public static I_UIControlManager_ColumnValueRange KeyValueControlHelper(ColumnDTO column)
         {
-            return new KeyValueControlHelper();
+            // KeyValueControlHelper:  aca04d5175f8
+            var control = new KeyValueControlHelper();
+            control.SetColumnValueRange(column.ColumnValueRange.Details);
+            return control;
         }
         public static I_UIControlManager GetControlHelper(ColumnDTO column, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null)
         {

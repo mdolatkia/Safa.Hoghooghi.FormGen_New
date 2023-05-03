@@ -132,7 +132,7 @@
                 </Grid>
             </TabItem>
             <TabItem IsSelected="True" x:Name="tabRelationships" Header="روابط">
-                <local:frmRelationships x:Name="formRelationships"/>
+                <local:frmEntityRelationships x:Name="formRelationships"/>
 
             </TabItem>
 

@@ -133,7 +133,7 @@ namespace MyModelManager
 
         private List<EntityListViewColumnsDTO> GenereateDefaultListViewColumns(TableDrivedEntityDTO firstEntity, TableDrivedEntityDTO entity = null, List<EntityListViewColumnsDTO> list = null, string relationshipPath = "", List<RelationshipDTO> relationships = null)
         {
-            //** BizEntityListView.GenereateDefaultListViewColumns: 35838f12-76ec-4a3a-8f4d-e0b50248b309
+            //** BizEntityListView.GenereateDefaultListViewColumns: e0b50248b309
             if (list == null)
                 list = new List<EntityListViewColumnsDTO>();
             if (entity == null)

@@ -33,7 +33,14 @@ namespace MyUILibrary.EntityArea
             }
 
         }
+        public I_UIControlManager_ColumnValueRange GetUIControlManager_ColumnValueRange
+        {
+            get
+            {
+                return GetUIControlManager as I_UIControlManager_ColumnValueRange;
+            }
 
+        }
         //public bool IsReadonlyFromState { set; get; }
         //public bool IsReadonly
         //{
@@ -45,14 +52,19 @@ namespace MyUILibrary.EntityArea
 
         public ChildSimpleContorlProperty(SimpleColumnControlGenerel simpleColumnControl, DP_FormDataRepository sourceData, EntityInstanceProperty property)
         {
+            // ChildSimpleContorlProperty: d2e58276d9ac
             SourceData = sourceData;
             SimpleColumnControl = simpleColumnControl;
             Property = property;
-            if (SimpleColumnControl.Column.ColumnValueRange != null && SimpleColumnControl.Column.ColumnValueRange.Details.Any())
-            {
-                ColumnValueRange = SimpleColumnControl.Column.ColumnValueRange.Details;
-                GetUIControlManager.SetColumnValueRange(SimpleColumnControl.Column.ColumnValueRange.Details,false);
-            }
+
+
+            //if (SimpleColumnControl.Column.ColumnValueRange != null && SimpleColumnControl.Column.ColumnValueRange.Details.Any())
+            //{
+            //    ColumnValueRange = SimpleColumnControl.Column.ColumnValueRange.Details;
+            //    GetUIControlManager_ColumnValueRange.SetColumnValueRange(SimpleColumnControl.Column.ColumnValueRange.Details,false);
+            //}
+
+
             //CheckColumnReadonly();
         }
 
@@ -247,15 +259,26 @@ namespace MyUILibrary.EntityArea
                 Property.Value = value;
             }
         }
-        public List<ColumnValueRangeDetailsDTO> ColumnValueRange { set; get; }
+        public List<ColumnValueRangeDetailsDTO> ColumnValueRange
+        {
+            get
+            {
+                if (_CustomColumnValueRange != null)
+                    return _CustomColumnValueRange;
+                else
+                    return SimpleColumnControl.Column.ColumnValueRange.Details;
+            }
+        }
+        List<ColumnValueRangeDetailsDTO> _CustomColumnValueRange { set; get; }
+
         public void SetColumnValueRangeFromState(List<ColumnValueRangeDetailsDTO> details)
         {
             if (SourceData.DataIsInEditMode())
             {
                 if (!IsHiddenOnState && !IsReadonly)
                 {
-                    ColumnValueRange = details;
-                    GetUIControlManager.SetColumnValueRange(details,false);
+                    _CustomColumnValueRange = details;
+                    GetUIControlManager_ColumnValueRange.SetColumnValueRange(details);
                 }
             }
         }
@@ -265,8 +288,8 @@ namespace MyUILibrary.EntityArea
             {
                 if (!IsHiddenOnState && !IsReadonly)
                 {
-                    ColumnValueRange = null;
-                    GetUIControlManager.SetColumnValueRange(SimpleColumnControl.Column.ColumnValueRange.Details, false);
+                    _CustomColumnValueRange = null;
+                    GetUIControlManager_ColumnValueRange.SetColumnValueRange(SimpleColumnControl.Column.ColumnValueRange.Details);
                 }
             }
         }

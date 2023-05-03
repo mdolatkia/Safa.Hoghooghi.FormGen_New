@@ -355,8 +355,8 @@
     <Compile Include="Letter\UC_LetterTemplateFields.xaml.cs">
       <DependentUpon>UC_LetterTemplateFields.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Relationship\frmRelationships.xaml.cs">
-      <DependentUpon>frmRelationships.xaml</DependentUpon>
+    <Compile Include="Relationship\frmEntityRelationships.xaml.cs">
+      <DependentUpon>frmEntityRelationships.xaml</DependentUpon>
     </Compile>
     <Compile Include="Report\frmEntityDirectReport.xaml.cs">
       <DependentUpon>frmEntityDirectReport.xaml</DependentUpon>
@@ -483,8 +483,8 @@
     <Compile Include="Report\frmEntityListReportSelect.xaml.cs">
       <DependentUpon>frmEntityListReportSelect.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Relationship\frmAllRelationships.xaml.cs">
-      <DependentUpon>frmAllRelationships.xaml</DependentUpon>
+    <Compile Include="Relationship\frmConceptualRelationships.xaml.cs">
+      <DependentUpon>frmConceptualRelationships.xaml</DependentUpon>
     </Compile>
     <Compile Include="Relationship\frmRelationshipCreate.xaml.cs">
       <DependentUpon>frmRelationshipCreate.xaml</DependentUpon>
@@ -766,7 +766,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Relationship\frmRelationships.xaml">
+    <Page Include="Relationship\frmEntityRelationships.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -846,7 +846,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Relationship\frmAllRelationships.xaml">
+    <Page Include="Relationship\frmConceptualRelationships.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

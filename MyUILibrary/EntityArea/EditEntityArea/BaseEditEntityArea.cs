@@ -126,7 +126,7 @@ namespace MyUILibrary.EntityArea
                         data = SearchDataForEditFromExternalSource(AreaInitializer.EntityID, dataRepository, this);
                     else
                         data = SearchDataForViewFromExternalSource(AreaInitializer.EntityID, dataRepository, this);
-                //    اینجا با selectdata عوض بشه
+                    //    اینجا با selectdata عوض بشه
                     if (data != null)
                     {
                         var addResult = AddData(data);
@@ -615,7 +615,7 @@ namespace MyUILibrary.EntityArea
                 GenerateTempView();
             }
 
-         //   GenerateViewEntityArea();
+            //   GenerateViewEntityArea();
 
             if (UIGenerated != null)
                 UIGenerated(this, null);
@@ -678,7 +678,7 @@ namespace MyUILibrary.EntityArea
         public void ShowTemproraryUIViewArea(I_View_TemporaryView view)
         {
             //** 7cc93641-b79f-4d63-94b2-0cfe0a61872b
-          
+
             ViewEntityArea.IsCalledFromDataView = false;
             if (ViewEntityArea.LastTemporaryView != null && ViewEntityArea.LastTemporaryView.HasPopupView)
                 ViewEntityArea.LastTemporaryView.RemovePopupView(ViewForViewEntityArea);
@@ -959,7 +959,7 @@ namespace MyUILibrary.EntityArea
                     searchViewInitializer.EntityID = AreaInitializer.EntityID;
                     _SearchEntityArea = new SearchEntityArea(searchViewInitializer);
                     _SearchEntityArea.SearchDataDefined += SearchEntityArea_SearchDataDefined;
-               
+
                 }
                 return _SearchEntityArea;
             }
@@ -1230,7 +1230,7 @@ namespace MyUILibrary.EntityArea
         //}
         public void GenerateControls()
         {
-            //** e8098f69-f007-4a9b-a617-ddfdfcbe4f89
+            //**  BaseEditEntityArea.GenerateControls: ddfdfcbe4f89
 
             SimpleColumnControls.Clear();
             RelationshipColumnControls.Clear();
@@ -1356,7 +1356,7 @@ namespace MyUILibrary.EntityArea
             //    }
             //}
 
-            //** BaseEditEntityArea.GenerateControls: 8218f45f-1045-4f73-8fe6-0a7df332e77f
+
             //می توانند یکی شوند
             foreach (var columnControl in SimpleColumnControls)
             {
@@ -2471,12 +2471,12 @@ namespace MyUILibrary.EntityArea
         private void ViewEntityArea_DataSelected(object sender, DataViewDataSelectedEventArg e)
         {
             //** edd35983-172e-4609-b67e-a377695e6d06
-           
+
             if (ViewForSearchAndView != null && ViewForSearchAndView.HasViewAreaView)
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(ViewForSearchAndView);
             AddDataViewItemsToForm(e.DataItem, e.IsCalledFromDataView);
 
-          }
+        }
         private void AddDataViewItemsToForm(List<DP_DataView> dataItems, bool fromDataView)
         {
             //** 366e6b79-8d07-4a54-9347-1625660fbdfb

@@ -27,7 +27,7 @@ namespace MyUILibrary.EntityArea
 
 
             SimpleSearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchEntityArea(EntitySearchDTO.EntityUISetting);
-            ManageSimpleSearchView();
+            GenerateUIControls();
 
             if (newAreaInitializer.PreDefinedSearchMessage != null)
                 ShowPreDefinedSearch(newAreaInitializer.PreDefinedSearchMessage);
@@ -101,9 +101,9 @@ namespace MyUILibrary.EntityArea
             get;
         }
 
-        private void ManageSimpleSearchView()
+        private void GenerateUIControls()
         {
-            //** 280ad2a0-760e-4ad2-9acb-31d456f709e0
+            //** EntityDefinedSearchArea.GenerateUIControls: 31d456f709e0
 
             SimpleSearchView.QuickSearchVisiblity = EntitySearchDTO.EntitySearchAllColumns.Any(x => x.ColumnID != 0 && x.ExcludeInQuickSearch == false);
             foreach (var searchcolumn in EntitySearchDTO.EntitySearchAllColumns.OrderBy(x => x.OrderID))
@@ -145,16 +145,16 @@ namespace MyUILibrary.EntityArea
                     propertyControl.Column = searchcolumn.Column;
                     propertyControl.EntitySearchColumn = searchcolumn;
                     propertyControl.Operators = searchcolumn.Operators;
-                    bool hasRangeOfValues = propertyControl.Column.ColumnValueRange != null && propertyControl.Column.ColumnValueRange.Details.Any();
-                    propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(propertyControl.Column, searchcolumn.ColumnUISetting, hasRangeOfValues, propertyControl.Operators);
+
+                    propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(propertyControl.Column, searchcolumn.ColumnUISetting, propertyControl.Operators);
                     propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.EntitySearchColumn.Alias);
 
                     if (!string.IsNullOrEmpty(propertyControl.EntitySearchColumn.Tooltip))
                         propertyControl.LabelControlManager.SetTooltip(propertyControl.EntitySearchColumn.Tooltip);
 
-                    if (hasRangeOfValues)
+                    if (propertyControl.ControlManager.UIControlManagerIsKeyValueList)
                     {
-                        propertyControl.ControlManager.GetUIControlManager().SetColumnValueRange(propertyControl.Column.ColumnValueRange.Details, true);
+                        propertyControl.ControlManager.GetUIControlManager_ColumnValueRange().SetMultiSelect(true);
                     }
                     else
                     {
@@ -427,7 +427,7 @@ namespace MyUILibrary.EntityArea
         {
             if (SearchDataDefined != null)
             {
-                SearchDataDefined(this,  searchData);
+                SearchDataDefined(this, searchData);
             }
         }
 

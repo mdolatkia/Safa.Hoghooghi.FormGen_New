@@ -173,7 +173,7 @@ namespace MyModelManager
         }
         private List<EntitySearchColumnsDTO> GenereateDefaultSearchColumns(TableDrivedEntityDTO firstEntity, TableDrivedEntityDTO entity = null, List<EntitySearchColumnsDTO> list = null, string relationshipPath = "", List<RelationshipDTO> relationships = null)
         {
-            //** BizEntitySearch.GenereateDefaultSearchColumns: 8ab306e9-0d52-4be6-95c0-9e5b4c36a21c
+            //** BizEntitySearch.GenereateDefaultSearchColumns: 9e5b4c36a21c
 
             if (list == null)
                 list = new List<EntitySearchColumnsDTO>();

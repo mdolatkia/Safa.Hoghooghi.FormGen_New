@@ -14,7 +14,7 @@ using System.Windows.Media;
 
 namespace MyUIGenerator.UIControlHelper
 {
-    public class SimpleControlManagerForOneDataForm :  I_SimpleControlManagerOne
+    public class SimpleControlManagerForOneDataForm : I_SimpleControlManagerOne
     {
         //public string ValidationMessage { set; get; }
         //public InfoColor ValidationColor { set; get; }
@@ -22,12 +22,12 @@ namespace MyUIGenerator.UIControlHelper
         public ColumnDTO Column { set; get; }
         public ColumnUISettingDTO ColumnUISettingDTO { set; get; }
         MenuHelper MenuHelper = new MenuHelper();
-        public SimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues, List<SimpleSearchOperator> operators = null) : base()
+        public SimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators = null) : base()
         {
             Column = column;
             ColumnUISettingDTO = columnSetting;
             //  RelatedControl = new List<FrameworkElement>();
-            if (hasRangeOfValues)
+            if (column.HasValueRange)
                 MyControlHelper = ControlHelper.KeyValueControlHelper(column);
             else
                 MyControlHelper = ControlHelper.GetControlHelper(column, columnSetting, operators);
@@ -36,7 +36,17 @@ namespace MyUIGenerator.UIControlHelper
         {
             return MyControlHelper;
         }
+        public I_UIControlManager_ColumnValueRange GetUIControlManager_ColumnValueRange()
+        {
+            return MyControlHelper as I_UIControlManager_ColumnValueRange;
+        }
+
         public I_UIControlManager MyControlHelper { set; get; }
+
+        public bool UIControlManagerIsKeyValueList
+        {
+            get { return MyControlHelper is I_UIControlManager_ColumnValueRange; }
+        }
         //public void SetColumnValueRange(List<ColumnValueRangeDetailsDTO> candidates)
         //{
         //    (MyControlHelper as I_ControlHelperValueRange).SetColumnValueRange(candidates);

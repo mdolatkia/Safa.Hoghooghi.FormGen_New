@@ -273,7 +273,7 @@ namespace MyModelManager
             {
                 //اینجا برای برنامه مدیریت فراداده است
                 result.ShowMiladiDateInUI = item.ShowMiladiDateInUI;
-                result.DBValueIsStringMiladi = item.DBValueIsStringMiladi;
+                result.DBStringValueIsMiladi = item.DBValueIsStringMiladi;
             }
             else
             {
@@ -289,15 +289,15 @@ namespace MyModelManager
                         result.ShowMiladiDateInUI = false;
                 }
                 if (item.DBValueIsStringMiladi != null)
-                    result.DBValueIsStringMiladi = item.DBValueIsStringMiladi.Value;
+                    result.DBStringValueIsMiladi = item.DBValueIsStringMiladi.Value;
                 else
                 {
                     if (item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting != null)
                     {
-                        result.DBValueIsStringMiladi = item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringDateColumnIsMiladi;
+                        result.DBStringValueIsMiladi = item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringDateColumnIsMiladi;
                     }
                     else
-                        result.DBValueIsStringMiladi = false;
+                        result.DBStringValueIsMiladi = false;
                 }
             }
 
@@ -322,31 +322,31 @@ namespace MyModelManager
 
         private TimeColumnTypeDTO ToTimeColumTypeDTO(DataAccess.TimeColumnType item, bool withNullValues)
         {
-            //**71b3797c-8b3e-421d-8c63-8f3baefaf4fd
+            //**BizColumn.ToTimeColumTypeDTO: 8f3baefaf4fd
             TimeColumnTypeDTO result = new TimeColumnTypeDTO();
             result.ColumnID = item.ColumnID;
             result.DBValueIsString = item.DBValueIsString;
             if (withNullValues)
             {
                 if (item.DBValueStringTimeFormat != null)
-                    result.DBValueStringTimeFormat = (StringTimeFormat)item.DBValueStringTimeFormat;
+                    result.DBStringValueTimeFormat = (StringTimeFormat)item.DBValueStringTimeFormat;
                 else
-                    result.DBValueStringTimeFormat = StringTimeFormat.Unknown;
+                    result.DBStringValueTimeFormat = StringTimeFormat.Unknown;
 
             }
             else
             {
                 if (item.DBValueStringTimeFormat != null && (StringTimeFormat)item.DBValueStringTimeFormat != StringTimeFormat.Unknown)
-                    result.DBValueStringTimeFormat = (StringTimeFormat)item.DBValueStringTimeFormat;
+                    result.DBStringValueTimeFormat = (StringTimeFormat)item.DBValueStringTimeFormat;
                 else
                 {
                     if (item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting != null
                         && (StringTimeFormat)item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringTimeFormat != StringTimeFormat.Unknown)
                     {
-                        result.DBValueStringTimeFormat = (StringTimeFormat)item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringTimeFormat;
+                        result.DBStringValueTimeFormat = (StringTimeFormat)item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringTimeFormat;
                     }
                     else
-                        result.DBValueStringTimeFormat = StringTimeFormat.Hours24;
+                        result.DBStringValueTimeFormat = StringTimeFormat.Hours24;
                 }
             }
 
@@ -377,9 +377,9 @@ namespace MyModelManager
             if (withNullValues)
             {
                 if (item.DBValueStringTimeFormat != null)
-                    result.DBValueStringTimeFormat = (StringTimeFormat)item.DBValueStringTimeFormat;
+                    result.DBStringValueTimeFormat = (StringTimeFormat)item.DBValueStringTimeFormat;
                 else
-                    result.DBValueStringTimeFormat = StringTimeFormat.Unknown;
+                    result.DBStringValueTimeFormat = StringTimeFormat.Unknown;
 
                 result.ShowMiladiDateInUI = item.ShowMiladiDateInUI;
                 result.DBStringValueIsMiladi = item.DBValueIsStringMiladi;
@@ -387,16 +387,16 @@ namespace MyModelManager
             else
             {
                 if (item.DBValueStringTimeFormat != null && (StringTimeFormat)item.DBValueStringTimeFormat != StringTimeFormat.Unknown)
-                    result.DBValueStringTimeFormat = (StringTimeFormat)item.DBValueStringTimeFormat;
+                    result.DBStringValueTimeFormat = (StringTimeFormat)item.DBValueStringTimeFormat;
                 else
                 {
                     if (item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting != null
                         && (StringTimeFormat)item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringTimeFormat != StringTimeFormat.Unknown)
                     {
-                        result.DBValueStringTimeFormat = (StringTimeFormat)item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringTimeFormat;
+                        result.DBStringValueTimeFormat = (StringTimeFormat)item.Column.Table.DBSchema.DatabaseInformation.DatabaseUISetting.StringTimeFormat;
                     }
                     else
-                        result.DBValueStringTimeFormat = StringTimeFormat.Hours24;
+                        result.DBStringValueTimeFormat = StringTimeFormat.Hours24;
                 }
 
                 if (item.ShowMiladiDateInUI != null)
@@ -658,6 +658,7 @@ namespace MyModelManager
         //}
         public ColumnDTO ToColumnDTO(DataAccess.Column item, bool simple)
         {
+            // BizColumn.ToColumnDTO: 3fad23169aeb
             var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Column, item.ID.ToString(), simple.ToString());
             if (cachedItem != null)
                 return (cachedItem as ColumnDTO);
@@ -917,7 +918,7 @@ namespace MyModelManager
                 {
                     var dbColumn = projectContext.DateColumnType.First(x => x.ColumnID == column.ColumnID);
                     dbColumn.ShowMiladiDateInUI = column.ShowMiladiDateInUI;
-                    dbColumn.DBValueIsStringMiladi = column.DBValueIsStringMiladi;
+                    dbColumn.DBValueIsStringMiladi = column.DBStringValueIsMiladi;
                     //if ((Enum_ColumnType)dbColumn.Column.OriginalTypeEnum == Enum_ColumnType.String)
                     //{
 
@@ -944,7 +945,7 @@ namespace MyModelManager
 
                     dbColumn.ShowMiladiDateInUI = column.ShowMiladiDateInUI;
                     dbColumn.DBValueIsStringMiladi = column.DBStringValueIsMiladi;
-                    dbColumn.DBValueStringTimeFormat = (short)column.DBValueStringTimeFormat;
+                    dbColumn.DBValueStringTimeFormat = (short)column.DBStringValueTimeFormat;
 
                     //dbColumn.ShowMiladiDateInUI = column.ShowMiladiDateInUI;
                     //dbColumn.ShowAMPMFormat = column.ShowAMPMFormat;
@@ -969,6 +970,7 @@ namespace MyModelManager
 
         public void UpdateTimeColumnType(List<TimeColumnTypeDTO> columnTypes)
         {
+            //BizColumn.UpdateTimeColumnType: 247a404e04f7
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 foreach (var column in columnTypes)
@@ -981,7 +983,7 @@ namespace MyModelManager
                     //        throw new Exception("ستون از نوع زمان می باشد و گزینه مقدار شمسی به اشتباه انتخاب شده است");
                     //    }
                     //}
-                    dbColumn.DBValueStringTimeFormat = (short)column.DBValueStringTimeFormat;
+                    dbColumn.DBValueStringTimeFormat = (short)column.DBStringValueTimeFormat;
                     //dbColumn.ShowAMPMFormat = column.ShowAMPMFormat;
                     //if ((Enum_ColumnType)dbColumn.Column.OriginalTypeEnum == Enum_ColumnType.String)
                     //{
@@ -1048,14 +1050,14 @@ namespace MyModelManager
                 //}
                 if (dbColumn.ID == 0)
                 {
-                    CreateNewColumnDataType(entity, dbColumn, column);
+                    SetColumnDataTypeFromTargetDB(entity, dbColumn, column);
                 }
                 else
                 {
                     if ((Enum_ColumnType)dbColumn.OriginalTypeEnum != column.OriginalColumnType)
                     {
                         RemoveColumnTypes(projectContext, dbColumn, new List<Enum_ColumnType>());
-                        CreateNewColumnDataType(entity, dbColumn, column);
+                        SetColumnDataTypeFromTargetDB(entity, dbColumn, column);
                     }
                     else
                     {
@@ -1105,7 +1107,7 @@ namespace MyModelManager
             }
         }
 
-        private void CreateNewColumnDataType(TableDrivedEntityDTO entity, Column dbColumn, ColumnDTO column)
+        private void SetColumnDataTypeFromTargetDB(TableDrivedEntityDTO entity, Column dbColumn, ColumnDTO column)
         {
             //BizColumn.CreateNewColumnDataType: fea6234f-fc47-4548-8d93-5e5127e74877
             if (column.ColumnType == Enum_ColumnType.String)
@@ -1113,7 +1115,7 @@ namespace MyModelManager
                 var dataHelper = new ModelDataHelper();
                 if (dbColumn.ID == 0)
                 {
-                    //**caf85527-3025-4e25-8b24-50861ad0329b
+                   
                     if (column.StringColumnType.MaxLength <= 50 &&
                                   (column.Name.ToLower().StartsWith("datetime") ||
                                   column.Name.ToLower().EndsWith("datetime"))
@@ -1189,8 +1191,6 @@ namespace MyModelManager
         }
 
 
-
-
         private void CreateNewDateTimeColumn(Column dbColumn, ColumnDTO column, Enum_ColumnType columnType)
         {
             //**BizColumn.CreateNewDateTimeColumn: 5a4645cf-0487-48d5-89bb-65590717ebfd
@@ -1216,7 +1216,7 @@ namespace MyModelManager
         }
         private void CreateNewDateTimeColumnOriginallyString(TableDrivedEntityDTO entity, Column dbColumn, ColumnDTO column, Enum_ColumnType columnType)
         {
-            //**BizColumn.CreateNewDateTimeColumnOriginallyString: e0a2dd6f-ec52-4430-b15f-9e272e60f7cb
+            //**BizColumn.CreateNewDateTimeColumnOriginallyString: 9e272e60f7cb
             ModelDataHelper dataHelper = new ModelDataHelper();
             dbColumn.TypeEnum = Convert.ToByte(columnType);
 

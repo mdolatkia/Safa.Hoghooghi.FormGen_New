@@ -1078,7 +1078,7 @@ namespace MyProject_WPF
 
         void DefineColumnValueForColumn(object sender, RoutedEventArgs e, ColumnDTO column)
         {
-            //**5389ea8a-2644-4759-9716-1abc824a1aa2
+           
             frmColumnValueRange view = new frmColumnValueRange(selectedEntity.ID, column.ID);
             if (column.ColumnValueRangeID == 0)
             {

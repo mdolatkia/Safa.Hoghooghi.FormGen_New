@@ -100,7 +100,7 @@ namespace MyUILibrary.EntityArea
                     propertyControl.Alias = column.Alias;
                 //   propertyControl.ControlPackage = new UIControlPackageForSimpleColumn();
                 //     propertyControl.IsPermanentReadOnly = true;
-                propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column.Column, column.ColumnUISetting, false);
+                propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column.Column, column.ColumnUISetting);
                 propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Alias);
 
                 //      if (propertyControl.IsPermanentReadOnly)

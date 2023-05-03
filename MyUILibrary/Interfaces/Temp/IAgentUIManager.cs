@@ -62,8 +62,8 @@ namespace MyUILibrary
 
         I_View_EditLogReportDetails GenereateViewOfEditLogReportDetails();
         I_View_ArchiveLogReportDetails GenereateViewOfArchiveLogReportDetails();
-        I_SimpleControlManagerOne GenerateSimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues, List<SimpleSearchOperator> operators);
-        I_SimpleControlManagerMultiple GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues);
+        I_SimpleControlManagerOne GenerateSimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators);
+        I_SimpleControlManagerMultiple GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO);
         
         I_UICompositionContainer GenerateGroup(GroupUISettingDTO groupUISettingDTO);
 

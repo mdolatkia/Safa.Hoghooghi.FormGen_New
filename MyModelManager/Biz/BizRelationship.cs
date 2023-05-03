@@ -71,7 +71,7 @@ namespace MyModelManager
         public IQueryable<Relationship> GetAllRelationships(MyIdeaEntities projectContext, bool includedTables)
         {
             IQueryable<Relationship> relationships = null;
-            //** e5f2c46e-fe5d-4f6d-b0ba-8a8242e6eb63
+            //**BizRelationship.GetAllRelationships: 8a8242e6eb63
             if (includedTables)
             {
                 relationships = projectContext.Relationship;
@@ -89,9 +89,26 @@ namespace MyModelManager
 
         public IQueryable<Relationship> GetAllEnabledRelationships(MyIdeaEntities projectContext, bool includedTables)
         {
-            //BizRelationship.GetAllEnabledRelationships: 32c5d8c8-dccc-4436-b41b-ba141918b2bb
+            //BizRelationship.GetAllEnabledRelationships: ba141918b2bb
             IQueryable<Relationship> relationships = GetAllRelationships(projectContext, includedTables);
-            return relationships.Where(x =>  !x.RelationshipColumns.Any(y => y.Column.IsDisabled || y.Column1.IsDisabled));
+            return relationships.Where(x => !x.RelationshipColumns.Any(y => y.Column.IsDisabled || y.Column1.IsDisabled));
+        }
+        public List<RelationshipDTO> GetEnabledRelationships1(int databaseID)
+        {
+            List<RelationshipDTO> result = new List<RelationshipDTO>();
+            using (var projectContext = new DataAccess.MyIdeaEntities())
+            {
+                var dbRel = GetAllEnabledRelationships(projectContext, true).Where(x => x.TableDrivedEntity.Table.DBSchema.DatabaseInformationID == databaseID && x.TableDrivedEntity1.Table.DBSchema.DatabaseInformationID == databaseID);
+
+                foreach (var item in dbRel)
+                    result.Add(ToRelationshipDTO(item));
+            }
+            return result;
+        }
+        public List<Relationship> GetEnabledRelationships(TableDrivedEntity entity)
+        {
+            // BizRelationship.GetEnabledRelationships: 84d63337f284
+            return entity.Relationship.Where(x => x.Removed != true && !x.RelationshipColumns.Any(y => y.Column.IsDisabled || y.Column1.IsDisabled)).ToList();
         }
         public List<RelationshipDTO> GetOrginalRelationships(int databaseID)
         {
@@ -135,32 +152,21 @@ namespace MyModelManager
         //    }
         //    return result;
         //}
-        public List<RelationshipDTO> GetEnabledRelationships(int databaseID)
-        {
-            List<RelationshipDTO> result = new List<RelationshipDTO>();
-            using (var projectContext = new DataAccess.MyIdeaEntities())
-            {
-                var dbRel = GetAllRelationships(projectContext, true).Where(x => x.TableDrivedEntity.Table.DBSchema.DatabaseInformationID == databaseID && x.TableDrivedEntity1.Table.DBSchema.DatabaseInformationID == databaseID);
 
-                foreach (var item in dbRel)
-                    result.Add(ToRelationshipDTO(item));
-            }
-            return result;
-        }
-        public List<RelationshipDTO> GetDataEntryEnabledRelationships(int databaseID)
-        {
-            List<RelationshipDTO> result = new List<RelationshipDTO>();
-            var pkToFk = (byte)Enum_MasterRelationshipType.FromPrimartyToForeign;
-            var fkToPK = (byte)Enum_MasterRelationshipType.FromForeignToPrimary;
-            using (var projectContext = new DataAccess.MyIdeaEntities())
-            {
-                var dbRel = GetAllRelationships(projectContext, true).Where(x => x.TableDrivedEntity.Table.DBSchema.DatabaseInformationID == databaseID && x.TableDrivedEntity1.Table.DBSchema.DatabaseInformationID == databaseID
-                && ((x.MasterTypeEnum == pkToFk && x.RelationshipType.PKToFKDataEntryEnabled == true) || (x.MasterTypeEnum == fkToPK && x.RelationshipColumns.Any(y => y.Column.DataEntryEnabled))));
-                foreach (var item in dbRel)
-                    result.Add(ToRelationshipDTO(item));
-            }
-            return result;
-        }
+        //public List<RelationshipDTO> GetDataEntryEnabledRelationships(int databaseID)
+        //{
+        //    List<RelationshipDTO> result = new List<RelationshipDTO>();
+        //    var pkToFk = (byte)Enum_MasterRelationshipType.FromPrimartyToForeign;
+        //    var fkToPK = (byte)Enum_MasterRelationshipType.FromForeignToPrimary;
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
+        //    {
+        //        var dbRel = GetAllRelationships(projectContext, true).Where(x => x.TableDrivedEntity.Table.DBSchema.DatabaseInformationID == databaseID && x.TableDrivedEntity1.Table.DBSchema.DatabaseInformationID == databaseID
+        //        && ((x.MasterTypeEnum == pkToFk && x.RelationshipType.PKToFKDataEntryEnabled == true) || (x.MasterTypeEnum == fkToPK && x.RelationshipColumns.Any(y => y.Column.DataEntryEnabled))));
+        //        foreach (var item in dbRel)
+        //            result.Add(ToRelationshipDTO(item));
+        //    }
+        //    return result;
+        //}
         //public RelationshipDTO GetOrginalRelationship(RelationshipDTO item, int databaseID)
         //{
         //    using (var projectContext = new DataAccess.MyIdeaEntities())
@@ -221,7 +227,7 @@ namespace MyModelManager
 
         public int CreateUpdateRelationship(DR_Requester requester, RelationshipDTO message, bool secondSideDataEntry)
         {
-            //** 64e53e00-3d62-4925-9a93-ab903c4acf08
+            //** BizRelationshipCreateUpdateRelationship: ab903c4acf08
             //int createdID = 0;
             //bool newItem = message.ID == 0;
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
@@ -381,7 +387,6 @@ namespace MyModelManager
 
                                 dbReverseRelationship.TypeEnum = Convert.ToByte(Enum_RelationshipType.ExplicitOneToOne);
                                 dbReverseRelationship.RelationshipType.ExplicitOneToOneRelationshipType = new ExplicitOneToOneRelationshipType();
-
                             }
                         }
                         else
@@ -580,9 +585,9 @@ namespace MyModelManager
             return result;
         }
 
-        public void UpdateModel(DR_Requester requester, int databaseID, List<RelationshipDTO> listNew, List<RelationshipDTO> listDeleted, List<RelationshipDTO> listEdited)
+        public void UpdateRelationshipInModel(DR_Requester requester, int databaseID, List<RelationshipDTO> listNew, List<RelationshipDTO> listDeleted, List<RelationshipDTO> listEdited)
         {
-            //** 692519c2-03ff-4b25-b7f8-58069fb34622
+            //**BizRelationship.UpdateRelationshipInModel: 58069fb34622
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 //foreach (var newRel in listNew)
@@ -612,6 +617,7 @@ namespace MyModelManager
         }
         private List<Tuple<Relationship, Relationship>> UpdateRelationshipInModel(DR_Requester requester, MyIdeaEntities projectContext, int databaseID, List<RelationshipDTO> listNew, List<RelationshipDTO> listEdited)
         {
+            // BizRelationship.UpdateRelationshipInModel: 93500ebd3e5e
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
 
             var allEntities = bizTableDrivedEntity.GetAllEnabledEntitiesDTO(databaseID);
@@ -636,12 +642,13 @@ namespace MyModelManager
                     dbRelationship.RelationshipType = new RelationshipType();
                     dbRelationship.RelationshipType.OneToManyRelationshipType = new OneToManyRelationshipType();
                     //dbRelationship.PKToFKDataEntryEnabled = false;
-                    //if (dbDatabase.DBHasDate)
-                    //{
-                    //    dbRelationship.RelationshipType.IsOtherSideMandatory = relationship.RelationInfo.AllPrimarySideHasFkSideData == true;
-                    //}
+                    if (dbDatabase.DBHasDate)
+                    {
+                        dbRelationship.RelationshipType.IsOtherSideMandatory = relationship.RelationInfo.AllPrimarySideHasFkSideData == true;
+                    }
                     //else
-                    dbRelationship.RelationshipType.IsOtherSideMandatory = false;
+                    //  dbRelationship.RelationshipType.IsOtherSideMandatory = false;
+                    // اینجا IsOtherSideMandatory فالس بود همیشه برگردوندم به حالت چک شدن از داده ها
                     dbRelationship.RelationshipType.IsOtherSideCreatable = true;
                     dbRelationship.RelationshipType.IsOtherSideDirectlyCreatable = true;
                     //dbRelationship.RelationshipType.IsSkippable = true;
@@ -664,12 +671,11 @@ namespace MyModelManager
                     //var reverseRelationshipType = new RelationshipType();
                     dbReverseRelationship.RelationshipType = new RelationshipType();
                     dbReverseRelationship.RelationshipType.ManyToOneRelationshipType = new ManyToOneRelationshipType();
-                    if (dbDatabase.DBHasDate)
-                    {
-                        dbReverseRelationship.RelationshipType.IsOtherSideMandatory = relationship.RelationInfo.AllFKSidesHavePKSide == true;
-                    }
-                    else
-                        dbReverseRelationship.RelationshipType.IsOtherSideMandatory = !relationship.FKCoumnIsNullable;
+
+
+                    dbReverseRelationship.RelationshipType.IsOtherSideMandatory = CheckFKTOPKRelationshipMandatory(relationship, relationship.RelationInfo);
+
+
                     //dbReverseRelationship.RelationshipType.IsOtherSideTransferable = true;
                     dbReverseRelationship.RelationshipType.IsOtherSideCreatable = true;
                     //dbReverseRelationship.RelationshipType.IsOtherSideDirectlyCreatable = false;
@@ -693,8 +699,8 @@ namespace MyModelManager
                     {
                         dbRelationship.RelationshipType.IsOtherSideMandatory = relationship.RelationInfo.AllPrimarySideHasFkSideData == true;
                     }
-                    else
-                        dbRelationship.RelationshipType.IsOtherSideMandatory = false;
+                    //else
+                    //    dbRelationship.RelationshipType.IsOtherSideMandatory = false;
                     //dbRelationship.RelationshipType.IsOtherSideTransferable = true;
                     dbRelationship.RelationshipType.IsOtherSideCreatable = true;
 
@@ -707,12 +713,16 @@ namespace MyModelManager
                     dbReverseRelationship.TypeEnum = Convert.ToByte(Enum_RelationshipType.ExplicitOneToOne);
                     dbReverseRelationship.RelationshipType = new RelationshipType();
                     dbReverseRelationship.RelationshipType.ExplicitOneToOneRelationshipType = new ExplicitOneToOneRelationshipType();
-                    if (dbDatabase.DBHasDate)
+                    if (!relationship.FKCoumnIsNullable)
                     {
-                        dbReverseRelationship.RelationshipType.IsOtherSideMandatory = relationship.RelationInfo.AllFKSidesHavePKSide == true;
+                        dbReverseRelationship.RelationshipType.IsOtherSideMandatory = true;
+                    }
+                    else if (dbDatabase.DBHasDate)
+                    {
+                        dbReverseRelationship.RelationshipType.IsOtherSideMandatory = CheckFKTOPKRelationshipMandatory(relationship, relationship.RelationInfo);
                     }
                     else
-                        dbReverseRelationship.RelationshipType.IsOtherSideMandatory = !relationship.FKCoumnIsNullable;
+                        dbReverseRelationship.RelationshipType.IsOtherSideMandatory = false;
                     //dbReverseRelationship.RelationshipType.IsOtherSideTransferable = true;
                     dbReverseRelationship.RelationshipType.IsOtherSideCreatable = true;
 
@@ -1500,7 +1510,7 @@ namespace MyModelManager
         }
         private Relationship ToRelationshipDB(RelationshipDTO item, MyIdeaEntities projectContext)
         {
-            //** BizRelationship.ToRelationshipDB: 3424ff73-1465-4872-aa31-c2cecbba5f18
+            //** BizRelationship.ToRelationshipDB: c2cecbba5f18
             var dbRelationship = GetAllEnabledRelationships(projectContext, true).First(x => x.ID == item.ID);
             dbRelationship.Alias = item.Alias;
             dbRelationship.Name = item.Name;
@@ -1572,7 +1582,7 @@ namespace MyModelManager
         }
         public RelationshipDTO ToRelationshipDTO(DataAccess.Relationship item, bool withPair = false)
         {
-            //**BizRelationship.ToRelationshipDTO 2be49890-963b-4d7e-ace1-f30042893bc1
+            //**BizRelationship.ToRelationshipDTO: f30042893bc1
             var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.Relationship, item.ID.ToString(), withPair.ToString());
             if (cachedItem != null)
                 return (cachedItem as RelationshipDTO);
@@ -1669,7 +1679,7 @@ namespace MyModelManager
             result.Created = item.Created == true;
 
 
-         
+
             ColumnDTO fkColumn = null;
             if (result.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary)
                 fkColumn = result.RelationshipColumns.First().FirstSideColumn;
@@ -2208,7 +2218,7 @@ namespace MyModelManager
 
                     dbFKtoPKRelationship.RelationshipType.ManyToOneRelationshipType = new ManyToOneRelationshipType();
                     dbFKtoPKRelationship.RelationshipType.IsOtherSideCreatable = true;
-                    dbFKtoPKRelationship.RelationshipType.IsOtherSideMandatory = relationInfo.AllFKSidesHavePKSide == true;
+                    dbFKtoPKRelationship.RelationshipType.IsOtherSideMandatory = CheckFKTOPKRelationshipMandatory(relationship, relationInfo);
                     dbFKtoPKRelationship.TypeEnum = Convert.ToByte(Enum_RelationshipType.ManyToOne);
                 }
                 else if (targetRaltionshipType == Enum_RelationshipType.ImplicitOneToOne
@@ -2221,7 +2231,7 @@ namespace MyModelManager
 
                     dbFKtoPKRelationship.RelationshipType.ExplicitOneToOneRelationshipType = new ExplicitOneToOneRelationshipType();
                     dbFKtoPKRelationship.RelationshipType.IsOtherSideCreatable = true;
-                    dbFKtoPKRelationship.RelationshipType.IsOtherSideMandatory = relationInfo.AllFKSidesHavePKSide == true;
+                    dbFKtoPKRelationship.RelationshipType.IsOtherSideMandatory = CheckFKTOPKRelationshipMandatory(relationship, relationship.RelationInfo);
                     dbFKtoPKRelationship.TypeEnum = Convert.ToByte(Enum_RelationshipType.ExplicitOneToOne);
 
                 }
@@ -2270,6 +2280,18 @@ namespace MyModelManager
 
                 projectContext.SaveChanges();
 
+            }
+        }
+
+        private bool CheckFKTOPKRelationshipMandatory(RelationshipDTO relationship, RelationInfo relationInfo)
+        {
+            if (!relationship.FKCoumnIsNullable)
+            {
+                return true;
+            }
+            else
+            {
+                return relationship.RelationInfo.AllFKSidesHavePKSide == true;
             }
         }
 
@@ -2878,26 +2900,27 @@ namespace MyModelManager
 
         public string GetRelationshipTypeTitle(Enum_RelationshipType item)
         {
+            //به منظور ساده سازی اشاره به عناوین صریح و ضمنی و ... حذف شد
             if (item == Enum_RelationshipType.OneToMany)
                 return "یک به چند";
             else if (item == Enum_RelationshipType.ManyToOne)
                 return "چند به یک";
             else if (item == Enum_RelationshipType.ImplicitOneToOne)
-                return "یک به یک ضمنی";
+                return "یک به یک";
             else if (item == Enum_RelationshipType.ExplicitOneToOne)
-                return "یک به یک صریح";
+                return "یک به یک";
             else if (item == Enum_RelationshipType.SubToSuper)
-                return "زیرکلاس به ابرکلاس";
+                return "ارث بری";
             else if (item == Enum_RelationshipType.SuperToSub)
-                return "ابرکلاس به زیرکلاس";
+                return "ارث بری";
             //else if (item == Enum_RelationshipType.SubUnionToUnion_SubUnionHoldsKeys)
             //    return "زیراجتماع به ابراجتماع_کلید در زیراجتماع";
             else if (item == Enum_RelationshipType.SubUnionToUnion)
-                return "زیراجتماع به ابراجتماع_کلید در ابراجتماع";
+                return "اجتماع";
             //else if (item == Enum_RelationshipType.UnionToSubUnion_SubUnionHoldsKeys)
             //    return "ابراجتماع به زیرجتماع_کلید در زیراجتماع";
             else if (item == Enum_RelationshipType.UnionToSubUnion)
-                return "ابراجتماع به زیرجتماع_کلید در ابراجتماع";
+                return "اجتماع";
             return "نامشخص";
         }
     }

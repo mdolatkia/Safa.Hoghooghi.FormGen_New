@@ -241,18 +241,20 @@ namespace MyUIGenerator
             return controlManager;
         }
 
-        public I_SimpleControlManagerOne GenerateSimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, bool hasRangeOfValues, List<SimpleSearchOperator> operators)
+        public I_SimpleControlManagerOne GenerateSimpleControlManagerForOneDataForm(ColumnDTO column, ColumnUISettingDTO columnSetting, List<SimpleSearchOperator> operators)
         {
-            var controlManager = new SimpleControlManagerForOneDataForm(column, columnSetting, hasRangeOfValues, operators);
+            // UIManager.GenerateSimpleControlManagerForOneDataForm: c2f4fcb37722
+            var controlManager = new SimpleControlManagerForOneDataForm(column, columnSetting, operators);
             //if (labelControlManager)
             //{
             //    controlManager.LabelControlManager = new LabelControlManager(labelText, true);
             //}
             return controlManager;
         }
-        public I_SimpleControlManagerMultiple GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO, bool hasRangeOfValues)
+        public I_SimpleControlManagerMultiple GenerateSimpleControlManagerForMultipleDataForm(ColumnDTO column, ColumnUISettingDTO columnUISettingDTO)
         {
-            var controlManager = new SimpleControlManagerForMultipleDataForm(column, columnUISettingDTO, hasRangeOfValues);
+            // UIManager.GenerateSimpleControlManagerForMultipleDataForm: 6533d162a478
+            var controlManager = new SimpleControlManagerForMultipleDataForm(column, columnUISettingDTO);
             //if (labelControlManager)
             //{
             //    controlManager.LabelControlManager = new LabelControlManager(labelText, false);

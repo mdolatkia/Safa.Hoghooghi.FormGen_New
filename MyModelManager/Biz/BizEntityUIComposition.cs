@@ -39,7 +39,7 @@ namespace MyModelManager
         //}
         public EntityUICompositionDTO GetOrCreateEntityUIComposition(int entityID)
         {
-            // BizEntityUIComposition.GetOrCreateEntityUIComposition: 3adc6e16-aff9-4bc6-a425-33f45647385a
+            // BizEntityUIComposition.GetOrCreateEntityUIComposition: 33f45647385a
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
             DR_Requester requester = new DR_Requester();
             requester.SkipSecurity = true;
@@ -48,7 +48,7 @@ namespace MyModelManager
         }
         public EntityUICompositionDTO GetOrCreateEntityUIComposition(int entityID, List<ColumnDTO> columns, List<RelationshipDTO> relationships)
         {
-            //** 6c3e6f7f-c2b7-41bb-8cbb-fdb08b6bb258
+            //** BizEntityUIComposition.GetOrCreateEntityUIComposition: fdb08b6bb258
 
             //اینجا نیازی به requester
             // نیست چون ستونها و روابط از بیرون میان و چک شده هستن
@@ -624,19 +624,19 @@ namespace MyModelManager
             //AddRelationshipUICompositionItem(tabPage, relationship, 0);
         }
 
-        private List<RelationshipDTO> GetCandidUpdateRelationships(EntityUICompositionDTO entityUICompositions, TableDrivedEntityDTO entity)
-        {
-            List<RelationshipDTO> rels = new List<RelationshipDTO>();
-            foreach (var relationship in entity.Relationships.Where(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign &&
-            x.DataEntryEnabled == true && x.IsOtherSideDirectlyCreatable))
-            {
-                if (!RelationshipExistsInTree(entityUICompositions, relationship))
-                {
-                    rels.Add(relationship);
-                }
-            }
-            return rels;
-        }
+        //private List<RelationshipDTO> GetCandidUpdateRelationships(EntityUICompositionDTO entityUICompositions, TableDrivedEntityDTO entity)
+        //{
+        //    List<RelationshipDTO> rels = new List<RelationshipDTO>();
+        //    foreach (var relationship in entity.Relationships.Where(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign &&
+        //    x.DataEntryEnabled == true && x.IsOtherSideDirectlyCreatable))
+        //    {
+        //        if (!RelationshipExistsInTree(entityUICompositions, relationship))
+        //        {
+        //            rels.Add(relationship);
+        //        }
+        //    }
+        //    return rels;
+        //}
 
         private bool RelationshipExistsInTree(EntityUICompositionDTO rootItem, RelationshipDTO relationship)
         {

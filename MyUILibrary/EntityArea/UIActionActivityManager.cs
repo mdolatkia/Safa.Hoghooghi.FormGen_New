@@ -210,7 +210,7 @@ namespace MyUILibrary.EntityArea
         }
         private void CheckColumnValueRangeStates()
         {
-            //**f1469379-7f8b-4bc7-b9b5-403d341eba76
+            //** UIActionActivityManager.CheckColumnValueRangeStates: 403d341eba76
             if (EditArea.SimpleColumnControls.Any(x => x.Column.ColumnValueRange != null && x.Column.ColumnValueRange.TagColumnID != 0))
             {
                 foreach (var item in EditArea.SimpleColumnControls.Where(x => x.Column.ColumnValueRange != null && x.Column.ColumnValueRange.TagColumnID != 0))

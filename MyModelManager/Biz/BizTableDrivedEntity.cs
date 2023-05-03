@@ -243,7 +243,7 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 return GetAllEnabledOrginalEntitiesExceptViews(projectContext)
-                       .Where(x => !x.EntitySearch.Any() && x.Table.DBSchema.DatabaseInformationID == databaseID ).Select(x => x.ID).ToList();
+                       .Where(x => !x.EntitySearch.Any() && x.Table.DBSchema.DatabaseInformationID == databaseID).Select(x => x.ID).ToList();
             }
         }
 
@@ -254,7 +254,7 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 return GetAllEnabledOrginalEntitiesExceptViews(projectContext)
-                       .Where(x => !x.EntityListView.Any() && x.Table.DBSchema.DatabaseInformationID == databaseID ).Select(x => x.ID).ToList();
+                       .Where(x => !x.EntityListView.Any() && x.Table.DBSchema.DatabaseInformationID == databaseID).Select(x => x.ID).ToList();
 
             }
         }
@@ -264,7 +264,7 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 return GetAllEnabledOrginalEntitiesExceptViews(projectContext)
-                     .Where(x => x.SearchInitially == null && x.Table.DBSchema.DatabaseInformationID == databaseID ).Select(x => x.ID).ToList();
+                     .Where(x => x.SearchInitially == null && x.Table.DBSchema.DatabaseInformationID == databaseID).Select(x => x.ID).ToList();
             }
         }
 
@@ -430,7 +430,7 @@ namespace MyModelManager
         }
         private DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, EntityUICompositionDTO uiCompositionDTO, DataEntryRelationshipDTO parentRelationship = null)
         {
-            //** aa7aa0ad-87b7-4842-b854-fedaef41c5c7
+            //** BizTableDrivedEntity.GetDataEntryEntity: fedaef41c5c7
 
             var entity = GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships);
             var finalEntity = CheckDataEntryPermission(requester, entity, true, parentRelationship);
@@ -655,6 +655,7 @@ namespace MyModelManager
         private bool ShouldSkipRelationshipDepended(DataEntryRelationshipDTO parentRelationship, RelationshipDTO relationship, IntracionMode intracionMode)
         {
             //Entity2IsIndependent آیا این خصوصیت مناسبه یا وجود در منوها جایگزین بشه
+            //BizTableDrivedEntity.ShouldSkipRelationshipDepended:  57991005621a
             if ((parentRelationship.IntracionMode == IntracionMode.CreateDirect || parentRelationship.IntracionMode == IntracionMode.CreateSelectDirect)
                 && parentRelationship.Relationship.Entity2IsIndependent)
             {
@@ -708,7 +709,7 @@ namespace MyModelManager
 
         private TableDrivedEntityDTO CheckDataEntryPermission(DR_Requester requester, TableDrivedEntityDTO entity, bool dataEntry, DataEntryRelationshipDTO parentRelationship = null)
         {
-            //** BizTableDrivedEntity.CheckDataEntryPermission: 46239ff9-cd78-4831-ad4a-8be394c313b9
+            //** BizTableDrivedEntity.CheckDataEntryPermission: 8be394c313b9
             //باید روابط اجباری همه برای ورود اطلاعلات فعال باشند. بعداً این کنترلها چک شود
             BizColumn bizColumn = new MyModelManager.BizColumn();
             BizRelationship bizRelationship = new BizRelationship();
@@ -1208,7 +1209,7 @@ namespace MyModelManager
         //}
         private TableDrivedEntityDTO ToTableDrivedEntityDTO(DataAccess.TableDrivedEntity item, EntityColumnInfoType columnInfoType, EntityRelationshipInfoType relationshipInfoType, bool specializeRelationships)
         {
-
+            // BizTableDrivedEntity.ToTableDrivedEntityDTO: 9ced8aaf7fb6
             // ستونهای disable از لیست ستونها حذف میشوند
 
 
@@ -1312,7 +1313,7 @@ namespace MyModelManager
                 BizISARelationship bizISARelationship = new BizISARelationship();
                 BizUnionRelationship bizUnionRelationship = new MyModelManager.BizUnionRelationship();
                 BizRelationship bizRelationship = new BizRelationship();
-                foreach (var relationship in item.Relationship.Where(x => x.Removed != true))
+                foreach (var relationship in bizRelationship.GetEnabledRelationships(item))
                 {
                     var relationshipDTO = bizRelationship.ToRelationshipDTO(relationship, true);
 

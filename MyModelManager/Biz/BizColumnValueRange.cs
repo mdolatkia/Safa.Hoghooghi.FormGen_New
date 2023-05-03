@@ -116,6 +116,7 @@ namespace MyModelManager
         }
         public bool UpdateColumnValueRange(ColumnValueRangeDTO message)
         {
+            //BizColumnValueRange.UpdateColumnValueRange: 1abc824a1aa2
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = projectContext.Column.First(x => x.ID == message.ID);

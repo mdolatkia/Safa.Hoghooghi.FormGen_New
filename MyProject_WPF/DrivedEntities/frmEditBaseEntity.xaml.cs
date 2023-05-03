@@ -29,6 +29,7 @@ namespace MyProject_WPF
         EditBaseEntityDTO Message { set; get; }
         public frmEditBaseEntity(int entityID)
         {
+            //frmEditBaseEntity: e6c6227212d5
             InitializeComponent();
             EntityID = entityID;
             //  Inheritance = inheritance;

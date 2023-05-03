@@ -294,7 +294,7 @@ namespace MyProject_WPF
         {
             return Task.Run(() =>
             {
-                var result = bizRelationship.GetEnabledRelationships(Database.ID);
+                var result = bizRelationship.GetEnabledRelationships1(Database.ID);
                 return result;
             });
         }
