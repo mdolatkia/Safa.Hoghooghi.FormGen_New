@@ -391,11 +391,9 @@ namespace MyUILibrary.EntityArea
         DataEntryEntityDTO _DataEntryEntity;
         public DataEntryEntityDTO DataEntryEntity
         {
-            //** 105bf5e0-8fc2-484d-aec9-fc084e9c81fc
+            //** BaseEditEntityArea.DataEntryEntity: fc084e9c81fc
             get
             {
-
-
                 if (AreaInitializer.SourceRelationColumnControl != null)
                 {
                     if (AreaInitializer.SourceRelationColumnControl.DataEntryRelationship.TargetDataEntryEntity == null)
@@ -551,7 +549,7 @@ namespace MyUILibrary.EntityArea
 
         public static Tuple<I_EditEntityArea, string> GetEditEntityArea(EditEntityAreaInitializer initializer)
         {
-            //** 1a7810b0-c6dd-4c12-8ad6-9ad46f1525db
+            //** BaseEditEntityArea.GetEditEntityArea: 9ad46f1525db
             BaseEditEntityArea result = null;
             var simpleEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetSimpleEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), initializer.EntityID);
             if (simpleEntity == null)
@@ -595,7 +593,7 @@ namespace MyUILibrary.EntityArea
 
         public void SetAreaInitializerAndGenerateView(EditEntityAreaInitializer initParam)
         {
-            //** e2265d8f-29cf-4852-909d-079c6e89e544
+            //** BaseEditEntityArea.SetAreaInitializerAndGenerateView: 079c6e89e544
             AreaInitializer = initParam;
 
             if (initParam.Preview)
@@ -1173,7 +1171,7 @@ namespace MyUILibrary.EntityArea
 
         public void GenerateDataView()
         {
-            //** 8e0354f0-b8dd-4fa4-909b-4ba73472fca2
+            //** BaseEditEntityArea.GenerateDataView: 4ba73472fca2
             if (DataViewGeneric == null)
             {
                 if (this is I_EditEntityAreaOneData)
@@ -1181,8 +1179,9 @@ namespace MyUILibrary.EntityArea
                 else if (this is I_EditEntityAreaMultipleData)
                     (this as I_EditEntityAreaMultipleData).DataView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateEditEntityAreaMultipleDataView(DataEntryEntity.UICompositions.EntityUISetting);
             }
-            GenerateControls();
             GenerateCommands();
+            GenerateControls();
+          
             if (AreaInitializer.Preview)
                 return;
             if (AreaInitializer.SourceRelationColumnControl == null)
@@ -1872,6 +1871,7 @@ namespace MyUILibrary.EntityArea
         }
         private void GenerateCommands()
         {
+            //BaseEditEntityArea.GenerateCommands: ada6635d8043
             if (Commands == null)
                 Commands = new List<I_Command>();
             DataViewGeneric.ClearCommands();
@@ -1902,6 +1902,7 @@ namespace MyUILibrary.EntityArea
                 Commands.Add(letterCommand);
                 DataViewGeneric.AddCommand(letterCommand.CommandManager, true);
             }
+
             var clearCommand = new ClearCommand(this);
             Commands.Add(clearCommand);
             DataViewGeneric.AddCommand(clearCommand.CommandManager);//, (!(this is I_EditEntityAreaMultipleData) && AreaInitializer.SourceRelationColumnControl != null));
@@ -1919,14 +1920,6 @@ namespace MyUILibrary.EntityArea
                 var deleteCommand = new DeleteCommand(this);
                 Commands.Add(deleteCommand);
                 DataViewGeneric.AddCommand(deleteCommand.CommandManager);
-
-
-                //var archivePermission = AgentUICoreMediator.GetSubSystemAssignedPermissions("Archive");
-                //if (!archivePermission.GrantedActions.Any(y => y == SecurityAction.NoAccess))
-                //{
-
-
-                //}
 
                 var dataViewCommand = new DataViewCommand(this);
                 Commands.Add(dataViewCommand);
@@ -1952,7 +1945,7 @@ namespace MyUILibrary.EntityArea
             if (AreaInitializer.IntracionMode == IntracionMode.CreateInDirect
          || AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect)
             {
-                var saveCloseCommand = new SaveAndCloseDialogCommand(this);
+                var saveCloseCommand = new UpdateAndCloseDialogCommand(this);
                 Commands.Add(saveCloseCommand);
                 DataViewGeneric.AddCommand(saveCloseCommand.CommandManager);
                 //این بعدا چک شود که ضروری است؟

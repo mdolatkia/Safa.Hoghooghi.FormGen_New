@@ -14,6 +14,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityAreaMultipleData EditArea { set; get; }
         public RemoveCommand(I_EditEntityAreaMultipleData editArea) : base()
         {
+            //RemoveCommand: 43c89dd5b4bf
             EditArea = editArea;
             //if (AgentHelper.GetAppMode() == AppMode.Paper)
             //    CommandManager.SetTitle("Remove");

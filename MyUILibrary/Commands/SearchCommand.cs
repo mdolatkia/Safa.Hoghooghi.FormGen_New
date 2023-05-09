@@ -14,6 +14,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityArea EditArea { set; get; }
         public SearchCommand(I_EditEntityArea editArea) : base()
         {
+            //SearchCommand: cda8ae466b21
             EditArea = editArea;
             //if (AgentHelper.GetAppMode() == AppMode.Paper)
             //    CommandManager.SetTitle("Search");

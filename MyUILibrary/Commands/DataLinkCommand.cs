@@ -15,6 +15,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityArea EditArea { set; get; }
         public DataLinkCommand(I_EditEntityArea editArea) : base()
         {
+            // DataLinkCommand: 3de1bf09614c
             EditArea = editArea;
             CommandManager.SetTitle("لینک داده");
             CommandManager.ImagePath = "Images//Close.png";

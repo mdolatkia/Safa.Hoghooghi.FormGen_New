@@ -114,7 +114,7 @@
     <Compile Include="Commands\DataViewCommand.cs" />
     <Compile Include="Commands\DeleteCommand.cs" />
     <Compile Include="Commands\ArchiveCommand.cs" />
-    <Compile Include="Commands\SaveAndCloseDialogCommand.cs" />
+    <Compile Include="Commands\UpdateAndCloseDialogCommand.cs" />
     <Compile Include="Commands\InfoCommand.cs" />
     <Compile Include="Commands\LetterCommand.cs" />
     <Compile Include="EntityArea\EditEntityArea\EditAreaDataManager.cs" />

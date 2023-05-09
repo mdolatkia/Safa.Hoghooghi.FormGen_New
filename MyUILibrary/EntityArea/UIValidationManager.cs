@@ -203,6 +203,7 @@ namespace MyUILibrary.EntityArea
         }
         private void ValidateISARelationships(DP_FormDataRepository data)
         {
+            //UIValidationManager.ValidateISARelationships: 3f64c5907ac5
             //ایزه ریلیشنهای ساب به سوپر
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
@@ -369,6 +370,7 @@ namespace MyUILibrary.EntityArea
 
         private void ValidateUnionRelationships(DP_FormDataRepository data)
         {
+        //UIValidationManager.ValidateUnionRelationships: e50167077e44
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
                 if (relationshipControl.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion)

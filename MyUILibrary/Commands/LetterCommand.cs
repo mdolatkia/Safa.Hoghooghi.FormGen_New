@@ -15,6 +15,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityArea EditArea { set; get; }
         public LetterCommand(I_EditEntityArea editArea) : base()
         {
+            // LetterCommand: ae44e26fef6b
             EditArea = editArea;
             CommandManager.SetTitle("نامه");
             CommandManager.ImagePath = "Images//letter.png";

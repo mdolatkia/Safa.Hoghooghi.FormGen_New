@@ -423,6 +423,7 @@ namespace MyUIGenerator
 
         public I_View_EditEntityAreaMultiple GenerateEditEntityAreaMultipleDataView(EntityUISettingDTO entityUISettingDTO)
         {
+            //UIManager.GenerateEditEntityAreaOneDataView: 346253bf3bf5
             I_View_EditEntityAreaMultiple view = new UC_EditEntityAreaMultiple();
             (view as UserControl).Margin = new Thickness(0, 0, 0, 5);
             //  view.grdArea.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.LightPink);
@@ -430,6 +431,7 @@ namespace MyUIGenerator
         }
         public I_View_EditEntityAreaDataView GenerateEditEntityAreaOneDataView(EntityUISettingDTO entityUISettingDTO)
         {
+            //UIManager.GenerateEditEntityAreaOneDataView: 7c2a866deda1
             //GridSetting gridSetting = new UIControlHelper.GridSetting();
             short columnsCount = 0;
             if (entityUISettingDTO == null || entityUISettingDTO.UIColumnsCount == 0)

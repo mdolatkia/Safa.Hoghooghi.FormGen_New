@@ -15,6 +15,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityArea EditArea { set; get; }
         public GridViewCommand(I_EditEntityArea editArea) : base()
         {
+            // GridViewCommand: a7111982b91c
             EditArea = editArea;
             CommandManager.SetTitle("گرید داده");
             CommandManager.ImagePath = "Images//grid.png";

@@ -15,6 +15,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityArea EditArea { set; get; }
         public DataViewCommand(I_EditEntityArea editArea) : base()
         {
+            // DataViewCommand: 939641817cea
             EditArea = editArea;
             CommandManager.SetTitle("نمایش داده");
             CommandManager.ImagePath = "Images//grid.png";

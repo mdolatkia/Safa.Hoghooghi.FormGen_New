@@ -362,7 +362,8 @@ namespace MyModelManager
         }
         public bool EntityIsReadonly(DR_Requester requester, TableDrivedEntity entity)
         {
-            //** 224c5e70-1ba3-43d1-a47b-a8c7523b7591
+
+            //** BizTableDrivedEntity.EntityIsReadonly: a8c7523b7591
             if (entity.IsReadonly)
                 return true;
             else
@@ -388,7 +389,7 @@ namespace MyModelManager
         }
         public bool DataHasNotDeleteAccess(DR_Requester requester, TableDrivedEntity entity)
         {
-            // a34e3c07-b7ca-4b78-9b00-f7b87aadf83b
+            // BizTableDrivedEntity.DataHasNotDeleteAccess: f7b87aadf83b
             if (entity.IsReadonly)
                 return true;
             else
@@ -426,6 +427,7 @@ namespace MyModelManager
         }
         public DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, DataEntryRelationshipDTO parentRelationship = null)
         {
+
             return GetDataEntryEntity(requester, entityID, null, parentRelationship);
         }
         private DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, EntityUICompositionDTO uiCompositionDTO, DataEntryRelationshipDTO parentRelationship = null)
@@ -525,15 +527,9 @@ namespace MyModelManager
                     relItem.TargetDataEntryEntity = GetDataEntryEntity(requester, relationship.EntityID2, relItem);
                 }
                 result.Relationships.Add(relItem);
-
-
-
             }
             SetDataEntryEntityUIComposition(result, finalEntity, uiCompositionDTO);
-
             return result;
-
-
         }
 
         private void SetDataEntryEntityUIComposition(DataEntryEntityDTO dataEntryDTO, TableDrivedEntityDTO finalEntity, EntityUICompositionDTO currentUIComposition)
@@ -611,21 +607,21 @@ namespace MyModelManager
 
         private RelationshipSkipMode GetRelationshipSkipMode(DataEntryRelationshipDTO parentRelationship, RelationshipDTO relationship)
         {
-            //** 2a1c0f40-2332-491a-a58d-20a74a0bbfe2
+            //** BizTableDrivedEntity.GetRelationshipSkipMode: 20a74a0bbfe2
             if (parentRelationship != null)
             {
                 if (IsReverseRelation(parentRelationship.Relationship, relationship))
                     return RelationshipSkipMode.MustSkip;
 
                 if (relationship.TypeEnum == Enum_RelationshipType.SuperToSub
-               || relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion
-               || relationship.TypeEnum == Enum_RelationshipType.UnionToSubUnion)
+                 || relationship.TypeEnum == Enum_RelationshipType.UnionToSubUnion)
                 {
                     if (relationship.TypeEnum == Enum_RelationshipType.SuperToSub)
                     {
                         var isaRelationship = (relationship as SuperToSubRelationshipDTO).ISARelationship;
 
-                        if (parentRelationship.Relationship is SubToSuperRelationshipDTO &&
+                        if (parentRelationship.Relationship.TypeEnum == Enum_RelationshipType.SubToSuper &&
+                            parentRelationship.Relationship is SubToSuperRelationshipDTO &&
                             isaRelationship.ID == (parentRelationship.Relationship as SubToSuperRelationshipDTO).ISARelationship.ID)
                         {
                             // اگر پدر ساب به سوپر باشد و این رابطه از مابقی  سوپر به سابهای  همان رابطه ارث بری پدر باشد
@@ -639,7 +635,8 @@ namespace MyModelManager
                     {
                         var unionRelationship = (relationship as UnionToSubUnionRelationshipDTO).UnionRelationship;
 
-                        if (parentRelationship.Relationship is SubUnionToSuperUnionRelationshipDTO
+                        if (parentRelationship.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion &&
+                            parentRelationship.Relationship is SubUnionToSuperUnionRelationshipDTO
                             && unionRelationship.ID == (parentRelationship.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship.ID)
                         {
                             // اگر پدر زیر اتحاد به اتحاد باشد و این رابطه از مابقی  اتحاد به زیر اتحادهای  همان رابطه اتحاد پدر باشد
@@ -719,6 +716,7 @@ namespace MyModelManager
             entity.IsReadonly = EntityIsReadonly(requester, entity.ID);
             entity.HasNotDeleteAccess = DataHasNotDeleteAccess(requester, entity.ID);
 
+            //بررسی شود که آیا دسترسی ادیت و ریدونلی برای ستونها و روابط جداگانه چک می شود. زیرا اینجا کاربر میخواهد ادیت کند و...
             foreach (var rel in entity.Relationships)
             {
                 bool relAccess = bizRelationship.DataIsAccessable(requester, rel.ID, false, true);

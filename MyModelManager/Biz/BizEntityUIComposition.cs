@@ -140,7 +140,7 @@ namespace MyModelManager
 
         private void FKRelationshipHasReservedPosition(List<RelationshipDTO> relationships, RelationshipDTO relationshipUI)
         {
-            //** 1cf96481-17c4-4d0a-96e1-7387bc372bcb
+            //** BizEntityUIComposition.FKRelationshipHasReservedPosition: 7387bc372bcb
             if (relationshipUI.FKReservedPosition == null)
             {
                 if (relationshipUI.TypeEnum == Enum_RelationshipType.UnionToSubUnion)
@@ -210,7 +210,7 @@ namespace MyModelManager
         }
         private List<Tuple<int, string, List<RelationshipDTO>>> GetOtherRelationshipsGroups(List<RelationshipDTO> relationships)
         {
-            //** 1ae24738-9276-424d-922e-5d69f05cfdd5
+            //**BizEntityUIComposition.GetOtherRelationshipsGroups: 5d69f05cfdd5
             List<Tuple<int, string, List<RelationshipDTO>>> result = new List<Tuple<int, string, List<RelationshipDTO>>>();
             foreach (var relationship in relationships)
             {

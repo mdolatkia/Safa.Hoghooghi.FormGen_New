@@ -14,6 +14,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityArea EditArea { set; get; }
         public InfoCommand(I_EditEntityArea editArea) : base()
         {
+            // InfoCommand: 83c8ff061a3d
             EditArea = editArea;
             CommandManager.SetTitle("اطلاعات");
             CommandManager.ImagePath = "Images//info.png";

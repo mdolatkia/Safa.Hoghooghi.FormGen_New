@@ -15,6 +15,7 @@ namespace MyUILibrary.EntityArea
     {
         public EditEntityAreaInitializer()
         {
+            // EditEntityAreaInitializer: 7bb9feae0514
             Datas = new List<DP_FormDataRepository>();
             UISettings = new TemplateEntityUISettings();
             //FormAttributes = new FormAttributes();

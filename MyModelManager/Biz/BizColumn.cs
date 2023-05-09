@@ -854,7 +854,7 @@ namespace MyModelManager
         }
         public bool DataIsAccessable(DR_Requester requester, Column column)
         {
-            //** 200a1e5f-f17f-42ef-9bc4-0c6adb5b0bdc
+            //** BizColumn.DataIsAccessable: 0c6adb5b0bdc
             SecurityHelper securityHelper = new SecurityHelper();
             if (column.IsDisabled == true)
                 return false;
@@ -884,7 +884,7 @@ namespace MyModelManager
         }
         public bool DataIsReadonly(DR_Requester requester, Column column)
         {
-            //** d6858f16-a243-4655-be6e-46ee61f89778
+            //** BizColumn.DataIsReadonly: 46ee61f89778
             SecurityHelper securityHelper = new SecurityHelper();
 
             if (column.IsReadonly == true)

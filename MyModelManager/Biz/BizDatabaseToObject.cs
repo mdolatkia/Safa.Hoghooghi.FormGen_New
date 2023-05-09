@@ -87,6 +87,7 @@ namespace MyModelManager
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
         public List<ObjectDTO> GetDatabaseChildObjects(DatabaseObjectCategory parentCategory, string parentTitle, int parentIdentity)
         {
+
             // BizDatabaseToObject.GetDatabaseChildObjects: c1e9819478c9
             List<ObjectDTO> result = new List<ObjectDTO>();
             using (var myProjectContext = new MyIdeaEntities())

@@ -127,7 +127,8 @@ namespace MyUILibrary
         }
         private void LoginForm_LoginRequested(object sender, LoginRequestedArg e)
         {
-            var result = AgentUICoreMediator.GetAgentUICoreMediator.securityManagerService.Login(e.UserName, e.Password);
+        //AgentUICoreMediator.LoginForm_LoginRequested: 99b51194b636
+           var result = AgentUICoreMediator.GetAgentUICoreMediator.securityManagerService.Login(e.UserName, e.Password);
             if (result.Successful)
             {
                 UIManager.PrepareMainForm();
@@ -259,6 +260,7 @@ namespace MyUILibrary
 
         private void SecuritySettings_Clicked(object sender, EventArgs e)
         {
+            // AgentUICoreMediator.SecuritySettings_Clicked: 3c8d2871a4e2
             var SecuritySetting = UIManager.GetSecuritySettingForm();
 
             SecuritySetting.AdminOrganizationPostsConfirmed += SecuritySetting_AdminOrganizationPostsConfirmed;
@@ -284,12 +286,6 @@ namespace MyUILibrary
                     SecuritySetting.ConfirmedOrganizatoinPosts = UserInfo.AdminSecurityInfo.SelectedOrganizationPosts;
                     SecuritySetting.ByPassSecurityCheckBoxValue = UserInfo.AdminSecurityInfo.ByPassSecurity;
                 }
-                //else
-                //{
-
-
-                //}
-
             }
             else
                 SecuritySetting.ShowAdminTab = false;
@@ -468,7 +464,7 @@ namespace MyUILibrary
         List<NavigationItemDTO> allNavigationTreeItems { set; get; }
 
 
-        //** 5e93e360-7ae9-4800-a97f-39c7547dd08c
+        //** AgentUICoreMediator.ShowNavigationTree: 39c7547dd08c
         private void ShowNavigationTree()
         {
             allNavigationTreeItems = navigationTreeManagerService.GetNavigationTree(GetRequester());

@@ -31,9 +31,10 @@ namespace MyProject_WPF
         //List<int> DatabaseIDs { set; get; }
         //     bool IgnoreAlreadyInNavigationTree { set; get; }
 
-        // ** 11d98350-9239-4fbd-9ab3-16800307f2f0
+  
         public frmNavigationTree()
         {
+            //  frmNavigationTree: 16800307f2f0
             InitializeComponent();
             // this.Loaded += frmNavigationTree_Loaded;
             SetDatabaseLookup();
@@ -44,7 +45,6 @@ namespace MyProject_WPF
             //this.frmDBTree.treeDBObjects.MouseLeftButtonDown += frmDBTree_MouseLeftButtonDown;
             treeNavigation.DragOver += treeNavigation_DragOver;
             treeNavigation.Drop += treeNavigation_Drop;
-
             treeDBObjects.MouseMove += treeDBObjects_MouseMove;
 
             bizDatabaseToObject.IgnoreViews = false;
@@ -316,6 +316,7 @@ namespace MyProject_WPF
 
         private FrameworkElement GetNodeHeader(string title, DatabaseObjectCategory type, EntityObjectType entityType = EntityObjectType.None)
         {
+       // frmNavigationTree.GetNodeHeader: ed015b6c86a7
             StackPanel pnlHeader = new StackPanel();
             System.Windows.Controls.TextBlock label = new System.Windows.Controls.TextBlock();
             label.Text = title;

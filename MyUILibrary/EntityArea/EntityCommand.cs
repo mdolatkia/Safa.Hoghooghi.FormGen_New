@@ -16,6 +16,7 @@ namespace MyUILibrary.EntityArea
 {
     public class EntityCommand : BaseCommand
     {
+        // EntityCommand: 1c0a26563d22
         //CommandAttributes CommandAttributes
         EntityCommandDTO EntityCommandDTO { set; get; }
         I_EditEntityArea EditArea { set; get; }

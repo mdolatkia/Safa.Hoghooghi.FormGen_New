@@ -14,6 +14,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityArea EditArea { set; get; }
         public DeleteCommand(I_EditEntityArea editArea) : base()
         {
+            //DeleteCommand: a29b9e9cf377
             EditArea = editArea;
             //if (AgentHelper.GetAppMode() == AppMode.Paper)
             //    CommandManager.SetTitle("Delete");

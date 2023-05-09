@@ -15,6 +15,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityArea EditArea { set; get; }
         public LogReportCommand(I_EditEntityArea editArea) : base()
         {
+            //LogReportCommand: ffc2a3c7a92f
             EditArea = editArea;
             CommandManager.SetTitle("گزارش لاگ");
             CommandManager.ImagePath = "Images//zoom_extend.png";

@@ -15,6 +15,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityArea EditArea { set; get; }
         public ArchiveCommand(I_EditEntityArea editArea) : base()
         {
+            //ArchiveCommand: dc80ddb6a7f3
             EditArea = editArea;
             CommandManager.SetTitle("آرشیو");
             CommandManager.ImagePath = "Images//archive.png";

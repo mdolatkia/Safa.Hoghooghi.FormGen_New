@@ -15,6 +15,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityArea EditArea { set; get; }
         public GraphCommand(I_EditEntityArea editArea) : base()
         {
+            // GraphCommand: 6ef5fd4bbae5
             EditArea = editArea;
             CommandManager.SetTitle("گراف داده");
             CommandManager.ImagePath = "Images//Close.png";

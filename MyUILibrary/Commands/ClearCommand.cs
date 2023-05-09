@@ -14,6 +14,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityArea EditArea { set; get; }
         public ClearCommand(I_EditEntityArea editArea) : base()
         {
+            // ClearCommand: d587de1402da
             EditArea = editArea;
             CommandManager.SetTitle("پاک کردن");
             CommandManager.ImagePath = "Images//clear.png";

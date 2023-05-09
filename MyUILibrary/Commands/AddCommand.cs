@@ -15,6 +15,8 @@ namespace MyUILibrary.EntityArea.Commands
         I_EditEntityAreaMultipleData EditArea { set; get; }
         public AddCommand(I_EditEntityAreaMultipleData editArea) : base()
         {
+            //AddCommand: 5168bfcab87f
+
             EditArea = editArea;
             //if (AgentHelper.GetAppMode() == AppMode.Paper)
             //    CommandManager.SetTitle("Add");

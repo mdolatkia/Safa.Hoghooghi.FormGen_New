@@ -10,11 +10,12 @@ using System.Threading.Tasks;
 
 namespace MyUILibrary.EntityArea.Commands
 {
-    class SaveAndCloseDialogCommand : BaseCommand
+    class UpdateAndCloseDialogCommand : BaseCommand
     {
         I_EditEntityArea EditArea { set; get; }
-        public SaveAndCloseDialogCommand(I_EditEntityArea editArea) : base()
+        public UpdateAndCloseDialogCommand(I_EditEntityArea editArea) : base()
         {
+            // UpdateAndCloseDialogCommand: dc6ea404ac9d
             EditArea = editArea;
             //if (AgentHelper.GetAppMode() == AppMode.Paper)
             //    CommandManager.SetTitle("Save and close");

@@ -73,6 +73,7 @@ namespace MyUILibrary.EntityArea
 
         private void CheckUnionDeterminerStates()
         {
+            //UIActionActivityManager.CheckUnionDeterminerStates: 0199f3874e7c
             if (EditArea.RelationshipColumnControls.Any(x => x.Relationship.TypeEnum == Enum_RelationshipType.UnionToSubUnion))
             {
                 foreach (var item in EditArea.RelationshipColumnControls.Where(x => x.Relationship.TypeEnum == Enum_RelationshipType.UnionToSubUnion))
@@ -139,6 +140,7 @@ namespace MyUILibrary.EntityArea
 
         private void CheckISADeterminerStates()
         {
+            //UIActionActivityManager.CheckISADeterminerStates: 56344e195b36
             if (EditArea.RelationshipColumnControls.Any(x => x.Relationship.TypeEnum == Enum_RelationshipType.SuperToSub))
             {
                 foreach (var item in EditArea.RelationshipColumnControls.Where(x => x.Relationship.TypeEnum == Enum_RelationshipType.SuperToSub))

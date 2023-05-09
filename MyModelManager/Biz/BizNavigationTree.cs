@@ -16,7 +16,7 @@ namespace MyModelManager
         BizEntityReport bizEntityReport = new BizEntityReport();
         public NavigationTreeDTO GetNavigationTree(DR_Requester requester)
         {
-            //** 220a1cf0-bfce-4db2-8949-e807e75a4ae6
+            //** BizNavigationTree.GetNavigationTree: 807e75a4ae6
             NavigationTreeDTO result = new NavigationTreeDTO();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {

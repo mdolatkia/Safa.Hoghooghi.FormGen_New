@@ -19,6 +19,7 @@ namespace MyUILibrary.EntityArea.Commands
         List<DP_DataRepository> Datas { set; get; }
         public SaveCommand(I_EditEntityArea editArea) : base()
         {
+            // SaveCommand: 21d90a42267d
             EditArea = editArea;
             //if (AgentHelper.GetAppMode() == AppMode.Paper)
             //    CommandManager.SetTitle("Save");
