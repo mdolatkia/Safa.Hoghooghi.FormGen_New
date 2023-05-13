@@ -76,7 +76,7 @@ namespace MyModelManager
                         {
                             var tail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(item.EntityRelationshipTail);
                             var entityReportDTO = new EntitySearchableReportDTO();
-                            bizEntitySearchableReport.ToEntitySearchableReportDTO( requester, item.EntitySearchableReport, entityReportDTO,  withDetails);
+                            bizEntitySearchableReport.ToEntitySearchableReportDTO(requester, item.EntitySearchableReport, entityReportDTO, withDetails);
                             result.SearchableReportRelationships.Add(ToDataMenuSearchableReportRelationshipDTO(item, tail, entityReportDTO));
                         }
                     }
@@ -102,7 +102,7 @@ namespace MyModelManager
                     if (bizEntityReport.DataIsAccessable(requester, item.EntityDataItemReportID))
                     {
                         var entityReportDTO = new EntityDataItemReportDTO();
-                        bizEntityDataItemReport.ToEntityDataItemReportDTO(requester, item.EntityDataItemReport, entityReportDTO,false);
+                        bizEntityDataItemReport.ToEntityDataItemReportDTO(requester, item.EntityDataItemReport, entityReportDTO, false);
                         result.DataItemReports.Add(ToDataMenuDataItemReportRelationshipDTO(item, entityReportDTO));
                     }
                 }
@@ -115,7 +115,7 @@ namespace MyModelManager
                 result.RelationshipID = entity.DataMenuForViewEntity.First().RelationshipID;
                 if (withDetails)
                 {
-                    if (bizRelationship.DataIsAccessable(requester, entity.DataMenuForViewEntity.First().Relationship, false, true))
+                    if (bizRelationship.DataIsAccessable(requester, entity.DataMenuForViewEntity.First().Relationship, false, true, false))
                         result.Relationship = bizRelationship.ToRelationshipDTO(entity.DataMenuForViewEntity.First().Relationship);
                 }
                 result.TargetDataMenuSettingID = entity.DataMenuForViewEntity.First().TargetDataMenuSettingID;
@@ -199,7 +199,7 @@ namespace MyModelManager
                     if (dataMenuSetting.RelationshipID != 0 && dataMenuSetting.TargetDataMenuSettingID != 0)
                     {
                         var relationship = bizRelationship.GetRelationship(dataMenuSetting.RelationshipID);
-                        var dataView = CreateDataView(requester,dataItem, relationship);
+                        var dataView = CreateDataView(requester, dataItem, relationship);
                         return GetDataMenu(requester, dataView, dataMenuSetting.TargetDataMenuSettingID);
                     }
                 }
@@ -259,7 +259,7 @@ namespace MyModelManager
                 {
                     if (dataMenuSetting.SearchableReportRelationships.Any())
                     {
-                        var relationshipReportRootMenu = AddMenu(resultMenus, "گزارش داده های مرتبط", "", DataMenuType.Folder,null);
+                        var relationshipReportRootMenu = AddMenu(resultMenus, "گزارش داده های مرتبط", "", DataMenuType.Folder, null);
                         foreach (var group in dataMenuSetting.SearchableReportRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(relationshipReportRootMenu, group.Key);
@@ -273,7 +273,7 @@ namespace MyModelManager
                     //نمای داده های مرتبط
                     if (dataMenuSetting.DataViewRelationships.Any())
                     {
-                        var dataViewRootMenu = AddMenu(resultMenus, "نمایش داده های مرتبط", "", DataMenuType.Folder,null);
+                        var dataViewRootMenu = AddMenu(resultMenus, "نمایش داده های مرتبط", "", DataMenuType.Folder, null);
                         foreach (var group in dataMenuSetting.DataViewRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(dataViewRootMenu, group.Key);
@@ -287,7 +287,7 @@ namespace MyModelManager
                     }
                     if (dataMenuSetting.GridViewRelationships.Any())
                     {
-                        var gridViewRootMenu = AddMenu(resultMenus, "گرید داده های مرتبط", "", DataMenuType.Folder,null);
+                        var gridViewRootMenu = AddMenu(resultMenus, "گرید داده های مرتبط", "", DataMenuType.Folder, null);
                         foreach (var group in dataMenuSetting.GridViewRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(gridViewRootMenu, group.Key);
@@ -301,7 +301,7 @@ namespace MyModelManager
                     }
                     if (dataMenuSetting.DataItemReports.Any())
                     {
-                        var gridViewRootMenu = AddMenu(resultMenus, "گزارشات مورد داده", "", DataMenuType.Folder,null);
+                        var gridViewRootMenu = AddMenu(resultMenus, "گزارشات مورد داده", "", DataMenuType.Folder, null);
                         foreach (var group in dataMenuSetting.DataItemReports.GroupBy(x => x.Group1 ?? ""))
                         {
                             DataMenu parentGroupMenu = GetGroupMenu(gridViewRootMenu, group.Key);
@@ -350,7 +350,7 @@ namespace MyModelManager
                     return parentMenu.SubMenus.First(x => x.Title == key);
                 else
                 {
-                    var subMenu = AddMenu(parentMenu.SubMenus, key, "", DataMenuType.Folder,null);
+                    var subMenu = AddMenu(parentMenu.SubMenus, key, "", DataMenuType.Folder, null);
                     return subMenu;
                 }
             }
@@ -380,7 +380,7 @@ namespace MyModelManager
             return true;
         }
 
-        private DataMenu AddMenu(List<DataMenu> result, string title, string tooltip, DataMenuType type,DP_DataView dataItem)
+        private DataMenu AddMenu(List<DataMenu> result, string title, string tooltip, DataMenuType type, DP_DataView dataItem)
         {
             var dataMenu = new DataMenu();
             dataMenu.Title = title;

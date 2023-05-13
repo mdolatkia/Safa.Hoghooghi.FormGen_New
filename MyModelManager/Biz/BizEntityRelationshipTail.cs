@@ -73,7 +73,7 @@ namespace MyModelManager
             {
                 if (entities.Any(x => !bizTableDrivedEntity.DataIsAccessable(requester, x)))
                     return false;
-                if (relationships.Any(x => !bizRelationship.DataIsAccessable(requester, x, false, false)))
+                if (relationships.Any(x => !bizRelationship.DataIsAccessable(requester, x, false, false, false)))
                     return false;
                 return true;
             }

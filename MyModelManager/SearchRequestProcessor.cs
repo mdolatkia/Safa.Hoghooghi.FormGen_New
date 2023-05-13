@@ -381,12 +381,12 @@ namespace MyDataSearchManagerBusiness
             {
                 if (phrase is SearchProperty)
                 {
-                    if (!bizColumn.DataIsAccessable(requester, (phrase as SearchProperty).ColumnID))
+                    if (!bizColumn.DataIsAccessable(requester, (phrase as SearchProperty).ColumnID, false))
                         result += (result == "" ? "" : Environment.NewLine) + "عدم دسترسی به خصوصیت به شناسه" + " " + (phrase as SearchProperty).ColumnID;
                 }
                 else if (phrase is DP_SearchRepositoryRelationship)
                 {
-                    if (!bizRElationship.DataIsAccessable(requester, (phrase as DP_SearchRepositoryRelationship).SourceRelationship.ID, false, true))
+                    if (!bizRElationship.DataIsAccessable(requester, (phrase as DP_SearchRepositoryRelationship).SourceRelationship.ID, false, true, false))
                         result += (result == "" ? "" : Environment.NewLine) + "عدم دسترسی به رابطه به شناسه" + " " + (phrase as DP_SearchRepositoryRelationship).SourceRelationship.ID;
                 }
 

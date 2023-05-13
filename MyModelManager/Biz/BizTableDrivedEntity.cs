@@ -719,12 +719,7 @@ namespace MyModelManager
             //بررسی شود که آیا دسترسی ادیت و ریدونلی برای ستونها و روابط جداگانه چک می شود. زیرا اینجا کاربر میخواهد ادیت کند و...
             foreach (var rel in entity.Relationships)
             {
-                bool relAccess = bizRelationship.DataIsAccessable(requester, rel.ID, false, true);
-                if (relAccess && dataEntry)
-                {
-                    relAccess = rel.DataEntryEnabled;
-                }
-                if (!relAccess)
+                if (!bizRelationship.DataIsAccessable(requester, rel.ID, false, true, dataEntry))
                 {
                     InValidRelationships.Add(rel);
                 }
@@ -739,12 +734,7 @@ namespace MyModelManager
             {
                 if (!column.PrimaryKey)
                 {
-                    bool colAccess = bizColumn.DataIsAccessable(requester, column.ID);
-                    if (colAccess && dataEntry)
-                    {
-                        colAccess = column.DataEntryEnabled;
-                    }
-                    if (!colAccess)
+                    if (!bizColumn.DataIsAccessable(requester, column.ID, dataEntry))
                         InValidColumns.Add(column);
                 }
             }
@@ -755,24 +745,24 @@ namespace MyModelManager
 
 
             //فقط خواندنی کردن ستونها وروابط
-            if (entity.IsReadonly)
-            {
-                foreach (var relationship in entity.Relationships.Where(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
-                {
-                    relationship.IsReadonly = true;
-                }
-                foreach (var column in entity.Columns)
-                {
-                    column.IsReadonly = true;
-                }
-            }
-            else
-            {
+            //if (entity.IsReadonly)
+            //{
+                //foreach (var relationship in entity.Relationships.Where(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
+                //{
+                //    relationship.IsReadonly = true;
+                //}
+                //foreach (var column in entity.Columns)
+                //{
+                //    column.IsReadonly = true;
+                //}
+            //}
+            //else
+            //{
                 foreach (var relationship in entity.Relationships)
                 {
-                    relationship.IsReadonly = bizRelationship.DataIsReadonly(requester, relationship.ID);
+                    relationship.IsReadonly = bizRelationship.DataIsReadonly(requester, relationship.ID, entity.IsReadonly);
                 }
-
+                ریدوتلی بودن ستون باید اینجا هم بره
                 foreach (var column in entity.Columns)
                 {
                     column.IsReadonly = bizColumn.DataIsReadonly(requester, column.ID);
@@ -788,7 +778,7 @@ namespace MyModelManager
                         }
                     }
                 }
-            }
+            //}
             return entity;
         }
 

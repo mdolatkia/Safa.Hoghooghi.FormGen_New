@@ -844,15 +844,15 @@ namespace MyModelManager
             }
         }
 
-        public bool DataIsAccessable(DR_Requester requester, int columnID)
+        public bool DataIsAccessable(DR_Requester requester, int columnID, bool checkDataEntry)
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = GetEnabledColumn(projectContext, columnID);
-                return DataIsAccessable(requester, dbColumn);
+                return DataIsAccessable(requester, dbColumn, checkDataEntry);
             }
         }
-        public bool DataIsAccessable(DR_Requester requester, Column column)
+        public bool DataIsAccessable(DR_Requester requester, Column column, bool checkDataEntry)
         {
             //** BizColumn.DataIsAccessable: 0c6adb5b0bdc
             SecurityHelper securityHelper = new SecurityHelper();
@@ -860,16 +860,23 @@ namespace MyModelManager
                 return false;
             else
             {
-                if (requester.SkipSecurity)
-                    return true;
-                var permission = securityHelper.GetAssignedPermissions(requester, column.ID, false);
-                if (permission.GrantedActions.Any(y => y == SecurityAction.NoAccess))
+                if (checkDataEntry && !column.DataEntryEnabled)
+                {
                     return false;
-                //else if (isNotReadonlyCheck && permission.GrantedActions.Any(y => y == SecurityAction.ReadOnly))
-                //    return false;
+                }
                 else
                 {
-                    return true;
+                    if (requester.SkipSecurity)
+                        return true;
+                    var permission = securityHelper.GetAssignedPermissions(requester, column.ID, false);
+                    if (permission.GrantedActions.Any(y => y == SecurityAction.NoAccess))
+                        return false;
+                    //else if (isNotReadonlyCheck && permission.GrantedActions.Any(y => y == SecurityAction.ReadOnly))
+                    //    return false;
+                    else
+                    {
+                        return true;
+                    }
                 }
             }
         }

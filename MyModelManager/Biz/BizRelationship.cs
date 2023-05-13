@@ -446,29 +446,22 @@ namespace MyModelManager
                 //message.ID = dbRelationship.ID;
             }
         }
-        public bool DataIsAccessable(DR_Requester requester, int relationshipID, bool checkFirstSideEntity, bool checkSecondSideEntity)
+        public bool DataIsAccessable(DR_Requester requester, int relationshipID, bool checkFirstSideEntity, bool checkSecondSideEntity, bool checkDataEntry)
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var relationship = GetAllEnabledRelationships(projectContext, false).First(x => x.ID == relationshipID);
-                return DataIsAccessable(requester, relationship, checkFirstSideEntity, checkSecondSideEntity);
+                return DataIsAccessable(requester, relationship, checkFirstSideEntity, checkSecondSideEntity, checkDataEntry);
             }
         }
 
 
-        public bool DataIsAccessable(DR_Requester requester, Relationship relationship, bool checkFirstSideEntity, bool checkSecondSideEntity)
+        public bool DataIsAccessable(DR_Requester requester, Relationship relationship, bool checkFirstSideEntity, bool checkSecondSideEntity, bool checkDataEntry)
         {
-            //** 729ddb34-1a3f-4c3d-b068-d2ac62182cab
-            //موقتا
-            return true;
+            //** BizRelationship.DataIsAccessable: d2ac62182cab
 
             SecurityHelper securityHelper = new SecurityHelper();
 
-
-            //if (relationship.Removed == true)
-            //    return false;
-            //else
-            //{
             Column firstFKCol = null;
             var relType = (Enum_MasterRelationshipType)relationship.MasterTypeEnum;
             if (relType == Enum_MasterRelationshipType.FromForeignToPrimary)
@@ -479,32 +472,25 @@ namespace MyModelManager
             BizColumn bizColumn = new BizColumn();
 
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-            //if (firstFKCol.IsDisabled)
-            if (!bizColumn.DataIsAccessable(requester, firstFKCol.ID))
+            if (!bizColumn.DataIsAccessable(requester, firstFKCol.ID, checkDataEntry))
                 return false;
             else
             {
-                if (requester.SkipSecurity)
-                    return true;
-
-                var permission = securityHelper.GetAssignedPermissions(requester, firstFKCol.ID, false);
-                if (permission.GrantedActions.Any(y => y == SecurityAction.NoAccess))
-                    return false;
-                else
+                //if (requester.SkipSecurity)
+                //    return true;
+                bool entitiesAccess = true;
+                if (checkFirstSideEntity)
                 {
-                    bool entitiesAccess = true;
-                    if (checkFirstSideEntity)
-                    {
-                        if (!bizTableDrivedEntity.DataIsAccessable(requester, relationship.TableDrivedEntity))
-                            entitiesAccess = false;
-                    }
-                    if (entitiesAccess && checkSecondSideEntity)
-                    {
-                        if (!bizTableDrivedEntity.DataIsAccessable(requester, relationship.TableDrivedEntity1))
-                            entitiesAccess = false;
-                    }
-                    return entitiesAccess;
+                    if (!bizTableDrivedEntity.DataIsAccessable(requester, relationship.TableDrivedEntity))
+                        entitiesAccess = false;
                 }
+                if (entitiesAccess && checkSecondSideEntity)
+                {
+                    if (!bizTableDrivedEntity.DataIsAccessable(requester, relationship.TableDrivedEntity1))
+                        entitiesAccess = false;
+                }
+                return entitiesAccess;
+
             }
             //else if (securityMode == SecurityMode.View)
             //{
@@ -522,19 +508,20 @@ namespace MyModelManager
             //}
             //}
         }
-        public bool DataIsReadonly(DR_Requester requester, int relationshipID)
+        public bool DataIsReadonly(DR_Requester requester, int relationshipID, bool? firstSideEntityIsReadonly)
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var relationship = GetAllEnabledRelationships(projectContext, false).First(x => x.ID == relationshipID);
-                return DataIsReadonly(requester, relationship);
+                return DataIsReadonly(requester, relationship, firstSideEntityIsReadonly);
             }
         }
-        public bool DataIsReadonly(DR_Requester requester, Relationship relationship)
+        public bool DataIsReadonly(DR_Requester requester, Relationship relationship, bool? firstSideEntityIsReadonly)
         {
-            //** 23c2cc51-c984-43d5-b002-acae9fe7903b
+            //**BizRelationship.DataIsReadonly: acae9fe7903b
             SecurityHelper securityHelper = new SecurityHelper();
 
+            //اینجا مجددا ریدونلی بودن موجودیت فرعی هم چک میشه زیرا ممکنه طرف دیگر رابطه باشه و ریدونلی باشه موجودیت
             Column firstFKCol = null;
             var relType = (Enum_MasterRelationshipType)relationship.MasterTypeEnum;
             TableDrivedEntity fkEntity = null;
@@ -550,25 +537,35 @@ namespace MyModelManager
             }
             BizColumn bizColumn = new BizColumn();
 
-
+            bool fkEntityIsReadonly = false;
             BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-            if (bizColumn.DataIsReadonly(requester, firstFKCol))
-                return true;
-            else if (bizTableDrivedEntity.EntityIsReadonly(requester, fkEntity))
+            if (relType == Enum_MasterRelationshipType.FromForeignToPrimary)
+            {
+                if (firstSideEntityIsReadonly == null)
+                {
+                    fkEntityIsReadonly = bizTableDrivedEntity.EntityIsReadonly(requester, fkEntity);
+                }
+                else
+                    fkEntityIsReadonly = firstSideEntityIsReadonly.Value;
+            }
+            if (fkEntityIsReadonly)
                 return true;
             else
-            {
-                if (requester.SkipSecurity)
-                    return false;
+                return bizColumn.DataIsReadonly(requester, firstFKCol);
 
-                var permission = securityHelper.GetAssignedPermissions(requester, firstFKCol.ID, false);
-                if (permission.GrantedActions.Any(y => y == SecurityAction.ReadOnly))
-                    return true;
-                else
-                {
-                    return false;
-                }
-            }
+            //else
+            //{
+            //    if (requester.SkipSecurity)
+            //        return false;
+
+            //    var permission = securityHelper.GetAssignedPermissions(requester, firstFKCol.ID, false);
+            //    if (permission.GrantedActions.Any(y => y == SecurityAction.ReadOnly))
+            //        return true;
+            //    else
+            //    {
+            //        return false;
+            //    }
+            //}
         }
         public List<RelationshipDTO> GetRelationshipsByEntityID(int entityID)
         {
