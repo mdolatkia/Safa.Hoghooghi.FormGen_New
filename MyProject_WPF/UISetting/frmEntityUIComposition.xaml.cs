@@ -26,7 +26,7 @@ namespace MyProject_WPF
     /// </summary>
     public partial class frmEntityUIComposition : UserControl
     {
-        //** d4503365-cbb8-45c8-a108-3292f851d67b
+        //** frmEntityUIComposition: 3292f851d67b
         BizEntityUIComposition bizEntityUIComposition = new BizEntityUIComposition();
         int EntityID { set; get; }
         //  List<ColumnOrRelationship> ColumnOrRelationships = new List<ColumnOrRelationship>();
@@ -63,7 +63,7 @@ namespace MyProject_WPF
 
         private void PopulateTree()
         {
-            //** c6287638-6961-48c2-ba47-35292cf1d9a1
+            //** frmEntityUIComposition.PopulateTree: 35292cf1d9a1
             treeEntityUIComposition.Items.Clear();
 
             var UICompositionTree = bizEntityUIComposition.GetOrCreateEntityUIComposition(EntityID);
@@ -491,7 +491,7 @@ namespace MyProject_WPF
             CollectEntityUICompositionItems(rootNode);
             EntityUICompositionDTO item = rootNode.DataContext as EntityUICompositionDTO;
 
-            bizEntityUIComposition.Save(EntityID, item);
+            bizEntityUIComposition.UpdateUIComposition(EntityID, item);
             PopulateTree();
         }
         private void CollectEntityUICompositionItems(RadTreeViewItem parentNode)

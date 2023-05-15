@@ -110,15 +110,16 @@ namespace MyUILibrary.EntityArea
     public class SimpleSearchColumnControl : BaseColumnControl
     {
         public event EventHandler<SimpleSearchColumnControl> FormulaSelectionRequested;
-        public SimpleSearchColumnControl()
+        public SimpleSearchColumnControl(IAgentUIManager uiManager, EntitySearchColumnsDTO entitySearchColumn)
         {
-
-            Operators = new List<SimpleSearchOperator>();
+            EntitySearchColumn = entitySearchColumn;
+            ControlManager = uiManager.GenerateSimpleControlManagerForOneDataForm(Column, EntitySearchColumn.ColumnUISetting, Operators);
+            _LabelControlManager = uiManager.GenerateLabelControlManager(EntitySearchColumn.Alias);
         }
-        public ColumnDTO Column { set; get; }
+        public ColumnDTO Column { get { return EntitySearchColumn.Column; } }
         public EntitySearchColumnsDTO EntitySearchColumn { get; set; }
         public I_SimpleControlManagerOne ControlManager { get; set; }
-        public List<SimpleSearchOperator> Operators { get; set; }
+        public List<SimpleSearchOperator> Operators { get { return EntitySearchColumn.Operators; } }
         public FormulaDTO Formula { get; internal set; }
 
 
@@ -188,57 +189,27 @@ namespace MyUILibrary.EntityArea
         }
         //public SearchEnumerableType SearchEnumerableType { get; set; }
     }
-    public class RelationshipSearchColumnControl : BaseColumnControl
-    {
-        public I_EditEntityArea EditNdTypeArea { set; get; }
-        public RelationshipDTO Relationship { set; get; }
-        public List<ColumnDTO> Columns { set; get; }
-        //public event EventHandler<ColumnValueChangeArg> ValueChanged;
-        public RelationshipSearchColumnControl()
-        {
-            //ColumnSetting = new ColumnSetting();
 
-            //Columns = new List<ColumnDTO>();
-        }
-        public EntitySearchColumnsDTO EntitySearchColumn { get; set; }
+    //public class NullColumnControl : SimpleSearchColumnControl
+    //{
+    //    public ColumnDTO FakeColumn { set; get; }
 
-        public I_RelationshipControlManagerOne ControlManager { get; set; }
-        public EntityRelationshipTailDTO RelationshipTail { set; get; }
+    //}
+    //public class RelationCheckColumnControl : SimpleSearchColumnControl
+    //{
+    //    public ColumnDTO FakeColumn { set; get; }
 
-        //public bool IsFake { set; get; }
-        //public SearchEnumerableType SearchEnumerableType { get; set; }
+    //}
+    //public class RelationCountCheckColumnControl : SimpleSearchColumnControl
+    //{
+    //    public RelationCountCheckColumnControl()
+    //    {
 
-        //public List<AG_RelatedConttol> RelatedUIControls { set; get; }
-    }
+    //    }
+    //    //   public SearchEnumerableType EnumerableType { get; set;}
+    //    public ColumnDTO FakeColumn { set; get; }
 
-    public class NullColumnControl : SimpleSearchColumnControl
-    {
-        public NullColumnControl()
-        {
-
-        }
-        public ColumnDTO FakeColumn { set; get; }
-
-    }
-    public class RelationCheckColumnControl : SimpleSearchColumnControl
-    {
-        public RelationCheckColumnControl()
-        {
-
-        }
-        public ColumnDTO FakeColumn { set; get; }
-
-    }
-    public class RelationCountCheckColumnControl : SimpleSearchColumnControl
-    {
-        public RelationCountCheckColumnControl()
-        {
-
-        }
-        //   public SearchEnumerableType EnumerableType { get; set;}
-        public ColumnDTO FakeColumn { set; get; }
-
-    }
+    //}
 
 
     //public class UISearchNullControlPackage : UIControlPackageForSimpleColumn

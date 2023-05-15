@@ -64,11 +64,9 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbroot = projectContext.EntityUIComposition.FirstOrDefault(x => x.TableDrivedEntityID == entityID && x.ParentID == null);
-                //foreach (var item in list)
-                //{
+               
                 if (dbroot != null)
                 {
-                    //** 11de07a7-43cf-4465-ad1d-a5e3914fd5f5
                     result = ToEntityUICompositionDTO(dbroot, columns, relationships);
                     var columnsAndRelationships = GetColumnsAndRelationships(result);
                     var notInUICompositionColumns = columns.Where(c => !columnsAndRelationships.Any(x => x.ObjectCategory == DatabaseObjectCategory.Column &&
@@ -81,7 +79,6 @@ namespace MyModelManager
                 }
                 else
                     result = GenerateUIComposition(entityID, columns, relationships);
-                //}
             }
             return result;
             //CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.EntityUICompositionTree, entityID.ToString());
@@ -108,7 +105,7 @@ namespace MyModelManager
         }
         private EntityUICompositionDTO GenerateUIComposition(int entityID, List<ColumnDTO> columns, List<RelationshipDTO> relationships)
         {
-            //** a301db67-64d0-4a8b-85cc-ed81338a7008
+            //** BizEntityUIComposition.GenerateUIComposition: ed81338a7008
             //    List<EntityUICompositionDTO> result = new List<EntityUICompositionDTO>();
             var entityUiComposition = new EntityUICompositionDTO();
             entityUiComposition.ObjectCategory = DatabaseObjectCategory.Entity;
@@ -122,7 +119,7 @@ namespace MyModelManager
 
         public void AddColumnsAndRelationships(EntityUICompositionDTO entityUiComposition, List<ColumnDTO> columns, List<RelationshipDTO> relationships)
         {
-            //** ddb369e2-26cc-4d8a-995c-52b9e6b626d0
+            //** BizEntityUIComposition.AddColumnsAndRelationships: 52b9e6b626d0
             foreach (var relationshipUI in relationships)
             {
                 if (relationshipUI.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary)
@@ -272,7 +269,7 @@ namespace MyModelManager
 
         private void AddOtherRelationshipUICompositionItem(EntityUICompositionDTO parentItem, List<Tuple<int, string, List<RelationshipDTO>>> otherRelationshipsGroups)
         {
-            //** 0a01c47e-c46f-414b-804c-ac47f85a7fd9
+            //** BizEntityUIComposition.AddOtherRelationshipUICompositionItem: ac47f85a7fd9
             var index = GetNextIndex(parentItem);
             foreach (var relationshipGroup in otherRelationshipsGroups.Where(x => !x.Item3.Any(y => y.IsOtherSideDirectlyCreatable)).OrderBy(x => x.Item2))
             {
@@ -282,20 +279,18 @@ namespace MyModelManager
                     index++;
                 }
             }
+
             if (otherRelationshipsGroups.Count(x => x.Item3.Any(y => y.IsOtherSideDirectlyCreatable)) > 1)
             {
-
                 var tabConrol = GetOrCreateRelationshipTabControl(parentItem, index, "روابط", "TabControl-99");
-
                 parentItem.ChildItems.Add(tabConrol);
-              //  parentItem = tabPage;
-
 
                 foreach (var relationshipGroup in otherRelationshipsGroups.Where(x => x.Item3.Any(y => y.IsOtherSideDirectlyCreatable)).OrderBy(x => x.Item2))
                 {
+                    var tabPageGroup = AddTabPage(tabConrol, relationshipGroup.Item2, "group_" + relationshipGroup.Item1);
+
                     if (relationshipGroup.Item3.Count() > 1)
                     {
-                        var tabPageGroup = AddTabPage(tabConrol, relationshipGroup.Item2, "group_" + relationshipGroup.Item1);
 
                         var grouptabConrol = GetOrCreateRelationshipTabControl(tabPageGroup, 0, relationshipGroup.Item2, "group_" + relationshipGroup.Item1);
                         foreach (var relationshipUI in relationshipGroup.Item3)
@@ -307,17 +302,28 @@ namespace MyModelManager
                     }
                     else
                     {
-                        var tabPage = AddTabPage(tabConrol, relationshipGroup.Item2, "group_" + relationshipGroup.Item1);
-                        AddRelationshipUICompositionItem(tabPage, relationshipGroup.Item3.First(), 0, false);
+                        AddRelationshipUICompositionItem(tabPageGroup, relationshipGroup.Item3.First(), 0, false);
                     }
                 }
             }
+            else if (otherRelationshipsGroups.Count(x => x.Item3.Any(y => y.IsOtherSideDirectlyCreatable)) == 1)
+            {
+                var relGroup = otherRelationshipsGroups.First(x => x.Item3.Any(y => y.IsOtherSideDirectlyCreatable));
+                var grouptabConrol = GetOrCreateRelationshipTabControl(parentItem, 0, relGroup.Item2, "group_" + relGroup.Item1);
+                foreach (var relationshipUI in relGroup.Item3)
+                {
+                    var tabPage = AddTabPage(grouptabConrol, relationshipUI.Alias, "Rel_" + relationshipUI.ID);
+                    AddRelationshipUICompositionItem(tabPage, relationshipUI, 0, false);
+                }
+            }
+
         }
 
 
 
         private void AddRelationshipUICompositionItem(EntityUICompositionDTO parentItem, RelationshipDTO relationship, int index, bool expander)
         {
+            //BizEntityUIComposition.AddRelationshipUICompositionItem: 791fcf47bcba
             var childItem = new EntityUICompositionDTO();
             childItem.ObjectCategory = DatabaseObjectCategory.Relationship;
             childItem.ObjectIdentity = relationship.ID.ToString();
@@ -354,7 +360,7 @@ namespace MyModelManager
 
         private void AddColumnUICompositionItem(EntityUICompositionDTO parentItem, ColumnDTO column, int index)
         {
-            //** BizEntityUIComposition.AddColumnUICompositionItem: ad8db1ea-07d5-481a-95fd-5c93e6562e87
+            //** BizEntityUIComposition.AddColumnUICompositionItem: 5c93e6562e87
             var childItem = new EntityUICompositionDTO();
             childItem.ObjectCategory = DatabaseObjectCategory.Column;
             childItem.ObjectIdentity = column.ID.ToString();
@@ -394,7 +400,7 @@ namespace MyModelManager
         }
         private EntityUICompositionDTO ToEntityUICompositionDTO(DataAccess.EntityUIComposition item, List<ColumnDTO> columns, List<RelationshipDTO> relationships)
         {
-            //**4d246d11-17b7-455f-86d9-6204e634719f
+            //** BizEntityUIComposition.ToEntityUICompositionDTO: 6204e634719f
             var result = new EntityUICompositionDTO();
             result.ID = item.ID;
             result.ParentID = item.ParentID;
@@ -518,9 +524,11 @@ namespace MyModelManager
 
             return result;
         }
-        public void UpdateUIComposition(DR_Requester requester, int entityID)
+        public void UpdateUICompositionForBaseEntity(DR_Requester requester, int entityID)
         {
             //کلا کامنت شد به موقعش اصلاح شود
+            //برای موجودیت های جدید ارث بری کاربرد دارد
+
 
             //////BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
             //////var entity = bizTableDrivedEntity.GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships);
@@ -667,12 +675,12 @@ namespace MyModelManager
             }
         }
 
-        public void Save(int entityID, EntityUICompositionDTO items)
+        public void UpdateUIComposition(int entityID, EntityUICompositionDTO items)
         {
+            // BizEntityUIComposition.UpdateUIComposition: f794d23c8a6a
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
-                SaveItem(projectContext, entityID, items);
-
+                UpdateUIComposition(projectContext, entityID, items);
                 try
                 {
                     projectContext.SaveChanges();
@@ -694,8 +702,9 @@ namespace MyModelManager
             }
         }
 
-        public void SaveItem(MyIdeaEntities projectContext, int entityID, EntityUICompositionDTO item)
+        public void UpdateUIComposition(MyIdeaEntities projectContext, int entityID, EntityUICompositionDTO item)
         {
+
             var existingIds = GetItemIds(item);// items.Where(x => x.ID != 0).Select(x => x.ID).ToList();
             if (existingIds.Count > 0)
             {

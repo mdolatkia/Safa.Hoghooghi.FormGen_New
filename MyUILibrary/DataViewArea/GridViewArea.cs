@@ -78,28 +78,27 @@ namespace MyUILibrary.DataViewArea
                 View.ClearControls();
                 foreach (var column in SelectedListView.EntityListViewAllColumns.OrderBy(x => x.OrderID))
                 {
-                    var propertyControl = new SimpleViewColumnControl() { ListViewColumn = column };
-                    propertyControl.RelativeColumnName = column.RelativeColumnName;
+                    var propertyControl = new SimpleViewColumnControl(AgentUICoreMediator.GetAgentUICoreMediator.UIManager, column);
+                 //   propertyControl.RelativeColumnName = column.RelativeColumnName;
 
-                    if (string.IsNullOrEmpty(column.Alias))
-                        propertyControl.Alias = column.Column.Alias;
-                    else
-                        propertyControl.Alias = column.Alias;
+                    //if (string.IsNullOrEmpty(column.Alias))
+                    //    propertyControl.Alias = column.Column.Alias;
+                    //else
+                    //    propertyControl.Alias = column.Alias;
                     //     propertyControl.ControlPackage = new UIControlPackageForSimpleColumn();
-                    propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column.Column, column.ColumnUISetting);
-                    propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Alias);
+
 
                     //      if (propertyControl.IsPermanentReadOnly)
                     if (!string.IsNullOrEmpty(column.Tooltip))
                     {
-                        propertyControl.LabelControlManager.SetTooltip( column.Tooltip);
+                        propertyControl.LabelControlManager.SetTooltip(column.Tooltip);
                     }
-                //    propertyControl.ControlManager.GetUIControlManager.SetReadonly(true);
+                    //    propertyControl.ControlManager.GetUIControlManager.SetReadonly(true);
                     ViewColumnControls.Add(propertyControl);
                 }
                 foreach (var columnControl in ViewColumnControls)
                 {
-                //    columnControl.Visited = true;
+                    //    columnControl.Visited = true;
                     View.AddUIControlPackage(columnControl.ControlManager, columnControl.LabelControlManager);
                 }
             }

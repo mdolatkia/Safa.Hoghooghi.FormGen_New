@@ -537,21 +537,19 @@ namespace MyModelManager
             }
             BizColumn bizColumn = new BizColumn();
 
-            bool fkEntityIsReadonly = false;
-            BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-            if (relType == Enum_MasterRelationshipType.FromForeignToPrimary)
+            bool? fkEntityIsReadonly = null;
+            if (relType == Enum_MasterRelationshipType.FromForeignToPrimary && firstSideEntityIsReadonly == true)
             {
-                if (firstSideEntityIsReadonly == null)
-                {
-                    fkEntityIsReadonly = bizTableDrivedEntity.EntityIsReadonly(requester, fkEntity);
-                }
-                else
-                    fkEntityIsReadonly = firstSideEntityIsReadonly.Value;
+                fkEntityIsReadonly = true;
+                //if (firstSideEntityIsReadonly == null)
+                //    fkEntityIsReadonly = bizTableDrivedEntity.EntityIsReadonly(requester, fkEntity);
+                //else
+                //    fkEntityIsReadonly = firstSideEntityIsReadonly.Value;
             }
-            if (fkEntityIsReadonly)
-                return true;
-            else
-                return bizColumn.DataIsReadonly(requester, firstFKCol);
+            //if (fkEntityIsReadonly)
+            //    return true;
+            //else
+            return bizColumn.DataIsReadonly(requester, firstFKCol, fkEntityIsReadonly, fkEntity);
 
             //else
             //{

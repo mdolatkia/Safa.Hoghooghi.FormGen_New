@@ -91,17 +91,17 @@ namespace MyUILibrary.EntityArea
             //** dd6006b0-96f6-4df8-b687-d2d99496f04e
             foreach (var column in EntityListView.EntityListViewAllColumns.OrderBy(x => x.OrderID))
             {
-                var propertyControl = new SimpleViewColumnControl() { ListViewColumn = column };
-                propertyControl.RelativeColumnName = column.RelativeColumnName;
+                var propertyControl = new SimpleViewColumnControl(AgentUICoreMediator.GetAgentUICoreMediator.UIManager, column) ;
+                //propertyControl.RelativeColumnName = column.RelativeColumnName;
 
-                if (string.IsNullOrEmpty(column.Alias))
-                    propertyControl.Alias = column.Column.Alias;
-                else
-                    propertyControl.Alias = column.Alias;
+                //if (string.IsNullOrEmpty(column.Alias))
+                //    propertyControl.Alias = column.Column.Alias;
+                //else
+                //    propertyControl.Alias = column.Alias;
                 //   propertyControl.ControlPackage = new UIControlPackageForSimpleColumn();
                 //     propertyControl.IsPermanentReadOnly = true;
-                propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column.Column, column.ColumnUISetting);
-                propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Alias);
+            //    propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column.Column, column.ColumnUISetting);
+            //    propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Alias);
 
                 //      if (propertyControl.IsPermanentReadOnly)
                 if (!string.IsNullOrEmpty(column.Tooltip))

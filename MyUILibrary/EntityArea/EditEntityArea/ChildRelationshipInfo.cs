@@ -151,7 +151,7 @@ namespace MyUILibrary.EntityArea
                         }
                     }
                 }
-                var message = "رابطه" + " " + RelationshipControl.Alias + " " + "برای داده" + " " + SourceData.ViewInfo + " " + "غیر قابل دسترسی می باشد";
+                var message = "رابطه" + " " + RelationshipControl.Relationship.Alias + " " + "برای داده" + " " + SourceData.ViewInfo + " " + "غیر قابل دسترسی می باشد";
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo(message, key);
             }
             else
@@ -338,7 +338,7 @@ namespace MyUILibrary.EntityArea
                         {
                             key += (key == "" ? "" : ",") + "غیر قابل دسترسی بودن رابطه" + ":" + item.Message;
                         }
-                        var message = "رابطه" + " " + RelationshipControl.Alias + " " + "برای داده" + " " + dataItem.ViewInfo + " " + "غیر قابل دسترسی می باشد";
+                        var message = "رابطه" + " " + RelationshipControl.Relationship.Alias + " " + "برای داده" + " " + dataItem.ViewInfo + " " + "غیر قابل دسترسی می باشد";
                         AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo(message, key);
                         return;
                     }
@@ -351,7 +351,7 @@ namespace MyUILibrary.EntityArea
                             {
                                 key += (key == "" ? "" : ",") + "فقط خواندنی بودن رابطه" + ":" + item.Message;
                             }
-                            var message = "رابطه" + " " + RelationshipControl.Alias + " " + "برای داده" + " " + dataItem.ViewInfo + " " + "غیر قابل دسترسی می باشد";
+                            var message = "رابطه" + " " + RelationshipControl.Relationship.Alias + " " + "برای داده" + " " + dataItem.ViewInfo + " " + "غیر قابل دسترسی می باشد";
                             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo(message, key);
                             return;
                         }
@@ -1379,6 +1379,7 @@ namespace MyUILibrary.EntityArea
 
         internal void DataViewRequested()
         {
+            // ChildRelationshipInfo.DataViewRequested: e48af9744b57
             //   ObservableCollection<DP_FormDataRepository> existingData = RealData;
 
             if (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.FormComposed == false)

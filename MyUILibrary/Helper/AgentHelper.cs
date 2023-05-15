@@ -128,24 +128,23 @@ namespace MyUILibrary
         //        else if (!string.IsNullOrEmpty(propertyControl.Column.Name))
         //            propertyControl.Alias = propertyControl.Column.Name;
         //}
-        public static void SetPropertyTitle(SimpleColumnControlGenerel propertyControl)
-        {
+        //public static void SetPropertyTitle(SimpleColumnControlGenerel propertyControl)
+        //{
+        //    if (propertyControl.Column != null)
+        //        if (!string.IsNullOrEmpty(propertyControl.Column.Alias))
+        //            propertyControl.Alias = propertyControl.Column.Alias;
+        //        else if (!string.IsNullOrEmpty(propertyControl.Column.Name))
+        //            propertyControl.Alias = propertyControl.Column.Name;
+        //}
+        //public static void SetPropertyTitle(SimpleSearchColumnControl propertyControl)
+        //{
 
-            if (propertyControl.Column != null)
-                if (!string.IsNullOrEmpty(propertyControl.Column.Alias))
-                    propertyControl.Alias = propertyControl.Column.Alias;
-                else if (!string.IsNullOrEmpty(propertyControl.Column.Name))
-                    propertyControl.Alias = propertyControl.Column.Name;
-        }
-        public static void SetPropertyTitle(SimpleSearchColumnControl propertyControl)
-        {
-
-            if (propertyControl.Column != null)
-                if (!string.IsNullOrEmpty(propertyControl.Column.Alias))
-                    propertyControl.Alias = propertyControl.Column.Alias;
-                else if (!string.IsNullOrEmpty(propertyControl.Column.Name))
-                    propertyControl.Alias = propertyControl.Column.Name;
-        }
+        //    if (propertyControl.Column != null)
+        //        if (!string.IsNullOrEmpty(propertyControl.Column.Alias))
+        //            propertyControl.Alias = propertyControl.Column.Alias;
+        //        else if (!string.IsNullOrEmpty(propertyControl.Column.Name))
+        //            propertyControl.Alias = propertyControl.Column.Name;
+        //}
 
         //public static string SetPropertyTitle(BaseColumnControl propertyControl)
         //{

@@ -111,17 +111,22 @@ namespace MyUILibrary.EntityArea
             //RawSearchEntityArea.GenerateUIControls: 527171b12fdc
             foreach (var column in FullEntity.Columns.OrderBy(x => x.Position))
             {
-                var propertyControl = new SimpleSearchColumnControl();
-                propertyControl.Column = column;
-                SimpleColumnControls.Add(propertyControl);
-            }
-            foreach (var columnControl in SimpleColumnControls)
-            {
-                columnControl.Operators = GetSimpleColumnOperators(columnControl.Column);
+                EntitySearchColumnsDTO tmp = new EntitySearchColumnsDTO();
+                tmp.Column = column;
+                tmp.Operators= GetSimpleColumnOperators(column);
+                tmp.ColumnUISetting = GetColumnUISetting(column);
+                tmp.Alias = column.Alias;
+                var columnControl = new SimpleSearchColumnControl(AgentUICoreMediator.GetAgentUICoreMediator.UIManager, tmp);
+               
+
+
+                SimpleColumnControls.Add(columnControl);
+            
+              //  columnControl.Operators = GetSimpleColumnOperators(columnControl.Column);
                 //  columnControl.ControlPackage = new UIControlPackageForSimpleColumn();
                 //bool hasRangeOfValues = columnControl.Column.ColumnValueRange != null && columnControl.Column.ColumnValueRange.Details.Any();
-                columnControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(columnControl.Column, GetColumnUISetting(columnControl.Column), columnControl.Operators);
-                columnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(columnControl.Column.Alias);
+             //   columnControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(columnControl.Column, GetColumnUISetting(columnControl.Column), columnControl.Operators);
+             //   columnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(columnControl.Column.Alias);
 
                 if (columnControl.ControlManager.UIControlManagerIsKeyValueList)
                 {
@@ -264,15 +269,15 @@ namespace MyUILibrary.EntityArea
         //    return !string.IsNullOrEmpty(item.Value)  && item.Value.ToLower() != "0";
         //}
 
-        private bool SearchValueIsEmpty(SimpleSearchColumnControl typePropertyControl, string value)
-        {
-            if (typePropertyControl is NullColumnControl)
-                return string.IsNullOrEmpty(value) || value == "false" || value == "0";
-            else if (typePropertyControl is RelationCheckColumnControl || typePropertyControl is RelationCountCheckColumnControl)
-                return string.IsNullOrEmpty(value) || value == "false" || value == "0";
-            else
-                return string.IsNullOrEmpty(value) || value == "0";
-        }
+        //private bool SearchValueIsEmpty(SimpleSearchColumnControl typePropertyControl, string value)
+        //{
+        //    if (typePropertyControl is NullColumnControl)
+        //        return string.IsNullOrEmpty(value) || value == "false" || value == "0";
+        //    else if (typePropertyControl is RelationCheckColumnControl || typePropertyControl is RelationCountCheckColumnControl)
+        //        return string.IsNullOrEmpty(value) || value == "false" || value == "0";
+        //    else
+        //        return string.IsNullOrEmpty(value) || value == "0";
+        //}
 
 
 

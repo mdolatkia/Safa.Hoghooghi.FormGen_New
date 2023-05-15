@@ -228,44 +228,37 @@ namespace MyUILibrary.EntityArea
         }
         public override void GenerateUIControlsByCompositionDTO(EntityUICompositionDTO UICompositions)
         {
-            //** 41575d0e-a2ce-41cb-a039-3c156446abf7
+            //**  EditEntityAreaMultipleData.GenerateUIControlsByCompositionDTO: 3c156446abf7
             //DataView.ClearControls();
             //SimpleColumnControls.Clear();
             //RelationshipColumnControls.Clear();
-            GenerateUIComposition(UICompositions);
-        }
-        private void GenerateUIComposition(EntityUICompositionDTO UICompositions)
-        {
-            //dbc86c4272eb
+            // GenerateUIComposition(UICompositions);
+
             foreach (var uiCompositionItem in UICompositions.ChildItems.OrderBy(x => x.Position))
             {
                 if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Entity)
                 {
-                    GenerateUIComposition(uiCompositionItem);
+                    GenerateUIControlsByCompositionDTO(uiCompositionItem);
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Group)
                 {
-                    GenerateUIComposition(uiCompositionItem);
+                    GenerateUIControlsByCompositionDTO(uiCompositionItem);
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.TabControl)
                 {
-                    GenerateUIComposition(uiCompositionItem);
+                    GenerateUIControlsByCompositionDTO(uiCompositionItem);
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.TabPage)
                 {
-                    GenerateUIComposition(uiCompositionItem);
+                    GenerateUIControlsByCompositionDTO(uiCompositionItem);
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Column)
                 {
-                    var column = uiCompositionItem.Column;
+                    //    var column = uiCompositionItem.Column;
                     //bool hasRangeOfValues = column.ColumnValueRange != null && column.ColumnValueRange.Details.Any();
 
-                    var propertyControl = new SimpleColumnControlMultiple() { Column = uiCompositionItem.Column };
-
-                    (propertyControl as SimpleColumnControlMultiple).SimpleControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(column, uiCompositionItem.ColumnUISetting);
-
-                    propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Column.Alias);
-                    AgentHelper.SetPropertyTitle(propertyControl);
+                    var propertyControl = new SimpleColumnControlMultiple(UIManager, uiCompositionItem);
+                    //  AgentHelper.SetPropertyTitle(propertyControl);
 
                     //    var info = column.ID + "," + column.Name;
 
@@ -278,33 +271,25 @@ namespace MyUILibrary.EntityArea
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Relationship)
                 {
-                    var relationshipColumnControl = new RelationshipColumnControlMultiple();
-                    relationshipColumnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(uiCompositionItem.Relationship.Relationship.Alias);
-                    relationshipColumnControl.DataEntryRelationship = uiCompositionItem.Relationship;
-                    relationshipColumnControl.ParentEditArea = this;
-                    var relationshipAlias = relationshipColumnControl.Relationship.Alias;
-                    relationshipColumnControl.Alias = (string.IsNullOrEmpty(relationshipAlias) ? "" : relationshipAlias + " : ");
+                    var editArea = GenerateRelationshipControlEditArea(uiCompositionItem.Relationship, uiCompositionItem.Relationship.Relationship);
+
+                    // relationshipColumnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(uiCompositionItem.Relationship.Relationship.Alias);
+                    //  relationshipColumnControl.DataEntryRelationship = uiCompositionItem.Relationship;
+                    //   relationshipColumnControl.ParentEditArea = this;
+                    //  var relationshipAlias = relationshipColumnControl.Relationship.Alias;
+                    //  relationshipColumnControl.Alias = (string.IsNullOrEmpty(relationshipAlias) ? "" : relationshipAlias + " : ");
 
                     //اینجا ادیت اریا رابطه و همچنین کنترل منیجر رابطه مشخص میشوند. اگر مثلا کاربر به موجودیت رابطه دسترسی نداشته باشد این مقادیر تولید نمی شوند و نال بر میگردد
 
-                    bool generated = GenerateRelationshipControlEditArea(relationshipColumnControl, uiCompositionItem.RelationshipUISetting);
+                    //  bool generated = GenerateRelationshipControlEditArea(relationshipColumnControl, uiCompositionItem.RelationshipUISetting);
 
 
-                    if (generated != false)
+                    if (editArea != null)
                     {
-
+                        var relationshipColumnControl = new RelationshipColumnControlMultiple(UIManager, uiCompositionItem, this as I_EditEntityArea, editArea);
                         RelationshipColumnControls.Add(relationshipColumnControl);
-
-
-                        //برای ادمین فعال شود بد نیست
-                        //    var info = dataEntryRelationship.Relationship.ID + "," + dataEntryRelationship.Relationship.Name + Environment.NewLine + dataEntryRelationship.Relationship.TypeStr + Environment.NewLine + dataEntryRelationship.Relationship.Info;
-                        //AddColumnControlMessage(new ColumnControlMessageItem(relationshipColumnControl, ControlOrLabelAsTarget.Label) { Key = "relationshipinfo", Message = info });
-                        //    AddRelationshipColumnMessageItem(propertyControl, info, InfoColor.Black, "permanentCaption", null, true);
-
+                        DataView.AddView(relationshipColumnControl.LabelControlManager, relationshipColumnControl.RelationshipControlManager);
                     }
-
-                    DataView.AddView(relationshipColumnControl.LabelControlManager, relationshipColumnControl.RelationshipControlManager);
-                    //  columnControl.Visited = true;
 
                 }
                 //حالت تب اضافه شود
@@ -315,7 +300,13 @@ namespace MyUILibrary.EntityArea
                 //}
 
             }
+
         }
+        //private void GenerateUIComposition(EntityUICompositionDTO UICompositions)
+        //{
+        //    //dbc86c4272eb
+
+        //}
 
 
         //private void SearchViewEntityArea_DataSelected(object sender, DataSelectedEventArg e)

@@ -55,14 +55,16 @@ namespace MyUILibrary.EntityArea
     public class SimpleViewColumnControl : BaseColumnControl
     {
         //public event EventHandler<ColumnValueChangeArg> ValueChanged;
-        public SimpleViewColumnControl()
+        public SimpleViewColumnControl(IAgentUIManager uiManager, EntityListViewColumnsDTO column)
         {
-
+            ListViewColumn = column;
+            ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForMultipleDataForm(ListViewColumn.Column, ListViewColumn.ColumnUISetting);
+            _LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(ListViewColumn.Alias);
         }
-        public I_SimpleControlManagerMultiple ControlManager { set; get; }
-        public EntityListViewColumnsDTO ListViewColumn { set; get; }
+        public I_SimpleControlManagerMultiple ControlManager { get; }
+        public EntityListViewColumnsDTO ListViewColumn { get; }
         //public ColumnDTO Column { set; get; }
-        public string RelativeColumnName { set; get; }
+        public string RelativeColumnName { get { return ListViewColumn.RelativeColumnName; } }
 
         //public List<AG_RelatedConttol> RelatedUIControls { set; get; }
     }

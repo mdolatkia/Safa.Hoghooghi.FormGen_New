@@ -881,35 +881,46 @@ namespace MyModelManager
             }
         }
 
-        public bool DataIsReadonly(DR_Requester requester, int columnID)
+        public bool DataIsReadonly(DR_Requester requester, int columnID, bool? entityIsReadonly, int entityID)
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbColumn = GetEnabledColumn(projectContext, columnID);
-                return DataIsReadonly(requester, dbColumn);
+                BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+                var dbEntity = bizTableDrivedEntity.GetAllEnabledEntities(projectContext).First(x => x.ID == entityID);
+                return DataIsReadonly(requester, dbColumn, entityIsReadonly, dbEntity);
             }
         }
-        public bool DataIsReadonly(DR_Requester requester, Column column)
+        public bool DataIsReadonly(DR_Requester requester, Column column, bool? entityIsReadonly, TableDrivedEntity entity)
         {
             //** BizColumn.DataIsReadonly: 46ee61f89778
             SecurityHelper securityHelper = new SecurityHelper();
-
-            if (column.IsReadonly == true)
+            if (entityIsReadonly == null)
+            {
+                BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+                entityIsReadonly = bizTableDrivedEntity.EntityIsReadonly(requester, entity);
+            }
+            if (entityIsReadonly.Value)
                 return true;
             else
             {
-                if (column.IsIdentity == true)
+                if (column.IsReadonly == true)
                     return true;
                 else
                 {
-                    if (requester.SkipSecurity)
-                        return false;
-                    var permission = securityHelper.GetAssignedPermissions(requester, column.ID, false);
-                    if (permission.GrantedActions.Any(y => y == SecurityAction.ReadOnly))
+                    if (column.IsIdentity == true)
                         return true;
                     else
                     {
-                        return false;
+                        if (requester.SkipSecurity)
+                            return false;
+                        var permission = securityHelper.GetAssignedPermissions(requester, column.ID, false);
+                        if (permission.GrantedActions.Any(y => y == SecurityAction.ReadOnly))
+                            return true;
+                        else
+                        {
+                            return false;
+                        }
                     }
                 }
             }
@@ -1122,7 +1133,7 @@ namespace MyModelManager
                 var dataHelper = new ModelDataHelper();
                 if (dbColumn.ID == 0)
                 {
-                   
+
                     if (column.StringColumnType.MaxLength <= 50 &&
                                   (column.Name.ToLower().StartsWith("datetime") ||
                                   column.Name.ToLower().EndsWith("datetime"))

@@ -52,7 +52,7 @@ namespace MyUILibrary.EntityArea
 
         public override void GenerateUIControlsByCompositionDTO(EntityUICompositionDTO UICompositions)
         {
-            //** 9db57fdb-25e0-4e68-9f9e-ad8b0609f380
+            //** EditEntityAreaOneData.GenerateUIControlsByCompositionDTO: ad8b0609f380
             I_View_GridContainer container = DataView;
             //container.ClearControls();
             //SimpleColumnControls.Clear();
@@ -109,69 +109,41 @@ namespace MyUILibrary.EntityArea
                     var parentTabGroupContainer = UICompositions.Item as I_TabGroupContainer;
                     parentTabGroupContainer.AddTabPage(tabPage, uiCompositionItem.Title, uiCompositionItem.TabPageUISetting, tabPage.HasHeader);
 
-                  
+
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Column)
                 {
-                    var column = uiCompositionItem.Column;
-                    //bool hasRangeOfValues = column.ColumnValueRange != null && column.ColumnValueRange.Details.Any();
-
-                    var propertyControl = new SimpleColumnControlOne() { Column = column };
-                    (propertyControl as SimpleColumnControlOne).SimpleControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(column, uiCompositionItem.ColumnUISetting, null);
-                    propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.Column.Alias);
-                    AgentHelper.SetPropertyTitle(propertyControl);
-
-                    var info = column.ID + "," + column.Name;
+                    var propertyControl = new SimpleColumnControlOne(UIManager, uiCompositionItem);
 
                     SimpleColumnControls.Add(propertyControl);
-
-
 
                     uiCompositionItem.Item = propertyControl.SimpleControlManager;
                     uiCompositionItem.UIItem = propertyControl.SimpleControlManager.GetUIControlManager().GetUIControl();
                     propertyControl.UICompositionDTO = uiCompositionItem;
 
                     (container as I_View_GridContainer).AddUIControlPackage(propertyControl.SimpleControlManager, propertyControl.LabelControlManager);
-                  //  parentUIControlComposition.ChildItems.Add(item);
-                    //   propertyControl.Visited = true;
 
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Relationship)
                 {
-                    var relationshipColumnControl = new RelationshipColumnControlOne();
-                    relationshipColumnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(uiCompositionItem.Relationship.Relationship.Alias);
-                    relationshipColumnControl.DataEntryRelationship = uiCompositionItem.Relationship;
-                    relationshipColumnControl.ParentEditArea = this;
-                    var relationshipAlias = relationshipColumnControl.Relationship.Alias;
-                    relationshipColumnControl.Alias = (string.IsNullOrEmpty(relationshipAlias) ? "" : relationshipAlias + " : ");
-
+                    var editArea = GenerateRelationshipControlEditArea(uiCompositionItem.Relationship, uiCompositionItem.Relationship.Relationship);
                     //اینجا ادیت اریا رابطه و همچنین کنترل منیجر رابطه مشخص میشوند. اگر مثلا کاربر به موجودیت رابطه دسترسی نداشته باشد این مقادیر تولید نمی شوند و نال بر میگردد
 
-                    bool generated = GenerateRelationshipControlEditArea(relationshipColumnControl, uiCompositionItem.RelationshipUISetting);
-
-
-                    if (generated != false)
+                    if (editArea != null)
                     {
-
+                        var relationshipColumnControl = new RelationshipColumnControlOne(UIManager, uiCompositionItem, this as I_EditEntityArea, editArea);
                         RelationshipColumnControls.Add(relationshipColumnControl);
 
-                        //برای ادمین فعال شود بد نیست
-                        //var info = dataEntryRelationship.Relationship.ID + "," + dataEntryRelationship.Relationship.Name + Environment.NewLine + dataEntryRelationship.Relationship.TypeStr + Environment.NewLine + dataEntryRelationship.Relationship.Info;
-                        //AddColumnControlMessage(new ColumnControlMessageItem(relationshipColumnControl, ControlOrLabelAsTarget.Label) { Key = "relationshipinfo", Message = info });
-                        //    AddRelationshipColumnMessageItem(propertyControl, info, InfoColor.Black, "permanentCaption", null, true);
-
+                        if (UICompositions.ChildItems.Count == 1 && UICompositions.Item is I_TabPageContainer)
+                        {
+                            relationshipColumnControl.RelationshipControlManager.TabPageContainer = UICompositions.Item as I_TabPageContainer;
+                        }
+                        uiCompositionItem.Item = relationshipColumnControl.RelationshipControlManager;
+                        uiCompositionItem.UIItem = relationshipColumnControl.RelationshipControlManager.GetView();
+                        relationshipColumnControl.UICompositionDTO = uiCompositionItem;
+                        (container as I_View_GridContainer).AddView(relationshipColumnControl.LabelControlManager, relationshipColumnControl.RelationshipControlManager);
                     }
-
-                    
-                    if (UICompositions.ChildItems.Count == 1 && UICompositions.Item  is I_TabPageContainer)
-                    {
-                        relationshipColumnControl.RelationshipControlManager.TabPageContainer = UICompositions.Item as I_TabPageContainer;
-                    }
-                    uiCompositionItem.Item = relationshipColumnControl.RelationshipControlManager;
-                    uiCompositionItem.UIItem = relationshipColumnControl.RelationshipControlManager.GetView();
-                    relationshipColumnControl.UICompositionDTO = uiCompositionItem;
-                    (container as I_View_GridContainer).AddView(relationshipColumnControl.LabelControlManager, relationshipColumnControl.RelationshipControlManager);
-                //    parentUIControlComposition.ChildItems.Add(item);
+                    //    parentUIControlComposition.ChildItems.Add(item);
                     //   columnControl.Visited = true;
 
                 }
@@ -197,15 +169,15 @@ namespace MyUILibrary.EntityArea
 
 
         }
-   
+
         public void CheckContainersVisiblity(List<BaseColumnControl> changedControls)
         {
             if (this is I_EditEntityAreaOneData)
             {
-               List<EntityUICompositionDTO> parentAsContainers = new List<EntityUICompositionDTO>();
+                List<EntityUICompositionDTO> parentAsContainers = new List<EntityUICompositionDTO>();
                 foreach (var item in changedControls)
                 {
-                    if (item.UICompositionDTO != null 
+                    if (item.UICompositionDTO != null
                         && item.UICompositionDTO.ParentItem != null)
                     {
                         if (!parentAsContainers.Any(x => x == item.UICompositionDTO.ParentItem))
@@ -251,9 +223,9 @@ namespace MyUILibrary.EntityArea
         //}
         public I_View_EditEntityAreaDataView DataView { set; get; }
 
-  //      List<UIControlComposition> I_EditEntityAreaOneData.UIControlPackageTree { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        //      List<UIControlComposition> I_EditEntityAreaOneData.UIControlPackageTree { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-     //   I_View_EditEntityAreaDataView I_EditEntityAreaOneData.SpecializedDataView => throw new NotImplementedException();
+        //   I_View_EditEntityAreaDataView I_EditEntityAreaOneData.SpecializedDataView => throw new NotImplementedException();
 
 
         public override I_View_Area DataViewGeneric

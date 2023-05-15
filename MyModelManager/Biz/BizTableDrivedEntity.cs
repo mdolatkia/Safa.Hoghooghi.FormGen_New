@@ -427,7 +427,6 @@ namespace MyModelManager
         }
         public DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, DataEntryRelationshipDTO parentRelationship = null)
         {
-
             return GetDataEntryEntity(requester, entityID, null, parentRelationship);
         }
         private DataEntryEntityDTO GetDataEntryEntity(DR_Requester requester, int entityID, EntityUICompositionDTO uiCompositionDTO, DataEntryRelationshipDTO parentRelationship = null)
@@ -444,6 +443,7 @@ namespace MyModelManager
             result.HasNotDeleteAccess = finalEntity.HasNotDeleteAccess;
             foreach (var column in finalEntity.Columns)
                 result.Columns.Add(column);
+          
             foreach (var relationship in finalEntity.Relationships)
             {
                 var skipMode = GetRelationshipSkipMode(parentRelationship, relationship);
@@ -459,6 +459,14 @@ namespace MyModelManager
                 //}
                 DataEntryRelationshipDTO relItem = new DataEntryRelationshipDTO();
                 relItem.Relationship = relationship;
+
+                if (relationship.TypeEnum == Enum_RelationshipType.OneToMany)
+                {
+                    relItem.DataMode = DataMode.Multiple;
+                }
+                else
+                    relItem.DataMode = DataMode.One;
+
 
                 if (parentRelationship != null && parentRelationship.DataMode == DataMode.Multiple)
                     relItem.Relationship.IsOtherSideDirectlyCreatable = false;
@@ -511,14 +519,6 @@ namespace MyModelManager
                     }
                 }
 
-                if (relationship.TypeEnum == Enum_RelationshipType.OneToMany)
-                {
-                    relItem.DataMode = DataMode.Multiple;
-                }
-                else
-                    relItem.DataMode = DataMode.One;
-
-
 
 
                 if (relItem.IntracionMode == IntracionMode.CreateDirect ||
@@ -526,52 +526,43 @@ namespace MyModelManager
                 {
                     relItem.TargetDataEntryEntity = GetDataEntryEntity(requester, relationship.EntityID2, relItem);
                 }
+
                 result.Relationships.Add(relItem);
             }
-            SetDataEntryEntityUIComposition(result, finalEntity, uiCompositionDTO);
+
+            BizEntityUIComposition bizEntityUIComposition = new BizEntityUIComposition();
+            if (uiCompositionDTO == null)
+            {
+                uiCompositionDTO = bizEntityUIComposition.GetOrCreateEntityUIComposition(finalEntity.ID, result.Columns, result.Relationships.Select(x => x.Relationship).ToList());
+            }
+        
+            SetColumnsAndRelationship(uiCompositionDTO, result.Columns, result.Relationships);
+            result.UICompositions = uiCompositionDTO;
+
             return result;
         }
 
-        private void SetDataEntryEntityUIComposition(DataEntryEntityDTO dataEntryDTO, TableDrivedEntityDTO finalEntity, EntityUICompositionDTO currentUIComposition)
-        {
-            //** 5e0fbd74-a0e8-4c09-8904-59b9417736aa
-            //اینجا باید بعدا تست بشه، موجودیت تغییر بکنه و انواع حالتهای اضافه شدن ستون و رابطه و یا رابطه شدن یک ستون قبلا موجود تست شود
-            BizEntityUIComposition bizEntityUIComposition = new BizEntityUIComposition();
-            if (currentUIComposition == null)
-            {
-                currentUIComposition = bizEntityUIComposition.GetOrCreateEntityUIComposition(finalEntity.ID, dataEntryDTO.Columns, dataEntryDTO.Relationships.Select(x => x.Relationship).ToList());
-                //if (currentUIComposition == null)
-                //{
-                //    currentUIComposition = bizEntityUIComposition.GenerateUIComposition(finalEntity, finalEntity.Columns, finalEntity.Relationships);
-                //}
-            }
+        //private void SetDataEntryEntityUIComposition(DataEntryEntityDTO dataEntryDTO, TableDrivedEntityDTO finalEntity, EntityUICompositionDTO currentUIComposition)
+        //{
+        //    //** 5e0fbd74-a0e8-4c09-8904-59b9417736aa
+        //    //اینجا باید بعدا تست بشه، موجودیت تغییر بکنه و انواع حالتهای اضافه شدن ستون و رابطه و یا رابطه شدن یک ستون قبلا موجود تست شود
+        
+        //}
 
-            //** 8400bf54-fed4-4226-8e61-0f2b5dd22bf3
-
-
-            //foreach (var column in dataEntryDTO.Columns)
-            //{
-            //    if (dataEntryDTO.Relationships.Any(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID)))
-            //        column.InvisibleInUI = true;
-            //}
-            SetColumnsAndRelationship(currentUIComposition, dataEntryDTO);
-            dataEntryDTO.UICompositions = currentUIComposition;
-        }
-
-        private void SetColumnsAndRelationship(EntityUICompositionDTO currentUIComposition, DataEntryEntityDTO dataEntryDTO)
+        private void SetColumnsAndRelationship(EntityUICompositionDTO currentUIComposition, List<ColumnDTO> Columns, List<DataEntryRelationshipDTO> Relationships)
         {
             //** ed89f4f2-9a80-4cbf-be42-bb0b00630402
             if (currentUIComposition.ObjectCategory == DatabaseObjectCategory.Column)
             {
                 //result.Add(currentUIComposition);
-                var fColumn = dataEntryDTO.Columns.FirstOrDefault(x => x.ID == Convert.ToInt32(currentUIComposition.ObjectIdentity));
+                var fColumn = Columns.FirstOrDefault(x => x.ID == Convert.ToInt32(currentUIComposition.ObjectIdentity));
                 if (fColumn != null)
                     currentUIComposition.Column = fColumn;
             }
             else if (currentUIComposition.ObjectCategory == DatabaseObjectCategory.Relationship)
             {
                 //result.Add(currentUIComposition);
-                var fRel = dataEntryDTO.Relationships.FirstOrDefault(x => x.Relationship.ID == Convert.ToInt32(currentUIComposition.ObjectIdentity));
+                var fRel = Relationships.FirstOrDefault(x => x.Relationship.ID == Convert.ToInt32(currentUIComposition.ObjectIdentity));
                 if (fRel != null)
                     currentUIComposition.Relationship = fRel;
                 else
@@ -582,7 +573,7 @@ namespace MyModelManager
             }
             foreach (var cItem in currentUIComposition.ChildItems)
             {
-                SetColumnsAndRelationship(cItem, dataEntryDTO);
+                SetColumnsAndRelationship(cItem, Columns, Relationships);
             }
         }
         //private List<EntityUICompositionDTO> GetRelationships(EntityUICompositionDTO currentUIComposition, List<EntityUICompositionDTO> result = null)
@@ -762,10 +753,9 @@ namespace MyModelManager
                 {
                     relationship.IsReadonly = bizRelationship.DataIsReadonly(requester, relationship.ID, entity.IsReadonly);
                 }
-                ریدوتلی بودن ستون باید اینجا هم بره
                 foreach (var column in entity.Columns)
                 {
-                    column.IsReadonly = bizColumn.DataIsReadonly(requester, column.ID);
+                    column.IsReadonly = bizColumn.DataIsReadonly(requester, column.ID, entity.IsReadonly, entity.ID);
                     if (!column.IsReadonly)
                     {
                         if (parentRelationship != null)
@@ -1762,7 +1752,7 @@ namespace MyModelManager
                         BizEntityUIComposition bizEntityUIComposition = new BizEntityUIComposition();
                         if (createdEntities.Any())
                         {
-                            bizEntityUIComposition.UpdateUIComposition(requester, message.BaseEntity.ID);
+                            bizEntityUIComposition.UpdateUICompositionForBaseEntity(requester, message.BaseEntity.ID);
 
                             BizEntitySettings bizEntitySettings = new MyModelManager.BizEntitySettings();
                             bizEntitySettings.UpdateDefaultSettingsInModel(requester, createdEntities.Select(x => x.Item1.ID).ToList());

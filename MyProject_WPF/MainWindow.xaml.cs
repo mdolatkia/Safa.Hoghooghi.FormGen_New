@@ -416,7 +416,7 @@ namespace MyProject_WPF
             var title = "روابط" + " - " + database.Name;
             if (!CheckPaneExists(title))
             {
-                frmAllRelationships frm = new frmAllRelationships(database);
+                frmConceptualRelationships frm = new frmConceptualRelationships(database);
                 AddPane(frm, title);
             }
         }

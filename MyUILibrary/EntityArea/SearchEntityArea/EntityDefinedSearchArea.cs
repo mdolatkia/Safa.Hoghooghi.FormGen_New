@@ -112,9 +112,7 @@ namespace MyUILibrary.EntityArea
                 {
                     if (searchcolumn.RelationshipTail != null)
                     {
-                        var propertyControl = new RelationshipSearchColumnControl();
-                        propertyControl.RelationshipTail = searchcolumn.RelationshipTail;
-                        propertyControl.EntitySearchColumn = searchcolumn;
+
 
                         EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
                         editEntityAreaInitializer1.EntityID = searchcolumn.RelationshipTail.TargetEntityID;
@@ -123,15 +121,14 @@ namespace MyUILibrary.EntityArea
                         var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
                         if (FirstSideEditEntityAreaResult.Item1 != null)
                         {
-                            propertyControl.EditNdTypeArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaMultipleData;
-                            propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelControlManagerForOneDataForm(propertyControl.EditNdTypeArea.TemporaryDisplayView, searchcolumn.RelationshipUISetting);
-                            propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.EntitySearchColumn.Alias);
+                            var propertyControl = new RelationshipSearchColumnControl(AgentUICoreMediator.GetAgentUICoreMediator.UIManager, FirstSideEditEntityAreaResult.Item1, searchcolumn);
 
                             if (!string.IsNullOrEmpty(propertyControl.EntitySearchColumn.Tooltip))
                                 propertyControl.LabelControlManager.SetTooltip(propertyControl.EntitySearchColumn.Tooltip);
+                            RelationshipColumnControls.Add(propertyControl);
+                            SimpleSearchView.AddView(propertyControl.LabelControlManager, propertyControl.ControlManager);
                         }
-                        RelationshipColumnControls.Add(propertyControl);
-                        SimpleSearchView.AddView(propertyControl.LabelControlManager, propertyControl.ControlManager);
+
                         ////اینجا چیه بررسی شود چرا اینجا؟
                         //if (propertyControl.EditNdTypeArea.SimpleEntity.SearchInitially == true)
                         //    propertyControl.EditNdTypeArea.SearchViewEntityArea.SearchInitialy();
@@ -141,14 +138,8 @@ namespace MyUILibrary.EntityArea
                 }
                 else
                 {
-                    var propertyControl = new SimpleSearchColumnControl();
-                    propertyControl.Column = searchcolumn.Column;
-                    propertyControl.EntitySearchColumn = searchcolumn;
-                    propertyControl.Operators = searchcolumn.Operators;
-
-                    propertyControl.ControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateSimpleControlManagerForOneDataForm(propertyControl.Column, searchcolumn.ColumnUISetting, propertyControl.Operators);
-                    propertyControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(propertyControl.EntitySearchColumn.Alias);
-
+                    var propertyControl = new SimpleSearchColumnControl(AgentUICoreMediator.GetAgentUICoreMediator.UIManager, searchcolumn);
+                    
                     if (!string.IsNullOrEmpty(propertyControl.EntitySearchColumn.Tooltip))
                         propertyControl.LabelControlManager.SetTooltip(propertyControl.EntitySearchColumn.Tooltip);
 
@@ -411,15 +402,15 @@ namespace MyUILibrary.EntityArea
         //    return !string.IsNullOrEmpty(item.Value)  && item.Value.ToLower() != "0";
         //}
 
-        private bool SearchValueIsEmpty(SimpleSearchColumnControl typePropertyControl, string value)
-        {
-            if (typePropertyControl is NullColumnControl)
-                return string.IsNullOrEmpty(value) || value == "false" || value == "0";
-            else if (typePropertyControl is RelationCheckColumnControl || typePropertyControl is RelationCountCheckColumnControl)
-                return string.IsNullOrEmpty(value) || value == "false" || value == "0";
-            else
-                return string.IsNullOrEmpty(value) || value == "0";
-        }
+        //private bool SearchValueIsEmpty(SimpleSearchColumnControl typePropertyControl, string value)
+        //{
+        //    if (typePropertyControl is NullColumnControl)
+        //        return string.IsNullOrEmpty(value) || value == "false" || value == "0";
+        //    else if (typePropertyControl is RelationCheckColumnControl || typePropertyControl is RelationCountCheckColumnControl)
+        //        return string.IsNullOrEmpty(value) || value == "false" || value == "0";
+        //    else
+        //        return string.IsNullOrEmpty(value) || value == "0";
+        //}
 
 
 

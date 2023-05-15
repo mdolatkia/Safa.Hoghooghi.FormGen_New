@@ -56,7 +56,7 @@ namespace MyModelManager
         public void UpdateDefaultSettingsInModel(List<int> uiCompositionEntities, List<int> listViewEntities, List<int> searchEntities, List<int> initialSearchEntities
             , List<TableDrivedEntityDTO> allEntities)
         {
-            //** 04bbaccb-db6d-4e2d-ac97-8d0b82740010
+            //** BizEntitySettings.UpdateDefaultSettingsInModel: 8d0b82740010
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 List<Tuple<int, EntityUICompositionDTO>> listEntityUIComposition = new List<Tuple<int, EntityUICompositionDTO>>();
@@ -73,7 +73,7 @@ namespace MyModelManager
                 {
                     if (ItemImportingStarted != null)
                         ItemImportingStarted(this, new ItemImportingStartedArg() { ItemName = "Setting UI for entity" + " " + GetEntityInfo(allEntities, item.Item1), TotalProgressCount = listEntityUIComposition.Count(), CurrentProgress = listEntityUIComposition.IndexOf(item) + 1 });
-                    bizEntityUIComposition.SaveItem(projectContext, item.Item1, item.Item2);
+                    bizEntityUIComposition.UpdateUIComposition(projectContext, item.Item1, item.Item2);
                 }
 
                 List<Tuple<int, EntityListViewDTO>> listEntityAndView = new List<Tuple<int, EntityListViewDTO>>();

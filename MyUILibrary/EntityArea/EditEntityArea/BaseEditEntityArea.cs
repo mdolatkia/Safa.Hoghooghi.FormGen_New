@@ -28,6 +28,7 @@ namespace MyUILibrary.EntityArea
         public event EventHandler<DisableEnableChangedArg> DisableEnableChanged;
         public event EventHandler DataViewGenerated;
         public event EventHandler UIGenerated;
+        public IAgentUIManager UIManager { get { return AgentUICoreMediator.GetAgentUICoreMediator.UIManager; } }
 
         //     public abstract void DataItemVisiblity(object data, bool visiblity);
         //   public abstract void DataItemEnablity(object data, bool visiblity);
@@ -1063,7 +1064,7 @@ namespace MyUILibrary.EntityArea
         //    public TemporaryLinkState TemporaryLinkState { set; get; }
         private void GenerateTempView()
         {
-            //** 1adcced6-dc22-4163-b37d-d932102d6454
+            //** BaseEditEntityArea.GenerateTempView: d932102d6454
             if (TemporaryDisplayView == null)
                 TemporaryDisplayView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateTemporaryLinkUI();
 
@@ -1181,7 +1182,7 @@ namespace MyUILibrary.EntityArea
             }
             GenerateCommands();
             GenerateControls();
-          
+
             if (AreaInitializer.Preview)
                 return;
             if (AreaInitializer.SourceRelationColumnControl == null)
@@ -1677,19 +1678,11 @@ namespace MyUILibrary.EntityArea
         //    //////}
         //}
 
-        public EditEntityAreaInitializer GenereateAreaInitializer(RelationshipColumnControlGeneral relationshipColumnControl)
-        {
-            //** 33596d4b-21fc-4799-9f24-e432367abf73
-            EditEntityAreaInitializer newAreaInitializer = new EditEntityAreaInitializer();
-            newAreaInitializer.EditAreaDataManager = AreaInitializer.EditAreaDataManager;
-            newAreaInitializer.ActionActivityManager = AreaInitializer.ActionActivityManager;
-            newAreaInitializer.Preview = AreaInitializer.Preview;
-            newAreaInitializer.EntityID = relationshipColumnControl.Relationship.EntityID2;
-            newAreaInitializer.SourceRelationColumnControl = relationshipColumnControl;
-            newAreaInitializer.DataMode = relationshipColumnControl.DataEntryRelationship.DataMode;
-            newAreaInitializer.IntracionMode = relationshipColumnControl.DataEntryRelationship.IntracionMode;
-            return newAreaInitializer;
-        }
+        //public EditEntityAreaInitializer GenereateAreaInitializerFromRelationshipColumn(RelationshipColumnControlGeneral relationshipColumnControl)
+        //{
+        //    //**BaseEditEntityArea.GenereateAreaInitializer 33596d4b-21fc-4799-9f24-e432367abf73
+
+        //}
 
         //private bool GenerateMultipleEditEntityAreaWithUIControlPackage(RelationshipColumnControlMultiple relationshipColumnControl, RelationshipUISettingDTO relationshipUISetting)
         //{
@@ -1709,32 +1702,22 @@ namespace MyUILibrary.EntityArea
         //        return false;
         //}
 
-        public bool GenerateRelationshipControlEditArea(RelationshipColumnControlGeneral relationshipColumnControl, RelationshipUISettingDTO relationshipUISetting)
+        public I_EditEntityArea GenerateRelationshipControlEditArea(DataEntryRelationshipDTO dataEntryRelationship, RelationshipDTO relationship)
         {
-            //** ad2fc46e-0246-4a3e-90d6-7b5673de233c
-            var newAreaInitializer = GenereateAreaInitializer(relationshipColumnControl);
+            //** BaseEditEntityArea.GenerateRelationshipControlEditArea: 7b5673de233c
+            EditEntityAreaInitializer newAreaInitializer = new EditEntityAreaInitializer();
+            newAreaInitializer.EditAreaDataManager = AreaInitializer.EditAreaDataManager;
+            newAreaInitializer.ActionActivityManager = AreaInitializer.ActionActivityManager;
+            newAreaInitializer.Preview = AreaInitializer.Preview;
+            newAreaInitializer.EntityID = relationship.EntityID2;
+            // newAreaInitializer.SourceRelationColumnControl = relationshipColumnControl;
+            newAreaInitializer.DataMode = dataEntryRelationship.DataMode;
+            newAreaInitializer.IntracionMode = dataEntryRelationship.IntracionMode;
+            //return newAreaInitializer;
+
+            //var newAreaInitializer = GenereateAreaInitializerFromRelationshipColumn(relationshipColumnControl);
             var editAreaResult = BaseEditEntityArea.GetEditEntityArea(newAreaInitializer);
-            if (editAreaResult.Item1 != null)
-            {
-                var editArea = editAreaResult.Item1;
-                if (this is I_EditEntityAreaOneData)
-                {
-                    I_RelationshipControlManagerOne controlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelControlManagerForOneDataForm(editArea.FirstView
-                        , relationshipUISetting);
-                    (relationshipColumnControl as RelationshipColumnControlOne).RelationshipControlManager = controlManager;
-                }
-                else if (this is I_EditEntityAreaMultipleData)
-                {
-                    var controlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelControlManagerForMultiDataForm(editArea.TemporaryDisplayView
-                        , relationshipUISetting);
-                    (relationshipColumnControl as RelationshipColumnControlMultiple).RelationshipControlManager = controlManager;
-                }
-                relationshipColumnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(relationshipColumnControl.Alias);
-                relationshipColumnControl.GenericEditNdTypeArea = editArea;
-                return true;
-            }
-            else
-                return false;
+            return editAreaResult.Item1;
         }
 
         //private void CheckDirectPossiblity(EditEntityAreaInitializer newAreaInitializer)
@@ -3405,6 +3388,136 @@ namespace MyUILibrary.EntityArea
 
 
     }
+    public class BaseColumnControl
+    {
+        protected I_UIControlManager _LabelControlManager;
+        public I_UIControlManager LabelControlManager { get; }
+
+        public BaseColumnControl()
+        {
+        }
+        public SecurityAction Permission { get; set; }
+        public EntityUICompositionDTO UICompositionDTO { set; get; }
+
+    }
+    public abstract class SimpleColumnControlGenerel : BaseColumnControl
+    {
+        public ColumnDTO Column { set; get; }
+    }
+
+
+
+    public class SimpleColumnControlOne : SimpleColumnControlGenerel
+    {
+
+        // SimpleColumnControlOne: 0c72888906d5 
+        public I_SimpleControlManagerOne SimpleControlManager { get; }
+        public SimpleColumnControlOne(IAgentUIManager uiManager, EntityUICompositionDTO uiCompositionItem)
+        {
+            Column = uiCompositionItem.Column;
+            SimpleControlManager = uiManager.GenerateSimpleControlManagerForOneDataForm(Column, uiCompositionItem.ColumnUISetting, null);
+            _LabelControlManager = uiManager.GenerateLabelControlManager(Column.Alias);
+        }
+        //public override I_SimpleControlManagerGeneral SimpleControlManagerGeneral
+        //{
+        //    get { return SimpleControlManager; }
+        //}
+
+    }
+    public class SimpleColumnControlMultiple : SimpleColumnControlGenerel
+    {
+        // SimpleColumnControlMultiple: 0616c9171488
+        public I_SimpleControlManagerMultiple SimpleControlManager { get; }
+        public SimpleColumnControlMultiple(IAgentUIManager uiManager, EntityUICompositionDTO uiCompositionItem)
+        {
+            Column = uiCompositionItem.Column;
+            SimpleControlManager = uiManager.GenerateSimpleControlManagerForMultipleDataForm(Column, uiCompositionItem.ColumnUISetting);
+            _LabelControlManager = uiManager.GenerateLabelControlManager(Column.Alias);
+        }
+        //public override I_SimpleControlManagerGeneral SimpleControlManagerGeneral
+        //{
+        //    get { return SimpleControlManager; }
+        //}
+
+    }
+
+    public abstract class RelationshipColumnControlGeneral : BaseColumnControl
+    {
+        //public event EventHandler<ChildRelationshipInfo> DataViewForTemporaryViewShown;
+        public I_EditEntityArea ParentEditArea { set; get; }
+        public RelationshipDTO Relationship { get { return DataEntryRelationship.Relationship; } }
+        //    public List<ColumnDTO> RelationshipColumns { set; get; }
+        public DataEntryRelationshipDTO DataEntryRelationship { set; get; }
+        public I_EditEntityArea GenericEditNdTypeArea { set; get; }
+
+    }
+    public class RelationshipColumnControlOne : RelationshipColumnControlGeneral
+    {
+        public I_RelationshipControlManagerOne RelationshipControlManager
+        {
+            set; get;
+        }
+        public RelationshipColumnControlOne(IAgentUIManager uiManager, EntityUICompositionDTO uiCompositionItem, I_EditEntityArea parentEditArea, I_EditEntityArea relationshipEditArea)
+        {
+            //RelationshipColumnControlOne: 7a0bc2462763
+            DataEntryRelationship = uiCompositionItem.Relationship;
+            RelationshipControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelControlManagerForOneDataForm(relationshipEditArea.FirstView
+                     , uiCompositionItem.RelationshipUISetting);
+
+
+            _LabelControlManager = uiManager.GenerateLabelControlManager(uiCompositionItem.Relationship.Relationship.Alias);
+            ParentEditArea = parentEditArea;
+        }
+    }
+    public class RelationshipColumnControlMultiple : RelationshipColumnControlGeneral
+    {
+        //RelationshipColumnControlMultiple: c0b7ea24c7e9
+        public RelationshipColumnControlMultiple(IAgentUIManager uiManager, EntityUICompositionDTO uiCompositionItem, I_EditEntityArea parentEditArea, I_EditEntityArea relationshipEditArea)
+        {
+            DataEntryRelationship = uiCompositionItem.Relationship;
+            RelationshipControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateRelControlManagerForMultiDataForm(relationshipEditArea.TemporaryDisplayView
+                       , uiCompositionItem.RelationshipUISetting);
+            _LabelControlManager = uiManager.GenerateLabelControlManager(uiCompositionItem.Relationship.Relationship.Alias);
+            ParentEditArea = parentEditArea;
+        }
+        public I_RelationshipControlManagerMultiple RelationshipControlManager
+        {
+            set; get;
+        }
+    }
+    public class RelationshipSearchColumnControl : BaseColumnControl
+    {
+        public RelationshipSearchColumnControl(IAgentUIManager uiManager, I_EditEntityArea editArea, EntitySearchColumnsDTO entitySearchColumn)
+        {
+            EntitySearchColumn = entitySearchColumn;
+            EditNdTypeArea = editArea;
+            ControlManager = uiManager.GenerateRelControlManagerForOneDataForm(EditNdTypeArea.TemporaryDisplayView, EntitySearchColumn.RelationshipUISetting);
+            _LabelControlManager = uiManager.GenerateLabelControlManager(EntitySearchColumn.Alias);
+
+        }
+
+        public I_EditEntityArea EditNdTypeArea { set; get; }
+        //public RelationshipDTO Relationship { get {return EntitySearchColumn.rel } }
+        public List<ColumnDTO> Columns { set; get; }
+        //public event EventHandler<ColumnValueChangeArg> ValueChanged;
+
+        public EntitySearchColumnsDTO EntitySearchColumn { get; set; }
+
+        public I_RelationshipControlManagerOne ControlManager { get; set; }
+        public EntityRelationshipTailDTO RelationshipTail
+        {
+            get
+            {
+                return EntitySearchColumn.RelationshipTail;
+            }
+        }
+
+        //public bool IsFake { set; get; }
+        //public SearchEnumerableType SearchEnumerableType { get; set; }
+
+        //public List<AG_RelatedConttol> RelatedUIControls { set; get; }
+    }
+
     public enum DataSearchAction
     {
         JustShowInViewEntityArea,

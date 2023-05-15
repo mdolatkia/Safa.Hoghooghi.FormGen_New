@@ -166,12 +166,12 @@ namespace MyDataEditManagerBusiness
                 {
                     foreach (var column in query.EditingProperties)
                     {
-                        if (!bizColumn.DataIsAccessable(requester, column.ColumnID))
+                        if (!bizColumn.DataIsAccessable(requester, column.ColumnID,true))
                         {
                             permission = false;
                             result.Details.Add(ToResultDetail("عدم دسترسی", "عدم دسترسی به ستون" + " " + column.Column.Alias, ""));
                         }
-                        else if (column.ValueIsChanged && (bizColumn.DataIsReadonly(requester, column.ColumnID)))
+                        else if (column.ValueIsChanged && (bizColumn.DataIsReadonly(requester, column.ColumnID,null, query.DataItem.TargetEntityID)))
                         {
                             permission = false;
                             result.Details.Add(ToResultDetail("عدم دسترسی", "عدم دسترسی ثبت به ستون" + " " + column.Column.Alias, ""));
