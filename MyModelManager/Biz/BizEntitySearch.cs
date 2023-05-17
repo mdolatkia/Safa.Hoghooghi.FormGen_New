@@ -45,7 +45,7 @@ namespace MyModelManager
         public EntitySearchDTO GetOrCreateEntitySearchDTO(DR_Requester requester, int entityID)
         {
             //entityID    66880   stackoverflow
-            //** 9f233c74-615c-4bd5-abf8-ec6a26985ad9
+            //** BizEntitySearch.GetOrCreateEntitySearchDTO: ec6a26985ad9
             EntitySearchDTO result = null;
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
@@ -406,6 +406,7 @@ namespace MyModelManager
 
         private bool CheckColumnDetection(List<PriorityColumnDetection> list, string columnAlias)
         {
+            // BizEntitySearch.CheckColumnDetection: 672a797215e4
             return list.Any(x =>
               (x.CompareType == PriorityCompareType.Equals && x.Key.ToLower() == columnAlias.ToLower())
               || (x.CompareType == PriorityCompareType.ColumnAliasContainsKey && columnAlias.ToLower().Contains(x.Key.ToLower()))
@@ -496,6 +497,7 @@ namespace MyModelManager
         }
         public int UpdateEntitySearchs(EntitySearchDTO message)
         {
+            // BizEntitySearch.UpdateEntitySearchs: 504fdd7bcfcc
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbItem = SaveItem(projectContext, message);

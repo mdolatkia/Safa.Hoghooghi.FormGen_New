@@ -184,7 +184,7 @@ namespace MyUILibrary.DataLinkArea
 
         private void SetDataLink(int dataLinkID)
         {
-            //** c23b278a-930f-45ef-92cb-cdff2b2126ea
+            //** DataLinkArea.SetDataLink: cdff2b2126ea
             SelectedDataLink = AgentUICoreMediator.GetAgentUICoreMediator.DataLinkManager.GetDataLink(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), dataLinkID);
             View.ClearEntityViews();
             if (SelectedDataLink != null)

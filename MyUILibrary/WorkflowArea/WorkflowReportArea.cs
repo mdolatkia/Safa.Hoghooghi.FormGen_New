@@ -158,7 +158,7 @@ namespace MyUILibrary.WorkflowArea
 
         private void AddDataSelector(int entityID)
         {
-            //** 172e9dfb-3fb9-450a-a280-c283f53e955b
+            //** WorkflowReportArea.AddDataSelector: c283f53e955b
             EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
             editEntityAreaInitializer1.EntityID = entityID;
             editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;

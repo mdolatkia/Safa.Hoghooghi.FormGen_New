@@ -741,6 +741,7 @@ namespace MyProject_WPF
 
         private void btnPreview_Click(object sender, RoutedEventArgs e)
         {
+            //frmEntityUIComposition.btnPreview_Click: 942c5c707156
             MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.SetUIManager(new UIManager());
             var userInfo = new MyUILibrary.UserInfo();
             userInfo.AdminSecurityInfo = new MyUILibrary.AdminSecurityInfo() { IsActive = true, ByPassSecurity = true };

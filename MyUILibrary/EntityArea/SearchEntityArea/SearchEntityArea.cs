@@ -29,7 +29,7 @@ namespace MyUILibrary.EntityArea
         I_View_SearchEntityArea _SearchView;
         public I_View_SearchEntityArea SearchView
         {
-            //** 08908f25-303b-409c-becb-3100cfe8e22f
+            //** SearchEntityArea.SearchView: 3100cfe8e22f
             get
             {
                 if (_SearchView == null)
@@ -131,6 +131,9 @@ namespace MyUILibrary.EntityArea
         public DP_SearchRepositoryMain LastSearch { set; get; }
         public void OnSearchDataDefined(DP_SearchRepositoryMain searchData)
         {
+            //کاربردهای این متد گفته شود در داکیومنت
+
+
             //if (searchData == null)
             //    searchData = new DP_SearchRepositoryMain(SearchInitializer.EntityID);
 

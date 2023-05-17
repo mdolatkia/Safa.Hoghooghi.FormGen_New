@@ -35,7 +35,7 @@ namespace MyProject_WPF
         public frmEntitySearch(int entityID, int entitySearchID)
         {
             InitializeComponent();
-            //** 4bbbbc10-0d57-4023-821b-62576df5955b
+            //** frmEntitySearch: 62576df5955b
             EntityID = entityID;
             BizTableDrivedEntity biz = new BizTableDrivedEntity();
             var entity = biz.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);

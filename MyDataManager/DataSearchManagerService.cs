@@ -25,7 +25,7 @@ namespace MyDataManagerService
             return bizEntitySearch.GetEntitySearch(requester,ID);
         }
 
-        public EntitySearchDTO GetDefaultEntitySearch(DR_Requester requester, int entityID)
+        public EntitySearchDTO GetOrCreateEntitySearchDTO(DR_Requester requester, int entityID)
         {
             return bizEntitySearch.GetOrCreateEntitySearchDTO(requester,entityID);
         }

@@ -31,6 +31,7 @@ namespace MyUILibrary.EntityArea
         public DirectReportAreaInitializer AreaInitializer { set; get; }
         public DirectReportArea(DirectReportAreaInitializer areaInitializer)
         {
+            //DirectReportArea: 93d179c8164c
             //بهتره اکسترنال ویو ست بشه .. یعنی یک فرم و کنترل که مثل مرورگر باشد
             AreaInitializer = areaInitializer;
             EntityDirectReport = AgentUICoreMediator.GetAgentUICoreMediator.ReportManager.GetEntityDirectReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), areaInitializer.ReportID);

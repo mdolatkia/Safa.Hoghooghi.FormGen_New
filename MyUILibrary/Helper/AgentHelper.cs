@@ -1282,7 +1282,7 @@ namespace MyUILibrary
         }
         public static DP_SearchRepositoryMain GetQuickSearchLogicPhrase(EntitySearchDTO entitySearchDTO, int entityID, string text)
         {
-            //** 2e5350c5-667f-40af-b346-8384c544000f
+            //** AgentHelper.GetQuickSearchLogicPhrase: 8384c544000f
             var quickSearchLogic = new DP_SearchRepositoryMain(entityID);
             //  quickSearchLogic.Title = SearchInitializer.Title;
             //quickSearchLogic.IsSimpleSearch = true;

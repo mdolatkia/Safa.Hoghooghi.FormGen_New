@@ -20,7 +20,7 @@ namespace MyUILibrary.EntityArea
         public event EventHandler<SimpleSearchColumnControl> FormulaSelectionRequested;
         public EntityDefinedSearchArea(SearchAreaInitializer newAreaInitializer)
         {
-            //** d8ed853b-7d7a-4788-9ef6-de46ee61a50f
+            //**EntityDefinedSearchArea: de46ee61a50f
             SimpleColumnControls = new List<SimpleSearchColumnControl>();
             RelationshipColumnControls = new List<RelationshipSearchColumnControl>();
             AreaInitializer = newAreaInitializer;
@@ -32,20 +32,27 @@ namespace MyUILibrary.EntityArea
             if (newAreaInitializer.PreDefinedSearchMessage != null)
                 ShowPreDefinedSearch(newAreaInitializer.PreDefinedSearchMessage);
 
+            AddCommands();
+           
+
+        }
+
+        private void AddCommands()
+        {
+            //EntityDefinedSearchArea.AddCommands: 101c0aa583fe
             var searchClearCommand = new SearchClearCommand(this);
             SimpleSearchView.AddCommand(searchClearCommand.CommandManager);
-            if (!newAreaInitializer.ForSave)
+            if (!AreaInitializer.ForSave)
             {
                 var simpleSearchconfirmcommand = new SimpleSearchConfirmCommand(this);
                 SimpleSearchView.AddCommand(simpleSearchconfirmcommand.CommandManager);
             }
-
         }
 
         EntitySearchDTO _EntitySearch;
         public EntitySearchDTO EntitySearchDTO
         {
-            // ** fa31d517-f2db-4656-9348-5f09df3218c6
+            // ** EntityDefinedSearchArea.EntitySearchDTO: 5f09df3218c6
             get
             {
                 if (_EntitySearch == null)
@@ -55,16 +62,14 @@ namespace MyUILibrary.EntityArea
                         entitySearchID = AreaInitializer.PreDefinedSearchMessage.EntitySearchID;
                     else
                     {
-
                         //این حالت فقط موقع تعریف پیش می آید
                         entitySearchID = AreaInitializer.EntitySearchID;
-
                     }
 
                     if (entitySearchID != 0)
                         _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), entitySearchID);
                     else
-                        _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetDefaultEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+                        _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetOrCreateEntitySearchDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
                 }
                 return _EntitySearch;
             }
@@ -276,7 +281,7 @@ namespace MyUILibrary.EntityArea
 
         public DP_SearchRepositoryMain GetSearchRepository()
         {
-            //** c056cb29-86d4-4003-b6dc-b1b5fa67fe2d
+            //** EntityDefinedSearchArea.GetSearchRepository: b1b5fa67fe2d
 
             var columnsSearchRepository = new DP_SearchRepositoryMain(AreaInitializer.EntityID);
             columnsSearchRepository.Title = AreaInitializer.Title;

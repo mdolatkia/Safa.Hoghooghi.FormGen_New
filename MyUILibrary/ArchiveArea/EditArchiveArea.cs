@@ -35,6 +35,7 @@ namespace MyUILibrary.EntityArea
         public ArchiveAreaInitializer AreaInitializer { set; get; }
         public EditArchiveArea(ArchiveAreaInitializer areaInitializer)
         {
+            //  EditArchiveArea: f311e9eea306
             AreaInitializer = areaInitializer;
             FilteredArchiveTags = new List<int>();
 

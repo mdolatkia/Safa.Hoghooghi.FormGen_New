@@ -56,7 +56,7 @@ namespace MyUILibrary.DataMenuArea
         }
         private void MenuUI_MenuClicked(object sender, EventArgs e)
         {
-            //** 8fca5f17-3601-4749-b0a6-28b138367084
+            //**DataMenuArea.MenuUI_MenuClicked: 28b138367084
             var dataMenuUI = sender as DataMenuUI;
             if (dataMenuUI != null)
             {

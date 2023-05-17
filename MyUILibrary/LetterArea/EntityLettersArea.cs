@@ -24,6 +24,7 @@ namespace MyUILibrary.EntityArea
         //public bool SecurityEditAndDelete { set; get; }
         public EntityLettersArea(LettersAreaInitializer areaInitializer)
         {
+            //EntityLettersArea: 09090b87a566
             AreaInitializer = areaInitializer;
             //DataItem = dataInstance;
             //var keyColumns = dataInstance.KeyProperties;

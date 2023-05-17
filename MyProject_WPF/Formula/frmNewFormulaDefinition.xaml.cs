@@ -246,6 +246,7 @@ namespace MyProject_WPF
 
         private void SetEditEntityArea()
         {
+            //frmNewFormulaDefinition.SetEditEntityArea: 909072457fda
             if (EntityID != 0)
             {
                 MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.SetUIManager(new UIManager());

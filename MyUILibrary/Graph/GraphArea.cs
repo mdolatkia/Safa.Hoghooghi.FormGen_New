@@ -182,7 +182,7 @@ namespace MyUILibrary.GraphArea
 
         private void SetGraph(int GraphID)
         {
-            //** 57f30aa8-478c-419d-9f90-d3b96a0f7c64
+            //** GraphArea.SetGraph: d3b96a0f7c64
             SelectedGraph = AgentUICoreMediator.GetAgentUICoreMediator.GraphManager.GetGraph(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), GraphID);
             View.ClearEntityViews();
             if (SelectedGraph != null)

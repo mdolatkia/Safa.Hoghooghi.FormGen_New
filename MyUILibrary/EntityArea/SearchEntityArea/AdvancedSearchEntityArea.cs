@@ -21,6 +21,7 @@ namespace MyUILibrary.EntityArea
 
         public AdvancedSearchEntityArea(SearchAreaInitializer newAreaInitializer)
         {
+            //AdvancedSearchEntityArea: ef3528f2b0f5
             SearchCommands = new List<I_Command>();
             AreaInitializer = newAreaInitializer;
 

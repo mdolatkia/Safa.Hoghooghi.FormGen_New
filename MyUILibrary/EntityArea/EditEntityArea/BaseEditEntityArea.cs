@@ -384,7 +384,7 @@ namespace MyUILibrary.EntityArea
                     //if (AreaInitializer.EntitySearchID != 0)
                     //    _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntitySearchID);
                     //else
-                    _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetDefaultEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+                    _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetOrCreateEntitySearchDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
                 }
                 return _EntitySearch;
             }
@@ -658,7 +658,7 @@ namespace MyUILibrary.EntityArea
             if (ViewForSearchAndView == null)
                 ViewForSearchAndView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchViewEntityArea();
 
-            ViewForSearchAndView.AddSearchAreaView(SearchEntityAreaView);
+            ViewForSearchAndView.AddSearchAreaView(SearchEntityArea.SearchView);
 
 
             ViewEntityArea.IsCalledFromDataView = fromDataView;
@@ -953,7 +953,7 @@ namespace MyUILibrary.EntityArea
             {
                 if (_SearchEntityArea == null)
                 {
-                    //** 32685ae3-5af2-4da5-806e-54e3b4a36ac9
+                    //** BaseEditEntityArea.SearchEntityArea: 54e3b4a36ac9
                     var searchViewInitializer = new SearchAreaInitializer();
                     searchViewInitializer.EntityID = AreaInitializer.EntityID;
                     _SearchEntityArea = new SearchEntityArea(searchViewInitializer);
@@ -963,13 +963,13 @@ namespace MyUILibrary.EntityArea
                 return _SearchEntityArea;
             }
         }
-        public I_View_SearchEntityArea SearchEntityAreaView
-        {
-            get
-            {
-                return SearchEntityArea.SearchView;
-            }
-        }
+        //public I_View_SearchEntityArea SearchEntityAreaView
+        //{
+        //    get
+        //    {
+        //        return SearchEntityArea.SearchView;
+        //    }
+        //}
         I_ViewEntityArea _ViewEntityArea;
         public I_ViewEntityArea ViewEntityArea
         {

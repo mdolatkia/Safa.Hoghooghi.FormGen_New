@@ -131,7 +131,7 @@ namespace MyUILibrary.EntityArea
         }
         private void EntitySearchLookup_SelectionChanged(object sender, SelectionChangedArg e)
         {
-            //** c30475a9-695e-47ba-a526-6e317f93bebd
+            //** LogReportArea.EntitySearchLookup_SelectionChanged: 6e317f93bebd
             if (e.SelectedItem != null)
             {
                 var entity = e.SelectedItem as TableDrivedEntityDTO;

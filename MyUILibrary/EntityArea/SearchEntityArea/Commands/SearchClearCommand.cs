@@ -14,6 +14,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_BaseSearchEntityArea SearchArea { set; get; }
         public SearchClearCommand(I_BaseSearchEntityArea searchArea) : base()
         {
+            // SearchClearCommand: be7702379276
             SearchArea = searchArea;
             CommandManager.SetTitle("پاک کردن");
             CommandManager.ImagePath = "Images//Clear.png";

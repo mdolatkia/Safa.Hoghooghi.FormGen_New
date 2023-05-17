@@ -23,7 +23,7 @@ namespace MyUILibrary.EntityArea
         I_View_Area FirstView { get; }
         void ClearUIData(DP_FormDataRepository dataItem);
         void RemoveDatas(List<DP_FormDataRepository> datas);
-        bool GenerateRelationshipControlEditArea(RelationshipColumnControlGeneral relationshipColumnControl);
+        bool GenerateRelationshipControlEditArea(DataEntryRelationshipDTO dataEntryRelationship, RelationshipDTO relationship);
         void RemoveData(DP_FormDataRepository data);
         void GenerateDataView();
         bool ClearData();
