@@ -206,7 +206,7 @@ namespace MyUILibrary.EntityArea
         }
         public void ShowPreDefinedSearch(PreDefinedSearchDTO preDefinedSearch)
         {
-            //** 2a9ef0e0-b74b-4502-85de-cd004ddc85ff
+            //**  EntityDefinedSearchArea.ShowPreDefinedSearch: cd004ddc85ff
 
             SimpleSearchView.QuickSearchText = preDefinedSearch.QuickSearchValue;
             foreach (var phrase in preDefinedSearch.SimpleSearchProperties)
@@ -355,7 +355,7 @@ namespace MyUILibrary.EntityArea
 
         public PreDefinedSearchDTO GetSearchRepositoryForSave()
         {
-            //** f462dc9f-0722-4587-8e77-ab359aa2461b
+            //** EntityDefinedSearchArea.GetSearchRepositoryForSave: ab359aa2461b
             var result = new PreDefinedSearchDTO();
 
             result.QuickSearchValue = SimpleSearchView.QuickSearchText;

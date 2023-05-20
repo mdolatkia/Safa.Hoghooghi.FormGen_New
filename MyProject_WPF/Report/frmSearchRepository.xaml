@@ -27,7 +27,7 @@
             <TextBlock Grid.Column="0" Grid.Row="1" Text="نوع جستجو"/>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" >
                 <RadioButton VerticalAlignment="Center" Name="optPreDefined" Checked="optPreDefined_Checked" Content="جستجوی از پیش تعریف شده"></RadioButton>
-                <RadioButton VerticalAlignment="Center" Name="optAdvanced" Checked="optPreDefined_Checked" Content="جستجوی از پیش تعریف شده"></RadioButton>
+                <RadioButton VerticalAlignment="Center" Name="optAdvanced" Checked="optPreDefined_Checked" Content="جستجوی پیشرفته"></RadioButton>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" x:Name="grdSearch">
