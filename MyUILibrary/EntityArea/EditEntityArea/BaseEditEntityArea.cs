@@ -623,7 +623,7 @@ namespace MyUILibrary.EntityArea
 
         public void ShowSearchView(bool fromDataView)
         {
-            //** 980f0d8f-2d82-4144-a498-397915c7e37f
+            //** BaseEditEntityArea.ShowSearchView: 397915c7e37f
 
 
             //CalculateFilterValues();
@@ -707,7 +707,7 @@ namespace MyUILibrary.EntityArea
 
         private void SearchEntityArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
         {
-            //** e1656539-2888-4534-8fcb-3841062ffaca
+            //** BaseEditEntityArea.SearchEntityArea_SearchDataDefined: 3841062ffaca
             var result = GetSearchResult(e);
             ViewEntityArea.AddData(result);
 
@@ -977,7 +977,7 @@ namespace MyUILibrary.EntityArea
             {
                 if (_ViewEntityArea == null)
                 {
-                    //** 32685ae3-5af2-4da5-806e-54e3b4a36ac9
+                    //** BaseEditEntityArea.ViewEntityArea: 54e3b4a36ac9
                     var viewAreaInitializer = new ViewEntityAreaInitializer();
                     viewAreaInitializer.EntityID = AreaInitializer.EntityID;
                     viewAreaInitializer.MultipleSelection = this is I_EditEntityAreaMultipleData;

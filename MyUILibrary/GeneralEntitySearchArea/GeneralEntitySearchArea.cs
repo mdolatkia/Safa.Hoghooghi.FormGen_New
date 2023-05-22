@@ -19,7 +19,7 @@ namespace MyUILibrary.EntitySearchArea
 
         public GeneralEntitySearchArea()
         {
-            //** 4afa9fa9-38f7-4665-bd64-33b533adf734
+            //** GeneralEntitySearchArea: 33b533adf734
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfGeneralEntitySearchArea();
             entitySearchLookup = new MySearchLookup();
             entitySearchLookup.DisplayMember = "Alias";

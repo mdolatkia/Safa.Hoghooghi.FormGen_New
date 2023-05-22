@@ -30,17 +30,17 @@ namespace MyUILibrary.EntityArea
         I_View_ViewEntityArea _ViewForViewEntityArea;
         public I_View_ViewEntityArea ViewForViewEntityArea
         {
-            //** bf26b842-9266-49e5-a0a3-14238316d018
+            //** ViewEntityArea.ViewForViewEntityArea: 14238316d018
             get
             {
                 if (_ViewForViewEntityArea == null)
                 {
-                    ViewCommands = new List<I_ViewAreaCommand>();
                     ViewColumnControls = new List<SimpleViewColumnControl>();
                     _ViewForViewEntityArea = AgentUICoreMediator.UIManager.GenerateViewOfViewEntityArea();
                     _ViewForViewEntityArea.MultipleSelection = ViewInitializer.MultipleSelection;
-                    var selectcommand = new SelectCommand(this);
-                    _ViewForViewEntityArea.AddCommand(selectcommand.CommandManager);
+
+                    AddCommands();
+                  
                     _ViewForViewEntityArea.DataContainerLoaded += ViewView_DataContainerLoaded;
                     _ViewForViewEntityArea.ItemDoubleClicked += ViewView_ItemDoubleClicked;
 
@@ -49,6 +49,15 @@ namespace MyUILibrary.EntityArea
                 return _ViewForViewEntityArea;
             }
         }
+
+        private void AddCommands()
+        {
+
+            ViewCommands = new List<I_ViewAreaCommand>();
+            var selectcommand = new SelectCommand(this);
+            _ViewForViewEntityArea.AddCommand(selectcommand.CommandManager);
+        }
+
         public ViewEntityAreaInitializer ViewInitializer { set; get; }
         //public I_EditEntityArea SourceEditEntityArea
         //{

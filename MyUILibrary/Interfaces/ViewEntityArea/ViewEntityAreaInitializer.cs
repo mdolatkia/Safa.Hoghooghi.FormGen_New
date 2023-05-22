@@ -26,7 +26,7 @@ namespace MyUILibrary.EntityArea
         public TemplateEntityUISettings UISettings { set; get; }
 
 
-        public bool AllowSelect;
+        //public bool AllowSelect;
         public bool MultipleSelection { set; get; }
         //public TableDrivedEntityDTO TempEntity { set; get; }
         public List<DP_DataView> ViewData { set; get; }
