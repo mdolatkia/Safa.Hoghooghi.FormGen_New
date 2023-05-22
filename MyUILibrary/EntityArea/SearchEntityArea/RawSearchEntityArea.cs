@@ -232,7 +232,7 @@ namespace MyUILibrary.EntityArea
         public List<SearchProperty> GetSearchRepository()
         {
 
-            //** 23709caa-6bdc-4d4c-a4e7-79a3cc81a307
+            //** RawSearchEntityArea.GetSearchRepository: 79a3cc81a307
             List<SearchProperty> result = new List<SearchProperty>();
             foreach (var property in SimpleColumnControls)
             {

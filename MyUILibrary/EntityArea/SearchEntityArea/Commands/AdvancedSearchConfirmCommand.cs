@@ -14,6 +14,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_AdvancedSearchEntityArea SearchArea { set; get; }
         public AdvancedSearchConfirmCommand(I_AdvancedSearchEntityArea searchArea) : base()
         {
+            // AdvancedSearchConfirmCommand: 263206ad4af8
             SearchArea = searchArea;
             //if (AgentHelper.GetAppMode() == AppMode.Paper)
             //    CommandManager.SetTitle("Search");

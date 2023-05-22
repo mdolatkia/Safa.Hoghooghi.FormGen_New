@@ -27,14 +27,9 @@ namespace MyUILibrary.EntityArea
 
             AdvancedSearchView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfAdvancedSearch();
 
+            AddCommands();
 
-            var clearSearchcommand = new SearchClearCommand(this);
-            AdvancedSearchView.AddCommand(clearSearchcommand.CommandManager);
-            if (!newAreaInitializer.ForSave)
-            {
-                var searchConfirmcommand = new AdvancedSearchConfirmCommand(this);
-                AdvancedSearchView.AddCommand(searchConfirmcommand.CommandManager);
-            }
+          
 
             if (newAreaInitializer.AdvancedSearchDTOMessage == null)
                 ClearSearchData();
@@ -43,6 +38,19 @@ namespace MyUILibrary.EntityArea
 
 
         }
+
+        private void AddCommands()
+        {
+            // AdvancedSearchEntityArea.AddCommands: 24fb53a7c80e
+            var clearSearchcommand = new SearchClearCommand(this);
+            AdvancedSearchView.AddCommand(clearSearchcommand.CommandManager);
+            if (!AreaInitializer.ForSave)
+            {
+                var searchConfirmcommand = new AdvancedSearchConfirmCommand(this);
+                AdvancedSearchView.AddCommand(searchConfirmcommand.CommandManager);
+            }
+        }
+
         public I_View_AdvancedSearchEntityArea AdvancedSearchView { set; get; }
 
         public List<I_Command> SearchCommands
@@ -79,17 +87,17 @@ namespace MyUILibrary.EntityArea
 
         public bool ShowSearchRepository(DP_SearchRepositoryMain item)
         {
+            //AdvancedSearchEntityArea.ShowSearchRepository:  8eb8b7ca6c92
             //   RootNode = null;
             RootSearchRepository = item;
             AdvancedSearchView.ClearTreeItems();
-
             AddNode(null, item);
             return true;
         }
 
         private void AddNode(AdvanceSearchNode parentNode, Phrase phrase)
         {
-            // ** ac0b73ce-dd1d-4a62-8719-dc5ef44a6503
+            // ** AdvancedSearchEntityArea.AddNode: dc5ef44a6503
             if (phrase is LogicPhraseDTO)
             {
                 var logicPhrase = phrase as LogicPhraseDTO;
@@ -138,21 +146,21 @@ namespace MyUILibrary.EntityArea
                     AddNode(newnode, item);
                 }
 
-                I_AdvanceSearchMenu rootAndMenu = newnode.NodeManager.AddMenu("Add Logic Phrase");
+                I_AdvanceSearchMenu rootAndMenu = newnode.NodeManager.AddMenu("افزودن جمله عبارت");
                 rootAndMenu.Clicked += (sender, e) => AddLogicPhraseClicked(sender, e, newnode, logicPhrase);
 
                 var searchRepositories = GetParentSearchRepositories(newnode);
                 var last = searchRepositories.Last();
 
                 I_AdvanceSearchMenu simpleSearchMenu = newnode.NodeManager.AddMenu("افزودن لیست خصوصیات");
-                simpleSearchMenu.Clicked += (sender1, e1) => RootAndMenu_Clicked1(sender1, e1, newnode, logicPhrase, last);
+                simpleSearchMenu.Clicked += (sender1, e1) => AddListSearchProperty(sender1, e1, newnode, logicPhrase, last);
 
 
                 var entity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetPermissionedEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), last);
                 foreach (var relationship in entity.Relationships)
                 {
                     I_AdvanceSearchMenu relationshipSearchMenu = newnode.NodeManager.AddMenu(relationship.Alias);
-                    relationshipSearchMenu.Clicked += (sender1, e1) => Relationship_ClickedNew(sender1, e1, newnode, logicPhrase, relationship);
+                    relationshipSearchMenu.Clicked += (sender1, e1) => RelationshipSearchRepository_AddNew(sender1, e1, newnode, logicPhrase, relationship);
                 }
                 if (parentNode != null)
                 {
@@ -251,9 +259,10 @@ namespace MyUILibrary.EntityArea
             AddNode(parentNode, newLogicPhrase);
         }
 
-        private void Relationship_ClickedNew(object sender1, EventArgs e1, AdvanceSearchNode parentNode, LogicPhraseDTO parentLogicPhrase
+        private void RelationshipSearchRepository_AddNew(object sender1, EventArgs e1, AdvanceSearchNode parentNode, LogicPhraseDTO parentLogicPhrase
             , RelationshipDTO relationship)
         {
+            //AdvancedSearchEntityArea.RelationshipSearchRepository_AddNew: bf90baf6917a
             var relSearchRepository = new DP_SearchRepositoryRelationship();
             relSearchRepository.Title = relationship.Alias;
             relSearchRepository.SourceRelationship = relationship;
@@ -343,9 +352,9 @@ namespace MyUILibrary.EntityArea
                 }
             }
         }
-        private void RootAndMenu_Clicked1(object sender1, EventArgs e1, AdvanceSearchNode parentNode, LogicPhraseDTO parentLogicPhrase, int entityID)
+        private void AddListSearchProperty(object sender1, EventArgs e1, AdvanceSearchNode parentNode, LogicPhraseDTO parentLogicPhrase, int entityID)
         {
-            //** 247d4428-042e-4038-9c89-c1729589c7ea
+            //** AdvancedSearchEntityArea.AddListSearchProperty: c1729589c7ea
             var searchViewInitializer = new SearchAreaInitializer();
 
             searchViewInitializer.EntityID = entityID;
@@ -378,9 +387,10 @@ namespace MyUILibrary.EntityArea
         }
         public DP_SearchRepositoryMain GetSearchRepository()
         {
+            // AdvancedSearchEntityArea.GetSearchRepository: 51644c6aa16f
+
             if (RootSearchRepository != null)
             {
-
                 return RootSearchRepository;
             }
             return null;

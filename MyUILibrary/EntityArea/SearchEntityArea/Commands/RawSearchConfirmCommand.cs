@@ -14,6 +14,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_RawSearchEntityArea SearchArea { set; get; }
         public RawSearchConfirmCommand(I_RawSearchEntityArea searchArea) : base()
         {
+            //RawSearchConfirmCommand: e180dd1853e5
             SearchArea = searchArea;
             CommandManager.SetTitle("جستجو");
             CommandManager.ImagePath = "Images//search.png";
