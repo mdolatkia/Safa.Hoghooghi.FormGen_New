@@ -21,6 +21,8 @@ namespace MyUILibrary.EntityArea
         //    public DP_FormDataRepository SourceData { set; get; }
         public bool LableIsShared { get { return (SourceData as DP_FormDataRepository).EditEntityArea is I_EditEntityAreaMultipleData; } }
 
+        public new DP_FormDataRepository SourceData { get { return SourceData as DP_FormDataRepository; } }
+
         public List<ControlStateItem> ControlReadonlyStateItems = new List<ControlStateItem>();
         public List<ControlStateItem> ControlHiddenStateItems = new List<ControlStateItem>();
 
@@ -358,7 +360,7 @@ namespace MyUILibrary.EntityArea
                     }
                 }
             }
-            dataItem.ParantChildRelationshipData = new ParentRelationshipInfo(this);
+            dataItem.ParantChildRelationshipData = this;
 
 
             //   childRelationshipData.
@@ -1488,7 +1490,7 @@ namespace MyUILibrary.EntityArea
 
         public void TemporaryViewActionRequested(I_View_TemporaryView TemporaryView, TemporaryLinkType linkType)
         {
-            //** dfbff421-9f1d-4949-8e34-40b8056e73af
+            //** ChildRelationshipInfo.TemporaryViewActionRequested: 40b8056e73af
             RelationshipControl.GenericEditNdTypeArea.ChildRelationshipInfoBinded = this;
             //if (LastTemporaryView != null)
             //{

@@ -63,7 +63,7 @@ namespace MyDataEditManagerBusiness
                         result.Add(ChildRelationshipData);
                         deleteDataItem.ChildRelationshipDatas.Add(ChildRelationshipData);
 
-                        var ParentRelationshipData = new ParentRelationshipData(ChildRelationshipData);
+                    //    var ParentRelationshipData = new ChildRelationshipData(ChildRelationshipData);
 
                         if (ChildRelationshipData.DBDeleteRule != RelationshipDeleteUpdateRule.Cascade)
                         {
@@ -71,7 +71,7 @@ namespace MyDataEditManagerBusiness
                             {
                                 DP_DataRepository dataItem = new DP_DataRepository(childItem.TargetEntityID, childItem.TargetEntityAlias);
                                 dataItem.DataView = childItem;
-                                dataItem.ParantChildRelationshipData = ParentRelationshipData;
+                                dataItem.ParantChildRelationshipData = ChildRelationshipData;
                                 ChildRelationshipData.RelatedData.Add(dataItem);
 
 
@@ -82,7 +82,7 @@ namespace MyDataEditManagerBusiness
                             bool repeatedInParents = false;
                             foreach (var childItem in searchViewResult.ResultDataItems)
                             {//هردفعه پرنتها برای هر ایتم گرفته نشود
-                                List<DP_DataRepository> parents = GetParentDataItems(ParentRelationshipData);
+                                List<DP_DataRepository> parents = GetParentDataItems(ChildRelationshipData);
                                 if (parents.Any(z => z.TargetEntityID == childItem.TargetEntityID && z.KeyProperties.All(x => childItem.Properties.Any(y => y.IsKey && x.ColumnID == y.ColumnID && x.Value == y.Value))))
                                 {
                                     var parentRepeted = parents.First(z => z.TargetEntityID == childItem.TargetEntityID && z.KeyProperties.All(x => childItem.Properties.Any(y => y.IsKey && x.ColumnID == y.ColumnID && x.Value == y.Value)));
@@ -90,7 +90,7 @@ namespace MyDataEditManagerBusiness
                                     repeatedInParents = true;
                                     DP_DataRepository dataItem = new DP_DataRepository(childItem.TargetEntityID, childItem.TargetEntityAlias);
                                     dataItem.DataView = childItem;
-                                    dataItem.ParantChildRelationshipData = ParentRelationshipData;
+                                    dataItem.ParantChildRelationshipData = ChildRelationshipData;
                                     dataItem.Error = "وابستگی تکراری با " + parentRepeted.ViewInfo;
                                     ChildRelationshipData.RelatedData.Add(dataItem);
                                 }
@@ -107,7 +107,7 @@ namespace MyDataEditManagerBusiness
                                     {
                                         DP_DataRepository dataItem = new DP_DataRepository(childItem.TargetEntityID, childItem.TargetEntityAlias);
                                         dataItem.DataView = childItem;
-                                        dataItem.ParantChildRelationshipData = ParentRelationshipData;
+                                        dataItem.ParantChildRelationshipData = ChildRelationshipData;
                                         ChildRelationshipData.RelatedData.Add(dataItem);
                                         var innerloop = GetTreeItems(requester, dataItem, rootDeleteItem);
                                         if (innerloop)
@@ -145,7 +145,7 @@ namespace MyDataEditManagerBusiness
                 return null;
         }
 
-        private List<DP_DataRepository> GetParentDataItems(ParentRelationshipData ParentRelationshipData, List<DP_DataRepository> items = null)
+        private List<DP_DataRepository> GetParentDataItems(ChildRelationshipData ParentRelationshipData, List<DP_DataRepository> items = null)
         {
             if (items == null)
                 items = new List<DP_DataRepository>();

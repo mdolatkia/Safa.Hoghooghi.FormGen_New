@@ -47,7 +47,7 @@ namespace MyModelManager
 
         public EntityListViewDTO GetOrCreateEntityListViewDTO(DR_Requester requester, int entityID)
         {
-            //** 4aecc037-4825-4e44-926a-3462d35bf2fc
+            //** BizEntityListView.GetOrCreateEntityListViewDTO: 3462d35bf2fc
             EntityListViewDTO result = null;
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
@@ -144,9 +144,11 @@ namespace MyModelManager
                 List<RelationshipDTO> reviewedRels = new List<RelationshipDTO>();
                 foreach (var column in entity.Columns)
                 {
+                    bool shoudAddColumn = false;
+                    RelationshipDTO shoudCheckRelationship = null;
                     if (column.PrimaryKey)
                     {
-                        AddListViewColumns(firstEntity, entity, list, column, relationshipPath, relationships);
+                        shoudAddColumn = true;
                     }
 
                     if (entity.Relationships.Any(x => x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID) &&
@@ -155,41 +157,52 @@ namespace MyModelManager
                         var newrelationship = entity.Relationships.First(x => x.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ID) &&
                      (x.TypeEnum == Enum_RelationshipType.SubToSuper || x.TypeEnum == Enum_RelationshipType.ManyToOne || x.TypeEnum == Enum_RelationshipType.ExplicitOneToOne));
 
-
-
-                        int distanceFromNonSubToSuper = 0;
-                        if (relationships != null)
+                        shoudAddColumn = true;
+                        if (!reviewedRels.Any(x => x.ID == newrelationship.ID)
+                              && (relationships == null || !relationships.Any(x => x.ID == newrelationship.ID)))
                         {
-                            distanceFromNonSubToSuper = relationships.Count(x => x.TypeEnum != Enum_RelationshipType.SubToSuper);
-                        }
-                        if (newrelationship.TypeEnum == Enum_RelationshipType.SubToSuper || distanceFromNonSubToSuper < 2)
-                        {
+                            reviewedRels.Add(newrelationship);
 
-                            AddListViewColumns(firstEntity, entity, list, column, relationshipPath, relationships);
-                            //جلوگیری از لوپ و همچنین رابطه چند ستونی
-                            if (!reviewedRels.Any(x => x.ID == newrelationship.ID)
-                                && (relationships == null || !relationships.Any(x => x.ID == newrelationship.ID)))
+                            if (newrelationship.TypeEnum == Enum_RelationshipType.SubToSuper)
                             {
-
-                                //به لیست جدید از روابط میسازیم چون ممکن از روابط چند شاخه شوند
-                                List<RelationshipDTO> relationshipsTail = new List<RelationshipDTO>();
+                                shoudCheckRelationship = newrelationship;
+                            }
+                            else if (newrelationship.TypeEnum == Enum_RelationshipType.ManyToOne || newrelationship.TypeEnum == Enum_RelationshipType.ExplicitOneToOne)
+                            {
+                                int distanceFromNonSubToSuper = 0;
                                 if (relationships != null)
                                 {
-                                    foreach (var relItem in relationships)
-                                        relationshipsTail.Add(relItem);
+                                    distanceFromNonSubToSuper = relationships.Count(x => x.TypeEnum != Enum_RelationshipType.SubToSuper);
                                 }
-                                relationshipsTail.Add(newrelationship);
-                                var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(newrelationship.EntityID2, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
-                                GenereateDefaultListViewColumns(firstEntity, entityDTO, list, relationshipPath + (relationshipPath == "" ? "" : ",") + newrelationship.ID.ToString(), relationshipsTail);
+                                if (relationships == null || distanceFromNonSubToSuper < 2)
+                                {
+                                    shoudCheckRelationship = newrelationship;
+                                }
                             }
                         }
-                        reviewedRels.Add(newrelationship);
                     }
 
                     var key = string.IsNullOrEmpty(column.Alias) ? column.Name : column.Alias;
                     if (CheckColumnDetection(GetPriorityColumnNames(), key))
+                        shoudAddColumn = true;
+
+                    if (shoudAddColumn)
                         AddListViewColumns(firstEntity, entity, list, column, relationshipPath, relationships);
 
+
+                    if (shoudCheckRelationship != null)
+                    {
+                        //به لیست جدید از روابط میسازیم چون ممکن از روابط چند شاخه شوند
+                        List<RelationshipDTO> relationshipsTail = new List<RelationshipDTO>();
+                        if (relationships != null)
+                        {
+                            foreach (var relItem in relationships)
+                                relationshipsTail.Add(relItem);
+                        }
+                        relationshipsTail.Add(shoudCheckRelationship);
+                        var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(shoudCheckRelationship.EntityID2, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
+                        GenereateDefaultListViewColumns(firstEntity, entityDTO, list, relationshipPath + (relationshipPath == "" ? "" : ",") + shoudCheckRelationship.ID.ToString(), relationshipsTail);
+                    }
                 }
             }
             else
@@ -429,6 +442,7 @@ namespace MyModelManager
 
         private bool CheckColumnDetection(List<PriorityColumnDetection> list, string columnAlias)
         {
+            // BizEntityListView.CheckColumnDetection: 7a6f5a2ab97e
             return list.Any(x =>
               (x.CompareType == PriorityCompareType.Equals && x.Key.ToLower() == columnAlias.ToLower())
               || (x.CompareType == PriorityCompareType.ColumnAliasContainsKey && columnAlias.ToLower().Contains(x.Key.ToLower()))
@@ -610,6 +624,7 @@ namespace MyModelManager
 
         public int UpdateEntityListViews(EntityListViewDTO message)
         {
+            //     BizEntityListView.UpdateEntityListViews: 738ce2bdd614
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbEntityListView = SaveItem(projectContext, message);

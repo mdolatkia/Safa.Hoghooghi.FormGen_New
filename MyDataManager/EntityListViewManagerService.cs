@@ -28,7 +28,7 @@ namespace MyDataManagerService
             return bizEntityListView.GetEntityListView(requester, ID);
         }
 
-        public EntityListViewDTO GetDefaultEntityListView(DR_Requester requester, int entityID)
+        public EntityListViewDTO GetOrCreateEntityListViewDTO(DR_Requester requester, int entityID)
         {
             return bizEntityListView.GetOrCreateEntityListViewDTO(requester, entityID);
         }

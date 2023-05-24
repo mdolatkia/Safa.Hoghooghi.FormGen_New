@@ -52,7 +52,7 @@ namespace MyUILibrary.EntityArea
 
         private void AddCommands()
         {
-
+            // ViewEntityArea.AddCommands: 0062609d681f
             ViewCommands = new List<I_ViewAreaCommand>();
             var selectcommand = new SelectCommand(this);
             _ViewForViewEntityArea.AddCommand(selectcommand.CommandManager);
@@ -97,7 +97,7 @@ namespace MyUILibrary.EntityArea
 
         private void ManageViewEntityArea()
         {
-            //** dd6006b0-96f6-4df8-b687-d2d99496f04e
+            //** ViewEntityArea.ManageViewEntityArea: d2d99496f04e
             foreach (var column in EntityListView.EntityListViewAllColumns.OrderBy(x => x.OrderID))
             {
                 var propertyControl = new SimpleViewColumnControl(AgentUICoreMediator.GetAgentUICoreMediator.UIManager, column) ;
@@ -212,7 +212,7 @@ namespace MyUILibrary.EntityArea
         EntityListViewDTO _EntityListView;
         public EntityListViewDTO EntityListView
         {
-            //** 18eef055-efc2-439a-8d24-890dd76ff4e3
+            //** ViewEntityArea.EntityListView: 890dd76ff4e3
             get
             {
                 if (_EntityListView == null)
@@ -220,7 +220,7 @@ namespace MyUILibrary.EntityArea
                     //if (ViewInitializer.EntityListViewID != 0)
                     //    _EntityListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), ViewInitializer.EntityListViewID);
                     //else
-                    _EntityListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetDefaultEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), ViewInitializer.EntityID);
+                    _EntityListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetOrCreateEntityListViewDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), ViewInitializer.EntityID);
                 }
 
 
@@ -233,6 +233,7 @@ namespace MyUILibrary.EntityArea
 
         public void OnDataSelected(List<DP_DataView> dataItems)
         {
+            // ViewEntityArea.OnDataSelected: e62db97ed241
             if (DataSelected != null)
                 DataSelected(this, new DataViewDataSelectedEventArg(dataItems, IsCalledFromDataView));
 

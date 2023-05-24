@@ -27,7 +27,7 @@ namespace MyUILibrary.EntityArea.Commands
 
         private void CommandManager_Clicked(object sender, EventArgs e)
         {
-            //** b5e691ad-29ae-4b2c-a2a1-c971552116e1
+            //** SearchCommand.SearchCommand: c971552116e1
             //if (EditArea.SearchViewEntityArea != null)
             //{
             //AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(packageArea.SearchViewEntityArea.View, packageArea.AreaInitializer.Title);

@@ -21,10 +21,13 @@ namespace ProxyLibrary
 
     public class ChildRelationshipData
     {
+        public int ToParentRelationshipID { get { return Relationship.PairRelationshipID; } }
+        public RelationshipDTO ToParentRelationship { get { return Relationship.PairRelationship; } }
         public DP_DataRepository SourceData { set; get; }
         public RelationshipDTO Relationship { set; get; }
         public ChildRelationshipData(DP_DataRepository sourceData, RelationshipDTO relationship)
         {
+            //ChildRelationshipData: 247b7f38d6a7
             SourceData = sourceData;
             Relationship = relationship;
             RelatedData = new List<DP_DataRepository>();
@@ -52,21 +55,21 @@ namespace ProxyLibrary
 
     }
 
-    public class ParentRelationshipData
-
-    {
-        public ParentRelationshipData(ChildRelationshipData parantChildRelationshipdata)
-        {
-            ParantChildRelationshipData = parantChildRelationshipdata;
-        }
-        public ChildRelationshipData ParantChildRelationshipData { set; get; }
-        public int ToParentRelationshipID { get { return ParantChildRelationshipData.Relationship.PairRelationshipID; } }
-        public RelationshipDTO ToParentRelationship { get { return ParantChildRelationshipData.Relationship.PairRelationship; } }
-        public DP_DataRepository SourceData { get { return ParantChildRelationshipData.SourceData; } }
-        //   public bool IsHidden { get; set; }
-        //   public bool IsReadonly { get; set; }
-        public bool IsAdded { get; set; }
-    }
+    //public class ParentRelationshipData
+    //{
+    //    public ParentRelationshipData(ChildRelationshipData parantChildRelationshipdata)
+    //    {
+    //        // ParentRelationshipData: 74a7bb50b4a8
+    //        ParantChildRelationshipData = parantChildRelationshipdata;
+    //    }
+    //    public ChildRelationshipData ParantChildRelationshipData { set; get; }
+    //    public int ToParentRelationshipID { get { return ParantChildRelationshipData.Relationship.PairRelationshipID; } }
+    //    public RelationshipDTO ToParentRelationship { get { return ParantChildRelationshipData.Relationship.PairRelationship; } }
+    //    public DP_DataRepository SourceData { get { return ParantChildRelationshipData.SourceData; } }
+    //    //   public bool IsHidden { get; set; }
+    //    //   public bool IsReadonly { get; set; }
+    //    public bool IsAdded { get; set; }
+    //}
 
 
 

@@ -15,6 +15,7 @@ namespace ProxyLibrary
 
         public DP_BaseData(int targetEntityID, string targetEntityAlias)
         {
+            //DP_BaseData: ffcd7c3d2304
             Properties = new List<EntityInstanceProperty>();
             _TargetEntityID = targetEntityID;
             _TargetEntityAlias = targetEntityAlias;
@@ -67,10 +68,12 @@ namespace ProxyLibrary
 
         public virtual List<ChildRelationshipData> ChildRelationshipDatas { set; get; }
 
-        public virtual ParentRelationshipData ParantChildRelationshipData { get; set; }
+        public virtual ChildRelationshipData ParantChildRelationshipData { get; set; }
+        public EntityListViewDTO EntityListView { set; get; }
 
         public DP_DataRepository(int TargetEntityID, string TargetEntityAlias) : base(TargetEntityID, TargetEntityAlias)
         {
+            //DP_DataRepository: 7939d86acdc6
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
             //SourceRelatedData = new List<DP_DataRepository>();
             //DataInstance = new EntityInstance();
@@ -89,7 +92,6 @@ namespace ProxyLibrary
             Properties.Clear();
         }
 
-        public EntityListViewDTO EntityListView { set; get; }
         public void SetProperties(List<EntityInstanceProperty> list)
         {
             ClearProperties();
@@ -761,6 +763,7 @@ namespace ProxyLibrary
 
         public EntityInstanceProperty(ColumnDTO column)
         {
+            //EntityInstanceProperty: 3b18025dd763
             FormulaUsageParemeters = new List<FormulaUsageParemetersDTO>();
             Column = column;
         }

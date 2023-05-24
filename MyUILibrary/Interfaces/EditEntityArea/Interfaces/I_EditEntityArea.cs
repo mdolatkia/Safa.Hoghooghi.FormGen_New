@@ -23,7 +23,7 @@ namespace MyUILibrary.EntityArea
         I_View_Area FirstView { get; }
         void ClearUIData(DP_FormDataRepository dataItem);
         void RemoveDatas(List<DP_FormDataRepository> datas);
-        bool GenerateRelationshipControlEditArea(DataEntryRelationshipDTO dataEntryRelationship, RelationshipDTO relationship);
+        I_EditEntityArea GenerateRelationshipControlEditArea(DataEntryRelationshipDTO dataEntryRelationship, RelationshipDTO relationship);
         void RemoveData(DP_FormDataRepository data);
         void GenerateDataView();
         bool ClearData();
@@ -769,7 +769,7 @@ namespace MyUILibrary.EntityArea
     //    public string Alias { set; get; }
     //    public SecurityAction Permission { get; set; }
     //}
-  
+
 
     public class ColumnValueChangeArg : EventArgs
     {
@@ -1123,28 +1123,28 @@ namespace MyUILibrary.EntityArea
 
 
 
-    public class ParentRelationshipInfo : ParentRelationshipData
+    //public class ParentRelationshipInfo : ChildRelationshipData
 
-    {
-        public ParentRelationshipInfo(ChildRelationshipInfo parantChildRelationshipInfo) : base(parantChildRelationshipInfo)
-        {
-            RelationshipColumnControl = parantChildRelationshipInfo.RelationshipControl;
-            //ParantChildRelationshipInfo = parantChildRelationshipInfo;
-        }
-        public new DP_FormDataRepository SourceData { get { return ParantChildRelationshipData.SourceData as DP_FormDataRepository; } }
-        public ChildRelationshipInfo ParantChildRelationshipInfo { get { return ParantChildRelationshipData as ChildRelationshipInfo; } }
-        public RelationshipColumnControlGeneral RelationshipColumnControl { set; get; }
-        //public ChildRelationshipInfo ParantChildRelationshipInfo { set; get; }
-        //  public int RelationshipID { get { return ParantChildRelationshipInfo.Relationship.PairRelationshipID; } }
-        // public RelationshipDTO ToRelationship { get { return ParantChildRelationshipInfo.Relationship.PairRelationship; } }
-        //   public DP_FormDataRepository SourceData { get { return ParantChildRelationshipInfo.SourceData as DP_FormDataRepository; } }
-        //public bool IsHidden { get { return IsHiddenOnState || IsHiddenOnShow; } }
-        //public bool IsHiddenOnState { get; set; }
-        //public bool IsHiddenOnShow { get; set; }
-        //public bool IsReadonly { get { return IsReadonlyOnState || IsReadonlyOnShow; } }
-        //public bool IsReadonlyOnState { get; set; }
-        //public bool IsReadonlyOnShow { get; set; }
-    }
+    //{
+    //    public ParentRelationshipInfo(ChildRelationshipInfo parantChildRelationshipInfo) : base(parantChildRelationshipInfo)
+    //    {
+    //        RelationshipColumnControl = parantChildRelationshipInfo.RelationshipControl;
+    //        //ParantChildRelationshipInfo = parantChildRelationshipInfo;
+    //    }
+    //    public new DP_FormDataRepository SourceData { get { return ParantChildRelationshipData.SourceData as DP_FormDataRepository; } }
+    //    public ChildRelationshipInfo ParantChildRelationshipInfo { get { return ParantChildRelationshipData as ChildRelationshipInfo; } }
+    //    public RelationshipColumnControlGeneral RelationshipColumnControl { set; get; }
+    //    //public ChildRelationshipInfo ParantChildRelationshipInfo { set; get; }
+    //    //  public int RelationshipID { get { return ParantChildRelationshipInfo.Relationship.PairRelationshipID; } }
+    //    // public RelationshipDTO ToRelationship { get { return ParantChildRelationshipInfo.Relationship.PairRelationship; } }
+    //    //   public DP_FormDataRepository SourceData { get { return ParantChildRelationshipInfo.SourceData as DP_FormDataRepository; } }
+    //    //public bool IsHidden { get { return IsHiddenOnState || IsHiddenOnShow; } }
+    //    //public bool IsHiddenOnState { get; set; }
+    //    //public bool IsHiddenOnShow { get; set; }
+    //    //public bool IsReadonly { get { return IsReadonlyOnState || IsReadonlyOnShow; } }
+    //    //public bool IsReadonlyOnState { get; set; }
+    //    //public bool IsReadonlyOnShow { get; set; }
+    //}
     public class ChangeMonitor
     {
         public ChangeMonitor()

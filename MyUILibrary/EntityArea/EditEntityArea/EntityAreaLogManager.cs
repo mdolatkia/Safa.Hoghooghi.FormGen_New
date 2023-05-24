@@ -143,7 +143,7 @@ namespace MyUILibrary.EntityArea
         {
             //**EntityAreaLogManager.ToDataLog: 131e42d5-ee2e-4613-a5d6-b7c6b5787207
             EditAreaDataActionLog log = new EditAreaDataActionLog();
-            if (item.ParantChildRelationshipData != null && item.ParantChildRelationshipData.IsAdded)
+            if (item.ParantChildRelationshipData != null)//??? && item.ParantChildRelationshipData.IsAdded)
             {
                 if (item.IsNewItem)
                     log.ActionType = LogAction.AddedToRelationshipNewData;

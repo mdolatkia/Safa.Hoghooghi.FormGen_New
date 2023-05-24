@@ -15,6 +15,7 @@ namespace MyUILibrary.EntityArea.Commands
         I_ViewEntityArea ViewArea { set; get; }
         public SelectCommand(I_ViewEntityArea viewArea) : base()
         {
+            // SelectCommand: 0dd1ef304b03
             ViewArea = viewArea;
             CommandManager.SetTitle("انتخاب");
             CommandManager.ImagePath = "Images//Confirm.png";

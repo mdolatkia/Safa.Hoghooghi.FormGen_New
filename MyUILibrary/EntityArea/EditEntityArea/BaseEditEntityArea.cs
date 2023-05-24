@@ -63,14 +63,14 @@ namespace MyUILibrary.EntityArea
 
         public void ShowDataFromExternalSource(DP_BaseData dataRepository = null)
         {
+            var date = new List<DP_BaseData>();
             if (dataRepository != null)
-                ShowDataFromExternalSource(new List<DP_BaseData> { dataRepository });
-            else
-                ShowDataFromExternalSource(new List<DP_BaseData>());
-
+                date.Add(dataRepository);
+            ShowDataFromExternalSource(date);
         }
         public void ShowDataFromExternalSource(List<DP_BaseData> dataRepositories)
         {
+            // BaseEditEntityArea.ShowDataFromExternalSource: 0594c59749b4
             bool dataView = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
                  AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
 
@@ -288,7 +288,7 @@ namespace MyUILibrary.EntityArea
             get
             {
                 if (_DefaultEntityListViewDTO == null)
-                    _DefaultEntityListViewDTO = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetDefaultEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+                    _DefaultEntityListViewDTO = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetOrCreateEntityListViewDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
                 return _DefaultEntityListViewDTO;
             }
         }
@@ -653,7 +653,7 @@ namespace MyUILibrary.EntityArea
 
 
             if (ViewEntityArea.LastTemporaryView != null && ViewEntityArea.LastTemporaryView.HasPopupView)
-                ViewEntityArea.LastTemporaryView.RemovePopupView(ViewForViewEntityArea);
+                ViewEntityArea.LastTemporaryView.RemovePopupView(ViewEntityArea.ViewForViewEntityArea);
 
             if (ViewForSearchAndView == null)
                 ViewForSearchAndView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfSearchViewEntityArea();
@@ -664,7 +664,7 @@ namespace MyUILibrary.EntityArea
             ViewEntityArea.IsCalledFromDataView = fromDataView;
 
             if (!ViewForSearchAndView.HasViewAreaView)
-                ViewForSearchAndView.AddViewAreaView(ViewForViewEntityArea);
+                ViewForSearchAndView.AddViewAreaView(ViewEntityArea.ViewForViewEntityArea);
             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(ViewForSearchAndView, SimpleEntity.Alias, Enum_WindowSize.Big);
         }
 
@@ -676,17 +676,17 @@ namespace MyUILibrary.EntityArea
 
         public void ShowTemproraryUIViewArea(I_View_TemporaryView view)
         {
-            //** 7cc93641-b79f-4d63-94b2-0cfe0a61872b
+            //** BaseEditEntityArea.ShowTemproraryUIViewArea: 0cfe0a61872b
 
             ViewEntityArea.IsCalledFromDataView = false;
             if (ViewEntityArea.LastTemporaryView != null && ViewEntityArea.LastTemporaryView.HasPopupView)
-                ViewEntityArea.LastTemporaryView.RemovePopupView(ViewForViewEntityArea);
+                ViewEntityArea.LastTemporaryView.RemovePopupView(ViewEntityArea.ViewForViewEntityArea);
             if (ViewForSearchAndView != null && ViewForSearchAndView.HasViewAreaView)
-                ViewForSearchAndView.RemoveViewAreaView(ViewForViewEntityArea);
+                ViewForSearchAndView.RemoveViewAreaView(ViewEntityArea.ViewForViewEntityArea);
             if (!view.HasPopupView)
             {
                 ViewEntityArea.LastTemporaryView = view;
-                view.AddPopupView(ViewForViewEntityArea);
+                view.AddPopupView(ViewEntityArea.ViewForViewEntityArea);
             }
             view.PopupVisibility = true;
         }
@@ -805,6 +805,7 @@ namespace MyUILibrary.EntityArea
 
         public I_View_SearchViewEntityArea ViewForSearchAndView
         {
+            // ViewForSearchAndView: f3b7615955e1
             set; get;
         }
 
@@ -977,7 +978,7 @@ namespace MyUILibrary.EntityArea
             {
                 if (_ViewEntityArea == null)
                 {
-                    //** BaseEditEntityArea.ViewEntityArea: 54e3b4a36ac9
+                    //** BaseEditEntityArea.ViewEntityArea: 81a1c5c88a88
                     var viewAreaInitializer = new ViewEntityAreaInitializer();
                     viewAreaInitializer.EntityID = AreaInitializer.EntityID;
                     viewAreaInitializer.MultipleSelection = this is I_EditEntityAreaMultipleData;
@@ -987,18 +988,18 @@ namespace MyUILibrary.EntityArea
                 return _ViewEntityArea;
             }
         }
-        I_View_ViewEntityArea _ViewForViewEntityArea;
-        public I_View_ViewEntityArea ViewForViewEntityArea
-        {
-            get
-            {
-                if (_ViewForViewEntityArea == null)
-                {
-                    return ViewEntityArea.ViewForViewEntityArea;
-                }
-                return _ViewForViewEntityArea;
-            }
-        }
+        //I_View_ViewEntityArea _ViewForViewEntityArea;
+        //public I_View_ViewEntityArea ViewForViewEntityArea
+        //{
+        //    get
+        //    {
+        //        if (_ViewForViewEntityArea == null)
+        //        {
+        //            return ViewEntityArea.ViewForViewEntityArea;
+        //        }
+        //        return _ViewForViewEntityArea;
+        //    }
+        //}
         //private void DetermineInteractionMode()
         //{
 
@@ -1100,7 +1101,7 @@ namespace MyUILibrary.EntityArea
 
         void TemporaryDisplayView_TemporaryDisplayViewRequested(object sender, Arg_TemporaryDisplayViewRequested e)
         {
-            //** 227e3821-5ab0-4348-8de2-95a95d63fa08
+            //** BaseEditEntityArea.TemporaryDisplayView_TemporaryDisplayViewRequested: 95a95d63fa08
             if (AreaInitializer.SourceRelationColumnControl == null)
             {
                 var TemporaryView = sender as I_View_TemporaryView;
@@ -2446,7 +2447,7 @@ namespace MyUILibrary.EntityArea
 
         private void ViewEntityArea_DataSelected(object sender, DataViewDataSelectedEventArg e)
         {
-            //** edd35983-172e-4609-b67e-a377695e6d06
+            //** BaseEditEntityArea.ViewEntityArea_DataSelected: a377695e6d06
 
             if (ViewForSearchAndView != null && ViewForSearchAndView.HasViewAreaView)
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(ViewForSearchAndView);

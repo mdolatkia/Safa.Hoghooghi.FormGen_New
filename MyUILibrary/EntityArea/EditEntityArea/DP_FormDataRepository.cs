@@ -15,7 +15,7 @@ namespace MyUILibrary.EntityArea
         //   public event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
         public new event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
         public event EventHandler<ChangeMonitor> RelatedDataTailOrColumnChanged;
-        public new ParentRelationshipInfo ParantChildRelationshipData
+        public new ChildRelationshipInfo ParantChildRelationshipData
         {
             set
             {
@@ -26,7 +26,7 @@ namespace MyUILibrary.EntityArea
                 }
 
             }
-            get { return base.ParantChildRelationshipData as ParentRelationshipInfo; }
+            get { return base.ParantChildRelationshipData as ChildRelationshipInfo; }
         }
 
         //public event EventHandler<ChangeMonitor> RelatedDataCollectionChanged;
@@ -323,7 +323,7 @@ namespace MyUILibrary.EntityArea
 
                 if (ParantChildRelationshipData != null)
                 {
-                    ParantChildRelationshipData.ParantChildRelationshipInfo.RemoveChangeMonitorByGenaralKey(key);
+                    ParantChildRelationshipData.RemoveChangeMonitorByGenaralKey(key);
                 }
             }
         }

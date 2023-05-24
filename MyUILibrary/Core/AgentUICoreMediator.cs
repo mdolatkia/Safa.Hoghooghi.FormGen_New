@@ -464,9 +464,10 @@ namespace MyUILibrary
         List<NavigationItemDTO> allNavigationTreeItems { set; get; }
 
 
-        //** AgentUICoreMediator.ShowNavigationTree: 39c7547dd08c
+     
         private void ShowNavigationTree()
-        {
+        {  
+            //** AgentUICoreMediator.ShowNavigationTree: 39c7547dd08c
             allNavigationTreeItems = navigationTreeManagerService.GetNavigationTree(GetRequester());
             UIManager.ClearNavigationTree();
             foreach (var item in allNavigationTreeItems.Where(x => x.ParentItem == null))
@@ -495,7 +496,7 @@ namespace MyUILibrary
 
         private void NavigationMenuClicked(NavigationItemDTO item)
         {
-
+            // AgentUICoreMediator.NavigationMenuClicked: a3a9f1a1fdd4
             if (item.ObjectCategory == DatabaseObjectCategory.Folder)
                 return;
             else if (item.ObjectCategory == DatabaseObjectCategory.Entity)
@@ -1042,7 +1043,7 @@ namespace MyUILibrary
         public void ShowEditEntityArea(int entityId, bool dialog, DataMode dataMode = DataMode.None, List<DP_BaseData> initializeData = null, Tuple<DP_DataView, EntityRelationshipTailDTO> tailDataValidation = null)
         {
 
-            //** 453786cd-8f9d-4995-bbe7-cc973c4f9fdb
+            //**  AgentUICoreMediator.ShowEditEntityArea: cc973c4f9fdb
             if (initializeData != null)
             {
                 if (initializeData.Count > 1)
@@ -1055,6 +1056,7 @@ namespace MyUILibrary
             }
             EditEntityAreaInitializer editEntityAreaInitializer = new EditEntityAreaInitializer();
             editEntityAreaInitializer.EntityID = entityId;
+            editEntityAreaInitializer.IntracionMode = IntracionMode.CreateSelectDirect;
             editEntityAreaInitializer.DataMode = dataMode;
             editEntityAreaInitializer.TailDataValidation = tailDataValidation;
             var editAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer);

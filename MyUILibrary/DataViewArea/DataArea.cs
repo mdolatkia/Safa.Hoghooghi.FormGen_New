@@ -199,7 +199,7 @@ namespace MyUILibrary.DataViewArea
             if (DataMenuSetting != null && DataMenuSetting.EntityListViewID != 0)
                 SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), DataMenuSetting.EntityListViewID);
             else
-                SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetDefaultEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+                SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetOrCreateEntityListViewDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
 
             SetEntitiyListViews();
             SetEntityOrderColumns();
