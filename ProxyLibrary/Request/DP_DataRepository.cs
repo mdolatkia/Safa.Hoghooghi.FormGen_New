@@ -267,6 +267,101 @@ namespace ProxyLibrary
         //public bool RelationshipIsAdded { get;  }
         public bool IsEdited { get; set; }
 
+        public void AddProperty(ColumnDTO column, object value)
+        {
+            EntityInstanceProperty property = new ProxyLibrary.EntityInstanceProperty(column);
+            //property.Name = column.Name;
+            property.PropertyValueChanged += Property_PropertyValueChanged;
+            property.Value = value;
+            Properties.Add(property);
+            OriginalProperties.Add(CopyProperty(property));
+        }
+        public EntityInstanceProperty AddCopyProperty(EntityInstanceProperty currrentProperty)
+        {
+            var prop = CopyProperty(currrentProperty);
+            Properties.Add(prop);
+            return prop;
+        }
+
+        private EntityInstanceProperty CopyProperty(EntityInstanceProperty currrentProperty)
+        {
+            EntityInstanceProperty property = new ProxyLibrary.EntityInstanceProperty(currrentProperty.Column);
+            //property.Name = currrentProperty.Name;
+            property.Value = currrentProperty.Value;
+            //    property.IsHidden = currrentProperty.IsHidden;
+            property.ISFK = currrentProperty.ISFK;
+            //      property.IsReadonlyFromState = currrentProperty.IsReadonlyFromState;
+            //      property.PropertyValueChanged += Property_PropertyValueChanged;
+            property.FormulaID = currrentProperty.FormulaID;
+            property.FormulaException = currrentProperty.FormulaException;
+            property.FormulaUsageParemeters = currrentProperty.FormulaUsageParemeters;
+            return property;
+        }
+
+        private void Property_PropertyValueChanged(object sender, PropertyValueChangedArg e)
+        {
+            //if (ChangeMonitorItems.Any(x => x.columnID != 0 && string.IsNullOrEmpty(x.RestTail)))
+            //{
+            //    foreach (var item in ChangeMonitorItems.Where(x => x.columnID != 0 && string.IsNullOrEmpty(x.RestTail)))
+            //    {
+            //        if (e.ColumnID == item.columnID)
+            //            item.DataToCall.OnRelatedDataOrColumnChanged(item);
+            //    }
+            //}
+            if (PropertyValueChanged != null)
+            {
+                e.DataItem = this;
+                PropertyValueChanged(this, e);
+            }
+        }
+
+
+        public override List<EntityInstanceProperty> KeyProperties
+        {
+            get
+            {
+                var listKey = new List<EntityInstanceProperty>();
+                if (IsFullData || DataView == null)
+                    listKey = Properties.Where(x => x.IsKey).ToList();
+                else
+                {
+
+                    listKey = DataView.Properties.Where(x => string.IsNullOrEmpty(x.RelationshipIDTailPath) && x.IsKey).ToList();
+                }
+                //if (listKey.Count == 0)
+                //    throw new Exception("dfsdf");
+                return listKey;
+            }
+        }
+
+        public List<EntityInstanceProperty> GetProperties()
+        {
+            return Properties;
+            //if (IsFullData || DataView == null)
+            //    return Properties;
+            //else
+            //{
+
+            //    return DataView.Properties;
+            //}
+
+        }
+        public string Info
+        {
+            get
+            {
+                string info = "";
+                if (!string.IsNullOrEmpty(TargetEntityAlias))
+                    info += TargetEntityAlias + ", ";
+                foreach (var item in Properties)
+                {
+                    info += (info == "" ? "" : Environment.NewLine) + item.Name + " : " + item.Value;
+                }
+                return info;
+            }
+        }
+
+
 
 
         //internal void OnRelatedDataOrColumnChanged(ChangeMonitor item)
@@ -399,15 +494,7 @@ namespace ProxyLibrary
         //    }
         //}
 
-        public void AddProperty(ColumnDTO column, object value)
-        {
-            EntityInstanceProperty property = new ProxyLibrary.EntityInstanceProperty(column);
-            //property.Name = column.Name;
-            property.PropertyValueChanged += Property_PropertyValueChanged;
-            property.Value = value;
-            Properties.Add(property);
-            OriginalProperties.Add(CopyProperty(property));
-        }
+
         //public bool PropertyValueIsChanged(EntityInstanceProperty property)
         //{
         //    if (property.IsReadonly)
@@ -418,76 +505,7 @@ namespace ProxyLibrary
         //        return property.Value != orgProperty.Value;
         //    }
         //}
-        public EntityInstanceProperty AddCopyProperty(EntityInstanceProperty currrentProperty)
-        {
-            var prop = CopyProperty(currrentProperty);
-            Properties.Add(prop);
-            return prop;
-        }
 
-        private EntityInstanceProperty CopyProperty(EntityInstanceProperty currrentProperty)
-        {
-            EntityInstanceProperty property = new ProxyLibrary.EntityInstanceProperty(currrentProperty.Column);
-            //property.Name = currrentProperty.Name;
-            property.Value = currrentProperty.Value;
-            //    property.IsHidden = currrentProperty.IsHidden;
-            property.ISFK = currrentProperty.ISFK;
-            //      property.IsReadonlyFromState = currrentProperty.IsReadonlyFromState;
-            //      property.PropertyValueChanged += Property_PropertyValueChanged;
-            property.FormulaID = currrentProperty.FormulaID;
-            property.FormulaException = currrentProperty.FormulaException;
-            property.FormulaUsageParemeters = currrentProperty.FormulaUsageParemeters;
-            return property;
-        }
-
-        private void Property_PropertyValueChanged(object sender, PropertyValueChangedArg e)
-        {
-            //if (ChangeMonitorItems.Any(x => x.columnID != 0 && string.IsNullOrEmpty(x.RestTail)))
-            //{
-            //    foreach (var item in ChangeMonitorItems.Where(x => x.columnID != 0 && string.IsNullOrEmpty(x.RestTail)))
-            //    {
-            //        if (e.ColumnID == item.columnID)
-            //            item.DataToCall.OnRelatedDataOrColumnChanged(item);
-            //    }
-            //}
-            if (PropertyValueChanged != null)
-            {
-                e.DataItem = this;
-                PropertyValueChanged(this, e);
-            }
-        }
-
-
-        public override List<EntityInstanceProperty> KeyProperties
-        {
-            get
-            {
-                var listKey = new List<EntityInstanceProperty>();
-                if (IsFullData || DataView == null)
-                    listKey = Properties.Where(x => x.IsKey).ToList();
-                else
-                {
-
-                    listKey = DataView.Properties.Where(x => string.IsNullOrEmpty(x.RelationshipIDTailPath) && x.IsKey).ToList();
-                }
-                //if (listKey.Count == 0)
-                //    throw new Exception("dfsdf");
-                return listKey;
-            }
-        }
-
-        public List<EntityInstanceProperty> GetProperties()
-        {
-            return Properties;
-            //if (IsFullData || DataView == null)
-            //    return Properties;
-            //else
-            //{
-
-            //    return DataView.Properties;
-            //}
-
-        }
         //List<EntityInstanceProperty> Properties { set; get; }
         //List<EntityInstanceProperty> OriginalProperties { set; get; }
         //public List<int> StateIds { set; get; }
@@ -498,23 +516,6 @@ namespace ProxyLibrary
         //public EntityInstance DataInstance;
 
         //public bool ValueChanged { set; get; }
-
-        public string Info
-        {
-            get
-            {
-                string info = "";
-                if (!string.IsNullOrEmpty(TargetEntityAlias))
-                    info += TargetEntityAlias + ", ";
-                foreach (var item in Properties)
-                {
-                    info += (info == "" ? "" : Environment.NewLine) + item.Name + " : " + item.Value;
-                }
-                return info;
-            }
-        }
-
-
 
 
         //    public bool ShouldWriteSimpleColumnsQuery { get; set; }

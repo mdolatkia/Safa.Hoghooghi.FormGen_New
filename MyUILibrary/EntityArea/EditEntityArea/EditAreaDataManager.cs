@@ -576,7 +576,7 @@ namespace MyUILibrary.EntityArea
             {
                 if (!DP_FormDataRepository.IsFullData)
                     throw new Exception("Asdadsf");
-                var columns = editEntityArea.DefaultEntityListViewDTO.EntityListViewAllColumns.Where(x => x.RelationshipTailID == 0);
+                var columns = editEntityArea.ViewEntityArea.EntityListView.EntityListViewAllColumns.Where(x => x.RelationshipTailID == 0);
                 if (columns.Any())
                 {
                     foreach (var item in columns)

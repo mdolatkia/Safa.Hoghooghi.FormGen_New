@@ -282,16 +282,16 @@ namespace MyUILibrary.EntityArea
         {
             set; get;
         }
-        EntityListViewDTO _DefaultEntityListViewDTO;
-        public EntityListViewDTO DefaultEntityListViewDTO
-        {
-            get
-            {
-                if (_DefaultEntityListViewDTO == null)
-                    _DefaultEntityListViewDTO = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetOrCreateEntityListViewDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
-                return _DefaultEntityListViewDTO;
-            }
-        }
+        //EntityListViewDTO _DefaultEntityListViewDTO;
+        //public EntityListViewDTO DefaultEntityListViewDTO
+        //{
+        //    get
+        //    {
+        //        if (_DefaultEntityListViewDTO == null)
+        //            _DefaultEntityListViewDTO = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetOrCreateEntityListViewDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+        //        return _DefaultEntityListViewDTO;
+        //    }
+        //}
 
 
 
@@ -2710,7 +2710,7 @@ namespace MyUILibrary.EntityArea
                 throw new Exception();
 
             if (dataItem.EntityListView == null)
-                dataItem.EntityListView = DefaultEntityListViewDTO;
+                dataItem.EntityListView = ViewEntityArea.EntityListView;// DefaultEntityListViewDTO;
 
             if (!dataItem.IsNewItem)
                 AreaInitializer.ActionActivityManager.SetExistingDataFirstLoadStates(dataItem);

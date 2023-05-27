@@ -227,7 +227,7 @@ namespace MyUILibrary.EntityArea
 
                     //bool quickSearchEnablity = true;
                     //if (!searchCommandEnablity)
-                       
+
                     //else
                     //    quickSearchEnablity = RelationshipControl.GenericEditNdTypeArea.TemporaryDisplayView.QuickSearchVisibility;
                     //tempView.DisableEnable(TemporaryLinkType.QuickSearch, quickSearchEnablity);
@@ -242,7 +242,7 @@ namespace MyUILibrary.EntityArea
 
                 List<ColumnControlColorItem> columnControlColorItems = new List<ColumnControlColorItem>();
                 List<ColumnControlMessageItem> columnControlMessageItems = new List<ColumnControlMessageItem>();
-              
+
                 if (RelationshipControl.Relationship.IsOtherSideMandatory)
                     columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
 
@@ -1171,8 +1171,8 @@ namespace MyUILibrary.EntityArea
 
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
             DR_SearchViewRequest request = new DR_SearchViewRequest(requester, searchDataItem);
-            if (RelationshipControl.GenericEditNdTypeArea.DefaultEntityListViewDTO != null)
-                request.EntityViewID = RelationshipControl.GenericEditNdTypeArea.DefaultEntityListViewDTO.ID;
+            //if (RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.EntityListView != null)
+            request.EntityViewID = RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.EntityListView.ID;
             //request.CheckStates = true;
             //      request.ToParentRelationshipID = relationship.PairRelationshipID;
 
@@ -1370,7 +1370,7 @@ namespace MyUILibrary.EntityArea
 
         //public void SelectFromParent(Dictionary<int, object> colAndValues)
         //{
-            
+
         //}
 
         internal void DataSelected(DP_FormDataRepository result)
@@ -1461,7 +1461,7 @@ namespace MyUILibrary.EntityArea
             DP_SearchRepositoryMain SearchDataItem = new DP_SearchRepositoryMain(entityID);
             foreach (var col in dataITem.KeyProperties)
             {
-                SearchDataItem.Phrases.Add(new SearchProperty(col.Column) {  Value = col.Value });
+                SearchDataItem.Phrases.Add(new SearchProperty(col.Column) { Value = col.Value });
             }
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
 
@@ -1485,7 +1485,7 @@ namespace MyUILibrary.EntityArea
                 return false;
             }
         }
-       // public I_View_TemporaryView LastTemporaryView { set; get; }
+        // public I_View_TemporaryView LastTemporaryView { set; get; }
         public bool DateSecurityIssue { get; private set; }
 
         public void TemporaryViewActionRequested(I_View_TemporaryView TemporaryView, TemporaryLinkType linkType)
@@ -1497,7 +1497,7 @@ namespace MyUILibrary.EntityArea
             //    if (LastTemporaryView.HasPopupView)
             //        LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.ViewForViewEntityArea);
             //}
-         //   LastTemporaryView = TemporaryView;
+            //   LastTemporaryView = TemporaryView;
             if (linkType == TemporaryLinkType.DataView)
             {
                 DataViewRequested();
@@ -1547,7 +1547,7 @@ namespace MyUILibrary.EntityArea
         //{
         //    //if (LastTemporaryView != null)
         //    //    LastTemporaryView.RemovePopupView(RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.ViewForViewEntityArea);
-           
+
         //}
         //List<ColumnControlColorItem> GeneralColumnControlColorItems = new List<ColumnControlColorItem>();
         //List<ColumnControlMessageItem> GeneralColumnControlMessageItems = new List<ColumnControlMessageItem>();

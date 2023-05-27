@@ -513,7 +513,7 @@ namespace MyUILibrary
             //result.Properties = new List<EntityInstanceProperty>();
             innerItem.IsNewItem = true;
 
-            innerItem.EntityListView = editEntityArea.DefaultEntityListViewDTO;
+            innerItem.EntityListView = editEntityArea.ViewEntityArea.EntityListView;
             //result.TargetEntityID = editEntityArea.AreaInitializer.EntityID;
             // result.DataInstance = new EntityInstance();// Clone<TableDrivedEntityDTO>(AreaInitializer.Template);
 

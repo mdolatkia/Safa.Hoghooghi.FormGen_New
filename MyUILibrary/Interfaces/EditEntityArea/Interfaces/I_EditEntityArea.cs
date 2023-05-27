@@ -34,7 +34,7 @@ namespace MyUILibrary.EntityArea
         I_View_Area DataViewGeneric { get; }
         TableDrivedEntityDTO FullEntity { get; }
         TableDrivedEntityDTO SimpleEntity { set; get; }
-        EntityListViewDTO DefaultEntityListViewDTO { get; }
+      //  EntityListViewDTO DefaultEntityListViewDTO { get; }
         event EventHandler<DisableEnableChangedArg> DisableEnableChanged;
         I_View_TemporaryView TemporaryDisplayView { set; get; }
         void SetTempText();
