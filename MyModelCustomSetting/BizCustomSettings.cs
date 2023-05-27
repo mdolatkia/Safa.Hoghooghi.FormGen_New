@@ -4224,7 +4224,7 @@ namespace MyModelCustomSetting
                 item.MaxDataItems = 1;
                 // item.SecurityMode = SecurityMode.View;
 
-                var res = searchRequestManager.Process(item);
+                var res = searchRequestManager.ProcessSearchViewRequest(item);
                 if (res != null && res.ResultDataItems.Any())
                 {
                     BizDataItem biz = new BizDataItem();

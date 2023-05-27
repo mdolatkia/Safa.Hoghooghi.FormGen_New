@@ -317,7 +317,7 @@ namespace MyUILibrary.EntityArea
         //{
 
         //}
-        public void AddDataToChildRelationshipInfo(DP_FormDataRepository dataItem)
+        public void AddDataToChildRelationshipData(DP_FormDataRepository dataItem)
         {
             if (IsReadonly && dataItem.IsNewItem && (!dataItem.IsDefaultData || !IsDataviewOpen))
                 throw new Exception();
@@ -381,21 +381,21 @@ namespace MyUILibrary.EntityArea
 
             if (IsDataviewOpen)
             {
-                ShowDataInDataView(dataItem);
-
+                ShowDataInChildRelationshipDataView(dataItem);
             }
 
             if (!IsDirect)
             {
-                SetTempText();
+                SetTempTextChildRelationshipData();
             }
             //CheckDataParentRelationship(dataItem);
 
             CheckRelationshipUI();
         }
 
-        private void ShowDataInDataView(DP_FormDataRepository dataItem)
+        private void ShowDataInChildRelationshipDataView(DP_FormDataRepository dataItem)
         {
+            //ChildRelationshipInfo.ShowDataInChildRelationshipDataView: 78184401047a
             RelationshipControl.GenericEditNdTypeArea.ShowDataInDataView(dataItem);
 
 
@@ -471,8 +471,9 @@ namespace MyUILibrary.EntityArea
         //    return false;
         //}
 
-        public void SetTempText()
+        public void SetTempTextChildRelationshipData()
         {
+            //ChildRelationshipInfo.SetTempTextChildRelationshipData: 2da7f695849f
             string text = "";
             //اینجا باید داده هایی که اسکیپ میشن رو در نظر نگیره
             if (RelatedData.Count > 1)
@@ -551,6 +552,10 @@ namespace MyUILibrary.EntityArea
         }
         public bool RemoveRelatedData(DP_FormDataRepository DP_FormDataRepository)
         {
+            //ChildRelationshipInfo.RemoveRelatedData: 938077b01703
+
+
+
             //var childRelationshipInfo = ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationshipID);
             //if (childRelationshipInfo != null)
 
@@ -565,7 +570,7 @@ namespace MyUILibrary.EntityArea
                 CheckRelationshipChanged(enum_AddRemove.Remove, DP_FormDataRepository);
                 if (!IsDirect)
                 {
-                    SetTempText();
+                    SetTempTextChildRelationshipData();
                 }
                 if (IsDataviewOpen)
                 {
@@ -573,7 +578,7 @@ namespace MyUILibrary.EntityArea
 
                     if (RelatedData.Count == 0 && RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
                     {
-                        CreateDefaultData();
+                        CreateDefaultDataChildRelationship();
                     }
                 }
                 CheckRelationshipUI();
@@ -686,6 +691,7 @@ namespace MyUILibrary.EntityArea
 
         public bool IsDataviewOpen
         {
+            // ChildRelationshipInfo.IsDataviewOpen: fb8b8d086bbe
             get
             {
                 return IsDirect ||
@@ -1031,54 +1037,46 @@ namespace MyUILibrary.EntityArea
 
         public bool SetBinding()
         {
+            // ChildRelationshipInfo.SetBinding: b0d3af993f9c
             //اینکه اینجا هیدن ها بایند نمیشن خوب نیست چون برای ارث بری مثلا شخص فرمهای شخص حقیقی و حقوقی مخفی هستن اولش و بایند نمیشن. بعدا یه فکری بشه
             RelationshipControl.GenericEditNdTypeArea.ChildRelationshipInfoBinded = this;
             if (!IsHidden)
             {
                 //if (!DateSecurityIssue)
                 //{
-                if (IsDataviewOpen)
+                if (IsDirect)// IsDataviewOpen)
                 {
                     ClearUIData();
                 }
-                if (!IsDirect)
+                else //if (!IsDirect)
                     GetTempView.SetLinkText("");
-                //bool SecurityIssue = false;
-                //bool result = true;
                 if (dataLoaded)
                 {
-                    if (IsDataviewOpen)
+                    if (IsDirect)//IsDataviewOpen)
                     {
-                        // RelationshipControl.GenericEditNdTypeArea.ClearUIData();
                         foreach (var item in RelatedData)
                         {
-                            ShowDataInDataView(item);
+                            ShowDataInChildRelationshipDataView(item);
                         }
                     }
-
-                    if (!IsDirect)
+                    else
                     {
-                        SetTempText();
+                        SetTempTextChildRelationshipData();
                     }
                 }
-                //  childData = specificDate.ChildRelationshipInfos.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
                 else
                 {
                     dataLoaded = true;
-
                     bool relationshipFirstSideHasValue = RelationshipControl.Relationship.RelationshipColumns.Any()
                         && RelationshipControl.Relationship.RelationshipColumns.All(x => SourceData.GetProperties().Any(y => !y.ValueIsEmpty() && y.ColumnID == x.FirstSideColumnID));
                     if (!relationshipFirstSideHasValue)
                     {
-                        //childData = specificDate.AddChildRelationshipInfo(relationshipControl);
 
                     }
                     else
                     {
-                        //bool childIsDataView = (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
-                        //                       RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
                         Tuple<bool, List<DP_FormDataRepository>> dbSearch;
-                        if (IsDataviewOpen)
+                        if (IsDirect)//IsDataviewOpen)
                             dbSearch = SerachDataFromParentRelationForChildDataView();
                         else
                             dbSearch = SerachDataFromParentRelationForChildTempView();
@@ -1087,35 +1085,28 @@ namespace MyUILibrary.EntityArea
                             DateSecurityIssue = true;
                             CheckRelationshipUI();
                             return false;
-                            //   AddHiddenState("DataIssue", "عدم دسترسی به داده", true, true);
-
                         }
                         else
                         {
                             foreach (var item in dbSearch.Item2)
-                                AddDataToChildRelationshipInfo(item);
+                                AddDataToChildRelationshipData(item);
                         }
                     }
                 }
-
-                if (IsDataviewOpen && RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
+                //if (IsDataviewOpen && RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
+                if (IsDirect && RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
                 {
                     if (!RelatedData.Any())
                     {
-
-                        CreateDefaultData();
+                        CreateDefaultDataChildRelationship();
                     }
                 }
-
-
                 if (RelationshipControl is RelationshipColumnControlMultiple)
                 {
                     GetTempView.TemporaryDisplayViewRequested += GetTempView_TemporaryDisplayViewRequested;
                 }
                 CheckRelationshipUI();
                 return true;
-
-                //}
             }
             else
             {
@@ -1127,6 +1118,7 @@ namespace MyUILibrary.EntityArea
 
         private void ClearUIData()
         {
+            //ChildRelationshipInfo.ClearUIData: a9614860d724
             if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
             {
 
@@ -1138,8 +1130,9 @@ namespace MyUILibrary.EntityArea
 
         }
 
-        private void CreateDefaultData()
+        private void CreateDefaultDataChildRelationship()
         {
+            // ChildRelationshipInfo.CreateDefaultDataChildRelationship: db3903adaa4d
             var newData = AgentHelper.CreateAreaInitializerNewData(RelationshipControl.GenericEditNdTypeArea);
             newData.IsDefaultData = true;
             if (IsReadonly)
@@ -1154,7 +1147,7 @@ namespace MyUILibrary.EntityArea
                     rel.AddReadonlyState("", "DataNewAndReadonly", true);
                 }
             }
-            AddDataToChildRelationshipInfo(newData);
+            AddDataToChildRelationshipData(newData);
         }
         private void GetTempView_TemporaryDisplayViewRequested(object sender, Arg_TemporaryDisplayViewRequested e)
         {
@@ -1165,69 +1158,36 @@ namespace MyUILibrary.EntityArea
 
         private Tuple<bool, List<DP_FormDataRepository>> SerachDataFromParentRelationForChildTempView()
         {
-            var searchDataItem = relationshipManager.GetSecondSideSearchDataItemByRelationship(SourceData, RelationshipControl.Relationship.ID);
-
-
+            //ChildRelationshipInfo.SerachDataFromParentRelationForChildTempView: 0f1244a3531e
+            var searchDataItem = relationshipManager.GetSecondSideSearchItemByFirstSideColumns(SourceData, RelationshipControl.Relationship);
 
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
             DR_SearchViewRequest request = new DR_SearchViewRequest(requester, searchDataItem);
-            //if (RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.EntityListView != null)
             request.EntityViewID = RelationshipControl.GenericEditNdTypeArea.ViewEntityArea.EntityListView.ID;
-            //request.CheckStates = true;
-            //      request.ToParentRelationshipID = relationship.PairRelationshipID;
-
             var childViewData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(request).ResultDataItems;
-
             var countRequest = new DR_SearchCountRequest(requester);
             countRequest.SearchDataItems = searchDataItem;
             countRequest.Requester.SkipSecurity = true;
             var count = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchCountRequest(countRequest);
-            //     bool secutrityImposed = false;
             if (count.ResultCount != childViewData.Count)
                 return new Tuple<bool, List<DP_FormDataRepository>>(true, null);
-            //if (!secutrityImposed)
-            //{
             List<DP_FormDataRepository> list = new List<DP_FormDataRepository>();
-
             EditAreaDataManager EditAreaDataManager = new EditAreaDataManager();
             foreach (var item in childViewData)
             {
                 var dpItem = new DP_FormDataRepository(item, RelationshipControl.GenericEditNdTypeArea, true, false);
-                //dpItem.IsDBRelationship = true;
-
                 list.Add(dpItem);
             }
-            // }
-            //else
-            //    childRelationshipInfo.SecurityIssue = true;
-
             return new Tuple<bool, List<DP_FormDataRepository>>(false, list);
-
         }
 
 
         public Tuple<bool, List<DP_FormDataRepository>> SerachDataFromParentRelationForChildDataView()
         {
+            //ChildRelationshipInfo.SerachDataFromParentRelationForChildDataView: 847beee04f15
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
-
-            //ChildRelationshipInfo childRelationshipInfo = null;
-            //childRelationshipInfo = parentRelationData.ChildRelationshipInfos.FirstOrDefault(x => x.Relationship.ID == relationship.ID);
-            //if (childRelationshipInfo == null)
-            //{
-            //    childRelationshipInfo = parentRelationData.AddChildRelationshipInfo(relationshipColumnControl);
-            //}
-            //else
-            //{
-            //    throw new Exception("Asd");
-            //}
-
-            //سکوریتی داده اعمال میشود
-
-            var searchDataItem = relationshipManager.GetSecondSideSearchDataItemByRelationship(SourceData, Relationship.ID);
-
-            // DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem, targetEditEntityArea.AreaInitializer.SecurityReadOnly, true);
+            var searchDataItem = relationshipManager.GetSecondSideSearchItemByFirstSideColumns(SourceData, Relationship);
             DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem);
-
             var childFullData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(request).ResultDataItems;
             var countRequest = new DR_SearchCountRequest(requester);
             countRequest.SearchDataItems = searchDataItem;
@@ -1237,33 +1197,15 @@ namespace MyUILibrary.EntityArea
             {
                 return new Tuple<bool, List<DP_FormDataRepository>>(true, null);
             }
-
-
-            //if (!secutrityImposed)
-            //{
-
             List<DP_FormDataRepository> list = new List<DP_FormDataRepository>();
             EditAreaDataManager EditAreaDataManager = new EditAreaDataManager();
             foreach (var data in childFullData)
             {
-                //  data.IsDBRelationship = true;
                 data.DataView = EditAreaDataManager.GetDataView(data);
-
                 DP_FormDataRepository formData = new DP_FormDataRepository(data, RelationshipControl.GenericEditNdTypeArea, true, false);
-                //   formData.IsDBRelationship = true;
                 list.Add(formData);
             }
-
-            //}
-            //else
-            //    childRelationshipInfo.SecurityIssue = true;
             return new Tuple<bool, List<DP_FormDataRepository>>(false, list);
-
-            //return childRelationshipInfo;
-            //foreach (var item in childFullData)
-            //    searchedData.Add(new Tuple<DP_FormDataRepository, DP_DataView>(item, null));
-
-            //return AddEditSearchData(searchedData, editEntityArea);
         }
 
 
@@ -1376,7 +1318,7 @@ namespace MyUILibrary.EntityArea
         internal void DataSelected(DP_FormDataRepository result)
         {
             if (RemoveRelatedData())
-                AddDataToChildRelationshipInfo(result);
+                AddDataToChildRelationshipData(result);
         }
 
         internal void DataViewRequested()
@@ -1404,7 +1346,7 @@ namespace MyUILibrary.EntityArea
                 //اینجا باید فقط برای فرم اصلی باشد
                 //(this as I_EditEntityAreaOneData).CreateDefaultData();
 
-                CreateDefaultData();
+                CreateDefaultDataChildRelationship();
 
                 //var newData = AgentHelper.CreateAreaInitializerNewData(RelationshipControl.GenericEditNdTypeArea);
                 //newData.IsDefaultData = true;
@@ -1437,7 +1379,7 @@ namespace MyUILibrary.EntityArea
                 }
                 foreach (var data in RelatedData)
                 {
-                    ShowDataInDataView(data);
+                    ShowDataInChildRelationshipDataView(data);
                 }
             }
             CheckRelationshipUI();

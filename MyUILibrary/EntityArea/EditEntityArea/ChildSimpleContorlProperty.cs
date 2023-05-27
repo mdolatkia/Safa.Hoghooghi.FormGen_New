@@ -70,8 +70,8 @@ namespace MyUILibrary.EntityArea
 
         public void SetBinding()
         {
+            //ChildSimpleContorlProperty.SetBinding: 9bef1c5de838
             GetUIControlManager.SetBinding(this.Property);
-
             //این اضافیه چون تو وضعیها بصورت داینامیک فقط تعیین میشه و اونجا هم ریست میشه اما جهت محکم کاری بد نیست
             SetControlUIDetails();
 

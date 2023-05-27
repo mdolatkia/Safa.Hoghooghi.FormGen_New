@@ -54,7 +54,7 @@ namespace MyDataEditManagerBusiness
                     var newrequester = new DR_Requester();
                     newrequester.SkipSecurity = true;
                     DR_SearchViewRequest searchViewRequest = new DR_SearchViewRequest(newrequester, searchRepository);
-                    var searchViewResult = SearchRequestManager.Process(searchViewRequest);
+                    var searchViewResult = SearchRequestManager.ProcessSearchViewRequest(searchViewRequest);
                     if (searchViewResult.ResultDataItems.Any())
                     {
 
@@ -138,7 +138,7 @@ namespace MyDataEditManagerBusiness
                 searchDataViewItem.Phrases.Add(new SearchProperty(col.Column) { Value = col.Value });
             }
             DR_SearchViewRequest searchViewRequest = new DR_SearchViewRequest(newrequester, searchDataViewItem);
-            var searchViewResult = SearchRequestManager.Process(searchViewRequest);
+            var searchViewResult = SearchRequestManager.ProcessSearchViewRequest(searchViewRequest);
             if (searchViewResult.ResultDataItems.Any())
                 return searchViewResult.ResultDataItems[0];
             else

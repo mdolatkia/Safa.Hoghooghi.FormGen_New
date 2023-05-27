@@ -169,6 +169,7 @@ namespace MyUIGenerator.View
 
         public void SetLinkText(string text)
         {
+            //UC_TemporaryDataSearchLink.SetLinkText: 9168b4b9155f
             txtInfo.Text = text;
         }
 

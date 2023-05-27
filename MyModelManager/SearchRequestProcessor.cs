@@ -115,8 +115,9 @@ namespace MyDataSearchManagerBusiness
 
 
 
-        public DR_ResultSearchView Process(DR_SearchViewRequest request)
+        public DR_ResultSearchView ProcessSearchViewRequest(DR_SearchViewRequest request)
         {
+            //SearchRequestProcessor.ProcessSearchViewRequest: 24931a627c37
             DR_ResultSearchView result = new DR_ResultSearchView();
             //var mainEntity = GetTableDrivedEntity1(request.Requester, request.SearchDataItems.TargetEntityID);
             //if (mainEntity == null)
@@ -1380,8 +1381,9 @@ namespace MyDataSearchManagerBusiness
             }
             return result;
         }
-        public DR_ResultSearchFullData Process(DR_SearchEditRequest request)
+        public DR_ResultSearchFullData ProcessSearchEditRequest(DR_SearchEditRequest request)
         {
+            // SearchRequestProcessor.ProcessSearchEditRequest: f5cf8a2212bd
             DR_ResultSearchFullData result = new DR_ResultSearchFullData();
             try
             {

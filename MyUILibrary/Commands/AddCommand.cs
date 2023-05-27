@@ -59,7 +59,7 @@ namespace MyUILibrary.EntityArea.Commands
             }
             else
             {
-                EditArea.ChildRelationshipInfoBinded.AddDataToChildRelationshipInfo(newData);
+                EditArea.ChildRelationshipInfoBinded.AddDataToChildRelationshipData(newData);
             }
             //EditArea.ShowDataInDataView(list, false);
         }

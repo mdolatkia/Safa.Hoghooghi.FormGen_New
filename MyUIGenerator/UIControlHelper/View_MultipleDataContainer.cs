@@ -161,6 +161,7 @@ namespace MyUIGenerator.UIControlHelper
 
         public void AddDataContainer(object dataItem)
         {
+            // View_MultipleDataContainer.AddDataContainer: 30bce92856e7
             if (!dataGrid.Items.Contains(dataItem))
             {
                 dataGrid.Items.Add(dataItem);

@@ -37,7 +37,7 @@ namespace MyLetterGenerator
 
             DR_SearchViewRequest request = new DR_SearchViewRequest(requester, searchDataItem);
             request.EntityViewID = letterTemplete.EntityListViewID;
-            var searchResult = searchProcessor.Process(request);
+            var searchResult = searchProcessor.ProcessSearchViewRequest(request);
             if (searchResult.Result == Enum_DR_ResultType.SeccessfullyDone)
                 dataviewItem = searchResult.ResultDataItems.FirstOrDefault();
             else if (searchResult.Result == Enum_DR_ResultType.ExceptionThrown)
@@ -175,7 +175,7 @@ namespace MyLetterGenerator
 
                     DR_SearchViewRequest request = new DR_SearchViewRequest(requester, searchDataItem);
                     request.EntityViewID = bizField.PartialLetterTemplate.EntityListViewID;
-                    var searchResult = searchProcessor.Process(request);
+                    var searchResult = searchProcessor.ProcessSearchViewRequest(request);
                     if (searchResult.Result == Enum_DR_ResultType.SeccessfullyDone)
                         relatedDataItems = searchResult.ResultDataItems;
                     else if (searchResult.Result == Enum_DR_ResultType.ExceptionThrown)

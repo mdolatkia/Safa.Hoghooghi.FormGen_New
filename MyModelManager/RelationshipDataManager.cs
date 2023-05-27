@@ -21,31 +21,14 @@ namespace MyRelationshipDataManager
 
         private DP_SearchRepositoryMain GetSecondSideSearchItemByRelationship(DP_BaseData firstSideDataItem, RelationshipDTO relationship)
         {
-            var relationshipFirstSideColumnExist = true;
-
-            foreach (var col in relationship.RelationshipColumns)
+            if (RelationshipFirstSideColumnExist(firstSideDataItem, relationship))
             {
-                if (!firstSideDataItem.Properties.Any(x => x.Value != null && !string.IsNullOrEmpty(x.Value.ToString()) && x.ColumnID == col.FirstSideColumnID))
-                    relationshipFirstSideColumnExist = false;
-
-            }
-            if (relationshipFirstSideColumnExist)
-            {
-                List<EntityInstanceProperty> properties = new List<EntityInstanceProperty>();
-                DP_SearchRepositoryMain resultDataItem = new DP_SearchRepositoryMain(relationship.EntityID2);
-                foreach (var col in relationship.RelationshipColumns)
-                {
-
-                    var value = firstSideDataItem.GetProperty(col.FirstSideColumnID).Value;
-                    if (value == null)
-                        return null;
-                    resultDataItem.Phrases.Add(new SearchProperty(col.SecondSideColumn) { Value = value });
-                }
-                return resultDataItem;
+                return GetSecondSideSearchItemByFirstSideColumns(firstSideDataItem, relationship);
             }
             else if (relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign
                 || relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary)
             {
+                //کلیدهای طرف اول مشخصند اما کلید ها کلید خارجی رابطه نیستند
                 DP_SearchRepositoryMain resultDataItem = new DP_SearchRepositoryMain(relationship.EntityID2);
                 if (firstSideDataItem.KeyProperties.Any() && firstSideDataItem.KeyProperties.All(x => x.Value != null && !string.IsNullOrEmpty(x.Value.ToString())))
                 {
@@ -70,7 +53,7 @@ namespace MyRelationshipDataManager
                         var value = firstSideDataItem.GetProperty(col.FirstSideColumnID).Value;
                         if (value == null)
                             return null;
-                        resultDataItem.Phrases.Add(new SearchProperty(col.SecondSideColumn) {  Value = value });
+                        resultDataItem.Phrases.Add(new SearchProperty(col.SecondSideColumn) { Value = value });
 
                     }
                     return resultDataItem;
@@ -83,8 +66,35 @@ namespace MyRelationshipDataManager
                 return null;
             }
         }
+        public bool RelationshipFirstSideColumnExist(DP_BaseData firstSideDataItem, RelationshipDTO relationship)
+        {
+            var relationshipFirstSideColumnExist = true;
 
+            foreach (var col in relationship.RelationshipColumns)
+            {
+                if (!firstSideDataItem.Properties.Any(x => x.Value != null && !string.IsNullOrEmpty(x.Value.ToString()) && x.ColumnID == col.FirstSideColumnID))
+                    relationshipFirstSideColumnExist = false;
 
+            }
+            return relationshipFirstSideColumnExist;
+        }
+
+        public DP_SearchRepositoryMain GetSecondSideSearchItemByFirstSideColumns(DP_BaseData firstSideDataItem, RelationshipDTO relationship)
+        {
+            if (!RelationshipFirstSideColumnExist(firstSideDataItem, relationship))
+                return null;
+            List<EntityInstanceProperty> properties = new List<EntityInstanceProperty>();
+            DP_SearchRepositoryMain resultDataItem = new DP_SearchRepositoryMain(relationship.EntityID2);
+            foreach (var col in relationship.RelationshipColumns)
+            {
+
+                var value = firstSideDataItem.GetProperty(col.FirstSideColumnID).Value;
+                if (value == null)
+                    return null;
+                resultDataItem.Phrases.Add(new SearchProperty(col.SecondSideColumn) { Value = value });
+            }
+            return resultDataItem;
+        }
     }
 
     //public enum RelationshipSreachType

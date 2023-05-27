@@ -556,6 +556,7 @@ namespace MyUILibrary.EntityArea
     //}
     public interface I_UIControlManager : I_UIElementManager
     {
+        // I_UIControlManager: c14447d93698
         void SetBinding(EntityInstanceProperty property);
         //void SetBorderColor(InfoColor color);
         //void SetBackgroundColor(InfoColor color);

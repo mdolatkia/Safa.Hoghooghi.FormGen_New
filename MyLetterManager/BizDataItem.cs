@@ -124,7 +124,7 @@ namespace MyDataItemManager
                     searchDataItem.Phrases.Add(new SearchProperty(bizColumn.GetColumnDTO(property.ColumnID, true)) { Value = property.Value });
                 }
                 DR_SearchViewRequest request = new DR_SearchViewRequest(requester, searchDataItem);
-                var searchResult = searchRequestManager.Process(request);
+                var searchResult = searchRequestManager.ProcessSearchViewRequest(request);
                 if (searchResult.Result == Enum_DR_ResultType.SeccessfullyDone)
                     result = searchResult.ResultDataItems.FirstOrDefault();
                 else if (searchResult.Result == Enum_DR_ResultType.ExceptionThrown)

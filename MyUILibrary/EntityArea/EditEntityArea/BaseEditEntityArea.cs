@@ -75,39 +75,7 @@ namespace MyUILibrary.EntityArea
                  AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
 
 
-            //if (dataRepository != null)
-            //{
-
-            //    if (dataView)
-            //    {
-            //        var result = AreaInitializer.EditAreaDataManager.SearchDataForEditFromExternalSource(AreaInitializer.EntityID, dataRepository, this);
-            //        if (result != null)
-            //        {
-            //            var addResult = AddData(result, true);
-            //            if (!addResult)
-            //                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", dataRepository.ViewInfo, Temp.InfoColor.Red);
-            //        }
-            //        else
-            //        {
-            //            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", dataRepository.ViewInfo, Temp.InfoColor.Red);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        var viewData = AreaInitializer.EditAreaDataManager.SearchDataForViewFromExternalSource(AreaInitializer.EntityID, dataRepository, this);
-            //        if (viewData != null)
-            //        {
-            //            var result = AreaInitializer.EditAreaDataManager.ConvertDP_DataViewToDP_DataRepository(viewData, this);
-            //            var addResult = AddData(result, false);
-            //            if (!addResult)
-            //                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", dataRepository.ViewInfo, Temp.InfoColor.Red);
-            //        }
-            //        else
-            //        {
-            //            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", dataRepository.ViewInfo, Temp.InfoColor.Red);
-            //        }
-            //    }
-            //}
+        
 
             if (dataRepositories != null && dataRepositories.Count > 0)
             {
@@ -140,7 +108,6 @@ namespace MyUILibrary.EntityArea
 
                 }
 
-                //ShowDataInDataView(result, true);
             }
             else
             {
@@ -155,6 +122,7 @@ namespace MyUILibrary.EntityArea
 
         private DP_FormDataRepository SearchDataForEditFromExternalSource(int entityID, DP_BaseData searchViewData, I_EditEntityArea editEntityArea)
         {
+            // BaseEditEntityArea.SearchDataForEditFromExternalSource: 12958ab8fff9
             DP_SearchRepositoryMain searchDataItem = new DP_SearchRepositoryMain(entityID);
             foreach (var col in searchViewData.KeyProperties)
             {
@@ -175,6 +143,7 @@ namespace MyUILibrary.EntityArea
         }
         private DP_FormDataRepository SearchDataForViewFromExternalSource(int entityID, DP_BaseData searchViewData, I_EditEntityArea editEntityArea)
         {
+            // BaseEditEntityArea.SearchDataForViewFromExternalSource: 7a04c6c350ac
             DP_SearchRepositoryMain SearchDataItem = new DP_SearchRepositoryMain(entityID);
             foreach (var col in searchViewData.KeyProperties)
             {
@@ -2618,6 +2587,7 @@ namespace MyUILibrary.EntityArea
 
         public void RemoveData(DP_FormDataRepository dataItem)
         {
+            // BaseEditEntityArea.RemoveData: e06d6fbdd00e
             GetDataList().Remove(dataItem);
             bool isDirect = (AreaInitializer.IntracionMode == IntracionMode.CreateDirect ||
                     AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
@@ -2740,6 +2710,7 @@ namespace MyUILibrary.EntityArea
         }
         public bool ShowDataInDataView(DP_FormDataRepository specificDate)
         {
+            // BaseEditEntityArea.ShowDataInDataView: 9f08862e5c0d
             bool result = true;
             if (!specificDate.IsFullData)
                 throw new Exception("asdasd");
@@ -2853,6 +2824,7 @@ namespace MyUILibrary.EntityArea
         //}
         public void SetTempText()
         {
+            // BaseEditEntityArea.SetTempText: f03945399e2a
             string text = "";
             //اینجا باید داده هایی که اسکیپ میشن رو در نظر نگیره
             if (AreaInitializer.Datas.Count > 1)
@@ -2860,8 +2832,8 @@ namespace MyUILibrary.EntityArea
             foreach (var item in AreaInitializer.Datas)
                 text += (text == "" ? "" : Environment.NewLine) + item.ViewInfo;
 
-            if (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
-            {
+            //if (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.ParentEditArea is I_EditEntityAreaOneData)
+            //{
                 TemporaryDisplayView.SetLinkText(text);
                 //if (string.IsNullOrEmpty(text))
                 //{
@@ -2869,7 +2841,7 @@ namespace MyUILibrary.EntityArea
                 //}
                 //   if (TemporaryDisplayView.QuickSearchVisibility)
                 //       TemporaryDisplayView.QuickSearchVisibility = false;
-            }
+            //}
             //else
             //{
             //    var relationshipControl = AreaInitializer.SourceRelationColumnControl.ParentEditArea.RelationshipColumnControls.First(x => x.Relationship.ID == ChildRelationshipInfo.Relationship.ID) as RelationshipColumnControlMultiple;

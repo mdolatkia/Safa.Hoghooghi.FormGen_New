@@ -41,8 +41,9 @@ namespace MyDataManager
         }
         public DR_ResultSearchView SendSearchViewRequest(DR_SearchViewRequest request)
         {
+            // RequestRegistrationService.SendSearchViewRequest: 29b1b425fff4
             SearchRequestManager editProcessor = new SearchRequestManager();
-            return editProcessor.Process(request as DR_SearchViewRequest);
+            return editProcessor.ProcessSearchViewRequest(request as DR_SearchViewRequest);
         }
      
         public DR_ResultSearchExists SendSearchExistsRequest(DR_SearchExistsRequest request)
@@ -59,13 +60,14 @@ namespace MyDataManager
         public DR_ResultSearchView SendSearchEditViewRequest(DR_SearchEditViewRequest request)
         {
             SearchRequestManager editProcessor = new SearchRequestManager();
-            return editProcessor.Process(request);
+            return editProcessor.ProcessSearchViewRequest(request);
         }
 
         public DR_ResultSearchFullData SendSearchEditRequest(DR_SearchEditRequest request)
         {
+            // RequestManagerService.SendSearchEditRequest: a0a0ef868831
             SearchRequestManager editProcessor = new SearchRequestManager();
-            return editProcessor.Process(request as DR_SearchEditRequest);
+            return editProcessor.ProcessSearchEditRequest(request as DR_SearchEditRequest);
         }
         public DR_ResultSearchFullData SendSearchFullDataRequest(DR_SearchFullDataRequest request)
         {
