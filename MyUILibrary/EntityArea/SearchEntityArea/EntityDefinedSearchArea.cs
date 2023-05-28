@@ -246,18 +246,22 @@ namespace MyUILibrary.EntityArea
             {
                 if (RelationshipColumnControls.Any(x => x.EntitySearchColumn.ID == phrase.EntitySearchColumnsID))
                 {
-                    List<Dictionary<ColumnDTO, object>> items = new List<Dictionary<ColumnDTO, object>>();
+                    List<DP_BaseData> dataitems = new List<DP_BaseData>();
                     foreach (var item in phrase.DataItems)
                     {
-                        Dictionary<ColumnDTO, object> data = new Dictionary<ColumnDTO, object>();
+                        //Dictionary<ColumnDTO, object> data = new Dictionary<ColumnDTO, object>();
+                        //foreach (var col in item.KeyProperties)
+                        //{
+                        //    data.Add(col.Column, col.Value);
+                        //}
+                        //items.Add(data);
+                        DP_BaseData dataItem = new DP_BaseData(AreaInitializer.EntityID, "");
                         foreach (var col in item.KeyProperties)
-                        {
-                            data.Add(col.Column, col.Value);
-                        }
-                        items.Add(data);
+                            dataItem.Properties.Add(new EntityInstanceProperty(col.Column) { Value = col.Value });
+                        dataitems.Add(dataItem);
 
                     }
-                    RelationshipColumnControls.First(x => x.EntitySearchColumn.ID == phrase.EntitySearchColumnsID).EditNdTypeArea.SelectData(items);
+                    RelationshipColumnControls.First(x => x.EntitySearchColumn.ID == phrase.EntitySearchColumnsID).EditNdTypeArea.SelectData(dataitems);
                 }
             }
         }

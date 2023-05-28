@@ -22,16 +22,16 @@ namespace MyUILibrary.EntityArea
         DataEntryEntityDTO DataEntryEntity { get; }
         I_View_Area FirstView { get; }
         void ClearUIData(DP_FormDataRepository dataItem);
-        void RemoveDatas(List<DP_FormDataRepository> datas);
+        void RemoveMultipleData(List<DP_FormDataRepository> datas);
         I_EditEntityArea GenerateRelationshipControlEditArea(DataEntryRelationshipDTO dataEntryRelationship, RelationshipDTO relationship);
-        void RemoveData(DP_FormDataRepository data);
+        void RemoveData(DP_FormDataRepository data, bool dataRemoveOnly = false);
         void GenerateDataView();
-        bool ClearData();
+        bool ClearData(bool dataRemoveOnly=false);
         I_Command GetCommand(Type type);
         bool AddData(DP_FormDataRepository data);
         bool ShowDataInDataView(DP_FormDataRepository dataItem);
         List<DP_FormDataRepository> GetDataList();
-        I_View_Area DataViewGeneric { get; }
+        I_View_Area DataView { get; }
         TableDrivedEntityDTO FullEntity { get; }
         TableDrivedEntityDTO SimpleEntity { set; get; }
       //  EntityListViewDTO DefaultEntityListViewDTO { get; }
@@ -71,8 +71,10 @@ namespace MyUILibrary.EntityArea
         bool SearchInitialyDone { get; set; }
         //   void SearchConfirmed(DP_SearchRepositoryMain searchItems, bool select);
         void ShowSearchView(bool fromDataView);
-        void SelectFromParent(RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues);
-        void SelectData(List<Dictionary<ColumnDTO, object>> items);
+  //      void SelectFromParent(RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues);
+        //      void SelectData(List<Dictionary<ColumnDTO, object>> items);
+    //    void SelectDataFromExternal(List<Dictionary<ColumnDTO, object>> items);
+        void SelectData(List<DP_BaseData> datas);
         //   void SearchTextBox(string text);
         // void RemoveViewEntityAreaView();
 

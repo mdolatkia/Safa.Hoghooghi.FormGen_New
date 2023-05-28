@@ -353,7 +353,7 @@ namespace MyUILibrary.EntityArea
        EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.Select);
             if (hasTempView)
             {
-                if (EditEntityArea.DataViewGeneric != null && EditEntityArea.DataViewGeneric.IsOpenedTemporary)
+                if (EditEntityArea.DataView != null && EditEntityArea.DataView.IsOpenedTemporary)
                     return true;
                 else
                     return false;
@@ -422,7 +422,7 @@ namespace MyUILibrary.EntityArea
        
         public void SetColumnValue(List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula, bool fromSetFkRelColumns)
         {
-            //** 62c0cf57-c2cf-4092-885c-5d7ba8eeba1a
+            //** DP_FormDataRepository.SetColumnValue: 5d7ba8eeba1a
             if (DataIsInEditMode())
             {
                 if (fromSetFkRelColumns == false)
@@ -497,7 +497,22 @@ namespace MyUILibrary.EntityArea
                                 if (!childInfo.IsReadonly && !childInfo.IsHidden)
                                 {
                                     //    RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(this);
-                                    childInfo.RelationshipControl.GenericEditNdTypeArea.SelectFromParent( childInfo.Relationship, childInfo.SourceData, item.Item3);
+
+
+                                    List<DP_BaseData> dataitems = new List<DP_BaseData>();
+                                    DP_BaseData dataItem = new DP_BaseData(childInfo.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.EntityID, "");
+                                    foreach (var citem in childInfo.Relationship.RelationshipColumns)
+                                    {
+                                        if (item.Item3.ContainsKey(citem.FirstSideColumnID))
+                                        {
+                                            dataItem.Properties.Add(new EntityInstanceProperty(citem.SecondSideColumn) { Value = item.Item3[citem.FirstSideColumnID] });
+                                        }
+                                    }
+                                    dataitems.Add(dataItem);
+
+                                    childInfo.RelationshipControl.GenericEditNdTypeArea.SelectData(dataitems);
+
+                                    //childInfo.RelationshipControl.GenericEditNdTypeArea.SelectFromParent( childInfo.Relationship, childInfo.SourceData, item.Item3);
                                 }
                             }
 

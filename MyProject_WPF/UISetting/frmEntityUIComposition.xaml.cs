@@ -782,7 +782,7 @@ namespace MyProject_WPF
 
 
             //    currentEditArea.GenerateDataViewPreview(dataEntryEntity);
-            brdView.Child = currentEditArea.DataViewGeneric as UIElement;
+            brdView.Child = currentEditArea.DataView as UIElement;
 
         }
 

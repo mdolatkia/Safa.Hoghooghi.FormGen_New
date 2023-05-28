@@ -39,7 +39,7 @@ namespace MyUILibrary.EntityArea.Commands
             if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
             {
                 var datas = EditArea.GetSelectedData();
-                EditArea.RemoveDatas(datas);
+                EditArea.RemoveMultipleData(datas);
             }
             else
             {

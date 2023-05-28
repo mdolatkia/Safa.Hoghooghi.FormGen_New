@@ -106,7 +106,7 @@ namespace MyUILibrary.EntityArea
                     if (RelationshipControl is RelationshipColumnControlOne)
                     {
                         if (IsDataviewOpen)
-                            return (RelationshipControl as RelationshipColumnControlOne).GenericEditNdTypeArea.DataViewGeneric;
+                            return (RelationshipControl as RelationshipColumnControlOne).GenericEditNdTypeArea.DataView;
                     }
                 }
                 return null;
@@ -695,8 +695,8 @@ namespace MyUILibrary.EntityArea
             get
             {
                 return IsDirect ||
-                                (RelationshipControl.GenericEditNdTypeArea.DataViewGeneric != null &&
-                                RelationshipControl.GenericEditNdTypeArea.DataViewGeneric.IsOpenedTemporary);
+                                (RelationshipControl.GenericEditNdTypeArea.DataView != null &&
+                                RelationshipControl.GenericEditNdTypeArea.DataView.IsOpenedTemporary);
             }
         }
         public bool IsDirect
@@ -1315,62 +1315,38 @@ namespace MyUILibrary.EntityArea
 
         //}
 
-        internal void DataSelected(DP_FormDataRepository result)
-        {
-            if (RemoveRelatedData())
-                AddDataToChildRelationshipData(result);
-        }
+        //internal void DataSelected(DP_FormDataRepository result)
+        //{
+          
+        //}
 
         internal void DataViewRequested()
         {
-            // ChildRelationshipInfo.DataViewRequested: e48af9744b57
-            //   ObservableCollection<DP_FormDataRepository> existingData = RealData;
-
             if (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.FormComposed == false)
             {
                 RelationshipControl.GenericEditNdTypeArea.GenerateDataView();
             }
+            RelationshipControl.GenericEditNdTypeArea.DataView.IsOpenedTemporary = true;
 
-            RelationshipControl.GenericEditNdTypeArea.DataViewGeneric.IsOpenedTemporary = true;
-
-            //////if (AreaInitializer.SourceRelationColumnControl != null)
-            //////{
-            //////    AreaInitializer.SourceRelationColumnControl.OnDataViewForTemporaryViewShown(ChildRelationshipInfo);
-            //////}
-            ///
             ClearUIData();
-
-            if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData && RelatedData.Count == 0)
+            if (RelatedData.Count == 0)
             {
-
-                //اینجا باید فقط برای فرم اصلی باشد
-                //(this as I_EditEntityAreaOneData).CreateDefaultData();
-
-                CreateDefaultDataChildRelationship();
-
-                //var newData = AgentHelper.CreateAreaInitializerNewData(RelationshipControl.GenericEditNdTypeArea);
-                //newData.IsDefaultData = true;
-                //AddDataToChildRelationshipInfo(newData);
-
+                if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData &&)
+                    CreateDefaultDataChildRelationship();
             }
             else
             {
-                //if (this is I_EditEntityAreaMultipleData)
-                //    (this as I_EditEntityAreaMultipleData).RemoveDataContainers();
-
-
                 foreach (var data in RelatedData)
                 {
                     if (!data.IsFullData)
                     {
-                        //if (!data.KeyProperties.Any())
-                        //    throw new Exception("asdad");
                         var resConvert = ConvertDataViewToFullData(RelationshipControl.GenericEditNdTypeArea.AreaInitializer.EntityID, data, RelationshipControl.GenericEditNdTypeArea);
                         if (!resConvert)
                         {
+                            دسترسی ادیت رو روی فرم چک کنیم اینکه موقع نمایش داده چک بشه رو حذف کنم اصلا
                             //ممکن است اینجا داده وابسته فول شود اما در نمایش فرم بعلت عدم دسترسی به داده  وابسته برای داده وابسته جاری فرم نمایش داده نشود
                             //بنابراین هر فولی به معنی اصلاح شدن داده نیست و باید خصوصیت دیگری در نظر گرفت
-                            RelationshipControl.GenericEditNdTypeArea.DataViewGeneric.IsOpenedTemporary = false;
+                            RelationshipControl.GenericEditNdTypeArea.DataView.IsOpenedTemporary = false;
 
                             AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده", data.ViewInfo, Temp.InfoColor.Red);
                             return;
@@ -1385,11 +1361,11 @@ namespace MyUILibrary.EntityArea
             CheckRelationshipUI();
             var dialogManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow();
             dialogManager.WindowClosed += DialogManager_WindowClosed;
-            dialogManager.ShowDialog(RelationshipControl.GenericEditNdTypeArea.DataViewGeneric, RelationshipControl.GenericEditNdTypeArea.SimpleEntity.Alias, Enum_WindowSize.Big);
+            dialogManager.ShowDialog(RelationshipControl.GenericEditNdTypeArea.DataView, RelationshipControl.GenericEditNdTypeArea.SimpleEntity.Alias, Enum_WindowSize.Big);
         }
         private void DialogManager_WindowClosed(object sender, EventArgs e)
         {
-            RelationshipControl.GenericEditNdTypeArea.DataViewGeneric.IsOpenedTemporary = false;
+            RelationshipControl.GenericEditNdTypeArea.DataView.IsOpenedTemporary = false;
             //   SetTempText(GetDataList());
             //   CheckRelationshipLabel();
             //foreach (var item in GetDataList())
@@ -1399,6 +1375,7 @@ namespace MyUILibrary.EntityArea
         }
         private bool ConvertDataViewToFullData(int entityID, DP_FormDataRepository dataITem, I_EditEntityArea editEntityArea)
         {
+            چندتایی شود مثل selectdata
             //اوکی نشده
             DP_SearchRepositoryMain SearchDataItem = new DP_SearchRepositoryMain(entityID);
             foreach (var col in dataITem.KeyProperties)

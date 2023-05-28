@@ -175,7 +175,6 @@ namespace MyUILibrary.EntityArea
             ViewInitializer.ViewData.Clear();
             ViewForViewEntityArea.RemoveDataContainers();
             ViewInitializer.ViewData.AddRange(data);
-
             ShowData1(data);
         }
 

@@ -228,10 +228,10 @@ namespace MyUILibrary.EntityArea
         //   I_View_EditEntityAreaDataView I_EditEntityAreaOneData.SpecializedDataView => throw new NotImplementedException();
 
 
-        public override I_View_Area DataViewGeneric
-        {
-            get { return DataView; }
-        }
+        //public override I_View_Area DataViewGeneric
+        //{
+        //    get { return DataView; }
+        //}
 
         public void CreateDefaultData()
         {
