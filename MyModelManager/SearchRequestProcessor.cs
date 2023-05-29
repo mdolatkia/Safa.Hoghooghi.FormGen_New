@@ -131,8 +131,13 @@ namespace MyDataSearchManagerBusiness
             //try
             //{
 
-            var dataTable = GetDataTableBySearchDataItems(request.Requester, request.SearchDataItems.TargetEntityID, request.SearchDataItems, null, request.EntityViewID, request.MaxDataItems, request.OrderByEntityViewColumnID, request.SortType);
-            result.ResultDataItems = DataTableToDP_ViewRepository(dataTable.Item1, dataTable.Item2, dataTable.Item3);
+            EntityListViewDTO listView = null;
+            if (request.EntityViewID != 0)
+                listView = bizEntityListView.GetEntityListView(request.Requester, request.EntityViewID);
+            else
+                listView = bizEntityListView.GetOrCreateEntityListViewDTO(request.Requester, request.SearchDataItems.TargetEntityID);
+            var dataTable = GetDataTableBySearchDataItems(request.Requester, request.SearchDataItems.TargetEntityID, request.SearchDataItems, listView.EntityListViewAllColumns, request.MaxDataItems, request.OrderByEntityViewColumnID, request.SortType);
+            result.ResultDataItems = DataTableToDP_ViewRepository(dataTable.Item1, dataTable.Item2, listView);
             result.Result = Enum_DR_ResultType.SeccessfullyDone;
 
             //if(request.CheckStates)
@@ -169,22 +174,24 @@ namespace MyDataSearchManagerBusiness
         //    //else
         //    return bizTableDrivedEntity.GetTableDrivedEntity(targetEntityID, withSimpleColumns, withRelationships);
         //}
-        public Tuple<TableDrivedEntityDTO, EntityListViewDTO, DataTable> GetDataTableBySearchDataItems(DR_Requester requester, int entityID, DP_SearchRepositoryMain searchDataItem, EntityListViewDTO listView, int listViewID, int maxItems = 0, int orderColumnID = 0, Enum_OrderBy sortType = Enum_OrderBy.Ascending)
+        public Tuple<TableDrivedEntityDTO, DataTable> GetDataTableBySearchDataItems(DR_Requester requester, int entityID, DP_SearchRepositoryMain searchDataItem
+            , List<EntityListViewColumnsDTO> listColumns, int maxItems = 0, int orderColumnID = 0
+            , Enum_OrderBy sortType = Enum_OrderBy.Ascending)
         {
-            var queryParts = GetQueryParts(requester, entityID, searchDataItem, listView, listViewID, maxItems, orderColumnID, sortType);
-            var commandStr = "select " + queryParts.Item3 + queryParts.Item4 + queryParts.Item5;
-            return new Tuple<TableDrivedEntityDTO, EntityListViewDTO, DataTable>(queryParts.Item1, queryParts.Item2, ConnectionManager.GetDBHelperByEntityID(entityID).ExecuteQuery(commandStr));
+            var queryParts = GetQueryParts(requester, entityID, searchDataItem, listColumns, maxItems, orderColumnID, sortType);
+            var commandStr = "select " + queryParts.Item2 + queryParts.Item3 + queryParts.Item4;
+            return new Tuple<TableDrivedEntityDTO, DataTable>(queryParts.Item1, ConnectionManager.GetDBHelperByEntityID(entityID).ExecuteQuery(commandStr));
 
         }
 
-        private Tuple<TableDrivedEntityDTO, EntityListViewDTO, string, string, string> GetQueryParts(DR_Requester requester, int entityID, DP_SearchRepositoryMain searchDataItem
-            , EntityListViewDTO listView, int listViewID
+        private Tuple<TableDrivedEntityDTO, string, string, string> GetQueryParts(DR_Requester requester, int entityID, DP_SearchRepositoryMain searchDataItem
+            , List<EntityListViewColumnsDTO> listColumns
             , int maxItems = 0, int orderColumnID = 0, Enum_OrderBy sortType = Enum_OrderBy.Ascending)
         {
             var fromClause = GetFromQuery(requester, entityID, searchDataItem);
             string orderBy = "";// GetOrderByQuery(fromClause.Item1, listView, orderColumnID, sortType);
-            var select = GetSelectQuery(requester, fromClause.Item1, listView, listViewID);
-            return new Tuple<TableDrivedEntityDTO, EntityListViewDTO, string, string, string>(fromClause.Item1, select.Item1, select.Item2, fromClause.Item2, orderBy);
+            var select = GetSelectQuery(requester, fromClause.Item1, listColumns);
+            return new Tuple<TableDrivedEntityDTO, string, string, string>(fromClause.Item1, select, fromClause.Item2, orderBy);
         }
 
 
@@ -203,42 +210,55 @@ namespace MyDataSearchManagerBusiness
             //{
             //    throw new Exception("عدم دسترسی به موجودیت به شناسه" + " " + entityID + " ");
             //}
-            EntityListViewDTO listView = null;
+            //  EntityListViewDTO listView = null;
+            List<ColumnDTO> listColumns = new List<ColumnDTO>();
+
+            BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+            var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
+
             if (primaryKeys)
             {
-                listView = bizEntityListView.GetEntityKeysListView(requester, entityID);
+                listColumns = entityDTO.Columns.Where(x => x.PrimaryKey).ToList(); ;
             }
             else
             {
-                listView = bizEntityListView.GetEntityListViewWithAllColumns(requester, entityID);
+                listColumns = entityDTO.Columns;
             }
-
-            var queryParts = GetQueryParts(requester, entityID, searchDataItem, listView, 0);
+            var listView = GetListViewFromColumns(listColumns);
+            var queryParts = GetQueryParts(requester, entityID, searchDataItem, listView.EntityListViewAllColumns);
             return new Tuple<string, string>(queryParts.Item3, queryParts.Item4);
             //return new Tuple<string, string>("", "");
         }
+
+        private EntityListViewDTO GetListViewFromColumns(List<ColumnDTO> listColumns)
+        {
+            EntityListViewDTO result = new EntityListViewDTO();
+            foreach (var column in listColumns)
+            {
+                EntityListViewColumnsDTO rColumn = new EntityListViewColumnsDTO();
+                rColumn.ID = 0;
+                rColumn.ColumnID = column.ID;
+                rColumn.Column = column;
+                rColumn.Alias = column.Alias;
+                rColumn.OrderID = (short)column.Position;
+                result.EntityListViewAllColumns.Add(rColumn);
+            }
+
+            return result;
+        }
+
         //private string GetQuery(DR_Requester requester, TableDrivedEntityDTO mainEntity, DP_SearchRepository searchDataItem, int maxDataItems, EntityListViewDTO entityListView, int orderColumnID, Enum_OrderBy sortType, SecurityMode securityMode)
         //{
 
         //}
 
 
-        private Tuple<EntityListViewDTO, string> GetSelectQuery(DR_Requester requester, TableDrivedEntityDTO entity, EntityListViewDTO listView, int listViewID)
+        private string GetSelectQuery(DR_Requester requester, TableDrivedEntityDTO entity, List<EntityListViewColumnsDTO> listColumns)
         {
-            BizEntityListView bizEntityListView = new BizEntityListView();
-            if (listView == null)
-            {
 
-                listView = bizEntityListView.GetOrCreateEntityListViewDTO(requester, entity.ID);
-
-            }
-            if (listView == null)
-            {
-                throw new Exception("عدم دسترسی به لیست نمایش موجودیت به شناسه" + " " + entity.ID);
-            }
             var select = "";
             var searchTableName = GetSearchTableAlias(entity, 0);
-            foreach (var column in listView.EntityListViewAllColumns)
+            foreach (var column in listColumns)
             {
                 if (column.RelationshipTail == null)
                 {
@@ -261,7 +281,7 @@ namespace MyDataSearchManagerBusiness
                         + " as " + aliasColumn;
                 }
             }
-            return new Tuple<EntityListViewDTO, string>(listView, select);
+            return select;
         }
 
         private string GetOrderByQuery(EntityListViewDTO entityListView, int orderColumnID, Enum_OrderBy sortType)
@@ -1136,10 +1156,12 @@ namespace MyDataSearchManagerBusiness
         {
             return (item.Value != null && !string.IsNullOrEmpty(item.Value.ToString()) && (item.NotIgnoreZeroValue || item.Value.ToString() != "0"));
         }
-        private List<DP_DataRepository> DataTableToDP_DataRepository(TableDrivedEntityDTO entity, EntityListViewDTO editListView, DataTable dataTable)
+        private List<DP_DataRepository> DataTableToDP_DataRepository(TableDrivedEntityDTO entity
+            , DataTable dataTable, EntityListViewDTO listView
+            , DataTable dataTableForDataView, EntityListViewDTO listViewForDataView)
         {
             //var mainEntity = GetTableDrivedEntity2( entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
-            List<Tuple<short, ColumnDTO>> listColumns = new List<Tuple<short, ColumnDTO>>();
+            List<Tuple<short, ColumnDTO>> listIndexColumns = new List<Tuple<short, ColumnDTO>>();
 
             for (short i = 0; i < dataTable.Columns.Count; i++)
             {
@@ -1148,194 +1170,126 @@ namespace MyDataSearchManagerBusiness
                 //int tailID = Convert.ToInt32(splt[0]);
                 //var columnName = splt[1];
 
-                var column = editListView.EntityListViewAllColumns.FirstOrDefault(x => x.RelativeColumnName == tailWithColumnName);
+                var column = listView.EntityListViewAllColumns.FirstOrDefault(x => x.RelativeColumnName == tailWithColumnName);
                 if (column != null)
                 {
-                    listColumns.Add(new Tuple<short, ColumnDTO>(i, column.Column));
+                    listIndexColumns.Add(new Tuple<short, ColumnDTO>(i, column.Column));
                 }
             }
+
+            List<DP_DataView> listDataView = null;
+            if (dataTableForDataView != null)
+                listDataView = DataTableToDP_ViewRepository(entity, dataTableForDataView, listViewForDataView);
 
             List<DP_DataRepository> result = new List<DP_DataRepository>();
             //  BizFormulaUsage bizFormulaUsage = new BizFormulaUsage();
             foreach (DataRow row in dataTable.Rows)
             {
-                var data = ToDataRepository(entity, row, listColumns);
+                List<EntityInstanceProperty> properties = new List<EntityInstanceProperty>();
+                for (int i = 0; i < row.Table.Columns.Count; i++)
+                {
+                    if (listIndexColumns.Any(x => x.Item1 == i))
+                    {
+                        var column = listIndexColumns.First(x => x.Item1 == i).Item2;
+                        object value = null;
+                        if (row[i] != DBNull.Value)
+                            value = row[i];//.ToString();
+                        else
+                            value = null;
+                        var property = new EntityInstanceProperty(column, value);
+                        //property.Name = column.Name;
+                        properties.Add(property);
+                    }
+                }
+
+
+                DP_DataView dataView = null;
+                if (listDataView != null)
+                {
+                    dataView = listDataView.FirstOrDefault(x => DataItemsAreEqual(x.KeyProperties, properties.Where(y => y.IsKey).ToList()));
+                }
+                var data = new DP_DataRepository(dataView);
+                data.SetProperties(properties);
+                data.IsFullData = true;
                 //    bizFormulaUsage.CheckFormulaUsages(data);
                 result.Add(data);
             }
             return result;
         }
-        private DP_DataRepository ToDataRepository(TableDrivedEntityDTO entity, DataRow reader, List<Tuple<short, ColumnDTO>> listColumns)
-        {
 
-            var result = new DP_DataRepository(entity.ID, entity.Alias);
-            result.IsFullData = true;
-            for (int i = 0; i < reader.Table.Columns.Count; i++)
+        internal static bool DataItemsAreEqual(List<EntityInstanceProperty> keyProperties1, List<EntityInstanceProperty> keyProperties2)
+        {
+            if (keyProperties1.Any() && keyProperties2.Any())
             {
-                if (listColumns.Any(x => x.Item1 == i))
-                {
-                    var column = listColumns.First(x => x.Item1 == i).Item2;
-                    var property = new EntityInstanceProperty(column);
-                    //property.Name = column.Name;
-                    if (reader[i] != DBNull.Value)
-                        property.Value = reader[i];//.ToString();
-                    else
-                        property.Value = null;
-                    result.AddProperty(column, property.Value);
-                }
+
+                if (keyProperties1.All(x => keyProperties2.Any(y => x.ColumnID == y.ColumnID && x.Value.Equals(y.Value)))
+                    && keyProperties2.All(x => keyProperties1.Any(y => x.ColumnID == y.ColumnID && x.Value.Equals(y.Value))))
+                    return true;
+
             }
-            return result;
+            return false;
         }
 
-        private List<DP_DataView> DataTableToDP_ViewRepository(TableDrivedEntityDTO entity, EntityListViewDTO listView, DataTable dataTable)
+        //private DP_DataRepository ToDataRepository(TableDrivedEntityDTO entity, DataRow reader
+        //    , List<Tuple<short, ColumnDTO>> listColumns, int listViewID, List<DataViewProperty> dataViewProperties)
+        //{
+
+
+        //    return result;
+        //}
+
+        private List<DP_DataView> DataTableToDP_ViewRepository(TableDrivedEntityDTO entity, DataTable dataTable, EntityListViewDTO listView)
         {
-            //TableDrivedEntityDTO entity = bizTableDrivedEntity.GetTableDrivedEntity(entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
             List<DP_DataView> result = new List<DP_DataView>();
-            //////List<Tuple<int, int, short>> keyColumns = new List<Tuple<int, int, short>>();
-            //////for (short i = 0; i < dataTable.Columns.Count; i++)
-            //////{
-            //////    var columnName = dataTable.Columns[i].ColumnName;
-            //////    if (columnName.EndsWith("KeyColumns"))
-            //////    {
-            //////        var splt = columnName.Split('>');
-            //////        keyColumns.Add(new Tuple<int, int, short>(Convert.ToInt32(splt[0]), Convert.ToInt32(splt[1]), i));
-            //////    }
-            //////}
-            List<Tuple<short, EntityListViewColumnsDTO>> listColumns = new List<Tuple<short, EntityListViewColumnsDTO>>();
-            //List<int> keyColumns = new List<int>();
+            List<Tuple<short, EntityListViewColumnsDTO>> listIndexColumns = new List<Tuple<short, EntityListViewColumnsDTO>>();
             for (short i = 0; i < dataTable.Columns.Count; i++)
             {
 
                 var tailWithColumnName = dataTable.Columns[i].ColumnName;
-                //var splt = tailWithColumnName.Split('>');
-                //int tailID = Convert.ToInt32(splt[0]);
-                //var columnName = splt[1];
 
-                //if (listView == null)
-                //{
-                //    var column = entity.Columns.FirstOrDefault(x => "0>" + x.Name == tailWithColumnName);
-                //    if (column != null)
-                //        listColumns.Add(new Tuple<short, ColumnDTO, int>(i, column, tailID));
-                //}
-                //else
-                //{
                 var column = listView.EntityListViewAllColumns.FirstOrDefault(x => x.RelativeColumnName == tailWithColumnName);
                 if (column != null)
-                    listColumns.Add(new Tuple<short, EntityListViewColumnsDTO>(i, column));
-                //}
-                //if (tailID == 0)
-                //{
-                //    if (entity.Columns.Where(x => x.PrimaryKey).Any(x => x.Name == columnName))
-                //        keyColumns.Add(i);
-                //}
+                    listIndexColumns.Add(new Tuple<short, EntityListViewColumnsDTO>(i, column));
+
             }
             foreach (DataRow row in dataTable.Rows)
             {
-                result.Add(ToViewRepository(entity, row, listColumns));
-            }
-            return result;
-        }
-        private DP_DataView ToViewRepository(TableDrivedEntityDTO entity, DataRow reader, List<Tuple<short, EntityListViewColumnsDTO>> listColumns)
-        {
-
-            var result = new DP_DataView(entity.ID, entity.Alias);
-
-            //////List<Tuple<int, int, List<EntityInstanceProperty>>> tailKeyColumns = new List<Tuple<int, int, List<EntityInstanceProperty>>>();
-            //////foreach (var keyColumn in keyColumns)
-            //////{
-            //////    if (reader[keyColumn.Item3] != DBNull.Value)
-            //////    {
-            //////        var keyColumnValue = reader[keyColumn.Item3].ToString();
-            //////        var splt1 = keyColumnValue.Split('#');
-            //////        List<EntityInstanceProperty> list = new List<EntityInstanceProperty>();
-            //////        foreach (var item in splt1)
-            //////        {
-            //////            var splt2 = item.Split('@');
-            //////            list.Add(new EntityInstanceProperty() { ColumnID = Convert.ToInt32(splt2[0]), Value = splt2[1] });
-            //////        }
-            //////        tailKeyColumns.Add(new Tuple<int, int, List<EntityInstanceProperty>>(keyColumn.Item1, keyColumn.Item2, list));
-            //////    }
-            //////}
-
-            for (int i = 0; i < reader.Table.Columns.Count; i++)
-            {
-
-
-                //foreach (var item in result.TypeOrTypeConditions.Select(x => x.Type))
-                //{
-                //foreach (var itemProperty in entity.Columns)
-                //{
-                //    if (itemProperty.Name.ToLower() == columnName.ToLower())
-                //    {
-                if (listColumns.Any(x => x.Item1 == i))
+                List<DataViewProperty> dataViewProperties = new List<DataViewProperty>();
+                for (int i = 0; i < row.Table.Columns.Count; i++)
                 {
-                    var listColumnsItem = listColumns.First(x => x.Item1 == i);
-                    var column = listColumnsItem.Item2;
-                    // string columnName = reader.Table.Columns[i].ColumnName;
-
-                    object value;
-                    if (reader[i] != DBNull.Value)
-                        value = reader[i];//.ToString();
-                    else
-                        value = null;
-
-                    var property = new EntityInstanceProperty(column.Column);
-                    //               property.EntityListViewColumnsID = listColumnsItem.Item2.ID;
-
-                    property.ListViewColumn = column;
-                    if (column.RelationshipTail != null)
-                        property.RelationshipIDTailPath = column.RelationshipTail.RelationshipIDPath;
-                    //property.Name = column.Column.Name;
-                    property.RelativeName = column.RelativeColumnName;
-                    property.Value = value;
-                    //if (column.RelationshipTailID == 0)
-                    //{
-
-                    //}
-                    result.Properties.Add(property);
+                    if (listIndexColumns.Any(x => x.Item1 == i))
+                    {
+                        var listColumnsItem = listIndexColumns.First(x => x.Item1 == i);
+                        var column = listColumnsItem.Item2;
+                        object value;
+                        if (row[i] != DBNull.Value)
+                            value = row[i];//.ToString();
+                        else
+                            value = null;
+                        var property = new DataViewProperty(column);
+                        property.Value = value;
+                        dataViewProperties.Add(property);
+                    }
                 }
-
-
-
-                //DP_DataViewItem viewItem;
-                //if (columnName.Contains(">"))
-                //{
-                //    var splt = columnName.Split('>');
-                //    int tailID = Convert.ToInt32(splt[0]);
-                //    viewItem = GetViewItem(result, tailID);
-                //    var tailKeyColumn = tailKeyColumns.First(x => x.Item1 == tailID);
-                //    viewItem.EntityID = tailKeyColumn.Item2;
-                //    viewItem.KeyProperties = tailKeyColumn.Item3;
-                //}
-                //else
-                //    viewItem = GetViewItem(result, 0);
-
-
-
+                var item = new DP_DataView(entity.ID, entity.Alias, listView.ID, dataViewProperties);
+                foreach (var dvColumn in item.DataViewProperties)
+                {
+                    if (dvColumn.Column.PrimaryKey && string.IsNullOrEmpty(dvColumn.RelationshipIDTailPath))
+                        item.Properties.Add(new EntityInstanceProperty(dvColumn.Column));
+                }
+                result.Add(item);
             }
-
-            //if (!columnName.Contains(","))
-            //{
-            //    var column = entity.Columns.First(x => x.Name == columnName);
-
-            //    property.IsKey = column.PrimaryKey;
-            //    property.ColumnID = column.ID;
-
-            //}
-            //else
-            //{
-
-
-            //}
-            //result.Properties.Add(property);
-            //}
-            //    }
-            //    //}
-            //}
-
-
             return result;
         }
+
+
+
+        //private DP_DataView ToViewRepository(TableDrivedEntityDTO entity, DataRow reader, List<Tuple<short, EntityListViewColumnsDTO>> listColumns)
+        //{
+
+
+        //    return result;
+        //}
 
         //private DP_DataViewItem GetViewItem(DP_DataView result, int tailID)
         //{
@@ -1352,11 +1306,14 @@ namespace MyDataSearchManagerBusiness
             DR_ResultSearchKeysOnly result = new DR_ResultSearchKeysOnly();
             try
             {
-                BizEntityListView bizEntityListView = new BizEntityListView();
-                var listView = bizEntityListView.GetEntityKeysListView(request.Requester, request.SearchDataItem.TargetEntityID);
-
-                var dataTable = GetDataTableBySearchDataItems(request.Requester, request.SearchDataItem.TargetEntityID, request.SearchDataItem, listView, 0);
-                result.ResultDataItems = DataTableToDP_ViewRepository(dataTable.Item1, dataTable.Item2, dataTable.Item3);
+                //  BizEntityListView bizEntityListView = new BizEntityListView();
+                //   var listView = bizEntityListView.GetEntityKeysListView(request.Requester, request.SearchDataItem.TargetEntityID);
+                BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+                var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(request.Requester, request.SearchDataItem.TargetEntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
+                var listColumns = entityDTO.Columns.Where(x => x.PrimaryKey).ToList(); ;
+                var listView = GetListViewFromColumns(listColumns);
+                var dataTable = GetDataTableBySearchDataItems(request.Requester, request.SearchDataItem.TargetEntityID, request.SearchDataItem, listView.EntityListViewAllColumns);
+                result.ResultDataItems = DataTableToDP_ViewRepository(dataTable.Item1, dataTable.Item2, listView);
                 result.Result = Enum_DR_ResultType.SeccessfullyDone;
             }
             catch (Exception ex)
@@ -1401,9 +1358,22 @@ namespace MyDataSearchManagerBusiness
         private List<DP_DataRepository> GetFullDataResult(DR_Requester requester, DP_SearchRepositoryMain searchDataItem)
         {
             BizEntityListView bizEntityListView = new BizEntityListView();
-            var editListView = bizEntityListView.GetEntityListViewWithAllColumns(requester, searchDataItem.TargetEntityID);
-            var dataTable = GetDataTableBySearchDataItems(requester, searchDataItem.TargetEntityID, searchDataItem, editListView, 0);
-            return DataTableToDP_DataRepository(dataTable.Item1, dataTable.Item2, dataTable.Item3);
+
+            BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+            var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(requester, searchDataItem.TargetEntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
+            var listView = GetListViewFromColumns(entityDTO.Columns);
+            //  var editListView = bizEntityListView.GetEntityListViewWithAllColumns(requester, searchDataItem.TargetEntityID);
+            var dataTable = GetDataTableBySearchDataItems(requester, searchDataItem.TargetEntityID, searchDataItem, listView.EntityListViewAllColumns);
+
+            DataTable dataviewDataTable = null;
+            EntityListViewDTO dataviewListView = null;
+            //if (withDataView)
+            //{
+            //فعلا همیشه بیاد
+            dataviewListView = bizEntityListView.GetOrCreateEntityListViewDTO(requester, searchDataItem.TargetEntityID);
+            dataviewDataTable = GetDataTableBySearchDataItems(requester, searchDataItem.TargetEntityID, searchDataItem, dataviewListView.EntityListViewAllColumns).Item2;
+            // }
+            return DataTableToDP_DataRepository(dataTable.Item1, dataTable.Item2, listView, dataviewDataTable, dataviewListView);
         }
 
         public void DoBeforeLoadActionActivities(DR_SearchEditRequest request, DR_ResultSearchFullData result)

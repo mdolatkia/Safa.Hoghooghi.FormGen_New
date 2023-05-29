@@ -35,9 +35,9 @@ namespace MyUILibrary.EntityArea.Commands
             DP_DataView dataView = null;
             if (dataInstance != null)
             {
-                if (dataInstance.DataView != null && !dataInstance.IsNewItem)
+                if ( !dataInstance.IsNewItem)
                 {
-                    dataView = dataInstance.DataView;
+                    dataView = dataInstance;
                     //AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عملیات آرشیو تنها بروی داده های ثبت شده امکان پذیر است");
                     //return;
                 }

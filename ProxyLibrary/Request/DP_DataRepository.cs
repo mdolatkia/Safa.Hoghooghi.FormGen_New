@@ -35,7 +35,7 @@ namespace ProxyLibrary
                     return (this as DP_DataRepository).KeyProperties;
                 else
                 {
-                    var listKey = Properties.Where(x => string.IsNullOrEmpty(x.RelationshipIDTailPath) && x.IsKey).ToList();
+                    var listKey = Properties.Where(x => x.IsKey).ToList();
                     if (listKey.Count == 0)
                     {
                         throw new Exception("no key");
@@ -47,18 +47,63 @@ namespace ProxyLibrary
         public int DataItemID { set; get; }
         public bool DataItemSearched { set; get; }
 
-        public virtual EntityInstanceProperty GetProperty(int columnID)
+        public EntityInstanceProperty GetProperty(int columnID)
         {
-            if (this is DP_DataRepository)
-                return (this as DP_DataRepository).GetProperty(columnID);
-            else
-
-            {
-                return Properties.FirstOrDefault(x => x.ColumnID == columnID);
-            }
+            return Properties.FirstOrDefault(x => x.ColumnID == columnID);
         }
     }
-    public class DP_DataRepository : DP_BaseData
+    public class DP_DataView : DP_BaseData
+    {
+        public DP_DataView(int targetEntityID, string targetEntityAlias
+            , int listViewID, List<DataViewProperty> dataViewProperties)
+            : base(targetEntityID, targetEntityAlias)
+        {
+            // DP_DataView: 4a4b577125bf
+            ListViewID = listViewID;
+            DataViewProperties = dataViewProperties;
+        }
+        public List<DataViewProperty> DataViewProperties { set; get; }
+        public int ListViewID { set; get; }
+        public string ViewInfo
+        {
+            get
+            {
+                string text = "";
+                var list = DataViewProperties.Where(x => x.IsDescriptive == true);
+                if (list.Count() == 0)
+                {
+                    list = DataViewProperties.Where(x => x.Value != null && !string.IsNullOrEmpty(x.Value.ToString()) && x.Value.ToString().Length <= 50).Take(5);
+                }
+                if (list.Count() == 0)
+                {
+                    list = DataViewProperties.Where(x => x.Value != null && !string.IsNullOrEmpty(x.Value.ToString())).Take(1);
+                }
+                //if (list.Count() <= 15)
+                //{
+                foreach (var prop in list)
+                {
+                    if (prop.Value != null && !string.IsNullOrEmpty(prop.Value.ToString()))
+                        text += (text == "" ? "" : ", ") + prop.Column.Alias + ":" + prop.Value;
+                }
+                //}
+                //else
+                //{
+                //    foreach (var prop in Properties.Where(x => x.IsDescriptive))
+                //    {
+                //        if (!string.IsNullOrEmpty(prop.Value) && prop.Value != "<Null>")
+                //            text += (text == "" ? "" : ", ") + prop.Value;
+                //    }
+
+                //}
+                if (text == "")
+                    text = "داده از موجودیت" + " " + TargetEntityID;
+                return text;
+            }
+        }
+        public Guid GUID;
+
+    }
+    public class DP_DataRepository : DP_DataView
     {
         public event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
 
@@ -69,22 +114,26 @@ namespace ProxyLibrary
         public virtual List<ChildRelationshipData> ChildRelationshipDatas { set; get; }
 
         public virtual ChildRelationshipData ParantChildRelationshipData { get; set; }
-        public EntityListViewDTO EntityListView { set; get; }
+        // public DP_DataView DataView { set; get; }
 
-        public DP_DataRepository(int TargetEntityID, string TargetEntityAlias) : base(TargetEntityID, TargetEntityAlias)
+        //public DP_DataRepository(int targetEntityID, string targetEntityAlias) : base(targetEntityID, targetEntityAlias)
+        //{
+
+        //}
+        public DP_DataRepository(DP_DataView dataView)
+          : base(dataView.TargetEntityID, dataView.TargetEntityAlias, dataView.ListViewID, dataView.DataViewProperties)
         {
-            //DP_DataRepository: 7939d86acdc6
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
-            //SourceRelatedData = new List<DP_DataRepository>();
-            //DataInstance = new EntityInstance();
-            //DataInstance.Properties = new List<EntityInstanceProperty>();
-            //RelationshipColumns = new List<ModelEntites.RelationshipColumnDTO>();
             ChildRelationshipDatas = new List<ChildRelationshipData>();
-            //StateIds = new List<int>();
-
             GUID = Guid.NewGuid();
-            //    DataTypes = new List<DP_DataRepository>();
-            //ViewEntityProperties = new List<Tuple<int, List<ProxyLibrary.EntityInstanceProperty>>>();
+        }
+        public DP_DataRepository(int TargetEntityID, string TargetEntityAlias)
+            : base(TargetEntityID, TargetEntityAlias, 0, null)
+        {
+
+            OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
+            ChildRelationshipDatas = new List<ChildRelationshipData>();
+            GUID = Guid.NewGuid();
         }
 
         public void ClearProperties()
@@ -110,32 +159,35 @@ namespace ProxyLibrary
             get
             {
                 string text = "";
-                if (DataView != null)
-                {
-                    return DataView.ViewInfo;
-                }
-                else if (IsFullData)
-                {
-                    if (IsNewItem)
-                        text = "داده جدید";
-                    else
-                        text = "داده اصلاحی شده";
-                    if (EntityListView != null)
-                    {
-                        foreach (var listViewColumn in EntityListView.EntityListViewAllColumns.Where(x => x.IsDescriptive))
-                        {
-                            var value = GetValueSomeHow(listViewColumn.RelationshipTail, listViewColumn.ColumnID);
-                            if (value != null)
-                                text += (text == "" ? "" : ", ") + listViewColumn.Column.Alias + ": " + value;
-                        }
-                    }
-                    else
-                        throw new Exception("asdasdad");
-                }
-                else
-                {
-                    return "خطای داده بعدا بررسی شود";
-                }
+                //////if (DataView != null)
+                //////{
+                //////    return DataView.ViewInfo;
+                //////}
+                //////else if (IsFullData)
+                //////{
+                //////    if (IsNewItem)
+                //////        text = "داده جدید";
+                //////    else
+                //////        text = "داده اصلاحی شده";
+                //////    if (EntityListView != null)
+                //////    {
+                //////        foreach (var listViewColumn in EntityListView.EntityListViewAllColumns.Where(x => x.IsDescriptive))
+                //////        {
+                //////            var value = GetValueSomeHow(listViewColumn.RelationshipTail, listViewColumn.ColumnID);
+                //////            if (value != null)
+                //////                text += (text == "" ? "" : ", ") + listViewColumn.Column.Alias + ": " + value;
+                //////        }
+                //////    }
+                //////    else
+                //////        throw new Exception("asdasdad");
+                //////}
+                //////else
+                //////{
+                //////    return "خطای داده بعدا بررسی شود";
+                //////}
+
+
+
 
 
                 //این بد نیست
@@ -218,13 +270,13 @@ namespace ProxyLibrary
                     return relatedData.GetValueSomeHow(valueRelationshipTail.ChildTail, valueColumnID);
                 else
                 {
-                    if (DataView != null)
-                    {
-                        if (DataView.Properties.Any(x => x.RelationshipIDTailPath == valueRelationshipTail.RelationshipIDPath && x.ColumnID == valueColumnID))
-                        {
-                            return DataView.Properties.First(x => x.RelationshipIDTailPath == valueRelationshipTail.RelationshipIDPath && x.ColumnID == valueColumnID).Value;
-                        }
-                    }
+                    //////if (DataView != null)
+                    //////{
+                    //////    if (DataView.Properties.Any(x => x.RelationshipIDTailPath == valueRelationshipTail.RelationshipIDPath && x.ColumnID == valueColumnID))
+                    //////    {
+                    //////        return DataView.Properties.First(x => x.RelationshipIDTailPath == valueRelationshipTail.RelationshipIDPath && x.ColumnID == valueColumnID).Value;
+                    //////    }
+                    //////}
 
                     return null;
                 }
@@ -234,16 +286,17 @@ namespace ProxyLibrary
         }
 
 
-        public override EntityInstanceProperty GetProperty(int columnID)
-        {
-            if (IsFullData || DataView == null)
-                return Properties.FirstOrDefault(x => x.ColumnID == columnID);
-            else
-            {
+        //public override EntityInstanceProperty GetProperty(int columnID)
+        //{
+        //    //////if (IsFullData || DataView == null)
+        //    //////    return Properties.FirstOrDefault(x => x.ColumnID == columnID);
+        //    //////else
+        //    //////{
 
-                return DataView.Properties.FirstOrDefault(x => x.ColumnID == columnID);
-            }
-        }
+        //    //////    return DataView.Properties.FirstOrDefault(x => x.ColumnID == columnID);
+        //    //////}
+        //    return Properties.FirstOrDefault(x => x.ColumnID == columnID);
+        //}
         public EntityInstanceProperty GetOriginalProperty(int columnID)
         {
             return OriginalProperties.FirstOrDefault(x => x.ColumnID == columnID);
@@ -252,7 +305,7 @@ namespace ProxyLibrary
         public string Error { get; set; }
         public bool IsFullData { set; get; }
         //public List<int> ViewEntityColumns { set; get; }
-        public DP_DataView DataView { set; get; }
+
 
         //public DP_DataRepository PairData { set; get; }
 
@@ -320,17 +373,18 @@ namespace ProxyLibrary
         {
             get
             {
-                var listKey = new List<EntityInstanceProperty>();
-                if (IsFullData || DataView == null)
-                    listKey = Properties.Where(x => x.IsKey).ToList();
-                else
-                {
+                //////var listKey = new List<EntityInstanceProperty>();
+                //////if (IsFullData || DataView == null)
+                //////    listKey = Properties.Where(x => x.IsKey).ToList();
+                //////else
+                //////{
 
-                    listKey = DataView.Properties.Where(x => string.IsNullOrEmpty(x.RelationshipIDTailPath) && x.IsKey).ToList();
-                }
-                //if (listKey.Count == 0)
-                //    throw new Exception("dfsdf");
-                return listKey;
+                //////    listKey = DataView.Properties.Where(x => string.IsNullOrEmpty(x.RelationshipIDTailPath) && x.IsKey).ToList();
+                //////}
+
+                //////  return listKey;
+
+                return Properties.Where(x => x.IsKey).ToList();
             }
         }
 
@@ -762,11 +816,21 @@ namespace ProxyLibrary
         public event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public EntityInstanceProperty(ColumnDTO column)
+        public EntityInstanceProperty()
         {
             //EntityInstanceProperty: 3b18025dd763
             FormulaUsageParemeters = new List<FormulaUsageParemetersDTO>();
+        }
+        public EntityInstanceProperty(ColumnDTO column) : this()
+        {
+
             Column = column;
+        }
+        public EntityInstanceProperty(ColumnDTO column, object value) : this()
+        {
+            //EntityInstanceProperty: 3b18025dd763
+            Column = column;
+            _Value = value;
         }
         public EntityInstanceProperty PKIdentityColumn { set; get; }
         //public EntityInstanceProperty(int columnID, string value)
@@ -839,7 +903,7 @@ namespace ProxyLibrary
         //    get { return Column.IsIdentity; }
         //}
 
-        public bool? IsDescriptive { get { return ListViewColumn != null ? ListViewColumn.IsDescriptive : (bool?)null; } }
+
         //public PropertyContitionType ContitionType;
         public List<FormulaUsageParemetersDTO> FormulaUsageParemeters { set; get; }
         public string FormulaException { set; get; }
@@ -847,11 +911,10 @@ namespace ProxyLibrary
         public bool ValueIsChanged { get; set; }
 
         //public int ListViewColumnID { set; get; }
-        public string RelationshipIDTailPath { get; set; }
+
         public bool HasForeignKeyData { get; set; }
 
         public bool ISFK { get; set; }
-        public EntityListViewColumnsDTO ListViewColumn { get; set; }
 
         public bool ValueIsEmptyOrDefaultValue()
         {
@@ -867,6 +930,56 @@ namespace ProxyLibrary
         }
         //public int EntityListViewColumnsID { get; set; }
     }
+
+    public class DataViewProperty
+    {
+        public DataViewProperty(EntityListViewColumnsDTO listViewColumn)
+        {
+            ListViewColumn = listViewColumn;
+        }
+        public ColumnDTO Column
+        {
+            get
+            {
+                return ListViewColumn.Column;
+            }
+        }
+        public int ColumnID
+        {
+            get { return Column.ID; }
+        }
+
+        public string RelativeName
+        {
+            get { return ListViewColumn.RelativeColumnName; }
+        }
+        public string Name
+        {
+            get { return Column.Name; }
+        }
+
+        object _Value;
+        public object Value
+        {
+            set; get;
+        }
+
+        public EntityListViewColumnsDTO ListViewColumn { get; set; }
+
+        public bool? IsDescriptive { get { return ListViewColumn != null ? ListViewColumn.IsDescriptive : (bool?)null; } }
+        public string RelationshipIDTailPath
+        {
+            get
+            {
+                if (ListViewColumn.RelationshipTail != null)
+                    return ListViewColumn.RelationshipTail.RelationshipIDPath;
+                else
+                    return "";
+
+            }
+        }
+    }
+
     public class PreDefinedSearchDTO : SavedSearchRepositoryDTO
     {
         public PreDefinedSearchDTO()
@@ -883,7 +996,7 @@ namespace ProxyLibrary
     {
         public DP_PreDefinedSearchSimpleColumn()
         {
-       //     Value = new List<object>();
+            //     Value = new List<object>();
         }
         public object Value { get; set; }
         public int FormulaID { get; set; }

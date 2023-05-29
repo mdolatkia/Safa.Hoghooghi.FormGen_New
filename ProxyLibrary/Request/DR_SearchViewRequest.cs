@@ -81,7 +81,8 @@ namespace ProxyLibrary
             //    SecurityMode = SecurityMode.Edit;
             //     WithDataView = withDataView;
         }
-        public bool WithDataView { set; get; }
+        public int DataViewID { set; get; }
+      //  public bool WithDataView { set; get; }
         //public bool CheckStates { get; set; }
         //public int ToParentRelationshipID { get; set; }
 
@@ -106,7 +107,7 @@ namespace ProxyLibrary
         //    //Properties = new List<List<EntityInstanceProperty>>();
         //}
         public DP_SearchRepositoryMain SearchDataItem;
-
+      //  public bool WithDataView { set; get; }
     }
     public class DR_SearchKeysOnlyRequest : BaseRequest
     {

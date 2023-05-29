@@ -233,7 +233,7 @@ namespace MyUILibrary.GraphArea
                 FirstSideEditEntityArea.AreaInitializer.Datas.Count == 0
              )
                 return;
-            FirstData = FirstSideEditEntityArea.AreaInitializer.Datas[0].DataView;
+            FirstData = FirstSideEditEntityArea.AreaInitializer.Datas[0];
             List<GraphItem> GraphItems = new List<GraphItem>();
 
             var fItems = new List<GraphItemGroups>();

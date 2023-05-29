@@ -38,9 +38,9 @@ namespace MyUILibrary.EntityArea.Commands
                 DP_DataView dataView = null;
                 if (dataInstance != null)
                 {
-                    if (dataInstance.DataView != null && !dataInstance.IsNewItem)
+                    if ( !dataInstance.IsNewItem)
                     {
-                        dataView = dataInstance.DataView;
+                        dataView = dataInstance;
                     }
                 }
                 //if (searchDP != null)

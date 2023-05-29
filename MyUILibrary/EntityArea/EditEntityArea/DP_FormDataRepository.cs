@@ -28,66 +28,47 @@ namespace MyUILibrary.EntityArea
             }
             get { return base.ParantChildRelationshipData as ChildRelationshipInfo; }
         }
-
-     
         public new List<ChildRelationshipInfo> ChildRelationshipDatas { get { return base.ChildRelationshipDatas.Cast<ChildRelationshipInfo>().ToList(); } }
-
         public List<ControlStateItem> ToParentRelationshipReadonlyStateItems = new List<ControlStateItem>();
         public List<ControlStateItem> ToParentRelationshipHiddenStateItems = new List<ControlStateItem>();
         public I_EditEntityArea EditEntityArea { set; get; }
+        public EntityListViewDTO EntityListView { get { return EditEntityArea.ViewEntityArea.EntityListView; } }
+
         public List<ChildSimpleContorlProperty> ChildSimpleContorlProperties { set; get; }
         List<Tuple<int, string, string, bool>> ListTempSimplePropertyReadonly = new List<Tuple<int, string, string, bool>>();
         List<Tuple<int, string, string, bool>> ListTempRelationshipPropertyReadonly = new List<Tuple<int, string, string, bool>>();
-        public DP_FormDataRepository(DP_DataView baseData, I_EditEntityArea editEntityArea, bool isDBRelationship, bool isNewItem) : base(baseData.TargetEntityID, baseData.TargetEntityAlias)
+        public DP_FormDataRepository(DP_DataView dataView, I_EditEntityArea editEntityArea, bool isDBRelationship, bool isNewItem)
+            : base(dataView)
         {
-            _TargetEntityID = baseData.TargetEntityID;
-            _TargetEntityAlias = baseData.TargetEntityAlias;
-            Properties = baseData.Properties;
+            Properties = dataView.Properties;
             foreach (var property in Properties)
                 property.PropertyValueChanged += Property_PropertyValueChanged;
-            DataView = baseData;
-            GUID = baseData.GUID;
-
+            //   DataView = baseData;
+            GUID = dataView.GUID;
+            //باید همیشه فالس باشه؟؟
             IsNewItem = isNewItem;
             IsDBRelationship = isDBRelationship;
-        
-
             EditEntityArea = editEntityArea;
-
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
-          
             ChildSimpleContorlProperties = new List<ChildSimpleContorlProperty>();
             ChangeMonitorItems = new List<ChangeMonitor>();
-
         }
-     
-        public DP_FormDataRepository(DP_DataRepository baseData, I_EditEntityArea editEntityArea, bool isDBRelationship, bool isNewItem) : base(baseData.TargetEntityID, baseData.TargetEntityAlias)
+        public DP_FormDataRepository(DP_DataRepository dataRepository, I_EditEntityArea editEntityArea, bool isDBRelationship, bool isNewItem)
+            : base(dataRepository)
         {
-            baseData.PropertyValueChanged += DP_FormDataRepository_PropertyValueChanged;
-
-            _TargetEntityID = baseData.TargetEntityID;
-            _TargetEntityAlias = baseData.TargetEntityAlias;
-            Properties = baseData.Properties;
+            dataRepository.PropertyValueChanged += DP_FormDataRepository_PropertyValueChanged;
+            Properties = dataRepository.Properties;
             foreach (var property in Properties)
                 property.PropertyValueChanged += Property_PropertyValueChanged;
-            EntityListView = baseData.EntityListView;
-
-            DataView = baseData.DataView;
-            GUID = baseData.GUID;
+            GUID = dataRepository.GUID;
             IsFullData = true;
             IsNewItem = isNewItem;
             IsDBRelationship = isDBRelationship;
-
-         
             EditEntityArea = editEntityArea;
-
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
-          
             ChildSimpleContorlProperties = new List<ChildSimpleContorlProperty>();
             ChangeMonitorItems = new List<ChangeMonitor>();
-
             SetProperties();
-        
         }
 
         private void Property_PropertyValueChanged(object sender, PropertyValueChangedArg e)
@@ -99,13 +80,13 @@ namespace MyUILibrary.EntityArea
             }
         }
         public bool ExcludeFromDataEntry { set; get; }
-     
+
         public bool ToParentRelationshipIsReadonly
         {
             get
             {
                 return ToParentRelationshipReadonlyStateItems.Any();
-             }
+            }
         }
         public bool ToParentRelationshipIsHidden
         {
@@ -114,14 +95,14 @@ namespace MyUILibrary.EntityArea
                 return ToParentRelationshipHiddenStateItems.Any();
             }
         }
-     
+
         public void SetProperties()
         {
             if (IsFullData)
             {
                 foreach (var simpleColumn in EditEntityArea.SimpleColumnControls)
                 {
-                    
+
 
                     var property = Properties.First(x => x.ColumnID == simpleColumn.Column.ID);
                     var simpleProperty = new ChildSimpleContorlProperty(simpleColumn, this, property);
@@ -135,7 +116,7 @@ namespace MyUILibrary.EntityArea
 
                 foreach (var relationshipColumnControl in EditEntityArea.RelationshipColumnControls)
                 {
-                  
+
 
                     var childRelationshipInfo = new ChildRelationshipInfo(relationshipColumnControl, this);
                     base.ChildRelationshipDatas.Add(childRelationshipInfo);
@@ -144,7 +125,7 @@ namespace MyUILibrary.EntityArea
                         var item = ListTempRelationshipPropertyReadonly.First(x => x.Item1 == relationshipColumnControl.Relationship.ID);
                         childRelationshipInfo.AddReadonlyState(item.Item2, item.Item3, item.Item4);
                     }
-                   
+
                 }
             }
         }
@@ -229,7 +210,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-    
+
         public new object GetValueSomeHow(EntityRelationshipTailDTO valueRelationshipTail, int valueColumnID)
         {
             if (valueRelationshipTail == null)
@@ -258,13 +239,13 @@ namespace MyUILibrary.EntityArea
                     return relatedData.GetValueSomeHow(valueRelationshipTail.ChildTail, valueColumnID);
                 else
                 {
-                    if (DataView != null)
-                    {
-                        if (DataView.Properties.Any(x => x.RelationshipIDTailPath == valueRelationshipTail.RelationshipIDPath && x.ColumnID == valueColumnID))
-                        {
-                            return DataView.Properties.First(x => x.RelationshipIDTailPath == valueRelationshipTail.RelationshipIDPath && x.ColumnID == valueColumnID).Value;
-                        }
-                    }
+                    //////if (DataView != null)
+                    //////{
+                    //////    if (DataView.Properties.Any(x => x.RelationshipIDTailPath == valueRelationshipTail.RelationshipIDPath && x.ColumnID == valueColumnID))
+                    //////    {
+                    //////        return DataView.Properties.First(x => x.RelationshipIDTailPath == valueRelationshipTail.RelationshipIDPath && x.ColumnID == valueColumnID).Value;
+                    //////    }
+                    //////}
 
                     return null;
                 }
@@ -273,16 +254,10 @@ namespace MyUILibrary.EntityArea
             //return "";
         }
 
-        public override EntityInstanceProperty GetProperty(int columnID)
-        {
-            if (IsFullData || DataView == null)
-                return Properties.FirstOrDefault(x => x.ColumnID == columnID);
-            else
-            {
-
-                return DataView.Properties.FirstOrDefault(x => x.ColumnID == columnID);
-            }
-        }
+        //public override EntityInstanceProperty GetProperty(int columnID)
+        //{
+        //    return Properties.FirstOrDefault(x => x.ColumnID == columnID);
+        //}
 
 
 
@@ -296,7 +271,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-      
+
 
 
         private void SplitRelationshipTail(string changingRelationshipTail, ref string firstRel, ref string rest)
@@ -317,7 +292,7 @@ namespace MyUILibrary.EntityArea
         public bool ISValid { get; set; }
 
         public bool? DataOrRelatedDataIsChanged { get; set; }
-     
+
         public bool ShoudBeCounted
         {
             get
@@ -343,7 +318,7 @@ namespace MyUILibrary.EntityArea
         public bool IsDefaultData { get; internal set; }
         public bool IsUpdated { get; internal set; }
 
-        
+
 
         public bool DataIsInEditMode()
         {
@@ -375,13 +350,13 @@ namespace MyUILibrary.EntityArea
             //    }
             //return false;
         }
-       
+
         internal void AddTempSimplePropertyReadonly(int id, string key, string title, bool permanent)
         {
             ListTempSimplePropertyReadonly.Add(new Tuple<int, string, string, bool>(id, key, title, permanent));
 
         }
-      
+
         internal void AddTempRelationshipPropertyReadonly(int id, string key, string title, bool permanent)
         {
             ListTempRelationshipPropertyReadonly.Add(new Tuple<int, string, string, bool>(id, key, title, permanent));
@@ -419,7 +394,7 @@ namespace MyUILibrary.EntityArea
                 ToParentRelationshipHiddenStateItems.Remove(ToParentRelationshipHiddenStateItems.First(x => x.Key == key));
             ToParentRelationshipHiddenStateItems.Add(new ControlStateItem(key, message, permanent));
         }
-       
+
         public void SetColumnValue(List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula, bool fromSetFkRelColumns)
         {
             //** DP_FormDataRepository.SetColumnValue: 5d7ba8eeba1a

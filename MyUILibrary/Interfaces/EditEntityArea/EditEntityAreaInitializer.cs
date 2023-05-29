@@ -36,7 +36,7 @@ namespace MyUILibrary.EntityArea
         //        return TemplateEntity.Alias;
         //    }
         //}
-        public I_EditAreaDataManager EditAreaDataManager { set; get; }
+    //    public I_EditAreaDataManager EditAreaDataManager { set; get; }
         public I_UIActionActivityManager ActionActivityManager { set; get; }
         public I_RelationshipFilterManager RelationshipFilterManager { get; set; }
 

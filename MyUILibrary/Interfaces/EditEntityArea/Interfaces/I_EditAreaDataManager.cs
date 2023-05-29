@@ -12,7 +12,7 @@ namespace MyUILibrary.EntityArea
     {
       //  void SerachDataFromParentRelationForChildDataView(ChildRelationshipInfo ChildRelationshipInfo);
      //   void SerachDataFromParentRelationForChildTempView(ChildRelationshipInfo ChildRelationshipInfo);
-        DP_DataView GetDataView(DP_DataRepository data);
+     //   DP_DataView GetDataView(DP_DataRepository data);
       //  bool ConvertDataViewToFullData(int entityID, DP_FormDataRepository searchViewData, I_EditEntityArea editEntityArea);
    //     DP_FormDataRepository GetFullDataFromDataViewSearch(int entityID, DP_DataView searchViewData, I_EditEntityArea editEntityArea);
      //   DP_FormDataRepository SearchDataForEditFromExternalSource(int entityID, DP_BaseData searchViewData, I_EditEntityArea editEntityArea);

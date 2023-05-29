@@ -223,7 +223,7 @@ namespace MyUILibrary.EntityArea.Commands
             //////    }
             //////}
             newItem.IsFullData = item.IsFullData;
-            newItem.DataView = item.DataView;
+           // newItem.DataView = item.DataView;
             //   newItem.HasDirectData = item.HasDirectData;
             newItem.IsDBRelationship = item.IsDBRelationship;
 
@@ -232,7 +232,7 @@ namespace MyUILibrary.EntityArea.Commands
             //newItem.IsReadonlyBecauseOfCreatorRelationshipOnShow = item.IsReadonlyBecauseOfCreatorRelationshipOnShow;
             //newItem.IsReadonlyBecauseOfCreatorRelationshipOnState = item.IsReadonlyBecauseOfCreatorRelationshipOnState;
             //newItem.IsReadonlyBecauseOfState = item.IsReadonlyBecauseOfState;
-            newItem.EntityListView = item.EntityListView;
+           // newItem.EntityListView = item.EntityListView;
             newItem.IsNewItem = item.IsNewItem;
 
             // newItem.ParantChildRelationshipInfo = newParentChildRelationshipInfo;

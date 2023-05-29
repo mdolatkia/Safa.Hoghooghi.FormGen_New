@@ -17,7 +17,7 @@ namespace MyReportManager
         //List<ReportGroupDTO> ReportGroups { set; get; }
         public PieChartReportResolver(DR_Requester requester, int reportID, RR_ReportSourceRequest request, Unit initialReportWidth)
         {
-            ChartReportReportDTO = bizEntityChartReport.GetEntityChartReport( requester, reportID, true);
+            ChartReportReportDTO = bizEntityChartReport.GetEntityChartReport(requester, reportID, true);
             //ReportGroups = groups;
             reportWidth = initialReportWidth;
             Request = request;
@@ -104,9 +104,9 @@ namespace MyReportManager
             if (objectDataSource == null)
             {
                 objectDataSource = new Telerik.Reporting.ObjectDataSource();
-             //   EntityListViewDTO listView = CreateListView();
+                //   EntityListViewDTO listView = CreateListView();
                 //CheckSubReportRelationshipColumnExistsInSelect(ChartReportReportDTO.EntityListView);
-                objectDataSource.DataSource = searchRequestManager.GetDataTableBySearchDataItems(Request.Requester, ChartReportReportDTO.TableDrivedEntityID, Request.SearchDataItems, ChartReportReportDTO.EntityListView, 0).Item3;
+                objectDataSource.DataSource = searchRequestManager.GetDataTableBySearchDataItems(Request.Requester, ChartReportReportDTO.TableDrivedEntityID, Request.SearchDataItems, ChartReportReportDTO.EntityListView.EntityListViewAllColumns).Item2;
 
             }
             report.DataSource = objectDataSource;

@@ -135,7 +135,7 @@ namespace MyDataItemManager
 
             if (!lastInfo || error)
             {
-                result = new DP_DataView(dbDataItem.TableDrivedEntityID, "");
+                result = new DP_DataView(dbDataItem.TableDrivedEntityID, "", 0, null);
                 result.DataItemID = dbDataItem.ID;
                 //result.TargetEntityID = dbDataItem.TableDrivedEntityID;
                 //   List<EntityInstanceProperty> listProperties = new List<EntityInstanceProperty>();

@@ -358,7 +358,7 @@ namespace MyModelManager
         DP_DataView CreateDataView(DR_Requester requester, DP_DataView sourceDataItem, RelationshipDTO relationsip)
         {
             var entity = bizTableDrivedEntity.GetTableDrivedEntity(requester, relationsip.EntityID2, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
-            var dataView = new DP_DataView(relationsip.EntityID2, relationsip.Entity2);
+            var dataView = new DP_DataView(relationsip.EntityID2, relationsip.Entity2, 0, null);
             foreach (var relCol in relationsip.RelationshipColumns)
             {
                 var property = sourceDataItem.GetProperty(relCol.FirstSideColumnID);

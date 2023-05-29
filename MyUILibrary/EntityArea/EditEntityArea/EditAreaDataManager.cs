@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MyUILibrary.EntityArea
 {
-    public class EditAreaDataManager : I_EditAreaDataManager
+    public class EditAreaDataManager //: I_EditAreaDataManager
     {
         public EditAreaDataManager()
         {
@@ -113,24 +113,24 @@ namespace MyUILibrary.EntityArea
         ////    return childRelationshipInfo;
 
         //}
-        public DP_DataView GetDataView(DP_DataRepository data)
-        {
-            //بعدا بررسی شود.کلا روش خوبی نیست.بهتره تو همون سرچ ادیت یه پارامتری سرچ بشه و دیتاویو ساخته بشه
-            var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
+        //public DP_DataView GetDataView(DP_DataRepository data)
+        //{
+        //    //بعدا بررسی شود.کلا روش خوبی نیست.بهتره تو همون سرچ ادیت یه پارامتری سرچ بشه و دیتاویو ساخته بشه
+        //    var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
 
-            DP_SearchRepositoryMain searchDataViewItem = new DP_SearchRepositoryMain(data.TargetEntityID);
-            foreach (var col in data.KeyProperties)
-            {
-                searchDataViewItem.Phrases.Add(new SearchProperty(col.Column) {  Value = col.Value });
-            }
-            DR_SearchViewRequest requestDataView = new DR_SearchViewRequest(requester, searchDataViewItem);
-            //requestDataView.EntityViewID = listViewID;
-            var childViewData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(requestDataView).ResultDataItems;
-            if (childViewData.Any())
-                return childViewData[0];
-            else
-                return null;
-        }
+        //    DP_SearchRepositoryMain searchDataViewItem = new DP_SearchRepositoryMain(data.TargetEntityID);
+        //    foreach (var col in data.KeyProperties)
+        //    {
+        //        searchDataViewItem.Phrases.Add(new SearchProperty(col.Column) {  Value = col.Value });
+        //    }
+        //    DR_SearchViewRequest requestDataView = new DR_SearchViewRequest(requester, searchDataViewItem);
+        //    //requestDataView.EntityViewID = listViewID;
+        //    var childViewData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(requestDataView).ResultDataItems;
+        //    if (childViewData.Any())
+        //        return childViewData[0];
+        //    else
+        //        return null;
+        //}
         //private List<EntityStateDTO> GetAppliableStates(I_EditEntityArea targetEditEntityArea, DP_FormDataRepository dataItem, bool tempView)
         //{
         //    List<EntityStateDTO> result = new List<EntityStateDTO>();
@@ -569,42 +569,42 @@ namespace MyUILibrary.EntityArea
 
         //}
 
-        private string GetInfo(DP_FormDataRepository DP_FormDataRepository, I_EditEntityArea editEntityArea)
-        {
-            string result = "";
-            if (DP_FormDataRepository.DataView == null)
-            {
-                if (!DP_FormDataRepository.IsFullData)
-                    throw new Exception("Asdadsf");
-                var columns = editEntityArea.ViewEntityArea.EntityListView.EntityListViewAllColumns.Where(x => x.RelationshipTailID == 0);
-                if (columns.Any())
-                {
-                    foreach (var item in columns)
-                    {
-                        var property = DP_FormDataRepository.GetProperty(item.ColumnID);
-                        result += (result == "" ? "" : ",") + property.Name + ":" + property.Value;
-                    }
-                }
-                else
-                {
-                    foreach (var item in DP_FormDataRepository.GetProperties().Take(3))
-                    {
-                        var property = DP_FormDataRepository.GetProperty(item.ColumnID);
-                        result += (result == "" ? "" : ",") + property.Name + ":" + property.Value;
-                    }
-                    result += " ...";
-                }
-            }
-            else
-            {
-                foreach (var item in DP_FormDataRepository.DataView.Properties)
-                {
-                    //var column = DP_FormDataRepository.DataView.Properties;
-                    result += (result == "" ? "" : ",") + item.Name + ":" + item.Value;
-                }
-            }
-            return result;
-        }
+        //private string GetInfo(DP_FormDataRepository DP_FormDataRepository, I_EditEntityArea editEntityArea)
+        //{
+        //    string result = "";
+        //    if (DP_FormDataRepository.DataView == null)
+        //    {
+        //        if (!DP_FormDataRepository.IsFullData)
+        //            throw new Exception("Asdadsf");
+        //        var columns = editEntityArea.ViewEntityArea.EntityListView.EntityListViewAllColumns.Where(x => x.RelationshipTailID == 0);
+        //        if (columns.Any())
+        //        {
+        //            foreach (var item in columns)
+        //            {
+        //                var property = DP_FormDataRepository.GetProperty(item.ColumnID);
+        //                result += (result == "" ? "" : ",") + property.Name + ":" + property.Value;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            foreach (var item in DP_FormDataRepository.GetProperties().Take(3))
+        //            {
+        //                var property = DP_FormDataRepository.GetProperty(item.ColumnID);
+        //                result += (result == "" ? "" : ",") + property.Name + ":" + property.Value;
+        //            }
+        //            result += " ...";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        foreach (var item in DP_FormDataRepository.DataView.Properties)
+        //        {
+        //            //var column = DP_FormDataRepository.DataView.Properties;
+        //            result += (result == "" ? "" : ",") + item.Name + ":" + item.Value;
+        //        }
+        //    }
+        //    return result;
+        //}
 
 
 

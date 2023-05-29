@@ -135,7 +135,7 @@ namespace MyUILibrary.EntityArea
             var foundItem = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
             if (foundItem.Any())
             {
-                foundItem[0].DataView = AreaInitializer.EditAreaDataManager.GetDataView(foundItem[0]);
+                //foundItem[0].DataView = AreaInitializer.EditAreaDataManager.GetDataView(foundItem[0]);
                 return new DP_FormDataRepository(foundItem[0], editEntityArea, false, false);
             }
             else
@@ -550,7 +550,7 @@ namespace MyUILibrary.EntityArea
                 result = new EditEntityAreaMultipleData(simpleEntity);
             if (result != null)
             {
-                initializer.EditAreaDataManager = new EditAreaDataManager();
+                //initializer.EditAreaDataManager = new EditAreaDataManager();
                 initializer.ActionActivityManager = new UIActionActivityManager(result);
                 initializer.RelationshipFilterManager = new RelationshipFilterManager(result);
                 initializer.EntityAreaLogManager = new EntityAreaLogManager();
@@ -1675,7 +1675,7 @@ namespace MyUILibrary.EntityArea
         {
             //** BaseEditEntityArea.GenerateRelationshipControlEditArea: 7b5673de233c
             EditEntityAreaInitializer newAreaInitializer = new EditEntityAreaInitializer();
-            newAreaInitializer.EditAreaDataManager = AreaInitializer.EditAreaDataManager;
+           // newAreaInitializer.EditAreaDataManager = AreaInitializer.EditAreaDataManager;
             newAreaInitializer.ActionActivityManager = AreaInitializer.ActionActivityManager;
             newAreaInitializer.Preview = AreaInitializer.Preview;
             newAreaInitializer.EntityID = relationship.EntityID2;
@@ -2506,7 +2506,7 @@ namespace MyUILibrary.EntityArea
                 }
                 var data = result.FirstOrDefault();
 
-                if (ChildRelationshipInfoBinded.RemoveRelatedData())
+                if (ChildRelationshipInfoBinded.RemoveAllRelatedData())
                 {
                     if (data != null)
                         ChildRelationshipInfoBinded.AddDataToChildRelationshipData(data);
@@ -2709,8 +2709,8 @@ namespace MyUILibrary.EntityArea
             if (dataItem.IsNewItem && DataEntryEntity.IsReadonly && !dataItem.IsDefaultData)
                 throw new Exception();
 
-            if (dataItem.EntityListView == null)
-                dataItem.EntityListView = ViewEntityArea.EntityListView;// DefaultEntityListViewDTO;
+          //  if (dataItem.EntityListView == null)
+          //      dataItem.EntityListView = ViewEntityArea.EntityListView;// DefaultEntityListViewDTO;
 
             if (!dataItem.IsNewItem)
                 AreaInitializer.ActionActivityManager.SetExistingDataFirstLoadStates(dataItem);
@@ -2721,15 +2721,16 @@ namespace MyUILibrary.EntityArea
                           AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect);
             if (isDirect)
             {
-                if (!ShowDataInDataView(dataItem))
-                {
-                    //نمایش ناموفق!!
-                    if (this is I_EditEntityAreaOneData)
-                    {
-                        ClearData();
-                    }
-                    result = false;
-                }
+                ShowDataInDataView(dataItem);
+                //if (!ShowDataInDataView(dataItem))
+                //{
+                //    //نمایش ناموفق!!
+                //    if (this is I_EditEntityAreaOneData)
+                //    {
+                //        ClearData();
+                //    }
+                //    result = false;
+                //}
             }
             else
                 SetTempText();
@@ -2738,7 +2739,7 @@ namespace MyUILibrary.EntityArea
 
             return result;
         }
-        public bool ShowDataInDataView(DP_FormDataRepository specificDate)
+        public void ShowDataInDataView(DP_FormDataRepository specificDate)
         {
             // BaseEditEntityArea.ShowDataInDataView: 9f08862e5c0d
             bool result = true;
@@ -2765,7 +2766,7 @@ namespace MyUILibrary.EntityArea
 
 
 
-            return result;
+          //  return result;
 
         }
 

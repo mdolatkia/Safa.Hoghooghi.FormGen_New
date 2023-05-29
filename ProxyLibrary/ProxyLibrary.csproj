@@ -103,7 +103,6 @@
     <Compile Include="Request\LetterResult.cs" />
     <Compile Include="Request\ArchiveResult.cs" />
     <Compile Include="Request\ChildRelationshipData.cs" />
-    <Compile Include="Request\DP_DataView.cs" />
     <Compile Include="Request\DP_DataRepository.cs" />
     <Compile Include="Request\DR_EditRequest.cs" />
     <Compile Include="BaseRequest.cs" />

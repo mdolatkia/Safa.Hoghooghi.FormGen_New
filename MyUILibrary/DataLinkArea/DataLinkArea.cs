@@ -259,8 +259,8 @@ namespace MyUILibrary.DataLinkArea
                 FirstSideEditEntityArea.AreaInitializer.Datas.Count == 0
                 || SecondSideEditEntityArea.AreaInitializer.Datas.Count == 0)
                 return;
-            FirstData = FirstSideEditEntityArea.AreaInitializer.Datas[0].DataView;
-            OtherData = SecondSideEditEntityArea.AreaInitializer.Datas[0].DataView;
+            FirstData = FirstSideEditEntityArea.AreaInitializer.Datas[0];
+            OtherData = SecondSideEditEntityArea.AreaInitializer.Datas[0];
             List<DataLinkItem> dataLinkItems = new List<DataLinkItem>();
 
             var fItems = new List<DataLinkItemGroup>();

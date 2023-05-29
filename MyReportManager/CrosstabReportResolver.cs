@@ -106,7 +106,7 @@ namespace MyReportManager
                 objectDataSource = new Telerik.Reporting.ObjectDataSource();
                 //   EntityListViewDTO listView = CreateListView();
                 //CheckSubReportRelationshipColumnExistsInSelect(CrosstabReportReportDTO.EntityListView);
-                objectDataSource.DataSource = searchRequestManager.GetDataTableBySearchDataItems(Request.Requester, CrosstabReportReportDTO.TableDrivedEntityID, Request.SearchDataItems, CrosstabReportReportDTO.EntityListView, 0).Item3;
+                objectDataSource.DataSource = searchRequestManager.GetDataTableBySearchDataItems(Request.Requester, CrosstabReportReportDTO.TableDrivedEntityID, Request.SearchDataItems, CrosstabReportReportDTO.EntityListView.EntityListViewAllColumns).Item2;
 
             }
             report.DataSource = objectDataSource;

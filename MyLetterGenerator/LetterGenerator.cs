@@ -144,8 +144,8 @@ namespace MyLetterGenerator
                         }
                         else if (bizField.FormulaID != 0)
                         {
-                            DP_DataRepository dataRepository = new DP_DataRepository(dataviewItem.TargetEntityID, dataviewItem.TargetEntityAlias);
-                            dataRepository.DataView = dataviewItem;
+                            DP_DataRepository dataRepository = new DP_DataRepository(dataviewItem);
+                       //     dataRepository.DataView = dataviewItem;
                             foreach (var key in dataviewItem.Properties.Where(x => x.IsKey))
                             {
                                 dataRepository.AddProperty(new ColumnDTO() { ID = key.ColumnID }, key.Value);

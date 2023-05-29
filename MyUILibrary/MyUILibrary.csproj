@@ -117,7 +117,6 @@
     <Compile Include="Commands\UpdateAndCloseDialogCommand.cs" />
     <Compile Include="Commands\InfoCommand.cs" />
     <Compile Include="Commands\LetterCommand.cs" />
-    <Compile Include="EntityArea\EditEntityArea\EditAreaDataManager.cs" />
     <Compile Include="EntityArea\EditEntityArea\EditEntityAreaMultipleData.cs" />
     <Compile Include="EntityArea\EditEntityArea\EntityAreaLogManager.cs" />
     <Compile Include="EntityArea\EntityCommand.cs" />
@@ -135,7 +134,6 @@
     <Compile Include="Interfaces\EditEntityArea\Interfaces\IAG_View_TemporaryDisplayView.cs" />
     <Compile Include="Interfaces\EditEntityArea\Interfaces\IAG_View_TemporarySearchView.cs" />
     <Compile Include="Interfaces\EditEntityArea\Interfaces\IAG_View_TemporaryView.cs" />
-    <Compile Include="Interfaces\EditEntityArea\Interfaces\I_EditAreaDataManager.cs" />
     <Compile Include="Interfaces\EditEntityArea\Interfaces\I_EditEntityArchiveArea.cs" />
     <Compile Include="Interfaces\EditEntityArea\Interfaces\I_EditEntityArea.cs" />
     <Compile Include="Interfaces\EditEntityArea\Interfaces\I_EditEntityLetterArea.cs" />

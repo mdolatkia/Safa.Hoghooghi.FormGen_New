@@ -513,7 +513,7 @@ namespace MyUILibrary
             //result.Properties = new List<EntityInstanceProperty>();
             innerItem.IsNewItem = true;
 
-            innerItem.EntityListView = editEntityArea.ViewEntityArea.EntityListView;
+            
             //result.TargetEntityID = editEntityArea.AreaInitializer.EntityID;
             // result.DataInstance = new EntityInstance();// Clone<TableDrivedEntityDTO>(AreaInitializer.Template);
 
@@ -608,6 +608,7 @@ namespace MyUILibrary
 
             }
             var result = new DP_FormDataRepository(innerItem, editEntityArea, false, true);
+           // result.EntityListView = editEntityArea.ViewEntityArea.EntityListView;
             // if (editEntityArea.DataEntryEntity.IsReadonly
             //|| (editEntityArea.AreaInitializer.SourceRelationColumnControl != null && editEntityArea.AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly))
             //     result.IsUseLessBecauseNewAndReadonly = true;
@@ -1263,7 +1264,7 @@ namespace MyUILibrary
                             relatedData.AddRange(childInfo.RelatedData);
                         }
                         if (valueRelationshipTail.ChildTail == null)
-                            result.AddRange(relatedData.Select(x => x.DataView));
+                            result.AddRange(relatedData.Select(x => x));
                         else
                             GetRelatedDataItemsSomeHow(valueRelationshipTail.ChildTail, relatedData, result);
                     }

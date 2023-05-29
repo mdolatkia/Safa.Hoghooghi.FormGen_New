@@ -40,7 +40,7 @@ namespace MyUILibrary.EntityArea.Commands
             //    if (EditArea is I_EditEntityAreaOneData)
             //        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog((EditArea as I_EditEntityAreaOneData).DataViewGeneric);
             //    else if (EditArea is I_EditEntityAreaMultipleData)
-            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(EditArea.DataViewGeneric);
+            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(EditArea.DataView);
             //}
 
         }

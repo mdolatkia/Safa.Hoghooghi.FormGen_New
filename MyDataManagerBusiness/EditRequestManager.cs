@@ -460,8 +460,8 @@ namespace MyDataEditManagerBusiness
             {
                 if (!result.Loop)
                 {
-                    DP_DataRepository rootDeleteITem = new DP_DataRepository(item.TargetEntityID, item.TargetEntityAlias);
-                    rootDeleteITem.DataView = deleteQueryItemManager.GetDataView(item);
+                    DP_DataRepository rootDeleteITem = new DP_DataRepository(deleteQueryItemManager.GetDataView(item));
+                   // rootDeleteITem.DataView = ;
                     var treeResult = deleteQueryItemManager.GetTreeItems(request.Requester, rootDeleteITem, rootDeleteITem);
                     result.DataTreeItems.Add(rootDeleteITem);
                     if (treeResult)

@@ -332,49 +332,49 @@ namespace MyModelManager
             }
         }
 
-        public EntityListViewDTO GetEntityListViewWithAllColumns(DR_Requester requester, int entityID)
-        {
-            BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-            var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
+        //public List<ColumnDTO> GetEntityListViewWithAllColumns(DR_Requester requester, int entityID)
+        //{
+        //    BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+        //    var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
+        //    return entityDTO.Columns;
+        //   // List<ColumnDTO> result = new List<ColumnDTO>();
+        //   // EntityListViewDTO result = new EntityListViewDTO();
+        //   //result.TableDrivedEntityID = entityDTO.ID;
+        //   //result.ID = 0;
+        //   //result.Title = "ستونهای ساخته شده";
+        //   //foreach (var column in entityDTO.Columns)
+        //   //{
+        //   //    EntityListViewColumnsDTO rColumn = new EntityListViewColumnsDTO();
+        //   //    rColumn.ID = 0;
+        //   //    rColumn.ColumnID = column.ID;
+        //   //    rColumn.Column = column;
+        //   //    rColumn.Alias = column.Alias;
+        //   //    rColumn.OrderID = (short)column.Position;
+        //   //    result.Add(rColumn);
+        //   //}
+        // //   return result;
 
-            EntityListViewDTO result = new EntityListViewDTO();
-            result.TableDrivedEntityID = entityDTO.ID;
-            result.ID = 0;
-            result.Title = "ستونهای ساخته شده";
-            foreach (var column in entityDTO.Columns)
-            {
-                EntityListViewColumnsDTO rColumn = new EntityListViewColumnsDTO();
-                rColumn.ID = 0;
-                rColumn.ColumnID = column.ID;
-                rColumn.Column = column;
-                rColumn.Alias = column.Alias;
-                rColumn.OrderID = (short)column.Position;
-                result.EntityListViewAllColumns.Add(rColumn);
-            }
-            return result;
+        //}
 
-        }
-
-        public EntityListViewDTO GetEntityKeysListView(DR_Requester requester, int entityID)
-        {
-            BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
-            var entityDTO = bizTableDrivedEntity.GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
-            EntityListViewDTO result = new EntityListViewDTO();
-            result.TableDrivedEntityID = entityDTO.ID;
-            result.ID = 0;
-            result.Title = "ستونهای کلید";
-            foreach (var column in entityDTO.Columns.Where(x => x.PrimaryKey))
-            {
-                EntityListViewColumnsDTO rColumn = new EntityListViewColumnsDTO();
-                rColumn.ID = 0;
-                rColumn.ColumnID = column.ID;
-                rColumn.Column = column;
-                rColumn.Alias = column.Alias;
-                rColumn.OrderID = (short)column.Position;
-                result.EntityListViewAllColumns.Add(rColumn);
-            }
-            return result;
-        }
+        //public List<ColumnDTO> GetEntityKeysListView(DR_Requester requester, int entityID)
+        //{
+          
+        //    //EntityListViewDTO result = new EntityListViewDTO();
+        //    //result.TableDrivedEntityID = entityDTO.ID;
+        //    //result.ID = 0;
+        //    //result.Title = "ستونهای کلید";
+        //    //foreach (var column in entityDTO.Columns.Where(x => x.PrimaryKey))
+        //    //{
+        //    //    EntityListViewColumnsDTO rColumn = new EntityListViewColumnsDTO();
+        //    //    rColumn.ID = 0;
+        //    //    rColumn.ColumnID = column.ID;
+        //    //    rColumn.Column = column;
+        //    //    rColumn.Alias = column.Alias;
+        //    //    rColumn.OrderID = (short)column.Position;
+        //    //    result.EntityListViewAllColumns.Add(rColumn);
+        //    //}
+        //    //return result;
+        //}
 
 
         public EntityListViewDTO GetEntityListView(DR_Requester requester, int EntityListViewsID)

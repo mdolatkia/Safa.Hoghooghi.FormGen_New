@@ -96,7 +96,7 @@ namespace MyUILibrary.EntityArea
                 var dataTreeInistializer = new DataTreeAreaInitializer();
                 dataTreeInistializer.EntitiyID = EntitySelectArea.SelectedEntity.ID;
                 dataTreeInistializer.RelationshipTailsLoaded = EntitySelectArea.SelectedEntity.LoadArchiveRelatedItems;
-                dataTreeInistializer.FirstDataItem = e.DataItem.DataView;
+                dataTreeInistializer.FirstDataItem = e.DataItem;
                 dataTreeInistializer.RelationshipTails = ArchiveRelationshipTails.Select(x => x.RelationshipTail).ToList();
                 DataTreeArea.SetAreaInitializer(dataTreeInistializer);
                 DataTreeArea.SelectAll();

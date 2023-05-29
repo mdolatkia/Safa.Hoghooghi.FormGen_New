@@ -122,7 +122,7 @@ namespace MyUILibrary.WorkflowArea
             if (SearchEditEntityArea != null)
             {
 
-                DP_DataView dataItem = SearchEditEntityArea.GetDataList().FirstOrDefault()?.DataView;
+                DP_DataView dataItem = SearchEditEntityArea.GetDataList().FirstOrDefault();
                 if (dataItem == null)
                 {
                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage("موجودیتی انتخاب نشده است");

@@ -69,8 +69,8 @@ namespace MyDataEditManagerBusiness
                         {
                             foreach (var childItem in searchViewResult.ResultDataItems)
                             {
-                                DP_DataRepository dataItem = new DP_DataRepository(childItem.TargetEntityID, childItem.TargetEntityAlias);
-                                dataItem.DataView = childItem;
+                                DP_DataRepository dataItem = new DP_DataRepository(childItem);
+                              //  dataItem.DataView = childItem;
                                 dataItem.ParantChildRelationshipData = ChildRelationshipData;
                                 ChildRelationshipData.RelatedData.Add(dataItem);
 
@@ -88,8 +88,8 @@ namespace MyDataEditManagerBusiness
                                     var parentRepeted = parents.First(z => z.TargetEntityID == childItem.TargetEntityID && z.KeyProperties.All(x => childItem.Properties.Any(y => y.IsKey && x.ColumnID == y.ColumnID && x.Value == y.Value)));
                                     loop = true;
                                     repeatedInParents = true;
-                                    DP_DataRepository dataItem = new DP_DataRepository(childItem.TargetEntityID, childItem.TargetEntityAlias);
-                                    dataItem.DataView = childItem;
+                                    DP_DataRepository dataItem = new DP_DataRepository(childItem);
+                                   // dataItem.DataView = childItem;
                                     dataItem.ParantChildRelationshipData = ChildRelationshipData;
                                     dataItem.Error = "وابستگی تکراری با " + parentRepeted.ViewInfo;
                                     ChildRelationshipData.RelatedData.Add(dataItem);
@@ -105,8 +105,8 @@ namespace MyDataEditManagerBusiness
                                     }
                                     else
                                     {
-                                        DP_DataRepository dataItem = new DP_DataRepository(childItem.TargetEntityID, childItem.TargetEntityAlias);
-                                        dataItem.DataView = childItem;
+                                        DP_DataRepository dataItem = new DP_DataRepository(childItem);
+                                     //   dataItem.DataView = childItem;
                                         dataItem.ParantChildRelationshipData = ChildRelationshipData;
                                         ChildRelationshipData.RelatedData.Add(dataItem);
                                         var innerloop = GetTreeItems(requester, dataItem, rootDeleteItem);
@@ -180,10 +180,10 @@ namespace MyDataEditManagerBusiness
             //     List<DP_DataRepository> rootDataItems = new List<DP_DataRepository>();
             foreach (var item in items)
             {
-                DP_DataRepository rootDeleteITem = new DP_DataRepository(item.TargetEntityID, item.TargetEntityAlias);
+                DP_DataRepository rootDeleteITem = new DP_DataRepository(item);
                 rootDeleteITem.SetProperties(item.GetProperties());
-                rootDeleteITem.DataView = item.DataView;
-                rootDeleteITem.EntityListView = item.EntityListView;
+              //  rootDeleteITem.DataView = item.DataView;
+               // rootDeleteITem.EntityListView = item.EntityListView;
                 rootDeleteITem.IsFullData = item.IsFullData;
 
                 var queryItem = new QueryItem(GetTableDrivedDTO(requester, item.TargetEntityID), Enum_QueryItemType.Delete, new List<EntityInstanceProperty>(), item);

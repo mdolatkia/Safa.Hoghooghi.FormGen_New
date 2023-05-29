@@ -41,193 +41,193 @@ namespace MyModelManager
                 item.Value.FormulaObject = this;
         }
 
-        public override bool TryGetMember(GetMemberBinder binder,
-                                out object result)
-        {
-            if (m_properties.ContainsKey(binder.Name))
-            {
-                var property = m_properties.FirstOrDefault(x => x.Key == binder.Name).Value;
-                OnProperyCalled(property);
-                if (!property.ValueSearched)
-                {
-                    property.ValueSearched = true;
-                    if (Definition)
-                    {
-                        if (property.PropertyType == PropertyType.Relationship)
-                        {
+        //////public override bool TryGetMember(GetMemberBinder binder,
+        //////                        out object result)
+        //////{
+        //////    if (m_properties.ContainsKey(binder.Name))
+        //////    {
+        //////        var property = m_properties.FirstOrDefault(x => x.Key == binder.Name).Value;
+        //////        OnProperyCalled(property);
+        //////        if (!property.ValueSearched)
+        //////        {
+        //////            property.ValueSearched = true;
+        //////            if (Definition)
+        //////            {
+        //////                if (property.PropertyType == PropertyType.Relationship)
+        //////                {
 
-                            var dataItem = new DP_DataRepository(property.PropertyRelationship.EntityID2, property.PropertyRelationship.Entity2);
-                            var entity = bizTableDrivedEntity.GetPermissionedEntity(Requester, dataItem.TargetEntityID);
-                            var properties = FormulaInstanceInternalHelper.GetProperties(Requester, entity, property, Definition);
-
-
-                            //newObject.PropertyGetCalled += BindableTypeDescriptor_PropertyGetCalled;
-                            //newObject.PropertySetChanged += FormulaObject_PropertySetChanged;
-                            //newObject.PropertyChanged += FormulaObject_PropertyChanged;
-                            if (property.PropertyRelationship.TypeEnum == Enum_RelationshipType.OneToMany)
-                            {
-                                var newObject = GetCustomSingleData(property, dataItem, Requester, Definition, properties, UsedFormulaIDs);
-                                //var list = new List<MyCustomSingleData>();
-                                //DataItems.Add(newObject);
-                                property.Value = new MyCustomMultipleData(Requester, entity.ID, new List<MyCustomSingleData>() { newObject });
-
-                            }
-                            else
-                            {
-                                var newObject = GetCustomSingleData(property, dataItem, Requester, Definition, properties, UsedFormulaIDs);
-                                property.Value = newObject;
-                            }
-                        }
-                        else
-                        {
-                            property.Value = GetPropertyDefaultValue(property);
-                        }
-                    }
-                    else
-                    {
-                        if (property.PropertyType == PropertyType.Relationship)
-                        {
-                            var entity = bizTableDrivedEntity.GetPermissionedEntity(Requester, property.PropertyRelationship.EntityID2);
-                            var properties = FormulaInstanceInternalHelper.GetProperties(Requester, entity, property, Definition);
-                            if (property.PropertyRelationshipProperties == null || property.PropertyRelationshipProperties.Count == 0)
-                                throw new Exception("adasdasd");
-                            List<DP_DataRepository> relatedDataItems = GetRelatedDataItems(DataItem, property.PropertyRelationship, property.PropertyRelationshipProperties);
-
-                            if (property.PropertyRelationship.TypeEnum == Enum_RelationshipType.OneToMany)
-                            {
-                                var list = new List<MyCustomSingleData>();
-
-                                foreach (var relatedDataItem in relatedDataItems)
-                                {
-                                    list.Add(GetCustomSingleData(property, relatedDataItem, Requester, Definition, GetCloneProperties(properties), UsedFormulaIDs));
-                                }
-                                var newObject = new MyCustomMultipleData(Requester, entity.ID, list);
-                                //    DataItems.Add(newObject);
-                                //    //newObject.PropertyGetCalled += BindableTypeDescriptor_PropertyGetCalled;
-                                //}
-                                property.Value = newObject;
-                            }
-                            else if (relatedDataItems.Any())
-                            {
-
-                                var newObject = GetCustomSingleData(property, relatedDataItems.First(), Requester, Definition, properties, UsedFormulaIDs);
-
-                                //newObject.PropertyGetCalled += BindableTypeDescriptor_PropertyGetCalled;
-                                //newObject.PropertySetChanged += FormulaObject_PropertySetChanged;
-                                //newObject.PropertyChanged += FormulaObject_PropertyChanged;
-                                property.Value = newObject;
-                            }
-                        }
-                        else
-                        {
-
-                            if (property.PropertyType == PropertyType.Column)
-                            {
-                                EntityInstanceProperty dataproperty = DataItem.GetProperty(property.ID);
-                                if (dataproperty != null)
-                                {
-                                    property.Value = dataproperty.Value;
-                                }
-                                else
-                                    throw new Exception("Date property" + " " + property.Name + " not found!");
-                            }
-                            else if (property.PropertyType == PropertyType.FormulaParameter)
-                            {
-                                var formula = property.Context as FormulaDTO;
-                                if (UsedFormulaIDs != null && UsedFormulaIDs.Contains(formula.ID))
-                                    throw new Exception("Loop");
-                                if (UsedFormulaIDs == null)
-                                    UsedFormulaIDs = new List<int>();
-                                UsedFormulaIDs.Add(formula.ID);
-                                //Application.Current.Dispatcher.Invoke((Action)delegate
-                                //{
-
-                                var value = FormulaFunctionHandler.CalculateFormula(formula.ID, DataItem, Requester, UsedFormulaIDs);
-                                if (value.Exception == null)
-                                {
-                                    //if ((property.Context is FormulaDTO) && (property.Context as FormulaDTO).ValueCustomType != ValueCustomType.None)
-                                    //    property.Value = GetCustomTypePropertyValue(property, (property.Context as FormulaDTO).ValueCustomType, value.Result);
-                                    //else
-                                    property.Value = value.Result;
-                                    //   e.FormulaUsageParemeters = value.FormulaUsageParemeters;
-                                }
-                                else
-                                    throw value.Exception;
-                                //});
-
-                            }
-                            else if (property.PropertyType == PropertyType.State)
-                            {
-                                //Application.Current.Dispatcher.Invoke((Action)delegate
-                                //{
-                                DP_DataRepository dataItem = DataItem;
-
-                                var stateresult = StateHandler.GetStateResult(property.ID, DataItem, Requester);
-                                if (string.IsNullOrEmpty(stateresult.Message))
-                                    property.Value = stateresult.Result;
-                                else
-                                    throw new Exception(stateresult.Message);
-                                //});
-                            }
-                            else if (property.PropertyType == PropertyType.Code)
-                            {
-                                //Application.Current.Dispatcher.Invoke((Action)delegate
-                                //{
-                                DP_DataRepository dataItem = DataItem;
-
-                                var coderesult = CodeFunctionHandler.GetCodeFunctionResult(Requester, property.ID, dataItem);
-                                if (coderesult.Exception == null)
-                                {
-                                    property.Value = coderesult.Result;
-                                }
-                                else
-                                {
-                                    throw coderesult.Exception;
-                                }
-
-                                //if ((property.Context is CodeFunctionDTO) && (property.Context as CodeFunctionDTO).ValueCustomType != ValueCustomType.None)
-                                //    property.Value = GetCustomTypePropertyValue(property, (property.Context as CodeFunctionDTO).ValueCustomType, result.Result);
-                                //else
+        //////                    var dataItem = new DP_DataRepository(property.PropertyRelationship.EntityID2, property.PropertyRelationship.Entity2);
+        //////                    var entity = bizTableDrivedEntity.GetPermissionedEntity(Requester, dataItem.TargetEntityID);
+        //////                    var properties = FormulaInstanceInternalHelper.GetProperties(Requester, entity, property, Definition);
 
 
-                                //});
-                            }
-                            else if (property.PropertyType == PropertyType.DBFunction)
-                            {
-                                //Application.Current.Dispatcher.Invoke((Action)delegate
-                                //{
-                                DP_DataRepository dataItem = DataItem;
+        //////                    //newObject.PropertyGetCalled += BindableTypeDescriptor_PropertyGetCalled;
+        //////                    //newObject.PropertySetChanged += FormulaObject_PropertySetChanged;
+        //////                    //newObject.PropertyChanged += FormulaObject_PropertyChanged;
+        //////                    if (property.PropertyRelationship.TypeEnum == Enum_RelationshipType.OneToMany)
+        //////                    {
+        //////                        var newObject = GetCustomSingleData(property, dataItem, Requester, Definition, properties, UsedFormulaIDs);
+        //////                        //var list = new List<MyCustomSingleData>();
+        //////                        //DataItems.Add(newObject);
+        //////                        property.Value = new MyCustomMultipleData(Requester, entity.ID, new List<MyCustomSingleData>() { newObject });
 
-                                var coderesult = DatabaseFunctionHandler.GetDatabaseFunctionValue(Requester, property.ID, dataItem);
-                                if (coderesult.Exception == null)
-                                {
-                                    property.Value = coderesult.Result;
-                                }
-                                else
-                                {
-                                    throw coderesult.Exception;
-                                }
+        //////                    }
+        //////                    else
+        //////                    {
+        //////                        var newObject = GetCustomSingleData(property, dataItem, Requester, Definition, properties, UsedFormulaIDs);
+        //////                        property.Value = newObject;
+        //////                    }
+        //////                }
+        //////                else
+        //////                {
+        //////                    property.Value = GetPropertyDefaultValue(property);
+        //////                }
+        //////            }
+        //////            else
+        //////            {
+        //////                if (property.PropertyType == PropertyType.Relationship)
+        //////                {
+        //////                    var entity = bizTableDrivedEntity.GetPermissionedEntity(Requester, property.PropertyRelationship.EntityID2);
+        //////                    var properties = FormulaInstanceInternalHelper.GetProperties(Requester, entity, property, Definition);
+        //////                    if (property.PropertyRelationshipProperties == null || property.PropertyRelationshipProperties.Count == 0)
+        //////                        throw new Exception("adasdasd");
+        //////                    List<DP_DataRepository> relatedDataItems = GetRelatedDataItems(DataItem, property.PropertyRelationship, property.PropertyRelationshipProperties);
 
-                                //if ((property.Context is CodeFunctionDTO) && (property.Context as CodeFunctionDTO).ValueCustomType != ValueCustomType.None)
-                                //    property.Value = GetCustomTypePropertyValue(property, (property.Context as CodeFunctionDTO).ValueCustomType, result.Result);
-                                //else
+        //////                    if (property.PropertyRelationship.TypeEnum == Enum_RelationshipType.OneToMany)
+        //////                    {
+        //////                        var list = new List<MyCustomSingleData>();
+
+        //////                        foreach (var relatedDataItem in relatedDataItems)
+        //////                        {
+        //////                            list.Add(GetCustomSingleData(property, relatedDataItem, Requester, Definition, GetCloneProperties(properties), UsedFormulaIDs));
+        //////                        }
+        //////                        var newObject = new MyCustomMultipleData(Requester, entity.ID, list);
+        //////                        //    DataItems.Add(newObject);
+        //////                        //    //newObject.PropertyGetCalled += BindableTypeDescriptor_PropertyGetCalled;
+        //////                        //}
+        //////                        property.Value = newObject;
+        //////                    }
+        //////                    else if (relatedDataItems.Any())
+        //////                    {
+
+        //////                        var newObject = GetCustomSingleData(property, relatedDataItems.First(), Requester, Definition, properties, UsedFormulaIDs);
+
+        //////                        //newObject.PropertyGetCalled += BindableTypeDescriptor_PropertyGetCalled;
+        //////                        //newObject.PropertySetChanged += FormulaObject_PropertySetChanged;
+        //////                        //newObject.PropertyChanged += FormulaObject_PropertyChanged;
+        //////                        property.Value = newObject;
+        //////                    }
+        //////                }
+        //////                else
+        //////                {
+
+        //////                    if (property.PropertyType == PropertyType.Column)
+        //////                    {
+        //////                        EntityInstanceProperty dataproperty = DataItem.GetProperty(property.ID);
+        //////                        if (dataproperty != null)
+        //////                        {
+        //////                            property.Value = dataproperty.Value;
+        //////                        }
+        //////                        else
+        //////                            throw new Exception("Date property" + " " + property.Name + " not found!");
+        //////                    }
+        //////                    else if (property.PropertyType == PropertyType.FormulaParameter)
+        //////                    {
+        //////                        var formula = property.Context as FormulaDTO;
+        //////                        if (UsedFormulaIDs != null && UsedFormulaIDs.Contains(formula.ID))
+        //////                            throw new Exception("Loop");
+        //////                        if (UsedFormulaIDs == null)
+        //////                            UsedFormulaIDs = new List<int>();
+        //////                        UsedFormulaIDs.Add(formula.ID);
+        //////                        //Application.Current.Dispatcher.Invoke((Action)delegate
+        //////                        //{
+
+        //////                        var value = FormulaFunctionHandler.CalculateFormula(formula.ID, DataItem, Requester, UsedFormulaIDs);
+        //////                        if (value.Exception == null)
+        //////                        {
+        //////                            //if ((property.Context is FormulaDTO) && (property.Context as FormulaDTO).ValueCustomType != ValueCustomType.None)
+        //////                            //    property.Value = GetCustomTypePropertyValue(property, (property.Context as FormulaDTO).ValueCustomType, value.Result);
+        //////                            //else
+        //////                            property.Value = value.Result;
+        //////                            //   e.FormulaUsageParemeters = value.FormulaUsageParemeters;
+        //////                        }
+        //////                        else
+        //////                            throw value.Exception;
+        //////                        //});
+
+        //////                    }
+        //////                    else if (property.PropertyType == PropertyType.State)
+        //////                    {
+        //////                        //Application.Current.Dispatcher.Invoke((Action)delegate
+        //////                        //{
+        //////                        DP_DataRepository dataItem = DataItem;
+
+        //////                        var stateresult = StateHandler.GetStateResult(property.ID, DataItem, Requester);
+        //////                        if (string.IsNullOrEmpty(stateresult.Message))
+        //////                            property.Value = stateresult.Result;
+        //////                        else
+        //////                            throw new Exception(stateresult.Message);
+        //////                        //});
+        //////                    }
+        //////                    else if (property.PropertyType == PropertyType.Code)
+        //////                    {
+        //////                        //Application.Current.Dispatcher.Invoke((Action)delegate
+        //////                        //{
+        //////                        DP_DataRepository dataItem = DataItem;
+
+        //////                        var coderesult = CodeFunctionHandler.GetCodeFunctionResult(Requester, property.ID, dataItem);
+        //////                        if (coderesult.Exception == null)
+        //////                        {
+        //////                            property.Value = coderesult.Result;
+        //////                        }
+        //////                        else
+        //////                        {
+        //////                            throw coderesult.Exception;
+        //////                        }
+
+        //////                        //if ((property.Context is CodeFunctionDTO) && (property.Context as CodeFunctionDTO).ValueCustomType != ValueCustomType.None)
+        //////                        //    property.Value = GetCustomTypePropertyValue(property, (property.Context as CodeFunctionDTO).ValueCustomType, result.Result);
+        //////                        //else
 
 
-                                //});
-                            }
-                        }
-                    }
-                }
+        //////                        //});
+        //////                    }
+        //////                    else if (property.PropertyType == PropertyType.DBFunction)
+        //////                    {
+        //////                        //Application.Current.Dispatcher.Invoke((Action)delegate
+        //////                        //{
+        //////                        DP_DataRepository dataItem = DataItem;
 
-                result = property.Value;
-                return true;
+        //////                        var coderesult = DatabaseFunctionHandler.GetDatabaseFunctionValue(Requester, property.ID, dataItem);
+        //////                        if (coderesult.Exception == null)
+        //////                        {
+        //////                            property.Value = coderesult.Result;
+        //////                        }
+        //////                        else
+        //////                        {
+        //////                            throw coderesult.Exception;
+        //////                        }
 
-            }
-            else
-            {
-                throw new Exception("Property" + " " + binder.Name + " not found!");
-            }
-        }
+        //////                        //if ((property.Context is CodeFunctionDTO) && (property.Context as CodeFunctionDTO).ValueCustomType != ValueCustomType.None)
+        //////                        //    property.Value = GetCustomTypePropertyValue(property, (property.Context as CodeFunctionDTO).ValueCustomType, result.Result);
+        //////                        //else
+
+
+        //////                        //});
+        //////                    }
+        //////                }
+        //////            }
+        //////        }
+
+        //////        result = property.Value;
+        //////        return true;
+
+        //////    }
+        //////    else
+        //////    {
+        //////        throw new Exception("Property" + " " + binder.Name + " not found!");
+        //////    }
+        //////}
 
         private Dictionary<string, MyPropertyInfo> GetCloneProperties(Dictionary<string, MyPropertyInfo> properties)
         {

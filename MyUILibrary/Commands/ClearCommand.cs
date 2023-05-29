@@ -30,7 +30,7 @@ namespace MyUILibrary.EntityArea.Commands
             if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
                 EditArea.ClearData();
             else
-                EditArea.ChildRelationshipInfoBinded.RemoveRelatedData();
+                EditArea.ChildRelationshipInfoBinded.RemoveAllRelatedData();
             //if (EditArea is I_EditEntityAreaOneData)
             //{
             //    (EditArea as I_EditEntityAreaOneData).ClearData(true);

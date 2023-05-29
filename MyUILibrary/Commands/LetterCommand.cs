@@ -34,13 +34,13 @@ namespace MyUILibrary.EntityArea.Commands
                 dataInstance = (EditArea as EditEntityAreaMultipleData).GetSelectedData().FirstOrDefault();
             if (dataInstance != null)
             {
-                if (dataInstance.DataView == null || dataInstance.IsNewItem)
+                if ( dataInstance.IsNewItem)
                 {
                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عملیات نامه ها تنها بروی داده های ثبت شده امکان پذیر است");
                     return;
                 }
 
-                AgentUICoreMediator.GetAgentUICoreMediator.ShowLetterArea(EditArea.AreaInitializer.EntityID, EditArea.SimpleEntity.Alias, false, dataInstance.DataView);
+                AgentUICoreMediator.GetAgentUICoreMediator.ShowLetterArea(EditArea.AreaInitializer.EntityID, EditArea.SimpleEntity.Alias, false, dataInstance);
 
             }
         }

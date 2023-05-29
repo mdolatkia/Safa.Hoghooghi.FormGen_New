@@ -49,13 +49,13 @@ namespace MyUILibrary.EntityArea.Commands
                 dataInstance = (EditArea as EditEntityAreaMultipleData).GetSelectedData().FirstOrDefault();
             if (dataInstance != null)
             {
-                if (dataInstance.DataView == null || dataInstance.IsNewItem)
+                if ( dataInstance.IsNewItem)
                 {
                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عملیات لاگ تنها بروی داده های ثبت شده امکان پذیر است");
                     return;
                 }
 
-                initializer.DataItem = dataInstance.DataView;
+                initializer.DataItem = dataInstance;
                 AgentUICoreMediator.GetAgentUICoreMediator.ShowLogReportArea(initializer, "گزارش لاگ", true);
             }
 

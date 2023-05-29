@@ -25,7 +25,7 @@ namespace MyUILibrary.EntityArea.Commands
         }
         private void CommandManager_Clicked(object sender, EventArgs e)
         {
-            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(EditArea.DataViewGeneric);
+            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(EditArea.DataView);
         }
     }
 }

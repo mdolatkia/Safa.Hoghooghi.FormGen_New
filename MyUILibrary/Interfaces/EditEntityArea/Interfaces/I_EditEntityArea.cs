@@ -29,7 +29,7 @@ namespace MyUILibrary.EntityArea
         bool ClearData(bool dataRemoveOnly=false);
         I_Command GetCommand(Type type);
         bool AddData(DP_FormDataRepository data);
-        bool ShowDataInDataView(DP_FormDataRepository dataItem);
+        void ShowDataInDataView(DP_FormDataRepository dataItem);
         List<DP_FormDataRepository> GetDataList();
         I_View_Area DataView { get; }
         TableDrivedEntityDTO FullEntity { get; }

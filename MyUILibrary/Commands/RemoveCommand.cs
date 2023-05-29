@@ -44,7 +44,7 @@ namespace MyUILibrary.EntityArea.Commands
             else
             {
                 var datas = EditArea.GetSelectedData();
-                EditArea.ChildRelationshipInfoBinded.RemoveRelatedData(datas);
+                EditArea.ChildRelationshipInfoBinded.RemoveRelatedMultipleData(datas);
             }
 
         }
