@@ -31,17 +31,17 @@ namespace MyUILibrary.EntityArea.Commands
         {
             //int relationID = 0;
             //DP_DataRepository RelationData = null;
-            //if (EditArea.AreaInitializer.SourceRelationColumnControl != null)
+            //if (EditArea.SourceRelationColumnControl != null)
             //{
-            //    relationID = EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.ID;
-            //    RelationData = EditArea.AreaInitializer.SourceRelationColumnControl.RelatedData;
+            //    relationID = EditArea.SourceRelationColumnControl.Relationship.ID;
+            //    RelationData = EditArea.SourceRelationColumnControl.RelatedData;
             //    //if (RelationData != null)
             //    //    RelationData.ValueChanged = true;
             //}
 
             var newData = AgentHelper.CreateAreaInitializerNewData(EditArea);
             //var list = AgentHelper.CreateListFromSingleObject<DP_DataRepository>(newData);
-            //if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
+            //if (EditArea.SourceRelationColumnControl == null)
             //{
             //    EditArea.AreaInitializer.Datas.Add(newData);
             //}
@@ -49,11 +49,12 @@ namespace MyUILibrary.EntityArea.Commands
             //{
             //    EditArea.ChildRelationshipInfo.RelatedData.Add(newData);
             //}
-            if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
+            if (EditArea.SourceRelationColumnControl == null)
             {
-                var addResult = EditArea.AddData(newData);
-                if (!addResult)
-                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", newData.ViewInfo, Temp.InfoColor.Red);
+                EditArea.AddData(newData);
+                //var addResult = EditArea.AddData(newData);
+                //if (!addResult)
+                //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", newData.ViewInfo, Temp.InfoColor.Red);
                
 
             }

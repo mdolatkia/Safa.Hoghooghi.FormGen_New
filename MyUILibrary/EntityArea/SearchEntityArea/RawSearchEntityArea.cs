@@ -74,7 +74,7 @@ namespace MyUILibrary.EntityArea
                 if (_FullEntity == null)
                     _FullEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetPermissionedEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
 
-                //if (AreaInitializer.SourceRelationColumnControl != null)
+                //if (SourceRelationColumnControl != null)
                 //    _FullEntity.Relationships.Clear();
                 return _FullEntity;
             }

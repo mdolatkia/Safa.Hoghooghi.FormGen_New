@@ -47,6 +47,10 @@ namespace MyUIGenerator.UIControlHelper
         {
             this.IsEnabled = enable;
         }
+        public void EnableDisableDataSection(bool enable)
+        {
+            ControlArea.IsEnabled = enable;
+        }
         //public void DisableEnableDataSection(bool enable)
         //{
         //    ControlArea.IsEnabled = enable;

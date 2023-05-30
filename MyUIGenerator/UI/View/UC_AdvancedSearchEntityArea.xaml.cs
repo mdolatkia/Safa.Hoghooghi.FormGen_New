@@ -187,7 +187,7 @@ namespace MyUIGenerator.View
             treeItems.Items.Clear();
         }
 
-        public void DisableEnableDataSection(bool enable)
+        public void EnableDisableDataSection(bool enable)
         {
             treeItems.IsEnabled = enable;
         }

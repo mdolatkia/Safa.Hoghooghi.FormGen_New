@@ -1275,7 +1275,7 @@ namespace MyDataSearchManagerBusiness
                 foreach (var dvColumn in item.DataViewProperties)
                 {
                     if (dvColumn.Column.PrimaryKey && string.IsNullOrEmpty(dvColumn.RelationshipIDTailPath))
-                        item.Properties.Add(new EntityInstanceProperty(dvColumn.Column));
+                        item.Properties.Add(new EntityInstanceProperty(dvColumn.Column, dvColumn.Value));
                 }
                 result.Add(item);
             }
@@ -1345,7 +1345,8 @@ namespace MyDataSearchManagerBusiness
             try
             {
                 result.ResultDataItems = GetFullDataResult(request.Requester, request.SearchDataItem);
-                DoBeforeLoadActionActivities(request, result);
+                DoBeforeLoadBackendActionActivities(request, result);
+                DoBeforeLoadUIActionActivities(request, result);
             }
             catch (Exception ex)
             {
@@ -1353,6 +1354,15 @@ namespace MyDataSearchManagerBusiness
                 result.Message = "خطا در جستجو" + Environment.NewLine + ex.Message;
             }
             return result;
+        }
+
+        private void DoBeforeLoadUIActionActivities(DR_SearchEditRequest request, DR_ResultSearchFullData result)
+        {
+            if (result.ResultDataItems.Any())
+            {
+                BizEntityState bizEntityState = new BizEntityState();
+                bizEntityState.DoBeforeLoadUIActionActivities(request.Requester, result.ResultDataItems);
+            }
         }
 
         private List<DP_DataRepository> GetFullDataResult(DR_Requester requester, DP_SearchRepositoryMain searchDataItem)
@@ -1376,11 +1386,11 @@ namespace MyDataSearchManagerBusiness
             return DataTableToDP_DataRepository(dataTable.Item1, dataTable.Item2, listView, dataviewDataTable, dataviewListView);
         }
 
-        public void DoBeforeLoadActionActivities(DR_SearchEditRequest request, DR_ResultSearchFullData result)
+        public void DoBeforeLoadBackendActionActivities(DR_SearchEditRequest request, DR_ResultSearchFullData result)
         {
             //بازدارنده بودن اقدام کنترل شود
             BizBackendActionActivity bizActionActivity = new BizBackendActionActivity();
-            var actionActivities = bizActionActivity.GetActionActivities(request.SearchDataItem.TargetEntityID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.BeforeLoad }, true, true);
+            var actionActivities = bizActionActivity.GetBackendActionActivities(request.SearchDataItem.TargetEntityID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.BeforeLoad }, true, true);
             CodeFunctionHandler codeFunctionHelper = new CodeFunctionHandler();
             foreach (var entityActionActivity in actionActivities)
             {

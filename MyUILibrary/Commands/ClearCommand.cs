@@ -27,7 +27,7 @@ namespace MyUILibrary.EntityArea.Commands
             //if (EditArea is I_EditEntityArea)
             //{
 
-            if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
+            if (EditArea.SourceRelationColumnControl == null)
                 EditArea.ClearData();
             else
                 EditArea.ChildRelationshipInfoBinded.RemoveAllRelatedData();
@@ -40,7 +40,7 @@ namespace MyUILibrary.EntityArea.Commands
             //    (EditArea as I_EditEntityAreaMultipleData).ClearData(false);
             //}
 
-                //if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
+                //if (EditArea.SourceRelationColumnControl == null)
                 //    EditArea.AreaInitializer.Datas.Clear();
                 //else
                 //{
@@ -52,11 +52,11 @@ namespace MyUILibrary.EntityArea.Commands
                 //}
                 //else if (EditArea is I_EditEntityAreaMultipleData)
                 //{
-                //    if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
+                //    if (EditArea.SourceRelationColumnControl == null)
                 //        EditArea.AreaInitializer.Datas.Clear();
                 //    else
                 //    {
-                //        EditArea.AreaInitializer.SourceRelationColumnControl.RelatedData.RemoveRelatedData(EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.ID);
+                //        EditArea.SourceRelationColumnControl.RelatedData.RemoveRelatedData(EditArea.SourceRelationColumnControl.Relationship.ID);
                 //        if (EditArea.ParentTemporaryView != null)
                 //            EditArea.ParentTemporaryView.SetLinkText("");
                 //    }

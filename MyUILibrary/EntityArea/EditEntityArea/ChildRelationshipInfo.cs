@@ -19,9 +19,9 @@ namespace MyUILibrary.EntityArea
 
         public List<PropertyFormulaComment> PropertyFormulaCommentItems = new List<PropertyFormulaComment>();
         //    public DP_FormDataRepository SourceData { set; get; }
-        public bool LableIsShared { get { return (SourceData as DP_FormDataRepository).EditEntityArea is I_EditEntityAreaMultipleData; } }
+        public bool LableIsShared { get { return SourceData.EditEntityArea is I_EditEntityAreaMultipleData; } }
 
-        public new DP_FormDataRepository SourceData { get { return SourceData as DP_FormDataRepository; } }
+        public new DP_FormDataRepository SourceData { get { return base.SourceData as DP_FormDataRepository; } }
 
         public List<ControlStateItem> ControlReadonlyStateItems = new List<ControlStateItem>();
         public List<ControlStateItem> ControlHiddenStateItems = new List<ControlStateItem>();
@@ -246,6 +246,18 @@ namespace MyUILibrary.EntityArea
                 if (RelationshipControl.Relationship.IsOtherSideMandatory)
                     columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
 
+                bool enableDisableDataSection = true;
+                if (RelatedData.Any(x => x.IsUseLessBecauseNewAndReadonly))
+                {
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, "relationReadonly", ControlItemPriority.Normal));
+                    columnControlMessageItems.Add(new ColumnControlMessageItem("به علت فقط خواندنی بودن موجودیت، از داده های جدید صرف نظر خواهد شد", ControlOrLabelAsTarget.Control, "isUseLessBecauseNewAndReadonly", ControlItemPriority.Normal));
+                    if (IsDataviewOpen)
+                    {
+                        enableDisableDataSection = false;
+                    }
+                }
+                if (IsDataviewOpen)
+                    RelationshipControl.GenericEditNdTypeArea.DataView.EnableDisableDataSection(enableDisableDataSection);
 
                 if (IsReadonly)
                 {
@@ -331,6 +343,7 @@ namespace MyUILibrary.EntityArea
                 //عملا میشه داده ای که یا انتخاب شده از سلکت ویو یا از رابطه اصلی اومده
                 dataItem.EditEntityArea.AreaInitializer.ActionActivityManager.SetExistingDataFirstLoadStates(dataItem);
 
+                //این تیکه اضافیه؟؟
                 if (!dataItem.IsDBRelationship)
                 {
                     //عملا میشه داده ای که انتخاب شده از سلکت ویو
@@ -551,7 +564,7 @@ namespace MyUILibrary.EntityArea
             return RelatedData.ToList();
             //    else return new List<ProxyLibrary.DP_FormDataRepository>();
         }
-        
+
 
         private void Property_PropertyValueChanged(object sender, PropertyValueChangedArg e, DP_FormDataRepository fkDataItem, EntityInstanceProperty item2)
         {
@@ -753,13 +766,13 @@ namespace MyUILibrary.EntityArea
 
             if (Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
             {
-                if (RelationshipControl.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.DBDeleteRule == RelationshipDeleteUpdateRule.Cascade)//|| RelationshipControl.GenericEditNdTypeArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(x => !x.SecondSideColumn.IsNull))
+                if (RelationshipControl.GenericEditNdTypeArea.SourceRelationColumnControl.Relationship.DBDeleteRule == RelationshipDeleteUpdateRule.Cascade)//|| RelationshipControl.GenericEditNdTypeArea.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(x => !x.SecondSideColumn.IsNull))
                 {
                     shouldDeleteFromDB = true;
                 }
             }
             //بعدا به این فکر شود
-            //var relationship = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipManager.GetRelationship(AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID);
+            //var relationship = AgentUICoreMediator.GetAgentUICoreMediator.RelationshipManager.GetRelationship(SourceRelationColumnControl.Relationship.PairRelationshipID);
             //if (relationship.IsOtherSideMandatory)
             //    shouldDeleteFromDB = true;
 
@@ -806,7 +819,7 @@ namespace MyUILibrary.EntityArea
 
             return clearIsOk;
         }
-       
+
 
         //internal void AddDataObserver(string key, string restTail, int columnID, DP_FormDataRepository targetDataItem, bool setSourceOrChilds)
         //{
@@ -908,6 +921,7 @@ namespace MyUILibrary.EntityArea
         {
             get
             {
+                داده هایی که از دیتابیس میان و رابطه پرنت هیدن دارن مشخص بشن و کلاً نیان
                 if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
                 {
                     if (RelatedData.Any() && RelatedData.All(x => x.IsDBRelationship && x.ToParentRelationshipReadonlyStateItems.Any()))
@@ -922,7 +936,8 @@ namespace MyUILibrary.EntityArea
         {
             get
             {
-                return ControlHiddenStateItems.Any() || DataIsOneAndHidden || DateSecurityIssue;
+                اینم بیخوده داده نباید در فرم پدر دخل و تصرف کند DataIsOneAndHidden
+                return ControlHiddenStateItems.Any() || DataIsOneAndHidden;
             }
         }
         public bool DataIsOneAndHidden
@@ -939,6 +954,22 @@ namespace MyUILibrary.EntityArea
                 return false;
             }
         }
+
+
+        //public bool IsDirectOneEmptyAndEntityIsReadonly
+        //{
+        //    get
+        //    {
+        //        if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData && IsDirect)
+        //        {
+        //            if (dataLoaded && !RelatedData.Any() && RelationshipControl.GenericEditNdTypeArea.DataEntryEntity.IsReadonly)
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        return false;
+        //    }
+        //}
         public bool IsReadonlyOnState
         {
             get
@@ -1083,22 +1114,22 @@ namespace MyUILibrary.EntityArea
                     }
                     else
                     {
-                        Tuple<bool, List<DP_FormDataRepository>> dbSearch;
+                        List<DP_FormDataRepository> dbSearch = null;
                         if (IsDirect)//IsDataviewOpen)
                             dbSearch = SerachDataFromParentRelationForChildDataView();
                         else
                             dbSearch = SerachDataFromParentRelationForChildTempView();
-                        if (dbSearch.Item1)
-                        {
-                            DateSecurityIssue = true;
-                            CheckRelationshipUI();
-                            //  return false;
-                        }
-                        else
-                        {
-                            foreach (var item in dbSearch.Item2)
-                                AddDataToChildRelationshipData(item);
-                        }
+                        //if (dbSearch.Item1)
+                        //{
+                        //    DateSecurityIssue = true;
+                        //    CheckRelationshipUI();
+                        //    //  return false;
+                        //}
+                        //else
+                        //{
+                        foreach (var item in dbSearch)
+                            AddDataToChildRelationshipData(item);
+                        //}
                     }
                 }
                 //if (IsDataviewOpen && RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
@@ -1146,14 +1177,14 @@ namespace MyUILibrary.EntityArea
             if (IsReadonly)
             {
                 newData.IsUseLessBecauseNewAndReadonly = true;
-                foreach (var property in newData.ChildSimpleContorlProperties)
-                {
-                    property.AddReadonlyState("", "DataNewAndReadonly", true);
-                }
-                foreach (var rel in newData.ChildRelationshipDatas)
-                {
-                    rel.AddReadonlyState("", "DataNewAndReadonly", true);
-                }
+                //////foreach (var property in newData.ChildSimpleContorlProperties)
+                //////{
+                //////    property.AddReadonlyState("", "DataNewAndReadonly", true);
+                //////}
+                //////foreach (var rel in newData.ChildRelationshipDatas)
+                //////{
+                //////    rel.AddReadonlyState("", "DataNewAndReadonly", true);
+                //////}
             }
             AddDataToChildRelationshipData(newData);
         }
@@ -1164,7 +1195,7 @@ namespace MyUILibrary.EntityArea
 
         RelationshipDataManager relationshipManager = new RelationshipDataManager();
 
-        private Tuple<bool, List<DP_FormDataRepository>> SerachDataFromParentRelationForChildTempView()
+        private List<DP_FormDataRepository> SerachDataFromParentRelationForChildTempView()
         {
             //ChildRelationshipInfo.SerachDataFromParentRelationForChildTempView: 0f1244a3531e
             var searchDataItem = relationshipManager.GetSecondSideSearchItemByFirstSideColumns(SourceData, RelationshipControl.Relationship);
@@ -1177,44 +1208,44 @@ namespace MyUILibrary.EntityArea
             countRequest.SearchDataItems = searchDataItem;
             countRequest.Requester.SkipSecurity = true;
             var count = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchCountRequest(countRequest);
-            if (count.ResultCount != childViewData.Count)
-                return new Tuple<bool, List<DP_FormDataRepository>>(true, null);
+            //if (count.ResultCount != childViewData.Count)
+            //    return new Tuple<bool, List<DP_FormDataRepository>>(true, null);
             List<DP_FormDataRepository> list = new List<DP_FormDataRepository>();
-           // EditAreaDataManager EditAreaDataManager = new EditAreaDataManager();
+            // EditAreaDataManager EditAreaDataManager = new EditAreaDataManager();
             foreach (var item in childViewData)
             {
                 var dpItem = new DP_FormDataRepository(item, RelationshipControl.GenericEditNdTypeArea, true, false);
                 list.Add(dpItem);
             }
-            return new Tuple<bool, List<DP_FormDataRepository>>(false, list);
+            return list;
         }
 
 
-        public Tuple<bool, List<DP_FormDataRepository>> SerachDataFromParentRelationForChildDataView()
+        public List<DP_FormDataRepository> SerachDataFromParentRelationForChildDataView()
         {
             //ChildRelationshipInfo.SerachDataFromParentRelationForChildDataView: 847beee04f15
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
             var searchDataItem = relationshipManager.GetSecondSideSearchItemByFirstSideColumns(SourceData, Relationship);
             DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem);
-           
+
             var childFullData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(request).ResultDataItems;
             var countRequest = new DR_SearchCountRequest(requester);
             countRequest.SearchDataItems = searchDataItem;
             countRequest.Requester.SkipSecurity = true;
             var count = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchCountRequest(countRequest);
-            if (count.ResultCount != childFullData.Count)
-            {
-                return new Tuple<bool, List<DP_FormDataRepository>>(true, null);
-            }
+            //if (count.ResultCount != childFullData.Count)
+            //{
+            //    return new Tuple<bool, List<DP_FormDataRepository>>(true, null);
+            //}
             List<DP_FormDataRepository> list = new List<DP_FormDataRepository>();
             //EditAreaDataManager EditAreaDataManager = new EditAreaDataManager();
             foreach (var data in childFullData)
             {
-              //  data.DataView = EditAreaDataManager.GetDataView(data);
+                //  data.DataView = EditAreaDataManager.GetDataView(data);
                 DP_FormDataRepository formData = new DP_FormDataRepository(data, RelationshipControl.GenericEditNdTypeArea, true, false);
                 list.Add(formData);
             }
-            return new Tuple<bool, List<DP_FormDataRepository>>(false, list);
+            return list;
         }
 
 
@@ -1411,8 +1442,8 @@ namespace MyUILibrary.EntityArea
             // var requestSearchEdit = new DR_SearchEditRequest(requester, SearchDataItem, editEntityArea.AreaInitializer.SecurityReadOnly, false);
 
             //int toRelationsipID = 0;
-            //if (editEntityArea.AreaInitializer.SourceRelationColumnControl != null)
-            //    editEntityArea.AreaInitializer.SourceRelationColumnControl
+            //if (editEntityArea.SourceRelationColumnControl != null)
+            //    editEntityArea.SourceRelationColumnControl
             var requestSearchEdit = new DR_SearchEditRequest(requester, searchItems);
             var foundItem = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
             foreach (var item in dataItems)
@@ -1421,6 +1452,7 @@ namespace MyUILibrary.EntityArea
                 item.ClearProperties();
                 item.SetProperties(fItem.GetProperties());
                 item.IsFullData = true;
+                item.SetProperties();
             }
             //if (foundItem.Any())
             //{
@@ -1438,7 +1470,7 @@ namespace MyUILibrary.EntityArea
             //}
         }
         // public I_View_TemporaryView LastTemporaryView { set; get; }
-        public bool DateSecurityIssue { get; private set; }
+        // public bool DateSecurityIssue { get; private set; }
 
         public void TemporaryViewActionRequested(I_View_TemporaryView TemporaryView, TemporaryLinkType linkType)
         {

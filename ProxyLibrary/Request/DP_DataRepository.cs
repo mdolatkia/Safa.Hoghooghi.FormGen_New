@@ -53,14 +53,19 @@ namespace ProxyLibrary
         }
     }
     public class DP_DataView : DP_BaseData
-    {
+    {            
+        // DP_DataView: 4a4b577125bf
         public DP_DataView(int targetEntityID, string targetEntityAlias
             , int listViewID, List<DataViewProperty> dataViewProperties)
             : base(targetEntityID, targetEntityAlias)
         {
-            // DP_DataView: 4a4b577125bf
             ListViewID = listViewID;
             DataViewProperties = dataViewProperties;
+        }
+        public DP_DataView(int targetEntityID, string targetEntityAlias)
+            : base(targetEntityID, targetEntityAlias)
+        {
+         
         }
         public List<DataViewProperty> DataViewProperties { set; get; }
         public int ListViewID { set; get; }
@@ -128,7 +133,7 @@ namespace ProxyLibrary
             GUID = Guid.NewGuid();
         }
         public DP_DataRepository(int TargetEntityID, string TargetEntityAlias)
-            : base(TargetEntityID, TargetEntityAlias, 0, null)
+            : base(TargetEntityID, TargetEntityAlias)
         {
 
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
@@ -915,6 +920,8 @@ namespace ProxyLibrary
         public bool HasForeignKeyData { get; set; }
 
         public bool ISFK { get; set; }
+        public bool IsReadonlyOfState { get; set; }
+        public string IsReadonlyStateTitle { get; set; }
 
         public bool ValueIsEmptyOrDefaultValue()
         {
@@ -1141,7 +1148,7 @@ namespace ProxyLibrary
                 if (Column != null)
                     return Column.ID;
                 else
-                    return ColumnID;
+                    return _ColumnID;
             }
         }
 

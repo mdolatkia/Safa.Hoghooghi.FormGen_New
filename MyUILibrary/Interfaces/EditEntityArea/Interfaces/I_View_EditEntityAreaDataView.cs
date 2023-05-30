@@ -104,8 +104,8 @@ namespace MyUILibrary.EntityArea
         void DeHighlightCommands();
         void AddCommand(I_CommandManager command, bool indirect = false);
         //void SetBackgroundColor(string color);
-   //     void DisableEnableDataSection(bool enable);
-     //   void Visiblity(bool visible);
+        void EnableDisableDataSection(bool enable);
+        //   void Visiblity(bool visible);
         void EnableDisable(bool enable);
        
         bool IsOpenedTemporary { get; set; }

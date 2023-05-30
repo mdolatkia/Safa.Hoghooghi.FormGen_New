@@ -54,7 +54,7 @@ namespace MyUILibrary.EntityArea
         //                    {
         //                      //  relationshipControl.RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(childRelInfo);
 
-        //                        if (fromUpdate && EditArea.AreaInitializer.SourceRelationColumnControl == null)
+        //                        if (fromUpdate && EditArea.SourceRelationColumnControl == null)
         //                        {
         //                            if (!relationshipControl.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.UIValidationManager.ValidateData(false))
         //                                result = false;
@@ -133,18 +133,18 @@ namespace MyUILibrary.EntityArea
             if (dataITem.IsNewItem)
             {
                 if (EditArea.FullEntity.Columns.Any(x => x.DataEntryEnabled && x.IsMandatory &&
-                (!EditArea.SimpleColumnControls.Any(c => c.Column.ID == x.ID) &&
+                (!EditArea.SimpleColumnControls.Any(c => c.DataEntryColumn.ID == x.ID) &&
                 !EditArea.RelationshipColumnControls.Any(r => r.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && r.Relationship.RelationshipColumns.Any(rc => rc.FirstSideColumnID == x.ID)) &&
-                (EditArea.AreaInitializer == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum != Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
+                (EditArea.AreaInitializer == null || EditArea.SourceRelationColumnControl.Relationship.MastertTypeEnum != Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
                 )
                 ))
                 {  //اگر غیر از این باشه و بخوایم ستونهایی که دسترسی دارند را از آنهایی که ندارند جدا کرده و بررسی کنیم قضیه خلی پیچیده میشود. 
                    //بهتر است نیاز بیزینسی با اختصاصی سازی موجودیت حل شود ونه با دسترسی امنیتی
                     var columnNames = "";
                     foreach (var col in EditArea.FullEntity.Columns.Where(x => x.DataEntryEnabled && x.IsMandatory &&
-                (!EditArea.SimpleColumnControls.Any(c => c.Column.ID == x.ID) &&
+                (!EditArea.SimpleColumnControls.Any(c => c.DataEntryColumn.ID == x.ID) &&
                 !EditArea.RelationshipColumnControls.Any(r => r.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && r.Relationship.RelationshipColumns.Any(rc => rc.FirstSideColumnID == x.ID)) &&
-                (EditArea.AreaInitializer == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.MastertTypeEnum != Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
+                (EditArea.AreaInitializer == null || EditArea.SourceRelationColumnControl.Relationship.MastertTypeEnum != Enum_MasterRelationshipType.FromPrimartyToForeign || !EditArea.SourceRelationColumnControl.Relationship.RelationshipColumns.Any(r => r.SecondSideColumnID == x.ID))
                 )
                 ))
                     {
@@ -156,12 +156,12 @@ namespace MyUILibrary.EntityArea
                 }
 
                 if (EditArea.FullEntity.Relationships.Any(x => x.DataEntryEnabled == true && x.IsOtherSideMandatory == true &&
-              (!EditArea.RelationshipColumnControls.Any(r => r.Relationship.ID == x.ID) && (EditArea.AreaInitializer.SourceRelationColumnControl == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID != x.ID))))
+              (!EditArea.RelationshipColumnControls.Any(r => r.Relationship.ID == x.ID) && (EditArea.SourceRelationColumnControl == null || EditArea.SourceRelationColumnControl.Relationship.PairRelationshipID != x.ID))))
                 {  //اگر غیر از این باشه و بخوایم روابطی که دسترسی دارند را از آنهایی که ندارند جدا کرده و بررسی کنیم قضیه خلی پیچیده میشود. 
                    //بهتر است نیاز بیزینسی با اختصاصی سازی موجودیت حل شود ونه با دسترسی امنیتی
                     var relNames = "";
                     foreach (var rel in EditArea.FullEntity.Relationships.Where(x => x.DataEntryEnabled == true &&
-              (!EditArea.RelationshipColumnControls.Any(r => r.Relationship.ID == x.ID) && (EditArea.AreaInitializer.SourceRelationColumnControl == null || EditArea.AreaInitializer.SourceRelationColumnControl.Relationship.PairRelationshipID != x.ID))))
+              (!EditArea.RelationshipColumnControls.Any(r => r.Relationship.ID == x.ID) && (EditArea.SourceRelationColumnControl == null || EditArea.SourceRelationColumnControl.Relationship.PairRelationshipID != x.ID))))
                     {
                         relNames += (relNames == "" ? "" : Environment.NewLine) + rel.Name;
                     }
@@ -266,11 +266,11 @@ namespace MyUILibrary.EntityArea
             int parentSubToSuperRelationshipID = 0;
             string parentSubToSuperName = "";
 
-            if (EditArea.AreaInitializer.SourceRelationColumnControl != null && EditArea.AreaInitializer.SourceRelationColumnControl.Relationship is SubToSuperRelationshipDTO)
+            if (EditArea.SourceRelationColumnControl != null && EditArea.SourceRelationColumnControl.Relationship is SubToSuperRelationshipDTO)
             {
-                parentSubToSuperRelationshipID = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ID;
-                parentSubToSuperName = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).Entity1;
-                parentISARelationshipID = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.ID;
+                parentSubToSuperRelationshipID = (EditArea.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ID;
+                parentSubToSuperName = (EditArea.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).Entity1;
+                parentISARelationshipID = (EditArea.SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.ID;
             }
             List<Tuple<ISARelationshipDTO, List<RelationshipColumnControlGeneral>>> isaRelationships = new List<Tuple<ISARelationshipDTO, List<RelationshipColumnControlGeneral>>>();
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
@@ -426,11 +426,11 @@ namespace MyUILibrary.EntityArea
             int parentSubToSuperRelationshipID = 0;
             string parentSubToSuperName = "";
 
-            if (EditArea.AreaInitializer.SourceRelationColumnControl != null && EditArea.AreaInitializer.SourceRelationColumnControl.Relationship is SubUnionToSuperUnionRelationshipDTO)
+            if (EditArea.SourceRelationColumnControl != null && EditArea.SourceRelationColumnControl.Relationship is SubUnionToSuperUnionRelationshipDTO)
             {
-                parentSubToSuperRelationshipID = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).ID;
-                parentSubToSuperName = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).Entity1;
-                parentUnionRelationshipID = (EditArea.AreaInitializer.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship.ID;
+                parentSubToSuperRelationshipID = (EditArea.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).ID;
+                parentSubToSuperName = (EditArea.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).Entity1;
+                parentUnionRelationshipID = (EditArea.SourceRelationColumnControl.Relationship as SubUnionToSuperUnionRelationshipDTO).UnionRelationship.ID;
             }
             List<Tuple<UnionRelationshipDTO, List<RelationshipColumnControlGeneral>>> unionRelationships = new List<Tuple<UnionRelationshipDTO, List<RelationshipColumnControlGeneral>>>();
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
@@ -589,87 +589,87 @@ namespace MyUILibrary.EntityArea
             //**UIValidationManager.ValidateSimpleColumn: 2d60cd226e9e
             var simplePropertyControl = childSimpleContorlProperty.SimpleColumnControl;
             var dataColumn = childSimpleContorlProperty.Property;
-            if (simplePropertyControl.Column.IsMandatory == true)
+            if (simplePropertyControl.DataEntryColumn.IsMandatory == true)
             {
                 if (dataColumn.Value == null || dataColumn.Value.ToString() == "")
                 {
-                    if (dataItem.IsNewItem == false || simplePropertyControl.Column.IsIdentity == false)
+                    if (dataItem.IsNewItem == false || simplePropertyControl.DataEntryColumn.IsIdentity == false)
                         AddColumnControlValidationMessage(simplePropertyControl, "مقدار دهی این خصوصیت اجباری می باشد", dataItem);
 
                 }
             }
             if (dataColumn.Value != null && dataColumn.Value.ToString() != "")
             {
-                if (simplePropertyControl.Column.StringColumnType != null)
+                if (simplePropertyControl.DataEntryColumn.StringColumnType != null)
                 {
-                    if (simplePropertyControl.Column.StringColumnType.MaxLength != 0
-                        && simplePropertyControl.Column.StringColumnType.MaxLength != -1)
+                    if (simplePropertyControl.DataEntryColumn.StringColumnType.MaxLength != 0
+                        && simplePropertyControl.DataEntryColumn.StringColumnType.MaxLength != -1)
                     {
-                        if (dataColumn.Value.ToString().Length > simplePropertyControl.Column.StringColumnType.MaxLength)
+                        if (dataColumn.Value.ToString().Length > simplePropertyControl.DataEntryColumn.StringColumnType.MaxLength)
                         {
-                            string message = "حداکثر طول این خصوصیت" + " " + simplePropertyControl.Column.StringColumnType.MaxLength + " " + "کاراکتر می باشد";
+                            string message = "حداکثر طول این خصوصیت" + " " + simplePropertyControl.DataEntryColumn.StringColumnType.MaxLength + " " + "کاراکتر می باشد";
                             AddColumnControlValidationMessage(simplePropertyControl, message, dataItem);
                         }
                     }
-                    if (simplePropertyControl.Column.StringColumnType.MinLength != 0
-                       && simplePropertyControl.Column.StringColumnType.MinLength != null)
+                    if (simplePropertyControl.DataEntryColumn.StringColumnType.MinLength != 0
+                       && simplePropertyControl.DataEntryColumn.StringColumnType.MinLength != null)
                     {
-                        if (dataColumn.Value.ToString().Length < simplePropertyControl.Column.StringColumnType.MinLength)
+                        if (dataColumn.Value.ToString().Length < simplePropertyControl.DataEntryColumn.StringColumnType.MinLength)
                         {
-                            string message = "حداقل طول این خصوصیت" + " " + simplePropertyControl.Column.StringColumnType.MinLength + " " + "کاراکتر می باشد";
+                            string message = "حداقل طول این خصوصیت" + " " + simplePropertyControl.DataEntryColumn.StringColumnType.MinLength + " " + "کاراکتر می باشد";
                             AddColumnControlValidationMessage(simplePropertyControl, message, dataItem);
                         }
                     }
                 }
 
-                if (simplePropertyControl.Column.NumericColumnType != null)
+                if (simplePropertyControl.DataEntryColumn.NumericColumnType != null)
                 {
-                    if (simplePropertyControl.Column.NumericColumnType.MinValue != null)
+                    if (simplePropertyControl.DataEntryColumn.NumericColumnType.MinValue != null)
                     {
                         var value = Convert.ToDouble(dataColumn.Value);
-                        if (value < simplePropertyControl.Column.NumericColumnType.MinValue.Value)
+                        if (value < simplePropertyControl.DataEntryColumn.NumericColumnType.MinValue.Value)
                         {
-                            string message = "حداقل مقدار این خصوصیت" + " " + simplePropertyControl.Column.NumericColumnType.MinValue.Value + " " + "می باشد";
+                            string message = "حداقل مقدار این خصوصیت" + " " + simplePropertyControl.DataEntryColumn.NumericColumnType.MinValue.Value + " " + "می باشد";
                             AddColumnControlValidationMessage(simplePropertyControl, message, dataItem);
                         }
                     }
-                    if (simplePropertyControl.Column.NumericColumnType.MaxValue != null)
+                    if (simplePropertyControl.DataEntryColumn.NumericColumnType.MaxValue != null)
                     {
                         var value = Convert.ToDouble(dataColumn.Value);
-                        if (value > simplePropertyControl.Column.NumericColumnType.MaxValue.Value)
+                        if (value > simplePropertyControl.DataEntryColumn.NumericColumnType.MaxValue.Value)
                         {
-                            string message = "حداکثر مقدار این خصوصیت" + " " + simplePropertyControl.Column.NumericColumnType.MaxValue.Value + " " + "می باشد";
+                            string message = "حداکثر مقدار این خصوصیت" + " " + simplePropertyControl.DataEntryColumn.NumericColumnType.MaxValue.Value + " " + "می باشد";
                             AddColumnControlValidationMessage(simplePropertyControl, message, dataItem);
                         }
                     }
-                    if (simplePropertyControl.Column.NumericColumnType.Precision != 0)
+                    if (simplePropertyControl.DataEntryColumn.NumericColumnType.Precision != 0)
                     {
                         var value = Convert.ToDouble(dataColumn.Value);
-                        if (value.ToString().Replace(".", "").Length > simplePropertyControl.Column.NumericColumnType.Precision)
+                        if (value.ToString().Replace(".", "").Length > simplePropertyControl.DataEntryColumn.NumericColumnType.Precision)
                         {
-                            string message = "تعداد اعداد این خصوصیت از مقدار تعیین شده" + " " + simplePropertyControl.Column.NumericColumnType.Precision + " " + "بیشتر می باشد";
+                            string message = "تعداد اعداد این خصوصیت از مقدار تعیین شده" + " " + simplePropertyControl.DataEntryColumn.NumericColumnType.Precision + " " + "بیشتر می باشد";
                             AddColumnControlValidationMessage(simplePropertyControl, message, dataItem);
                         }
                     }
-                    if (simplePropertyControl.Column.NumericColumnType.Scale != 0)
+                    if (simplePropertyControl.DataEntryColumn.NumericColumnType.Scale != 0)
                     {
                         var value = Convert.ToDouble(dataColumn.Value);
                         if (value.ToString().Contains("."))
                         {
                             var splt = value.ToString().Split('.')[1];
-                            if (splt.Length > simplePropertyControl.Column.NumericColumnType.Scale)
+                            if (splt.Length > simplePropertyControl.DataEntryColumn.NumericColumnType.Scale)
                             {
-                                string message = "تعداد اعشار این خصوصیت از مقدار تعیین شده" + " " + simplePropertyControl.Column.NumericColumnType.Scale + " " + "بیشتر می باشد";
+                                string message = "تعداد اعشار این خصوصیت از مقدار تعیین شده" + " " + simplePropertyControl.DataEntryColumn.NumericColumnType.Scale + " " + "بیشتر می باشد";
                                 AddColumnControlValidationMessage(simplePropertyControl, message, dataItem);
                             }
                         }
                     }
                 }
-                if (simplePropertyControl.Column.StringColumnType != null)
+                if (simplePropertyControl.DataEntryColumn.StringColumnType != null)
                 {
-                    if (!string.IsNullOrEmpty(simplePropertyControl.Column.StringColumnType.Format))
+                    if (!string.IsNullOrEmpty(simplePropertyControl.DataEntryColumn.StringColumnType.Format))
                     {
-                        Regex regex = new Regex(simplePropertyControl.Column.StringColumnType.Format);
+                        Regex regex = new Regex(simplePropertyControl.DataEntryColumn.StringColumnType.Format);
                         if (!regex.IsMatch(dataColumn.Value.ToString()))
                         {
                             string message = "فرمت این خصوصیت صحیح نمی باشد";
@@ -680,7 +680,7 @@ namespace MyUILibrary.EntityArea
 
 
 
-                if (simplePropertyControl.Column.HasValueRange)
+                if (simplePropertyControl.DataEntryColumn.HasValueRange)
                 {
 
                     List<ColumnValueRangeDetailsDTO> validValueRange = childSimpleContorlProperty.ColumnValueRange;

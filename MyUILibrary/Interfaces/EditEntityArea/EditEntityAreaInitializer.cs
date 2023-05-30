@@ -25,7 +25,7 @@ namespace MyUILibrary.EntityArea
             //UISettings.FlowDirection = FlowDirection.RightToLeft;
             UISettings.Language = "farsi";
         }
-        public RelationshipColumnControlGeneral SourceRelationColumnControl { set; get; }
+        
      //   public RelationshipColumnControl SourceEditArea { set; get; }
         //public TableDrivedEntityDTO TemplateEntity { set; get; }
         public int EntityID { set; get; }
@@ -46,8 +46,8 @@ namespace MyUILibrary.EntityArea
             set { _Datas = value; }
             get
             {
-                if (SourceRelationColumnControl != null)
-                    throw new Exception("sdfsdg");
+                //if (SourceRelationColumnControl != null)
+                //    throw new Exception("sdfsdg");
                 return _Datas;
             }
         }
@@ -71,7 +71,8 @@ namespace MyUILibrary.EntityArea
         public I_EditAreaLogManager EntityAreaLogManager { get; set; }
         public I_UIFomulaManager UIFomulaManager { get; set; }
         public I_UIValidationManager UIValidationManager { get; set; }
-     //   public int EntitySearchID { get; internal set; }
+        public DataEntryRelationshipDTO DataEntryRelationship { get; internal set; }
+        //   public int EntitySearchID { get; internal set; }
 
         //  public bool RemoveInfo { get; set; }
 

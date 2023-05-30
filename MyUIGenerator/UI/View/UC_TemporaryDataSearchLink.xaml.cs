@@ -451,6 +451,11 @@ namespace MyUIGenerator.View
         {
             this.IsEnabled = enable;
         }
+
+        public void EnableDisableDataSection(bool enable)
+        {
+            throw new NotImplementedException();
+        }
         //public void SetBackgroundColor(string color)
         //{
         //    throw new NotImplementedException();

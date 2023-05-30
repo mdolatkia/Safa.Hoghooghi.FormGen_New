@@ -434,6 +434,9 @@ namespace MyModelManager
             //** BizTableDrivedEntity.GetDataEntryEntity: fedaef41c5c7
 
             var entity = GetTableDrivedEntity(requester, entityID, EntityColumnInfoType.WithFullColumns, EntityRelationshipInfoType.WithRelationships);
+            if (entity == null)
+                return null;
+
             var finalEntity = CheckDataEntryPermission(requester, entity, true, parentRelationship);
 
             DataEntryEntityDTO result = new DataEntryEntityDTO();
@@ -756,17 +759,17 @@ namespace MyModelManager
                 foreach (var column in entity.Columns)
                 {
                     column.IsReadonly = bizColumn.DataIsReadonly(requester, column.ID, entity.IsReadonly, entity.ID);
-                    if (!column.IsReadonly)
-                    {
-                        if (parentRelationship != null)
-                        {
-                            if (parentRelationship.Relationship.RelationshipColumns.Any(x => x.SecondSideColumnID == column.ID))
-                            {
-                                if (parentRelationship.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
-                                    column.IsReadonly = true;
-                            }
-                        }
-                    }
+                    //if (!column.IsReadonly)
+                    //{
+                    //    if (parentRelationship != null)
+                    //    {
+                    //        if (parentRelationship.Relationship.RelationshipColumns.Any(x => x.SecondSideColumnID == column.ID))
+                    //        {
+                    //            if (parentRelationship.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign)
+                    //                column.IsReadonly = true;
+                    //        }
+                    //    }
+                    //}
                 }
             //}
             return entity;

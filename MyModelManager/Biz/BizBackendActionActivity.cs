@@ -12,7 +12,7 @@ namespace MyModelManager
 {
     public class BizBackendActionActivity
     {
-        public List<BackendActionActivityDTO> GetActionActivities(int entityID, List<Enum_EntityActionActivityStep> BackendActionActivitySteps, bool genericOnes, bool withDetails)
+        public List<BackendActionActivityDTO> GetBackendActionActivities(int entityID, List<Enum_EntityActionActivityStep> BackendActionActivitySteps, bool genericOnes, bool withDetails)
         {
             List<BackendActionActivityDTO> result = new List<BackendActionActivityDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())

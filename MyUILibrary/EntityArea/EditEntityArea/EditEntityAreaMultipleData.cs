@@ -271,7 +271,7 @@ namespace MyUILibrary.EntityArea
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Relationship)
                 {
-                    var editArea = GenerateRelationshipControlEditArea(uiCompositionItem.Relationship, uiCompositionItem.Relationship.Relationship);
+                    var editArea = GenerateRelationshipControlEditArea(uiCompositionItem.Relationship);
 
                     // relationshipColumnControl.LabelControlManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateLabelControlManager(uiCompositionItem.Relationship.Relationship.Alias);
                     //  relationshipColumnControl.DataEntryRelationship = uiCompositionItem.Relationship;
@@ -356,7 +356,7 @@ namespace MyUILibrary.EntityArea
         //}
         //private I_SearchViewEntityArea GenerateSearchViewArea()
         //{
-        //    if (AreaInitializer.SourceRelationColumnControl != null)
+        //    if (SourceRelationColumnControl != null)
         //        throw new Exception("asdasd");
         //    var searchViewEntityArea = new SearchViewEntityArea();
         //    var searchViewInit = new SearchViewAreaInitializer();
@@ -416,13 +416,13 @@ namespace MyUILibrary.EntityArea
         //    //////if (typePropertyControl.EditNdTypeArea != null)
         //    //////{
         //    //////    //var relationSourceControl = (typePropertyControl as RelationSourceControl);
-        //    //////    if (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl != null)
+        //    //////    if (typePropertyControl.EditNdTypeArea.SourceRelationColumnControl != null)
         //    //////    {
-        //    //////        if (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ManyToOne
-        //    //////            || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ExplicitOneToOne
-        //    //////            || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SubToSuper
-        //    //////            || (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.UnionToSubUnion_UnionHoldsKeys)
-        //    //////            || (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SubUnionToUnion_SubUnionHoldsKeys))
+        //    //////        if (typePropertyControl.EditNdTypeArea.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ManyToOne
+        //    //////            || typePropertyControl.EditNdTypeArea.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ExplicitOneToOne
+        //    //////            || typePropertyControl.EditNdTypeArea.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SubToSuper
+        //    //////            || (typePropertyControl.EditNdTypeArea.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.UnionToSubUnion_UnionHoldsKeys)
+        //    //////            || (typePropertyControl.EditNdTypeArea.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SubUnionToUnion_SubUnionHoldsKeys))
         //    //////        {
         //    //////            var data = typePropertyControl.EditNdTypeArea.AreaInitializer.Data.FirstOrDefault(x => x.SourceRelatedData == dataRepository);
         //    //////            //AreaInitializer.DataMode == DataMode.Multiple
@@ -430,11 +430,11 @@ namespace MyUILibrary.EntityArea
         //    //////            if (data == null)
         //    //////                return "";
         //    //////            else
-        //    //////                return typePropertyControl.EditNdTypeArea.FetchTypePorpertyValue(data, typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipColumns.First().SecondSideColumn1);
+        //    //////                return typePropertyControl.EditNdTypeArea.FetchTypePorpertyValue(data, typePropertyControl.EditNdTypeArea.SourceRelationColumnControl.RelationshipColumns.First().SecondSideColumn1);
         //    //////        }
-        //    //////        else if (typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.OneToMany
-        //    //////            || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ImplicitOneToOne
-        //    //////              || typePropertyControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SuperToSub)
+        //    //////        else if (typePropertyControl.EditNdTypeArea.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.OneToMany
+        //    //////            || typePropertyControl.EditNdTypeArea.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.ImplicitOneToOne
+        //    //////              || typePropertyControl.EditNdTypeArea.SourceRelationColumnControl.RelationshipType == Enum_RelationshipType.SuperToSub)
         //    //////        {
         //    //////            //return FetchTypePorpertyValue(dataRepository, typePropertyControl.Column);
         //    //////            throw (new Exception("asfsdf"));

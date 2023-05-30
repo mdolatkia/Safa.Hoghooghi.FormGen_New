@@ -26,7 +26,7 @@ namespace MyUILibrary.EntityArea
         {
             foreach (var columnControl in EditArea.SimpleColumnControls)
             {
-                if (columnControl.Column.ColumnCustomFormula != null)
+                if (columnControl.DataEntryColumn.ColumnCustomFormula != null)
                 {
                     FormulaColumns.Add(columnControl);
                 }
@@ -45,21 +45,21 @@ namespace MyUILibrary.EntityArea
             {
                 foreach (var columnControl in FormulaColumns)
                 {
-                    var childSimpleContorlProperties = e.DataItem.ChildSimpleContorlProperties.FirstOrDefault(x => x.SimpleColumnControl.Column.ID == columnControl.Column.ID);
+                    var childSimpleContorlProperties = e.DataItem.ChildSimpleContorlProperties.FirstOrDefault(x => x.SimpleColumnControl.DataEntryColumn.ID == columnControl.DataEntryColumn.ID);
                     if (childSimpleContorlProperties == null)
                         continue;//حذف شود
                     var cpMenuFormulaCalculation = new ConrolPackageMenu();
                     cpMenuFormulaCalculation.Name = "mnuFormulaCalculation";
                     cpMenuFormulaCalculation.Title = "محاسبه فرمول";
-                    cpMenuFormulaCalculation.Tooltip = columnControl.Column.ColumnCustomFormula.Formula.Tooltip;
+                    cpMenuFormulaCalculation.Tooltip = columnControl.DataEntryColumn.ColumnCustomFormula.Formula.Tooltip;
                     childSimpleContorlProperties.GetUIControlManager.AddButtonMenu(cpMenuFormulaCalculation);
                     cpMenuFormulaCalculation.MenuClicked += (sender1, e1) => CpMenuFormulaCalculation_MenuClicked(sender1, e1, childSimpleContorlProperties);
 
                     string generalKey = "formulaColumn" + AgentHelper.GetUniqueDataPostfix(e.DataItem);
-                    string usageKey = columnControl.Column.ID.ToString();
+                    string usageKey = columnControl.DataEntryColumn.ID.ToString();
                     if (e.DataItem.ChangeMonitorExists(generalKey, usageKey))
                         return;
-                    var fullFormula = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetFormula(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), columnControl.Column.ColumnCustomFormula.FormulaID);
+                    var fullFormula = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetFormula(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), columnControl.DataEntryColumn.ColumnCustomFormula.FormulaID);
                     if (fullFormula.FormulaItems.Any(x => x.ItemType == FormuaItemType.Column || !string.IsNullOrEmpty(x.RelationshipIDTail)))
                     {
                         e.DataItem.RelatedDataTailOrColumnChanged += (sender1, e1) => DataItem_RelatedDataTailOrColumnChanged(sender1, e1, childSimpleContorlProperties);
@@ -107,10 +107,10 @@ namespace MyUILibrary.EntityArea
             {
                 if (e.DataToCall.DataIsInEditMode())
                 {
-                    foreach (var columnControl in FormulaColumns.Where(x => x.Column.ID.ToString() == e.UsageKey))
+                    foreach (var columnControl in FormulaColumns.Where(x => x.DataEntryColumn.ID.ToString() == e.UsageKey))
                     {
-                        var formulaColumn = FormulaColumns.First(x => x.Column.ID == columnControl.Column.ID).Column.ColumnCustomFormula;
-                        var dataProperty = e.DataToCall.GetProperty(columnControl.Column.ID);
+                        var formulaColumn = FormulaColumns.First(x => x.DataEntryColumn.ID == columnControl.DataEntryColumn.ID).DataEntryColumn.ColumnCustomFormula;
+                        var dataProperty = e.DataToCall.GetProperty(columnControl.DataEntryColumn.ID);
                         if (dataProperty != null)
                         {
                             CalculateProperty(childSimpleContorlProperty);
@@ -131,7 +131,7 @@ namespace MyUILibrary.EntityArea
 
         public void CalculateProperty(ChildSimpleContorlProperty childSimpleContorlProperty)
         {
-            var columnCustomFormula = childSimpleContorlProperty.SimpleColumnControl.Column.ColumnCustomFormula;
+            var columnCustomFormula = childSimpleContorlProperty.SimpleColumnControl.DataEntryColumn.ColumnCustomFormula;
             var dataItem = childSimpleContorlProperty.SourceData;
             var dataProperty = childSimpleContorlProperty.Property;
             var key = "formulaCalculated" + "_" + columnCustomFormula.ID;
@@ -274,7 +274,7 @@ namespace MyUILibrary.EntityArea
             FormulaCalculationAreaInitializer initializer = new FormulaCalculationAreaInitializer();
             initializer.ChildSimpleContorlProperty = childSimpleContorlProperty;
             initializer.FomulaManager = this;
-            initializer.ColumnCustomFormula = childSimpleContorlProperty.SimpleColumnControl.Column.ColumnCustomFormula;
+            initializer.ColumnCustomFormula = childSimpleContorlProperty.SimpleColumnControl.DataEntryColumn.ColumnCustomFormula;
             //initializer.ColumnControl = columnControl;
             var formulaCalculationArea = new FormulaCalculationArea(initializer);
             if (formulaCalculationArea.View != null)

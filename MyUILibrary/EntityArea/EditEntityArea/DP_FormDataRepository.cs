@@ -35,7 +35,7 @@ namespace MyUILibrary.EntityArea
         public EntityListViewDTO EntityListView { get { return EditEntityArea.ViewEntityArea.EntityListView; } }
 
         public List<ChildSimpleContorlProperty> ChildSimpleContorlProperties { set; get; }
-        List<Tuple<int, string, string, bool>> ListTempSimplePropertyReadonly = new List<Tuple<int, string, string, bool>>();
+        //List<Tuple<int, string, string, bool>> ListTempSimplePropertyReadonly = new List<Tuple<int, string, string, bool>>();
         List<Tuple<int, string, string, bool>> ListTempRelationshipPropertyReadonly = new List<Tuple<int, string, string, bool>>();
         public DP_FormDataRepository(DP_DataView dataView, I_EditEntityArea editEntityArea, bool isDBRelationship, bool isNewItem)
             : base(dataView)
@@ -68,6 +68,7 @@ namespace MyUILibrary.EntityArea
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
             ChildSimpleContorlProperties = new List<ChildSimpleContorlProperty>();
             ChangeMonitorItems = new List<ChangeMonitor>();
+           
             SetProperties();
         }
 
@@ -102,16 +103,14 @@ namespace MyUILibrary.EntityArea
             {
                 foreach (var simpleColumn in EditEntityArea.SimpleColumnControls)
                 {
-
-
-                    var property = Properties.First(x => x.ColumnID == simpleColumn.Column.ID);
+                    var property = Properties.First(x => x.ColumnID == simpleColumn.DataEntryColumn.ID);
                     var simpleProperty = new ChildSimpleContorlProperty(simpleColumn, this, property);
                     ChildSimpleContorlProperties.Add(simpleProperty);
-                    if (ListTempSimplePropertyReadonly.Any(x => x.Item1 == simpleColumn.Column.ID))
-                    {
-                        var item = ListTempSimplePropertyReadonly.First(x => x.Item1 == simpleColumn.Column.ID);
-                        simpleProperty.AddReadonlyState(item.Item2, item.Item3, item.Item4);
-                    }
+                    //if (ListTempSimplePropertyReadonly.Any(x => x.Item1 == simpleColumn.DataEntryColumn.ID))
+                    //{
+                    //    var item = ListTempSimplePropertyReadonly.First(x => x.Item1 == simpleColumn.DataEntryColumn.ID);
+                    //    simpleProperty.AddReadonlyState(item.Item2, item.Item3, item.Item4);
+                    //}
                 }
 
                 foreach (var relationshipColumnControl in EditEntityArea.RelationshipColumnControls)
@@ -312,7 +311,7 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        public bool IsUseLessBecauseNewAndReadonly { get; set; }
+       public bool IsUseLessBecauseNewAndReadonly { get; set; }
 
         public List<ChangeMonitor> ChangeMonitorItems { set; get; }
         public bool IsDefaultData { get; internal set; }
@@ -335,7 +334,7 @@ namespace MyUILibrary.EntityArea
             }
             else
             {
-                if (EditEntityArea.AreaInitializer.SourceRelationColumnControl == null)
+                if (EditEntityArea.SourceRelationColumnControl == null)
                 {
                     if (EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect || EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect)
                         return true;
@@ -351,11 +350,11 @@ namespace MyUILibrary.EntityArea
             //return false;
         }
 
-        internal void AddTempSimplePropertyReadonly(int id, string key, string title, bool permanent)
-        {
-            ListTempSimplePropertyReadonly.Add(new Tuple<int, string, string, bool>(id, key, title, permanent));
+        //internal void AddTempSimplePropertyReadonly(int id, string key, string title, bool permanent)
+        //{
+        //    ListTempSimplePropertyReadonly.Add(new Tuple<int, string, string, bool>(id, key, title, permanent));
 
-        }
+        //}
 
         internal void AddTempRelationshipPropertyReadonly(int id, string key, string title, bool permanent)
         {
@@ -372,8 +371,8 @@ namespace MyUILibrary.EntityArea
                 bool hasTempView = (EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
           EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect ||
             EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.Select);
-                //if ((DataView == null || DataView.IsOpenedTemporary == false) && (AreaInitializer.SourceRelationColumnControl == null || AreaInitializer.SourceRelationColumnControl.SourceEditArea.DataItemIsInEditMode(dataItem.ParantChildRelationshipInfo.SourceData)))
-                if (hasTempView && (EditEntityArea.AreaInitializer.SourceRelationColumnControl == null || ParantChildRelationshipData.SourceData.DataIsInEditMode()))
+                //if ((DataView == null || DataView.IsOpenedTemporary == false) && (SourceRelationColumnControl == null || SourceRelationColumnControl.SourceEditArea.DataItemIsInEditMode(dataItem.ParantChildRelationshipInfo.SourceData)))
+                if (hasTempView && (EditEntityArea.SourceRelationColumnControl == null || ParantChildRelationshipData.SourceData.DataIsInEditMode()))
                     return true;
             }
             return false;
@@ -445,10 +444,10 @@ namespace MyUILibrary.EntityArea
                                 }
 
                             }
-                            else if (ChildSimpleContorlProperties.Any(x => !x.IsReadonly && !x.IsHiddenOnState && x.SimpleColumnControl.Column.ID == column.ColumnID))
+                            else if (ChildSimpleContorlProperties.Any(x => !x.IsReadonly && !x.IsHiddenOnState && x.SimpleColumnControl.DataEntryColumn.ID == column.ColumnID))
                             {
                                 //اینجا باید بیزینسی ریدونلی شدن داده هم تست شود
-                                var simpleColumn = ChildSimpleContorlProperties.First(x => !x.IsReadonly && !x.IsHiddenOnState && x.SimpleColumnControl.Column.ID == column.ColumnID);
+                                var simpleColumn = ChildSimpleContorlProperties.First(x => !x.IsReadonly && !x.IsHiddenOnState && x.SimpleColumnControl.DataEntryColumn.ID == column.ColumnID);
                                 simpleColumnValues.Add(new Tuple<ChildSimpleContorlProperty, object>(simpleColumn, columnValue.ExactValue));
                             }
                         }

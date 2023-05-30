@@ -132,7 +132,7 @@ namespace MyUIGenerator.UIControlHelper
             }
             else
                 MyControlHelper = ControlHelper.GetControlHelper(Column, ColumnSetting, null);
-            MyControlHelper.SetReadonly(IsReadOnly);
+        //    MyControlHelper.SetReadonly(IsReadOnly);
             //if (MyControlHelper is I_ControlHelperValueRange)
             //{
             //    if (ColumnValueRange != null)

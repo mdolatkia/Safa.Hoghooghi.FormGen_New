@@ -17,7 +17,7 @@ namespace MyUILibrary.EntityArea
         public DP_FormDataRepository SourceData { set; get; }
         public bool LableIsShared { get { return SourceData.EditEntityArea is I_EditEntityAreaMultipleData; } }
 
-        public List<ControlStateItem> ControlReadonlyStateItems = new List<ControlStateItem>();
+        //public List<ControlStateItem> ControlReadonlyStateItems = new List<ControlStateItem>();
         public List<ControlStateItem> ControlHiddenStateItems = new List<ControlStateItem>();
 
 
@@ -85,25 +85,42 @@ namespace MyUILibrary.EntityArea
                 return ControlHiddenStateItems.Any();
             }
         }
-        public bool IsReadonlyOnState
-        {
-            get
-            {
-                return ControlReadonlyStateItems.Any();
-            }
-        }
+        //public bool IsReadonlyOnState
+        //{
+        //    get
+        //    {
+        //        return ControlReadonlyStateItems.Any();
+        //    }
+        //}
         public bool IsReadonly
         {
             get
             {
                 //**ChildSimpleContorlProperty.IsReadonly: 7a082dc6-eb74-4622-8062-1eac557339df
-                return SimpleColumnControl.Column.IsReadonly || ControlReadonlyStateItems.Any();
+                return SimpleColumnControl.DataEntryColumn.IsReadonly || Property.IsReadonlyOfState;
 
                 //|| (Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary &&
                 //              (SourceData.EditEntityArea.DataEntryEntity.IsReadonly || SourceData.IsReadonlyBecauseOfState));
             }
         }
+        public string IsReadonlyText
+        {
+            get
+            {
+                string text = "";
+                if (SimpleColumnControl.DataEntryColumn.IsReadonly)
+                    text += "دسترسی به ستون فقط خواندنی است";
 
+                if (Property.IsReadonlyOfState)
+                    text += (string.IsNullOrEmpty(text) ? "" : Environment.NewLine)
+                        + "بر اساس وضعیتهای زیر دسترسی به ستون فقط خواندنی است" + Environment.NewLine + Property.IsReadonlyStateTitle;
+
+                return text;
+
+                //|| (Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary &&
+                //              (SourceData.EditEntityArea.DataEntryEntity.IsReadonly || SourceData.IsReadonlyBecauseOfState));
+            }
+        }
         //public void SetSimpleColumnHiddenFromState(string message, string key, bool permanent, bool checkInUI)//, ImposeControlState hiddenControlState)
         //{
         //    if (checkInUI)
@@ -131,7 +148,7 @@ namespace MyUILibrary.EntityArea
 
         private void SetControlUIDetails()
         {
-            // ChildSimpleContorlProperty.SetControlUIDetails: ffee3df3-b262-4bb8-88ba-2b095307e547
+            // ChildSimpleContorlProperty.SetControlUIDetails: 2b095307e547
             if (IsHiddenOnState)
             {
                 GetUIControlManager.Visiblity(false);
@@ -144,29 +161,27 @@ namespace MyUILibrary.EntityArea
                 if (!LableIsShared)
                     SimpleColumnControl.LabelControlManager.Visiblity(true);
 
-                GetUIControlManager.SetReadonly(false);
-
                 List<ColumnControlColorItem> columnControlColorItems = new List<ColumnControlColorItem>();
                 List<ColumnControlMessageItem> columnControlMessageItems = new List<ColumnControlMessageItem>();
 
 
-                if (SimpleColumnControl.Column.IsMandatory)
-                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
-                if (SimpleColumnControl.Column.IsReadonly)
+                GetUIControlManager.SetReadonly(IsReadonly);
+                if (IsReadonly)
                 {
-                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, "columnReadonly", ControlItemPriority.Normal));
-                    columnControlMessageItems.Add(new ColumnControlMessageItem("این فیلد فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد", ControlOrLabelAsTarget.Control, "columnReadonly", ControlItemPriority.Normal));
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, IsReadonlyText, ControlItemPriority.High));
+                    columnControlMessageItems.Add(new ColumnControlMessageItem(IsReadonlyText, ControlOrLabelAsTarget.Control, "readonly", ControlItemPriority.High));
                 }
+
+
+                if (SimpleColumnControl.DataEntryColumn.IsMandatory)
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Label, ControlColorTarget.Foreground, "mandatory", ControlItemPriority.Normal));
+             
                 foreach (var item in ControlHiddenStateItems)
                 {
                     columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.Red, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
                     columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "ترتیب اثری به داده نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
                 }
-                foreach (var item in ControlReadonlyStateItems)
-                {
-                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, item.Key, ControlItemPriority.High));
-                    columnControlMessageItems.Add(new ColumnControlMessageItem(item.Message + Environment.NewLine + "این فیلد فقط خواندنی می باشد و تغییرات اعمال نخواهد شد", ControlOrLabelAsTarget.Control, item.Key, ControlItemPriority.High));
-                }
+
 
                 foreach (var item in PropertyFormulaCommentItems)
                 {
@@ -213,18 +228,18 @@ namespace MyUILibrary.EntityArea
         //    }
         //}
 
-        public void AddReadonlyState(string key, string message, bool permanent)
-        {
-            if (ControlReadonlyStateItems.Any(x => x.Key == key))
-                ControlReadonlyStateItems.Remove(ControlReadonlyStateItems.First(x => x.Key == key));
-            ControlReadonlyStateItems.Add(new ControlStateItem(key, message, permanent));
+        //public void AddReadonlyState(string key, string message, bool permanent)
+        //{
+        //    if (ControlReadonlyStateItems.Any(x => x.Key == key))
+        //        ControlReadonlyStateItems.Remove(ControlReadonlyStateItems.First(x => x.Key == key));
+        //    ControlReadonlyStateItems.Add(new ControlStateItem(key, message, permanent));
 
-            //if (checkInUI)
-            //{
-            //    CheckColumnReadonly();
-            //    SetMessageAndColor();
-            //}
-        }
+        //    //if (checkInUI)
+        //    //{
+        //    //    CheckColumnReadonly();
+        //    //    SetMessageAndColor();
+        //    //}
+        //}
 
 
 
@@ -266,7 +281,7 @@ namespace MyUILibrary.EntityArea
                 if (_CustomColumnValueRange != null)
                     return _CustomColumnValueRange;
                 else
-                    return SimpleColumnControl.Column.ColumnValueRange.Details;
+                    return SimpleColumnControl.DataEntryColumn.ColumnValueRange.Details;
             }
         }
         List<ColumnValueRangeDetailsDTO> _CustomColumnValueRange { set; get; }
@@ -289,7 +304,7 @@ namespace MyUILibrary.EntityArea
                 if (!IsHiddenOnState && !IsReadonly)
                 {
                     _CustomColumnValueRange = null;
-                    GetUIControlManager_ColumnValueRange.SetColumnValueRange(SimpleColumnControl.Column.ColumnValueRange.Details);
+                    GetUIControlManager_ColumnValueRange.SetColumnValueRange(SimpleColumnControl.DataEntryColumn.ColumnValueRange.Details);
                 }
             }
         }

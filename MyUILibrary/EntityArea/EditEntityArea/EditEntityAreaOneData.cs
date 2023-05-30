@@ -126,11 +126,12 @@ namespace MyUILibrary.EntityArea
                 }
                 else if (uiCompositionItem.ObjectCategory == DatabaseObjectCategory.Relationship)
                 {
-                    var editArea = GenerateRelationshipControlEditArea(uiCompositionItem.Relationship, uiCompositionItem.Relationship.Relationship);
+                    var editArea = GenerateRelationshipControlEditArea(uiCompositionItem.Relationship);
                     //اینجا ادیت اریا رابطه و همچنین کنترل منیجر رابطه مشخص میشوند. اگر مثلا کاربر به موجودیت رابطه دسترسی نداشته باشد این مقادیر تولید نمی شوند و نال بر میگردد
 
                     if (editArea != null)
                     {
+
                         var relationshipColumnControl = new RelationshipColumnControlOne(UIManager, uiCompositionItem, this as I_EditEntityArea, editArea);
                         RelationshipColumnControls.Add(relationshipColumnControl);
 
@@ -235,18 +236,19 @@ namespace MyUILibrary.EntityArea
 
         public void CreateDefaultData()
         {
+            //EditEntityAreaOneData.CreateDefaultData: f089224255d6
             bool shouldCreatData = true;
 
-            if (this.AreaInitializer.SourceRelationColumnControl != null)
+            if (this.SourceRelationColumnControl != null)
                 throw new Exception("asvvvb");
 
             //if (DataEntryEntity.IsReadonly)
             //{
             //    shouldCreatData = false;
             //}
-            //if (AreaInitializer.SourceRelationColumnControl != null)
+            //if (SourceRelationColumnControl != null)
             //{
-            //    if (AreaInitializer.SourceRelationColumnControl.Relationship.IsReadonly)
+            //    if (SourceRelationColumnControl.Relationship.IsReadonly)
             //        shouldCreatData = false;
             //}
             if (shouldCreatData)
@@ -261,24 +263,27 @@ namespace MyUILibrary.EntityArea
                 {
                     newData.IsUseLessBecauseNewAndReadonly = true;
 
-                    foreach (var property in newData.ChildSimpleContorlProperties)
-                    {
-                        property.AddReadonlyState("", "DataNewAndReadonly", true);
-                    }
-                    foreach (var rel in newData.ChildRelationshipDatas)
-                    {
-                        rel.AddReadonlyState("", "DataNewAndReadonly", true);
-                    }
+                    //////foreach (var property in newData.ChildSimpleContorlProperties)
+                    //////{
+                    //////    property.AddReadonlyState("", "DataNewAndReadonly", true);
+                    //////}
+                    //////foreach (var rel in newData.ChildRelationshipDatas)
+                    //////{
+                    //////    rel.AddReadonlyState("", "DataNewAndReadonly", true);
+                    //////}
                 }
+                AddData(newData);
 
-                var addResult = AddData(newData);
-                if (!addResult)
-                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده پیش فرض و یا داده های وابسته", newData.ViewInfo, Temp.InfoColor.Red);
+                ////var addResult = AddData(newData);
+                ////if (!addResult)
+                ////    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده پیش فرض و یا داده های وابسته", newData.ViewInfo, Temp.InfoColor.Red);
+                
+                
                 //else
                 //{
 
                 //}
-                //if (AreaInitializer.SourceRelationColumnControl != null)
+                //if (SourceRelationColumnControl != null)
                 //{
                 //    if (DataView != null)
                 //    {
@@ -341,7 +346,7 @@ namespace MyUILibrary.EntityArea
         //   //     bool relationshipFirstSideHasValue = relationshipControl.Relationship.RelationshipColumns.Any()
         //   //         && relationshipControl.Relationship.RelationshipColumns.All(x => specificDate.GetProperties().Any(y => !AgentHelper.ValueIsEmpty(y) && y.ColumnID == x.FirstSideColumnID));
 
-        //   //     //relationshipControl.EditNdTypeArea.AreaInitializer.SourceRelationColumnControl.RelatedData = specificDate;
+        //   //     //relationshipControl.EditNdTypeArea.SourceRelationColumnControl.RelatedData = specificDate;
         //   //     //اینجا یکارایی بشه دسترسی موقت
 
         //   ////     bool childLoadedBefore = specificDate.ChildRelationshipDatas.Any(x => x.Relationship.ID == relationshipControl.Relationship.ID);

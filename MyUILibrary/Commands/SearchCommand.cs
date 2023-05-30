@@ -34,7 +34,7 @@ namespace MyUILibrary.EntityArea.Commands
 
             I_EditEntityArea editArea = null;
 
-            if (EditArea.AreaInitializer.SourceRelationColumnControl == null)
+            if (EditArea.SourceRelationColumnControl == null)
                 editArea = EditArea;
             else
                 editArea = EditArea.ChildRelationshipInfoBinded.RelationshipControl.GenericEditNdTypeArea;

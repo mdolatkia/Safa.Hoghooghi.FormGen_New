@@ -104,7 +104,7 @@ namespace MyProject_WPF
             }
             else
             {
-                foreach (var item in bizActionActivity.GetActionActivities(entityID, null, false, false))
+                foreach (var item in bizActionActivity.GetBackendActionActivities(entityID, null, false, false))
                     Message.Add(item);
             }
             dtgActionActivities.ItemsSource = Message;
