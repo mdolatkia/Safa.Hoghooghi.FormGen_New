@@ -42,7 +42,7 @@ namespace MyModelManager
             //////    }
             //////    return GetStateFunctionResult(StateFunction, parameters);
         }
-        public StateResult GetStateResult(EntityStateDTO state, DP_DataRepository mainDataItem, DR_Requester requester)
+        public StateResult GetStateResult(EntityStateDTO state, DP_BaseData mainDataItem, DR_Requester requester)
         {
             StateResult result = new StateResult();
             bool hasAnyOfConditions = false;
@@ -66,7 +66,7 @@ namespace MyModelManager
             return result;
         }
 
-        private bool GetConditionResult(EntityStateConditionDTO condition, DP_DataRepository mainDataItem, DR_Requester requester)
+        private bool GetConditionResult(EntityStateConditionDTO condition, DP_BaseData mainDataItem, DR_Requester requester)
         {
             bool result = false;
             bool securitySubjectIsOk = false;

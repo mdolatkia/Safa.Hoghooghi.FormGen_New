@@ -353,65 +353,97 @@ namespace MyModelManager
                 return dbEntityState.ID;
             }
         }
-
-        internal void DoBeforeLoadUIActionActivities(DR_Requester Requester, List<DP_DataRepository> resultDataItems)
+        internal void DoFullDataBeforeLoadUIActionActivities(DR_Requester Requester, List<DP_DataRepository> resultDataItems)
         {
             var entityStates = GetEntityStates(Requester, resultDataItems.First().TargetEntityID, true);
-            if (entityStates.Any(x => x.ActionActivities.Any(y => y.UIEnablityDetails.Any(z => z.Readonly == true))))
+            List<Tuple<EntityStateDTO, List<UIEnablityDetailsDTO>>> listItems = new List<Tuple<EntityStateDTO, List<UIEnablityDetailsDTO>>>();
+            foreach (var entityState in entityStates)
             {
-                foreach (var dataItem in resultDataItems)
+                List<UIEnablityDetailsDTO> listEnablity = new List<UIEnablityDetailsDTO>();
+                foreach (var action in entityState.ActionActivities)
                 {
-                    foreach (var state in entityStates.Where(x => x.ActionActivities.Any(y => y.UIEnablityDetails.Any(z => z.Readonly == true))))
+                    foreach (var uiEnablity in action.UIEnablityDetails)
                     {
-                        if (CheckEntityState(Requester, dataItem, state))
+                        if (uiEnablity.RelationshipID != 0 || uiEnablity.ColumnID != 0)
+                            listEnablity.Add(uiEnablity);
+                    }
+                }
+                if (listEnablity.Any())
+                {
+                    foreach (var dataItem in resultDataItems)
+                    {
+                        if (CheckEntityState(Requester, dataItem, entityState))
                         {
-                            foreach (var actionActivity in state.ActionActivities)
+                            foreach (var uiEnablity in listEnablity)
                             {
-                                if (actionActivity.Type == Enum_ActionActivityType.UIEnablity)
+
+                                if (uiEnablity.ColumnID != 0)
                                 {
-                                    foreach (var detail in actionActivity.UIEnablityDetails)
+                                    var property = dataItem.Properties.FirstOrDefault(x => x.ColumnID == uiEnablity.ColumnID);
+                                    if (property != null)
                                     {
-                                        //var type = IsOnLoadOnlyAction(detail);
-                                        //if (type == ActionType.OnLoadParentRelationship || type == ActionType.OnLoadChildReadonly)
-                                        //{
-                                        //    if (type == ActionType.OnLoadParentRelationship)
-                                        //    {
-                                        //        if (detail.Hidden == true)
-                                        //        {
-                                        //            dataItem.AddParentRelationshipHiddenState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
-                                        //                                                                                               //    result.parentRelationshipIsHidden = true;
-                                        //        }
-                                        //        else if (detail.Readonly == true)
-                                        //        {
-                                        //            dataItem.AddParentRelationshipReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
-                                        //                                                                                                 //  result.parentRelationshipIsReadonly = true;
-                                        //        }
-                                        //    }
-                                        //else if (type == ActionType.OnLoadChildReadonly)
-                                        //{
-                                        //if (detail.RelationshipID != 0)
-                                        //{
-                                        //    if (dataItem.ChildRelationshipDatas.Any(x => x.Relationship.ID == detail.RelationshipID))
-                                        //    {
-                                        //        var childRelationshipInfo = dataItem.ChildRelationshipDatas.First(x => x.Relationship.ID == detail.RelationshipID);
-                                        //        childRelationshipInfo.AddReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
-                                        //    }
-                                        //    else
-                                        //        dataItem.AddTempRelationshipPropertyReadonly(detail.RelationshipID, detail.ID.ToString(), state.Title, true);
-                                        //}
-                                        //else 
-                                        if (detail.ColumnID != 0)
+                                        if (uiEnablity.Readonly == true)
                                         {
-                                            var property = dataItem.Properties.FirstOrDefault(x => x.ColumnID == detail.ColumnID);
-                                            if (property != null)
-                                            {
-                                                property.IsReadonlyOfState = true;
-                                                property.IsReadonlyStateTitle += (string.IsNullOrEmpty(property.IsReadonlyStateTitle) ? "" : Environment.NewLine + state.Title);
-                                            }
+                                            property.IsReadonlyOfState = true;
+                                            property.IsReadonlyStateTitle += (string.IsNullOrEmpty(property.IsReadonlyStateTitle) ? "" : Environment.NewLine + entityState.Title);
+                                        }
+                                        else if (uiEnablity.Hidden == true)
+                                        {
+                                            property.IsHiddenOfState = true;
+                                            property.IsHiddenStateTitle += (string.IsNullOrEmpty(property.IsReadonlyStateTitle) ? "" : Environment.NewLine + entityState.Title);
                                         }
                                     }
-                                    //    }
-                                    //}
+                                }
+                                else if (uiEnablity.RelationshipID != 0)
+                                {
+                                    if (uiEnablity.Readonly == true)
+                                    {
+                                        dataItem.ReadOnlyRelationships.Add(new Tuple<int, string>(uiEnablity.RelationshipID, entityState.Title));
+                                    }
+                                    else if (uiEnablity.Hidden == true)
+                                    {
+                                        dataItem.HiddenRelationships.Add(new Tuple<int, string>(uiEnablity.RelationshipID, entityState.Title));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        internal void DoDataViewBeforeLoadUIActionActivities(DR_Requester Requester, List<DP_DataView> resultDataItems, int toParentRelationshipID)
+        {
+            var entityStates = GetEntityStates(Requester, resultDataItems.First().TargetEntityID, true);
+            List<Tuple<EntityStateDTO, List<UIEnablityDetailsDTO>>> listItems = new List<Tuple<EntityStateDTO, List<UIEnablityDetailsDTO>>>();
+            foreach (var entityState in entityStates)
+            {
+                List<UIEnablityDetailsDTO> listEnablity = new List<UIEnablityDetailsDTO>();
+                foreach (var action in entityState.ActionActivities)
+                {
+                    foreach (var uiEnablity in action.UIEnablityDetails)
+                    {
+                        if (uiEnablity.RelationshipID != 0 && uiEnablity.RelationshipID == toParentRelationshipID)
+                            listEnablity.Add(uiEnablity);
+                    }
+                }
+                if (listEnablity.Any())
+                {
+                    foreach (var dataItem in resultDataItems)
+                    {
+                        if (CheckEntityState(Requester, dataItem, entityState))
+                        {
+                            foreach (var uiEnablity in listEnablity)
+                            {
+                                if (uiEnablity.RelationshipID != 0)
+                                {
+                                    if (uiEnablity.Readonly == true)
+                                    {
+                                        dataItem.ReadOnlyRelationships.Add(new Tuple<int, string>(uiEnablity.RelationshipID, entityState.Title));
+                                    }
+                                    else if (uiEnablity.Hidden == true)
+                                    {
+                                        dataItem.HiddenRelationships.Add(new Tuple<int, string>(uiEnablity.RelationshipID, entityState.Title));
+                                    }
                                 }
                             }
                         }
@@ -420,7 +452,7 @@ namespace MyModelManager
             }
         }
 
-        private bool CheckEntityState(DR_Requester Requester, DP_DataRepository dataItem, EntityStateDTO state)
+        private bool CheckEntityState(DR_Requester Requester, DP_BaseData dataItem, EntityStateDTO state)
         {
             bool stateIsValid = false;
             StateHandler handler = new StateHandler();

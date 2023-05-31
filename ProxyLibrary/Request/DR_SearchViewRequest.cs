@@ -10,13 +10,13 @@ namespace ProxyLibrary
             SearchDataItems = searchDataItems;
             //  
         }
-      //  public bool CheckStates { set; get; }
+        //  public bool CheckStates { set; get; }
         public DP_SearchRepositoryMain SearchDataItems;
         //public int EntityID;
         public int EntityViewID { set; get; }
         public int OrderByEntityViewColumnID { set; get; }
         public Enum_OrderBy SortType { set; get; }
-
+        public int ToParentRelationshipID { set; get; }
         public int MaxDataItems { set; get; }
     }
 
@@ -82,7 +82,8 @@ namespace ProxyLibrary
             //     WithDataView = withDataView;
         }
         public int DataViewID { set; get; }
-      //  public bool WithDataView { set; get; }
+       // public int ParentRelationshipID { set; get; }
+        //  public bool WithDataView { set; get; }
         //public bool CheckStates { get; set; }
         //public int ToParentRelationshipID { get; set; }
 
@@ -107,7 +108,7 @@ namespace ProxyLibrary
         //    //Properties = new List<List<EntityInstanceProperty>>();
         //}
         public DP_SearchRepositoryMain SearchDataItem;
-      //  public bool WithDataView { set; get; }
+        //  public bool WithDataView { set; get; }
     }
     public class DR_SearchKeysOnlyRequest : BaseRequest
     {

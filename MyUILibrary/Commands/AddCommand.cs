@@ -39,7 +39,7 @@ namespace MyUILibrary.EntityArea.Commands
             //    //    RelationData.ValueChanged = true;
             //}
 
-            var newData = AgentHelper.CreateAreaInitializerNewData(EditArea);
+            var newData = AgentHelper.CreateAreaInitializerNewData(EditArea,false);
             //var list = AgentHelper.CreateListFromSingleObject<DP_DataRepository>(newData);
             //if (EditArea.SourceRelationColumnControl == null)
             //{

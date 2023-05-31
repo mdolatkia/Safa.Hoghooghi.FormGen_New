@@ -71,7 +71,10 @@ namespace MyUILibrary.EntityArea
         public void SetBinding()
         {
             //ChildSimpleContorlProperty.SetBinding: 9bef1c5de838
-            GetUIControlManager.SetBinding(this.Property);
+            if (!IsHiddenOnState)
+            {
+                GetUIControlManager.SetBinding(this.Property);
+            }
             //این اضافیه چون تو وضعیها بصورت داینامیک فقط تعیین میشه و اونجا هم ریست میشه اما جهت محکم کاری بد نیست
             SetControlUIDetails();
 
@@ -83,6 +86,18 @@ namespace MyUILibrary.EntityArea
             get
             {
                 return ControlHiddenStateItems.Any();
+            }
+        }
+        public string IsHiddenText
+        {
+            get
+            {
+                string text = "";
+                foreach (var item in ControlHiddenStateItems)
+                {
+                    text += (text == "" ? "" : ",") + "غیر قابل دسترسی بودن رابطه" + ":" + item.Message;
+                }
+                return text;
             }
         }
         //public bool IsReadonlyOnState
@@ -154,6 +169,9 @@ namespace MyUILibrary.EntityArea
                 GetUIControlManager.Visiblity(false);
                 if (!LableIsShared)
                     SimpleColumnControl.LabelControlManager.Visiblity(false);
+
+                var message = "رابطه" + " " + SimpleColumnControl.DataEntryColumn.Alias + " " + "برای داده" + " " + SourceData.ViewInfo + " " + "غیر قابل دسترسی می باشد";
+                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo(message, IsHiddenText);
             }
             else
             {
@@ -168,7 +186,7 @@ namespace MyUILibrary.EntityArea
                 GetUIControlManager.SetReadonly(IsReadonly);
                 if (IsReadonly)
                 {
-                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, IsReadonlyText, ControlItemPriority.High));
+                    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, "readonly", ControlItemPriority.High));
                     columnControlMessageItems.Add(new ColumnControlMessageItem(IsReadonlyText, ControlOrLabelAsTarget.Control, "readonly", ControlItemPriority.High));
                 }
 
@@ -267,13 +285,10 @@ namespace MyUILibrary.EntityArea
         //    }
         //}
 
-        public void SetValue(object value)
-        {
-            if (!IsReadonly && IsHiddenOnState)
-            {
-                Property.Value = value;
-            }
-        }
+        //public void SetValue(object value)
+        //{
+           
+        //}
         public List<ColumnValueRangeDetailsDTO> ColumnValueRange
         {
             get

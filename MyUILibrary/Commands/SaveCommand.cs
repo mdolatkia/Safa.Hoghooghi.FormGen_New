@@ -248,7 +248,7 @@ namespace MyUILibrary.EntityArea.Commands
                 //////else if ((childItem.Relationship.IsReadonly || childItem.IsReadonly) && childItem.CheckRelationshipIsChanged())
                 //////    skipChildRel = true;
                 //}
-                if (!childItem.IsHidden)
+                if (!childItem.IsHiddenOnState)
                 {
                     var newChildItems = new ChildRelationshipData(childItem.SourceData, childItem.Relationship);
 

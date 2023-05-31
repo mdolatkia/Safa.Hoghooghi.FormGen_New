@@ -29,8 +29,8 @@ namespace MyUILibrary.EntityArea
             get { return base.ParantChildRelationshipData as ChildRelationshipInfo; }
         }
         public new List<ChildRelationshipInfo> ChildRelationshipDatas { get { return base.ChildRelationshipDatas.Cast<ChildRelationshipInfo>().ToList(); } }
-        public List<ControlStateItem> ToParentRelationshipReadonlyStateItems = new List<ControlStateItem>();
-        public List<ControlStateItem> ToParentRelationshipHiddenStateItems = new List<ControlStateItem>();
+        //public List<ControlStateItem> ToParentRelationshipReadonlyStateItems = new List<ControlStateItem>();
+        //public List<ControlStateItem> ToParentRelationshipHiddenStateItems = new List<ControlStateItem>();
         public I_EditEntityArea EditEntityArea { set; get; }
         public EntityListViewDTO EntityListView { get { return EditEntityArea.ViewEntityArea.EntityListView; } }
 
@@ -68,7 +68,7 @@ namespace MyUILibrary.EntityArea
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
             ChildSimpleContorlProperties = new List<ChildSimpleContorlProperty>();
             ChangeMonitorItems = new List<ChangeMonitor>();
-           
+
             SetProperties();
         }
 
@@ -82,20 +82,20 @@ namespace MyUILibrary.EntityArea
         }
         public bool ExcludeFromDataEntry { set; get; }
 
-        public bool ToParentRelationshipIsReadonly
-        {
-            get
-            {
-                return ToParentRelationshipReadonlyStateItems.Any();
-            }
-        }
-        public bool ToParentRelationshipIsHidden
-        {
-            get
-            {
-                return ToParentRelationshipHiddenStateItems.Any();
-            }
-        }
+        //public bool ToParentRelationshipIsReadonly
+        //{
+        //    get
+        //    {
+        //        return ToParentRelationshipReadonlyStateItems.Any();
+        //    }
+        //}
+        //public bool ToParentRelationshipIsHidden
+        //{
+        //    get
+        //    {
+        //        return ToParentRelationshipHiddenStateItems.Any();
+        //    }
+        //}
 
         public void SetProperties()
         {
@@ -115,15 +115,13 @@ namespace MyUILibrary.EntityArea
 
                 foreach (var relationshipColumnControl in EditEntityArea.RelationshipColumnControls)
                 {
-
-
                     var childRelationshipInfo = new ChildRelationshipInfo(relationshipColumnControl, this);
                     base.ChildRelationshipDatas.Add(childRelationshipInfo);
-                    if (ListTempRelationshipPropertyReadonly.Any(x => x.Item1 == relationshipColumnControl.Relationship.ID))
-                    {
-                        var item = ListTempRelationshipPropertyReadonly.First(x => x.Item1 == relationshipColumnControl.Relationship.ID);
-                        childRelationshipInfo.AddReadonlyState(item.Item2, item.Item3, item.Item4);
-                    }
+                    //if (ListTempRelationshipPropertyReadonly.Any(x => x.Item1 == relationshipColumnControl.Relationship.ID))
+                    //{
+                    //    var item = ListTempRelationshipPropertyReadonly.First(x => x.Item1 == relationshipColumnControl.Relationship.ID);
+                    //    childRelationshipInfo.AddReadonlyState(item.Item2, item.Item3, item.Item4);
+                    //}
 
                 }
             }
@@ -301,8 +299,8 @@ namespace MyUILibrary.EntityArea
                 //else
                 if (IsUseLessBecauseNewAndReadonly)
                     return false;
-                else if (ParantChildRelationshipData != null && ToParentRelationshipIsHidden)
-                    return false;
+                //else if (ParantChildRelationshipData != null && ParentRelationshipIsHidden)
+                //    return false;
                 //else if (ParantChildRelationshipData != null && ToParentRelationshipIsReadonly && !IsDBRelationship)
                 //    return false;
                 //else if (IsReadonly && !IsDBRelationship)
@@ -311,13 +309,12 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-       public bool IsUseLessBecauseNewAndReadonly { get; set; }
+        public bool IsUseLessBecauseNewAndReadonly { get; set; }
 
         public List<ChangeMonitor> ChangeMonitorItems { set; get; }
         public bool IsDefaultData { get; internal set; }
         public bool IsUpdated { get; internal set; }
-
-
+       
 
         public bool DataIsInEditMode()
         {
@@ -379,20 +376,20 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        public void AddParentRelationshipReadonlyState(string key, string message, bool permanent)
-        {
-            if (ToParentRelationshipReadonlyStateItems.Any(x => x.Key == key))
-                ToParentRelationshipReadonlyStateItems.Remove(ToParentRelationshipReadonlyStateItems.First(x => x.Key == key));
-            ToParentRelationshipReadonlyStateItems.Add(new ControlStateItem(key, message, permanent));
+        //public void AddParentRelationshipReadonlyState(string key, string message, bool permanent)
+        //{
+        //    if (ToParentRelationshipReadonlyStateItems.Any(x => x.Key == key))
+        //        ToParentRelationshipReadonlyStateItems.Remove(ToParentRelationshipReadonlyStateItems.First(x => x.Key == key));
+        //    ToParentRelationshipReadonlyStateItems.Add(new ControlStateItem(key, message, permanent));
 
-        }
+        //}
 
-        public void AddParentRelationshipHiddenState(string key, string message, bool permanent)
-        {
-            if (ToParentRelationshipHiddenStateItems.Any(x => x.Key == key))
-                ToParentRelationshipHiddenStateItems.Remove(ToParentRelationshipHiddenStateItems.First(x => x.Key == key));
-            ToParentRelationshipHiddenStateItems.Add(new ControlStateItem(key, message, permanent));
-        }
+        //public void AddParentRelationshipHiddenState(string key, string message, bool permanent)
+        //{
+        //    if (ToParentRelationshipHiddenStateItems.Any(x => x.Key == key))
+        //        ToParentRelationshipHiddenStateItems.Remove(ToParentRelationshipHiddenStateItems.First(x => x.Key == key));
+        //    ToParentRelationshipHiddenStateItems.Add(new ControlStateItem(key, message, permanent));
+        //}
 
         public void SetColumnValue(List<UIColumnValueDTO> uIColumnValue, EntityStateDTO state, FormulaDTO formula, bool fromSetFkRelColumns)
         {
@@ -429,9 +426,9 @@ namespace MyUILibrary.EntityArea
                                 continue;
 
                             //اینجا باید بیزینسی ریدونلی شدن داده هم تست شود
-                            if (ChildRelationshipDatas.Any(x => !x.IsReadonly && !x.IsHidden && x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID)))
+                            if (ChildRelationshipDatas.Any(x =>  x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID)))
                             {
-                                var relationshipColumn = ChildRelationshipDatas.First(x => !x.IsReadonly && !x.IsHidden && x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID));
+                                var relationshipColumn = ChildRelationshipDatas.First(x =>  x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID));
 
                                 if (relationshipColumn.Relationship.RelationshipColumns.All(x => uIColumnValue.Any(z => z.ColumnID == x.FirstSideColumnID)))
                                 {
@@ -444,10 +441,10 @@ namespace MyUILibrary.EntityArea
                                 }
 
                             }
-                            else if (ChildSimpleContorlProperties.Any(x => !x.IsReadonly && !x.IsHiddenOnState && x.SimpleColumnControl.DataEntryColumn.ID == column.ColumnID))
+                            else if (ChildSimpleContorlProperties.Any(x => x.SimpleColumnControl.DataEntryColumn.ID == column.ColumnID))
                             {
                                 //اینجا باید بیزینسی ریدونلی شدن داده هم تست شود
-                                var simpleColumn = ChildSimpleContorlProperties.First(x => !x.IsReadonly && !x.IsHiddenOnState && x.SimpleColumnControl.DataEntryColumn.ID == column.ColumnID);
+                                var simpleColumn = ChildSimpleContorlProperties.First(x =>  x.SimpleColumnControl.DataEntryColumn.ID == column.ColumnID);
                                 simpleColumnValues.Add(new Tuple<ChildSimpleContorlProperty, object>(simpleColumn, columnValue.ExactValue));
                             }
                         }
@@ -456,7 +453,11 @@ namespace MyUILibrary.EntityArea
                     foreach (var item in simpleColumnValues)
                     {
                         //اینجا باید بررسی بشه که نوع مقدار و پراپرتی مناسب هستند
-                        item.Item1.SetValue(item.Item2);
+                        if (!item.Item1.IsReadonly && item.Item1.IsHiddenOnState)
+                        {
+                            item.Item1.Property.Value = item.Item2;
+                        }
+
                     }
                     foreach (var item in relationshipColumnValues)
                     {
@@ -468,7 +469,7 @@ namespace MyUILibrary.EntityArea
 
                             if ((childInfo.SourceData as DP_FormDataRepository).DataIsInEditMode())
                             {
-                                if (!childInfo.IsReadonly && !childInfo.IsHidden)
+                                if (!childInfo.IsReadonly && !childInfo.IsHiddenOnState)
                                 {
                                     //    RelationshipControl.GenericEditNdTypeArea.SetChildRelationshipInfo(this);
 

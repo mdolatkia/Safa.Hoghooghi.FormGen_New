@@ -12,7 +12,7 @@ namespace MyModelManager
 {
     public class DataitemRelatedColumnValueHandler
     {
-        public object GetValueSomeHow(DR_Requester requester, DP_DataRepository sentdata, EntityRelationshipTailDTO valueRelationshipTail, int valueColumnID, bool firstIfMultiple = false)
+        public object GetValueSomeHow(DR_Requester requester, DP_BaseData sentdata, EntityRelationshipTailDTO valueRelationshipTail, int valueColumnID, bool firstIfMultiple = false)
         {
             if (valueRelationshipTail == null)
             {
@@ -21,28 +21,32 @@ namespace MyModelManager
             }
             else
             {
-                DP_DataRepository relatedData = null;
-                if (sentdata.ParantChildRelationshipData != null && sentdata.ParantChildRelationshipData.ToParentRelationshipID == valueRelationshipTail.Relationship.ID)
+                DP_BaseData relatedData = null;
+                if (sentdata is DP_DataRepository)
                 {
-                    if (sentdata.ParantChildRelationshipData.ToParentRelationshipID == valueRelationshipTail.Relationship.ID)
-                        relatedData = sentdata.ParantChildRelationshipData.SourceData;
-                }
-                else if (sentdata.ChildRelationshipDatas.Any(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID))
-                {
-                    var childInfo = sentdata.ChildRelationshipDatas.First(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID);
-                    if (childInfo.RelatedData.Count > 1)
+                  
+                    if ((sentdata as DP_DataRepository).ParantChildRelationshipData != null && (sentdata as DP_DataRepository).ParantChildRelationshipData.ToParentRelationshipID == valueRelationshipTail.Relationship.ID)
                     {
-                        if (firstIfMultiple)
-                            relatedData = childInfo.RelatedData.First();
-                        else
-                            throw new Exception("asav");
+                        if ((sentdata as DP_DataRepository).ParantChildRelationshipData.ToParentRelationshipID == valueRelationshipTail.Relationship.ID)
+                            relatedData = (sentdata as DP_DataRepository).ParantChildRelationshipData.SourceData;
                     }
-                    else if (childInfo.RelatedData.Count == 1)
-                        relatedData = childInfo.RelatedData.First();
-                    else if (childInfo.RelatedData.Count == 0)
+                    else if ((sentdata as DP_DataRepository).ChildRelationshipDatas.Any(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID))
                     {
-                        //یعنی یا داده مرتبطی وجود نداشته یا حذف شده
-                        return "";
+                        var childInfo = (sentdata as DP_DataRepository).ChildRelationshipDatas.First(x => x.Relationship.ID == valueRelationshipTail.Relationship.ID);
+                        if (childInfo.RelatedData.Count > 1)
+                        {
+                            if (firstIfMultiple)
+                                relatedData = childInfo.RelatedData.First();
+                            else
+                                throw new Exception("asav");
+                        }
+                        else if (childInfo.RelatedData.Count == 1)
+                            relatedData = childInfo.RelatedData.First();
+                        else if (childInfo.RelatedData.Count == 0)
+                        {
+                            //یعنی یا داده مرتبطی وجود نداشته یا حذف شده
+                            return "";
+                        }
                     }
                 }
                 if (relatedData != null)

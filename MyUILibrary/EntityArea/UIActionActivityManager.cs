@@ -548,74 +548,69 @@ namespace MyUILibrary.EntityArea
         //    return result;
         //}
 
-        public void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem)
-        {
-            //DataAddedResult result = new DataAddedResult();
+        //public void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem)
+        //{
+        //    //DataAddedResult result = new DataAddedResult();
 
-            if (dataItem.IsNewItem)
-                return;
+        //    if (dataItem.IsNewItem)
+        //        return;
 
-            foreach (var state in EditArea.EntityStates1.Where(x => StateHasOnLoadAction(x)))
-            {
-                if (CheckEntityState(dataItem, state))
-                {
-                    foreach (var actionActivity in state.ActionActivities)
-                    {
-                        if (actionActivity.Type == Enum_ActionActivityType.UIEnablity)
-                        {
-                            foreach (var detail in actionActivity.UIEnablityDetails)
-                            {
-                                var type = IsOnLoadOnlyAction(detail);
-                                if (type == ActionType.OnLoadParentRelationship || type == ActionType.OnLoadChildReadonly)
-                                {
-                                    if (type == ActionType.OnLoadParentRelationship)
-                                    {
-                                        if (detail.Hidden == true)
-                                        {
-                                            dataItem.AddParentRelationshipHiddenState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
-                                                                                                                               //    result.parentRelationshipIsHidden = true;
-                                        }
-                                        else if (detail.Readonly == true)
-                                        {
-                                            dataItem.AddParentRelationshipReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
-                                                                                                                                 //  result.parentRelationshipIsReadonly = true;
-                                        }
-                                    }
-                                    else if (type == ActionType.OnLoadChildReadonly)
-                                    {
-                                        if (detail.RelationshipID != 0)
-                                        {
-                                            if (dataItem.ChildRelationshipDatas.Any(x => x.Relationship.ID == detail.RelationshipID))
-                                            {
-                                                var childRelationshipInfo = dataItem.ChildRelationshipDatas.First(x => x.Relationship.ID == detail.RelationshipID);
-                                                childRelationshipInfo.AddReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
-                                            }
-                                            else
-                                                dataItem.AddTempRelationshipPropertyReadonly(detail.RelationshipID, detail.ID.ToString(), state.Title, true);
-                                        }
-                                        //else if (detail.ColumnID != 0)
-                                        //{
-                                        //    var simpleColumn = GetChildSimpleContorlProperty(dataItem, detail.ColumnID);
-                                        //    if (simpleColumn != null)
-                                        //    {
-                                        //        simpleColumn.AddReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);//, ImposeControlState.Impose);// GetColumnReadonlyControlState(state, dataItem, detail.ColumnID, actionActivitySource));
-                                        //    }
-                                        //    else
-                                        //        dataItem.AddTempSimplePropertyReadonly(detail.ColumnID, detail.ID.ToString(), state.Title, true);
-                                        //}
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            //   return result;
-            //if (EditArea is I_EditEntityAreaOneData && hiddenControls.Any())
-            //{
-            //    (EditArea as I_EditEntityAreaOneData).CheckContainersVisiblity(hiddenControls);
-            //}
-        }
+        //    foreach (var state in EditArea.EntityStates1.Where(x => StateHasOnLoadAction(x)))
+        //    {
+        //        if (CheckEntityState(dataItem, state))
+        //        {
+        //            foreach (var actionActivity in state.ActionActivities)
+        //            {
+        //                if (actionActivity.Type == Enum_ActionActivityType.UIEnablity)
+        //                {
+        //                    foreach (var detail in actionActivity.UIEnablityDetails)
+        //                    {
+        //                        var type = IsOnLoadOnlyAction(detail);
+        //                        if (type == ActionType.OnLoadParentRelationship || type == ActionType.OnLoadChildReadonly)
+        //                        {
+        //                            //if (type == ActionType.OnLoadParentRelationship)
+        //                            //{
+        //                            //     if (detail.Readonly == true)
+        //                            //    {
+        //                            //        dataItem.AddParentRelationshipReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
+        //                            //                                                                                             //  result.parentRelationshipIsReadonly = true;
+        //                            //    }
+        //                            //}
+        //                            if (type == ActionType.OnLoadChildReadonly)
+        //                            {
+        //                                if (detail.RelationshipID != 0)
+        //                                {
+        //                                    if (dataItem.ChildRelationshipDatas.Any(x => x.Relationship.ID == detail.RelationshipID))
+        //                                    {
+        //                                        var childRelationshipInfo = dataItem.ChildRelationshipDatas.First(x => x.Relationship.ID == detail.RelationshipID);
+        //                                        childRelationshipInfo.AddReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
+        //                                    }
+        //                                    else
+        //                                        dataItem.AddTempRelationshipPropertyReadonly(detail.RelationshipID, detail.ID.ToString(), state.Title, true);
+        //                                }
+        //                                //else if (detail.ColumnID != 0)
+        //                                //{
+        //                                //    var simpleColumn = GetChildSimpleContorlProperty(dataItem, detail.ColumnID);
+        //                                //    if (simpleColumn != null)
+        //                                //    {
+        //                                //        simpleColumn.AddReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);//, ImposeControlState.Impose);// GetColumnReadonlyControlState(state, dataItem, detail.ColumnID, actionActivitySource));
+        //                                //    }
+        //                                //    else
+        //                                //        dataItem.AddTempSimplePropertyReadonly(detail.ColumnID, detail.ID.ToString(), state.Title, true);
+        //                                //}
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    //   return result;
+        //    //if (EditArea is I_EditEntityAreaOneData && hiddenControls.Any())
+        //    //{
+        //    //    (EditArea as I_EditEntityAreaOneData).CheckContainersVisiblity(hiddenControls);
+        //    //}
+        //}
         public void DataShown(DP_FormDataRepository dataItem)
         {
 

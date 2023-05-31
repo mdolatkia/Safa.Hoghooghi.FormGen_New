@@ -256,22 +256,22 @@ namespace MyUILibrary.EntityArea
 
             if (shouldCreatData)
             {
-                var newData = AgentHelper.CreateAreaInitializerNewData(this);
-                newData.IsDefaultData = true;
+                var newData = AgentHelper.CreateAreaInitializerNewData(this,true);
+              
 
-                if (DataEntryEntity.IsReadonly)
-                {
-                    newData.IsUseLessBecauseNewAndReadonly = true;
+                //if (DataEntryEntity.IsReadonly)
+                //{
+                //    newData.IsUseLessBecauseNewAndReadonly = true;
 
-                    //////foreach (var property in newData.ChildSimpleContorlProperties)
-                    //////{
-                    //////    property.AddReadonlyState("", "DataNewAndReadonly", true);
-                    //////}
-                    //////foreach (var rel in newData.ChildRelationshipDatas)
-                    //////{
-                    //////    rel.AddReadonlyState("", "DataNewAndReadonly", true);
-                    //////}
-                }
+                //    //////foreach (var property in newData.ChildSimpleContorlProperties)
+                //    //////{
+                //    //////    property.AddReadonlyState("", "DataNewAndReadonly", true);
+                //    //////}
+                //    //////foreach (var rel in newData.ChildRelationshipDatas)
+                //    //////{
+                //    //////    rel.AddReadonlyState("", "DataNewAndReadonly", true);
+                //    //////}
+                //}
                 AddData(newData);
 
                 ////var addResult = AddData(newData);

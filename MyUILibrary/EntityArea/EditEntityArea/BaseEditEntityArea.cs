@@ -2733,8 +2733,8 @@ namespace MyUILibrary.EntityArea
             //  if (dataItem.EntityListView == null)
             //      dataItem.EntityListView = ViewEntityArea.EntityListView;// DefaultEntityListViewDTO;
 
-            if (!dataItem.IsNewItem)
-                AreaInitializer.ActionActivityManager.SetExistingDataFirstLoadStates(dataItem);
+            //if (!dataItem.IsNewItem)
+            //    AreaInitializer.ActionActivityManager.SetExistingDataFirstLoadStates(dataItem);
 
             AreaInitializer.Datas.Add(dataItem);
 
@@ -3111,37 +3111,92 @@ namespace MyUILibrary.EntityArea
                 deleteCommand.CommandManager.SetEnabled(deleteCommandEnablity);
             }
 
-            bool addCommandEnablity = true;
-            var addCommand = GetCommand(typeof(AddCommand));
-            if (addCommand != null)
-            {
-                if (DataEntryEntity.IsReadonly)
-                    addCommandEnablity = false;
-                else
-                    addCommandEnablity = true;
-                addCommand.CommandManager.SetEnabled(addCommandEnablity);
-            }
-
-            bool removeCommandEnablity = true;
-            var removeCommand = GetCommand(typeof(RemoveCommand));
-            if (removeCommand != null)
-            {
-                if (!dataList.Any())
-                {
-                    removeCommandEnablity = false;
-                }
-                removeCommand.CommandManager.SetEnabled(removeCommandEnablity);
-            }
-
             bool clearCommandEnablity = true;
-            var clearCommand = GetCommand(typeof(ClearCommand));
-            if (clearCommand != null)
+            bool searchCommandEnablity = true;
+            bool addCommandEnablity = true;
+            bool removeCommandEnablity = true;
+            if (SourceRelationColumnControl != null)
+            {
+                if (ChildRelationshipInfoBinded.IsReadonly || !ChildRelationshipInfoBinded.RelatedData.Any())
+                    clearCommandEnablity = false;
+
+
+                if (ChildRelationshipInfoBinded.IsReadonly)// || (RelatedData.Any() && RelatedData.All(x => x.IsDBRelationship && (x.ToParentRelationshipIsReadonly || x.ToParentRelationshipIsHidden))))
+                    searchCommandEnablity = false;
+
+                if (ChildRelationshipInfoBinded.IsDataviewOpen)
+                {
+                    if (DataEntryEntity.IsReadonly || ChildRelationshipInfoBinded.IsReadonly)
+                        addCommandEnablity = false;
+                    else
+                        addCommandEnablity = true;
+
+                    if (DataEntryEntity.IsReadonly || !ChildRelationshipInfoBinded.RelatedData.Any())//|| RelatedData.All(x => x.IsDBRelationship && (x.ToParentRelationshipIsReadonly || x.ToParentRelationshipIsHidden)))
+                    {
+                        // باید رو ریمو خود داده کنترل شودIsDBRelationship ها
+                        removeCommandEnablity = false;
+                    }
+                }
+                if (!ChildRelationshipInfoBinded.IsDirect)
+                {
+                    var tempView = ChildRelationshipInfoBinded.GetTempView;
+
+                    tempView.ButtonClearEnabled = clearCommandEnablity;
+                    tempView.ButtonSearchFormEnabled = searchCommandEnablity;
+                    tempView.ButtonPopupEnabled = searchCommandEnablity;
+                    tempView.InfoTextboxReadOnly = !searchCommandEnablity;
+
+                    //bool quickSearchEnablity = true;
+                    //if (!searchCommandEnablity)
+
+                    //else
+                    //    quickSearchEnablity = RelationshipControl.GenericEditNdTypeArea.TemporaryDisplayView.QuickSearchVisibility;
+                    //tempView.DisableEnable(TemporaryLinkType.QuickSearch, quickSearchEnablity);
+
+                    bool dataViewEnablity = true;
+                    if ((DataEntryEntity.IsReadonly || ChildRelationshipInfoBinded.IsReadonly) && !ChildRelationshipInfoBinded.RelatedData.Any())
+                        dataViewEnablity = false;
+                    tempView.ButtonDataEditEnabled = dataViewEnablity;
+                }
+            }
+            else
             {
                 if (!dataList.Any())
                 {
                     clearCommandEnablity = false;
                 }
+
+                if (DataEntryEntity.IsReadonly)
+                    addCommandEnablity = false;
+                else
+                    addCommandEnablity = true;
+
+
+                if (!dataList.Any())
+                {
+                    removeCommandEnablity = false;
+                }
+            }
+
+            var clearCommand = GetCommand(typeof(ClearCommand));
+            if (clearCommand != null)
                 clearCommand.CommandManager.SetEnabled(clearCommandEnablity);
+
+            var searchCommand = SourceRelationColumnControl.GenericEditNdTypeArea.GetCommand(typeof(SearchCommand));
+            if (searchCommand != null)
+                searchCommand.CommandManager.SetEnabled(searchCommandEnablity);
+
+
+            var addCommand = GetCommand(typeof(AddCommand));
+            if (addCommand != null)
+            {
+                addCommand.CommandManager.SetEnabled(addCommandEnablity);
+            }
+
+            var removeCommand = GetCommand(typeof(RemoveCommand));
+            if (removeCommand != null)
+            {
+                removeCommand.CommandManager.SetEnabled(removeCommandEnablity);
             }
             bool enableDisableDataSection = true;
             if (GetDataList().Any(x => x.IsUseLessBecauseNewAndReadonly))

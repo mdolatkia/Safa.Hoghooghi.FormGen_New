@@ -27,6 +27,8 @@ namespace ProxyLibrary
         public string _TargetEntityAlias;
         public int TargetEntityID { get { return _TargetEntityID; } }
         public string TargetEntityAlias { get { return _TargetEntityAlias; } }
+
+        public bool IsNewItem;
         public virtual List<EntityInstanceProperty> KeyProperties
         {
             get
@@ -53,7 +55,7 @@ namespace ProxyLibrary
         }
     }
     public class DP_DataView : DP_BaseData
-    {            
+    {
         // DP_DataView: 4a4b577125bf
         public DP_DataView(int targetEntityID, string targetEntityAlias
             , int listViewID, List<DataViewProperty> dataViewProperties)
@@ -65,8 +67,10 @@ namespace ProxyLibrary
         public DP_DataView(int targetEntityID, string targetEntityAlias)
             : base(targetEntityID, targetEntityAlias)
         {
-         
+
         }
+        public List<Tuple<int, string>> ReadOnlyRelationships { get; set; }
+        public List<Tuple<int, string>> HiddenRelationships { get; set; }
         public List<DataViewProperty> DataViewProperties { set; get; }
         public int ListViewID { set; get; }
         public string ViewInfo
@@ -116,6 +120,40 @@ namespace ProxyLibrary
         //public event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
         //public Dictionary<int, List<ColumnValueRangeDetailsDTO>> ColumnKeyValueRanges = new Dictionary<int, List<ColumnValueRangeDetailsDTO>>();
 
+        public bool ParentRelationshipIsHidden
+        {
+            get { return ParantChildRelationshipData != null && HiddenRelationships.Any(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID); }
+        }
+        public string ParentRelationshipHiddenText
+        {
+            get
+            {
+                var text = "";
+                if (ParantChildRelationshipData != null)
+                {
+                    foreach (var item in HiddenRelationships.Where(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID))
+                        text += (text == "" ? "" : Environment.NewLine + item.Item2);
+                }
+                return text;
+            }
+        }
+        public bool ParentRelationshipIsReadonly
+        {
+            get { return ParantChildRelationshipData != null && ReadOnlyRelationships.Any(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID); }
+        }
+        public string ParentRelationshipReadonlyText
+        {
+            get
+            {
+                var text = "";
+                if (ParantChildRelationshipData != null)
+                {
+                    foreach (var item in ReadOnlyRelationships.Where(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID))
+                        text += (text == "" ? "" : Environment.NewLine + item.Item2);
+                }
+                return text;
+            }
+        }
         public virtual List<ChildRelationshipData> ChildRelationshipDatas { set; get; }
 
         public virtual ChildRelationshipData ParantChildRelationshipData { get; set; }
@@ -130,6 +168,8 @@ namespace ProxyLibrary
         {
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
             ChildRelationshipDatas = new List<ChildRelationshipData>();
+            ReadOnlyRelationships = new List<Tuple<int, string>>();
+
             GUID = Guid.NewGuid();
         }
         public DP_DataRepository(int TargetEntityID, string TargetEntityAlias)
@@ -138,6 +178,7 @@ namespace ProxyLibrary
 
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
             ChildRelationshipDatas = new List<ChildRelationshipData>();
+            ReadOnlyRelationships = new List<Tuple<int, string>>();
             GUID = Guid.NewGuid();
         }
 
@@ -317,7 +358,7 @@ namespace ProxyLibrary
 
 
         public Guid GUID;
-        public bool IsNewItem;
+
 
 
 
@@ -419,6 +460,13 @@ namespace ProxyLibrary
                 return info;
             }
         }
+
+
+
+
+
+        //public bool ParentRelationshipIsHidden { get; set; }
+        // public string ParentRelationshipTitle { get; set; }
 
 
 
@@ -922,6 +970,8 @@ namespace ProxyLibrary
         public bool ISFK { get; set; }
         public bool IsReadonlyOfState { get; set; }
         public string IsReadonlyStateTitle { get; set; }
+        public bool IsHiddenOfState { get; set; }
+        public string IsHiddenStateTitle { get; set; }
 
         public bool ValueIsEmptyOrDefaultValue()
         {

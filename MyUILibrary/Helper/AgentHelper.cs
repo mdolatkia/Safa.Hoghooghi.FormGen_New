@@ -490,30 +490,31 @@ namespace MyUILibrary
 
 
         //یک قلم داده جدید ایجاد میکند
-        internal static DP_FormDataRepository CreateAreaInitializerNewData(I_EditEntityArea editEntityArea)
+        internal static DP_FormDataRepository CreateAreaInitializerNewData(I_EditEntityArea editEntityArea, bool isDefault)
         {
             //**AgentHelper.CreateAreaInitializerNewData: 193cdabb907a
-            if (editEntityArea is I_EditEntityAreaMultipleData)
-            {
-                if (editEntityArea.DataEntryEntity.IsReadonly)
-                {
-                    throw new Exception("Entity is readonly!");
-                }
-                if (editEntityArea.SourceRelationColumnControl != null)
-                {
-                    if (editEntityArea.SourceRelationColumnControl.Relationship.IsReadonly)
-                        throw new Exception("Relationship is readonly!");
-                }
-            }
+            //if (editEntityArea is I_EditEntityAreaMultipleData)
+            //{
+            //if (editEntityArea.DataEntryEntity.IsReadonly)
+            //{
+            //    throw new Exception("Entity is readonly!");
+            //}
+            //if (editEntityArea.SourceRelationColumnControl != null)
+            //{
+            //    if (editEntityArea.SourceRelationColumnControl.Relationship.IsReadonly)
+            //        throw new Exception("Relationship is readonly!");
+            //}
+            //}
 
             var innerItem = new DP_DataRepository(editEntityArea.AreaInitializer.EntityID, editEntityArea.SimpleEntity.Alias);
+
 
             innerItem.IsFullData = true;
 
             //result.Properties = new List<EntityInstanceProperty>();
             innerItem.IsNewItem = true;
 
-            
+
             //result.TargetEntityID = editEntityArea.AreaInitializer.EntityID;
             // result.DataInstance = new EntityInstance();// Clone<TableDrivedEntityDTO>(AreaInitializer.Template);
 
@@ -608,7 +609,17 @@ namespace MyUILibrary
 
             }
             var result = new DP_FormDataRepository(innerItem, editEntityArea, false, true);
-           // result.EntityListView = editEntityArea.ViewEntityArea.EntityListView;
+
+            if (isDefault)
+            {
+                result.IsDefaultData = true;
+                if (editEntityArea.DataEntryEntity.IsReadonly || (editEntityArea.ChildRelationshipInfoBinded != null && editEntityArea.ChildRelationshipInfoBinded.IsReadonly))
+                {
+                    result.IsUseLessBecauseNewAndReadonly = true;
+                }
+            }
+
+            // result.EntityListView = editEntityArea.ViewEntityArea.EntityListView;
             // if (editEntityArea.DataEntryEntity.IsReadonly
             //|| (editEntityArea.SourceRelationColumnControl != null && editEntityArea.SourceRelationColumnControl.Relationship.IsReadonly))
             //     result.IsUseLessBecauseNewAndReadonly = true;

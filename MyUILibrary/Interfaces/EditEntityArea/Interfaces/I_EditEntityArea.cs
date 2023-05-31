@@ -75,6 +75,7 @@ namespace MyUILibrary.EntityArea
         //      void SelectData(List<Dictionary<ColumnDTO, object>> items);
         //    void SelectDataFromExternal(List<Dictionary<ColumnDTO, object>> items);
         void SelectData(List<DP_BaseData> datas);
+        void DecideButtonsEnablity1();
         //   void SearchTextBox(string text);
         // void RemoveViewEntityAreaView();
 
@@ -97,7 +98,7 @@ namespace MyUILibrary.EntityArea
 
         //void ResetActionActivities(DP_FormDataRepository dataItem);
         void CheckAndImposeEntityStates(DP_FormDataRepository data, ActionActivitySource actionActivitySource);
-        void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem);
+       // void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem);
         void DataToShowInDataview(DP_FormDataRepository specificDate);
     }
 
