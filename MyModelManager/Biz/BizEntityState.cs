@@ -353,7 +353,7 @@ namespace MyModelManager
                 return dbEntityState.ID;
             }
         }
-        internal void DoFullDataBeforeLoadUIActionActivities(DR_Requester Requester, List<DP_DataRepository> resultDataItems)
+        internal void DoFullDataBeforeLoadUIActionActivities(DR_Requester Requester, List<DP_DataRepository> resultDataItems, int toParentRelationshipID)
         {
             var entityStates = GetEntityStates(Requester, resultDataItems.First().TargetEntityID, true);
             List<Tuple<EntityStateDTO, List<UIEnablityDetailsDTO>>> listItems = new List<Tuple<EntityStateDTO, List<UIEnablityDetailsDTO>>>();
@@ -364,7 +364,9 @@ namespace MyModelManager
                 {
                     foreach (var uiEnablity in action.UIEnablityDetails)
                     {
-                        if (uiEnablity.RelationshipID != 0 || uiEnablity.ColumnID != 0)
+
+                        if ((uiEnablity.RelationshipID != 0 && uiEnablity.RelationshipID == toParentRelationshipID)
+                            || (uiEnablity.Readonly == true && uiEnablity.ColumnID != 0))
                             listEnablity.Add(uiEnablity);
                     }
                 }
@@ -384,25 +386,27 @@ namespace MyModelManager
                                     {
                                         if (uiEnablity.Readonly == true)
                                         {
-                                            property.IsReadonlyOfState = true;
-                                            property.IsReadonlyStateTitle += (string.IsNullOrEmpty(property.IsReadonlyStateTitle) ? "" : Environment.NewLine + entityState.Title);
+                                            property.OnLoadIsReadonlyOfState = true;
+                                            property.OnLoadIsReadonlyStateTitle += (string.IsNullOrEmpty(property.OnLoadIsReadonlyStateTitle) ? "" : Environment.NewLine + entityState.Title);
                                         }
-                                        else if (uiEnablity.Hidden == true)
-                                        {
-                                            property.IsHiddenOfState = true;
-                                            property.IsHiddenStateTitle += (string.IsNullOrEmpty(property.IsReadonlyStateTitle) ? "" : Environment.NewLine + entityState.Title);
-                                        }
+                                        //else if (uiEnablity.Hidden == true)
+                                        //{
+                                        //    property.OnLoadIsHiddenOfState = true;
+                                        //    property.OnLoadIsHiddenStateTitle += (string.IsNullOrEmpty(property.OnLoadIsReadonlyStateTitle) ? "" : Environment.NewLine + entityState.Title);
+                                        //}
                                     }
                                 }
                                 else if (uiEnablity.RelationshipID != 0)
                                 {
                                     if (uiEnablity.Readonly == true)
                                     {
-                                        dataItem.ReadOnlyRelationships.Add(new Tuple<int, string>(uiEnablity.RelationshipID, entityState.Title));
+                                        dataItem.ParentRelationshipIsReadonlyOnLoad = true;
+                                        dataItem.ParentRelationshipIsReadonlyOnLoadText += (string.IsNullOrEmpty(dataItem.ParentRelationshipIsReadonlyOnLoadText) ? "" : ",") + entityState.Title;
                                     }
                                     else if (uiEnablity.Hidden == true)
                                     {
-                                        dataItem.HiddenRelationships.Add(new Tuple<int, string>(uiEnablity.RelationshipID, entityState.Title));
+                                        dataItem.ParentRelationshipIsHidenOnLoad = true;
+                                        dataItem.ParentRelationshipIsHidenOnLoadText += (string.IsNullOrEmpty(dataItem.ParentRelationshipIsHidenOnLoadText) ? "" : ",") + entityState.Title;
                                     }
                                 }
                             }
@@ -438,11 +442,11 @@ namespace MyModelManager
                                 {
                                     if (uiEnablity.Readonly == true)
                                     {
-                                        dataItem.ReadOnlyRelationships.Add(new Tuple<int, string>(uiEnablity.RelationshipID, entityState.Title));
+                                        dataItem.OnLoadReadOnlyRelationships.Add(new Tuple<int, string>(uiEnablity.RelationshipID, entityState.Title));
                                     }
                                     else if (uiEnablity.Hidden == true)
                                     {
-                                        dataItem.HiddenRelationships.Add(new Tuple<int, string>(uiEnablity.RelationshipID, entityState.Title));
+                                        dataItem.OnLoadHiddenRelationships.Add(new Tuple<int, string>(uiEnablity.RelationshipID, entityState.Title));
                                     }
                                 }
                             }

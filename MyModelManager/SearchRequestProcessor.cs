@@ -1363,7 +1363,7 @@ namespace MyDataSearchManagerBusiness
             if (result.ResultDataItems.Any())
             {
                 BizEntityState bizEntityState = new BizEntityState();
-                bizEntityState.DoFullDataBeforeLoadUIActionActivities(request.Requester, result.ResultDataItems);
+                bizEntityState.DoFullDataBeforeLoadUIActionActivities(request.Requester, result.ResultDataItems, request.ToParentRelationshipID);
             }
         }
         private void DoBeforeLoadBackendActionActivities(DR_SearchViewRequest request, DR_ResultSearchView result)

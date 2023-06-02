@@ -362,13 +362,13 @@ namespace MyUILibrary.EntityArea
         private bool StateHasDynamicAction(EntityStateDTO state)
         {
             return (state.ActionActivities.Any(x => (x.Type == Enum_ActionActivityType.ColumnValueRange && x.UIColumnValueRange != null) || x.Type == Enum_ActionActivityType.ColumnValue
-                || (x.Type == Enum_ActionActivityType.UIEnablity && x.UIEnablityDetails.Any(y => IsOnLoadOnlyAction(y) == ActionType.DynamicChildVisiblity))));
+                || (x.Type == Enum_ActionActivityType.UIEnablity && x.UIEnablityDetails.Any(y => y.Hidden == true))));
         }
-        private bool StateHasOnLoadAction(EntityStateDTO state)
-        {
-            return (state.ActionActivities.Any(x => x.Type == Enum_ActionActivityType.UIEnablity && x.UIEnablityDetails.Any(y => IsOnLoadOnlyAction(y) == ActionType.OnLoadChildReadonly
-            || IsOnLoadOnlyAction(y) == ActionType.OnLoadParentRelationship)));
-        }
+        //private bool StateHasOnLoadAction(EntityStateDTO state)
+        //{
+        //    return (state.ActionActivities.Any(x => x.Type == Enum_ActionActivityType.UIEnablity && x.UIEnablityDetails.Any(y => IsOnLoadOnlyAction(y) == ActionType.OnLoadChildReadonly
+        //    || IsOnLoadOnlyAction(y) == ActionType.OnLoadParentRelationship)));
+        //}
 
 
         //private void EditArea_DataItemLoaded(object sender, EditAreaDataItemLoadedArg e)
@@ -615,24 +615,24 @@ namespace MyUILibrary.EntityArea
         {
 
         }
-        private ActionType IsOnLoadOnlyAction(UIEnablityDetailsDTO uiEnablity)
-        {
-            if (uiEnablity.RelationshipID != 0 && EditArea.SourceRelationColumnControl != null &&
-             uiEnablity.RelationshipID == EditArea.SourceRelationColumnControl.Relationship.PairRelationshipID)
-                return ActionType.OnLoadParentRelationship;
-            else if (uiEnablity.Hidden == true)
-                return ActionType.DynamicChildVisiblity;
-            else if (uiEnablity.Readonly == true)
-            {
-                return ActionType.OnLoadChildReadonly;
-            }
-            else
-                return ActionType.Unknown;
-            //   fItems.Add(uiEnablity);
+        //private ActionType IsOnLoadOnlyAction(UIEnablityDetailsDTO uiEnablity)
+        //{
+        //    //if (uiEnablity.RelationshipID != 0 && EditArea.SourceRelationColumnControl != null &&
+        //    // uiEnablity.RelationshipID == EditArea.SourceRelationColumnControl.Relationship.PairRelationshipID)
+        //    //    return ActionType.OnLoadParentRelationship;
+        //    else if (uiEnablity.Hidden == true)
+        //        return ActionType.DynamicChildVisiblity;
+        //    //else if (uiEnablity.Readonly == true)
+        //    //{
+        //    //    return ActionType.OnLoadChildReadonly;
+        //    //}
+        //    else
+        //        return ActionType.Unknown;
+        //    //   fItems.Add(uiEnablity);
 
-            //  uiEnablity.Permanent = true;
+        //    //  uiEnablity.Permanent = true;
 
-        }
+        //}
 
 
         private BaseColumnControl ChildItemVisiblity(EntityStateDTO state, UIEnablityDetailsDTO detail, DP_FormDataRepository dataItem, bool hidden)
@@ -717,8 +717,10 @@ namespace MyUILibrary.EntityArea
                     {
                         foreach (var detail in actionActivity.UIEnablityDetails)
                         {
-                            var type = IsOnLoadOnlyAction(detail);
-                            if (type == ActionType.DynamicChildVisiblity)
+                            //var type = IsOnLoadOnlyAction(detail);
+                            //if (type == ActionType.DynamicChildVisiblity)
+                            //{
+                            if (detail.Hidden == true)
                             {
                                 var isHidden = ChildItemVisiblity(state, detail, dataItem, true);
                                 if (isHidden != null)
@@ -726,6 +728,7 @@ namespace MyUILibrary.EntityArea
                                     hiddenControls.Add(isHidden);
                                 }
                             }
+                            //}
 
                         }
                     }
@@ -794,8 +797,10 @@ namespace MyUILibrary.EntityArea
                     foreach (var detail in actionActivity.UIEnablityDetails)
                     {
 
-                        var type = IsOnLoadOnlyAction(detail);
-                        if (type == ActionType.DynamicChildVisiblity)
+                        //var type = IsOnLoadOnlyAction(detail);
+                        //if (type == ActionType.DynamicChildVisiblity)
+                        //{
+                        if (detail.Hidden == true)
                         {
                             var isHidden = ChildItemVisiblity(state, detail, dataItem, false);
                             if (isHidden != null)
@@ -803,6 +808,7 @@ namespace MyUILibrary.EntityArea
                                 hiddenControls.Add(isHidden);
                             }
                         }
+                        //}
                         //if (UIEnablityIsApliable(dataItem, detail))
                         //{
                         //////if (detail.ColumnID != 0)

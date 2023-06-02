@@ -112,7 +112,7 @@ namespace MyUILibrary.EntityArea
             get
             {
                 //**ChildSimpleContorlProperty.IsReadonly: 7a082dc6-eb74-4622-8062-1eac557339df
-                return SimpleColumnControl.DataEntryColumn.IsReadonly || Property.IsReadonlyOfState;
+                return SimpleColumnControl.DataEntryColumn.IsReadonly || Property.OnLoadIsReadonlyOfState;
 
                 //|| (Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary &&
                 //              (SourceData.EditEntityArea.DataEntryEntity.IsReadonly || SourceData.IsReadonlyBecauseOfState));
@@ -126,9 +126,9 @@ namespace MyUILibrary.EntityArea
                 if (SimpleColumnControl.DataEntryColumn.IsReadonly)
                     text += "دسترسی به ستون فقط خواندنی است";
 
-                if (Property.IsReadonlyOfState)
+                if (Property.OnLoadIsReadonlyOfState)
                     text += (string.IsNullOrEmpty(text) ? "" : Environment.NewLine)
-                        + "بر اساس وضعیتهای زیر دسترسی به ستون فقط خواندنی است" + Environment.NewLine + Property.IsReadonlyStateTitle;
+                        + "بر اساس وضعیتهای زیر دسترسی به ستون فقط خواندنی است" + Environment.NewLine + Property.OnLoadIsReadonlyStateTitle;
 
                 return text;
 

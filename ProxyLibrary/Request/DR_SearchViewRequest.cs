@@ -82,7 +82,8 @@ namespace ProxyLibrary
             //     WithDataView = withDataView;
         }
         public int DataViewID { set; get; }
-       // public int ParentRelationshipID { set; get; }
+        public int ToParentRelationshipID { set; get; }
+        // public int ParentRelationshipID { set; get; }
         //  public bool WithDataView { set; get; }
         //public bool CheckStates { get; set; }
         //public int ToParentRelationshipID { get; set; }

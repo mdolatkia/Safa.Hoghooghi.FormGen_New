@@ -192,20 +192,20 @@ namespace MyUILibrary.EntityArea
 
 
                 bool enableDisableView = true;
-                if (RelatedData.Any(x => x.ParentRelationshipIsHidden))
+                if (RelatedData.Any(x => x.ParentRelationshipIsOnLoadHidden))
                 {
                     if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
                     {
                         enableDisableView = false;
                         columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, "parentRelationshipHidden", ControlItemPriority.Normal));
-                        columnControlMessageItems.Add(new ColumnControlMessageItem(RelatedData.First(x => x.ParentRelationshipIsHidden).ParentRelationshipHiddenText, ControlOrLabelAsTarget.Control, "parentRelationshipHidden", ControlItemPriority.Normal));
+                        columnControlMessageItems.Add(new ColumnControlMessageItem(RelatedData.First(x => x.ParentRelationshipIsOnLoadHidden).ParentRelationshipHiddenText, ControlOrLabelAsTarget.Control, "parentRelationshipHidden", ControlItemPriority.Normal));
 
                     }
                     else
                     {
                         if (IsDataviewOpen)
                         {
-                            foreach (var data in RelatedData.Where(x => x.ParentRelationshipIsHidden))
+                            foreach (var data in RelatedData.Where(x => x.ParentRelationshipIsOnLoadHidden))
                             {
                                 (RelationshipControl.GenericEditNdTypeArea as I_EditEntityAreaMultipleData).DataView.SetTooltip(data, data.ParentRelationshipHiddenText);
                                 (RelationshipControl.GenericEditNdTypeArea as I_EditEntityAreaMultipleData).DataView.EnableDisable(data, false);
@@ -214,7 +214,7 @@ namespace MyUILibrary.EntityArea
                     }
                 }
                 (GetMainUIControlManager as I_View_Area).EnableDisable(enableDisableView);
-             
+
 
                 bool enableDisableDataSection = true;
                 if (RelatedData.Any(x => x.IsUseLessBecauseNewAndReadonly))
@@ -863,7 +863,7 @@ namespace MyUILibrary.EntityArea
         }
         public bool IsReadonlyOfState
         {
-            get { return SourceData.ReadOnlyRelationships.Any(x => x.Item1 == Relationship.ID); }
+            get { return SourceData.OnLoadReadOnlyRelationships.Any(x => x.Item1 == Relationship.ID); }
         }
         public string IsReadonlyText
         {
@@ -877,7 +877,7 @@ namespace MyUILibrary.EntityArea
                 {
                     text += (string.IsNullOrEmpty(text) ? "" : Environment.NewLine)
                               + "بر اساس وضعیتهای زیر دسترسی به ستون فقط خواندنی است";
-                    foreach (var item in SourceData.ReadOnlyRelationships.Where(x => x.Item1 == Relationship.ID))
+                    foreach (var item in SourceData.OnLoadReadOnlyRelationships.Where(x => x.Item1 == Relationship.ID))
                     {
                         text += Environment.NewLine + item.Item2;
                     }
@@ -1221,7 +1221,7 @@ namespace MyUILibrary.EntityArea
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
             var searchDataItem = relationshipManager.GetSecondSideSearchItemByFirstSideColumns(SourceData, Relationship);
             DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem);
-            //      request.ParentRelationshipID = Relationship.ID;
+            request.ToParentRelationshipID = Relationship.ID;
             var childFullData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(request).ResultDataItems;
             var countRequest = new DR_SearchCountRequest(requester);
             countRequest.SearchDataItems = searchDataItem;

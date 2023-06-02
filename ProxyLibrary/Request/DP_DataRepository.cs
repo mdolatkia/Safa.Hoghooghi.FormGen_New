@@ -69,8 +69,10 @@ namespace ProxyLibrary
         {
 
         }
-        public List<Tuple<int, string>> ReadOnlyRelationships { get; set; }
-        public List<Tuple<int, string>> HiddenRelationships { get; set; }
+        public bool ParentRelationshipIsReadonlyOnLoad { get; set; }
+        public string ParentRelationshipIsReadonlyOnLoadText { get; set; }
+        public bool ParentRelationshipIsHidenOnLoad { get; set; }
+        public string ParentRelationshipIsHidenOnLoadText { get; set; }
         public List<DataViewProperty> DataViewProperties { set; get; }
         public int ListViewID { set; get; }
         public string ViewInfo
@@ -120,9 +122,9 @@ namespace ProxyLibrary
         //public event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
         //public Dictionary<int, List<ColumnValueRangeDetailsDTO>> ColumnKeyValueRanges = new Dictionary<int, List<ColumnValueRangeDetailsDTO>>();
 
-        public bool ParentRelationshipIsHidden
+        public bool ParentRelationshipIsOnLoadHidden
         {
-            get { return ParantChildRelationshipData != null && HiddenRelationships.Any(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID); }
+            get { return ParantChildRelationshipData != null && OnLoadHiddenRelationships.Any(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID); }
         }
         public string ParentRelationshipHiddenText
         {
@@ -131,7 +133,7 @@ namespace ProxyLibrary
                 var text = "";
                 if (ParantChildRelationshipData != null)
                 {
-                    foreach (var item in HiddenRelationships.Where(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID))
+                    foreach (var item in OnLoadHiddenRelationships.Where(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID))
                         text += (text == "" ? "" : Environment.NewLine + item.Item2);
                 }
                 return text;
@@ -139,7 +141,7 @@ namespace ProxyLibrary
         }
         public bool ParentRelationshipIsReadonly
         {
-            get { return ParantChildRelationshipData != null && ReadOnlyRelationships.Any(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID); }
+            get { return ParantChildRelationshipData != null && OnLoadReadOnlyRelationships.Any(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID); }
         }
         public string ParentRelationshipReadonlyText
         {
@@ -148,7 +150,7 @@ namespace ProxyLibrary
                 var text = "";
                 if (ParantChildRelationshipData != null)
                 {
-                    foreach (var item in ReadOnlyRelationships.Where(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID))
+                    foreach (var item in OnLoadReadOnlyRelationships.Where(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID))
                         text += (text == "" ? "" : Environment.NewLine + item.Item2);
                 }
                 return text;
@@ -168,7 +170,7 @@ namespace ProxyLibrary
         {
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
             ChildRelationshipDatas = new List<ChildRelationshipData>();
-            ReadOnlyRelationships = new List<Tuple<int, string>>();
+            OnLoadReadOnlyRelationships = new List<Tuple<int, string>>();
 
             GUID = Guid.NewGuid();
         }
@@ -178,7 +180,7 @@ namespace ProxyLibrary
 
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
             ChildRelationshipDatas = new List<ChildRelationshipData>();
-            ReadOnlyRelationships = new List<Tuple<int, string>>();
+            OnLoadReadOnlyRelationships = new List<Tuple<int, string>>();
             GUID = Guid.NewGuid();
         }
 
@@ -968,10 +970,10 @@ namespace ProxyLibrary
         public bool HasForeignKeyData { get; set; }
 
         public bool ISFK { get; set; }
-        public bool IsReadonlyOfState { get; set; }
-        public string IsReadonlyStateTitle { get; set; }
-        public bool IsHiddenOfState { get; set; }
-        public string IsHiddenStateTitle { get; set; }
+        public bool OnLoadIsReadonlyOfState { get; set; }
+        public string OnLoadIsReadonlyStateTitle { get; set; }
+        // public bool OnLoadIsHiddenOfState { get; set; }
+        // public string OnLoadIsHiddenStateTitle { get; set; }
 
         public bool ValueIsEmptyOrDefaultValue()
         {
