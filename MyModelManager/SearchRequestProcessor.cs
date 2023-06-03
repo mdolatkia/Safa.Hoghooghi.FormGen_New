@@ -447,11 +447,11 @@ namespace MyDataSearchManagerBusiness
             var securityEntityState = bizRoleSecurity.GetAppliableConditionsBySecuritySubject(requester, mainEntity.ID, DataDirectSecurityMode.FetchData);
             if (securityEntityState != null)
             {
-                if (securityEntityState.StateConditions.Count == 0)
+                if (securityEntityState.StateCondition == null)
                 {//چون یعنی دایرکت سکوریتی دارد اما هیچکدام سکوریتی سابجکتشان صدق نمی کند
                     return GetNowRowSearchQuery(requester, mainEntity);
                 }
-                else if (securityEntityState.StateConditions.Any(x => !x.Values.Any()))
+                else if (!securityEntityState.StateCondition.Values.Any())
                 {
                     //چون یا هست و حداقل یکی فقط سکوریتی سابجکت دارد که صدق میکند
                     return "";
@@ -510,21 +510,21 @@ namespace MyDataSearchManagerBusiness
             //}
 
 
-            mainSearchDataItem.AndOrType = securityEntityState.ConditionOperator;
+            //mainSearchDataItem.AndOrType = securityEntityState.ConditionOperator;
 
             LogicPhraseDTO logicPhrase = new LogicPhraseDTO();
-            foreach (var condition in securityEntityState.StateConditions)
+            var condition = securityEntityState.StateCondition;
+
+            if (condition.RelationshipTailID == 0)
             {
-                if (condition.RelationshipTailID == 0)
-                {
-                    AddConditionPhrase(requester, condition, logicPhrase);
-                }
-                else
-                {
-                    var currentSearchRepository = CreateChildSearchRepository(logicPhrase, condition.RelationshipTail);
-                    AddConditionPhrase(requester, condition, currentSearchRepository);
-                }
+                AddConditionPhrase(requester, condition, logicPhrase);
             }
+            else
+            {
+                var currentSearchRepository = CreateChildSearchRepository(logicPhrase, condition.RelationshipTail);
+                AddConditionPhrase(requester, condition, currentSearchRepository);
+            }
+
             mainSearchDataItem.Phrases.Add(logicPhrase);
 
             if (!mainSearchDataItem.Phrases.Any())
@@ -549,9 +549,9 @@ namespace MyDataSearchManagerBusiness
             //بهینه بشه میشه اصلا اینکه این یا مساوی باشه رو به ساختن کوئری منتقل کرد و اونجا خودش تصمیم بگیره
             if (conditionDTO.Values.Count > 1)
             {
-                if (conditionDTO.EntityStateOperator == Enum_EntityStateOperator.Equals)
+                if (conditionDTO.EntityStateOperator == InORNotIn.In)
                     searchProperty.Operator = CommonOperator.InValues;
-                else if (conditionDTO.EntityStateOperator == Enum_EntityStateOperator.NotEquals)
+                else if (conditionDTO.EntityStateOperator == InORNotIn.NotIn)
                     searchProperty.Operator = CommonOperator.NotInValues;
 
                 foreach (var val in conditionDTO.Values)
@@ -562,9 +562,9 @@ namespace MyDataSearchManagerBusiness
             }
             else
             {
-                if (conditionDTO.EntityStateOperator == Enum_EntityStateOperator.Equals)
+                if (conditionDTO.EntityStateOperator == InORNotIn.In)
                     searchProperty.Operator = CommonOperator.Equals;
-                else if (conditionDTO.EntityStateOperator == Enum_EntityStateOperator.NotEquals)
+                else if (conditionDTO.EntityStateOperator == InORNotIn.NotIn)
                     searchProperty.Operator = CommonOperator.Equals;
 
                 foreach (var val in conditionDTO.Values)
@@ -1363,7 +1363,7 @@ namespace MyDataSearchManagerBusiness
             if (result.ResultDataItems.Any())
             {
                 BizEntityState bizEntityState = new BizEntityState();
-                bizEntityState.DoFullDataBeforeLoadUIActionActivities(request.Requester, result.ResultDataItems, request.ToParentRelationshipID);
+                bizEntityState.DoDataBeforeLoadUIActionActivities(request.Requester, result.ResultDataItems.Cast<DP_DataView>().ToList(), true, request.ToParentRelationshipID, request.ToParentRelationshipIsFKToPK);
             }
         }
         private void DoBeforeLoadBackendActionActivities(DR_SearchViewRequest request, DR_ResultSearchView result)
@@ -1371,7 +1371,7 @@ namespace MyDataSearchManagerBusiness
             if (result.ResultDataItems.Any())
             {
                 BizEntityState bizEntityState = new BizEntityState();
-                bizEntityState.DoDataViewBeforeLoadUIActionActivities(request.Requester, result.ResultDataItems, request.ToParentRelationshipID);
+                bizEntityState.DoDataBeforeLoadUIActionActivities(request.Requester, result.ResultDataItems, false, request.ToParentRelationshipID, request.ToParentRelationshipIsFKToPK);
             }
         }
         private List<DP_DataRepository> GetFullDataResult(DR_Requester requester, DP_SearchRepositoryMain searchDataItem)

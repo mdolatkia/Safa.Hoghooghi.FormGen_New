@@ -20,8 +20,11 @@ namespace DataAccess
         public int UIActionActivityID { get; set; }
         public bool EvenIsNotNew { get; set; }
         public bool EvenHasValue { get; set; }
+        public Nullable<short> ReservedValue { get; set; }
+        public Nullable<int> FormulaID { get; set; }
     
         public virtual Column Column { get; set; }
+        public virtual Formula Formula { get; set; }
         public virtual UIActionActivity UIActionActivity { get; set; }
     }
 }

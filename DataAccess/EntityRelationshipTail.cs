@@ -30,7 +30,7 @@ namespace DataAccess
             this.EntityRelationshipTailDataMenu = new HashSet<EntityRelationshipTailDataMenu>();
             this.GraphDefinition_EntityRelationshipTail = new HashSet<GraphDefinition_EntityRelationshipTail>();
             this.LetterTemplateRelationshipField = new HashSet<LetterTemplateRelationshipField>();
-            this.TableDrivedEntityStateCondition = new HashSet<TableDrivedEntityStateCondition>();
+            this.EntityStateCondition = new HashSet<EntityStateCondition>();
             this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
             this.RelationshipSearchFilter = new HashSet<RelationshipSearchFilter>();
         }
@@ -67,7 +67,7 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LetterTemplateRelationshipField> LetterTemplateRelationshipField { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TableDrivedEntityStateCondition> TableDrivedEntityStateCondition { get; set; }
+        public virtual ICollection<EntityStateCondition> EntityStateCondition { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

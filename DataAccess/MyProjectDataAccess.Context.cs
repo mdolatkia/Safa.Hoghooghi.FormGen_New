@@ -88,7 +88,11 @@ namespace DataAccess
         public virtual DbSet<EntitySearch> EntitySearch { get; set; }
         public virtual DbSet<EntitySearchableReport> EntitySearchableReport { get; set; }
         public virtual DbSet<EntitySearchColumns> EntitySearchColumns { get; set; }
+        public virtual DbSet<EntityState> EntityState { get; set; }
         public virtual DbSet<EntityState_UIActionActivity> EntityState_UIActionActivity { get; set; }
+        public virtual DbSet<EntityStateCondition> EntityStateCondition { get; set; }
+        public virtual DbSet<EntityStateConditionSecuritySubject> EntityStateConditionSecuritySubject { get; set; }
+        public virtual DbSet<EntityStateConditionValues> EntityStateConditionValues { get; set; }
         public virtual DbSet<EntityUIComposition> EntityUIComposition { get; set; }
         public virtual DbSet<EntityUISetting> EntityUISetting { get; set; }
         public virtual DbSet<EntityValidation> EntityValidation { get; set; }
@@ -142,10 +146,6 @@ namespace DataAccess
         public virtual DbSet<TableDrivedEntity> TableDrivedEntity { get; set; }
         public virtual DbSet<TableDrivedEntity_Columns> TableDrivedEntity_Columns { get; set; }
         public virtual DbSet<TableDrivedEntity_EntityCommand> TableDrivedEntity_EntityCommand { get; set; }
-        public virtual DbSet<TableDrivedEntityState> TableDrivedEntityState { get; set; }
-        public virtual DbSet<TableDrivedEntityStateCondition> TableDrivedEntityStateCondition { get; set; }
-        public virtual DbSet<TableDrivedEntityStateConditionSecuritySubject> TableDrivedEntityStateConditionSecuritySubject { get; set; }
-        public virtual DbSet<TableDrivedEntityStateConditionValues> TableDrivedEntityStateConditionValues { get; set; }
         public virtual DbSet<TabPageUISetting> TabPageUISetting { get; set; }
         public virtual DbSet<TimeColumnType> TimeColumnType { get; set; }
         public virtual DbSet<UIActionActivity> UIActionActivity { get; set; }

@@ -215,7 +215,7 @@ namespace MyModelManager
             if (withDetails && result.EntityStateID != 0)
             {
                 BizEntityState bizEntityState = new BizEntityState();
-                result.EntityState = bizEntityState.ToEntityStateDTO(requester, item.TableDrivedEntityState, withDetails);
+                result.EntityState = bizEntityState.ToEntityStateDTO(requester, item.EntityState, withDetails);
             }
 
             //foreach (var valItem in item.EntitySecurityDirectValues)
@@ -466,17 +466,17 @@ namespace MyModelManager
 
 
                 //   entityState = bizEntityState.ToEntityStateDTO(requester, targetEntityDisrectSecurity.TableDrivedEntityState, true);
-                foreach (var condition in targetEntityDisrectSecurity.EntityState.StateConditions.ToList())
+                var condition = targetEntityDisrectSecurity.EntityState.StateCondition;
+
+                if (ConditionSecuritySubjectIsValid(requester, condition))
                 {
-                    if (ConditionSecuritySubjectIsValid(requester, condition))
-                    {
-                        GetConditionDTOWithValues(requester, condition);
-                    }
-                    else
-                    {
-                        targetEntityDisrectSecurity.EntityState.StateConditions.Remove(condition);
-                    }
+                    targetEntityDisrectSecurity.EntityState.StateCondition = GetConditionDTOWithValues(requester, condition);
                 }
+                else
+                {
+                    targetEntityDisrectSecurity.EntityState.StateCondition = null;
+                }
+
 
                 return targetEntityDisrectSecurity.EntityState;
                 //var organizationPosts = GetDBOrganizationPosts(context, requester);
@@ -617,12 +617,12 @@ namespace MyModelManager
                 bool hasAnyOfSubjects = false;
                 foreach (var subject in condition.SecuritySubjects)
                 {
-                    if (requester.Posts.Any(x => x.CurrentUserID == subject.SecuritySubjectID)
-                        || requester.Posts.Any(x => x.ID == subject.SecuritySubjectID)
-                         || requester.Posts.Any(x => x.OrganizationID == subject.SecuritySubjectID)
-                          || requester.Posts.Any(x => x.OrganizationTypeID == subject.SecuritySubjectID)
-                           || requester.Posts.Any(x => x.OrganizationTypeRoleTypeID == subject.SecuritySubjectID)
-                            || requester.Posts.Any(x => x.RoleTypeID == subject.SecuritySubjectID)
+                    if (requester.Posts.Any(x => x.CurrentUserID == subject)
+                        || requester.Posts.Any(x => x.ID == subject)
+                         || requester.Posts.Any(x => x.OrganizationID == subject)
+                          || requester.Posts.Any(x => x.OrganizationTypeID == subject)
+                           || requester.Posts.Any(x => x.OrganizationTypeRoleTypeID == subject)
+                            || requester.Posts.Any(x => x.RoleTypeID == subject)
                             )
                         hasAnyOfSubjects = true;
                 }

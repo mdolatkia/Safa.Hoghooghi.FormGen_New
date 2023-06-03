@@ -604,6 +604,15 @@
           <Property Name="Tooltip" Type="varchar" MaxLength="1024" />
           <Property Name="ExcludeInGeneralSearch" Type="bit" />
         </EntityType>
+        <EntityType Name="EntityState">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TableDrivedEntityID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="128" Nullable="false" />
+          <Property Name="EntityStateConditionID" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="EntityState_UIActionActivity">
           <Key>
             <PropertyRef Name="ID" />
@@ -611,6 +620,35 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TableDrivedEntityStateID" Type="int" Nullable="false" />
           <Property Name="UIActionActivityID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EntityStateCondition">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="128" />
+          <Property Name="FormulaID" Type="int" />
+          <Property Name="ColumnID" Type="int" />
+          <Property Name="EntityRelationshipTailID" Type="int" />
+          <Property Name="ValueOpoerator" Type="smallint" />
+          <Property Name="SecuritySubjectInOrNotIn" Type="smallint" />
+        </EntityType>
+        <EntityType Name="EntityStateConditionSecuritySubject">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntityStateConditionID" Type="int" Nullable="false" />
+          <Property Name="SecuritySubjectID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EntityStateConditionValues">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Value" Type="varchar(max)" />
+          <Property Name="EntityStateConditionID" Type="int" Nullable="false" />
+          <Property Name="ReservedValue" Type="smallint" />
         </EntityType>
         <EntityType Name="EntityUIComposition">
           <Key>
@@ -1132,45 +1170,6 @@
           <Property Name="EntityCommandID" Type="int" Nullable="false" />
           <Property Name="TableDrivedEntityID" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="TableDrivedEntityState">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TableDrivedEntityID" Type="int" Nullable="false" />
-          <Property Name="Title" Type="varchar" MaxLength="128" Nullable="false" />
-          <Property Name="ConditionOperator" Type="smallint" />
-        </EntityType>
-        <EntityType Name="TableDrivedEntityStateCondition">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Title" Type="varchar" MaxLength="128" />
-          <Property Name="TableDrivedEntityStateID" Type="int" Nullable="false" />
-          <Property Name="FormulaID" Type="int" />
-          <Property Name="ColumnID" Type="int" />
-          <Property Name="EntityRelationshipTailID" Type="int" />
-          <Property Name="ValueOpoerator" Type="smallint" />
-          <Property Name="SecuritySubjectInOrNotIn" Type="smallint" />
-        </EntityType>
-        <EntityType Name="TableDrivedEntityStateConditionSecuritySubject">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TableDrivedEntityStateConditionID" Type="int" Nullable="false" />
-          <Property Name="SecuritySubjectID" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="TableDrivedEntityStateConditionValues">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Value" Type="varchar(max)" />
-          <Property Name="TableDrivedEntityStateConditionID" Type="int" Nullable="false" />
-          <Property Name="ReservedValue" Type="smallint" />
-        </EntityType>
         <EntityType Name="TabPageUISetting">
           <Key>
             <PropertyRef Name="ID" />
@@ -1205,6 +1204,8 @@
           <Property Name="UIActionActivityID" Type="int" Nullable="false" />
           <Property Name="EvenIsNotNew" Type="bit" Nullable="false" />
           <Property Name="EvenHasValue" Type="bit" Nullable="false" />
+          <Property Name="ReservedValue" Type="smallint" />
+          <Property Name="FormulaID" Type="int" />
         </EntityType>
         <EntityType Name="UIEnablityDetails">
           <Key>
@@ -2234,14 +2235,26 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_EntitySecurityDirect_TableDrivedEntityState">
-          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="1" />
+          <End Role="EntityState" Type="Self.EntityState" Multiplicity="1" />
           <End Role="EntitySecurityDirect" Type="Self.EntitySecurityDirect" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
+            <Principal Role="EntityState">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EntitySecurityDirect">
               <PropertyRef Name="TableDrivedEntityStateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntityState_EntityStateCondition">
+          <End Role="EntityStateCondition" Type="Self.EntityStateCondition" Multiplicity="1" />
+          <End Role="EntityState" Type="Self.EntityState" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityStateCondition">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityState">
+              <PropertyRef Name="EntityStateConditionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2318,10 +2331,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_FormulaItems_TableDrivedEntityState">
-          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="0..1" />
+          <End Role="EntityState" Type="Self.EntityState" Multiplicity="0..1" />
           <End Role="FormulaItems" Type="Self.FormulaItems" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
+            <Principal Role="EntityState">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="FormulaItems">
@@ -2823,85 +2836,85 @@
         </Association>
         <Association Name="FK_TableDrivedEntityStateCondition_Column">
           <End Role="Column" Type="Self.Column" Multiplicity="0..1" />
-          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="*" />
+          <End Role="EntityStateCondition" Type="Self.EntityStateCondition" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Column">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateCondition">
+            <Dependent Role="EntityStateCondition">
               <PropertyRef Name="ColumnID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TableDrivedEntityStateCondition_EntityRelationshipTail">
           <End Role="EntityRelationshipTail" Type="Self.EntityRelationshipTail" Multiplicity="0..1" />
-          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="*" />
+          <End Role="EntityStateCondition" Type="Self.EntityStateCondition" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="EntityRelationshipTail">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateCondition">
+            <Dependent Role="EntityStateCondition">
               <PropertyRef Name="EntityRelationshipTailID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TableDrivedEntityStateCondition_Formula">
           <End Role="Formula" Type="Self.Formula" Multiplicity="0..1" />
-          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="*" />
+          <End Role="EntityStateCondition" Type="Self.EntityStateCondition" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Formula">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateCondition">
+            <Dependent Role="EntityStateCondition">
               <PropertyRef Name="FormulaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TableDrivedEntityStateCondition_TableDrivedEntityState">
-          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="1" />
-          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TableDrivedEntityStateCondition">
-              <PropertyRef Name="TableDrivedEntityStateID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TableDrivedEntityStateSecuritySubject_SecuritySubject">
           <End Role="SecuritySubject" Type="Self.SecuritySubject" Multiplicity="1" />
-          <End Role="TableDrivedEntityStateConditionSecuritySubject" Type="Self.TableDrivedEntityStateConditionSecuritySubject" Multiplicity="*" />
+          <End Role="EntityStateConditionSecuritySubject" Type="Self.EntityStateConditionSecuritySubject" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SecuritySubject">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateConditionSecuritySubject">
+            <Dependent Role="EntityStateConditionSecuritySubject">
               <PropertyRef Name="SecuritySubjectID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
-          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="1" />
-          <End Role="TableDrivedEntityStateConditionSecuritySubject" Type="Self.TableDrivedEntityStateConditionSecuritySubject" Multiplicity="*" />
+          <End Role="EntityStateCondition" Type="Self.EntityStateCondition" Multiplicity="1" />
+          <End Role="EntityStateConditionSecuritySubject" Type="Self.EntityStateConditionSecuritySubject" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityStateCondition">
+            <Principal Role="EntityStateCondition">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateConditionSecuritySubject">
-              <PropertyRef Name="TableDrivedEntityStateConditionID" />
+            <Dependent Role="EntityStateConditionSecuritySubject">
+              <PropertyRef Name="EntityStateConditionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState">
-          <End Role="TableDrivedEntityStateCondition" Type="Self.TableDrivedEntityStateCondition" Multiplicity="1" />
-          <End Role="TableDrivedEntityStateConditionValues" Type="Self.TableDrivedEntityStateConditionValues" Multiplicity="*" />
+          <End Role="EntityStateCondition" Type="Self.EntityStateCondition" Multiplicity="1" />
+          <End Role="EntityStateConditionValues" Type="Self.EntityStateConditionValues" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityStateCondition">
+            <Principal Role="EntityStateCondition">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateConditionValues">
-              <PropertyRef Name="TableDrivedEntityStateConditionID" />
+            <Dependent Role="EntityStateConditionValues">
+              <PropertyRef Name="EntityStateConditionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UIColumnValue_Formula">
+          <End Role="Formula" Type="Self.Formula" Multiplicity="0..1" />
+          <End Role="UIColumnValue" Type="Self.UIColumnValue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Formula">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UIColumnValue">
+              <PropertyRef Name="FormulaID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3806,10 +3819,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FKEntityStat936255">
-          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="1" />
+          <End Role="EntityState" Type="Self.EntityState" Multiplicity="1" />
           <End Role="EntityState_UIActionActivity" Type="Self.EntityState_UIActionActivity" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
+            <Principal Role="EntityState">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EntityState_UIActionActivity">
@@ -4719,12 +4732,12 @@
         </Association>
         <Association Name="FKTableDrive764829">
           <End Role="TableDrivedEntity" Type="Self.TableDrivedEntity" Multiplicity="1" />
-          <End Role="TableDrivedEntityState" Type="Self.TableDrivedEntityState" Multiplicity="*" />
+          <End Role="EntityState" Type="Self.EntityState" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TableDrivedEntity">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityState">
+            <Dependent Role="EntityState">
               <PropertyRef Name="TableDrivedEntityID" />
             </Dependent>
           </ReferentialConstraint>
@@ -5021,7 +5034,11 @@
           <EntitySet Name="EntitySearch" EntityType="Self.EntitySearch" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntitySearchableReport" EntityType="Self.EntitySearchableReport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntitySearchColumns" EntityType="Self.EntitySearchColumns" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EntityState" EntityType="Self.EntityState" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityState_UIActionActivity" EntityType="Self.EntityState_UIActionActivity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EntityStateCondition" EntityType="Self.EntityStateCondition" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EntityStateConditionSecuritySubject" EntityType="Self.EntityStateConditionSecuritySubject" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EntityStateConditionValues" EntityType="Self.EntityStateConditionValues" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityUIComposition" EntityType="Self.EntityUIComposition" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityUISetting" EntityType="Self.EntityUISetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntityValidation" EntityType="Self.EntityValidation" Schema="dbo" store:Type="Tables" />
@@ -5075,10 +5092,6 @@
           <EntitySet Name="TableDrivedEntity" EntityType="Self.TableDrivedEntity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TableDrivedEntity_Columns" EntityType="Self.TableDrivedEntity_Columns" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TableDrivedEntity_EntityCommand" EntityType="Self.TableDrivedEntity_EntityCommand" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TableDrivedEntityState" EntityType="Self.TableDrivedEntityState" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TableDrivedEntityStateCondition" EntityType="Self.TableDrivedEntityStateCondition" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TableDrivedEntityStateConditionSecuritySubject" EntityType="Self.TableDrivedEntityStateConditionSecuritySubject" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TableDrivedEntityStateConditionValues" EntityType="Self.TableDrivedEntityStateConditionValues" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TabPageUISetting" EntityType="Self.TabPageUISetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TimeColumnType" EntityType="Self.TimeColumnType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UIActionActivity" EntityType="Self.UIActionActivity" Schema="dbo" store:Type="Tables" />
@@ -5363,8 +5376,12 @@
             <End Role="EntitySearchableReport" EntitySet="EntitySearchableReport" />
           </AssociationSet>
           <AssociationSet Name="FK_EntitySecurityDirect_TableDrivedEntityState" Association="Self.FK_EntitySecurityDirect_TableDrivedEntityState">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
+            <End Role="EntityState" EntitySet="EntityState" />
             <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntityState_EntityStateCondition" Association="Self.FK_EntityState_EntityStateCondition">
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
+            <End Role="EntityState" EntitySet="EntityState" />
           </AssociationSet>
           <AssociationSet Name="FK_Formula_CodeFunction" Association="Self.FK_Formula_CodeFunction">
             <End Role="CodeFunction" EntitySet="CodeFunction" />
@@ -5391,7 +5408,7 @@
             <End Role="FormulaItems" EntitySet="FormulaItems" />
           </AssociationSet>
           <AssociationSet Name="FK_FormulaItems_TableDrivedEntityState" Association="Self.FK_FormulaItems_TableDrivedEntityState">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
+            <End Role="EntityState" EntitySet="EntityState" />
             <End Role="FormulaItems" EntitySet="FormulaItems" />
           </AssociationSet>
           <AssociationSet Name="FK_GraphDefinition_DataMenuSetting" Association="Self.FK_GraphDefinition_DataMenuSetting">
@@ -5560,31 +5577,31 @@
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateCondition_Column" Association="Self.FK_TableDrivedEntityStateCondition_Column">
             <End Role="Column" EntitySet="Column" />
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateCondition_EntityRelationshipTail" Association="Self.FK_TableDrivedEntityStateCondition_EntityRelationshipTail">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateCondition_Formula" Association="Self.FK_TableDrivedEntityStateCondition_Formula">
             <End Role="Formula" EntitySet="Formula" />
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TableDrivedEntityStateCondition_TableDrivedEntityState" Association="Self.FK_TableDrivedEntityStateCondition_TableDrivedEntityState">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" Association="Self.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject">
             <End Role="SecuritySubject" EntitySet="SecuritySubject" />
-            <End Role="TableDrivedEntityStateConditionSecuritySubject" EntitySet="TableDrivedEntityStateConditionSecuritySubject" />
+            <End Role="EntityStateConditionSecuritySubject" EntitySet="EntityStateConditionSecuritySubject" />
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" Association="Self.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
-            <End Role="TableDrivedEntityStateConditionSecuritySubject" EntitySet="TableDrivedEntityStateConditionSecuritySubject" />
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
+            <End Role="EntityStateConditionSecuritySubject" EntitySet="EntityStateConditionSecuritySubject" />
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState" Association="Self.FK_TableDrivedEntityStateValues_TableDrivedEntityState">
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
-            <End Role="TableDrivedEntityStateConditionValues" EntitySet="TableDrivedEntityStateConditionValues" />
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
+            <End Role="EntityStateConditionValues" EntitySet="EntityStateConditionValues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UIColumnValue_Formula" Association="Self.FK_UIColumnValue_Formula">
+            <End Role="Formula" EntitySet="Formula" />
+            <End Role="UIColumnValue" EntitySet="UIColumnValue" />
           </AssociationSet>
           <AssociationSet Name="FK_UIEnablityDetails_Relationship" Association="Self.FK_UIEnablityDetails_Relationship">
             <End Role="Relationship" EntitySet="Relationship" />
@@ -5887,7 +5904,7 @@
             <End Role="EntityState_UIActionActivity" EntitySet="EntityState_UIActionActivity" />
           </AssociationSet>
           <AssociationSet Name="FKEntityStat936255" Association="Self.FKEntityStat936255">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
+            <End Role="EntityState" EntitySet="EntityState" />
             <End Role="EntityState_UIActionActivity" EntitySet="EntityState_UIActionActivity" />
           </AssociationSet>
           <AssociationSet Name="FKEntityUICo258285" Association="Self.FKEntityUICo258285">
@@ -6192,7 +6209,7 @@
           </AssociationSet>
           <AssociationSet Name="FKTableDrive764829" Association="Self.FKTableDrive764829">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
+            <End Role="EntityState" EntitySet="EntityState" />
           </AssociationSet>
           <AssociationSet Name="FKTabPageUIS719811" Association="Self.FKTabPageUIS719811">
             <End Role="EntityUIComposition" EntitySet="EntityUIComposition" />
@@ -6339,7 +6356,11 @@
           <EntitySet Name="EntitySearch" EntityType="MyIdeaModel.EntitySearch" />
           <EntitySet Name="EntitySearchableReport" EntityType="MyIdeaModel.EntitySearchableReport" />
           <EntitySet Name="EntitySearchColumns" EntityType="MyIdeaModel.EntitySearchColumns" />
+          <EntitySet Name="EntityState" EntityType="MyIdeaModel.EntityState" />
           <EntitySet Name="EntityState_UIActionActivity" EntityType="MyIdeaModel.EntityState_UIActionActivity" />
+          <EntitySet Name="EntityStateCondition" EntityType="MyIdeaModel.EntityStateCondition" />
+          <EntitySet Name="EntityStateConditionSecuritySubject" EntityType="MyIdeaModel.EntityStateConditionSecuritySubject" />
+          <EntitySet Name="EntityStateConditionValues" EntityType="MyIdeaModel.EntityStateConditionValues" />
           <EntitySet Name="EntityUIComposition" EntityType="MyIdeaModel.EntityUIComposition" />
           <EntitySet Name="EntityUISetting" EntityType="MyIdeaModel.EntityUISetting" />
           <EntitySet Name="EntityValidation" EntityType="MyIdeaModel.EntityValidation" />
@@ -6393,10 +6414,6 @@
           <EntitySet Name="TableDrivedEntity" EntityType="MyIdeaModel.TableDrivedEntity" />
           <EntitySet Name="TableDrivedEntity_Columns" EntityType="MyIdeaModel.TableDrivedEntity_Columns" />
           <EntitySet Name="TableDrivedEntity_EntityCommand" EntityType="MyIdeaModel.TableDrivedEntity_EntityCommand" />
-          <EntitySet Name="TableDrivedEntityState" EntityType="MyIdeaModel.TableDrivedEntityState" />
-          <EntitySet Name="TableDrivedEntityStateCondition" EntityType="MyIdeaModel.TableDrivedEntityStateCondition" />
-          <EntitySet Name="TableDrivedEntityStateConditionSecuritySubject" EntityType="MyIdeaModel.TableDrivedEntityStateConditionSecuritySubject" />
-          <EntitySet Name="TableDrivedEntityStateConditionValues" EntityType="MyIdeaModel.TableDrivedEntityStateConditionValues" />
           <EntitySet Name="TabPageUISetting" EntityType="MyIdeaModel.TabPageUISetting" />
           <EntitySet Name="TimeColumnType" EntityType="MyIdeaModel.TimeColumnType" />
           <EntitySet Name="UIActionActivity" EntityType="MyIdeaModel.UIActionActivity" />
@@ -6609,7 +6626,7 @@
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateCondition_Column" Association="MyIdeaModel.FK_TableDrivedEntityStateCondition_Column">
             <End Role="Column" EntitySet="Column" />
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
           </AssociationSet>
           <AssociationSet Name="FK_UnionToSubUnionRelationshipType_Column" Association="MyIdeaModel.FK_UnionToSubUnionRelationshipType_Column">
             <End Role="Column" EntitySet="Column" />
@@ -7029,7 +7046,7 @@
           </AssociationSet>
           <AssociationSet Name="FK_TableDrivedEntityStateCondition_EntityRelationshipTail" Association="MyIdeaModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail">
             <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
           </AssociationSet>
           <AssociationSet Name="FKEntityRela568378" Association="MyIdeaModel.FKEntityRela568378">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
@@ -7095,13 +7112,45 @@
             <End Role="EntitySearchColumns" EntitySet="EntitySearchColumns" />
             <End Role="SavedPreDefinedSearchSimpleColumn" EntitySet="SavedPreDefinedSearchSimpleColumn" />
           </AssociationSet>
+          <AssociationSet Name="FK_EntitySecurityDirect_TableDrivedEntityState" Association="MyIdeaModel.FK_EntitySecurityDirect_TableDrivedEntityState">
+            <End Role="EntityState" EntitySet="EntityState" />
+            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntityState_EntityStateCondition" Association="MyIdeaModel.FK_EntityState_EntityStateCondition">
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
+            <End Role="EntityState" EntitySet="EntityState" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FormulaItems_TableDrivedEntityState" Association="MyIdeaModel.FK_FormulaItems_TableDrivedEntityState">
+            <End Role="EntityState" EntitySet="EntityState" />
+            <End Role="FormulaItems" EntitySet="FormulaItems" />
+          </AssociationSet>
+          <AssociationSet Name="FKEntityStat936255" Association="MyIdeaModel.FKEntityStat936255">
+            <End Role="EntityState" EntitySet="EntityState" />
+            <End Role="EntityState_UIActionActivity" EntitySet="EntityState_UIActionActivity" />
+          </AssociationSet>
+          <AssociationSet Name="FKTableDrive764829" Association="MyIdeaModel.FKTableDrive764829">
+            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
+            <End Role="EntityState" EntitySet="EntityState" />
+          </AssociationSet>
           <AssociationSet Name="FKEntityStat608686" Association="MyIdeaModel.FKEntityStat608686">
             <End Role="UIActionActivity" EntitySet="UIActionActivity" />
             <End Role="EntityState_UIActionActivity" EntitySet="EntityState_UIActionActivity" />
           </AssociationSet>
-          <AssociationSet Name="FKEntityStat936255" Association="MyIdeaModel.FKEntityStat936255">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-            <End Role="EntityState_UIActionActivity" EntitySet="EntityState_UIActionActivity" />
+          <AssociationSet Name="FK_TableDrivedEntityStateCondition_Formula" Association="MyIdeaModel.FK_TableDrivedEntityStateCondition_Formula">
+            <End Role="Formula" EntitySet="Formula" />
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" Association="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
+            <End Role="EntityStateConditionSecuritySubject" EntitySet="EntityStateConditionSecuritySubject" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState" Association="MyIdeaModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState">
+            <End Role="EntityStateCondition" EntitySet="EntityStateCondition" />
+            <End Role="EntityStateConditionValues" EntitySet="EntityStateConditionValues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" Association="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject">
+            <End Role="SecuritySubject" EntitySet="SecuritySubject" />
+            <End Role="EntityStateConditionSecuritySubject" EntitySet="EntityStateConditionSecuritySubject" />
           </AssociationSet>
           <AssociationSet Name="FKEntityUICo258285" Association="MyIdeaModel.FKEntityUICo258285">
             <End Role="EntityUIComposition" EntitySet="EntityUIComposition" />
@@ -7155,9 +7204,9 @@
             <End Role="Formula" EntitySet="Formula" />
             <End Role="SavedPreDefinedSearchSimpleColumn" EntitySet="SavedPreDefinedSearchSimpleColumn" />
           </AssociationSet>
-          <AssociationSet Name="FK_TableDrivedEntityStateCondition_Formula" Association="MyIdeaModel.FK_TableDrivedEntityStateCondition_Formula">
+          <AssociationSet Name="FK_UIColumnValue_Formula" Association="MyIdeaModel.FK_UIColumnValue_Formula">
             <End Role="Formula" EntitySet="Formula" />
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
+            <End Role="UIColumnValue" EntitySet="UIColumnValue" />
           </AssociationSet>
           <AssociationSet Name="FKFormula967405" Association="MyIdeaModel.FKFormula967405">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
@@ -7182,10 +7231,6 @@
           <AssociationSet Name="FKTransition813783" Association="MyIdeaModel.FKTransition813783">
             <End Role="Formula" EntitySet="Formula" />
             <End Role="TransitionAction_Formula" EntitySet="TransitionAction_Formula" />
-          </AssociationSet>
-          <AssociationSet Name="FK_FormulaItems_TableDrivedEntityState" Association="MyIdeaModel.FK_FormulaItems_TableDrivedEntityState">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-            <End Role="FormulaItems" EntitySet="FormulaItems" />
           </AssociationSet>
           <AssociationSet Name="FKFormulaIte675108" Association="MyIdeaModel.FKFormulaIte675108">
             <End Role="Relationship" EntitySet="Relationship" />
@@ -7402,30 +7447,6 @@
           <AssociationSet Name="FKTableDrive379163" Association="MyIdeaModel.FKTableDrive379163">
             <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
             <End Role="TableDrivedEntity_Columns" EntitySet="TableDrivedEntity_Columns" />
-          </AssociationSet>
-          <AssociationSet Name="FKTableDrive764829" Association="MyIdeaModel.FKTableDrive764829">
-            <End Role="TableDrivedEntity" EntitySet="TableDrivedEntity" />
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntitySecurityDirect_TableDrivedEntityState" Association="MyIdeaModel.FK_EntitySecurityDirect_TableDrivedEntityState">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-            <End Role="EntitySecurityDirect" EntitySet="EntitySecurityDirect" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TableDrivedEntityStateCondition_TableDrivedEntityState" Association="MyIdeaModel.FK_TableDrivedEntityStateCondition_TableDrivedEntityState">
-            <End Role="TableDrivedEntityState" EntitySet="TableDrivedEntityState" />
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" Association="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
-            <End Role="TableDrivedEntityStateConditionSecuritySubject" EntitySet="TableDrivedEntityStateConditionSecuritySubject" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState" Association="MyIdeaModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState">
-            <End Role="TableDrivedEntityStateCondition" EntitySet="TableDrivedEntityStateCondition" />
-            <End Role="TableDrivedEntityStateConditionValues" EntitySet="TableDrivedEntityStateConditionValues" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" Association="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject">
-            <End Role="SecuritySubject" EntitySet="SecuritySubject" />
-            <End Role="TableDrivedEntityStateConditionSecuritySubject" EntitySet="TableDrivedEntityStateConditionSecuritySubject" />
           </AssociationSet>
           <AssociationSet Name="FK_UIEnablityDetails_UIActionActivity" Association="MyIdeaModel.FK_UIEnablityDetails_UIActionActivity">
             <End Role="UIActionActivity" EntitySet="UIActionActivity" />
@@ -7789,7 +7810,7 @@
           <NavigationProperty Name="TimeColumnType" Relationship="MyIdeaModel.FK_StringTimeColumnType_Column" FromRole="Column" ToRole="TimeColumnType" />
           <NavigationProperty Name="SuperToSubRelationshipType" Relationship="MyIdeaModel.FK_SuperToSubRelationshipType_Column" FromRole="Column" ToRole="SuperToSubRelationshipType" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FK_TableDrivedEntity_Column" FromRole="Column" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_Column" FromRole="Column" ToRole="TableDrivedEntityStateCondition" />
+          <NavigationProperty Name="EntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_Column" FromRole="Column" ToRole="EntityStateCondition" />
           <NavigationProperty Name="UnionToSubUnionRelationshipType" Relationship="MyIdeaModel.FK_UnionToSubUnionRelationshipType_Column" FromRole="Column" ToRole="UnionToSubUnionRelationshipType" />
           <NavigationProperty Name="Table" Relationship="MyIdeaModel.FKColumn659222" FromRole="Column" ToRole="Table" />
           <NavigationProperty Name="SecurityObject" Relationship="MyIdeaModel.FKColumn689451" FromRole="Column" ToRole="SecurityObject" />
@@ -8347,7 +8368,7 @@
           <NavigationProperty Name="EntityRelationshipTailDataMenu" Relationship="MyIdeaModel.FK_EntityRelationshipTailDataMenu_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="EntityRelationshipTailDataMenu" />
           <NavigationProperty Name="GraphDefinition_EntityRelationshipTail" Relationship="MyIdeaModel.FK_GraphDefinition_EntityRelationshipTail_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="GraphDefinition_EntityRelationshipTail" />
           <NavigationProperty Name="LetterTemplateRelationshipField" Relationship="MyIdeaModel.FK_LetterTemplateRelationshipField_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="LetterTemplateRelationshipField" />
-          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntityStateCondition" />
+          <NavigationProperty Name="EntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="EntityStateCondition" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FKEntityRela568378" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="TableDrivedEntity1" Relationship="MyIdeaModel.FKEntityRela831147" FromRole="EntityRelationshipTail" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="EntitySearchColumns" Relationship="MyIdeaModel.FKEntitySear748558" FromRole="EntityRelationshipTail" ToRole="EntitySearchColumns" />
@@ -8440,6 +8461,20 @@
           <NavigationProperty Name="SavedPreDefinedSearchRelationship" Relationship="MyIdeaModel.FK_PreDefinedSearchRelationship_EntitySearchColumns" FromRole="EntitySearchColumns" ToRole="SavedPreDefinedSearchRelationship" />
           <NavigationProperty Name="SavedPreDefinedSearchSimpleColumn" Relationship="MyIdeaModel.FK_PreDefinedSearchSimpleColumn_EntitySearchColumns" FromRole="EntitySearchColumns" ToRole="SavedPreDefinedSearchSimpleColumn" />
         </EntityType>
+        <EntityType Name="EntityState">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="EntityStateConditionID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyIdeaModel.FK_EntitySecurityDirect_TableDrivedEntityState" FromRole="EntityState" ToRole="EntitySecurityDirect" />
+          <NavigationProperty Name="EntityStateCondition" Relationship="MyIdeaModel.FK_EntityState_EntityStateCondition" FromRole="EntityState" ToRole="EntityStateCondition" />
+          <NavigationProperty Name="FormulaItems" Relationship="MyIdeaModel.FK_FormulaItems_TableDrivedEntityState" FromRole="EntityState" ToRole="FormulaItems" />
+          <NavigationProperty Name="EntityState_UIActionActivity" Relationship="MyIdeaModel.FKEntityStat936255" FromRole="EntityState" ToRole="EntityState_UIActionActivity" />
+          <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FKTableDrive764829" FromRole="EntityState" ToRole="TableDrivedEntity" />
+        </EntityType>
         <EntityType Name="EntityState_UIActionActivity">
           <Key>
             <PropertyRef Name="ID" />
@@ -8447,8 +8482,46 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TableDrivedEntityStateID" Type="Int32" Nullable="false" />
           <Property Name="UIActionActivityID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EntityState" Relationship="MyIdeaModel.FKEntityStat936255" FromRole="EntityState_UIActionActivity" ToRole="EntityState" />
           <NavigationProperty Name="UIActionActivity" Relationship="MyIdeaModel.FKEntityStat608686" FromRole="EntityState_UIActionActivity" ToRole="UIActionActivity" />
-          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyIdeaModel.FKEntityStat936255" FromRole="EntityState_UIActionActivity" ToRole="TableDrivedEntityState" />
+        </EntityType>
+        <EntityType Name="EntityStateCondition">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="FormulaID" Type="Int32" />
+          <Property Name="ColumnID" Type="Int32" />
+          <Property Name="EntityRelationshipTailID" Type="Int32" />
+          <Property Name="ValueOpoerator" Type="Int16" />
+          <Property Name="SecuritySubjectInOrNotIn" Type="Int16" />
+          <NavigationProperty Name="Column" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_Column" FromRole="EntityStateCondition" ToRole="Column" />
+          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail" FromRole="EntityStateCondition" ToRole="EntityRelationshipTail" />
+          <NavigationProperty Name="EntityState" Relationship="MyIdeaModel.FK_EntityState_EntityStateCondition" FromRole="EntityStateCondition" ToRole="EntityState" />
+          <NavigationProperty Name="Formula" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_Formula" FromRole="EntityStateCondition" ToRole="Formula" />
+          <NavigationProperty Name="EntityStateConditionSecuritySubject" Relationship="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" FromRole="EntityStateCondition" ToRole="EntityStateConditionSecuritySubject" />
+          <NavigationProperty Name="EntityStateConditionValues" Relationship="MyIdeaModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState" FromRole="EntityStateCondition" ToRole="EntityStateConditionValues" />
+        </EntityType>
+        <EntityType Name="EntityStateConditionSecuritySubject">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntityStateConditionID" Type="Int32" Nullable="false" />
+          <Property Name="SecuritySubjectID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" FromRole="EntityStateConditionSecuritySubject" ToRole="EntityStateCondition" />
+          <NavigationProperty Name="SecuritySubject" Relationship="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" FromRole="EntityStateConditionSecuritySubject" ToRole="SecuritySubject" />
+        </EntityType>
+        <EntityType Name="EntityStateConditionValues">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EntityStateConditionID" Type="Int32" Nullable="false" />
+          <Property Name="ReservedValue" Type="Int16" />
+          <NavigationProperty Name="EntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState" FromRole="EntityStateConditionValues" ToRole="EntityStateCondition" />
         </EntityType>
         <EntityType Name="EntityUIComposition">
           <Key>
@@ -8516,11 +8589,12 @@
           <NavigationProperty Name="CodeFunction_TableDrivedEntity" Relationship="MyIdeaModel.FK_Formula_CodeFunction_TableDrivedEntity" FromRole="Formula" ToRole="CodeFunction_TableDrivedEntity" />
           <NavigationProperty Name="ColumnCustomFormula" Relationship="MyIdeaModel.FK_ColumnCustomFormula_Formula" FromRole="Formula" ToRole="ColumnCustomFormula" />
           <NavigationProperty Name="DatabaseFunction_TableDrivedEntity" Relationship="MyIdeaModel.FK_Formula_DatabaseFunction_TableDrivedEntity" FromRole="Formula" ToRole="DatabaseFunction_TableDrivedEntity" />
+          <NavigationProperty Name="EntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_Formula" FromRole="Formula" ToRole="EntityStateCondition" />
           <NavigationProperty Name="EntityValidation" Relationship="MyIdeaModel.FKEntityVali933297" FromRole="Formula" ToRole="EntityValidation" />
           <NavigationProperty Name="LinearFormula" Relationship="MyIdeaModel.FK_Formula_LinearFormula" FromRole="Formula" ToRole="LinearFormula" />
           <NavigationProperty Name="PhraseColumn" Relationship="MyIdeaModel.FK_PhraseColumn_Formula" FromRole="Formula" ToRole="PhraseColumn" />
           <NavigationProperty Name="SavedPreDefinedSearchSimpleColumn" Relationship="MyIdeaModel.FK_SavedPreDefinedSearchSimpleColumn_Formula" FromRole="Formula" ToRole="SavedPreDefinedSearchSimpleColumn" />
-          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_Formula" FromRole="Formula" ToRole="TableDrivedEntityStateCondition" />
+          <NavigationProperty Name="UIColumnValue" Relationship="MyIdeaModel.FK_UIColumnValue_Formula" FromRole="Formula" ToRole="UIColumnValue" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FKFormula967405" FromRole="Formula" ToRole="TableDrivedEntity" />
           <NavigationProperty Name="FormulaItems" Relationship="MyIdeaModel.FKFormulaIte505844" FromRole="Formula" ToRole="FormulaItems" />
           <NavigationProperty Name="FormulaItems1" Relationship="MyIdeaModel.FKFormulaIte540022" FromRole="Formula" ToRole="FormulaItems" />
@@ -8546,9 +8620,9 @@
           <NavigationProperty Name="CodeFunction_TableDrivedEntity" Relationship="MyIdeaModel.FK_FormulaItems_CodeFunction_TableDrivedEntity" FromRole="FormulaItems" ToRole="CodeFunction_TableDrivedEntity" />
           <NavigationProperty Name="Column" Relationship="MyIdeaModel.FKFormulaIte729281" FromRole="FormulaItems" ToRole="Column" />
           <NavigationProperty Name="DatabaseFunction_TableDrivedEntity" Relationship="MyIdeaModel.FK_FormulaItems_DatabaseFunction_TableDrivedEntity" FromRole="FormulaItems" ToRole="DatabaseFunction_TableDrivedEntity" />
+          <NavigationProperty Name="EntityState" Relationship="MyIdeaModel.FK_FormulaItems_TableDrivedEntityState" FromRole="FormulaItems" ToRole="EntityState" />
           <NavigationProperty Name="Formula" Relationship="MyIdeaModel.FKFormulaIte505844" FromRole="FormulaItems" ToRole="Formula" />
           <NavigationProperty Name="Formula1" Relationship="MyIdeaModel.FKFormulaIte540022" FromRole="FormulaItems" ToRole="Formula" />
-          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyIdeaModel.FK_FormulaItems_TableDrivedEntityState" FromRole="FormulaItems" ToRole="TableDrivedEntityState" />
           <NavigationProperty Name="Relationship" Relationship="MyIdeaModel.FKFormulaIte675108" FromRole="FormulaItems" ToRole="Relationship" />
         </EntityType>
         <EntityType Name="GraphDefinition">
@@ -9129,6 +9203,7 @@
           <NavigationProperty Name="EntityRelationshipTailDataMenuItems" Relationship="MyIdeaModel.FK_EntityRelationshipTailListViewItems_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="EntityRelationshipTailDataMenuItems" />
           <NavigationProperty Name="EntityReport" Relationship="MyIdeaModel.FKEntityRepo82108" FromRole="TableDrivedEntity" ToRole="EntityReport" />
           <NavigationProperty Name="EntitySearch" Relationship="MyIdeaModel.FK_EntitySearch_TableDrivedEntity" FromRole="TableDrivedEntity" ToRole="EntitySearch" />
+          <NavigationProperty Name="EntityState" Relationship="MyIdeaModel.FKTableDrive764829" FromRole="TableDrivedEntity" ToRole="EntityState" />
           <NavigationProperty Name="EntityUIComposition" Relationship="MyIdeaModel.FKEntityUICo461879" FromRole="TableDrivedEntity" ToRole="EntityUIComposition" />
           <NavigationProperty Name="EntityValidation" Relationship="MyIdeaModel.FKEntityVali365073" FromRole="TableDrivedEntity" ToRole="EntityValidation" />
           <NavigationProperty Name="Formula" Relationship="MyIdeaModel.FKFormula967405" FromRole="TableDrivedEntity" ToRole="Formula" />
@@ -9147,7 +9222,6 @@
           <NavigationProperty Name="EntitySecurityDirect" Relationship="MyIdeaModel.FKEntitySecu556643" FromRole="TableDrivedEntity" ToRole="EntitySecurityDirect" />
           <NavigationProperty Name="SecurityObject" Relationship="MyIdeaModel.FKTableDrive36776" FromRole="TableDrivedEntity" ToRole="SecurityObject" />
           <NavigationProperty Name="TableDrivedEntity_Columns" Relationship="MyIdeaModel.FKTableDrive379163" FromRole="TableDrivedEntity" ToRole="TableDrivedEntity_Columns" />
-          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyIdeaModel.FKTableDrive764829" FromRole="TableDrivedEntity" ToRole="TableDrivedEntityState" />
         </EntityType>
         <EntityType Name="TableDrivedEntity_Columns">
           <Key>
@@ -9169,59 +9243,6 @@
           <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="EntityCommand" Relationship="MyIdeaModel.FK_TableDrivedEntity_EntityCommand_EntityCommand" FromRole="TableDrivedEntity_EntityCommand" ToRole="EntityCommand" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FK_TableDrivedEntity_EntityCommand_TableDrivedEntity" FromRole="TableDrivedEntity_EntityCommand" ToRole="TableDrivedEntity" />
-        </EntityType>
-        <EntityType Name="TableDrivedEntityState">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
-          <Property Name="Title" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="ConditionOperator" Type="Int16" />
-          <NavigationProperty Name="EntityState_UIActionActivity" Relationship="MyIdeaModel.FKEntityStat936255" FromRole="TableDrivedEntityState" ToRole="EntityState_UIActionActivity" />
-          <NavigationProperty Name="FormulaItems" Relationship="MyIdeaModel.FK_FormulaItems_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="FormulaItems" />
-          <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FKTableDrive764829" FromRole="TableDrivedEntityState" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="EntitySecurityDirect" Relationship="MyIdeaModel.FK_EntitySecurityDirect_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="EntitySecurityDirect" />
-          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_TableDrivedEntityState" FromRole="TableDrivedEntityState" ToRole="TableDrivedEntityStateCondition" />
-        </EntityType>
-        <EntityType Name="TableDrivedEntityStateCondition">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Title" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="TableDrivedEntityStateID" Type="Int32" Nullable="false" />
-          <Property Name="FormulaID" Type="Int32" />
-          <Property Name="ColumnID" Type="Int32" />
-          <Property Name="EntityRelationshipTailID" Type="Int32" />
-          <Property Name="ValueOpoerator" Type="Int16" />
-          <Property Name="SecuritySubjectInOrNotIn" Type="Int16" />
-          <NavigationProperty Name="Column" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_Column" FromRole="TableDrivedEntityStateCondition" ToRole="Column" />
-          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_EntityRelationshipTail" FromRole="TableDrivedEntityStateCondition" ToRole="EntityRelationshipTail" />
-          <NavigationProperty Name="Formula" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_Formula" FromRole="TableDrivedEntityStateCondition" ToRole="Formula" />
-          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyIdeaModel.FK_TableDrivedEntityStateCondition_TableDrivedEntityState" FromRole="TableDrivedEntityStateCondition" ToRole="TableDrivedEntityState" />
-          <NavigationProperty Name="TableDrivedEntityStateConditionSecuritySubject" Relationship="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" FromRole="TableDrivedEntityStateCondition" ToRole="TableDrivedEntityStateConditionSecuritySubject" />
-          <NavigationProperty Name="TableDrivedEntityStateConditionValues" Relationship="MyIdeaModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState" FromRole="TableDrivedEntityStateCondition" ToRole="TableDrivedEntityStateConditionValues" />
-        </EntityType>
-        <EntityType Name="TableDrivedEntityStateConditionSecuritySubject">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TableDrivedEntityStateConditionID" Type="Int32" Nullable="false" />
-          <Property Name="SecuritySubjectID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" FromRole="TableDrivedEntityStateConditionSecuritySubject" ToRole="TableDrivedEntityStateCondition" />
-          <NavigationProperty Name="SecuritySubject" Relationship="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" FromRole="TableDrivedEntityStateConditionSecuritySubject" ToRole="SecuritySubject" />
-        </EntityType>
-        <EntityType Name="TableDrivedEntityStateConditionValues">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="TableDrivedEntityStateConditionID" Type="Int32" Nullable="false" />
-          <Property Name="ReservedValue" Type="Int16" />
-          <NavigationProperty Name="TableDrivedEntityStateCondition" Relationship="MyIdeaModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState" FromRole="TableDrivedEntityStateConditionValues" ToRole="TableDrivedEntityStateCondition" />
         </EntityType>
         <EntityType Name="TabPageUISetting">
           <Key>
@@ -9263,7 +9284,10 @@
           <Property Name="UIActionActivityID" Type="Int32" Nullable="false" />
           <Property Name="EvenIsNotNew" Type="Boolean" Nullable="false" />
           <Property Name="EvenHasValue" Type="Boolean" Nullable="false" />
+          <Property Name="ReservedValue" Type="Int16" />
+          <Property Name="FormulaID" Type="Int32" />
           <NavigationProperty Name="Column" Relationship="MyIdeaModel.FKColumnValu491864" FromRole="UIColumnValue" ToRole="Column" />
+          <NavigationProperty Name="Formula" Relationship="MyIdeaModel.FK_UIColumnValue_Formula" FromRole="UIColumnValue" ToRole="Formula" />
           <NavigationProperty Name="UIActionActivity" Relationship="MyIdeaModel.FKColumnValu201622" FromRole="UIColumnValue" ToRole="UIActionActivity" />
         </EntityType>
         <EntityType Name="UIEnablityDetails">
@@ -9322,8 +9346,8 @@
           <Property Name="TableDrivedEntityID" Type="Int32" Nullable="false" />
           <Property Name="Mode" Type="Int16" />
           <Property Name="TableDrivedEntityStateID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EntityState" Relationship="MyIdeaModel.FK_EntitySecurityDirect_TableDrivedEntityState" FromRole="EntitySecurityDirect" ToRole="EntityState" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FKEntitySecu556643" FromRole="EntitySecurityDirect" ToRole="TableDrivedEntity" />
-          <NavigationProperty Name="TableDrivedEntityState" Relationship="MyIdeaModel.FK_EntitySecurityDirect_TableDrivedEntityState" FromRole="EntitySecurityDirect" ToRole="TableDrivedEntityState" />
         </EntityType>
         <EntityType Name="Organization">
           <Key>
@@ -9433,7 +9457,7 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Type" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="TableDrivedEntityStateConditionSecuritySubject" Relationship="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" FromRole="SecuritySubject" ToRole="TableDrivedEntityStateConditionSecuritySubject" />
+          <NavigationProperty Name="EntityStateConditionSecuritySubject" Relationship="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_SecuritySubject" FromRole="SecuritySubject" ToRole="EntityStateConditionSecuritySubject" />
           <NavigationProperty Name="Organization" Relationship="MyIdeaModel.FKOrganizati892027" FromRole="SecuritySubject" ToRole="Organization" />
           <NavigationProperty Name="OrganizationPost" Relationship="MyIdeaModel.FKOrganizati807635" FromRole="SecuritySubject" ToRole="OrganizationPost" />
           <NavigationProperty Name="OrganizationType" Relationship="MyIdeaModel.FKOrganizati936301" FromRole="SecuritySubject" ToRole="OrganizationType" />
@@ -10166,12 +10190,12 @@
         </Association>
         <Association Name="FK_TableDrivedEntityStateCondition_Column">
           <End Type="MyIdeaModel.Column" Role="Column" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="*" />
+          <End Type="MyIdeaModel.EntityStateCondition" Role="EntityStateCondition" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Column">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateCondition">
+            <Dependent Role="EntityStateCondition">
               <PropertyRef Name="ColumnID" />
             </Dependent>
           </ReferentialConstraint>
@@ -11426,12 +11450,12 @@
         </Association>
         <Association Name="FK_TableDrivedEntityStateCondition_EntityRelationshipTail">
           <End Type="MyIdeaModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="*" />
+          <End Type="MyIdeaModel.EntityStateCondition" Role="EntityStateCondition" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="EntityRelationshipTail">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateCondition">
+            <Dependent Role="EntityStateCondition">
               <PropertyRef Name="EntityRelationshipTailID" />
             </Dependent>
           </ReferentialConstraint>
@@ -11628,6 +11652,66 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EntitySecurityDirect_TableDrivedEntityState">
+          <End Type="MyIdeaModel.EntityState" Role="EntityState" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityState">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntitySecurityDirect">
+              <PropertyRef Name="TableDrivedEntityStateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntityState_EntityStateCondition">
+          <End Type="MyIdeaModel.EntityStateCondition" Role="EntityStateCondition" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntityState" Role="EntityState" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityStateCondition">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityState">
+              <PropertyRef Name="EntityStateConditionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FormulaItems_TableDrivedEntityState">
+          <End Type="MyIdeaModel.EntityState" Role="EntityState" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.FormulaItems" Role="FormulaItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityState">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FormulaItems">
+              <PropertyRef Name="TableDrivedEntityStateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKEntityStat936255">
+          <End Type="MyIdeaModel.EntityState" Role="EntityState" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntityState_UIActionActivity" Role="EntityState_UIActionActivity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityState">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityState_UIActionActivity">
+              <PropertyRef Name="TableDrivedEntityStateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKTableDrive764829">
+          <End Type="MyIdeaModel.TableDrivedEntity" Role="TableDrivedEntity" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntityState" Role="EntityState" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableDrivedEntity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityState">
+              <PropertyRef Name="TableDrivedEntityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKEntityStat608686">
           <End Type="MyIdeaModel.UIActionActivity" Role="UIActionActivity" Multiplicity="1" />
           <End Type="MyIdeaModel.EntityState_UIActionActivity" Role="EntityState_UIActionActivity" Multiplicity="*" />
@@ -11640,15 +11724,51 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKEntityStat936255">
-          <End Type="MyIdeaModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="1" />
-          <End Type="MyIdeaModel.EntityState_UIActionActivity" Role="EntityState_UIActionActivity" Multiplicity="*" />
+        <Association Name="FK_TableDrivedEntityStateCondition_Formula">
+          <End Type="MyIdeaModel.Formula" Role="Formula" Multiplicity="0..1" />
+          <End Type="MyIdeaModel.EntityStateCondition" Role="EntityStateCondition" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
+            <Principal Role="Formula">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="EntityState_UIActionActivity">
-              <PropertyRef Name="TableDrivedEntityStateID" />
+            <Dependent Role="EntityStateCondition">
+              <PropertyRef Name="FormulaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
+          <End Type="MyIdeaModel.EntityStateCondition" Role="EntityStateCondition" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntityStateConditionSecuritySubject" Role="EntityStateConditionSecuritySubject" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityStateCondition">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityStateConditionSecuritySubject">
+              <PropertyRef Name="EntityStateConditionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState">
+          <End Type="MyIdeaModel.EntityStateCondition" Role="EntityStateCondition" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntityStateConditionValues" Role="EntityStateConditionValues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityStateCondition">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityStateConditionValues">
+              <PropertyRef Name="EntityStateConditionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateSecuritySubject_SecuritySubject">
+          <End Type="MyIdeaModel.SecuritySubject" Role="SecuritySubject" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntityStateConditionSecuritySubject" Role="EntityStateConditionSecuritySubject" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SecuritySubject">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityStateConditionSecuritySubject">
+              <PropertyRef Name="SecuritySubjectID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11808,14 +11928,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TableDrivedEntityStateCondition_Formula">
+        <Association Name="FK_UIColumnValue_Formula">
           <End Type="MyIdeaModel.Formula" Role="Formula" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="*" />
+          <End Type="MyIdeaModel.UIColumnValue" Role="UIColumnValue" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Formula">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TableDrivedEntityStateCondition">
+            <Dependent Role="UIColumnValue">
               <PropertyRef Name="FormulaID" />
             </Dependent>
           </ReferentialConstraint>
@@ -11889,18 +12009,6 @@
             </Principal>
             <Dependent Role="TransitionAction_Formula">
               <PropertyRef Name="FormulaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_FormulaItems_TableDrivedEntityState">
-          <End Type="MyIdeaModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.FormulaItems" Role="FormulaItems" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FormulaItems">
-              <PropertyRef Name="TableDrivedEntityStateID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -12549,78 +12657,6 @@
             </Principal>
             <Dependent Role="TableDrivedEntity_Columns">
               <PropertyRef Name="TableDrivedEntityID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKTableDrive764829">
-          <End Type="MyIdeaModel.TableDrivedEntity" Role="TableDrivedEntity" Multiplicity="1" />
-          <End Type="MyIdeaModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntity">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TableDrivedEntityState">
-              <PropertyRef Name="TableDrivedEntityID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntitySecurityDirect_TableDrivedEntityState">
-          <End Type="MyIdeaModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="1" />
-          <End Type="MyIdeaModel.EntitySecurityDirect" Role="EntitySecurityDirect" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntitySecurityDirect">
-              <PropertyRef Name="TableDrivedEntityStateID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TableDrivedEntityStateCondition_TableDrivedEntityState">
-          <End Type="MyIdeaModel.TableDrivedEntityState" Role="TableDrivedEntityState" Multiplicity="1" />
-          <End Type="MyIdeaModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityState">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TableDrivedEntityStateCondition">
-              <PropertyRef Name="TableDrivedEntityStateID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
-          <End Type="MyIdeaModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="1" />
-          <End Type="MyIdeaModel.TableDrivedEntityStateConditionSecuritySubject" Role="TableDrivedEntityStateConditionSecuritySubject" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityStateCondition">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TableDrivedEntityStateConditionSecuritySubject">
-              <PropertyRef Name="TableDrivedEntityStateConditionID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState">
-          <End Type="MyIdeaModel.TableDrivedEntityStateCondition" Role="TableDrivedEntityStateCondition" Multiplicity="1" />
-          <End Type="MyIdeaModel.TableDrivedEntityStateConditionValues" Role="TableDrivedEntityStateConditionValues" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TableDrivedEntityStateCondition">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TableDrivedEntityStateConditionValues">
-              <PropertyRef Name="TableDrivedEntityStateConditionID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TableDrivedEntityStateSecuritySubject_SecuritySubject">
-          <End Type="MyIdeaModel.SecuritySubject" Role="SecuritySubject" Multiplicity="1" />
-          <End Type="MyIdeaModel.TableDrivedEntityStateConditionSecuritySubject" Role="TableDrivedEntityStateConditionSecuritySubject" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SecuritySubject">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TableDrivedEntityStateConditionSecuritySubject">
-              <PropertyRef Name="SecuritySubjectID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -13751,11 +13787,53 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="EntityState">
+            <EntityTypeMapping TypeName="MyIdeaModel.EntityState">
+              <MappingFragment StoreEntitySet="EntityState">
+                <ScalarProperty Name="EntityStateConditionID" ColumnName="EntityStateConditionID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="TableDrivedEntityID" ColumnName="TableDrivedEntityID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="EntityState_UIActionActivity">
             <EntityTypeMapping TypeName="MyIdeaModel.EntityState_UIActionActivity">
               <MappingFragment StoreEntitySet="EntityState_UIActionActivity">
                 <ScalarProperty Name="UIActionActivityID" ColumnName="UIActionActivityID" />
                 <ScalarProperty Name="TableDrivedEntityStateID" ColumnName="TableDrivedEntityStateID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntityStateCondition">
+            <EntityTypeMapping TypeName="MyIdeaModel.EntityStateCondition">
+              <MappingFragment StoreEntitySet="EntityStateCondition">
+                <ScalarProperty Name="SecuritySubjectInOrNotIn" ColumnName="SecuritySubjectInOrNotIn" />
+                <ScalarProperty Name="ValueOpoerator" ColumnName="ValueOpoerator" />
+                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
+                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
+                <ScalarProperty Name="FormulaID" ColumnName="FormulaID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntityStateConditionSecuritySubject">
+            <EntityTypeMapping TypeName="MyIdeaModel.EntityStateConditionSecuritySubject">
+              <MappingFragment StoreEntitySet="EntityStateConditionSecuritySubject">
+                <ScalarProperty Name="SecuritySubjectID" ColumnName="SecuritySubjectID" />
+                <ScalarProperty Name="EntityStateConditionID" ColumnName="EntityStateConditionID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntityStateConditionValues">
+            <EntityTypeMapping TypeName="MyIdeaModel.EntityStateConditionValues">
+              <MappingFragment StoreEntitySet="EntityStateConditionValues">
+                <ScalarProperty Name="ReservedValue" ColumnName="ReservedValue" />
+                <ScalarProperty Name="EntityStateConditionID" ColumnName="EntityStateConditionID" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -14331,49 +14409,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TableDrivedEntityState">
-            <EntityTypeMapping TypeName="MyIdeaModel.TableDrivedEntityState">
-              <MappingFragment StoreEntitySet="TableDrivedEntityState">
-                <ScalarProperty Name="ConditionOperator" ColumnName="ConditionOperator" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="TableDrivedEntityID" ColumnName="TableDrivedEntityID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TableDrivedEntityStateCondition">
-            <EntityTypeMapping TypeName="MyIdeaModel.TableDrivedEntityStateCondition">
-              <MappingFragment StoreEntitySet="TableDrivedEntityStateCondition">
-                <ScalarProperty Name="SecuritySubjectInOrNotIn" ColumnName="SecuritySubjectInOrNotIn" />
-                <ScalarProperty Name="ValueOpoerator" ColumnName="ValueOpoerator" />
-                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
-                <ScalarProperty Name="ColumnID" ColumnName="ColumnID" />
-                <ScalarProperty Name="FormulaID" ColumnName="FormulaID" />
-                <ScalarProperty Name="TableDrivedEntityStateID" ColumnName="TableDrivedEntityStateID" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TableDrivedEntityStateConditionSecuritySubject">
-            <EntityTypeMapping TypeName="MyIdeaModel.TableDrivedEntityStateConditionSecuritySubject">
-              <MappingFragment StoreEntitySet="TableDrivedEntityStateConditionSecuritySubject">
-                <ScalarProperty Name="SecuritySubjectID" ColumnName="SecuritySubjectID" />
-                <ScalarProperty Name="TableDrivedEntityStateConditionID" ColumnName="TableDrivedEntityStateConditionID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TableDrivedEntityStateConditionValues">
-            <EntityTypeMapping TypeName="MyIdeaModel.TableDrivedEntityStateConditionValues">
-              <MappingFragment StoreEntitySet="TableDrivedEntityStateConditionValues">
-                <ScalarProperty Name="ReservedValue" ColumnName="ReservedValue" />
-                <ScalarProperty Name="TableDrivedEntityStateConditionID" ColumnName="TableDrivedEntityStateConditionID" />
-                <ScalarProperty Name="Value" ColumnName="Value" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="TabPageUISetting">
             <EntityTypeMapping TypeName="MyIdeaModel.TabPageUISetting">
               <MappingFragment StoreEntitySet="TabPageUISetting">
@@ -14404,6 +14439,8 @@
           <EntitySetMapping Name="UIColumnValue">
             <EntityTypeMapping TypeName="MyIdeaModel.UIColumnValue">
               <MappingFragment StoreEntitySet="UIColumnValue">
+                <ScalarProperty Name="FormulaID" ColumnName="FormulaID" />
+                <ScalarProperty Name="ReservedValue" ColumnName="ReservedValue" />
                 <ScalarProperty Name="EvenHasValue" ColumnName="EvenHasValue" />
                 <ScalarProperty Name="EvenIsNotNew" ColumnName="EvenIsNotNew" />
                 <ScalarProperty Name="UIActionActivityID" ColumnName="UIActionActivityID" />

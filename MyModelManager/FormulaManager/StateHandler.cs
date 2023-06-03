@@ -47,22 +47,22 @@ namespace MyModelManager
             StateResult result = new StateResult();
             bool hasAnyOfConditions = false;
             bool hasAllOfConditions = true;
-            foreach (var condition in state.StateConditions)
-            {
-                var conditionResult = GetConditionResult(condition, mainDataItem, requester);
-                if (conditionResult)
-                    hasAnyOfConditions = true;
-                else
-                    hasAllOfConditions = false;
-            }
-            if (state.ConditionOperator == AndOREqualType.And)
-                result.Result = hasAllOfConditions;
-            else if (state.ConditionOperator == AndOREqualType.Or)
-                result.Result = hasAnyOfConditions;
-            else if (state.ConditionOperator == AndOREqualType.NotAnd)
-                result.Result = !hasAllOfConditions;
-            else if (state.ConditionOperator == AndOREqualType.NotOr)
-                result.Result = !hasAnyOfConditions;
+            var condition = state.StateCondition;
+
+            var conditionResult = GetConditionResult(condition, mainDataItem, requester);
+            //if (conditionResult)
+            //    hasAnyOfConditions = true;
+            //else
+            //    hasAllOfConditions = false;
+
+            //if (state.ConditionOperator == AndOREqualType.And)
+            //    result.Result = hasAllOfConditions;
+            //else if (state.ConditionOperator == AndOREqualType.Or)
+            //    result.Result = hasAnyOfConditions;
+            //else if (state.ConditionOperator == AndOREqualType.NotAnd)
+            //    result.Result = !hasAllOfConditions;
+            //else if (state.ConditionOperator == AndOREqualType.NotOr)
+            //    result.Result = !hasAnyOfConditions;
             return result;
         }
 
@@ -77,12 +77,12 @@ namespace MyModelManager
                 {
                     foreach (var post in requester.Posts)
                     {
-                        if (post.CurrentUserID == subject.SecuritySubjectID
-                            || post.ID == subject.SecuritySubjectID
-                             || post.OrganizationID == subject.SecuritySubjectID
-                              || post.OrganizationTypeID == subject.SecuritySubjectID
-                               || post.OrganizationTypeRoleTypeID == subject.SecuritySubjectID
-                                || post.RoleTypeID == subject.SecuritySubjectID
+                        if (post.CurrentUserID == subject
+                            || post.ID == subject
+                             || post.OrganizationID == subject
+                              || post.OrganizationTypeID == subject
+                               || post.OrganizationTypeRoleTypeID == subject
+                                || post.RoleTypeID == subject
                                 )
                             hasAnyOfSubjects = true;
                     }
@@ -99,7 +99,7 @@ namespace MyModelManager
             }
             else
                 securitySubjectIsOk = true;
-         
+
             if (securitySubjectIsOk)
             {
                 if (condition.ColumnID != 0)
@@ -150,7 +150,7 @@ namespace MyModelManager
                     }
                 }
             }
-            if (condition.EntityStateOperator == Enum_EntityStateOperator.Equals)
+            if (condition.EntityStateOperator == InORNotIn.In)
             {
                 return hasAnyOfValues == true;
             }

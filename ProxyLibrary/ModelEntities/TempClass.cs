@@ -239,6 +239,8 @@ namespace ModelEntites
         public int ColumnID { set; get; }
         public bool EvenHasValue { set; get; }
         public bool EvenIsNotNew { set; get; }
+        public  SecurityReservedValue? ReservedValue { set; get; }
+        public int FormulaID { set; get; }
         // public int EntityRelationshipTailID { set; get; }
         // public EntityRelationshipTailDTO EntityRelationshipTail { set; get; }
 
@@ -291,6 +293,7 @@ namespace ModelEntites
         public bool? Readonly { set; get; }
         public bool EvenInTempView { get; set; }
         public bool Permanent { get; set; }
+        public Enum_ApplyState ApplyState { get; set; }
         //  public List<ActionActivitySource> AllowedSteps { get; set; }
         //   public bool OnLoadOnly { get; set; }
         //    public int UICompositionID { set; get; }
@@ -2580,7 +2583,16 @@ namespace ModelEntites
         BeforeDelete,
         AfterDelete
     }
-
+    public enum Enum_ActionActivityType
+    {
+        CodeFunction,
+        DatabaseFunction,
+        UIEnablity,
+        ColumnValueRange,
+        EntityReadonly,
+        // ColumnValueRangeResetOld,
+        ColumnValue
+    }
     public class UIActionActivityDTO
     {
         public UIActionActivityDTO()
@@ -2600,6 +2612,7 @@ namespace ModelEntites
         public int EntityID { set; get; }
         public Enum_ActionActivityType Type { set; get; }
         public UIColumnValueRangeDTO UIColumnValueRange { set; get; }
+        public Enum_ApplyState ApplyState { get; set; }
         //  public List<UIColumnValueRangeResetDTO> UIColumnValueRangeReset { set; get; }
         //    public bool OnlyOnLoad { get; set; }
     }
@@ -2741,17 +2754,13 @@ namespace ModelEntites
         Pdf,
         MsWord,
     }
-    public enum Enum_ActionActivityType
+ 
+    public enum Enum_ApplyState
     {
-        CodeFunction,
-        DatabaseFunction,
-        UIEnablity,
-        ColumnValueRange,
-        EntityReadonly,
-        // ColumnValueRangeResetOld,
-        ColumnValue
+        None,
+        InDataFetch,
+        InUI
     }
-
     public class ArchiveRelationshipTailDTO
     {
         public ArchiveRelationshipTailDTO()
@@ -2930,8 +2939,8 @@ namespace ModelEntites
     {
         public EntityStateDTO()
         {
-            ActionActivities = new ObservableCollection<ModelEntites.UIActionActivityDTO>();
-            StateConditions = new ObservableCollection<EntityStateConditionDTO>();
+            ActionActivities = new ObservableCollection<UIActionActivityDTO>();
+          //  StateConditions = new  List<EntityStateConditionDTO>();
         }
         public int ID { set; get; }
         //public bool Preserve { set; get; }
@@ -2939,11 +2948,11 @@ namespace ModelEntites
 
 
 
-        public AndOREqualType ConditionOperator { set; get; }
+      //  public AndOREqualType ConditionOperator { set; get; }
         public string Title { set; get; }
 
         public ObservableCollection<UIActionActivityDTO> ActionActivities { set; get; }
-        public ObservableCollection<EntityStateConditionDTO> StateConditions { set; get; }
+        public EntityStateConditionDTO StateCondition { set; get; }
         //     public bool HasOnLoadOnlyAction { get; set; }
         //    public bool HasDynamicAction { get; set; }
     }
@@ -2952,7 +2961,7 @@ namespace ModelEntites
         public EntityStateConditionDTO()
         {
             Values = new List<ModelEntites.EntityStateValueDTO>();
-            SecuritySubjects = new ObservableCollection<ChildSecuritySubjectDTO>();
+            SecuritySubjects = new ObservableCollection<int>();
         }
         public int ID { set; get; }
         //public bool Preserve { set; get; }
@@ -2964,12 +2973,12 @@ namespace ModelEntites
         public FormulaDTO Formula { set; get; }
         public int ColumnID { set; get; }
         public ColumnDTO Column { set; get; }
-        public Enum_EntityStateOperator EntityStateOperator { set; get; }
+        public InORNotIn EntityStateOperator { set; get; }
         public string Title { set; get; }
         public List<EntityStateValueDTO> Values { set; get; }
         //public int ActionActivityID { set; get; }
         public InORNotIn SecuritySubjectInORNotIn { set; get; }
-        public ObservableCollection<ChildSecuritySubjectDTO> SecuritySubjects { set; get; }
+        public ObservableCollection<int> SecuritySubjects { set; get; }
 
     }
     //public class EntityStateGroupDTO 
@@ -2985,13 +2994,13 @@ namespace ModelEntites
 
 
     //}
-    public class ChildSecuritySubjectDTO
-    {
-        public int SecuritySubjectID { set; get; }
-        //   public Enum_SecuritySubjectOperator SecuritySubjectOperator { set; get; }
+    //public class ChildSecuritySubjectDTO
+    //{
+    //    public int SecuritySubjectID { set; get; }
+    //    //   public Enum_SecuritySubjectOperator SecuritySubjectOperator { set; get; }
 
 
-    }
+    //}
     public class EntityStateValueDTO
     {
         public string Value { set; get; }

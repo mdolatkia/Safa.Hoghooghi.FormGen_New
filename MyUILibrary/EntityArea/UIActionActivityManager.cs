@@ -62,7 +62,7 @@ namespace MyUILibrary.EntityArea
                 var dataDirectSecurity = AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.GetEntitySecurityDirects(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID);
                 foreach (var item in dataDirectSecurity)
                 {
-                    item.EntityState.ConditionOperator = AgentHelper.GetNotOperator(item.EntityState.ConditionOperator);
+                    //item.EntityState.ConditionOperator = AgentHelper.GetNotOperator(item.EntityState.ConditionOperator);
                     item.EntityState.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
 
                     EditArea.EntityStates1.Add(item.EntityState);
@@ -84,10 +84,10 @@ namespace MyUILibrary.EntityArea
                         var state = new EntityStateDTO();
                         state.ID = -1 * superToSubRel.ID;
                         EntityStateConditionDTO condition = new EntityStateConditionDTO();
-                        state.StateConditions.Add(condition);
+                        state.StateCondition = condition;
                         condition.ColumnID = superToSubRel.DeterminerColumnID;
                         condition.Values.Add(new EntityStateValueDTO() { Value = superToSubRel.DeterminerColumnValue });
-                        condition.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                        condition.EntityStateOperator = InORNotIn.NotIn;
                         var actionActivity = new UIActionActivityDTO();
                         actionActivity.ID = -1 * superToSubRel.ID;
                         actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -106,10 +106,10 @@ namespace MyUILibrary.EntityArea
                     var state = new EntityStateDTO();
                     state.ID = -1 * subToSuperRel.ID;
                     EntityStateConditionDTO condition = new EntityStateConditionDTO();
-                    state.StateConditions.Add(condition);
+                    state.StateCondition = condition;
                     condition.ColumnID = subToSuperRel.DeterminerColumnID;
                     condition.Values.Add(new EntityStateValueDTO() { Value = subToSuperRel.DeterminerColumnValue });
-                    condition.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                    condition.EntityStateOperator = InORNotIn.NotIn;
                     var actionActivity = new UIActionActivityDTO();
                     actionActivity.ID = -1 * subToSuperRel.ID;
                     actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -122,10 +122,10 @@ namespace MyUILibrary.EntityArea
                     var setDeterminerState = new EntityStateDTO();
                     setDeterminerState.ID = -2 * subToSuperRel.ID;
                     EntityStateConditionDTO condition1 = new EntityStateConditionDTO();
-                    setDeterminerState.StateConditions.Add(condition1);
+                    setDeterminerState.StateCondition = condition1;
                     condition1.ColumnID = subToSuperRel.DeterminerColumnID;
                     condition1.Values.Add(new EntityStateValueDTO() { Value = "!@#$#" });
-                    condition1.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                    condition1.EntityStateOperator = InORNotIn.NotIn;
                     var setDeterminerActionActivity = new UIActionActivityDTO();
                     setDeterminerActionActivity.ID = -2 * subToSuperRel.ID;
                     setDeterminerActionActivity.Type = Enum_ActionActivityType.ColumnValue;
@@ -151,11 +151,11 @@ namespace MyUILibrary.EntityArea
                         var state = new EntityStateDTO();
                         state.ID = -1 * superToSubRel.ID;
                         EntityStateConditionDTO condition = new EntityStateConditionDTO();
-                        state.StateConditions.Add(condition);
+                        state.StateCondition = condition;
                         condition.ColumnID = superToSubRel.SuperEntityDeterminerColumn.ID;
                         foreach (var val in superToSubRel.DeterminerColumnValues)
                             condition.Values.Add(new EntityStateValueDTO() { Value = val.Value });
-                        condition.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                        condition.EntityStateOperator = InORNotIn.NotIn;
                         var actionActivity = new UIActionActivityDTO();
                         actionActivity.ID = -1 * superToSubRel.ID;
                         actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -175,11 +175,11 @@ namespace MyUILibrary.EntityArea
                     var state = new EntityStateDTO();
                     state.ID = -1 * subToSuperRel.ID;
                     EntityStateConditionDTO condition = new EntityStateConditionDTO();
-                    state.StateConditions.Add(condition);
+                    state.StateCondition = condition;
                     condition.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
                     foreach (var val in subToSuperRel.DeterminerColumnValues)
                         condition.Values.Add(new EntityStateValueDTO() { Value = val.Value });
-                    condition.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                    condition.EntityStateOperator = InORNotIn.NotIn;
                     var actionActivity = new UIActionActivityDTO();
                     actionActivity.ID = -1 * subToSuperRel.ID;
                     actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -194,10 +194,10 @@ namespace MyUILibrary.EntityArea
                     var setDeterminerState = new EntityStateDTO();
                     setDeterminerState.ID = -2 * subToSuperRel.ID;
                     EntityStateConditionDTO condition1 = new EntityStateConditionDTO();
-                    setDeterminerState.StateConditions.Add(condition1);
+                    setDeterminerState.StateCondition = condition1;
                     condition1.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
                     condition1.Values.Add(new EntityStateValueDTO() { Value = "!@#$#" });
-                    condition1.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                    condition1.EntityStateOperator = InORNotIn.NotIn;
                     var setDeterminerActionActivity = new UIActionActivityDTO();
                     setDeterminerActionActivity.ID = -2 * subToSuperRel.ID;
                     setDeterminerActionActivity.Type = Enum_ActionActivityType.ColumnValue;
@@ -221,12 +221,12 @@ namespace MyUILibrary.EntityArea
                     var state = new EntityStateDTO();
                     state.ID = -1 * item.DataEntryColumn.ID;
                     EntityStateConditionDTO condition = new EntityStateConditionDTO();
-                    state.StateConditions.Add(condition);
+                    state.StateCondition = condition;
                     condition.ColumnID = item.DataEntryColumn.ColumnValueRange.TagColumnID;
                     condition.RelationshipTailID = item.DataEntryColumn.ColumnValueRange.EntityRelationshipTailID;
                     condition.RelationshipTail = item.DataEntryColumn.ColumnValueRange.EntityRelationshipTail;
                     condition.Values.Add(new EntityStateValueDTO() { Value = "###" });
-                    condition.EntityStateOperator = Enum_EntityStateOperator.NotEquals;
+                    condition.EntityStateOperator = InORNotIn.NotIn;
                     var actionActivity = new UIActionActivityDTO();
                     actionActivity.ID = -1 * item.DataEntryColumn.ID;
                     actionActivity.Type = Enum_ActionActivityType.ColumnValueRange;
@@ -252,17 +252,16 @@ namespace MyUILibrary.EntityArea
             if ((EditArea.EntityStates1 == null || EditArea.EntityStates1.Count == 0))
                 return;
 
-            var changeMonitors = GetChangeMoniStates(EditArea);
-            if (changeMonitors.Any())
+            List<EntityStateDTO> result = new List<EntityStateDTO>();
+            foreach (var state in EditArea.EntityStates1)
             {
-                dataItem.RelatedDataTailOrColumnChanged += DataItem_RelatedDataTailOrColumnChanged;
-                foreach (var state in changeMonitors)
+                if (StateHasDynamicAction(state))
                 {
+                    dataItem.RelatedDataTailOrColumnChanged += DataItem_RelatedDataTailOrColumnChanged;
                     CheckDataItemChangeMonitors(dataItem, state);
                 }
             }
             var actionActivitySource = ActionActivitySource.OnShowData;
-
             CheckAndImposeEntityStates(dataItem, actionActivitySource);
         }
         private UIActionActivityDTO GetReadonlyActionActivity()
@@ -311,16 +310,10 @@ namespace MyUILibrary.EntityArea
             }
             return newActionActivity;
         }
-        private List<EntityStateDTO> GetChangeMoniStates(I_EditEntityArea editArea)
-        {
-            List<EntityStateDTO> result = new List<EntityStateDTO>();
-            foreach (var state in EditArea.EntityStates1)
-            {
-                if (StateHasDynamicAction(state))
-                    result.Add(state);
-            }
-            return result;
-        }
+        //private List<EntityStateDTO> GetChangeMoniStates(I_EditEntityArea editArea)
+        //{
+
+        //}
 
 
         public void CheckAndImposeEntityStates(DP_FormDataRepository dataItem, ActionActivitySource actionActivitySource)
@@ -361,8 +354,8 @@ namespace MyUILibrary.EntityArea
 
         private bool StateHasDynamicAction(EntityStateDTO state)
         {
-            return (state.ActionActivities.Any(x => (x.Type == Enum_ActionActivityType.ColumnValueRange && x.UIColumnValueRange != null) || x.Type == Enum_ActionActivityType.ColumnValue
-                || (x.Type == Enum_ActionActivityType.UIEnablity && x.UIEnablityDetails.Any(y => y.Hidden == true))));
+            return (state.ActionActivities.Any(x => x.ApplyState == Enum_ApplyState.InUI
+                || (x.UIEnablityDetails != null && x.UIEnablityDetails.Any(y => y.ApplyState == Enum_ApplyState.InUI))));
         }
         //private bool StateHasOnLoadAction(EntityStateDTO state)
         //{
@@ -440,23 +433,22 @@ namespace MyUILibrary.EntityArea
 
             List<Tuple<string, int>> columns = new List<Tuple<string, int>>();
             List<Tuple<string, int>> rels = new List<Tuple<string, int>>();
-            foreach (var condition in entityState.StateConditions)
+            var condition = entityState.StateCondition;
+            if (condition.Formula != null)
             {
-                if (condition.Formula != null)
+                foreach (var fItem in condition.Formula.FormulaItems)
                 {
-                    foreach (var fItem in condition.Formula.FormulaItems)
-                    {
-                        if (fItem.ItemType == FormuaItemType.Column)
-                            columns.Add(new Tuple<string, int>(fItem.RelationshipIDTail, fItem.ItemID));
-                        else if (!string.IsNullOrEmpty(fItem.RelationshipIDTail))
-                            rels.Add(new Tuple<string, int>(fItem.RelationshipIDTail, 0));
-                    }
-                }
-                else if (condition.ColumnID != 0)
-                {
-                    columns.Add(new Tuple<string, int>(condition.RelationshipTail?.RelationshipIDPath, condition.ColumnID));
+                    if (fItem.ItemType == FormuaItemType.Column)
+                        columns.Add(new Tuple<string, int>(fItem.RelationshipIDTail, fItem.ItemID));
+                    else if (!string.IsNullOrEmpty(fItem.RelationshipIDTail))
+                        rels.Add(new Tuple<string, int>(fItem.RelationshipIDTail, 0));
                 }
             }
+            else if (condition.ColumnID != 0)
+            {
+                columns.Add(new Tuple<string, int>(condition.RelationshipTail?.RelationshipIDPath, condition.ColumnID));
+            }
+
             //if (columns.Any() || rels.Any())
             //{
             //    dataItem.RelatedDataTailOrColumnChanged += DataItem_RelatedDataTailOrColumnChanged;

@@ -20,7 +20,7 @@ namespace DataAccess
         public Nullable<short> Mode { get; set; }
         public int TableDrivedEntityStateID { get; set; }
     
+        public virtual EntityState EntityState { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        public virtual TableDrivedEntityState TableDrivedEntityState { get; set; }
     }
 }

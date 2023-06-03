@@ -67,7 +67,7 @@ namespace MyProject_WPF
                 view = new MyProject_WPF.frmAddEntityGroup(Transition.ProcessID, Process.EntityID, 0);
             else
             {
-                var id = ((sender as MyStaticLookup).SelectedItem as ActivityDTO).ID;
+                var id = ((sender as MyStaticLookup).SelectedItem as EntityGroupDTO).ID;
                 view = new MyProject_WPF.frmAddEntityGroup(Transition.ProcessID, Process.EntityID, id);
             }
             view.ItemSaved += (sender1, e1) => View_ItemSavedEntityGroup(sender1, e1, (sender as MyStaticLookup));

@@ -18,7 +18,7 @@ namespace DataAccess
         public int TableDrivedEntityStateID { get; set; }
         public int UIActionActivityID { get; set; }
     
+        public virtual EntityState EntityState { get; set; }
         public virtual UIActionActivity UIActionActivity { get; set; }
-        public virtual TableDrivedEntityState TableDrivedEntityState { get; set; }
     }
 }

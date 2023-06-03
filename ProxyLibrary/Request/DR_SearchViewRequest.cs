@@ -18,6 +18,7 @@ namespace ProxyLibrary
         public Enum_OrderBy SortType { set; get; }
         public int ToParentRelationshipID { set; get; }
         public int MaxDataItems { set; get; }
+        public bool ToParentRelationshipIsFKToPK { get; set; }
     }
 
     public class DR_SearchEditViewRequest : DR_SearchViewRequest
@@ -83,6 +84,7 @@ namespace ProxyLibrary
         }
         public int DataViewID { set; get; }
         public int ToParentRelationshipID { set; get; }
+        public bool ToParentRelationshipIsFKToPK { set; get; }
         // public int ParentRelationshipID { set; get; }
         //  public bool WithDataView { set; get; }
         //public bool CheckStates { get; set; }
@@ -94,7 +96,6 @@ namespace ProxyLibrary
         //    //Properties = new List<List<EntityInstanceProperty>>();
         //}
         public DP_SearchRepositoryMain SearchDataItem;
-
     }
     public class DR_SearchFullDataRequest : BaseRequest
     {

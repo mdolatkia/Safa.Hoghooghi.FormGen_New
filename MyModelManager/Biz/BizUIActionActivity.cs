@@ -34,7 +34,7 @@ namespace MyModelManager
                 return ToActionActivityDTO(ActionActivitys, true);
             }
         }
-        public UIActionActivityDTO ToActionActivityDTO(UIActionActivity item, bool withDetails)
+        public UIActionActivityDTO ToActionActivityDTO(UIActionActivity item, bool withDetails, int toParentRelationshipID = 0)
         {
             UIActionActivityDTO result = new UIActionActivityDTO();
             result.Type = (Enum_ActionActivityType)item.Type;
@@ -45,11 +45,12 @@ namespace MyModelManager
             {
                 foreach (var dbitem in item.UIColumnValue)
                     result.UIColumnValue.Add(ToColumnValueDTO(dbitem));
+                result.ApplyState = Enum_ApplyState.InUI;
             }
             if (withDetails && result.Type == Enum_ActionActivityType.UIEnablity)
             {
                 foreach (var dbitem in item.UIEnablityDetails)
-                    result.UIEnablityDetails.Add(ToUIEnablityDetailsDTO(result.UIEnablityDetails, dbitem));
+                    result.UIEnablityDetails.Add(ToUIEnablityDetailsDTO(dbitem, toParentRelationshipID));
             }
             //if (withDetails && result.Type == Enum_ActionActivityType.ColumnValueRange)
             //{
@@ -76,7 +77,7 @@ namespace MyModelManager
             result.RelatedStates = "";
             foreach (var state in item.EntityState_UIActionActivity)
             {
-                result.RelatedStates += (result.RelatedStates == "" ? "" : " , ") + state.TableDrivedEntityState.Title;
+                result.RelatedStates += (result.RelatedStates == "" ? "" : " , ") + state.EntityState.Title;
             }
             return result;
         }
@@ -105,6 +106,10 @@ namespace MyModelManager
             result.ExactValue = item.ExactValue;
             result.EvenIsNotNew = item.EvenIsNotNew;
             result.EvenHasValue = item.EvenHasValue;
+            if (item.FormulaID != null)
+                result.FormulaID = item.FormulaID.Value;
+            if (item.ReservedValue != null)
+                result.ReservedValue = (SecurityReservedValue)item.ReservedValue.Value;
             //     result.EntityRelationshipTailID = item.EntityRelationshipTailID ?? 0;
             //BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
             //if (result.EntityRelationshipTailID != 0)
@@ -127,23 +132,23 @@ namespace MyModelManager
         //    result.Readonly = relationshipEnablity.Readonly;
         //    return result;
         //}
-        private UIEnablityDetailsDTO ToUIEnablityDetailsDTO(List<UIEnablityDetailsDTO> list, UIEnablityDetails dbitem)
+        private UIEnablityDetailsDTO ToUIEnablityDetailsDTO(UIEnablityDetails dbitem, int toParentRelationshipID)
         {
             var cItem = new UIEnablityDetailsDTO();
             if (dbitem.ColumnID != null)
             {
-                //short relType = (short)Enum_MasterRelationshipType.FromForeignToPrimary;
-                //if (dbitem.Column.RelationshipColumns.Any(x => x.Relationship.MasterTypeEnum == relType))
-                //{
-                //    var relID = dbitem.Column.RelationshipColumns.First(x => x.Relationship.MasterTypeEnum == relType).Relationship.ID;
-                //    if (!list.Any(x => x.RelationshipID == relID))
-                //        cItem.RelationshipID = relID;
-                //}
-                //else
-
                 cItem.ColumnID = dbitem.ColumnID.Value;
-
-
+            }
+            if (dbitem.Readonly == true)
+            {
+                cItem.ApplyState = Enum_ApplyState.InDataFetch;
+            }
+            else if (dbitem.Hidden == true)
+            {
+                if (dbitem.RelationshipID != null && dbitem.RelationshipID == toParentRelationshipID)
+                    cItem.ApplyState = Enum_ApplyState.InDataFetch;
+                else
+                    cItem.ApplyState = Enum_ApplyState.InUI;
             }
             cItem.ID = dbitem.ID;
             if (dbitem.RelationshipID != null)
@@ -173,11 +178,13 @@ namespace MyModelManager
                         var dbColumnValue = new UIColumnValue();
                         dbColumnValue.ColumnID = item.ColumnID;
 
-                        
-                        dbColumnValue.ExactValue = item.ExactValue.ToString();
+                        if (item.ExactValue != null)
+                            dbColumnValue.ExactValue = item.ExactValue.ToString();
                         dbColumnValue.EvenIsNotNew = item.EvenIsNotNew;
                         dbColumnValue.EvenHasValue = item.EvenHasValue;
-
+                        dbColumnValue.FormulaID = item.FormulaID == 0 ? (int?)null : item.FormulaID;
+                        dbColumnValue.ReservedValue = (short?)item.ReservedValue;
+                        dbColumnValue.EvenHasValue = item.EvenHasValue;
                         //while (dbColumnValue.ColumnValue_ValidValues.Any())
                         //    dbColumnValue.ColumnValue_ValidValues.Remove(dbColumnValue.ColumnValue_ValidValues.First());
                         //foreach (var value in UIActionActivity.ColumnValue.ValidValues)

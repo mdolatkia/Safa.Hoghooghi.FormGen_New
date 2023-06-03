@@ -12,30 +12,28 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class TableDrivedEntityState
+    public partial class EntityState
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public TableDrivedEntityState()
+        public EntityState()
         {
-            this.EntityState_UIActionActivity = new HashSet<EntityState_UIActionActivity>();
-            this.FormulaItems = new HashSet<FormulaItems>();
             this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
-            this.TableDrivedEntityStateCondition = new HashSet<TableDrivedEntityStateCondition>();
+            this.FormulaItems = new HashSet<FormulaItems>();
+            this.EntityState_UIActionActivity = new HashSet<EntityState_UIActionActivity>();
         }
     
         public int ID { get; set; }
         public int TableDrivedEntityID { get; set; }
         public string Title { get; set; }
-        public Nullable<short> ConditionOperator { get; set; }
+        public int EntityStateConditionID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntityState_UIActionActivity> EntityState_UIActionActivity { get; set; }
+        public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
+        public virtual EntityStateCondition EntityStateCondition { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntityState_UIActionActivity> EntityState_UIActionActivity { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TableDrivedEntityStateCondition> TableDrivedEntityStateCondition { get; set; }
     }
 }

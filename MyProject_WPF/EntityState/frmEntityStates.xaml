@@ -34,8 +34,8 @@
                     --><!--<telerik:GridViewComboBoxColumn x:Name="colHasOrHasNot" Header="دارد/ندارد" DataMemberBinding="{Binding Path=SecuritySubjectOperator}"></telerik:GridViewComboBoxColumn>--><!--
                 </telerik:RadGridView.Columns>
             </telerik:RadGridView>-->
-            <TextBlock Text="عملگر"  x:Name="lblInOrNotIn"  Grid.Row="0" Grid.Column="2" VerticalAlignment="Top"  ></TextBlock>
-            <ComboBox x:Name="cmbConditionOperator" Grid.Column="3" Grid.Row="0" VerticalAlignment="Top" Width="120" ></ComboBox>
+            <!--<TextBlock Text="عملگر"  x:Name="lblInOrNotIn"  Grid.Row="0" Grid.Column="2" VerticalAlignment="Top"  ></TextBlock>
+            <ComboBox x:Name="cmbConditionOperator" Grid.Column="3" Grid.Row="0" VerticalAlignment="Top" Width="120" ></ComboBox>-->
             <!--<MyCommonWPFControls:MySearchLookup x:Name="lokSubject" Grid.Row="1" HorizontalAlignment="Stretch"  Grid.Column="1"/>-->
             <!--<TextBlock Text="نوع" Grid.Row="1"></TextBlock>-->
 
@@ -44,11 +44,14 @@
                 <RadioButton x:Name="optNotPersist" Checked="chkPersist_Checked" Content="وضعیت ذخیره نشود (صرفا اقدامات ظاهری قابل انتخاب خواهند بود)"></RadioButton>
             </StackPanel>-->
 
-            <Button Name="btnAddCondition" Content="افزودن شرط" Grid.Column="3" HorizontalAlignment="Right" Click="btnAddCondition_Click"></Button>
+            <!--<Button Name="btnAddCondition" Content="افزودن شرط" Grid.Column="3" HorizontalAlignment="Right" Click="btnAddCondition_Click"></Button>-->
         </Grid>
-        <TabControl x:Name="tabMain" Margin="2" Grid.Row="2">
+        <Grid x:Name="grdCondition" Margin="2" Grid.Row="2">
             
-        </TabControl>
+        </Grid>
+        <!--<TabControl x:Name="tabMain" Margin="2" Grid.Row="2">
+            
+        </TabControl>-->
        
         <Grid  Margin="2" Grid.Row="3">
             <Grid.RowDefinitions>
@@ -59,16 +62,18 @@
             <TextBlock x:Name="lblActionActivities" HorizontalAlignment="Left" Text="اقدامات مرتبط"></TextBlock>
             <telerik:RadGridView Grid.Row="1" AutoGenerateColumns="False" MinHeight="80" x:Name="dtgActionActivities" >
                 <telerik:RadGridView.Columns>
-                    <telerik:GridViewComboBoxColumn Header="اقدام مرتبط" DataMemberBinding="{Binding ID}" />
+                    <!--<telerik:GridViewComboBoxColumn Header="اقدام مرتبط" DataMemberBinding="{Binding ID}" />-->
+                    <MyCommonWPFControls:MyStaticLookupColumn EditItemEnabled="True" NewItemEnabled="True" DataMemberBinding="{Binding ID}"  x:Name="colActionActivity" Header="اثر وضعیت"></MyCommonWPFControls:MyStaticLookupColumn>
+
                 </telerik:RadGridView.Columns>
-                <telerik:RadContextMenu.ContextMenu  >
+                <!--<telerik:RadContextMenu.ContextMenu  >
                     <telerik:RadContextMenu>
                         <telerik:RadMenuItem x:Name="mnuAddNewItem" Header="افزودن مورد جدید" Click="mnuAddNewItem_Click"></telerik:RadMenuItem>
                         <telerik:RadMenuItem x:Name="mnuRemoveItem" Header="حذف مورد" Click="mnuRemoveItem_Click"></telerik:RadMenuItem>
                         <telerik:RadMenuItem x:Name="mnuAddNewActionActivity" Header="تعریف اقدام جدید" Click="mnuAddNewActionActivity_Click"></telerik:RadMenuItem>
                         <telerik:RadMenuItem x:Name="mnuEditActionActivity" Header="اصلاح اقدام مرتبط" Click="mnuEditActionActivity_Click"></telerik:RadMenuItem>
                     </telerik:RadContextMenu>
-                </telerik:RadContextMenu.ContextMenu  >
+                </telerik:RadContextMenu.ContextMenu  >-->
             </telerik:RadGridView>
         </Grid>
         <StackPanel Grid.Row="4" Orientation="Horizontal">

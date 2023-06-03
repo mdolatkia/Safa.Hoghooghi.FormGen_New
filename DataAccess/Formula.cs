@@ -18,10 +18,11 @@ namespace DataAccess
         public Formula()
         {
             this.ColumnCustomFormula = new HashSet<ColumnCustomFormula>();
+            this.EntityStateCondition = new HashSet<EntityStateCondition>();
             this.EntityValidation = new HashSet<EntityValidation>();
             this.PhraseColumn = new HashSet<PhraseColumn>();
             this.SavedPreDefinedSearchSimpleColumn = new HashSet<SavedPreDefinedSearchSimpleColumn>();
-            this.TableDrivedEntityStateCondition = new HashSet<TableDrivedEntityStateCondition>();
+            this.UIColumnValue = new HashSet<UIColumnValue>();
             this.FormulaItems = new HashSet<FormulaItems>();
             this.FormulaItems1 = new HashSet<FormulaItems>();
             this.LetterTemplatePlainField = new HashSet<LetterTemplatePlainField>();
@@ -45,6 +46,8 @@ namespace DataAccess
         public virtual ICollection<ColumnCustomFormula> ColumnCustomFormula { get; set; }
         public virtual DatabaseFunction_TableDrivedEntity DatabaseFunction_TableDrivedEntity { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntityStateCondition> EntityStateCondition { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityValidation> EntityValidation { get; set; }
         public virtual LinearFormula LinearFormula { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -52,7 +55,7 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SavedPreDefinedSearchSimpleColumn> SavedPreDefinedSearchSimpleColumn { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TableDrivedEntityStateCondition> TableDrivedEntityStateCondition { get; set; }
+        public virtual ICollection<UIColumnValue> UIColumnValue { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }

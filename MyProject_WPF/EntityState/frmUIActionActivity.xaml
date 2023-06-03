@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="MyProject_WPF.frmUIActionActivity"
+﻿<UserControl x:Class="MyProject_WPF.frmUIActionActivity" xmlns:MyCommonWPFControls="clr-namespace:MyCommonWPFControls;assembly=MyCommonWPFControls"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -66,6 +66,8 @@
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewComboBoxColumn x:Name="colColumnValueColumn" Header="انتخاب ستون" DataMemberBinding="{Binding ColumnID}" />
                                 <telerik:GridViewDataColumn Header="مقدار" DataMemberBinding="{Binding ExactValue}" />
+                                <telerik:GridViewComboBoxColumn x:Name="colReservedValue" Header="مقدار رزرو" DataMemberBinding="{Binding Path=SecurityReservedValue}"></telerik:GridViewComboBoxColumn>
+                                <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding FormulaID}"  x:Name="colFormula" Header="فرمول"></MyCommonWPFControls:MyStaticLookupColumn>
                             </telerik:RadGridView.Columns>
                         </telerik:RadGridView> 
                         <!--<TextBox Grid.Row="2" HorizontalAlignment="Left" x:Name="txtColumnValue" Width="230" Grid.Column="1"></TextBox>-->

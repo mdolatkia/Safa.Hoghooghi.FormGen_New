@@ -305,7 +305,8 @@ namespace MyUILibrary.EntityArea
             {
                 if (_EntityStates == null)
                 {
-                    _EntityStates = AgentUICoreMediator.GetAgentUICoreMediator.entityStateManagerService.GetEntityStates(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+                    _EntityStates = AgentUICoreMediator.GetAgentUICoreMediator.entityStateManagerService.GetEntityStates(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester()
+                        , AreaInitializer.EntityID, SourceRelationColumnControl == null ? 0 : SourceRelationColumnControl.Relationship.PairRelationshipID);
 
                 }
                 return _EntityStates;

@@ -1,7 +1,5 @@
 ﻿using ModelEntites;
-
-
-
+using MyCommonWPFControls;
 using MyModelManager;
 using System;
 using System.Collections.Generic;
@@ -129,9 +127,8 @@ namespace MyProject_WPF
             //SetRelationshipEnablityRelationshipTails();
             SetColumnValueColumns();
             SetUIEnablityColumns();
-      //      SetUIColumnValueRangeColumns();
-
-            dtgColumnValue.ItemsSource = ValidValues;
+            //      SetUIColumnValueRangeColumns();
+            //dtgColumnValue.ItemsSource = ValidValues;
         }
 
         //private void SetUIColumnValueRangeColumns()
@@ -427,8 +424,40 @@ namespace MyProject_WPF
             colColumnValueColumn.ItemsSource = targetEntity.Columns;
             colColumnValueColumn.DisplayMemberPath = "Alias";
             colColumnValueColumn.SelectedValueMemberPath = "ID";
+
+
+            SetFromulas();
+            colFormula.EditItemEnabled = true;
+            colFormula.NewItemEnabled = true;
+            colFormula.EditItemClicked += LokFormula_EditItemClicked;
+
+
+            colReservedValue.ItemsSource = Enum.GetValues(typeof(SecurityReservedValue));
+
         }
 
+        private void LokFormula_EditItemClicked(object sender, EditItemClickEventArg e)
+        {
+            int formulaID = 0;
+            if ((sender as MyStaticLookup).SelectedItem != null)
+                formulaID = (int)(sender as MyStaticLookup).SelectedValue;
+            frmFormula view = new frmFormula(formulaID, EntityID);
+            view.FormulaUpdated += (sender1, e1) => View_FormulaSelected(sender1, e1, (sender as MyStaticLookup));
+            MyProjectManager.GetMyProjectManager.ShowDialog(view, "Form", Enum_WindowSize.Maximized);
+        }
+
+        private void View_FormulaSelected(object sender, FormulaSelectedArg e, MyStaticLookup lookup)
+        {
+            SetFromulas();
+            lookup.SelectedValue = e.FormulaID;
+        }
+        private void SetFromulas()
+        {
+            colFormula.DisplayMemberPath = "Name";
+            colFormula.SelectedValueMemberPath = "ID";
+            BizFormula bizFormula = new BizFormula();
+            colFormula.ItemsSource = bizFormula.GetFormulas(EntityID, false);
+        }
         //private void btnRelationshipEnablityRelationshipTail_Click(object sender, RoutedEventArgs e)
         //{
         //    frmEntityRelationshipTail view = new frmEntityRelationshipTail(EntityID);

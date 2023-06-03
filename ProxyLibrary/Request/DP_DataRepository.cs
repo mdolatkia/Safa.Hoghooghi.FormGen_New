@@ -122,40 +122,40 @@ namespace ProxyLibrary
         //public event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
         //public Dictionary<int, List<ColumnValueRangeDetailsDTO>> ColumnKeyValueRanges = new Dictionary<int, List<ColumnValueRangeDetailsDTO>>();
 
-        public bool ParentRelationshipIsOnLoadHidden
-        {
-            get { return ParantChildRelationshipData != null && OnLoadHiddenRelationships.Any(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID); }
-        }
-        public string ParentRelationshipHiddenText
-        {
-            get
-            {
-                var text = "";
-                if (ParantChildRelationshipData != null)
-                {
-                    foreach (var item in OnLoadHiddenRelationships.Where(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID))
-                        text += (text == "" ? "" : Environment.NewLine + item.Item2);
-                }
-                return text;
-            }
-        }
-        public bool ParentRelationshipIsReadonly
-        {
-            get { return ParantChildRelationshipData != null && OnLoadReadOnlyRelationships.Any(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID); }
-        }
-        public string ParentRelationshipReadonlyText
-        {
-            get
-            {
-                var text = "";
-                if (ParantChildRelationshipData != null)
-                {
-                    foreach (var item in OnLoadReadOnlyRelationships.Where(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID))
-                        text += (text == "" ? "" : Environment.NewLine + item.Item2);
-                }
-                return text;
-            }
-        }
+        //public bool ParentRelationshipIsOnLoadHidden
+        //{
+        //    get { return ParantChildRelationshipData != null && ParentRelationshipIsHidenOnLoad.Any(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID); }
+        //}
+        //public string ParentRelationshipHiddenText
+        //{
+        //    get
+        //    {
+        //        var text = "";
+        //        if (ParantChildRelationshipData != null)
+        //        {
+        //            foreach (var item in OnLoadHiddenRelationships.Where(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID))
+        //                text += (text == "" ? "" : Environment.NewLine + item.Item2);
+        //        }
+        //        return text;
+        //    }
+        //}
+        //public bool ParentRelationshipIsReadonly
+        //{
+        //    get { return ParantChildRelationshipData != null && OnLoadReadOnlyRelationships.Any(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID); }
+        //}
+        //public string ParentRelationshipReadonlyText
+        //{
+        //    get
+        //    {
+        //        var text = "";
+        //        if (ParantChildRelationshipData != null)
+        //        {
+        //            foreach (var item in OnLoadReadOnlyRelationships.Where(x => x.Item1 == ParantChildRelationshipData.ToParentRelationshipID))
+        //                text += (text == "" ? "" : Environment.NewLine + item.Item2);
+        //        }
+        //        return text;
+        //    }
+        //}
         public virtual List<ChildRelationshipData> ChildRelationshipDatas { set; get; }
 
         public virtual ChildRelationshipData ParantChildRelationshipData { get; set; }
@@ -165,12 +165,17 @@ namespace ProxyLibrary
         //{
 
         //}
+
+      //  public List<Tuple<int, string>> ChildHiddenRelationships { get; set; }
+        public List<Tuple<int, string>> ChildReadonlyRelationships { get; set; }
         public DP_DataRepository(DP_DataView dataView)
           : base(dataView.TargetEntityID, dataView.TargetEntityAlias, dataView.ListViewID, dataView.DataViewProperties)
         {
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
             ChildRelationshipDatas = new List<ChildRelationshipData>();
-            OnLoadReadOnlyRelationships = new List<Tuple<int, string>>();
+         //   ChildHiddenRelationships = new List<Tuple<int, string>>();
+            ChildReadonlyRelationships = new List<Tuple<int, string>>();
+            //      OnLoadReadOnlyRelationships = new List<Tuple<int, string>>();
 
             GUID = Guid.NewGuid();
         }
@@ -180,7 +185,9 @@ namespace ProxyLibrary
 
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
             ChildRelationshipDatas = new List<ChildRelationshipData>();
-            OnLoadReadOnlyRelationships = new List<Tuple<int, string>>();
+         //   ChildHiddenRelationships = new List<Tuple<int, string>>();
+            ChildReadonlyRelationships = new List<Tuple<int, string>>();
+            //    OnLoadReadOnlyRelationships = new List<Tuple<int, string>>();
             GUID = Guid.NewGuid();
         }
 
@@ -462,6 +469,8 @@ namespace ProxyLibrary
                 return info;
             }
         }
+
+
 
 
 

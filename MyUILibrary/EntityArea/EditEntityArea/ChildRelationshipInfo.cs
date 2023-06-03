@@ -192,22 +192,21 @@ namespace MyUILibrary.EntityArea
 
 
                 bool enableDisableView = true;
-                if (RelatedData.Any(x => x.ParentRelationshipIsOnLoadHidden))
+                if (RelatedData.Any(x => x.ParentRelationshipIsHidenOnLoad))
                 {
                     if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
                     {
                         enableDisableView = false;
                         columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, "parentRelationshipHidden", ControlItemPriority.Normal));
-                        columnControlMessageItems.Add(new ColumnControlMessageItem(RelatedData.First(x => x.ParentRelationshipIsOnLoadHidden).ParentRelationshipHiddenText, ControlOrLabelAsTarget.Control, "parentRelationshipHidden", ControlItemPriority.Normal));
-
+                        columnControlMessageItems.Add(new ColumnControlMessageItem(RelatedData.First(x => x.ParentRelationshipIsHidenOnLoad).ParentRelationshipIsHidenOnLoadText, ControlOrLabelAsTarget.Control, "parentRelationshipHidden", ControlItemPriority.Normal));
                     }
                     else
                     {
                         if (IsDataviewOpen)
                         {
-                            foreach (var data in RelatedData.Where(x => x.ParentRelationshipIsOnLoadHidden))
+                            foreach (var data in RelatedData.Where(x => x.ParentRelationshipIsHidenOnLoad))
                             {
-                                (RelationshipControl.GenericEditNdTypeArea as I_EditEntityAreaMultipleData).DataView.SetTooltip(data, data.ParentRelationshipHiddenText);
+                                (RelationshipControl.GenericEditNdTypeArea as I_EditEntityAreaMultipleData).DataView.SetTooltip(data, data.ParentRelationshipIsHidenOnLoadText);
                                 (RelationshipControl.GenericEditNdTypeArea as I_EditEntityAreaMultipleData).DataView.EnableDisable(data, false);
                             }
                         }
@@ -581,8 +580,7 @@ namespace MyUILibrary.EntityArea
             if (clearIsOk)
             {
                 base.RelatedData.Remove(DP_FormDataRepository);
-
-
+                
                 CheckRelationshipChanged(enum_AddRemove.Remove, DP_FormDataRepository);
                 if (!IsDirect)
                 {
@@ -863,7 +861,7 @@ namespace MyUILibrary.EntityArea
         }
         public bool IsReadonlyOfState
         {
-            get { return SourceData.OnLoadReadOnlyRelationships.Any(x => x.Item1 == Relationship.ID); }
+            get { return SourceData.ChildReadonlyRelationships.Any(x => x.Item1 == Relationship.ID); }
         }
         public string IsReadonlyText
         {
@@ -877,7 +875,7 @@ namespace MyUILibrary.EntityArea
                 {
                     text += (string.IsNullOrEmpty(text) ? "" : Environment.NewLine)
                               + "بر اساس وضعیتهای زیر دسترسی به ستون فقط خواندنی است";
-                    foreach (var item in SourceData.OnLoadReadOnlyRelationships.Where(x => x.Item1 == Relationship.ID))
+                    foreach (var item in SourceData.ChildReadonlyRelationships.Where(x => x.Item1 == Relationship.ID))
                     {
                         text += Environment.NewLine + item.Item2;
                     }
@@ -1199,6 +1197,7 @@ namespace MyUILibrary.EntityArea
             var childViewData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(request).ResultDataItems;
             var countRequest = new DR_SearchCountRequest(requester);
             request.ToParentRelationshipID = Relationship.ID;
+            request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
             countRequest.SearchDataItems = searchDataItem;
             countRequest.Requester.SkipSecurity = true;
             var count = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchCountRequest(countRequest);
@@ -1221,7 +1220,8 @@ namespace MyUILibrary.EntityArea
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
             var searchDataItem = relationshipManager.GetSecondSideSearchItemByFirstSideColumns(SourceData, Relationship);
             DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem);
-            request.ToParentRelationshipID = Relationship.ID;
+            request.ToParentRelationshipID = ToParentRelationship.ID;
+            request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
             var childFullData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(request).ResultDataItems;
             var countRequest = new DR_SearchCountRequest(requester);
             countRequest.SearchDataItems = searchDataItem;

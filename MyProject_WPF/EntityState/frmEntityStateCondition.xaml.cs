@@ -45,8 +45,7 @@ namespace MyProject_WPF
             SetFromulas();
             SetSecuritySubjects();
 
-            ControlHelper.GenerateContextMenu(dtgColumnValue);
-            ControlHelper.GenerateContextMenu(dtgFormulaValue);
+            ControlHelper.GenerateContextMenu(dtgValues);
             ControlHelper.GenerateContextMenu(dtgSecuritySubjects);
             lokRelationshipTail.SelectionChanged += LokRelationshipTail_SelectionChanged;
             lokRelationshipTail.EditItemClicked += LokRelationshipTail_EditItemClicked;
@@ -184,36 +183,28 @@ namespace MyProject_WPF
             if (Message.FormulaID != 0)
             {
                 lokFormula.SelectedValue = Message.FormulaID;
-                dtgFormulaValue.ItemsSource = Message.Values;
                 optFormula.IsChecked = true;
             }
             else if (Message.ColumnID != 0)
             {
-
                 cmbColumns.SelectedValue = Message.ColumnID;
-                dtgColumnValue.ItemsSource = Message.Values;
                 optColumn.IsChecked = true;
             }
-            else
-            {
-                dtgFormulaValue.ItemsSource = Message.Values;
-                dtgColumnValue.ItemsSource = Message.Values;
-            }
+            
+            dtgValues.ItemsSource = Message.Values;
             cmbInOrNotIn.SelectedItem = Message.SecuritySubjectInORNotIn;
         }
         private void optFormula_Checked(object sender, RoutedEventArgs e)
         {
-            tabColumn.Visibility = Visibility.Collapsed;
-            tabFormula.Visibility = Visibility.Visible;
-            tabFormula.IsSelected = true;
+            grdColumn.Visibility = Visibility.Collapsed;
+            grdFormula.Visibility = Visibility.Visible;
         }
 
 
         private void optColumn_Checked(object sender, RoutedEventArgs e)
         {
-            tabFormula.Visibility = Visibility.Collapsed;
-            tabColumn.Visibility = Visibility.Visible;
-            tabColumn.IsSelected = true;
+            grdFormula.Visibility = Visibility.Collapsed;
+            grdColumn.Visibility = Visibility.Visible;
         }
 
         public string UpdateMessage()
@@ -255,7 +246,7 @@ namespace MyProject_WPF
                 Message.RelationshipTailID = (int)lokRelationshipTail.SelectedValue;
 
             if (cmbOperator.SelectedItem != null)
-                Message.EntityStateOperator = (Enum_EntityStateOperator)cmbOperator.SelectedItem;
+                Message.EntityStateOperator = (InORNotIn)cmbOperator.SelectedItem;
             Message.SecuritySubjectInORNotIn = (InORNotIn)cmbInOrNotIn.SelectedItem;
             //EntityStateConditionDTO.Preserve = optPersist.IsChecked == true;
             if (optFormula.IsChecked == true)

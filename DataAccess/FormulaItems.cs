@@ -29,9 +29,9 @@ namespace DataAccess
         public virtual CodeFunction_TableDrivedEntity CodeFunction_TableDrivedEntity { get; set; }
         public virtual Column Column { get; set; }
         public virtual DatabaseFunction_TableDrivedEntity DatabaseFunction_TableDrivedEntity { get; set; }
+        public virtual EntityState EntityState { get; set; }
         public virtual Formula Formula { get; set; }
         public virtual Formula Formula1 { get; set; }
-        public virtual TableDrivedEntityState TableDrivedEntityState { get; set; }
         public virtual Relationship Relationship { get; set; }
     }
 }
