@@ -362,7 +362,7 @@ namespace MyProject_WPF
                 //////    entityStates = bizEntityState.GetEntityStates(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue, false);
                 //////}
                 ///
-                entityStates = bizEntityState.GetEntityStates(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue, false).Where(x => x.FormulaID == 0).ToList();
+                entityStates = bizEntityState.GetEntityStates(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntities.SelectedValue, false,false).Where(x => x.FormulaID == 0).ToList();
                 lokState.DisplayMember = "Title";
                 lokState.SelectedValueMember = "ID";
                 lokState.ItemsSource = entityStates;

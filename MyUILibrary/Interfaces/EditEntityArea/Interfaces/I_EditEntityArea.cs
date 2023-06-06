@@ -97,7 +97,7 @@ namespace MyUILibrary.EntityArea
         //   void ApplyStatesBeforeUpdate();
 
         //void ResetActionActivities(DP_FormDataRepository dataItem);
-        void CheckAndImposeEntityStates(DP_FormDataRepository data, ActionActivitySource actionActivitySource);
+        void CheckAndImposeEntityStates(DP_FormDataRepository data);
        // void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem);
         void DataToShowInDataview(DP_FormDataRepository specificDate);
     }
@@ -1156,7 +1156,7 @@ namespace MyUILibrary.EntityArea
 
         }
         public DP_FormDataRepository SourceData { set; get; }
-        public string GeneralKey { set; get; }
+     //   public string GeneralKey { set; get; }
         public string UsageKey { set; get; }
         public DP_FormDataRepository DataToCall { set; get; }
         public int columnID { set; get; }

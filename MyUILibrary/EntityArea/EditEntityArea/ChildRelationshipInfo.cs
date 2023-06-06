@@ -357,7 +357,7 @@ namespace MyUILibrary.EntityArea
 
             foreach (var changeMonitor in ChangeMonitorItems.Where(x => !string.IsNullOrEmpty(x.RestTail) || x.columnID != 0))
             {
-                dataItem.AddChangeMonitorIfNotExists(changeMonitor.GeneralKey, changeMonitor.UsageKey, changeMonitor.RestTail, changeMonitor.columnID, changeMonitor.DataToCall);
+                dataItem.AddChangeMonitorIfNotExists( changeMonitor.UsageKey, changeMonitor.RestTail, changeMonitor.columnID, changeMonitor.DataToCall);
             }
             //if (ChangeMonitorItems.Any(x => x.columnID == 0))
             //{
@@ -975,11 +975,11 @@ namespace MyUILibrary.EntityArea
         List<ChangeMonitor> ChangeMonitorItems = new List<ChangeMonitor>();
 
         //اینجا وظیفه چک کردن هم داده ها و هم ستونهای داده را دارد
-        internal void AddChangeMonitor(string generalKey, string usageKey, string restTail, int columnID, DP_FormDataRepository dataToCall)
+        internal void AddChangeMonitor( string usageKey, string restTail, int columnID, DP_FormDataRepository dataToCall)
         {
             ChangeMonitorItems.Add(new ChangeMonitor()
             {
-                GeneralKey = generalKey,
+                //GeneralKey = generalKey,
                 UsageKey = usageKey,
                 DataToCall = dataToCall,
                 columnID = columnID,
@@ -1000,17 +1000,17 @@ namespace MyUILibrary.EntityArea
 
 
 
-        public void RemoveChangeMonitorByGenaralKey(string key)
-        {
-            foreach (var item in ChangeMonitorItems.Where(x => x.GeneralKey == key).ToList())
-            {
-                ChangeMonitorItems.Remove(item);
-                foreach (var data in RelatedData)
-                {
-                    data.RemoveChangeMonitorByGenaralKey(key);
-                }
-            }
-        }
+        //public void RemoveChangeMonitorByGenaralKey(string key)
+        //{
+        //    foreach (var item in ChangeMonitorItems.Where(x => x.GeneralKey == key).ToList())
+        //    {
+        //        ChangeMonitorItems.Remove(item);
+        //        foreach (var data in RelatedData)
+        //        {
+        //            data.RemoveChangeMonitorByGenaralKey(key);
+        //        }
+        //    }
+        //}
 
         //public bool OriginalDataHasBecomeHidden(DP_FormDataRepository orginalData)
         //{
@@ -1197,7 +1197,7 @@ namespace MyUILibrary.EntityArea
             var childViewData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(request).ResultDataItems;
             var countRequest = new DR_SearchCountRequest(requester);
             request.ToParentRelationshipID = Relationship.ID;
-            request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
+          //  request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
             countRequest.SearchDataItems = searchDataItem;
             countRequest.Requester.SkipSecurity = true;
             var count = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchCountRequest(countRequest);
@@ -1221,7 +1221,7 @@ namespace MyUILibrary.EntityArea
             var searchDataItem = relationshipManager.GetSecondSideSearchItemByFirstSideColumns(SourceData, Relationship);
             DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem);
             request.ToParentRelationshipID = ToParentRelationship.ID;
-            request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
+           // request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
             var childFullData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(request).ResultDataItems;
             var countRequest = new DR_SearchCountRequest(requester);
             countRequest.SearchDataItems = searchDataItem;
@@ -1315,6 +1315,7 @@ namespace MyUILibrary.EntityArea
 
         public void AddHiddenState(string key, string message, bool permanent)
         {
+            //ChildRelationshipInfo.AddHiddenState: c77deede58e4
             if (ControlHiddenStateItems.Any(x => x.Key == key))
                 ControlHiddenStateItems.Remove(ControlHiddenStateItems.First(x => x.Key == key));
             ControlHiddenStateItems.Add(new ControlStateItem(key, message, permanent));

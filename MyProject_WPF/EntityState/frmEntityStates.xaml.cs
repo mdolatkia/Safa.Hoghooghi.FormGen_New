@@ -90,7 +90,7 @@ namespace MyProject_WPF
 
         private void GetEntityState(int entityStateID)
         {
-            StateDTO = bizEntityState.GetEntityState(MyProjectManager.GetMyProjectManager.GetRequester(), entityStateID, false);
+            StateDTO = bizEntityState.GetEntityState(MyProjectManager.GetMyProjectManager.GetRequester(), entityStateID,false, false);
             ShowStateDTO();
         }
         //  frmEntityStateCondition conditionView;

@@ -18,7 +18,7 @@ namespace MyDataManagerService
         BizEntityState bizEntityState = new BizEntityState();
         public List<EntityStateDTO> GetEntityStates(DR_Requester requester, int entityID,int toParentRelationshipID)
         {
-            return bizEntityState.GetEntityStates(requester, entityID, true, toParentRelationshipID);
+            return bizEntityState.GetEntityStates(requester, entityID, true,true, toParentRelationshipID);
         }
 
         //public DP_EntityActionActivitiesResult GetEntityActionActivities(DP_EntityActionActivitiesRequest request)

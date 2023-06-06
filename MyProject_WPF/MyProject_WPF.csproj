@@ -321,9 +321,6 @@
     <Compile Include="SearchView\frmEntitySearchSelect.xaml.cs">
       <DependentUpon>frmEntitySearchSelect.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EntityState\frmUIActionActivitySelect.xaml.cs">
-      <DependentUpon>frmUIActionActivitySelect.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Letter\frmLetterRelationships.xaml.cs">
       <DependentUpon>frmLetterRelationships.xaml</DependentUpon>
     </Compile>
@@ -730,10 +727,6 @@
     <Page Include="SearchView\frmEntitySearchSelect.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="EntityState\frmUIActionActivitySelect.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="CommonTemp\frmChooseItem.xaml">
       <SubType>Designer</SubType>

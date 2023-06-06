@@ -154,6 +154,7 @@ namespace MyUILibrary.EntityArea
 
         public void AddHiddenState(string key, string message, bool permanent)
         {
+            // ChildSimpleContorlProperty.AddHiddenState: a301af124dd7
             if (ControlHiddenStateItems.Any(x => x.Key == key))
                 ControlHiddenStateItems.Remove(ControlHiddenStateItems.First(x => x.Key == key));
             ControlHiddenStateItems.Add(new ControlStateItem(key, message, permanent));
@@ -303,6 +304,7 @@ namespace MyUILibrary.EntityArea
 
         public void SetColumnValueRangeFromState(List<ColumnValueRangeDetailsDTO> details)
         {
+            // ChildSimpleContorlProperty.SetColumnValueRangeFromState: a9112d396ebd
             if (SourceData.DataIsInEditMode())
             {
                 if (!IsHiddenOnState && !IsReadonly)

@@ -20,7 +20,7 @@ namespace MyModelManager
 
 
                 foreach (var item in listActionActivity)
-                    result.Add(ToActionActivityDTO(item, withDetails));
+                    result.Add(ToActionActivityDTO(item, withDetails, false));
 
             }
             return result;
@@ -31,26 +31,46 @@ namespace MyModelManager
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var ActionActivitys = projectContext.UIActionActivity.First(x => x.ID == ActionActivitysID);
-                return ToActionActivityDTO(ActionActivitys, true);
+                return ToActionActivityDTO(ActionActivitys, true, false);
             }
         }
-        public UIActionActivityDTO ToActionActivityDTO(UIActionActivity item, bool withDetails, int toParentRelationshipID = 0)
+        public UIActionActivityDTO ToActionActivityDTO(UIActionActivity item, bool withDetails, bool forExecution, int toParentRelationshipID = 0)
         {
             UIActionActivityDTO result = new UIActionActivityDTO();
             result.Type = (Enum_ActionActivityType)item.Type;
 
 
+            if (withDetails)
+            {
+                if (result.Type == Enum_ActionActivityType.ColumnValue)
+                {
+                    foreach (var dbitem in item.UIColumnValue)
+                        result.UIColumnValue.Add(ToColumnValueDTO(dbitem));
+                    result.ApplyState = Enum_ApplyState.InUI;
+                }
+                if (result.Type == Enum_ActionActivityType.UIEnablity)
+                {
+                    foreach (var dbitem in item.UIEnablityDetails)
+                        result.UIEnablityDetails.Add(ToUIEnablityDetailsDTO(dbitem, forExecution, toParentRelationshipID));
+                }
+                if (result.Type == Enum_ActionActivityType.EntityReadonly)
+                {
+                    if (forExecution)
+                    {
 
-            if (withDetails && result.Type == Enum_ActionActivityType.ColumnValue)
-            {
-                foreach (var dbitem in item.UIColumnValue)
-                    result.UIColumnValue.Add(ToColumnValueDTO(dbitem));
-                result.ApplyState = Enum_ApplyState.InUI;
-            }
-            if (withDetails && result.Type == Enum_ActionActivityType.UIEnablity)
-            {
-                foreach (var dbitem in item.UIEnablityDetails)
-                    result.UIEnablityDetails.Add(ToUIEnablityDetailsDTO(dbitem, toParentRelationshipID));
+                        BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
+                        var entity = bizTableDrivedEntity.GetTableDrivedEntity(item.TableDrivedEntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithRelationships);
+
+                        foreach (var column in entity.Columns)
+                        {
+                            result.UIEnablityDetails.Add(ToUIEnablityDetailsDTO(new UIEnablityDetails() { ColumnID = column.ID, Readonly = true }, forExecution, toParentRelationshipID));
+                        }
+                        foreach (var relationship in entity.Relationships.Where(x => x.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
+                        {
+                            result.UIEnablityDetails.Add(ToUIEnablityDetailsDTO(new UIEnablityDetails() { RelationshipID = relationship.ID, Readonly = true }, forExecution, toParentRelationshipID));
+                        }
+                    }
+                }
             }
             //if (withDetails && result.Type == Enum_ActionActivityType.ColumnValueRange)
             //{
@@ -132,24 +152,15 @@ namespace MyModelManager
         //    result.Readonly = relationshipEnablity.Readonly;
         //    return result;
         //}
-        private UIEnablityDetailsDTO ToUIEnablityDetailsDTO(UIEnablityDetails dbitem, int toParentRelationshipID)
+        private UIEnablityDetailsDTO ToUIEnablityDetailsDTO(UIEnablityDetails dbitem, bool forExecution, int toParentRelationshipID)
         {
+            //BizUIActionActivity.ToUIEnablityDetailsDTO: c172a773b084
             var cItem = new UIEnablityDetailsDTO();
             if (dbitem.ColumnID != null)
             {
                 cItem.ColumnID = dbitem.ColumnID.Value;
             }
-            if (dbitem.Readonly == true)
-            {
-                cItem.ApplyState = Enum_ApplyState.InDataFetch;
-            }
-            else if (dbitem.Hidden == true)
-            {
-                if (dbitem.RelationshipID != null && dbitem.RelationshipID == toParentRelationshipID)
-                    cItem.ApplyState = Enum_ApplyState.InDataFetch;
-                else
-                    cItem.ApplyState = Enum_ApplyState.InUI;
-            }
+
             cItem.ID = dbitem.ID;
             if (dbitem.RelationshipID != null)
                 cItem.RelationshipID = dbitem.RelationshipID.Value;
@@ -158,6 +169,22 @@ namespace MyModelManager
             //    cItem.UICompositionID = dbitem.EntityUICompositionID.Value;
             cItem.Hidden = dbitem.Hidden;
             cItem.Readonly = dbitem.Readonly;
+
+            if (forExecution)
+            {
+                if (dbitem.Readonly == true)
+                {
+                    cItem.ApplyState = Enum_ApplyState.InDataFetch;
+                }
+                else if (dbitem.Hidden == true)
+                {
+                    if (dbitem.RelationshipID != null && dbitem.RelationshipID == toParentRelationshipID)
+                        cItem.ApplyState = Enum_ApplyState.InDataFetch;
+                    else
+                        cItem.ApplyState = Enum_ApplyState.InUI;
+                }
+            }
+
             return cItem;
         }
         public int UpdateActionActivitys(UIActionActivityDTO UIActionActivity)

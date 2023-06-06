@@ -136,35 +136,43 @@ namespace MyUILibrary.EntityArea
                     item.DataToCall.OnRelatedDataOrColumnChanged(item);
             }
         }
-        public bool ChangeMonitorExists(string generalKey, string usageKey)
+        public bool ChangeMonitorExists(string usageKey)
         {
-            return ChangeMonitorItems.Any(x => x.GeneralKey == generalKey && x.UsageKey == usageKey);
+            return ChangeMonitorItems.Any(x => x.UsageKey == usageKey);
         }
 
-        public void AddChangeMonitorIfNotExists(string generalKey, string usageKey, string restTail, int columnID = 0, DP_FormDataRepository dataToCall = null)
+        public void AddChangeMonitorIfNotExists(string usageKey, Tuple<string, List<int>> relTailAndColumns, DP_FormDataRepository dataToCall = null)
         {
             if (!IsFullData)
                 throw new Exception("asdasdasd");
             if (dataToCall == null)
                 dataToCall = this;
+            var restTail = relTailAndColumns.Item1;
+            var columns = relTailAndColumns.Item2;
             if (string.IsNullOrEmpty(restTail) && columnID == 0)
                 return;
 
-            if (ChangeMonitorItems.Any(x => x.GeneralKey == generalKey && x.UsageKey == usageKey && x.RestTail == restTail && x.columnID == columnID && x.DataToCall == dataToCall))
+            if (ChangeMonitorItems.Any(x => x.UsageKey == usageKey && x.DataToCall == dataToCall))// x.RestTail == restTail && x.columnID == columnID && x.DataToCall == dataToCall))
                 return;
 
             if (string.IsNullOrEmpty(restTail))
             {
-                var item = new ChangeMonitor()
+                //var item = new ChangeMonitor()
+                //{
+                //    SourceData = this,
+                //    //GeneralKey = generalKey,
+                //    UsageKey = usageKey,
+                //    DataToCall = dataToCall,
+                //    columnID = columnID,
+                //    RestTail = restTail
+                //};
+                //ChangeMonitorItems.Add(item);
+
+                var property = Properties.FirstOrDefault(x => x.ColumnID == columnID);
+                if (property != null)
                 {
-                    SourceData = this,
-                    GeneralKey = generalKey,
-                    UsageKey = usageKey,
-                    DataToCall = dataToCall,
-                    columnID = columnID,
-                    RestTail = restTail
-                };
-                ChangeMonitorItems.Add(item);
+
+                }
             }
             else
             {
@@ -174,7 +182,7 @@ namespace MyUILibrary.EntityArea
                 {
                     if (childRelationshipInfo.Relationship.ID.ToString() == firstRel)
                     {
-                        childRelationshipInfo.AddChangeMonitor(generalKey, usageKey, Rest, columnID, dataToCall);
+                        childRelationshipInfo.AddChangeMonitor(usageKey, Rest, columnID, dataToCall);
                         return;
                     }
                 }
@@ -182,7 +190,7 @@ namespace MyUILibrary.EntityArea
                 {
                     if (ParantChildRelationshipData.ToParentRelationshipID.ToString() == firstRel)
                     {
-                        ParantChildRelationshipData.SourceData.AddChangeMonitorIfNotExists(generalKey, usageKey, Rest, columnID, dataToCall);
+                        ParantChildRelationshipData.SourceData.AddChangeMonitorIfNotExists(usageKey, Rest, columnID, dataToCall);
                     }
                 }
             }
@@ -190,22 +198,22 @@ namespace MyUILibrary.EntityArea
 
 
 
-        public void RemoveChangeMonitorByGenaralKey(string key)
-        {
-            foreach (var item in ChangeMonitorItems.Where(x => x.GeneralKey == key).ToList())
-            {
-                ChangeMonitorItems.Remove(item);
-                foreach (var childRelationshipInfo in ChildRelationshipDatas)
-                {
-                    childRelationshipInfo.RemoveChangeMonitorByGenaralKey(key);
-                }
+        //public void RemoveChangeMonitorByGenaralKey(string key)
+        //{
+        //    foreach (var item in ChangeMonitorItems.Where(x => x.GeneralKey == key).ToList())
+        //    {
+        //        ChangeMonitorItems.Remove(item);
+        //        foreach (var childRelationshipInfo in ChildRelationshipDatas)
+        //        {
+        //            childRelationshipInfo.RemoveChangeMonitorByGenaralKey(key);
+        //        }
 
-                if (ParantChildRelationshipData != null)
-                {
-                    ParantChildRelationshipData.RemoveChangeMonitorByGenaralKey(key);
-                }
-            }
-        }
+        //        if (ParantChildRelationshipData != null)
+        //        {
+        //            ParantChildRelationshipData.RemoveChangeMonitorByGenaralKey(key);
+        //        }
+        //    }
+        //}
 
 
         public new object GetValueSomeHow(EntityRelationshipTailDTO valueRelationshipTail, int valueColumnID)
@@ -314,7 +322,7 @@ namespace MyUILibrary.EntityArea
         public List<ChangeMonitor> ChangeMonitorItems { set; get; }
         public bool IsDefaultData { get; internal set; }
         public bool IsUpdated { get; internal set; }
-       
+
 
         public bool DataIsInEditMode()
         {
@@ -426,9 +434,9 @@ namespace MyUILibrary.EntityArea
                                 continue;
 
                             //اینجا باید بیزینسی ریدونلی شدن داده هم تست شود
-                            if (ChildRelationshipDatas.Any(x =>  x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID)))
+                            if (ChildRelationshipDatas.Any(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID)))
                             {
-                                var relationshipColumn = ChildRelationshipDatas.First(x =>  x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID));
+                                var relationshipColumn = ChildRelationshipDatas.First(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.FirstSideColumnID == column.ColumnID));
 
                                 if (relationshipColumn.Relationship.RelationshipColumns.All(x => uIColumnValue.Any(z => z.ColumnID == x.FirstSideColumnID)))
                                 {
@@ -444,7 +452,7 @@ namespace MyUILibrary.EntityArea
                             else if (ChildSimpleContorlProperties.Any(x => x.SimpleColumnControl.DataEntryColumn.ID == column.ColumnID))
                             {
                                 //اینجا باید بیزینسی ریدونلی شدن داده هم تست شود
-                                var simpleColumn = ChildSimpleContorlProperties.First(x =>  x.SimpleColumnControl.DataEntryColumn.ID == column.ColumnID);
+                                var simpleColumn = ChildSimpleContorlProperties.First(x => x.SimpleColumnControl.DataEntryColumn.ID == column.ColumnID);
                                 simpleColumnValues.Add(new Tuple<ChildSimpleContorlProperty, object>(simpleColumn, columnValue.ExactValue));
                             }
                         }

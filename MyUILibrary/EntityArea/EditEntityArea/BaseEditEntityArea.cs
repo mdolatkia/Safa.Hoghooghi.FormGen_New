@@ -2052,7 +2052,7 @@ namespace MyUILibrary.EntityArea
             {
                 foreach (var childSimpleContorlProperty in data.ChildSimpleContorlProperties.Where(x => x.SimpleColumnControl.DataEntryColumn.ColumnCustomFormula != null && x.SimpleColumnControl.DataEntryColumn.ColumnCustomFormula.Formula != null))
                     AreaInitializer.UIFomulaManager.CalculateProperty(childSimpleContorlProperty);
-                AreaInitializer.ActionActivityManager.CheckAndImposeEntityStates(data, ActionActivitySource.BeforeUpdate);
+                AreaInitializer.ActionActivityManager.CheckAndImposeEntityStates(data);
                 foreach (var childRelInfo in data.ChildRelationshipDatas)
                 {
                     if (childRelInfo.RelationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateDirect

@@ -215,7 +215,7 @@ namespace MyModelManager
             if (withDetails && result.EntityStateID != 0)
             {
                 BizEntityState bizEntityState = new BizEntityState();
-                result.EntityState = bizEntityState.ToEntityStateDTO(requester, item.EntityState, withDetails);
+                result.EntityState = bizEntityState.ToEntityStateDTO(requester, item.EntityState, withDetails, false);
             }
 
             //foreach (var valItem in item.EntitySecurityDirectValues)
@@ -442,7 +442,7 @@ namespace MyModelManager
             //Tuple<EntitySecurityInDirectDTO, List<EntitySecurityDirectDTO>> result;= new Tuple<EntitySecurityInDirectDTO, List<EntitySecurityDirectDTO>>();
 
             BizRoleSecurity bizRoleSecurity = new BizRoleSecurity();
-          //  List<EntityStateConditionDTO> entityStateConditions = new List<EntityStateConditionDTO>();
+            //  List<EntityStateConditionDTO> entityStateConditions = new List<EntityStateConditionDTO>();
             //  EntitySecurityInDirectDTO indisrectSecurityDTO = null;
             //   EntityStateDTO entityState = null;
             using (var context = new MyIdeaEntities())
@@ -466,16 +466,16 @@ namespace MyModelManager
 
 
                 //   entityState = bizEntityState.ToEntityStateDTO(requester, targetEntityDisrectSecurity.TableDrivedEntityState, true);
-              //  var condition = targetEntityDisrectSecurity.EntityState.StateCondition;
+                //  var condition = targetEntityDisrectSecurity.EntityState.StateCondition;
 
                 if (ConditionSecuritySubjectIsValid(requester, targetEntityDisrectSecurity.EntityState))
                 {
-                     GetConditionDTOWithValues(requester, targetEntityDisrectSecurity.EntityState);
+                    GetConditionDTOWithValues(requester, targetEntityDisrectSecurity.EntityState);
                 }
                 else
                 {
                     targetEntityDisrectSecurity.EntityState.Values = null;
-                  //  targetEntityDisrectSecurity.EntityState.StateCondition = null;
+                    //  targetEntityDisrectSecurity.EntityState.StateCondition = null;
                 }
 
 
@@ -576,7 +576,7 @@ namespace MyModelManager
                     }
                 }
             }
-          //  return conditionDTO;
+            //  return conditionDTO;
         }
 
 

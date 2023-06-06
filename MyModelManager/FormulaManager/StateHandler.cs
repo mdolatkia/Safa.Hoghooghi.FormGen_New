@@ -17,7 +17,7 @@ namespace MyModelManager
 
         public StateResult GetStateResult(int StateFunctionID, DP_DataRepository mainDataItem, DR_Requester requester)
         {
-            var state = bizStateFunction.GetEntityState(requester, StateFunctionID, true);
+            var state = bizStateFunction.GetEntityState(requester, StateFunctionID, true, false);
             return GetStateResult(state, mainDataItem, requester);
             //////    var parameters = new List<object>();
             //////    var StateFunction = bizStateFunction.GetStateFunction(StateFunctionID);
@@ -47,7 +47,7 @@ namespace MyModelManager
             StateResult result = new StateResult();
             bool hasAnyOfConditions = false;
             bool hasAllOfConditions = true;
-           // var condition = state.StateCondition;
+            // var condition = state.StateCondition;
 
             var conditionResult = GetConditionResult(state, mainDataItem, requester);
             //if (conditionResult)

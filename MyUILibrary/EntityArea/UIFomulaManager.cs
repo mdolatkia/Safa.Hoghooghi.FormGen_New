@@ -55,9 +55,9 @@ namespace MyUILibrary.EntityArea
                     childSimpleContorlProperties.GetUIControlManager.AddButtonMenu(cpMenuFormulaCalculation);
                     cpMenuFormulaCalculation.MenuClicked += (sender1, e1) => CpMenuFormulaCalculation_MenuClicked(sender1, e1, childSimpleContorlProperties);
 
-                    string generalKey = "formulaColumn" + AgentHelper.GetUniqueDataPostfix(e.DataItem);
-                    string usageKey = columnControl.DataEntryColumn.ID.ToString();
-                    if (e.DataItem.ChangeMonitorExists(generalKey, usageKey))
+                  //  string generalKey = "formulaColumn" + AgentHelper.GetUniqueDataPostfix(e.DataItem);
+                    string usageKey = "formula" + columnControl.DataEntryColumn.ID.ToString();
+                    if (e.DataItem.ChangeMonitorExists( usageKey))
                         return;
                     var fullFormula = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetFormula(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), columnControl.DataEntryColumn.ColumnCustomFormula.FormulaID);
                     if (fullFormula.FormulaItems.Any(x => x.ItemType == FormuaItemType.Column || !string.IsNullOrEmpty(x.RelationshipIDTail)))
@@ -69,7 +69,7 @@ namespace MyUILibrary.EntityArea
                     {
                         foreach (var item in columnItems)
                         {
-                            e.DataItem.AddChangeMonitorIfNotExists(generalKey, usageKey, item.RelationshipIDTail, item.ItemID);
+                            e.DataItem.AddChangeMonitorIfNotExists( usageKey, item.RelationshipIDTail, item.ItemID);
                         }
                     }
                     var relationshipItems = fullFormula.FormulaItems.Where(x => !string.IsNullOrEmpty(x.RelationshipIDTail)).GroupBy(x => x.RelationshipIDTail);
@@ -77,7 +77,7 @@ namespace MyUILibrary.EntityArea
                     {
                         foreach (var item in relationshipItems)
                         {
-                            e.DataItem.AddChangeMonitorIfNotExists(generalKey, usageKey, item.Key, 0);
+                            e.DataItem.AddChangeMonitorIfNotExists( usageKey, item.Key, 0);
                         }
                     }
                 }
@@ -103,7 +103,7 @@ namespace MyUILibrary.EntityArea
 
         private void DataItem_RelatedDataTailOrColumnChanged(object sender, ChangeMonitor e, ChildSimpleContorlProperty childSimpleContorlProperty)
         {
-            if (e.GeneralKey.StartsWith("formulaColumn"))
+            if (e.UsageKey.StartsWith("formulaColumn"))
             {
                 if (e.DataToCall.DataIsInEditMode())
                 {
@@ -368,7 +368,7 @@ namespace MyUILibrary.EntityArea
         public void UpdateFromulas()
         {
             var datalist = EditArea.GetDataList().Where(x => x.ShoudBeCounted).ToList();
-          
+
         }
     }
 }

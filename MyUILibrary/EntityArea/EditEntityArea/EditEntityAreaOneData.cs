@@ -173,6 +173,7 @@ namespace MyUILibrary.EntityArea
 
         public void CheckContainersVisiblity(List<BaseColumnControl> changedControls)
         {
+            //EditEntityAreaOneData.CheckContainersVisiblity: 29dc4e65ce6f
             if (this is I_EditEntityAreaOneData)
             {
                 List<EntityUICompositionDTO> parentAsContainers = new List<EntityUICompositionDTO>();
@@ -256,8 +257,8 @@ namespace MyUILibrary.EntityArea
 
             if (shouldCreatData)
             {
-                var newData = AgentHelper.CreateAreaInitializerNewData(this,true);
-              
+                var newData = AgentHelper.CreateAreaInitializerNewData(this, true);
+
 
                 //if (DataEntryEntity.IsReadonly)
                 //{
@@ -277,8 +278,8 @@ namespace MyUILibrary.EntityArea
                 ////var addResult = AddData(newData);
                 ////if (!addResult)
                 ////    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده پیش فرض و یا داده های وابسته", newData.ViewInfo, Temp.InfoColor.Red);
-                
-                
+
+
                 //else
                 //{
 

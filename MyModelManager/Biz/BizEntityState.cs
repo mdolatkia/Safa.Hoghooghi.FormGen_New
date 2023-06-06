@@ -13,14 +13,14 @@ namespace MyModelManager
 {
     public class BizEntityState
     {
-        public List<EntityStateDTO> GetEntityStates(DR_Requester requester, int entityID, bool withDetails, int toParentRelationshipID = 0)
+        public List<EntityStateDTO> GetEntityStates(DR_Requester requester, int entityID, bool withDetails, bool forExecution, int toParentRelationshipID = 0)
         {
             List<EntityStateDTO> result = new List<EntityStateDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityState = projectContext.EntityState.Where(x => x.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityState)
-                    result.Add(ToEntityStateDTO(requester, item, withDetails, toParentRelationshipID));
+                    result.Add(ToEntityStateDTO(requester, item, withDetails, forExecution, toParentRelationshipID));
 
             }
             return result;
@@ -54,13 +54,13 @@ namespace MyModelManager
         //    }
         //    return result;
         //}
-        public EntityStateDTO GetEntityState(DR_Requester requester, int entityStatesID, bool withDetails)
+        public EntityStateDTO GetEntityState(DR_Requester requester, int entityStatesID, bool withDetails, bool forExecution)
         {
             List<EntityStateDTO> result = new List<EntityStateDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var EntityStates = projectContext.EntityState.First(x => x.ID == entityStatesID);
-                return ToEntityStateDTO(requester, EntityStates, withDetails);
+                return ToEntityStateDTO(requester, EntityStates, withDetails, forExecution);
             }
         }
         //public bool EntityHasState(DP_DataRepository dataItem, int stateID)
@@ -106,7 +106,7 @@ namespace MyModelManager
         //    return null;
         //}
 
-        public EntityStateDTO ToEntityStateDTO(DR_Requester requester, EntityState item, bool withDetails, int toParentRelationshipID = 0)
+        public EntityStateDTO ToEntityStateDTO(DR_Requester requester, EntityState item, bool withDetails, bool forExecution, int toParentRelationshipID = 0)
         {
             var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.EntityState, item.ID.ToString(), withDetails.ToString());
             if (cachedItem != null)
@@ -129,7 +129,7 @@ namespace MyModelManager
             var bizActionActivity = new BizUIActionActivity();
             foreach (var actionActivity in item.EntityState_UIActionActivity)
             {
-                result.ActionActivities.Add(bizActionActivity.ToActionActivityDTO(actionActivity.UIActionActivity, withDetails, toParentRelationshipID));
+                result.ActionActivities.Add(bizActionActivity.ToActionActivityDTO(actionActivity.UIActionActivity, withDetails, forExecution, toParentRelationshipID));
             }
             result.ID = item.ID;
             result.Title = item.Title;
@@ -180,7 +180,7 @@ namespace MyModelManager
         //{
         //    var result = new EntityStateConditionDTO();
         //    result.ID = item.ID;
-           
+
         //    return result;
         //}
 
@@ -340,9 +340,10 @@ namespace MyModelManager
                 return dbEntityState.ID;
             }
         }
-        internal void DoDataBeforeLoadUIActionActivities(DR_Requester Requester, List<DP_DataView> resultDataItems, bool fullData, int toParentRelationshipID, bool fromFKToPK)
+        internal void DoDataBeforeLoadUIActionActivities(DR_Requester Requester, List<DP_DataView> resultDataItems, bool fullData, int toParentRelationshipID)
         {
-            var entityStates = GetEntityStates(Requester, resultDataItems.First().TargetEntityID, true, toParentRelationshipID);
+            // BizEntityState.DoDataBeforeLoadUIActionActivities: 84133990d0c1
+            var entityStates = GetEntityStates(Requester, resultDataItems.First().TargetEntityID, true, true, toParentRelationshipID);
             List<Tuple<EntityStateDTO, List<UIEnablityDetailsDTO>>> listItems = new List<Tuple<EntityStateDTO, List<UIEnablityDetailsDTO>>>();
             foreach (var entityState in entityStates)
             {
@@ -351,28 +352,27 @@ namespace MyModelManager
                 {
                     if (fullData)
                     {
-                        foreach (var uiEnablity in action.UIEnablityDetails.Where(x => (x.Readonly == true && x.ColumnID != 0) ||
-                        x.RelationshipID != 0 && x.RelationshipID == toParentRelationshipID))
+                        foreach (var uiEnablity in action.UIEnablityDetails.Where(x => x.ApplyState ==  Enum_ApplyState.InDataFetch))
                         {
                             listEnablity.Add(uiEnablity);
                         }
                     }
                     else
                     {
-                        foreach (var uiEnablity in action.UIEnablityDetails.Where(x => x.RelationshipID != 0 && x.RelationshipID == toParentRelationshipID))
+                        foreach (var uiEnablity in action.UIEnablityDetails.Where(x => x.ApplyState == Enum_ApplyState.InDataFetch && x.RelationshipID != 0 && x.RelationshipID == toParentRelationshipID))
                         {
                             listEnablity.Add(uiEnablity);
                         }
                     }
-                    foreach (var uiEnablity in action.UIEnablityDetails.Where(x => x.ApplyState == Enum_ApplyState.InDataFetch))
-                    {
-                        listEnablity.Add(uiEnablity);
-                    }
+                    //foreach (var uiEnablity in action.UIEnablityDetails.Where(x => x.ApplyState == Enum_ApplyState.InDataFetch))
+                    //{
+                    //    listEnablity.Add(uiEnablity);
+                    //}
                 }
-                if (entityState.ActionActivities.Any(x => x.Type == Enum_ActionActivityType.EntityReadonly))
-                {
-                    listEnablity.Add(new UIEnablityDetailsDTO() { RelationshipID = toParentRelationshipID, Readonly = true });
-                }
+                //if (entityState.ActionActivities.Any(x => x.Type == Enum_ActionActivityType.EntityReadonly))
+                //{
+                //    listEnablity.Add(new UIEnablityDetailsDTO() { RelationshipID = toParentRelationshipID, Readonly = true });
+                //}
                 if (listEnablity.Any())
                 {
                     foreach (var dataItem in resultDataItems)
