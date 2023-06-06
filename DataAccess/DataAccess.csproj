@@ -313,13 +313,10 @@
     <Compile Include="EntityState.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="EntityStateCondition.cs">
+    <Compile Include="EntityStateSecuritySubject.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="EntityStateConditionSecuritySubject.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EntityStateConditionValues.cs">
+    <Compile Include="EntityStateValues.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="EntityState_UIActionActivity.cs">

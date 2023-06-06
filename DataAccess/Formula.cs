@@ -18,7 +18,7 @@ namespace DataAccess
         public Formula()
         {
             this.ColumnCustomFormula = new HashSet<ColumnCustomFormula>();
-            this.EntityStateCondition = new HashSet<EntityStateCondition>();
+            this.EntityState = new HashSet<EntityState>();
             this.EntityValidation = new HashSet<EntityValidation>();
             this.PhraseColumn = new HashSet<PhraseColumn>();
             this.SavedPreDefinedSearchSimpleColumn = new HashSet<SavedPreDefinedSearchSimpleColumn>();
@@ -46,7 +46,7 @@ namespace DataAccess
         public virtual ICollection<ColumnCustomFormula> ColumnCustomFormula { get; set; }
         public virtual DatabaseFunction_TableDrivedEntity DatabaseFunction_TableDrivedEntity { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntityStateCondition> EntityStateCondition { get; set; }
+        public virtual ICollection<EntityState> EntityState { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityValidation> EntityValidation { get; set; }
         public virtual LinearFormula LinearFormula { get; set; }

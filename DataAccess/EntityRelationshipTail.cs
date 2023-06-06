@@ -28,9 +28,9 @@ namespace DataAccess
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
             this.EntityGroup_Relationship = new HashSet<EntityGroup_Relationship>();
             this.EntityRelationshipTailDataMenu = new HashSet<EntityRelationshipTailDataMenu>();
+            this.EntityState = new HashSet<EntityState>();
             this.GraphDefinition_EntityRelationshipTail = new HashSet<GraphDefinition_EntityRelationshipTail>();
             this.LetterTemplateRelationshipField = new HashSet<LetterTemplateRelationshipField>();
-            this.EntityStateCondition = new HashSet<EntityStateCondition>();
             this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
             this.RelationshipSearchFilter = new HashSet<RelationshipSearchFilter>();
         }
@@ -63,11 +63,11 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityRelationshipTailDataMenu> EntityRelationshipTailDataMenu { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntityState> EntityState { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GraphDefinition_EntityRelationshipTail> GraphDefinition_EntityRelationshipTail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LetterTemplateRelationshipField> LetterTemplateRelationshipField { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntityStateCondition> EntityStateCondition { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

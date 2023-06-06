@@ -9,51 +9,83 @@
     <Grid FlowDirection="RightToLeft">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition ></RowDefinition>
-            <RowDefinition ></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-            </Grid.RowDefinitions>
+
+
+
+
+        <Grid x:Name="grdCondition" Margin="2" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
             <TextBlock Text="عنوان"></TextBlock>
-            <TextBox x:Name="txtTitle" Grid.Column="1"></TextBox>
-            <!--<TextBlock Grid.Row="1" x:Name="lblSecuritySubjects" Text="نقش/گروه"></TextBlock>
-            <telerik:RadGridView x:Name="dtgSecuritySubjects" MinHeight="80" AutoGenerateColumns="False" Grid.Row="1" Grid.Column="1" >
+            <TextBox  x:Name="txtTitle" Grid.Column="1"></TextBox>
+            <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="شروط" HorizontalAlignment="Left"></TextBlock>
+            <StackPanel Grid.Column="3"  Orientation="Horizontal">
+                <RadioButton  x:Name="optFormula" Margin="10,0,10,0" Checked="optFormula_Checked">فرمول</RadioButton>
+                <RadioButton x:Name="optColumn" Margin="10,0,10,0" Checked="optColumn_Checked">ستون</RadioButton>
+            </StackPanel>
+
+
+            <TextBlock Grid.Row="1" x:Name="lblFormula" Text="فرمول مرتبط"></TextBlock>
+            <MyCommonWPFControls:MyStaticLookup x:Name="lokFormula" Width="260"  Grid.Row="1" Grid.Column="1"></MyCommonWPFControls:MyStaticLookup>
+            <!--<Button x:Name="btnAddFormula" Width="90" Height="20" Content="تعریف فرمول" Grid.Column="2" Click="btnAddFormula_Click"></Button>-->
+
+
+            <TextBlock x:Name="lblRelationshipTail" Grid.Row="2" Text="رابطه"></TextBlock>
+            <MyCommonWPFControls:MyStaticLookup Grid.Row="2" NewItemEnabled="True" x:Name="lokRelationshipTail" Width="230" Grid.Column="1" />
+            <TextBlock x:Name="lblColumns" Grid.Row="2" Text="ستون" Grid.Column="2" ></TextBlock>
+            <ComboBox Grid.Row="2" x:Name="cmbColumns" Width="230" Grid.Column="3"></ComboBox>
+
+
+
+            <TextBlock Grid.Row="3" Text="مقادیر مورد انتظار"></TextBlock>
+            <telerik:RadGridView x:Name="dtgValues" MinHeight="80" AutoGenerateColumns="False" Grid.Row="3" Grid.Column="1" >
+                <telerik:RadGridView.Columns>
+                    <telerik:GridViewDataColumn Header="مقدار" DataMemberBinding="{Binding Value}" />
+                    <telerik:GridViewComboBoxColumn x:Name="colReservedValue" Header="مقدار رزرو" DataMemberBinding="{Binding Path=SecurityReservedValue}"></telerik:GridViewComboBoxColumn>
+                </telerik:RadGridView.Columns>
+            </telerik:RadGridView>
+            <TextBlock Grid.Row="3" Grid.Column="2" Text="عملگر"></TextBlock>
+            <ComboBox x:Name="cmbOperator"  VerticalAlignment="Center" Width="220" Grid.Row="3" Grid.Column="3" ></ComboBox>
+
+            <TextBlock Grid.Row="4" x:Name="lblSecuritySubjects" Text="نقش/گروه"></TextBlock>
+            <telerik:RadGridView x:Name="dtgSecuritySubjects" MinHeight="80" AutoGenerateColumns="False" Grid.Row="4" Grid.Column="1" >
                 <telerik:RadGridView.Columns>
                     <MyCommonWPFControls:MySearchLookupColumn  x:Name="colSecuritySubject" Header="نقش/گروه" Width="200"  DataMemberBinding="{Binding Path=SecuritySubjectID}"></MyCommonWPFControls:MySearchLookupColumn>
-                    --><!--<telerik:GridViewComboBoxColumn x:Name="colHasOrHasNot" Header="دارد/ندارد" DataMemberBinding="{Binding Path=SecuritySubjectOperator}"></telerik:GridViewComboBoxColumn>--><!--
+                    <!--<telerik:GridViewComboBoxColumn x:Name="colHasOrHasNot" Header="دارد/ندارد" DataMemberBinding="{Binding Path=SecuritySubjectOperator}"></telerik:GridViewComboBoxColumn>-->
                 </telerik:RadGridView.Columns>
-            </telerik:RadGridView>-->
-            <!--<TextBlock Text="عملگر"  x:Name="lblInOrNotIn"  Grid.Row="0" Grid.Column="2" VerticalAlignment="Top"  ></TextBlock>
-            <ComboBox x:Name="cmbConditionOperator" Grid.Column="3" Grid.Row="0" VerticalAlignment="Top" Width="120" ></ComboBox>-->
-            <!--<MyCommonWPFControls:MySearchLookup x:Name="lokSubject" Grid.Row="1" HorizontalAlignment="Stretch"  Grid.Column="1"/>-->
-            <!--<TextBlock Text="نوع" Grid.Row="1"></TextBlock>-->
+            </telerik:RadGridView>
+            <TextBlock Text="عملگر"  x:Name="lblInOrNotIn"  Grid.Row="4" Grid.Column="2"   ></TextBlock>
+            <ComboBox x:Name="cmbInOrNotIn" Grid.Column="3" Grid.Row="4" VerticalAlignment="Center" Width="220" ></ComboBox>
+            <!--<Border BorderBrush="Black" Grid.Row="1" BorderThickness="1" CornerRadius="5" >
+              
+            </Border>-->
 
-            <!--<StackPanel Orientation="Vertical"   Grid.Column="1" Grid.Row="1">
-                <RadioButton x:Name="optPersist" Checked="chkPersist_Checked" Content="وضعیت ذخیره شود (همه انواع اقدامات قابل انتخاب خواهند بود)"></RadioButton>
-                <RadioButton x:Name="optNotPersist" Checked="chkPersist_Checked" Content="وضعیت ذخیره نشود (صرفا اقدامات ظاهری قابل انتخاب خواهند بود)"></RadioButton>
-            </StackPanel>-->
 
-            <!--<Button Name="btnAddCondition" Content="افزودن شرط" Grid.Column="3" HorizontalAlignment="Right" Click="btnAddCondition_Click"></Button>-->
         </Grid>
-        <Grid x:Name="grdCondition" Margin="2" Grid.Row="2">
-            
-        </Grid>
+
         <!--<TabControl x:Name="tabMain" Margin="2" Grid.Row="2">
             
         </TabControl>-->
-       
-        <Grid  Margin="2" Grid.Row="3">
+
+        <Grid  Margin="2" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
@@ -76,7 +108,7 @@
                 </telerik:RadContextMenu.ContextMenu  >-->
             </telerik:RadGridView>
         </Grid>
-        <StackPanel Grid.Row="4" Orientation="Horizontal">
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="ثبت" x:Name="btnSave" Click="btnSave_Click"></Button>
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="جدید" x:Name="btnNew" Click="btnNew_Click"></Button>
             <Button    Grid.Row="0" Width="120" HorizontalAlignment="Right" Content="جستجو" x:Name="btnSearch" Click="btnSearch_Click"></Button>

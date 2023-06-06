@@ -134,19 +134,6 @@ namespace MyModelManager
             result.ID = item.ID;
             result.Title = item.Title;
 
-            result.StateCondition = ToEntityStateConditionDTO(requester, item.EntityStateCondition, withDetails);
-
-
-            CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.EntityState, item.ID.ToString(), withDetails.ToString());
-
-
-            return result;
-        }
-
-        public EntityStateConditionDTO ToEntityStateConditionDTO(DR_Requester requester, EntityStateCondition item, bool withDetails)
-        {
-            var result = new EntityStateConditionDTO();
-            result.ID = item.ID;
             result.FormulaID = item.FormulaID ?? 0;
             if (result.FormulaID != 0 && withDetails)
             {  //??با جزئیات؟؟........................................................................ 
@@ -160,7 +147,6 @@ namespace MyModelManager
                 result.Column = bizColumn.ToColumnDTO(item.Column, true);
 
             }
-            result.Title = item.Title;
             result.RelationshipTailID = item.EntityRelationshipTailID ?? 0;
             if (item.EntityRelationshipTail != null)
             {
@@ -170,12 +156,12 @@ namespace MyModelManager
             if (item.ValueOpoerator != null)
                 result.EntityStateOperator = (InORNotIn)item.ValueOpoerator;
 
-            foreach (var valItem in item.EntityStateConditionValues)
+            foreach (var valItem in item.EntityStateValues)
             {
                 result.Values.Add(new ModelEntites.EntityStateValueDTO() { Value = valItem.Value, SecurityReservedValue = valItem.ReservedValue == null ? SecurityReservedValue.None : (SecurityReservedValue)valItem.ReservedValue });
             }
 
-            foreach (var valItem in item.EntityStateConditionSecuritySubject)
+            foreach (var valItem in item.EntityStateSecuritySubject)
             {
                 result.SecuritySubjects.Add(valItem.SecuritySubjectID);//, SecuritySubjectOperator = (Enum_SecuritySubjectOperator)valItem.SecuritySubjectOperator });
             }
@@ -183,8 +169,20 @@ namespace MyModelManager
                 result.SecuritySubjectInORNotIn = InORNotIn.In;
             else
                 result.SecuritySubjectInORNotIn = (InORNotIn)item.SecuritySubjectInOrNotIn;
+
+            CacheManager.GetCacheManager().AddCacheItem(result, CacheItemType.EntityState, item.ID.ToString(), withDetails.ToString());
+
+
             return result;
         }
+
+        //public EntityStateConditionDTO ToEntityStateConditionDTO(DR_Requester requester, EntityStateCondition item, bool withDetails)
+        //{
+        //    var result = new EntityStateConditionDTO();
+        //    result.ID = item.ID;
+           
+        //    return result;
+        //}
 
         //public void ClearAndSaveStates(DataItemState item)
         //{
@@ -290,53 +288,48 @@ namespace MyModelManager
                 //        removeList.Add(item);
                 //}
 
-                if (dbEntityState.EntityStateCondition == null)
-                    dbEntityState.EntityStateCondition = new EntityStateCondition();
 
-                while (dbEntityState.EntityStateCondition.EntityStateConditionValues.Any())
-                    dbEntityState.EntityStateCondition.EntityStateConditionValues.Remove(dbEntityState.EntityStateCondition.EntityStateConditionValues.First());
-                while (dbEntityState.EntityStateCondition.EntityStateConditionSecuritySubject.Any())
-                    dbEntityState.EntityStateCondition.EntityStateConditionSecuritySubject.Remove(dbEntityState.EntityStateCondition.EntityStateConditionSecuritySubject.First());
-                projectContext.EntityStateCondition.Remove(dbEntityState.EntityStateCondition);
+                while (dbEntityState.EntityStateValues.Any())
+                    dbEntityState.EntityStateValues.Remove(dbEntityState.EntityStateValues.First());
+                while (dbEntityState.EntityStateSecuritySubject.Any())
+                    dbEntityState.EntityStateSecuritySubject.Remove(dbEntityState.EntityStateSecuritySubject.First());
 
 
-                var dbCondition = dbEntityState.EntityStateCondition;
-                var condition = EntityState.StateCondition;
 
-                if (condition.FormulaID != 0)
-                    dbCondition.FormulaID = condition.FormulaID;
+                if (dbEntityState.FormulaID != 0)
+                    dbEntityState.FormulaID = EntityState.FormulaID;
                 else
-                    dbCondition.FormulaID = null;
-                if (condition.ColumnID != 0)
+                    dbEntityState.FormulaID = null;
+                if (EntityState.ColumnID != 0)
                 {
-                    dbCondition.ColumnID = condition.ColumnID;
-                    if (condition.RelationshipTailID == 0)
-                        dbCondition.EntityRelationshipTailID = null;
+                    dbEntityState.ColumnID = EntityState.ColumnID;
+                    if (EntityState.RelationshipTailID == 0)
+                        dbEntityState.EntityRelationshipTailID = null;
                     else
-                        dbCondition.EntityRelationshipTailID = condition.RelationshipTailID;
+                        dbEntityState.EntityRelationshipTailID = EntityState.RelationshipTailID;
                 }
                 else
                 {
-                    dbCondition.ColumnID = null;
-                    dbCondition.EntityRelationshipTailID = null;
+                    dbEntityState.ColumnID = null;
+                    dbEntityState.EntityRelationshipTailID = null;
                 }
-                dbCondition.Title = condition.Title;
-                dbCondition.ValueOpoerator = (short)condition.EntityStateOperator;
-                dbCondition.SecuritySubjectInOrNotIn = (short)condition.SecuritySubjectInORNotIn;
+                dbEntityState.Title = EntityState.Title;
+                dbEntityState.ValueOpoerator = (short)EntityState.EntityStateOperator;
+                dbEntityState.SecuritySubjectInOrNotIn = (short)EntityState.SecuritySubjectInORNotIn;
 
-                while (dbCondition.EntityStateConditionValues.Any())
-                    projectContext.EntityStateConditionValues.Remove(dbCondition.EntityStateConditionValues.First());
-                foreach (var nItem in condition.Values)
+                while (dbEntityState.EntityStateValues.Any())
+                    projectContext.EntityStateValues.Remove(dbEntityState.EntityStateValues.First());
+                foreach (var nItem in EntityState.Values)
                 {
-                    dbCondition.EntityStateConditionValues.Add(new EntityStateConditionValues() { Value = nItem.Value, ReservedValue = (short)nItem.SecurityReservedValue });
+                    dbEntityState.EntityStateValues.Add(new EntityStateValues() { Value = nItem.Value, ReservedValue = (short)nItem.SecurityReservedValue });
                 }
 
 
-                while (dbCondition.EntityStateConditionSecuritySubject.Any())
-                    projectContext.EntityStateConditionSecuritySubject.Remove(dbCondition.EntityStateConditionSecuritySubject.First());
-                foreach (var nItem in condition.SecuritySubjects)
+                while (dbEntityState.EntityStateSecuritySubject.Any())
+                    projectContext.EntityStateSecuritySubject.Remove(dbEntityState.EntityStateSecuritySubject.First());
+                foreach (var nItem in EntityState.SecuritySubjects)
                 {
-                    dbCondition.EntityStateConditionSecuritySubject.Add(new EntityStateConditionSecuritySubject() { SecuritySubjectID = nItem });//, SecuritySubjectOperator = (short)nItem.SecuritySubjectOperator });
+                    dbEntityState.EntityStateSecuritySubject.Add(new EntityStateSecuritySubject() { SecuritySubjectID = nItem });//, SecuritySubjectOperator = (short)nItem.SecuritySubjectOperator });
                 }
 
 

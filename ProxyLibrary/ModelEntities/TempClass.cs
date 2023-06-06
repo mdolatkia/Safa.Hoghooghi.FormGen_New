@@ -2952,21 +2952,6 @@ namespace ModelEntites
         public string Title { set; get; }
 
         public ObservableCollection<UIActionActivityDTO> ActionActivities { set; get; }
-        public EntityStateConditionDTO StateCondition { set; get; }
-        //     public bool HasOnLoadOnlyAction { get; set; }
-        //    public bool HasDynamicAction { get; set; }
-    }
-    public class EntityStateConditionDTO
-    {
-        public EntityStateConditionDTO()
-        {
-            Values = new List<ModelEntites.EntityStateValueDTO>();
-            SecuritySubjects = new ObservableCollection<int>();
-        }
-        public int ID { set; get; }
-        //public bool Preserve { set; get; }
-        public int EntityStateID { set; get; }
-
         public int RelationshipTailID { set; get; }
         public EntityRelationshipTailDTO RelationshipTail { set; get; }
         public int FormulaID { set; get; }
@@ -2974,13 +2959,28 @@ namespace ModelEntites
         public int ColumnID { set; get; }
         public ColumnDTO Column { set; get; }
         public InORNotIn EntityStateOperator { set; get; }
-        public string Title { set; get; }
+       
         public List<EntityStateValueDTO> Values { set; get; }
         //public int ActionActivityID { set; get; }
         public InORNotIn SecuritySubjectInORNotIn { set; get; }
         public ObservableCollection<int> SecuritySubjects { set; get; }
-
+        //     public bool HasOnLoadOnlyAction { get; set; }
+        //    public bool HasDynamicAction { get; set; }
     }
+    //public class EntityStateConditionDTO
+    //{
+    //    public EntityStateConditionDTO()
+    //    {
+    //        Values = new List<ModelEntites.EntityStateValueDTO>();
+    //        SecuritySubjects = new ObservableCollection<int>();
+    //    }
+    //    public int ID { set; get; }
+    //    //public bool Preserve { set; get; }
+    //    public int EntityStateID { set; get; }
+
+      
+
+    //}
     //public class EntityStateGroupDTO 
     //{
     //    public EntityStateGroupDTO()

@@ -17,7 +17,7 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public SecuritySubject()
         {
-            this.EntityStateConditionSecuritySubject = new HashSet<EntityStateConditionSecuritySubject>();
+            this.EntityStateSecuritySubject = new HashSet<EntityStateSecuritySubject>();
             this.Permission = new HashSet<Permission>();
         }
     
@@ -25,7 +25,7 @@ namespace DataAccess
         public short Type { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntityStateConditionSecuritySubject> EntityStateConditionSecuritySubject { get; set; }
+        public virtual ICollection<EntityStateSecuritySubject> EntityStateSecuritySubject { get; set; }
         public virtual Organization Organization { get; set; }
         public virtual OrganizationPost OrganizationPost { get; set; }
         public virtual OrganizationType OrganizationType { get; set; }

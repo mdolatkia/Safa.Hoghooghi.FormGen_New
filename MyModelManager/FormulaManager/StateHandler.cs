@@ -47,9 +47,9 @@ namespace MyModelManager
             StateResult result = new StateResult();
             bool hasAnyOfConditions = false;
             bool hasAllOfConditions = true;
-            var condition = state.StateCondition;
+           // var condition = state.StateCondition;
 
-            var conditionResult = GetConditionResult(condition, mainDataItem, requester);
+            var conditionResult = GetConditionResult(state, mainDataItem, requester);
             //if (conditionResult)
             //    hasAnyOfConditions = true;
             //else
@@ -66,7 +66,7 @@ namespace MyModelManager
             return result;
         }
 
-        private bool GetConditionResult(EntityStateConditionDTO condition, DP_BaseData mainDataItem, DR_Requester requester)
+        private bool GetConditionResult(EntityStateDTO condition, DP_BaseData mainDataItem, DR_Requester requester)
         {
             bool result = false;
             bool securitySubjectIsOk = false;
@@ -126,7 +126,7 @@ namespace MyModelManager
             return result;
         }
 
-        private bool StateHasValue(DR_Requester requester, EntityStateConditionDTO condition, object columnValue)
+        private bool StateHasValue(DR_Requester requester, EntityStateDTO condition, object columnValue)
         {
             bool hasAnyOfValues = false;
             if (columnValue == null)

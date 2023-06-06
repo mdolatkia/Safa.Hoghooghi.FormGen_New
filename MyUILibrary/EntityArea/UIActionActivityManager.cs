@@ -83,11 +83,9 @@ namespace MyUILibrary.EntityArea
                     {
                         var state = new EntityStateDTO();
                         state.ID = -1 * superToSubRel.ID;
-                        EntityStateConditionDTO condition = new EntityStateConditionDTO();
-                        state.StateCondition = condition;
-                        condition.ColumnID = superToSubRel.DeterminerColumnID;
-                        condition.Values.Add(new EntityStateValueDTO() { Value = superToSubRel.DeterminerColumnValue });
-                        condition.EntityStateOperator = InORNotIn.NotIn;
+                        state.ColumnID = superToSubRel.DeterminerColumnID;
+                        state.Values.Add(new EntityStateValueDTO() { Value = superToSubRel.DeterminerColumnValue });
+                        state.EntityStateOperator = InORNotIn.NotIn;
                         var actionActivity = new UIActionActivityDTO();
                         actionActivity.ID = -1 * superToSubRel.ID;
                         actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -105,11 +103,9 @@ namespace MyUILibrary.EntityArea
                 {
                     var state = new EntityStateDTO();
                     state.ID = -1 * subToSuperRel.ID;
-                    EntityStateConditionDTO condition = new EntityStateConditionDTO();
-                    state.StateCondition = condition;
-                    condition.ColumnID = subToSuperRel.DeterminerColumnID;
-                    condition.Values.Add(new EntityStateValueDTO() { Value = subToSuperRel.DeterminerColumnValue });
-                    condition.EntityStateOperator = InORNotIn.NotIn;
+                    state.ColumnID = subToSuperRel.DeterminerColumnID;
+                    state.Values.Add(new EntityStateValueDTO() { Value = subToSuperRel.DeterminerColumnValue });
+                    state.EntityStateOperator = InORNotIn.NotIn;
                     var actionActivity = new UIActionActivityDTO();
                     actionActivity.ID = -1 * subToSuperRel.ID;
                     actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -121,11 +117,10 @@ namespace MyUILibrary.EntityArea
                     //شرط اگر داده جدید باشد
                     var setDeterminerState = new EntityStateDTO();
                     setDeterminerState.ID = -2 * subToSuperRel.ID;
-                    EntityStateConditionDTO condition1 = new EntityStateConditionDTO();
-                    setDeterminerState.StateCondition = condition1;
-                    condition1.ColumnID = subToSuperRel.DeterminerColumnID;
-                    condition1.Values.Add(new EntityStateValueDTO() { Value = "!@#$#" });
-                    condition1.EntityStateOperator = InORNotIn.NotIn;
+
+                    setDeterminerState.ColumnID = subToSuperRel.DeterminerColumnID;
+                    setDeterminerState.Values.Add(new EntityStateValueDTO() { Value = "!@#$#" });
+                    setDeterminerState.EntityStateOperator = InORNotIn.NotIn;
                     var setDeterminerActionActivity = new UIActionActivityDTO();
                     setDeterminerActionActivity.ID = -2 * subToSuperRel.ID;
                     setDeterminerActionActivity.Type = Enum_ActionActivityType.ColumnValue;
@@ -150,12 +145,11 @@ namespace MyUILibrary.EntityArea
                     {
                         var state = new EntityStateDTO();
                         state.ID = -1 * superToSubRel.ID;
-                        EntityStateConditionDTO condition = new EntityStateConditionDTO();
-                        state.StateCondition = condition;
-                        condition.ColumnID = superToSubRel.SuperEntityDeterminerColumn.ID;
+
+                        state.ColumnID = superToSubRel.SuperEntityDeterminerColumn.ID;
                         foreach (var val in superToSubRel.DeterminerColumnValues)
-                            condition.Values.Add(new EntityStateValueDTO() { Value = val.Value });
-                        condition.EntityStateOperator = InORNotIn.NotIn;
+                            state.Values.Add(new EntityStateValueDTO() { Value = val.Value });
+                        state.EntityStateOperator = InORNotIn.NotIn;
                         var actionActivity = new UIActionActivityDTO();
                         actionActivity.ID = -1 * superToSubRel.ID;
                         actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -174,12 +168,10 @@ namespace MyUILibrary.EntityArea
 
                     var state = new EntityStateDTO();
                     state.ID = -1 * subToSuperRel.ID;
-                    EntityStateConditionDTO condition = new EntityStateConditionDTO();
-                    state.StateCondition = condition;
-                    condition.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
+                    state.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
                     foreach (var val in subToSuperRel.DeterminerColumnValues)
-                        condition.Values.Add(new EntityStateValueDTO() { Value = val.Value });
-                    condition.EntityStateOperator = InORNotIn.NotIn;
+                        state.Values.Add(new EntityStateValueDTO() { Value = val.Value });
+                    state.EntityStateOperator = InORNotIn.NotIn;
                     var actionActivity = new UIActionActivityDTO();
                     actionActivity.ID = -1 * subToSuperRel.ID;
                     actionActivity.Type = Enum_ActionActivityType.UIEnablity;
@@ -193,11 +185,9 @@ namespace MyUILibrary.EntityArea
                     //منها در صورت چند مقداری بودن اولی انتخاب میشود. تست شود که فقط یکبار ست شود و اگر کاربر چیز دیگه ای انتخاب کرد مقدار با اولی مجددا ست نشود
                     var setDeterminerState = new EntityStateDTO();
                     setDeterminerState.ID = -2 * subToSuperRel.ID;
-                    EntityStateConditionDTO condition1 = new EntityStateConditionDTO();
-                    setDeterminerState.StateCondition = condition1;
-                    condition1.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
-                    condition1.Values.Add(new EntityStateValueDTO() { Value = "!@#$#" });
-                    condition1.EntityStateOperator = InORNotIn.NotIn;
+                    setDeterminerState.ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID;
+                    setDeterminerState.Values.Add(new EntityStateValueDTO() { Value = "!@#$#" });
+                    setDeterminerState.EntityStateOperator = InORNotIn.NotIn;
                     var setDeterminerActionActivity = new UIActionActivityDTO();
                     setDeterminerActionActivity.ID = -2 * subToSuperRel.ID;
                     setDeterminerActionActivity.Type = Enum_ActionActivityType.ColumnValue;
@@ -220,13 +210,12 @@ namespace MyUILibrary.EntityArea
 
                     var state = new EntityStateDTO();
                     state.ID = -1 * item.DataEntryColumn.ID;
-                    EntityStateConditionDTO condition = new EntityStateConditionDTO();
-                    state.StateCondition = condition;
-                    condition.ColumnID = item.DataEntryColumn.ColumnValueRange.TagColumnID;
-                    condition.RelationshipTailID = item.DataEntryColumn.ColumnValueRange.EntityRelationshipTailID;
-                    condition.RelationshipTail = item.DataEntryColumn.ColumnValueRange.EntityRelationshipTail;
-                    condition.Values.Add(new EntityStateValueDTO() { Value = "###" });
-                    condition.EntityStateOperator = InORNotIn.NotIn;
+
+                    state.ColumnID = item.DataEntryColumn.ColumnValueRange.TagColumnID;
+                    state.RelationshipTailID = item.DataEntryColumn.ColumnValueRange.EntityRelationshipTailID;
+                    state.RelationshipTail = item.DataEntryColumn.ColumnValueRange.EntityRelationshipTail;
+                    state.Values.Add(new EntityStateValueDTO() { Value = "###" });
+                    state.EntityStateOperator = InORNotIn.NotIn;
                     var actionActivity = new UIActionActivityDTO();
                     actionActivity.ID = -1 * item.DataEntryColumn.ID;
                     actionActivity.Type = Enum_ActionActivityType.ColumnValueRange;
@@ -433,10 +422,10 @@ namespace MyUILibrary.EntityArea
 
             List<Tuple<string, int>> columns = new List<Tuple<string, int>>();
             List<Tuple<string, int>> rels = new List<Tuple<string, int>>();
-            var condition = entityState.StateCondition;
-            if (condition.Formula != null)
+           // var condition = entityState;
+            if (entityState.Formula != null)
             {
-                foreach (var fItem in condition.Formula.FormulaItems)
+                foreach (var fItem in entityState.Formula.FormulaItems)
                 {
                     if (fItem.ItemType == FormuaItemType.Column)
                         columns.Add(new Tuple<string, int>(fItem.RelationshipIDTail, fItem.ItemID));
@@ -444,9 +433,9 @@ namespace MyUILibrary.EntityArea
                         rels.Add(new Tuple<string, int>(fItem.RelationshipIDTail, 0));
                 }
             }
-            else if (condition.ColumnID != 0)
+            else if (entityState.ColumnID != 0)
             {
-                columns.Add(new Tuple<string, int>(condition.RelationshipTail?.RelationshipIDPath, condition.ColumnID));
+                columns.Add(new Tuple<string, int>(entityState.RelationshipTail?.RelationshipIDPath, entityState.ColumnID));
             }
 
             //if (columns.Any() || rels.Any())

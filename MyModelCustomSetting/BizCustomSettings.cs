@@ -430,10 +430,8 @@ namespace MyModelCustomSetting
                         readonlyTypeOfConclusionItem.Title = "فقط خواندنی سازی نوع مورد خلاصه سرویس";
                         readonlyTypeOfConclusionItem.TableDrivedEntityID = serviceConclusionItem.ID;
 
-                        EntityStateCondition condition = new EntityStateCondition();
-                        condition.ColumnID = confirmedColumn.ID;
-                        condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { Value = "true" });
-                        readonlyTypeOfConclusionItem.EntityStateCondition=condition;
+                        readonlyTypeOfConclusionItem.ColumnID = confirmedColumn.ID;
+                        readonlyTypeOfConclusionItem.EntityStateValues.Add(new EntityStateValues() { Value = "true" });
 
 
                         var uiActionActivity = new UIActionActivity();
@@ -459,10 +457,9 @@ namespace MyModelCustomSetting
                                 readonlyRelationships.Title = "فقط خواندنی سازی روابط";
                                 readonlyRelationships.TableDrivedEntityID = serviceConclusionItem.ID;
 
-                                EntityStateCondition condition = new EntityStateCondition();
-                                condition.ColumnID = confirmedColumn.ID;
-                                condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { Value = "true" });
-                                readonlyRelationships.EntityStateCondition=condition;
+                                
+                                readonlyRelationships.ColumnID = confirmedColumn.ID;
+                                readonlyRelationships.EntityStateValues.Add(new EntityStateValues() { Value = "true" });
 
 
 
@@ -643,10 +640,10 @@ namespace MyModelCustomSetting
                         //    employeeRole2ModirState = new EntityState();
                         //    employeeRole2ModirState.Title = "فیلتر نقش 2 کارمند برای مدیر";
                         //    employeeRole2ModirState.TableDrivedEntityID = employee.ID;
-                        //    EntityStateCondition condition = new EntityStateCondition();
-                        //    condition.ColumnID = employeeRoleColumn.ID;
-                        //    condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { Value = "1" });
-                        //    employeeRole2ModirState.EntityStateCondition=condition;
+                        //    EntityState  = new EntityState();
+                        //    .ColumnID = employeeRoleColumn.ID;
+                        //    .EntityStateValues.Add(new EntityStateValues() { Value = "1" });
+                        //    employeeRole2ModirState.EntityState=;
                         //    var uiActionActivity = new UIActionActivity();
                         //    uiActionActivity.Title = "نقش 2 برای مدیر";
                         //    employeeRole2ModirState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
@@ -661,10 +658,10 @@ namespace MyModelCustomSetting
                         //    employeeRole2KarshenasState = new EntityState();
                         //    employeeRole2KarshenasState.Title = "فیلتر نقش 2 کارمند برای کارشناس";
                         //    employeeRole2KarshenasState.TableDrivedEntityID = employee.ID;
-                        //    EntityStateCondition condition = new EntityStateCondition();
-                        //    condition.ColumnID = employeeRoleColumn.ID;
-                        //    condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { Value = "2" });
-                        //    employeeRole2KarshenasState.EntityStateCondition=condition;
+                        //    EntityState  = new EntityState();
+                        //    .ColumnID = employeeRoleColumn.ID;
+                        //    .EntityStateValues.Add(new EntityStateValues() { Value = "2" });
+                        //    employeeRole2KarshenasState.EntityState=;
                         //    var uiActionActivity = new UIActionActivity();
                         //    uiActionActivity.Title = "نقش 2 برای کارشناس";
                         //    employeeRole2KarshenasState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
@@ -706,10 +703,8 @@ namespace MyModelCustomSetting
                         agencyDefaultCodeState = new EntityState();
                         agencyDefaultCodeState.Title = "کد پیش فرض سازمان برای آژانس";
                         agencyDefaultCodeState.TableDrivedEntityID = office.ID;
-                        EntityStateCondition condition = new EntityStateCondition();
-                        condition.ColumnID = isAgencyColumn.ID;
-                        condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { Value = "true" });
-                        agencyDefaultCodeState.EntityStateCondition=condition;
+                        agencyDefaultCodeState.ColumnID = isAgencyColumn.ID;
+                        agencyDefaultCodeState.EntityStateValues.Add(new EntityStateValues() { Value = "true" });
                         var uiActionActivity = new UIActionActivity();
                         uiActionActivity.Title = "مقدار پیش فرض کد 10";
                         agencyDefaultCodeState.EntityState_UIActionActivity.Add(new EntityState_UIActionActivity() { UIActionActivity = uiActionActivity });
@@ -724,10 +719,9 @@ namespace MyModelCustomSetting
                         workshopDefaultCodeState = new EntityState();
                         workshopDefaultCodeState.Title = "کد پیش فرض سازمان برای ورکشاپ";
                         workshopDefaultCodeState.TableDrivedEntityID = office.ID;
-                        EntityStateCondition condition = new EntityStateCondition();
-                        condition.ColumnID = isWorkshopColumn.ID;
-                        condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { Value = "true" });
-                        workshopDefaultCodeState.EntityStateCondition=condition;
+
+                        workshopDefaultCodeState.ColumnID = isWorkshopColumn.ID;
+                        workshopDefaultCodeState.EntityStateValues.Add(new EntityStateValues() { Value = "true" });
 
                         var uiActionActivity = new UIActionActivity();
                         uiActionActivity.Title = "مقدار پیش فرض کد 20";
@@ -745,10 +739,9 @@ namespace MyModelCustomSetting
                         hideWorkshopLevelState.Title = "مخفی کردن سطح ورکشاپ برای آژانس";
                         hideWorkshopLevelState.TableDrivedEntityID = office.ID;
 
-                        EntityStateCondition condition = new EntityStateCondition();
-                        condition.ColumnID = isAgencyColumn.ID;
-                        condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { Value = "true" });
-                        hideWorkshopLevelState.EntityStateCondition=condition;
+
+                        hideWorkshopLevelState.ColumnID = isAgencyColumn.ID;
+                        hideWorkshopLevelState.EntityStateValues.Add(new EntityStateValues() { Value = "true" });
 
                         var uiActionActivity = new UIActionActivity();
                         uiActionActivity.Title = "مخفی کردن سطح ورکشاپ";
@@ -785,10 +778,9 @@ namespace MyModelCustomSetting
                         regionCountryReadonly.Title = "فقط خواندنی سازی کشورها";
                         regionCountryReadonly.TableDrivedEntityID = region.ID;
 
-                        EntityStateCondition condition = new EntityStateCondition();
-                        condition.ColumnID = typeColumn.ID;
-                        condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { Value = "کشور" });
-                        regionCountryReadonly.EntityStateCondition=condition;
+
+                        regionCountryReadonly.ColumnID = typeColumn.ID;
+                        regionCountryReadonly.EntityStateValues.Add(new EntityStateValues() { Value = "کشور" });
 
                         var uiActionActivity = new UIActionActivity();
                         uiActionActivity.Title = "فقط خواندنی سازی کشورها";
@@ -807,10 +799,9 @@ namespace MyModelCustomSetting
                             regionCountryHideParent.Title = "مخفی سازی رابطه پدر برای کشورها";
                             regionCountryHideParent.TableDrivedEntityID = region.ID;
 
-                            EntityStateCondition condition = new EntityStateCondition();
-                            condition.ColumnID = typeColumn.ID;
-                            condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { Value = "کشور" });
-                            regionCountryHideParent.EntityStateCondition=condition;
+
+                            regionCountryHideParent.ColumnID = typeColumn.ID;
+                            regionCountryHideParent.EntityStateValues.Add(new EntityStateValues() { Value = "کشور" });
 
 
 
@@ -3541,22 +3532,22 @@ namespace MyModelCustomSetting
                 directSecurityFetchDataServiceRequest.EntityState = new EntityState();
                 directSecurityFetchDataServiceRequest.EntityState.Title = "دسترسی داده";
                 directSecurityFetchDataServiceRequest.EntityState.TableDrivedEntityID = serviceRequest.ID;
-                //directSecurityFetchDataServiceRequest.EntityState.ConditionOperator = (short)AndOREqualType.Or;
+                //directSecurityFetchDataServiceRequest.EntityState.Operator = (short)AndOREqualType.Or;
 
                 directSecurityFetchDataServiceRequest.Mode = (short)DataDirectSecurityMode.FetchData;
 
-                EntityStateCondition condition = new EntityStateCondition();
-                condition.ColumnID = OfficeIDColumn.ID;
-                condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { ReservedValue = (short)SecurityReservedValue.OrganizationExternalKey });
-                condition.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
-                condition.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
-                directSecurityFetchDataServiceRequest.EntityState.EntityStateCondition=condition;
+                //  EntityState  = new EntityState();
+                directSecurityFetchDataServiceRequest.EntityState.ColumnID = OfficeIDColumn.ID;
+                directSecurityFetchDataServiceRequest.EntityState.EntityStateValues.Add(new EntityStateValues() { ReservedValue = (short)SecurityReservedValue.OrganizationExternalKey });
+                directSecurityFetchDataServiceRequest.EntityState.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
+                directSecurityFetchDataServiceRequest.EntityState.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
+               // directSecurityFetchDataServiceRequest.EntityState.EntityState=;
 
-                //////EntityStateCondition condition1 = new EntityStateCondition();
-                //////condition1.EntityStateConditionSecuritySubject.Add(new EntityStateConditionSecuritySubject() { SecuritySubject = roleRahbarKol.SecuritySubject });
-                //////condition1.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
-                //////condition1.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
-                //////directSecurityFetchDataServiceRequest.EntityState.EntityStateCondition.Add(condition1);
+                //////EntityState 1 = new EntityState();
+                //////1.EntityStateSecuritySubject.Add(new EntityStateSecuritySubject() { SecuritySubject = roleRahbarKol.SecuritySubject });
+                //////1.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
+                //////1.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
+                //////directSecurityFetchDataServiceRequest.EntityState.EntityState.Add(1);
 
 
                 projectContext.EntitySecurityDirect.Add(directSecurityFetchDataServiceRequest);
@@ -3587,19 +3578,17 @@ namespace MyModelCustomSetting
                 directSecurityReadonly.EntityState = new EntityState();
                 directSecurityReadonly.EntityState.Title = "دسترسی اصلاح";
                 directSecurityReadonly.EntityState.TableDrivedEntityID = serviceRequest.ID;
-         //       directSecurityReadonly.EntityState.ConditionOperator = (short)AndOREqualType.Or;
-                EntityStateCondition condition = new EntityStateCondition();
-                condition.ColumnID = organizationPostIDColumn.ID;
-                condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { ReservedValue = (short)SecurityReservedValue.OrganizationPostID });
-                condition.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
-                condition.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
-                directSecurityReadonly.EntityState.EntityStateCondition=condition;
+         //       directSecurityReadonly.EntityState.Operator = (short)AndOREqualType.Or;
+                directSecurityReadonly.EntityState.ColumnID = organizationPostIDColumn.ID;
+                directSecurityReadonly.EntityState.EntityStateValues.Add(new EntityStateValues() { ReservedValue = (short)SecurityReservedValue.OrganizationPostID });
+                directSecurityReadonly.EntityState.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
+                directSecurityReadonly.EntityState.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
 
-                //////EntityStateCondition condition1 = new EntityStateCondition();
-                //////condition1.EntityStateConditionSecuritySubject.Add(new EntityStateConditionSecuritySubject() { SecuritySubject = roleRahbarKol.SecuritySubject });
-                //////condition1.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
-                //////condition1.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
-                //////directSecurityReadonly.EntityState.EntityStateCondition.Add(condition1);
+                //////EntityState 1 = new EntityState();
+                //////1.EntityStateSecuritySubject.Add(new EntityStateSecuritySubject() { SecuritySubject = roleRahbarKol.SecuritySubject });
+                //////1.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
+                //////1.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
+                //////directSecurityReadonly.EntityState.EntityState.Add(1);
 
                 projectContext.EntitySecurityDirect.Add(directSecurityReadonly);
             }
@@ -3613,26 +3602,24 @@ namespace MyModelCustomSetting
                 directSecurityFetchDataServiceConclusion.EntityState = new EntityState();
                 directSecurityFetchDataServiceConclusion.EntityState.Title = "دسترسی داده";
                 directSecurityFetchDataServiceConclusion.EntityState.TableDrivedEntityID = serviceConclusion.ID;
-           //     directSecurityFetchDataServiceConclusion.EntityState.ConditionOperator = (short)AndOREqualType.Or;
+           //     directSecurityFetchDataServiceConclusion.EntityState.Operator = (short)AndOREqualType.Or;
 
                 directSecurityFetchDataServiceConclusion.Mode = (short)DataDirectSecurityMode.FetchData;
 
-                EntityStateCondition condition = new EntityStateCondition();
-                condition.ColumnID = OfficeIDColumn.ID;
+                directSecurityFetchDataServiceConclusion.EntityState.ColumnID = OfficeIDColumn.ID;
 
                 var conclusionToServiceRequestRelationship = projectContext.Relationship.FirstOrDefault(x => x.TableDrivedEntityID1 == serviceConclusion.ID && x.TableDrivedEntityID2 == serviceRequest.ID);
                 var conclusionToServiceRequestRelationshipTail = GetRelationshipTail(projectContext, serviceConclusion, serviceRequest, conclusionToServiceRequestRelationship.ID.ToString());
-                condition.EntityRelationshipTail = conclusionToServiceRequestRelationshipTail;
-                condition.EntityStateConditionValues.Add(new EntityStateConditionValues() { ReservedValue = (short)SecurityReservedValue.OrganizationExternalKey });
-                condition.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
-                condition.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
-                directSecurityFetchDataServiceConclusion.EntityState.EntityStateCondition=condition;
+                directSecurityFetchDataServiceConclusion.EntityState.EntityRelationshipTail = conclusionToServiceRequestRelationshipTail;
+                directSecurityFetchDataServiceConclusion.EntityState.EntityStateValues.Add(new EntityStateValues() { ReservedValue = (short)SecurityReservedValue.OrganizationExternalKey });
+                directSecurityFetchDataServiceConclusion.EntityState.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
+                directSecurityFetchDataServiceConclusion.EntityState.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
 
-                //////EntityStateCondition condition1 = new EntityStateCondition();
-                //////condition1.EntityStateConditionSecuritySubject.Add(new EntityStateConditionSecuritySubject() { SecuritySubject = roleRahbarKol.SecuritySubject });
-                //////condition1.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
-                //////condition1.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
-                //////directSecurityFetchDataServiceConclusion.EntityState.EntityStateCondition.Add(condition1);
+                //////EntityState 1 = new EntityState();
+                //////1.EntityStateSecuritySubject.Add(new EntityStateSecuritySubject() { SecuritySubject = roleRahbarKol.SecuritySubject });
+                //////1.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
+                //////1.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
+                //////directSecurityFetchDataServiceConclusion.EntityState.EntityState.Add(1);
 
 
                 projectContext.EntitySecurityDirect.Add(directSecurityFetchDataServiceConclusion);

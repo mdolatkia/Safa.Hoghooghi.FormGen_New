@@ -90,9 +90,8 @@ namespace DataAccess
         public virtual DbSet<EntitySearchColumns> EntitySearchColumns { get; set; }
         public virtual DbSet<EntityState> EntityState { get; set; }
         public virtual DbSet<EntityState_UIActionActivity> EntityState_UIActionActivity { get; set; }
-        public virtual DbSet<EntityStateCondition> EntityStateCondition { get; set; }
-        public virtual DbSet<EntityStateConditionSecuritySubject> EntityStateConditionSecuritySubject { get; set; }
-        public virtual DbSet<EntityStateConditionValues> EntityStateConditionValues { get; set; }
+        public virtual DbSet<EntityStateSecuritySubject> EntityStateSecuritySubject { get; set; }
+        public virtual DbSet<EntityStateValues> EntityStateValues { get; set; }
         public virtual DbSet<EntityUIComposition> EntityUIComposition { get; set; }
         public virtual DbSet<EntityUISetting> EntityUISetting { get; set; }
         public virtual DbSet<EntityValidation> EntityValidation { get; set; }

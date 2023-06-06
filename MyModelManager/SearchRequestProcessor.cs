@@ -447,11 +447,11 @@ namespace MyDataSearchManagerBusiness
             var securityEntityState = bizRoleSecurity.GetAppliableConditionsBySecuritySubject(requester, mainEntity.ID, DataDirectSecurityMode.FetchData);
             if (securityEntityState != null)
             {
-                if (securityEntityState.StateCondition == null)
+                if (securityEntityState.Values == null)
                 {//چون یعنی دایرکت سکوریتی دارد اما هیچکدام سکوریتی سابجکتشان صدق نمی کند
                     return GetNowRowSearchQuery(requester, mainEntity);
                 }
-                else if (!securityEntityState.StateCondition.Values.Any())
+                else if (!securityEntityState.Values.Any())
                 {
                     //چون یا هست و حداقل یکی فقط سکوریتی سابجکت دارد که صدق میکند
                     return "";
@@ -513,16 +513,16 @@ namespace MyDataSearchManagerBusiness
             //mainSearchDataItem.AndOrType = securityEntityState.ConditionOperator;
 
             LogicPhraseDTO logicPhrase = new LogicPhraseDTO();
-            var condition = securityEntityState.StateCondition;
+            //var condition = securityEntityState.StateCondition;
 
-            if (condition.RelationshipTailID == 0)
+            if (securityEntityState.RelationshipTailID == 0)
             {
-                AddConditionPhrase(requester, condition, logicPhrase);
+                AddConditionPhrase(requester, securityEntityState, logicPhrase);
             }
             else
             {
-                var currentSearchRepository = CreateChildSearchRepository(logicPhrase, condition.RelationshipTail);
-                AddConditionPhrase(requester, condition, currentSearchRepository);
+                var currentSearchRepository = CreateChildSearchRepository(logicPhrase, securityEntityState.RelationshipTail);
+                AddConditionPhrase(requester, securityEntityState, currentSearchRepository);
             }
 
             mainSearchDataItem.Phrases.Add(logicPhrase);
@@ -539,7 +539,7 @@ namespace MyDataSearchManagerBusiness
 
         }
 
-        private void AddConditionPhrase(DR_Requester requester, EntityStateConditionDTO conditionDTO, LogicPhraseDTO logicPhrase)
+        private void AddConditionPhrase(DR_Requester requester, EntityStateDTO conditionDTO, LogicPhraseDTO logicPhrase)
         {
             var searchProperty = new SearchProperty(conditionDTO.Column);
             //     searchProperty.ColumnID = conditionDTO.ColumnID;

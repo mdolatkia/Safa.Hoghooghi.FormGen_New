@@ -442,7 +442,7 @@ namespace MyModelManager
             //Tuple<EntitySecurityInDirectDTO, List<EntitySecurityDirectDTO>> result;= new Tuple<EntitySecurityInDirectDTO, List<EntitySecurityDirectDTO>>();
 
             BizRoleSecurity bizRoleSecurity = new BizRoleSecurity();
-            List<EntityStateConditionDTO> entityStateConditions = new List<EntityStateConditionDTO>();
+          //  List<EntityStateConditionDTO> entityStateConditions = new List<EntityStateConditionDTO>();
             //  EntitySecurityInDirectDTO indisrectSecurityDTO = null;
             //   EntityStateDTO entityState = null;
             using (var context = new MyIdeaEntities())
@@ -466,15 +466,16 @@ namespace MyModelManager
 
 
                 //   entityState = bizEntityState.ToEntityStateDTO(requester, targetEntityDisrectSecurity.TableDrivedEntityState, true);
-                var condition = targetEntityDisrectSecurity.EntityState.StateCondition;
+              //  var condition = targetEntityDisrectSecurity.EntityState.StateCondition;
 
-                if (ConditionSecuritySubjectIsValid(requester, condition))
+                if (ConditionSecuritySubjectIsValid(requester, targetEntityDisrectSecurity.EntityState))
                 {
-                    targetEntityDisrectSecurity.EntityState.StateCondition = GetConditionDTOWithValues(requester, condition);
+                     GetConditionDTOWithValues(requester, targetEntityDisrectSecurity.EntityState);
                 }
                 else
                 {
-                    targetEntityDisrectSecurity.EntityState.StateCondition = null;
+                    targetEntityDisrectSecurity.EntityState.Values = null;
+                  //  targetEntityDisrectSecurity.EntityState.StateCondition = null;
                 }
 
 
@@ -550,7 +551,7 @@ namespace MyModelManager
             //   return new EntityDataSecurityItems(entityState, indisrectSecurityDTO, entityStateConditions);
         }
 
-        private EntityStateConditionDTO GetConditionDTOWithValues(DR_Requester requester, EntityStateConditionDTO conditionDTO)
+        private void GetConditionDTOWithValues(DR_Requester requester, EntityStateDTO conditionDTO)
         {
             if (conditionDTO.Values.Any(x => x.SecurityReservedValue != SecurityReservedValue.None))
             {
@@ -575,7 +576,7 @@ namespace MyModelManager
                     }
                 }
             }
-            return conditionDTO;
+          //  return conditionDTO;
         }
 
 
@@ -609,7 +610,7 @@ namespace MyModelManager
             return "";
         }
 
-        private bool ConditionSecuritySubjectIsValid(DR_Requester requester, EntityStateConditionDTO condition)
+        private bool ConditionSecuritySubjectIsValid(DR_Requester requester, EntityStateDTO condition)
         {
 
             if (condition.SecuritySubjects.Any())

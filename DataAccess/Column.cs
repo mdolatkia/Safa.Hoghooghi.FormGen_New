@@ -20,12 +20,12 @@ namespace DataAccess
             this.CodeFunction_TableDrivedEntity_Parameters = new HashSet<CodeFunction_TableDrivedEntity_Parameters>();
             this.ColumnValueRange1 = new HashSet<ColumnValueRange>();
             this.EntityDirectlReportParameters = new HashSet<EntityDirectlReportParameters>();
+            this.EntityState = new HashSet<EntityState>();
             this.RelationshipSearchFilter = new HashSet<RelationshipSearchFilter>();
             this.RelationshipSearchFilter1 = new HashSet<RelationshipSearchFilter>();
             this.SavedPreDefinedSearchRelationshipData = new HashSet<SavedPreDefinedSearchRelationshipData>();
             this.SuperToSubRelationshipType = new HashSet<SuperToSubRelationshipType>();
             this.TableDrivedEntity = new HashSet<TableDrivedEntity>();
-            this.EntityStateCondition = new HashSet<EntityStateCondition>();
             this.UnionToSubUnionRelationshipType = new HashSet<UnionToSubUnionRelationshipType>();
             this.PhraseColumn = new HashSet<PhraseColumn>();
             this.UIColumnValue = new HashSet<UIColumnValue>();
@@ -73,6 +73,8 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityDirectlReportParameters> EntityDirectlReportParameters { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntityState> EntityState { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RelationshipSearchFilter> RelationshipSearchFilter1 { get; set; }
@@ -83,8 +85,6 @@ namespace DataAccess
         public virtual ICollection<SuperToSubRelationshipType> SuperToSubRelationshipType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TableDrivedEntity> TableDrivedEntity { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntityStateCondition> EntityStateCondition { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UnionToSubUnionRelationshipType> UnionToSubUnionRelationshipType { get; set; }
         public virtual Table Table { get; set; }

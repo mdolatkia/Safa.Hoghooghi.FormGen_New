@@ -27,6 +27,7 @@ namespace MyProject_WPF
 
         public frmEntityStates(int entityID, int entityStateID)
         {
+            // frmEntityStates: 1082873315d1
             InitializeComponent();
             EntityID = entityID;
             EntityStateID = entityStateID;
@@ -55,7 +56,7 @@ namespace MyProject_WPF
             frmUIActionActivity view;
             if ((sender as MyStaticLookup).SelectedItem == null)
             {
-                 view = new frmUIActionActivity(0, EntityID);
+                view = new frmUIActionActivity(0, EntityID);
             }
             else
             {
@@ -92,26 +93,42 @@ namespace MyProject_WPF
             StateDTO = bizEntityState.GetEntityState(MyProjectManager.GetMyProjectManager.GetRequester(), entityStateID, false);
             ShowStateDTO();
         }
-        frmEntityStateCondition conditionView;
+        //  frmEntityStateCondition conditionView;
         private void ShowStateDTO()
         {
             txtTitle.Text = StateDTO.Title;
             dtgActionActivities.ItemsSource = StateDTO.ActionActivities;
-     //       cmbConditionOperator.SelectedItem = StateDTO.ConditionOperator;
+            //       cmbConditionOperator.SelectedItem = StateDTO.ConditionOperator;
 
-            var condition = StateDTO.StateCondition;
-            if (string.IsNullOrEmpty(condition.Title))
-                condition.Title = "شرط";
-
-            conditionView = new frmEntityStateCondition(EntityID, condition);
+            //   conditionView = new frmEntityStateCondition(EntityID, condition);
             // view.VerticalAlignment = VerticalAlignment.Stretch;
             //TabItem tab = new TabItem();
             //tab.VerticalAlignment = VerticalAlignment.Stretch;
             //tab.Header = condition.Title;
             //tab.Content = view;
             //view.DeleteConditionRequest += View_DeleteConditionRequest;
-            grdCondition.Children.Clear();
-            grdCondition.Children.Add(conditionView);
+            //    grdCondition.Children.Clear();
+            //  grdCondition.Children.Add(conditionView);
+
+
+            dtgSecuritySubjects.ItemsSource = StateDTO.SecuritySubjects;
+            lokRelationshipTail.SelectedValue = StateDTO.RelationshipTailID;
+            cmbOperator.SelectedItem = StateDTO.EntityStateOperator;
+            if (StateDTO.FormulaID != 0)
+            {
+                lokFormula.SelectedValue = StateDTO.FormulaID;
+                optFormula.IsChecked = true;
+            }
+            else if (StateDTO.ColumnID != 0)
+            {
+                cmbColumns.SelectedValue = StateDTO.ColumnID;
+                optColumn.IsChecked = true;
+            }
+
+            dtgValues.ItemsSource = StateDTO.Values;
+            cmbInOrNotIn.SelectedItem = StateDTO.SecuritySubjectInORNotIn;
+
+
             //   tab.IsSelected = true;
 
             //foreach (var item in StateDTO.StateConditions)
@@ -140,7 +157,27 @@ namespace MyProject_WPF
             //else
             //    StateDTO.ActionActivityID = 0;
             StateDTO.Title = txtTitle.Text;
-            StateDTO.StateCondition = conditionView.Message;
+            StateDTO.Title = txtTitle.Text;
+            if (lokRelationshipTail.SelectedItem == null)
+                StateDTO.RelationshipTailID = 0;
+            else
+                StateDTO.RelationshipTailID = (int)lokRelationshipTail.SelectedValue;
+
+            if (cmbOperator.SelectedItem != null)
+                StateDTO.EntityStateOperator = (InORNotIn)cmbOperator.SelectedItem;
+            StateDTO.SecuritySubjectInORNotIn = (InORNotIn)cmbInOrNotIn.SelectedItem;
+            //EntityStateConditionDTO.Preserve = optPersist.IsChecked == true;
+            if (optFormula.IsChecked == true)
+            {
+                StateDTO.FormulaID = (int)lokFormula.SelectedValue;
+                StateDTO.ColumnID = 0;
+            }
+            else if (optColumn.IsChecked == true)
+            {
+                StateDTO.FormulaID = 0;
+                StateDTO.ColumnID = (int)cmbColumns.SelectedValue;
+            }
+
             //foreach (TabItem item in tabMain.Items)
             //{
             //    var result = (item.Content as frmEntityStateCondition).UpdateMessage();
@@ -229,7 +266,7 @@ namespace MyProject_WPF
         //    //    MessageBox.Show("لطفا یکی از حالات ذخیره و یا عدم ذخیره وضعیت را انتخاب نمایید");
         //    //    return;
         //    //}
-          
+
         //}
         //private void View_ItemSaved(object sender, SavedItemArg e)
         //{
@@ -281,6 +318,27 @@ namespace MyProject_WPF
         private void mnuAddNewItem_Click(object sender, Telerik.Windows.RadRoutedEventArgs e)
         {
             StateDTO.ActionActivities.Add(new UIActionActivityDTO());
+        }
+
+        private void optFormula_Checked(object sender, RoutedEventArgs e)
+        {
+            lblRelationshipTail.Visibility = Visibility.Collapsed;
+            lokRelationshipTail.Visibility = Visibility.Collapsed;
+            lblColumns.Visibility = Visibility.Collapsed;
+            cmbColumns.Visibility = Visibility.Collapsed;
+            lblFormula.Visibility = Visibility.Visible;
+            lokFormula.Visibility = Visibility.Visible;
+        }
+
+
+        private void optColumn_Checked(object sender, RoutedEventArgs e)
+        {
+            lblRelationshipTail.Visibility = Visibility.Visible;
+            lokRelationshipTail.Visibility = Visibility.Visible;
+            lblColumns.Visibility = Visibility.Visible;
+            cmbColumns.Visibility = Visibility.Visible;
+            lblFormula.Visibility = Visibility.Collapsed;
+            lokFormula.Visibility = Visibility.Collapsed;
         }
 
         //private void btnAddCondition_Click(object sender, RoutedEventArgs e)

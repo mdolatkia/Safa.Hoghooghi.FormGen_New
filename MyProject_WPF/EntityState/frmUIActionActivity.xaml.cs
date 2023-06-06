@@ -36,6 +36,7 @@ namespace MyProject_WPF
         //فرم جدا هم صدا زده شود 
         public frmUIActionActivity(int actionActivityID, int entityID)
         {
+            //frmUIActionActivity: 6c1a76026666
             InitializeComponent();
             //EntityID = entityID;
             //Catalog = catalog;

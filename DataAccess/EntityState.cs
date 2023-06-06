@@ -18,20 +18,32 @@ namespace DataAccess
         public EntityState()
         {
             this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
+            this.EntityStateValues = new HashSet<EntityStateValues>();
             this.FormulaItems = new HashSet<FormulaItems>();
+            this.EntityStateSecuritySubject = new HashSet<EntityStateSecuritySubject>();
             this.EntityState_UIActionActivity = new HashSet<EntityState_UIActionActivity>();
         }
     
         public int ID { get; set; }
         public int TableDrivedEntityID { get; set; }
         public string Title { get; set; }
-        public int EntityStateConditionID { get; set; }
+        public Nullable<int> FormulaID { get; set; }
+        public Nullable<int> ColumnID { get; set; }
+        public Nullable<int> EntityRelationshipTailID { get; set; }
+        public Nullable<short> ValueOpoerator { get; set; }
+        public Nullable<short> SecuritySubjectInOrNotIn { get; set; }
     
+        public virtual Column Column { get; set; }
+        public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
-        public virtual EntityStateCondition EntityStateCondition { get; set; }
+        public virtual Formula Formula { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntityStateValues> EntityStateValues { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntityStateSecuritySubject> EntityStateSecuritySubject { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityState_UIActionActivity> EntityState_UIActionActivity { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
