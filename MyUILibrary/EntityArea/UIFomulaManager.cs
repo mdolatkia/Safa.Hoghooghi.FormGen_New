@@ -31,56 +31,85 @@ namespace MyUILibrary.EntityArea
                     FormulaColumns.Add(columnControl);
                 }
             }
-            if (FormulaColumns.Any())
-            {
-                //  AddMenu();
-                EditArea.DataItemShown += EditArea_DataItemLoaded;
-                // EditArea.DataItemUnShown += EditArea_DataItemUnShown;
-            }
+            //if (FormulaColumns.Any())
+            //{
+            //    //  AddMenu();
+            //    EditArea.DataItemShown += EditArea_DataItemShown;
+            //    // EditArea.DataItemUnShown += EditArea_DataItemUnShown;
+            //}
         }
-
-        private void EditArea_DataItemLoaded(object sender, EditAreaDataItemLoadedArg e)
+        public void DataToShowInDataview(DP_FormDataRepository dataItem)
         {
-            if (e.InEditMode)
+            if (!FormulaColumns.Any())
+                return;
+            foreach (var columnControl in FormulaColumns)
             {
-                foreach (var columnControl in FormulaColumns)
-                {
-                    var childSimpleContorlProperties = e.DataItem.ChildSimpleContorlProperties.FirstOrDefault(x => x.SimpleColumnControl.DataEntryColumn.ID == columnControl.DataEntryColumn.ID);
-                    if (childSimpleContorlProperties == null)
-                        continue;//حذف شود
-                    var cpMenuFormulaCalculation = new ConrolPackageMenu();
-                    cpMenuFormulaCalculation.Name = "mnuFormulaCalculation";
-                    cpMenuFormulaCalculation.Title = "محاسبه فرمول";
-                    cpMenuFormulaCalculation.Tooltip = columnControl.DataEntryColumn.ColumnCustomFormula.Formula.Tooltip;
-                    childSimpleContorlProperties.GetUIControlManager.AddButtonMenu(cpMenuFormulaCalculation);
-                    cpMenuFormulaCalculation.MenuClicked += (sender1, e1) => CpMenuFormulaCalculation_MenuClicked(sender1, e1, childSimpleContorlProperties);
 
-                  //  string generalKey = "formulaColumn" + AgentHelper.GetUniqueDataPostfix(e.DataItem);
-                    string usageKey = "formula" + columnControl.DataEntryColumn.ID.ToString();
-                    if (e.DataItem.ChangeMonitorExists( usageKey))
-                        return;
-                    var fullFormula = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetFormula(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), columnControl.DataEntryColumn.ColumnCustomFormula.FormulaID);
-                    if (fullFormula.FormulaItems.Any(x => x.ItemType == FormuaItemType.Column || !string.IsNullOrEmpty(x.RelationshipIDTail)))
-                    {
-                        e.DataItem.RelatedDataTailOrColumnChanged += (sender1, e1) => DataItem_RelatedDataTailOrColumnChanged(sender1, e1, childSimpleContorlProperties);
-                    }
-                    var columnItems = fullFormula.FormulaItems.Where(x => x.ItemType == FormuaItemType.Column);
-                    if (columnItems.Any())
-                    {
-                        foreach (var item in columnItems)
-                        {
-                            e.DataItem.AddChangeMonitorIfNotExists( usageKey, item.RelationshipIDTail, item.ItemID);
-                        }
-                    }
-                    var relationshipItems = fullFormula.FormulaItems.Where(x => !string.IsNullOrEmpty(x.RelationshipIDTail)).GroupBy(x => x.RelationshipIDTail);
-                    if (relationshipItems.Any())
-                    {
-                        foreach (var item in relationshipItems)
-                        {
-                            e.DataItem.AddChangeMonitorIfNotExists( usageKey, item.Key, 0);
-                        }
-                    }
+
+                //  string generalKey = "formulaColumn" + AgentHelper.GetUniqueDataPostfix(e.DataItem);
+                string usageKey = columnControl.DataEntryColumn.ID.ToString();
+                if (dataItem.ChangeMonitorExists(usageKey))
+                    return;
+
+
+                var childSimpleContorlProperties = dataItem.ChildSimpleContorlProperties.FirstOrDefault(x => x.SimpleColumnControl.DataEntryColumn.ID == columnControl.DataEntryColumn.ID);
+                if (childSimpleContorlProperties == null)
+                    continue;//حذف شود
+                var cpMenuFormulaCalculation = new ConrolPackageMenu();
+                cpMenuFormulaCalculation.Name = "mnuFormulaCalculation";
+                cpMenuFormulaCalculation.Title = "محاسبه فرمول";
+                cpMenuFormulaCalculation.Tooltip = columnControl.DataEntryColumn.ColumnCustomFormula.Formula.Tooltip;
+                childSimpleContorlProperties.GetUIControlManager.AddButtonMenu(cpMenuFormulaCalculation);
+                cpMenuFormulaCalculation.MenuClicked += (sender1, e1) => CpMenuFormulaCalculation_MenuClicked(sender1, e1, childSimpleContorlProperties);
+
+                List<Tuple<string, int>> relTailsAndColumns = new List<Tuple<string, int>>();
+
+
+                var fullFormula = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetFormula(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), columnControl.DataEntryColumn.ColumnCustomFormula.FormulaID);
+
+                foreach (var fItem in fullFormula.FormulaItems)
+                {
+                    relTailsAndColumns.Add(new Tuple<string, int>(fItem.RelationshipIDTail, fItem.ItemType == FormuaItemType.Column ? fItem.ItemID : 0));
                 }
+
+                List<Tuple<string, List<int>>> relTailAndColumns = new List<Tuple<string, List<int>>>();
+                foreach (var item in relTailsAndColumns.GroupBy(x => x.Item1))
+                {
+                    if (item.Any(x => x.Item2 != 0))
+                    {
+                        List<int> columns = new List<int>();
+                        foreach (var tuple in item.Where(x => x.Item2 != 0))
+                        {
+                            if (!columns.Any(x => x == tuple.Item2))
+                                columns.Add(tuple.Item2);
+                        }
+                    }
+                    else
+                        relTailAndColumns.Add(new Tuple<string, List<int>>(item.Key, null));
+                }
+                foreach (var item in relTailAndColumns)
+                    dataItem.AddChangeMonitorIfNotExists(new ChangeMonitorItem(this, usageKey, item, dataItem));
+
+                //if (fullFormula.FormulaItems.Any(x => x.ItemType == FormuaItemType.Column || !string.IsNullOrEmpty(x.RelationshipIDTail)))
+                //{
+                //    e.DataItem.RelatedDataTailOrColumnChanged += (sender1, e1) => DataItem_RelatedDataTailOrColumnChanged(sender1, e1, childSimpleContorlProperties);
+                //}
+                //var columnItems = fullFormula.FormulaItems.Where(x => x.ItemType == FormuaItemType.Column);
+                //if (columnItems.Any())
+                //{
+                //    foreach (var item in columnItems)
+                //    {
+                //        e.DataItem.AddChangeMonitorIfNotExists(usageKey, item.RelationshipIDTail, item.ItemID);
+                //    }
+                //}
+                //var relationshipItems = fullFormula.FormulaItems.Where(x => !string.IsNullOrEmpty(x.RelationshipIDTail)).GroupBy(x => x.RelationshipIDTail);
+                //if (relationshipItems.Any())
+                //{
+                //    foreach (var item in relationshipItems)
+                //    {
+                //        e.DataItem.AddChangeMonitorIfNotExists(usageKey, item.Key, 0);
+                //    }
+                //}
             }
         }
 
@@ -101,24 +130,24 @@ namespace MyUILibrary.EntityArea
 
         //}
 
-        private void DataItem_RelatedDataTailOrColumnChanged(object sender, ChangeMonitor e, ChildSimpleContorlProperty childSimpleContorlProperty)
-        {
-            if (e.UsageKey.StartsWith("formulaColumn"))
-            {
-                if (e.DataToCall.DataIsInEditMode())
-                {
-                    foreach (var columnControl in FormulaColumns.Where(x => x.DataEntryColumn.ID.ToString() == e.UsageKey))
-                    {
-                        var formulaColumn = FormulaColumns.First(x => x.DataEntryColumn.ID == columnControl.DataEntryColumn.ID).DataEntryColumn.ColumnCustomFormula;
-                        var dataProperty = e.DataToCall.GetProperty(columnControl.DataEntryColumn.ID);
-                        if (dataProperty != null)
-                        {
-                            CalculateProperty(childSimpleContorlProperty);
-                        }
-                    }
-                }
-            }
-        }
+        //private void DataItem_RelatedDataTailOrColumnChanged(object sender, ChangeMonitor e, ChildSimpleContorlProperty childSimpleContorlProperty)
+        //{
+        //    if (e.UsageKey.StartsWith("formulaColumn"))
+        //    {
+        //        if (e.DataToCall.DataIsInEditMode())
+        //        {
+        //            foreach (var columnControl in FormulaColumns.Where(x => x.DataEntryColumn.ID.ToString() == e.UsageKey))
+        //            {
+        //                var formulaColumn = FormulaColumns.First(x => x.DataEntryColumn.ID == columnControl.DataEntryColumn.ID).DataEntryColumn.ColumnCustomFormula;
+        //                var dataProperty = e.DataToCall.GetProperty(columnControl.DataEntryColumn.ID);
+        //                if (dataProperty != null)
+        //                {
+        //                    CalculateProperty(childSimpleContorlProperty);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
 
 
@@ -128,6 +157,21 @@ namespace MyUILibrary.EntityArea
 
         //}
 
+        public void DataPropertyRelationshipChanged(DP_FormDataRepository data, string usageKey)
+        {
+            if (data.DataIsInEditMode())
+            {
+                foreach (var columnControl in FormulaColumns.Where(x => x.DataEntryColumn.ID.ToString() == usageKey))
+                {
+                    var formulaColumn = FormulaColumns.First(x => x.DataEntryColumn.ID == columnControl.DataEntryColumn.ID).DataEntryColumn.ColumnCustomFormula;
+                    var childSimpleContorlProperties = data.ChildSimpleContorlProperties.FirstOrDefault(x => x.SimpleColumnControl.DataEntryColumn.ID == columnControl.DataEntryColumn.ID);
+                    if (childSimpleContorlProperties != null)
+                    {
+                        CalculateProperty(childSimpleContorlProperties);
+                    }
+                }
+            }
+        }
 
         public void CalculateProperty(ChildSimpleContorlProperty childSimpleContorlProperty)
         {
@@ -370,5 +414,7 @@ namespace MyUILibrary.EntityArea
             var datalist = EditArea.GetDataList().Where(x => x.ShoudBeCounted).ToList();
 
         }
+
+
     }
 }

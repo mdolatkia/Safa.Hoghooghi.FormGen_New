@@ -253,61 +253,57 @@ namespace MyUILibrary.EntityArea
             List<EntityStateDTO> result = new List<EntityStateDTO>();
             foreach (var state in GetUIEntityStates())
             {
-                if (CheckDataItemChangeMonitors(dataItem, state))
-                    dataItem.RelatedDataTailOrColumnChanged += DataItem_RelatedDataTailOrColumnChanged;
+                SetDataItemChangeMonitors(dataItem, state);
+                //  dataItem.RelatedDataTailOrColumnChanged += DataItem_RelatedDataTailOrColumnChanged;
             }
             //   var actionActivitySource = ActionActivitySource.OnShowData;
             CheckAndImposeEntityStates(dataItem);
         }
-        private UIActionActivityDTO GetReadonlyActionActivity()
-        {
-            var newActionActivity = new UIActionActivityDTO();
-            foreach (var column in EditArea.DataEntryEntity.Columns)
-            {
-                if (!column.PrimaryKey)
-                {
-                    //اگر با فرمول غیر فعال شود چی خود ستونی که باعث ریدونلی شدن می شود
-                    if (!EditArea.DataEntryEntity.Relationships.Any(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.SecondSideColumnID == column.ID)))
-                    {
-                        //bool skip = false;
-                        //foreach (var item in states)
-                        //{
-                        //    if (item.RelationshipTailID == 0 && item.ColumnID != 0)
-                        //    {
-                        //        if (item.ColumnID == column.ID)
-                        //            skip = true;
-                        //    }
-                        //}
-                        //if (!skip)
-                        //{
-                        var detail = new UIEnablityDetailsDTO();
-                        detail.ColumnID = column.ID;
-                        detail.Readonly = true;
-                        detail.ID = column.ID;
-                        newActionActivity.UIEnablityDetails.Add(detail);
-                        //}
-                    }
-                }
-            }
-            foreach (var relationship in EditArea.DataEntryEntity.Relationships.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
-            {
-                //////if (item.RelationshipTail != null)
-                //////{
-                //همون قضیه که خود رابطه ک=ه با وضعیت مشترکه نمیتونه اعمال بشه
-                //if (item.RelationshipTail.Relationship.ID == relationship.ID)
-                //    continue;
-                //////}
-                var detail = new UIEnablityDetailsDTO();
-                detail.RelationshipID = relationship.Relationship.ID;
-                detail.Readonly = true;
-                detail.ID = relationship.Relationship.ID;
-                newActionActivity.UIEnablityDetails.Add(detail);
-            }
-            return newActionActivity;
-        }
-        //private List<EntityStateDTO> GetChangeMoniStates(I_EditEntityArea editArea)
+        //private UIActionActivityDTO GetReadonlyActionActivity()
         //{
-
+        //    var newActionActivity = new UIActionActivityDTO();
+        //    foreach (var column in EditArea.DataEntryEntity.Columns)
+        //    {
+        //        if (!column.PrimaryKey)
+        //        {
+        //            //اگر با فرمول غیر فعال شود چی خود ستونی که باعث ریدونلی شدن می شود
+        //            if (!EditArea.DataEntryEntity.Relationships.Any(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary && x.Relationship.RelationshipColumns.Any(y => y.SecondSideColumnID == column.ID)))
+        //            {
+        //                //bool skip = false;
+        //                //foreach (var item in states)
+        //                //{
+        //                //    if (item.RelationshipTailID == 0 && item.ColumnID != 0)
+        //                //    {
+        //                //        if (item.ColumnID == column.ID)
+        //                //            skip = true;
+        //                //    }
+        //                //}
+        //                //if (!skip)
+        //                //{
+        //                var detail = new UIEnablityDetailsDTO();
+        //                detail.ColumnID = column.ID;
+        //                detail.Readonly = true;
+        //                detail.ID = column.ID;
+        //                newActionActivity.UIEnablityDetails.Add(detail);
+        //                //}
+        //            }
+        //        }
+        //    }
+        //    foreach (var relationship in EditArea.DataEntryEntity.Relationships.Where(x => x.Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary))
+        //    {
+        //        //////if (item.RelationshipTail != null)
+        //        //////{
+        //        //همون قضیه که خود رابطه ک=ه با وضعیت مشترکه نمیتونه اعمال بشه
+        //        //if (item.RelationshipTail.Relationship.ID == relationship.ID)
+        //        //    continue;
+        //        //////}
+        //        var detail = new UIEnablityDetailsDTO();
+        //        detail.RelationshipID = relationship.Relationship.ID;
+        //        detail.Readonly = true;
+        //        detail.ID = relationship.Relationship.ID;
+        //        newActionActivity.UIEnablityDetails.Add(detail);
+        //    }
+        //    return newActionActivity;
         //}
 
 
@@ -316,117 +312,29 @@ namespace MyUILibrary.EntityArea
             //UIActionActivityManager.CheckAndImposeEntityStates: 5a9f918cdb55
             if (GetUIEntityStates().Count == 0)
                 return;
-            //   DataAndStates item = null;
-            //  if (ListDataAndStates.Any(x => x.DataItem == dataItem))
-            //      item = ListDataAndStates.First(x => x.DataItem == dataItem);
-            //  else
-            //  {
-            //     item = new EntityArea.DataAndStates(dataItem);
-            //      //  item.EntityStates.CollectionChanged += (sender1, e1) => EntityStates_CollectionChanged(sender1, e1, item);
-            //      ListDataAndStates.Add(item);
-            //   }
-
+            if (!dataItem.DataIsInEditMode())
+                return;
             ResetActionActivities(dataItem);
 
-            //   item.EntityStates1.Clear();
-            //List<EntityStateDTO> trueStates = new List<EntityStateDTO>();
-            //   var appliableStates = GetAppliableStates(dataItem);
             foreach (var state in GetUIEntityStates())
             {
                 if (CheckEntityState(dataItem, state))
                     DoStateActionActivity(state, dataItem);
             }
-            //item.EntityStateGroups.Clear();
-            //foreach (var group in appliableStates.Item2)
-            //{
-            //    if (CheckEntityState(dataItem, group))
-            //        item.EntityStateGroups.Add(group);
-            //}
-            //       if (item.EntityStates1.Any())
 
         }
 
-        //private bool StateHasDynamicAction(EntityStateDTO state)
-        //{
 
-        //}
-        //private bool StateHasOnLoadAction(EntityStateDTO state)
-        //{
-        //    return (state.ActionActivities.Any(x => x.Type == Enum_ActionActivityType.UIEnablity && x.UIEnablityDetails.Any(y => IsOnLoadOnlyAction(y) == ActionType.OnLoadChildReadonly
-        //    || IsOnLoadOnlyAction(y) == ActionType.OnLoadParentRelationship)));
-        //}
-
-
-        //private void EditArea_DataItemLoaded(object sender, EditAreaDataItemLoadedArg e)
-        //{
-        //private List<EntityStateDTO> GetAppliableStates(DP_FormDataRepository dataItem)
-        //{
-        //    List<EntityStateDTO> result = new List<EntityStateDTO>();
-        //    foreach (var state in EditArea.EntityStates1.Where(x => x.ActionActivities.Any()))
-        //    {
-        //        //if (skipUICheck)
-        //        //    result.Add(state);
-        //        //else
-        //        //{
-        //        if (state.ActionActivities.Any(x => x.UIEnablityDetails.Any(y => EditArea.SourceRelationColumnControl != null && y.RelationshipID == EditArea.SourceRelationColumnControl.Relationship.PairRelationshipID)))
-        //        {
-        //            //bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || (EditArea is I_EditEntityAreaOneData && EditArea.DataItemIsInTempViewMode(dataItem));
-        //            //چرا اینجا تمپ ویو هم باشه وضعیت حساب میشه؟
-        //            bool dataIsInValidMode = dataItem.DataIsInEditMode() || dataItem.DataItemIsInTempViewMode();
-        //            if (dataIsInValidMode)
-        //                result.Add(state);
-        //        }
-        //        else
-        //        {
-        //            if (dataItem.DataIsInEditMode())
-        //                result.Add(state);
-        //        }
-        //        //}
-        //    }
-        //    //List<EntityStateGroupDTO> resultGroup = new List<EntityStateGroupDTO>();
-        //    //foreach (var group in EditArea.EntityStateGroups.Where(x => x.ActionActivities.Any()))
-        //    //{
-
-        //    //    if (skipUICheck)
-        //    //        resultGroup.Add(group);
-        //    //    else
-        //    //    {
-        //    //        if (group.EntityStates.Any(z => z.ActionActivities.Any(x => x.UIEnablityDetails.Any(y => EditArea.SourceRelationColumnControl != null && y.RelationshipID == EditArea.SourceRelationColumnControl.Relationship.PairRelationshipID))))
-        //    //        {
-        //    //            //bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || (EditArea is I_EditEntityAreaOneData && EditArea.DataItemIsInTempViewMode(dataItem));
-        //    //            bool dataIsInValidMode = EditArea.DataItemIsInEditMode(dataItem) || EditArea.DataItemIsInTempViewMode(dataItem);
-        //    //            if (dataIsInValidMode)
-        //    //                resultGroup.Add(group);
-        //    //        }
-        //    //        else
-        //    //        {
-        //    //            if (EditArea.DataItemIsInEditMode(dataItem))
-        //    //                resultGroup.Add(group);
-        //    //        }
-        //    //    }
-
-        //    //}
-        //    return result;
-        //}
-
-
-        //    //   item.OnShow = true;
-        //    //    if (item.EntityStates.Any())
-        //    //  EntityStates_CollectionChanged(null, null, item);
-        //    //     item.OnShow = false;
-        //}
-
-        private bool CheckDataItemChangeMonitors(DP_FormDataRepository dataItem, EntityStateDTO entityState)
+        private bool SetDataItemChangeMonitors(DP_FormDataRepository dataItem, EntityStateDTO entityState)
         {
-            // UIActionActivityManager.CheckDataItemChangeMonitors: 96259224044f
+            // UIActionActivityManager.SetDataItemChangeMonitors: 96259224044f
             var generalKey = "stateWatch" + AgentHelper.GetUniqueDataPostfix(dataItem);
             var usageKey = "stateWatch" + entityState.ID.ToString();
-
+            
             if (dataItem.ChangeMonitorExists(usageKey))
                 return false;
 
             List<Tuple<string, int>> relTailsAndColumns = new List<Tuple<string, int>>();
-            //    List<Tuple<string, int>> rels = new List<Tuple<string, int>>();
 
             if (entityState.Formula != null)
             {
@@ -440,13 +348,7 @@ namespace MyUILibrary.EntityArea
                 relTailsAndColumns.Add(new Tuple<string, int>(entityState.RelationshipTail?.RelationshipIDPath, entityState.ColumnID));
             }
 
-            //if (columns.Any() || rels.Any())
-            //{
-            //    dataItem.RelatedDataTailOrColumnChanged += DataItem_RelatedDataTailOrColumnChanged;
-            //}
-
             List<Tuple<string, List<int>>> relTailAndColumns = new List<Tuple<string, List<int>>>();
-
             foreach (var item in relTailsAndColumns.GroupBy(x => x.Item1))
             {
                 if (item.Any(x => x.Item2 != 0))
@@ -462,10 +364,7 @@ namespace MyUILibrary.EntityArea
                     relTailAndColumns.Add(new Tuple<string, List<int>>(item.Key, null));
             }
             foreach (var item in relTailAndColumns)
-                dataItem.AddChangeMonitorIfNotExists(usageKey, item);
-
-            //foreach (var item in rels)
-            //    dataItem.AddChangeMonitorIfNotExists(generalKey, usageKey, item.Item1, 0);
+                dataItem.AddChangeMonitorIfNotExists(new ChangeMonitorItem(this, usageKey, item, dataItem));
 
             return relTailsAndColumns.Any();
         }
@@ -473,174 +372,24 @@ namespace MyUILibrary.EntityArea
 
 
 
-        //private void EditArea_DataItemUnShown(object sender, EditAreaDataItemArg e)
-        //{
-        //    e.DataItem.RemoveChangeMonitorByGenaralKey("stateWatch" + AgentHelper.GetUniqueDataPostfix(e.DataItem));
-        //    foreach (var item in ListDataAndStates.Where(x => x.DataItem == e.DataItem).ToList())
-        //        ListDataAndStates.Remove(item);
-        //}
 
-
-        //private void SetDataChangeEventsForDataItem(DP_FormDataRepository dataItem)
-        //{
-
-        //}
-
-        private void DataItem_RelatedDataTailOrColumnChanged(object sender, ChangeMonitor e)
+        public void DataPropertyRelationshipChanged(DP_FormDataRepository data, string usageKey)
         {
-            if (e.UsageKey.StartsWith("stateWatch"))
+            // UIActionActivityManager.DataPropertyRelationshipChanged: b60b5cf2effa
+            if ( GetUIEntityStates().Any(x => x.ID.ToString() == usageKey))
             {
-                //foreach (var entityState in EditArea.EntityStates1.Where(x => x.ID.ToString() == e.UsageKey))
-                //{
-                if (GetUIEntityStates().Any(x => x.ID.ToString() == e.UsageKey))
-                //if (e.UsageKey == entityState.ID.ToString())
-                {
-                    CheckAndImposeEntityStates(e.DataToCall);
-
-                    //bool changed = false;
-                    //var listItem = ListDataAndStates.FirstOrDefault(x => x.DataItem == e.DataToCall);
-                    //if (listItem != null)
-                    //{
-                    //    bool entityStateValue = CheckEntityState(e.DataToCall, entityState);
-                    //    if (entityStateValue)
-                    //    {
-                    //        if (!listItem.EntityStates1.Any(x => x.ID == entityState.ID))
-                    //        {
-                    //            listItem.EntityStates1.Add(entityState);
-                    //            changed = true;
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        if (listItem.EntityStates1.Any(x => x.ID == entityState.ID))
-                    //        {
-                    //            listItem.EntityStates1.Remove(listItem.EntityStates1.First(x => x.ID == entityState.ID));
-                    //            changed = true;
-                    //        }
-                    //    }
-                    //}
-                    //if (changed)
-                    //{
-                    //    CheckAndImposeEntityStates(listItem.DataItem, ActionActivitySource.TailOrPropertyChange);
-                    //    //ResetActionActivities(listItem.DataItem);
-                    //    //DoStateActionActivity(listItem, ActionActivitySource.TailOrPropertyChange);
-                    //}
-
-                }
-                //}
+                CheckAndImposeEntityStates(data);
             }
         }
-        //private void ImposetStates(DataAndStates dataAndState, bool reset)
-        //{
-        //    if (reset)
-        //        ResetActionActivities(dataAndState.DataItem);
-        //    DoStateActionActivity(dataAndState, dataAndState.EntityStates);
-        //}
-        //private void EntityStates_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e, DataAndStates dataAndState)
-        //{
-        //    //var allActionActivities = dataAndState.EntityStates.SelectMany(x => x.ActionActivities);
-        //    ResetActionActivities(dataAndState.DataItem);
-        //}
 
-        //private List<EntityStateDTO> GetEntityStates(DP_FormDataRepository dataItem)
-        //{
-        //    //  ResetActionActivities(dataItem);
-        //    List<EntityStateDTO> result = new List<EntityStateDTO>();
 
-        //    return result;
-        //}
-
-        //public void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem)
-        //{
-        //    //DataAddedResult result = new DataAddedResult();
-
-        //    if (dataItem.IsNewItem)
-        //        return;
-
-        //    foreach (var state in EditArea.EntityStates1.Where(x => StateHasOnLoadAction(x)))
-        //    {
-        //        if (CheckEntityState(dataItem, state))
-        //        {
-        //            foreach (var actionActivity in state.ActionActivities)
-        //            {
-        //                if (actionActivity.Type == Enum_ActionActivityType.UIEnablity)
-        //                {
-        //                    foreach (var detail in actionActivity.UIEnablityDetails)
-        //                    {
-        //                        var type = IsOnLoadOnlyAction(detail);
-        //                        if (type == ActionType.OnLoadParentRelationship || type == ActionType.OnLoadChildReadonly)
-        //                        {
-        //                            //if (type == ActionType.OnLoadParentRelationship)
-        //                            //{
-        //                            //     if (detail.Readonly == true)
-        //                            //    {
-        //                            //        dataItem.AddParentRelationshipReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
-        //                            //                                                                                             //  result.parentRelationshipIsReadonly = true;
-        //                            //    }
-        //                            //}
-        //                            if (type == ActionType.OnLoadChildReadonly)
-        //                            {
-        //                                if (detail.RelationshipID != 0)
-        //                                {
-        //                                    if (dataItem.ChildRelationshipDatas.Any(x => x.Relationship.ID == detail.RelationshipID))
-        //                                    {
-        //                                        var childRelationshipInfo = dataItem.ChildRelationshipDatas.First(x => x.Relationship.ID == detail.RelationshipID);
-        //                                        childRelationshipInfo.AddReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);
-        //                                    }
-        //                                    else
-        //                                        dataItem.AddTempRelationshipPropertyReadonly(detail.RelationshipID, detail.ID.ToString(), state.Title, true);
-        //                                }
-        //                                //else if (detail.ColumnID != 0)
-        //                                //{
-        //                                //    var simpleColumn = GetChildSimpleContorlProperty(dataItem, detail.ColumnID);
-        //                                //    if (simpleColumn != null)
-        //                                //    {
-        //                                //        simpleColumn.AddReadonlyState(detail.ID.ToString(), state.Title, true);//, actionActivitySource == ActionActivitySource.OnShowData && detail.ID != 0);//, ImposeControlState.Impose);// GetColumnReadonlyControlState(state, dataItem, detail.ColumnID, actionActivitySource));
-        //                                //    }
-        //                                //    else
-        //                                //        dataItem.AddTempSimplePropertyReadonly(detail.ColumnID, detail.ID.ToString(), state.Title, true);
-        //                                //}
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    //   return result;
-        //    //if (EditArea is I_EditEntityAreaOneData && hiddenControls.Any())
-        //    //{
-        //    //    (EditArea as I_EditEntityAreaOneData).CheckContainersVisiblity(hiddenControls);
-        //    //}
-        //}
-        public void DataShown(DP_FormDataRepository dataItem)
-        {
-
-        }
-        //private ActionType IsOnLoadOnlyAction(UIEnablityDetailsDTO uiEnablity)
-        //{
-        //    //if (uiEnablity.RelationshipID != 0 && EditArea.SourceRelationColumnControl != null &&
-        //    // uiEnablity.RelationshipID == EditArea.SourceRelationColumnControl.Relationship.PairRelationshipID)
-        //    //    return ActionType.OnLoadParentRelationship;
-        //    else if (uiEnablity.Hidden == true)
-        //        return ActionType.DynamicChildVisiblity;
-        //    //else if (uiEnablity.Readonly == true)
-        //    //{
-        //    //    return ActionType.OnLoadChildReadonly;
-        //    //}
-        //    else
-        //        return ActionType.Unknown;
-        //    //   fItems.Add(uiEnablity);
-
-        //    //  uiEnablity.Permanent = true;
-
-        //}
 
 
         private BaseColumnControl ChildItemVisiblity(EntityStateDTO state, UIEnablityDetailsDTO detail, DP_FormDataRepository dataItem, bool hidden)
         {
-            if (dataItem.DataIsInEditMode())
-            {
+            // UIActionActivityManager.ChildItemVisiblity: 438a981b8c49
+            //if (dataItem.DataIsInEditMode())
+            //{
                 if (detail.RelationshipID != 0)
                 {
                     if (dataItem.ChildRelationshipDatas.Any(x => x.Relationship.ID == detail.RelationshipID))
@@ -659,8 +408,6 @@ namespace MyUILibrary.EntityArea
                     var simpleColumn = GetChildSimpleContorlProperty(dataItem, detail.ColumnID);
                     if (simpleColumn != null)
                     {
-                        //         if (dataItem.DataIsInEditMode())
-
                         if (hidden)
                             simpleColumn.AddHiddenState(detail.ID.ToString(), "غیر فعال سازی ستون" + " " + "بر اساس وضعیت" + " " + state.Title, false);
                         else
@@ -668,7 +415,7 @@ namespace MyUILibrary.EntityArea
                         return (simpleColumn.SimpleColumnControl);
                     }
                 }
-            }
+            //}
 
             //دوتا کار باید انجام شه
 
@@ -678,20 +425,7 @@ namespace MyUILibrary.EntityArea
             return null;
         }
 
-        //private bool ParentRelationshipAction(EntityStateDTO state, UIEnablityDetailsDTO detail, DP_FormDataRepository dataItem)
-        //{
-        //    if (detail.RelationshipID != 0)
-        //    {
 
-
-        //    }
-        //    return false;
-        //}
-        //private BaseColumnControl ChildItemReadonly(EntityStateDTO state, UIEnablityDetailsDTO detail, DP_FormDataRepository dataItem)
-        //{
-
-        //    return null;
-        //}
         private bool CheckEntityState(DP_FormDataRepository dataItem, EntityStateDTO state)
         {
             // UIActionActivityManager.CheckEntityState: 79bffbfb2ad2
@@ -914,157 +648,14 @@ namespace MyUILibrary.EntityArea
             //////item.EntityStates.Clear();
         }
 
-        private bool ActionActivityIsApliable(DP_FormDataRepository dataItem, UIActionActivityDTO actionActivity)
-        {
-            if (dataItem.DataIsInEditMode())
-                return true;
-            else
-                return false;
-        }
-
-        //private bool UIEnablityIsApliable(DP_FormDataRepository dataItem, UIEnablityDetailsDTO detail)
+        //private bool ActionActivityIsApliable(DP_FormDataRepository dataItem, UIActionActivityDTO actionActivity)
         //{
-        //    if (dataItem.DataIsInEditMode() || (detail.EvenInTempView && dataItem.DataItemIsInTempViewMode()))
+        //    if (dataItem.DataIsInEditMode())
         //        return true;
         //    else
         //        return false;
         //}
 
-
-
-
-        //private void ApplyState(I_EditEntityArea editArea, DP_FormDataRepository dataItem, EntityStateDTO state)
-        //{
-
-        //}
-
-
-
-
-
-
-
-
-
-
-        //private bool AllChildItemsAreDBRel(DP_FormDataRepository dataItem, EntityRelationshipTailDTO relationshipTail)
-        //{
-        //    if (relationshipTail == null || !dataItem.ChildRelationshipDatas.Any(x => x.Relationship.ID == relationshipTail.Relationship.ID))
-        //        return true;
-        //    else
-        //    {
-        //        var childRelInfo = dataItem.ChildRelationshipDatas.First(x => x.Relationship.ID == relationshipTail.Relationship.ID);
-        //        var childData = childRelInfo.RelatedData.First();
-        //        if (childData.IsDBRelationship)
-        //            return AllChildItemsAreDBRel(childData, relationshipTail.ChildTail);
-        //        else
-        //            return false;
-        //    }
-        //}
-        //private ImposeControlState GetRelationshipReadonlyControlState(ChildRelationshipInfo childRelationshipInfo, EntityStateDTO state, int relationshipID, ActionActivitySource actionActivitySource)
-        //{
-        //    if (state.StateConditions.Any(x => x.RelationshipTailID != 0))
-        //    {
-        //        if (state.StateConditions.Any(x => x.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || x.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ",")))
-        //        {
-        //            if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
-        //                return ImposeControlState.AddMessageColor;
-        //            else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
-        //            {
-        //                if (childRelationshipInfo.CheckRelationshipIsChanged())
-        //                {
-        //                    return ImposeControlState.AddMessageColor;
-        //                }
-        //            }
-        //            else if (actionActivitySource == ActionActivitySource.OnShowData)
-        //            {
-        //                return ImposeControlState.AddMessageColor;
-        //            }
-        //        }
-        //    }
-        //    return ImposeControlState.Impose;
-        //}
-        //private ImposeControlState GetRelationshipHiddenControlState(ChildRelationshipInfo childRelationshipInfo, EntityStateDTO state, int relationshipID, ActionActivitySource actionActivitySource)
-        //{
-        //    if (state.StateConditions.Any(x => x.RelationshipTailID != 0))
-        //    {
-        //        if (state.StateConditions.Any(x => x.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || x.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ",")))
-        //        {
-        //            if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
-        //                return ImposeControlState.AddMessageColor;
-        //            else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
-        //            {
-        //                if (childRelationshipInfo.CheckRelationshipIsChanged())
-        //                {
-        //                    return ImposeControlState.AddMessageColor;
-        //                }
-        //            }
-        //            else if (actionActivitySource == ActionActivitySource.OnShowData)
-        //            {
-        //                return ImposeControlState.AddMessageColor;
-        //            }
-        //        }
-        //    }
-        //    return ImposeControlState.Impose;
-        //}
-        //private ImposeControlState GetColumnReadonlyControlState(EntityStateDTO state, DP_FormDataRepository dataItem, int columnID, ActionActivitySource actionActivitySource)
-        //{
-        //    if (state.RelationshipTailID == 0 && state.ColumnID != 0)
-        //    {
-        //        if (state.ColumnID == columnID)
-        //        {
-        //            if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
-        //            {
-        //                //چون همونیه که تغییر کرده
-        //                return ImposeControlState.AddMessageColor;
-        //            }
-        //            else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
-        //            {
-        //                if (dataItem.PropertyValueIsChanged(dataItem.GetProperty(columnID)))
-        //                    return ImposeControlState.AddMessageColor;
-        //            }
-        //        }
-        //    }
-
-        //    return ImposeControlState.Impose;
-        //}
-
-        //private ImposeControlState GetColumnHiddenControlState(EntityStateDTO state, DP_FormDataRepository dataItem, int columnID, ActionActivitySource actionActivitySource)
-        //{
-        //    if (state.RelationshipTailID == 0 && state.ColumnID != 0)
-        //    {
-        //        if (state.ColumnID == columnID)
-        //        {
-        //            if (actionActivitySource == ActionActivitySource.TailOrPropertyChange)
-        //            {
-        //                //چون همونیه که تغییر کرده
-        //                return ImposeControlState.AddMessageColor;
-        //            }
-        //            else if (actionActivitySource == ActionActivitySource.BeforeUpdate)
-        //            {
-        //                if (dataItem.PropertyValueIsChanged(dataItem.GetProperty(columnID)))
-        //                    return ImposeControlState.AddMessageColor;
-        //            }
-        //        }
-        //    }
-        //    return ImposeControlState.Impose;
-        //}
-        //private bool ShouldImposeRelationshipControlInUI(EntityStateDTO state, int relationshipID)
-        //{
-        //    if (state.FormulaID != 0)
-        //        return false;
-        //    else if (state.RelationshipTailID != 0)
-        //    {
-        //        if (state.RelationshipTail.RelationshipIDPath == relationshipID.ToString() || state.RelationshipTail.RelationshipIDPath.StartsWith(relationshipID.ToString() + ","))
-        //            return false;
-        //        else
-        //            return true;
-        //    }
-        //    else
-        //    {
-        //        return true;
-        //    }
-        //}
 
         private List<ColumnValueRangeDetailsDTO> GetFilteredRange(ChildSimpleContorlProperty childSimpleContorlProperty, UIColumnValueRangeDTO uIColumnValueRange)
         {
@@ -1091,75 +682,6 @@ namespace MyUILibrary.EntityArea
 
             return result;
         }
-
-        //private static EditEntityAreaByRelationshipTail GetEditEntityAreaByRelationshipTail(I_EditEntityArea editEntityArea, EntityRelationshipTailDTO entityRelationshipTail)
-        //{
-        //    //اگر مالتی پل بود و ...
-        //    RelationshipColumnControlGeneral relatedEntityArea = null;
-        //    if (editEntityArea is I_EditEntityAreaOneData)
-        //        relatedEntityArea = (editEntityArea as I_EditEntityAreaOneData).RelationshipColumnControls.FirstOrDefault(x => x.Relationship.ID == entityRelationshipTail.Relationship.ID);
-        //    else if (editEntityArea is I_EditEntityAreaMultipleData)
-        //        relatedEntityArea = (editEntityArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.FirstOrDefault(x => x.Relationship.ID == entityRelationshipTail.Relationship.ID);
-
-        //    if (relatedEntityArea != null)
-        //    {
-        //        if (entityRelationshipTail.ChildTail == null)
-        //        {
-        //            EditEntityAreaByRelationshipTail result = new MyUILibrary.EditEntityAreaByRelationshipTail();
-        //            result.EditEntityAreaFound = true;
-        //            result.FoundEditEntityArea = relatedEntityArea.GenericEditNdTypeArea;
-        //            return result;
-        //        }
-        //        else
-        //        {
-        //            return GetEditEntityAreaByRelationshipTail(relatedEntityArea.GenericEditNdTypeArea, entityRelationshipTail.ChildTail);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        EditEntityAreaByRelationshipTail result = new MyUILibrary.EditEntityAreaByRelationshipTail();
-        //        result.EditEntityAreaFound = false;
-        //        result.LastFoundEntityArea = new Tuple<I_EditEntityArea, EntityRelationshipTailDTO>(editEntityArea, entityRelationshipTail);
-        //        return result;
-        //    }
-
-        //}
-        //private UIControlPackageTree GetUIComposition(I_EditEntityArea editEntityArea, int uiCompositionID)
-        //{
-        //    if (editEntityArea is I_EditEntityAreaOneData)
-        //        return (editEntityArea as I_EditEntityAreaOneData).UICompositionContainers.FirstOrDefault(x => x.UIComposition.ID == uiCompositionID);
-        //    return null;
-        //}
-        //private RelationshipColumnControl GetChildRelationshipInfo(DP_FormDataRepository dataItem, int relationshipID)
-        //{
-        //    RelationshipColumnControl control = null;
-
-        //    if (editEntityArea is I_EditEntityAreaOneData)
-        //    {
-        //        if ((editEntityArea as I_EditEntityAreaOneData).RelationshipColumnControls.Any(x => x.Relationship.ID == relationshipID))
-        //        {
-        //            control = (editEntityArea as I_EditEntityAreaOneData).RelationshipColumnControls.First(x => x.Relationship.ID == relationshipID);
-
-        //        }
-        //        else if (editEntityArea.SourceRelationColumnControl != null && editEntityArea.SourceRelationColumnControl.Relationship.PairRelationshipID == relationshipID)
-        //        {
-        //            control = editEntityArea.SourceRelationColumnControl;
-        //        }
-        //    }
-        //    else if (editEntityArea is I_EditEntityAreaMultipleData)
-        //    {
-        //        if ((editEntityArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.Any(x => x.Relationship.ID == relationshipID))
-        //        {
-        //            control = (editEntityArea as I_EditEntityAreaMultipleData).RelationshipColumnControls.First(x => x.Relationship.ID == relationshipID);
-        //        }
-        //        else if (editEntityArea.SourceRelationColumnControl != null && editEntityArea.SourceRelationColumnControl.Relationship.PairRelationshipID == relationshipID)
-        //        {
-        //            control = editEntityArea.SourceRelationColumnControl;
-        //        }
-        //    }
-        //    return control;
-        //}
-
 
 
         private ChildSimpleContorlProperty GetChildSimpleContorlProperty(DP_FormDataRepository dataItem, int columnID)

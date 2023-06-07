@@ -2048,6 +2048,7 @@ namespace MyUILibrary.EntityArea
         }
         public void UpdateData(List<DP_FormDataRepository> datas)
         {
+            //BaseEditEntityArea.UpdateData: 9376d8dbc2e0
             foreach (var data in datas.Where(x => x.ShoudBeCounted))
             {
                 foreach (var childSimpleContorlProperty in data.ChildSimpleContorlProperties.Where(x => x.SimpleColumnControl.DataEntryColumn.ColumnCustomFormula != null && x.SimpleColumnControl.DataEntryColumn.ColumnCustomFormula.Formula != null))
@@ -2770,9 +2771,6 @@ namespace MyUILibrary.EntityArea
             if (this is I_EditEntityAreaMultipleData)
                 (DataView as I_View_EditEntityAreaMultiple).AddDataContainer(specificDate);
 
-            AreaInitializer.ActionActivityManager.DataToShowInDataview(specificDate);
-
-
             foreach (var propertyControl in specificDate.ChildSimpleContorlProperties)
             {
                 propertyControl.SetBinding();
@@ -2783,8 +2781,10 @@ namespace MyUILibrary.EntityArea
                 childRelationshipInfo.SetBinding();
 
             }
-            if (result)
-                OnDataItemShown(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
+            AreaInitializer.ActionActivityManager.DataToShowInDataview(specificDate);
+            AreaInitializer.UIFomulaManager.DataToShowInDataview(specificDate);
+            //if (result)
+            //    OnDataItemShown(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
 
 
 
@@ -2865,11 +2865,10 @@ namespace MyUILibrary.EntityArea
 
 
         //اصلاح و بهتر شود برای تمپ ویوها
-        public void OnDataItemShown(EditAreaDataItemLoadedArg arg)
-        {
-            if (DataItemShown != null)
-                DataItemShown(this, arg);
-        }
+        //public void OnDataItemShown(EditAreaDataItemLoadedArg arg)
+        //{
+            
+        //}
         //public void OnDataItemUnShown(EditAreaDataItemArg arg)
         //{
         //    if (DataItemUnShown != null)

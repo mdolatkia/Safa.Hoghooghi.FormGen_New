@@ -13,8 +13,8 @@ namespace MyUILibrary.EntityArea
     public class DP_FormDataRepository : DP_DataRepository
     {
         //   public event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
-        public new event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
-        public event EventHandler<ChangeMonitor> RelatedDataTailOrColumnChanged;
+        //public new event EventHandler<PropertyValueChangedArg> PropertyValueChanged;
+        public event EventHandler<string> RelatedDataTailOrColumnChanged;
         public new ChildRelationshipInfo ParantChildRelationshipData
         {
             set
@@ -41,8 +41,8 @@ namespace MyUILibrary.EntityArea
             : base(dataView)
         {
             Properties = dataView.Properties;
-            foreach (var property in Properties)
-                property.PropertyValueChanged += Property_PropertyValueChanged;
+            //foreach (var property in Properties)
+            //    property.PropertyValueChanged += Property_PropertyValueChanged;
             //   DataView = baseData;
             GUID = dataView.GUID;
             //باید همیشه فالس باشه؟؟
@@ -51,15 +51,15 @@ namespace MyUILibrary.EntityArea
             EditEntityArea = editEntityArea;
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
             ChildSimpleContorlProperties = new List<ChildSimpleContorlProperty>();
-            ChangeMonitorItems = new List<ChangeMonitor>();
+            //     ChangeMonitorItems = new List<ChangeMonitor>();
         }
         public DP_FormDataRepository(DP_DataRepository dataRepository, I_EditEntityArea editEntityArea, bool isDBRelationship, bool isNewItem)
             : base(dataRepository)
         {
-            dataRepository.PropertyValueChanged += DP_FormDataRepository_PropertyValueChanged;
+            // dataRepository.PropertyValueChanged += DP_FormDataRepository_PropertyValueChanged;
             Properties = dataRepository.Properties;
-            foreach (var property in Properties)
-                property.PropertyValueChanged += Property_PropertyValueChanged;
+            //foreach (var property in Properties)
+            //    property.PropertyValueChanged += Property_PropertyValueChanged;
             GUID = dataRepository.GUID;
             IsFullData = true;
             IsNewItem = isNewItem;
@@ -67,19 +67,19 @@ namespace MyUILibrary.EntityArea
             EditEntityArea = editEntityArea;
             OriginalProperties = new List<ProxyLibrary.EntityInstanceProperty>();
             ChildSimpleContorlProperties = new List<ChildSimpleContorlProperty>();
-            ChangeMonitorItems = new List<ChangeMonitor>();
+            //  ChangeMonitorItems = new List<ChangeMonitor>();
 
             SetProperties();
         }
 
-        private void Property_PropertyValueChanged(object sender, PropertyValueChangedArg e)
-        {
-            if (PropertyValueChanged != null)
-            {
-                e.DataItem = this;
-                PropertyValueChanged(this, e);
-            }
-        }
+        //private void Property_PropertyValueChanged(object sender, PropertyValueChangedArg e)
+        //{
+        //    if (PropertyValueChanged != null)
+        //    {
+        //        e.DataItem = this;
+        //        PropertyValueChanged(this, e);
+        //    }
+        //}
         public bool ExcludeFromDataEntry { set; get; }
 
         //public bool ToParentRelationshipIsReadonly
@@ -127,73 +127,87 @@ namespace MyUILibrary.EntityArea
             }
         }
 
-        private void DP_FormDataRepository_PropertyValueChanged(object sender, PropertyValueChangedArg e)
-        {
-
-            foreach (var item in ChangeMonitorItems.Where(x => x.columnID != 0 && string.IsNullOrEmpty(x.RestTail)))
-            {
-                if (e.ColumnID == item.columnID)
-                    item.DataToCall.OnRelatedDataOrColumnChanged(item);
-            }
-        }
+        //private void DP_FormDataRepository_PropertyValueChanged(object sender, PropertyValueChangedArg e)
+        //{
+        //    foreach (var item in ChangeMonitorItems.Where(x => x.columnID != 0 && string.IsNullOrEmpty(x.RestTail)))
+        //    {
+        //        if (e.ColumnID == item.columnID)
+        //            item.DataToCall.OnRelatedDataOrColumnChanged(item);
+        //    }
+        //}
         public bool ChangeMonitorExists(string usageKey)
         {
             return ChangeMonitorItems.Any(x => x.UsageKey == usageKey);
         }
 
-        public void AddChangeMonitorIfNotExists(string usageKey, Tuple<string, List<int>> relTailAndColumns, DP_FormDataRepository dataToCall = null)
+        public void AddChangeMonitorIfNotExists(ChangeMonitorItem changeMonitorItem)
         {
+            // DP_FormDataRepository.AddChangeMonitorIfNotExists: 878337c82793
             if (!IsFullData)
                 throw new Exception("asdasdasd");
-            if (dataToCall == null)
-                dataToCall = this;
-            var restTail = relTailAndColumns.Item1;
-            var columns = relTailAndColumns.Item2;
-            if (string.IsNullOrEmpty(restTail) && columnID == 0)
+            //if (changeMonitorItem.DataToCall == null)
+            //    changeMonitorItem.DataToCall = this;
+
+            if (string.IsNullOrEmpty(changeMonitorItem.RelTailAndColumns.Item1) && !changeMonitorItem.RelTailAndColumns.Item2.Any(x => x != 0))
                 return;
 
-            if (ChangeMonitorItems.Any(x => x.UsageKey == usageKey && x.DataToCall == dataToCall))// x.RestTail == restTail && x.columnID == columnID && x.DataToCall == dataToCall))
+            if (ChangeMonitorItems.Any(x => x.UsageKey == changeMonitorItem.UsageKey && x.DataToCall == changeMonitorItem.DataToCall))// x.RestTail == restTail && x.columnID == columnID && x.DataToCall == dataToCall))
                 return;
+
+            ChangeMonitorItems.Add(changeMonitorItem);
+
+            if (IsFullData)
+            {
+                SetChangeMonitor(changeMonitorItem);
+            }
+        }
+
+        public void SetChangeMonitor(ChangeMonitorItem changeMonitorItem)
+        {
+            // DP_FormDataRepository.SetChangeMonitor: 66a9c49dd77a
+            var restTail = changeMonitorItem.RelTailAndColumns.Item1;
+            var columns = changeMonitorItem.RelTailAndColumns.Item2;
 
             if (string.IsNullOrEmpty(restTail))
             {
-                //var item = new ChangeMonitor()
-                //{
-                //    SourceData = this,
-                //    //GeneralKey = generalKey,
-                //    UsageKey = usageKey,
-                //    DataToCall = dataToCall,
-                //    columnID = columnID,
-                //    RestTail = restTail
-                //};
-                //ChangeMonitorItems.Add(item);
-
-                var property = Properties.FirstOrDefault(x => x.ColumnID == columnID);
-                if (property != null)
+                foreach (var columnID in columns.Where(x => x != 0))
                 {
-
+                    var property = Properties.FirstOrDefault(x => x.ColumnID == columnID);
+                    if (property != null)
+                    {
+                        property.PropertyValueChanged += (sender, e) => PropertyValueChanged1(sender, e, changeMonitorItem);
+                    }
                 }
             }
             else
             {
                 string firstRel = "", Rest = "";
-                SplitRelationshipTail(restTail, ref firstRel, ref Rest);
+                AgentHelper.SplitRelationshipTail(restTail, ref firstRel, ref Rest);
+                var newrelTailAndColumns = new Tuple<string, List<int>>(Rest, changeMonitorItem.RelTailAndColumns.Item2);
+                List<DP_FormDataRepository> listData = new List<DP_FormDataRepository>();
                 foreach (var childRelationshipInfo in ChildRelationshipDatas)
                 {
                     if (childRelationshipInfo.Relationship.ID.ToString() == firstRel)
                     {
-                        childRelationshipInfo.AddChangeMonitor(usageKey, Rest, columnID, dataToCall);
-                        return;
+                        foreach (var data in childRelationshipInfo.RelatedData)
+                            listData.Add(data);
                     }
                 }
-                if (ParantChildRelationshipData != null)
+                if (ParantChildRelationshipData != null && ParantChildRelationshipData.ToParentRelationshipID.ToString() == firstRel)
                 {
-                    if (ParantChildRelationshipData.ToParentRelationshipID.ToString() == firstRel)
-                    {
-                        ParantChildRelationshipData.SourceData.AddChangeMonitorIfNotExists(usageKey, Rest, columnID, dataToCall);
-                    }
+                    listData.Add(ParantChildRelationshipData.SourceData);
+                }
+                foreach (var data in listData)
+                {
+                    data.AddChangeMonitorIfNotExists(new ChangeMonitorItem(changeMonitorItem.ChangeMonitorSource, changeMonitorItem.UsageKey, newrelTailAndColumns, changeMonitorItem.DataToCall));
                 }
             }
+        }
+
+        private void PropertyValueChanged1(object sender, PropertyValueChangedArg e, ChangeMonitorItem changeMonitorItem)
+        {
+            // DP_FormDataRepository.PropertyValueChanged1: 955b8130c9b3
+            changeMonitorItem.ChangeMonitorSource.DataPropertyRelationshipChanged(changeMonitorItem.DataToCall, changeMonitorItem.UsageKey);
         }
 
 
@@ -267,31 +281,19 @@ namespace MyUILibrary.EntityArea
 
 
 
-        internal void OnRelatedDataOrColumnChanged(ChangeMonitor item)
-        {
-            if (RelatedDataTailOrColumnChanged != null)
-            {
-                //var changeMonitor = ChangeMonitorItems.First(x => x.Key == item.Key);
-                RelatedDataTailOrColumnChanged(this, item);
-            }
-        }
+        //internal void OnRelatedDataOrColumnChanged(string usageKey)
+        //{
+        //    if (RelatedDataTailOrColumnChanged != null)
+        //    {
+        //        //var changeMonitor = ChangeMonitorItems.First(x => x.Key == item.Key);
+        //        RelatedDataTailOrColumnChanged(this, usageKey);
+        //    }
+        //}
 
 
 
 
-        private void SplitRelationshipTail(string changingRelationshipTail, ref string firstRel, ref string rest)
-        {
-            if (changingRelationshipTail.Contains(','))
-            {
-                var splt = changingRelationshipTail.Split(",".ToCharArray(), 2);
-                firstRel = splt[0];
-                rest = splt[1];
-            }
-            else
-            {
-                firstRel = changingRelationshipTail;
-            }
-        }
+
 
 
         public bool ISValid { get; set; }
@@ -319,7 +321,7 @@ namespace MyUILibrary.EntityArea
 
         public bool IsUseLessBecauseNewAndReadonly { get; set; }
 
-        public List<ChangeMonitor> ChangeMonitorItems { set; get; }
+        public List<ChangeMonitorItem> ChangeMonitorItems { set; get; }
         public bool IsDefaultData { get; internal set; }
         public bool IsUpdated { get; internal set; }
 
@@ -550,6 +552,30 @@ namespace MyUILibrary.EntityArea
         public string Key { get; set; }
         public string Message { get; set; }
         //  public bool ImposeInUI { get; set; }
+    }
+    public enum ChangeMonitorSource
+    {
+        UIActionActivityManager,
+        FormulaManager
+    }
+    public class ChangeMonitorItem
+    {
+
+        public ChangeMonitorItem(I_ChangeMonitor changeMonitorSource, string usageKey, Tuple<string, List<int>> relTailAndColumns, DP_FormDataRepository dataToCall)
+        {
+            ChangeMonitorSource = changeMonitorSource;
+            UsageKey = usageKey;
+            RelTailAndColumns = relTailAndColumns;
+            DataToCall = dataToCall;
+        }
+
+        public I_ChangeMonitor ChangeMonitorSource { set; get; }
+        //    public DP_FormDataRepository SourceData { set; get; }
+        //   public string GeneralKey { set; get; }
+        public string UsageKey { set; get; }
+        public DP_FormDataRepository DataToCall { set; get; }
+        public Tuple<string, List<int>> RelTailAndColumns { set; get; }
+        //     public string RestTail { set; get; }
     }
 
 }

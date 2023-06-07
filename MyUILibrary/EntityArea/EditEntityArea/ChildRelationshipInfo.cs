@@ -235,6 +235,9 @@ namespace MyUILibrary.EntityArea
                 SetItemMessage(columnControlMessageItems);
             }
         }
+
+
+
         //private void ChildRelationshipInfo_IsReadonlyChanged(object sender, EventArgs e)
         //{
         //    if (SourceData.DataIsInEditMode())
@@ -322,6 +325,9 @@ namespace MyUILibrary.EntityArea
             //   childRelationshipData.
             //  dataItem.ParantChildRelationshipData = new ParentRelationshipData();
             base.RelatedData.Add(dataItem);
+
+
+
             if (dataItem.IsDBRelationship)
             {
                 //اینجا میتونه از این نوع نباشه بلکه DP_DataRepository
@@ -334,7 +340,6 @@ namespace MyUILibrary.EntityArea
             else
                 CheckRelationshipChanged(enum_AddRemove.Add, dataItem);
 
-
             if (IsDataviewOpen)
             {
                 ShowDataInChildRelationshipDataView(dataItem);
@@ -344,21 +349,40 @@ namespace MyUILibrary.EntityArea
             {
                 SetTempTextChildRelationshipData();
             }
+
+            foreach (var changeMonitorItem in GetChangeMonitorItemsFromSourceData())
+            {
+                dataItem.AddChangeMonitorIfNotExists(changeMonitorItem);
+            }
+
+          
+
             //CheckDataParentRelationship(dataItem);
 
             SetControlUIDetails();
         }
-
+        public List<ChangeMonitorItem> GetChangeMonitorItemsFromSourceData()
+        {
+            List<ChangeMonitorItem> result = new List<ChangeMonitorItem>();
+            foreach (var changeMonitorItem in SourceData.ChangeMonitorItems.Where(x => !string.IsNullOrEmpty(x.RelTailAndColumns.Item1)))
+            {
+                string firstRel = "", Rest = "";
+                AgentHelper.SplitRelationshipTail(changeMonitorItem.RelTailAndColumns.Item1, ref firstRel, ref Rest);
+                if (RelationshipControl.Relationship.ID.ToString() == firstRel)
+                {
+                    var newrelTailAndColumns = new Tuple<string, List<int>>(Rest, changeMonitorItem.RelTailAndColumns.Item2);
+                    result.Add(new ChangeMonitorItem(changeMonitorItem.ChangeMonitorSource, changeMonitorItem.UsageKey, newrelTailAndColumns, changeMonitorItem.DataToCall));
+                }
+            }
+            return result;
+        }
         private void ShowDataInChildRelationshipDataView(DP_FormDataRepository dataItem)
         {
             //ChildRelationshipInfo.ShowDataInChildRelationshipDataView: 78184401047a
             RelationshipControl.GenericEditNdTypeArea.ShowDataInDataView(dataItem);
 
 
-            foreach (var changeMonitor in ChangeMonitorItems.Where(x => !string.IsNullOrEmpty(x.RestTail) || x.columnID != 0))
-            {
-                dataItem.AddChangeMonitorIfNotExists( changeMonitor.UsageKey, changeMonitor.RestTail, changeMonitor.columnID, changeMonitor.DataToCall);
-            }
+
             //if (ChangeMonitorItems.Any(x => x.columnID == 0))
             //{
 
@@ -382,7 +406,16 @@ namespace MyUILibrary.EntityArea
             //    }
             //}
         }
-
+        //////internal void AddChangeMonitorIfNotExists(ChangeMonitorItem changeMonitorItem)
+        //////{
+        //////    if (ChangeMonitorItems.Any(x => x.UsageKey == changeMonitorItem.UsageKey && x.DataToCall == changeMonitorItem.DataToCall))// x.RestTail == restTail && x.columnID == columnID && x.DataToCall == dataToCall))
+        //////        return;
+        //////    ChangeMonitorItems.Add(changeMonitorItem);
+        //////    foreach (var data in RelatedData)
+        //////    {
+        //////        data.AddChangeMonitorIfNotExists(changeMonitorItem);
+        //////    }
+        //////}
         //private void CheckDataParentRelationship(DP_FormDataRepository dataItem)
         //{
         //    if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
@@ -580,7 +613,7 @@ namespace MyUILibrary.EntityArea
             if (clearIsOk)
             {
                 base.RelatedData.Remove(DP_FormDataRepository);
-                
+
                 CheckRelationshipChanged(enum_AddRemove.Remove, DP_FormDataRepository);
                 if (!IsDirect)
                 {
@@ -605,9 +638,9 @@ namespace MyUILibrary.EntityArea
         private void CheckRelationshipChanged(enum_AddRemove mode, DP_FormDataRepository dataItem)
         {
             //ChildRelationshipInfo.CheckRelationshipChanged: e7c6d51dcb3d
-            foreach (var item in ChangeMonitorItems)
+            foreach (var item in GetChangeMonitorItemsFromSourceData())
             {
-                item.DataToCall.OnRelatedDataOrColumnChanged(item);
+                item.ChangeMonitorSource.DataPropertyRelationshipChanged(item.DataToCall, item.UsageKey);
             }
             //برای ریمو باید پیش از این نال بشنن مقادیر
             if (Relationship.MastertTypeEnum == Enum_MasterRelationshipType.FromPrimartyToForeign && mode == enum_AddRemove.Remove)
@@ -972,31 +1005,23 @@ namespace MyUILibrary.EntityArea
         //}
         //این باید خود رابطه را چک کنه همچنین اینکه رابطه کریتورش فقط خواندنی هست یا نه؟ خود موجودیت طرفین هم فکر بشه
 
-        List<ChangeMonitor> ChangeMonitorItems = new List<ChangeMonitor>();
+        //  List<ChangeMonitorItem> ChangeMonitorItems = new List<ChangeMonitorItem>();
 
         //اینجا وظیفه چک کردن هم داده ها و هم ستونهای داده را دارد
-        internal void AddChangeMonitor( string usageKey, string restTail, int columnID, DP_FormDataRepository dataToCall)
-        {
-            ChangeMonitorItems.Add(new ChangeMonitor()
-            {
-                //GeneralKey = generalKey,
-                UsageKey = usageKey,
-                DataToCall = dataToCall,
-                columnID = columnID,
-                RestTail = restTail
-
-            });
-
-            //if (!string.IsNullOrEmpty(restTail))
-            //{
+        //internal void AddChangeMonitor(ChangeMonitorItem changeMonitorItem)
+        //{
 
 
-            //foreach (var relatedData in RelatedData)
-            //{
-            //    relatedData.AddChangeMonitor(generalKey, usageKey, restTail, columnID, dataToCall);
-            //}
-            //}
-        }
+        //    //foreach (var relatedData in RelatedData)
+        //    //{
+        //    //    relatedData.AddChangeMonitor(generalKey, usageKey, restTail, columnID, dataToCall);
+        //    //}
+        //    //if (!string.IsNullOrEmpty(restTail))
+        //    //{
+
+
+        //    //}
+        //}
 
 
 
@@ -1197,7 +1222,7 @@ namespace MyUILibrary.EntityArea
             var childViewData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(request).ResultDataItems;
             var countRequest = new DR_SearchCountRequest(requester);
             request.ToParentRelationshipID = Relationship.ID;
-          //  request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
+            //  request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
             countRequest.SearchDataItems = searchDataItem;
             countRequest.Requester.SkipSecurity = true;
             var count = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchCountRequest(countRequest);
@@ -1221,7 +1246,7 @@ namespace MyUILibrary.EntityArea
             var searchDataItem = relationshipManager.GetSecondSideSearchItemByFirstSideColumns(SourceData, Relationship);
             DR_SearchEditRequest request = new DR_SearchEditRequest(requester, searchDataItem);
             request.ToParentRelationshipID = ToParentRelationship.ID;
-           // request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
+            // request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
             var childFullData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(request).ResultDataItems;
             var countRequest = new DR_SearchCountRequest(requester);
             countRequest.SearchDataItems = searchDataItem;
@@ -1373,7 +1398,7 @@ namespace MyUILibrary.EntityArea
             else
             {
                 if (RelatedData.Any(x => !x.IsFullData))
-                    ConvertDataViewToFullData(RelationshipControl.GenericEditNdTypeArea.AreaInitializer.EntityID, RelatedData, RelationshipControl.GenericEditNdTypeArea);
+                    ConvertDataViewToFullDataAndShow(RelationshipControl.GenericEditNdTypeArea.AreaInitializer.EntityID, RelatedData, RelationshipControl.GenericEditNdTypeArea);
 
                 //foreach (var data in RelatedData)
                 //{
@@ -1391,10 +1416,7 @@ namespace MyUILibrary.EntityArea
                 //        //}
                 //    }
                 //}
-                foreach (var data in RelatedData)
-                {
-                    ShowDataInChildRelationshipDataView(data);
-                }
+
             }
             SetControlUIDetails();
             var dialogManager = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow();
@@ -1411,9 +1433,9 @@ namespace MyUILibrary.EntityArea
             //    OnDataItemUnShown(new EditAreaDataItemArg() { DataItem = item });
             //}
         }
-        private void ConvertDataViewToFullData(int entityID, List<DP_FormDataRepository> dataItems, I_EditEntityArea editEntityArea)
+        private void ConvertDataViewToFullDataAndShow(int entityID, List<DP_FormDataRepository> dataItems, I_EditEntityArea editEntityArea)
         {
-            // ChildRelationshipInfo.ConvertDataViewToFullData: 28ad76d5595c
+            // ChildRelationshipInfo.ConvertDataViewToFullDataAndShow: 28ad76d5595c
             //چندتایی شود مثل selectdata
             //اوکی نشده
             //DP_SearchRepositoryMain SearchDataItem = new DP_SearchRepositoryMain(entityID);
@@ -1449,7 +1471,12 @@ namespace MyUILibrary.EntityArea
                 item.SetProperties(fItem.GetProperties());
                 item.IsFullData = true;
                 item.SetProperties();
+                ShowDataInChildRelationshipDataView(item);
+                foreach (var changeMonitor in item.ChangeMonitorItems)
+                    item.SetChangeMonitor(changeMonitor);
             }
+
+
             //if (foundItem.Any())
             //{
             //dataITem.ClearProperties();

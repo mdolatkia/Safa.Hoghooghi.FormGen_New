@@ -97,7 +97,7 @@ namespace MyModelManager
             }
 
             //مدل رو تا فولدر فرمول رفتم یا استیت رابطه داره و استیت هم با فرمول چیکار کنم
-            var formulaStates = bizEntityState.GetEntityStates(requester, entity.ID, false);
+            var formulaStates = bizEntityState.GetEntityStates(requester, entity.ID, false, false);
             foreach (var state in formulaStates)
             {
                 var name = "st_" + state.Title;

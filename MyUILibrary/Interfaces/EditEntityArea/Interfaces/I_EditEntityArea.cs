@@ -91,22 +91,27 @@ namespace MyUILibrary.EntityArea
         public bool IsValid { set; get; }
         public string Message { set; get; }
     }
-    public interface I_UIActionActivityManager
+    public interface I_ChangeMonitor
+    {
+        void DataPropertyRelationshipChanged(DP_FormDataRepository data, string usageKey);
+    }
+    public interface I_UIActionActivityManager : I_ChangeMonitor
     {
         //void DoStateActionActivity(I_EditEntityAreaOneData editEntityAreaOneData, DP_FormDataRepository dataItem, EntityStateDTO state);
         //   void ApplyStatesBeforeUpdate();
 
         //void ResetActionActivities(DP_FormDataRepository dataItem);
         void CheckAndImposeEntityStates(DP_FormDataRepository data);
-       // void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem);
+        // void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem);
         void DataToShowInDataview(DP_FormDataRepository specificDate);
     }
 
-    public interface I_UIFomulaManager
+    public interface I_UIFomulaManager : I_ChangeMonitor
     {
         void UpdateFromulas();
         void CalculateProperty(ChildSimpleContorlProperty ChildSimpleContorlProperty);
         void CalculateProperty(DP_DataRepository dataItem, EntityInstanceProperty dataProperty);
+        void DataToShowInDataview(DP_FormDataRepository specificDate);
 
         //   void UpdateFromulas();
     }
@@ -1149,17 +1154,5 @@ namespace MyUILibrary.EntityArea
     //    //public bool IsReadonlyOnState { get; set; }
     //    //public bool IsReadonlyOnShow { get; set; }
     //}
-    public class ChangeMonitor
-    {
-        public ChangeMonitor()
-        {
-
-        }
-        public DP_FormDataRepository SourceData { set; get; }
-     //   public string GeneralKey { set; get; }
-        public string UsageKey { set; get; }
-        public DP_FormDataRepository DataToCall { set; get; }
-        public int columnID { set; get; }
-        public string RestTail { set; get; }
-    }
+  
 }

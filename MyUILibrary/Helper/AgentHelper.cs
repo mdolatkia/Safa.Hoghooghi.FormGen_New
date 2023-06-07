@@ -628,6 +628,19 @@ namespace MyUILibrary
 
             return result;
         }
+        public static void SplitRelationshipTail(string changingRelationshipTail, ref string firstRel, ref string rest)
+        {
+            if (changingRelationshipTail.Contains(','))
+            {
+                var splt = changingRelationshipTail.Split(",".ToCharArray(), 2);
+                firstRel = splt[0];
+                rest = splt[1];
+            }
+            else
+            {
+                firstRel = changingRelationshipTail;
+            }
+        }
         //public static Tuple<List<ColumnDTO>, List<RelationshipDTO>> GetValidColumnsAndRelationships(TableDrivedEntityDTO entity, AssignedPermissionDTO permission)
         //{
 
