@@ -13,14 +13,27 @@ namespace MyModelManager
 {
     public class BizEntityState
     {
-        public List<EntityStateDTO> GetEntityStates(DR_Requester requester, int entityID, bool withDetails, bool forExecution, int toParentRelationshipID = 0)
+        public List<EntityStateDTO> GetEntityStates(DR_Requester requester, int entityID)
         {
             List<EntityStateDTO> result = new List<EntityStateDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listEntityState = projectContext.EntityState.Where(x => x.TableDrivedEntityID == entityID);
                 foreach (var item in listEntityState)
-                    result.Add(ToEntityStateDTO(requester, item, withDetails, forExecution, toParentRelationshipID));
+                    result.Add(ToEntityStateDTO(requester, item, false));
+
+            }
+            return result;
+        }
+
+        public List<EntityStateDTO> GetEntityStatesForApply(DR_Requester requester, int entityID, Enum_ApplyState applyState, int toParentRelationshipID = 0)
+        {
+            List<EntityStateDTO> result = new List<EntityStateDTO>();
+            using (var projectContext = new DataAccess.MyIdeaEntities())
+            {
+                var listEntityState = projectContext.EntityState.Where(x => x.TableDrivedEntityID == entityID);
+                foreach (var item in listEntityState)
+                    result.Add(ToEntityStateDTO(requester, item, true, applyState, toParentRelationshipID));
 
             }
             return result;
@@ -54,13 +67,13 @@ namespace MyModelManager
         //    }
         //    return result;
         //}
-        public EntityStateDTO GetEntityState(DR_Requester requester, int entityStatesID, bool withDetails, bool forExecution)
+        public EntityStateDTO GetEntityState(DR_Requester requester, int entityStatesID, bool withDetails)
         {
             List<EntityStateDTO> result = new List<EntityStateDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var EntityStates = projectContext.EntityState.First(x => x.ID == entityStatesID);
-                return ToEntityStateDTO(requester, EntityStates, withDetails, forExecution);
+                return ToEntityStateDTO(requester, EntityStates, withDetails);
             }
         }
         //public bool EntityHasState(DP_DataRepository dataItem, int stateID)
@@ -106,7 +119,7 @@ namespace MyModelManager
         //    return null;
         //}
 
-        public EntityStateDTO ToEntityStateDTO(DR_Requester requester, EntityState item, bool withDetails, bool forExecution, int toParentRelationshipID = 0)
+        public EntityStateDTO ToEntityStateDTO(DR_Requester requester, EntityState item, bool withDetails, Enum_ApplyState applyState=Enum_ApplyState.None, int toParentRelationshipID = 0)
         {
             var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.EntityState, item.ID.ToString(), withDetails.ToString());
             if (cachedItem != null)
@@ -129,7 +142,7 @@ namespace MyModelManager
             var bizActionActivity = new BizUIActionActivity();
             foreach (var actionActivity in item.EntityState_UIActionActivity)
             {
-                result.ActionActivities.Add(bizActionActivity.ToActionActivityDTO(actionActivity.UIActionActivity, withDetails, forExecution, toParentRelationshipID));
+                result.ActionActivities.Add(bizActionActivity.ToActionActivityDTO(actionActivity.UIActionActivity, withDetails, applyState, toParentRelationshipID));
             }
             result.ID = item.ID;
             result.Title = item.Title;
@@ -343,36 +356,19 @@ namespace MyModelManager
         internal void DoDataBeforeLoadUIActionActivities(DR_Requester Requester, List<DP_DataView> resultDataItems, bool fullData, int toParentRelationshipID)
         {
             // BizEntityState.DoDataBeforeLoadUIActionActivities: 84133990d0c1
-            var entityStates = GetEntityStates(Requester, resultDataItems.First().TargetEntityID, true, true, toParentRelationshipID);
+            var entityStates = GetEntityStatesForApply(Requester, resultDataItems.First().TargetEntityID,
+                fullData ? Enum_ApplyState.InDataFetchFullData : Enum_ApplyState.InDataFetchDataView, toParentRelationshipID);
             List<Tuple<EntityStateDTO, List<UIEnablityDetailsDTO>>> listItems = new List<Tuple<EntityStateDTO, List<UIEnablityDetailsDTO>>>();
-            foreach (var entityState in entityStates)
+            foreach (var entityState in entityStates.Where(x => x.ActionActivities != null))
             {
                 List<UIEnablityDetailsDTO> listEnablity = new List<UIEnablityDetailsDTO>();
                 foreach (var action in entityState.ActionActivities.Where(x => x.UIEnablityDetails != null))
                 {
-                    if (fullData)
+                    foreach (var uiEnablity in action.UIEnablityDetails)
                     {
-                        foreach (var uiEnablity in action.UIEnablityDetails.Where(x => x.ApplyState ==  Enum_ApplyState.InDataFetch))
-                        {
-                            listEnablity.Add(uiEnablity);
-                        }
+                        listEnablity.Add(uiEnablity);
                     }
-                    else
-                    {
-                        foreach (var uiEnablity in action.UIEnablityDetails.Where(x => x.ApplyState == Enum_ApplyState.InDataFetch && x.RelationshipID != 0 && x.RelationshipID == toParentRelationshipID))
-                        {
-                            listEnablity.Add(uiEnablity);
-                        }
-                    }
-                    //foreach (var uiEnablity in action.UIEnablityDetails.Where(x => x.ApplyState == Enum_ApplyState.InDataFetch))
-                    //{
-                    //    listEnablity.Add(uiEnablity);
-                    //}
                 }
-                //if (entityState.ActionActivities.Any(x => x.Type == Enum_ActionActivityType.EntityReadonly))
-                //{
-                //    listEnablity.Add(new UIEnablityDetailsDTO() { RelationshipID = toParentRelationshipID, Readonly = true });
-                //}
                 if (listEnablity.Any())
                 {
                     foreach (var dataItem in resultDataItems)
@@ -381,7 +377,6 @@ namespace MyModelManager
                         {
                             foreach (var uiEnablity in listEnablity)
                             {
-
                                 if (uiEnablity.ColumnID != 0)
                                 {
                                     var property = dataItem.Properties.FirstOrDefault(x => x.ColumnID == uiEnablity.ColumnID);

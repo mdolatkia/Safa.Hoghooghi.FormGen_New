@@ -40,11 +40,11 @@ namespace MyProject_WPF
             GetEntityStates();
         }
 
-       
-     
+
+
         private void GetEntityStates()
         {
-            var listEntityStates = bizEntityState.GetEntityStates(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID,false);
+            var listEntityStates = bizEntityState.GetEntityStates(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
             dtgItems.ItemsSource = listEntityStates;
         }
         private void btnClose_Click(object sender, RoutedEventArgs e)

@@ -17,7 +17,7 @@ namespace MyModelManager
 
         public StateResult GetStateResult(int StateFunctionID, DP_DataRepository mainDataItem, DR_Requester requester)
         {
-            var state = bizStateFunction.GetEntityState(requester, StateFunctionID, true, false);
+            var state = bizStateFunction.GetEntityState(requester, StateFunctionID, true);
             return GetStateResult(state, mainDataItem, requester);
             //////    var parameters = new List<object>();
             //////    var StateFunction = bizStateFunction.GetStateFunction(StateFunctionID);

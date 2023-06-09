@@ -293,7 +293,7 @@ namespace ModelEntites
         public bool? Readonly { set; get; }
         public bool EvenInTempView { get; set; }
         public bool Permanent { get; set; }
-        public Enum_ApplyState ApplyState { get; set; }
+       // public Enum_ApplyState ApplyState { get; set; }
         //  public List<ActionActivitySource> AllowedSteps { get; set; }
         //   public bool OnLoadOnly { get; set; }
         //    public int UICompositionID { set; get; }
@@ -2612,7 +2612,7 @@ namespace ModelEntites
         public int EntityID { set; get; }
         public Enum_ActionActivityType Type { set; get; }
         public UIColumnValueRangeDTO UIColumnValueRange { set; get; }
-        public Enum_ApplyState ApplyState { get; set; }
+   //     public Enum_ApplyState ApplyState { get; set; }
         //  public List<UIColumnValueRangeResetDTO> UIColumnValueRangeReset { set; get; }
         //    public bool OnlyOnLoad { get; set; }
     }
@@ -2758,7 +2758,8 @@ namespace ModelEntites
     public enum Enum_ApplyState
     {
         None,
-        InDataFetch,
+        InDataFetchFullData,
+        InDataFetchDataView,
         InUI
     }
     public class ArchiveRelationshipTailDTO

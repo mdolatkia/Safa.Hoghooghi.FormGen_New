@@ -190,7 +190,7 @@ namespace MyUILibrary.EntityArea
                 //}
 
 
-
+                
                 bool enableDisableView = true;
                 if (RelatedData.Any(x => x.ParentRelationshipIsHidenOnLoad))
                 {
@@ -1222,6 +1222,7 @@ namespace MyUILibrary.EntityArea
             var childViewData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(request).ResultDataItems;
             var countRequest = new DR_SearchCountRequest(requester);
             request.ToParentRelationshipID = Relationship.ID;
+        //    request.CheckEntityStates = true;
             //  request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
             countRequest.SearchDataItems = searchDataItem;
             countRequest.Requester.SkipSecurity = true;

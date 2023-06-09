@@ -17,6 +17,7 @@ namespace ProxyLibrary
         public int OrderByEntityViewColumnID { set; get; }
         public Enum_OrderBy SortType { set; get; }
         public int ToParentRelationshipID { set; get; }
+      //  public bool CheckEntityStates { set; get; }
         public int MaxDataItems { set; get; }
      //   public bool ToParentRelationshipIsFKToPK { get; set; }
     }

@@ -240,8 +240,7 @@ namespace MyUILibrary.EntityArea
         //}
         private List<EntityStateDTO> GetUIEntityStates()
         {
-            return EditArea.EntityStates1.Where(state => state.ActionActivities.Any(x => x.ApplyState == Enum_ApplyState.InUI
-                || (x.UIEnablityDetails != null && x.UIEnablityDetails.Any(y => y.ApplyState == Enum_ApplyState.InUI)))).ToList();
+            return EditArea.EntityStates1;
 
         }
         public void DataToShowInDataview(DP_FormDataRepository dataItem)
@@ -315,7 +314,10 @@ namespace MyUILibrary.EntityArea
             if (!dataItem.DataIsInEditMode())
                 return;
             ResetActionActivities(dataItem);
-
+            دوحالتش بکن
+                م 
+                ادیت مود و 
+                تمپ مد
             foreach (var state in GetUIEntityStates())
             {
                 if (CheckEntityState(dataItem, state))

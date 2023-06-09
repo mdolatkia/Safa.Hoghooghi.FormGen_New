@@ -732,7 +732,6 @@ namespace MyUILibrary.EntityArea
             }
 
             var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
-            //سکوریتی داده اعمال میشود
             DR_SearchViewRequest request = new DR_SearchViewRequest(requester, searchItems);
             var result = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(request);
 
@@ -2476,6 +2475,8 @@ namespace MyUILibrary.EntityArea
 
                 var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
                 var requestSearchEdit = new DR_SearchEditRequest(requester, searchItems);
+                if (SourceRelationColumnControl != null)
+                    requestSearchEdit.ToParentRelationshipID = ChildRelationshipInfoBinded.ToParentRelationshipID;
                 var res = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchEditRequest(requestSearchEdit).ResultDataItems;
                 if (datas.Count != res.Count)
                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به برخی داده ها", "", Temp.InfoColor.Red);
@@ -2491,16 +2492,16 @@ namespace MyUILibrary.EntityArea
             }
             else
             {
-                List<DP_DataView> dataViews = new List<DP_DataView>();
 
-                if (datas.Any(x => x is DP_DataView))
-                {
-                    dataViews = datas.Cast<DP_DataView>().ToList();
-                }
-                else
-                {
-                    dataViews = GetDataViewItemsFromSearchResult(searchItems);
-                }
+                var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
+                DR_SearchViewRequest request = new DR_SearchViewRequest(requester, searchItems);
+                if (SourceRelationColumnControl != null)
+                    request.ToParentRelationshipID = ChildRelationshipInfoBinded.ToParentRelationshipID;
+              //  request.CheckEntityStates = true;
+                var dataViews = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(request).ResultDataItems;
+                if (datas.Count != dataViews.Count)
+                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به برخی داده ها", "", Temp.InfoColor.Red);
+
                 foreach (var dataItem in dataViews)
                     result.Add(new DP_FormDataRepository(dataItem, this, false, false));
             }
@@ -2528,7 +2529,16 @@ namespace MyUILibrary.EntityArea
                     throw new Exception("asdasd");
                 }
                 var data = result.FirstOrDefault();
-
+                if(data.ParentRelationshipIsHidenOnLoad)
+                {
+                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("داده انتخاب شده به رابطه انتخاب شده دسترسی ندارد", "", Temp.InfoColor.Red);
+                    return;
+                }
+                if (data.ParentRelationshipIsReadonlyOnLoad)
+                {
+                    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("رابطه برای داده انتخاب شده فقط خواندنی می باشد", "", Temp.InfoColor.Red);
+                    return;
+                }
                 if (ChildRelationshipInfoBinded.RemoveAllRelatedData())
                 {
                     if (data != null)
@@ -2867,7 +2877,7 @@ namespace MyUILibrary.EntityArea
         //اصلاح و بهتر شود برای تمپ ویوها
         //public void OnDataItemShown(EditAreaDataItemLoadedArg arg)
         //{
-            
+
         //}
         //public void OnDataItemUnShown(EditAreaDataItemArg arg)
         //{

@@ -215,7 +215,7 @@ namespace MyModelManager
             if (withDetails && result.EntityStateID != 0)
             {
                 BizEntityState bizEntityState = new BizEntityState();
-                result.EntityState = bizEntityState.ToEntityStateDTO(requester, item.EntityState, withDetails, false);
+                result.EntityState = bizEntityState.ToEntityStateDTO(requester, item.EntityState, withDetails);
             }
 
             //foreach (var valItem in item.EntitySecurityDirectValues)
