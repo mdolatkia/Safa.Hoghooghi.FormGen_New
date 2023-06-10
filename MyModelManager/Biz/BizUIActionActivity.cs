@@ -38,7 +38,7 @@ namespace MyModelManager
         {
             UIActionActivityDTO result = new UIActionActivityDTO();
             result.Type = (Enum_ActionActivityType)item.Type;
-
+         
 
             if (withDetails && applyState != Enum_ApplyState.None)
             {
@@ -68,7 +68,11 @@ namespace MyModelManager
                         }
                     }
                     result.UIEnablityDetails = GetUIEnabllityListFiltered(list, applyState, toParentRelationshipID);
+
+               
                 }
+
+
             }
             //if (withDetails && result.Type == Enum_ActionActivityType.ColumnValueRange)
             //{

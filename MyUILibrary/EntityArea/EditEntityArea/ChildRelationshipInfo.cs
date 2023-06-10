@@ -188,17 +188,39 @@ namespace MyUILibrary.EntityArea
                 //    columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, "relationReadonly", ControlItemPriority.Normal));
                 //    columnControlMessageItems.Add(new ColumnControlMessageItem("رابطه فقط خواندنی می باشد و تغییرات رابطه اعمال نخواهد شد" + Environment.NewLine + key, ControlOrLabelAsTarget.Control, "relationReadonly", ControlItemPriority.Normal));
                 //}
+                List<DataColorItem> dataColorItems = new List<DataColorItem>();
+                List<DataMessageItem> dataMessageItems = new List<DataMessageItem>();
+                List<DP_FormDataRepository> disabledDataItems = new List<DP_FormDataRepository>();
+
+                if (RelatedData.Any(x => x.ParentRelationshipIsHidenInUI))
+                {
+                    if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
+                    {
+                        columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, "parentRelationshipHiddenInUI", ControlItemPriority.Normal));
+                        columnControlMessageItems.Add(new ColumnControlMessageItem(RelatedData.First(x => x.ParentRelationshipIsHidenOnLoad).ParentRelationshipIsHidenOnLoadText, ControlOrLabelAsTarget.Control, "parentRelationshipHiddenInUI", ControlItemPriority.Normal));
+                    }
+                    else
+                    {
+                        if (IsDataviewOpen)
+                        {
+                            foreach (var data in RelatedData.Where(x => x.ParentRelationshipIsHidenInUI))
+                            {
+                                dataColorItems.Add(new DataColorItem(data, InfoColor.DarkRed, data.GUID.ToString(), ControlItemPriority.Normal));
+                                dataMessageItems.Add(new DataMessageItem(data, data.ParentRelationshipIsHidenInUIText, data.GUID.ToString(), ControlItemPriority.Normal));
+                            }
+                        }
+                    }
+                }
 
 
-                
                 bool enableDisableView = true;
                 if (RelatedData.Any(x => x.ParentRelationshipIsHidenOnLoad))
                 {
                     if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaOneData)
                     {
                         enableDisableView = false;
-                        columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, "parentRelationshipHidden", ControlItemPriority.Normal));
-                        columnControlMessageItems.Add(new ColumnControlMessageItem(RelatedData.First(x => x.ParentRelationshipIsHidenOnLoad).ParentRelationshipIsHidenOnLoadText, ControlOrLabelAsTarget.Control, "parentRelationshipHidden", ControlItemPriority.Normal));
+                        columnControlColorItems.Add(new ColumnControlColorItem(InfoColor.DarkRed, ControlOrLabelAsTarget.Control, ControlColorTarget.Border, "parentRelationshipHiddenOnLoad", ControlItemPriority.Normal));
+                        columnControlMessageItems.Add(new ColumnControlMessageItem(RelatedData.First(x => x.ParentRelationshipIsHidenOnLoad).ParentRelationshipIsHidenOnLoadText, ControlOrLabelAsTarget.Control, "parentRelationshipHiddenOnLoad", ControlItemPriority.Normal));
                     }
                     else
                     {
@@ -206,13 +228,15 @@ namespace MyUILibrary.EntityArea
                         {
                             foreach (var data in RelatedData.Where(x => x.ParentRelationshipIsHidenOnLoad))
                             {
-                                (RelationshipControl.GenericEditNdTypeArea as I_EditEntityAreaMultipleData).DataView.SetTooltip(data, data.ParentRelationshipIsHidenOnLoadText);
-                                (RelationshipControl.GenericEditNdTypeArea as I_EditEntityAreaMultipleData).DataView.EnableDisable(data, false);
+                                dataMessageItems.Add(new DataMessageItem(data, data.ParentRelationshipIsHidenOnLoadText, data.GUID.ToString(), ControlItemPriority.Normal));
+                                disabledDataItems.Add(data);
                             }
                         }
                     }
                 }
+
                 (GetMainUIControlManager as I_View_Area).EnableDisable(enableDisableView);
+
 
 
                 bool enableDisableDataSection = true;
@@ -233,9 +257,64 @@ namespace MyUILibrary.EntityArea
 
                 SetItemColor(columnControlColorItems);
                 SetItemMessage(columnControlMessageItems);
+
+                SetDataItemsColor(dataColorItems);
+                SetDataItemsMessage(dataMessageItems);
+                SetDataItemsEnablity(disabledDataItems);
+
             }
         }
 
+        private void SetDataItemsEnablity(List<DP_FormDataRepository> disabledDataItems)
+        {
+            if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaMultipleData)
+            {
+                if (IsDataviewOpen)
+                {
+                    foreach (var data in RelatedData)
+                    {
+                        (RelationshipControl.GenericEditNdTypeArea as I_EditEntityAreaMultipleData).DataView.EnableDisable(data, !disabledDataItems.Any(x => x == data));
+                    }
+                }
+            }
+        }
+        private void SetDataItemsColor(List<DataColorItem> dataColorItems)
+        {
+            if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaMultipleData)
+            {
+                if (IsDataviewOpen)
+                {
+                    foreach (var data in RelatedData)
+                    {
+                        var colorItems = dataColorItems.Where(x => x.DataItem == data).ToList();
+                        var colorItem = colorItems.OrderByDescending(x => x.Priority).FirstOrDefault();
+                        Temp.InfoColor color;
+                        if (colorItem != null)
+                            color = colorItem.Color;
+                        else
+                            color = InfoColor.Default;
+                        (RelationshipControl.GenericEditNdTypeArea as I_EditEntityAreaMultipleData).DataView.SetColor(data, color);
+                    }
+                }
+            }
+        }
+        private void SetDataItemsMessage(List<DataMessageItem> dataMessageItemItems)
+        {
+            if (RelationshipControl.GenericEditNdTypeArea is I_EditEntityAreaMultipleData)
+            {
+                if (IsDataviewOpen)
+                {
+                    foreach (var data in RelatedData)
+                    {
+                        var tooltip = "";
+                        var messageItems = dataMessageItemItems.Where(x => x.DataItem == data).ToList();
+                        foreach (var item in messageItems.OrderByDescending(x => x.Priority))
+                            tooltip += (tooltip == "" ? "" : Environment.NewLine) + item.Message;
+                        (RelationshipControl.GenericEditNdTypeArea as I_EditEntityAreaMultipleData).DataView.SetTooltip(data, tooltip);
+                    }
+                }
+            }
+        }
 
 
         //private void ChildRelationshipInfo_IsReadonlyChanged(object sender, EventArgs e)
@@ -355,7 +434,7 @@ namespace MyUILibrary.EntityArea
                 dataItem.AddChangeMonitorIfNotExists(changeMonitorItem);
             }
 
-          
+
 
             //CheckDataParentRelationship(dataItem);
 
@@ -1222,7 +1301,7 @@ namespace MyUILibrary.EntityArea
             var childViewData = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(request).ResultDataItems;
             var countRequest = new DR_SearchCountRequest(requester);
             request.ToParentRelationshipID = Relationship.ID;
-        //    request.CheckEntityStates = true;
+            //    request.CheckEntityStates = true;
             //  request.ToParentRelationshipIsFKToPK = ToParentRelationship.MastertTypeEnum == Enum_MasterRelationshipType.FromForeignToPrimary;
             countRequest.SearchDataItems = searchDataItem;
             countRequest.Requester.SkipSecurity = true;

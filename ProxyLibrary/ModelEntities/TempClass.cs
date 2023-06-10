@@ -239,7 +239,7 @@ namespace ModelEntites
         public int ColumnID { set; get; }
         public bool EvenHasValue { set; get; }
         public bool EvenIsNotNew { set; get; }
-        public  SecurityReservedValue? ReservedValue { set; get; }
+        public SecurityReservedValue? ReservedValue { set; get; }
         public int FormulaID { set; get; }
         // public int EntityRelationshipTailID { set; get; }
         // public EntityRelationshipTailDTO EntityRelationshipTail { set; get; }
@@ -293,7 +293,7 @@ namespace ModelEntites
         public bool? Readonly { set; get; }
         public bool EvenInTempView { get; set; }
         public bool Permanent { get; set; }
-       // public Enum_ApplyState ApplyState { get; set; }
+        // public Enum_ApplyState ApplyState { get; set; }
         //  public List<ActionActivitySource> AllowedSteps { get; set; }
         //   public bool OnLoadOnly { get; set; }
         //    public int UICompositionID { set; get; }
@@ -2612,7 +2612,8 @@ namespace ModelEntites
         public int EntityID { set; get; }
         public Enum_ActionActivityType Type { set; get; }
         public UIColumnValueRangeDTO UIColumnValueRange { set; get; }
-   //     public Enum_ApplyState ApplyState { get; set; }
+      
+
         //  public List<UIColumnValueRangeResetDTO> UIColumnValueRangeReset { set; get; }
         //    public bool OnlyOnLoad { get; set; }
     }
@@ -2754,7 +2755,7 @@ namespace ModelEntites
         Pdf,
         MsWord,
     }
- 
+
     public enum Enum_ApplyState
     {
         None,
@@ -2762,6 +2763,11 @@ namespace ModelEntites
         InDataFetchDataView,
         InUI
     }
+    //public enum Enum_UIApplyState
+    //{
+    //    OnlyEditMode,
+    //    EditOrViewMode
+    //}
     public class ArchiveRelationshipTailDTO
     {
         public ArchiveRelationshipTailDTO()
@@ -2941,7 +2947,7 @@ namespace ModelEntites
         public EntityStateDTO()
         {
             ActionActivities = new ObservableCollection<UIActionActivityDTO>();
-          //  StateConditions = new  List<EntityStateConditionDTO>();
+            //  StateConditions = new  List<EntityStateConditionDTO>();
         }
         public int ID { set; get; }
         //public bool Preserve { set; get; }
@@ -2949,7 +2955,7 @@ namespace ModelEntites
 
 
 
-      //  public AndOREqualType ConditionOperator { set; get; }
+        //  public AndOREqualType ConditionOperator { set; get; }
         public string Title { set; get; }
 
         public ObservableCollection<UIActionActivityDTO> ActionActivities { set; get; }
@@ -2958,13 +2964,16 @@ namespace ModelEntites
         public int FormulaID { set; get; }
         public FormulaDTO Formula { set; get; }
         public int ColumnID { set; get; }
+
         public ColumnDTO Column { set; get; }
         public InORNotIn EntityStateOperator { set; get; }
-       
+
         public List<EntityStateValueDTO> Values { set; get; }
         //public int ActionActivityID { set; get; }
         public InORNotIn SecuritySubjectInORNotIn { set; get; }
         public ObservableCollection<int> SecuritySubjects { set; get; }
+        //public bool ApplyOnEditMode  { set; get; }
+        public bool ApplyOnViewMode { set; get; }
         //     public bool HasOnLoadOnlyAction { get; set; }
         //    public bool HasDynamicAction { get; set; }
     }
@@ -2979,7 +2988,7 @@ namespace ModelEntites
     //    //public bool Preserve { set; get; }
     //    public int EntityStateID { set; get; }
 
-      
+
 
     //}
     //public class EntityStateGroupDTO 

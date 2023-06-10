@@ -282,6 +282,27 @@ namespace MyUIGenerator.UIControlHelper
 
             //dataGrid.SetTooltip(dataItem, tooltip);
         }
+
+        public void SetColor(object dataItem, InfoColor color)
+        {
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+            {
+                GridViewRow row = (GridViewRow)dataGrid.ItemContainerGenerator
+                                                    .ContainerFromItem(dataItem);
+                if (row != null)
+                {
+                    if (color != InfoColor.Black)
+                    {
+                        row.BorderBrush = UIManager.GetColorFromInfoColor(color);
+                        //            (cell.Content as Control).BorderThickness = new Thickness(1);
+                    }
+                    else
+                        row.BorderBrush = UIManager.GetColorFromInfoColor(color);
+                }
+            }));
+
+        }
+
         public void EnableDisable(object dataItem, bool enable)
         {
             System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
@@ -296,6 +317,7 @@ namespace MyUIGenerator.UIControlHelper
             //   dataGrid.EnableDisable(dataItem, enable);
         }
 
+      
         //public void RemoveSelectedDataContainers()
         //{
         //    //if (AgentHelper.GetDataEntryMode( EditTemplate) == DataMode.Multiple)
@@ -334,17 +356,7 @@ namespace MyUIGenerator.UIControlHelper
         //        SetColor(item);
         //    }
         //}
-        //private void SetColor(object dataItem)
-        //{
-        //    var color = InfoColor.Black;
-        //    var validationMessage = rowValidationMessages.Where(x => x.CausingDataItem == dataItem);
-        //    if (validationMessage.Any())
-        //        color = validationMessage.Last().Color;
-        //    if (color != InfoColor.Black)
-        //        dataGridHelper.SetColor(dataItem, color);
-        //    else
-        //        dataGridHelper.ClearColor(dataItem);
-        //}
+
 
         //private void SetTooltip(object dataItem)
         //{

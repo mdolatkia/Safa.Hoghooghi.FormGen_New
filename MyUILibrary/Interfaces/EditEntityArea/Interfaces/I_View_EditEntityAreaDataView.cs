@@ -165,6 +165,7 @@ namespace MyUILibrary.EntityArea
 
         void RemoveDataContainer(object data);
         void SetTooltip(object data,string message);
+        void SetColor(object data, InfoColor message);
         //void Visiblity(object dataItem, bool visible);
         void EnableDisable(object dataItem, bool enable);
         //void RemoveSelectedDataContainers();

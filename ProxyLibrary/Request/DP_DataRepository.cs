@@ -73,6 +73,7 @@ namespace ProxyLibrary
         public string ParentRelationshipIsReadonlyOnLoadText { get; set; }
         public bool ParentRelationshipIsHidenOnLoad { get; set; }
         public string ParentRelationshipIsHidenOnLoadText { get; set; }
+    
         public List<DataViewProperty> DataViewProperties { set; get; }
         public int ListViewID { set; get; }
         public string ViewInfo

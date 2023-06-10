@@ -325,6 +325,20 @@ namespace MyUILibrary.EntityArea
         public bool IsDefaultData { get; internal set; }
         public bool IsUpdated { get; internal set; }
 
+        bool _ParentRelationshipIsHidenInUI;
+        public bool ParentRelationshipIsHidenInUI
+        {
+            get
+            {
+                return _ParentRelationshipIsHidenInUI;
+            }
+            set
+            {
+                _ParentRelationshipIsHidenInUI = value;
+                ParantChildRelationshipData.SetControlUIDetails();
+            }
+        }
+        public string ParentRelationshipIsHidenInUIText { get; set; }
 
         public bool DataIsInEditMode()
         {
@@ -356,7 +370,23 @@ namespace MyUILibrary.EntityArea
             //    }
             //return false;
         }
-
+        public bool DataIsInViewMode()
+        {
+            bool hasTempView = (EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateInDirect ||
+      EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect ||
+       EditEntityArea.AreaInitializer.IntracionMode == IntracionMode.Select);
+            if (hasTempView)
+            {
+                if (EditEntityArea.SourceRelationColumnControl == null)
+                    return true;
+                else
+                    return this.ParantChildRelationshipData.SourceData.DataIsInEditMode();
+            }
+            else
+                return false;
+            //    }
+            //return false;
+        }
         //internal void AddTempSimplePropertyReadonly(int id, string key, string title, bool permanent)
         //{
         //    ListTempSimplePropertyReadonly.Add(new Tuple<int, string, string, bool>(id, key, title, permanent));

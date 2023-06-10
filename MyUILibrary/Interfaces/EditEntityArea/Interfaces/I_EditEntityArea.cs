@@ -898,25 +898,6 @@ namespace MyUILibrary.EntityArea
         public ControlColorTarget ColorTarget { set; get; }
         public Temp.InfoColor Color { get; set; }
     }
-    public class DataMessageItem : BaseMessageItem
-    {
-        public DataMessageItem(string message, string key, ControlItemPriority priority)
-        {
-            Message = message;
-            Key = key;
-            Priority = priority;
-        }
-    }
-    public class DataColorItem : BaseColorItem
-    {
-        public DataColorItem(InfoColor infoColor, ControlColorTarget controlColorTarget, string key, ControlItemPriority priority)
-        {
-            Color = infoColor;
-            ColorTarget = controlColorTarget;
-            Key = key;
-            Priority = priority;
-        }
-    }
 
 
     public class ColumnControlMessageItem : BaseMessageItem
@@ -962,6 +943,30 @@ namespace MyUILibrary.EntityArea
         Border,
         Background,
         Foreground
+    }
+
+    public class DataColorItem : BaseColorItem
+    {
+        public DataColorItem(DP_FormDataRepository dataItem, InfoColor infoColor, string key, ControlItemPriority priority)
+        {
+            Color = infoColor;
+            Key = key;
+            Priority = priority;
+            DataItem = dataItem;
+        }
+        public DP_FormDataRepository DataItem { set; get; }
+    }
+    public class DataMessageItem : BaseMessageItem
+    {
+        public DataMessageItem(DP_FormDataRepository dataItem,string message, string key, ControlItemPriority priority)
+        {
+            Message = message;
+            Key = key;
+            Priority = priority;
+            DataItem = dataItem;
+        }
+        public DP_FormDataRepository DataItem { set; get; }
+
     }
     //public class ColumnMessageItem : BaseMessageItem
     //{
@@ -1154,5 +1159,5 @@ namespace MyUILibrary.EntityArea
     //    //public bool IsReadonlyOnState { get; set; }
     //    //public bool IsReadonlyOnShow { get; set; }
     //}
-  
+
 }

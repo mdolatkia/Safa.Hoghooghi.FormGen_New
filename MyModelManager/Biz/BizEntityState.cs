@@ -119,7 +119,7 @@ namespace MyModelManager
         //    return null;
         //}
 
-        public EntityStateDTO ToEntityStateDTO(DR_Requester requester, EntityState item, bool withDetails, Enum_ApplyState applyState=Enum_ApplyState.None, int toParentRelationshipID = 0)
+        public EntityStateDTO ToEntityStateDTO(DR_Requester requester, EntityState item, bool withDetails, Enum_ApplyState applyState = Enum_ApplyState.None, int toParentRelationshipID = 0)
         {
             var cachedItem = CacheManager.GetCacheManager().GetCachedItem(CacheItemType.EntityState, item.ID.ToString(), withDetails.ToString());
             if (cachedItem != null)
@@ -144,6 +144,14 @@ namespace MyModelManager
             {
                 result.ActionActivities.Add(bizActionActivity.ToActionActivityDTO(actionActivity.UIActionActivity, withDetails, applyState, toParentRelationshipID));
             }
+            if (applyState == Enum_ApplyState.InUI)
+            {
+                if (result.ActionActivities.Any(x => x.UIEnablityDetails != null && x.UIEnablityDetails.Any(y => y.RelationshipID != 0 && y.RelationshipID == toParentRelationshipID)))
+                    result.ApplyOnViewMode = true;
+                if (result.ActionActivities.Any(x => x.Type==Enum_ActionActivityType. x.UIEnablityDetails != null && x.UIEnablityDetails.Any(y => y.RelationshipID != 0 && y.RelationshipID == toParentRelationshipID)))
+                    result.ApplyOnViewMode = true;
+            }
+
             result.ID = item.ID;
             result.Title = item.Title;
 
@@ -353,7 +361,7 @@ namespace MyModelManager
                 return dbEntityState.ID;
             }
         }
-        internal void DoDataBeforeLoadUIActionActivities(DR_Requester Requester, List<DP_DataView> resultDataItems, bool fullData, int toParentRelationshipID)
+        internal void DoDataBeforeLoadActionActivities(DR_Requester Requester, List<DP_DataView> resultDataItems, bool fullData, int toParentRelationshipID)
         {
             // BizEntityState.DoDataBeforeLoadUIActionActivities: 84133990d0c1
             var entityStates = GetEntityStatesForApply(Requester, resultDataItems.First().TargetEntityID,

@@ -1363,7 +1363,7 @@ namespace MyDataSearchManagerBusiness
             if (result.ResultDataItems.Any())
             {
                 BizEntityState bizEntityState = new BizEntityState();
-                bizEntityState.DoDataBeforeLoadUIActionActivities(request.Requester, result.ResultDataItems.Cast<DP_DataView>().ToList(), true, request.ToParentRelationshipID);
+                bizEntityState.DoDataBeforeLoadActionActivities(request.Requester, result.ResultDataItems.Cast<DP_DataView>().ToList(), true, request.ToParentRelationshipID);
             }
         }
         private void DoBeforeLoadBackendActionActivities(DR_SearchViewRequest request, DR_ResultSearchView result)
@@ -1371,7 +1371,7 @@ namespace MyDataSearchManagerBusiness
             if (result.ResultDataItems.Any())
             {
                 BizEntityState bizEntityState = new BizEntityState();
-                bizEntityState.DoDataBeforeLoadUIActionActivities(request.Requester, result.ResultDataItems, false, request.ToParentRelationshipID);
+                bizEntityState.DoDataBeforeLoadActionActivities(request.Requester, result.ResultDataItems, false, request.ToParentRelationshipID);
             }
         }
         private List<DP_DataRepository> GetFullDataResult(DR_Requester requester, DP_SearchRepositoryMain searchDataItem)
