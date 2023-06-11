@@ -38,7 +38,7 @@ namespace MyUILibrary.EntityArea
         event EventHandler<DisableEnableChangedArg> DisableEnableChanged;
         I_View_TemporaryView TemporaryDisplayView { set; get; }
         void SetTempText();
-        List<EntityStateDTO> EntityStates1 { get; }
+        //    List<EntityStateDTO> EntityStates1 { get; }
         //I_SearchAndViewEntityArea SearchViewEntityArea { set; get; }
         I_EditEntityLetterArea EditLetterArea { set; get; }
         I_DataListReportAreaContainer DataListReportAreaContainer { set; get; }
@@ -99,7 +99,7 @@ namespace MyUILibrary.EntityArea
     {
         //void DoStateActionActivity(I_EditEntityAreaOneData editEntityAreaOneData, DP_FormDataRepository dataItem, EntityStateDTO state);
         //   void ApplyStatesBeforeUpdate();
-
+        List<EntityStateDTO> EntityStates1 { get; }
         //void ResetActionActivities(DP_FormDataRepository dataItem);
         void CheckAndImposeEntityStates(DP_FormDataRepository data);
         // void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem);
@@ -958,7 +958,7 @@ namespace MyUILibrary.EntityArea
     }
     public class DataMessageItem : BaseMessageItem
     {
-        public DataMessageItem(DP_FormDataRepository dataItem,string message, string key, ControlItemPriority priority)
+        public DataMessageItem(DP_FormDataRepository dataItem, string message, string key, ControlItemPriority priority)
         {
             Message = message;
             Key = key;

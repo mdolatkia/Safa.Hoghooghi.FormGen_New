@@ -28,6 +28,7 @@ namespace MyModelManager
 
         public List<EntityStateDTO> GetEntityStatesForApply(DR_Requester requester, int entityID, Enum_ApplyState applyState, int toParentRelationshipID = 0)
         {
+            // BizEntityState.GetEntityStatesForApply: 829758bde96e
             List<EntityStateDTO> result = new List<EntityStateDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
@@ -144,13 +145,14 @@ namespace MyModelManager
             {
                 result.ActionActivities.Add(bizActionActivity.ToActionActivityDTO(actionActivity.UIActionActivity, withDetails, applyState, toParentRelationshipID));
             }
-            if (applyState == Enum_ApplyState.InUI)
-            {
-                if (result.ActionActivities.Any(x => x.UIEnablityDetails != null && x.UIEnablityDetails.Any(y => y.RelationshipID != 0 && y.RelationshipID == toParentRelationshipID)))
-                    result.ApplyOnViewMode = true;
-                if (result.ActionActivities.Any(x => x.Type==Enum_ActionActivityType. x.UIEnablityDetails != null && x.UIEnablityDetails.Any(y => y.RelationshipID != 0 && y.RelationshipID == toParentRelationshipID)))
-                    result.ApplyOnViewMode = true;
-            }
+            //if (applyState == Enum_ApplyState.InUI)
+            //{
+            //    //if (result.ActionActivities.Any(x => x.UIEnablityDetails != null && x.UIEnablityDetails.Any(y => y.RelationshipID != 0 && y.RelationshipID == toParentRelationshipID)))
+            //    //    result.ApplyOnViewEditMode = true;
+            //    //if (result.ActionActivities.Any(x => x.UIColumnValue. ||
+            //    //x.Type==Enum_ActionActivityType.ColumnValueRange||(x.Type==Enum_ActionActivityType. x.UIEnablityDetails != null && x.UIEnablityDetails.Any(y => y.RelationshipID != 0 && y.RelationshipID == toParentRelationshipID)))
+            //    //    result.ApplyOnViewMode = true;
+            //}
 
             result.ID = item.ID;
             result.Title = item.Title;

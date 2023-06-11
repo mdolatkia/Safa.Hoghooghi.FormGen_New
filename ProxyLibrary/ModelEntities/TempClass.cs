@@ -2973,7 +2973,8 @@ namespace ModelEntites
         public InORNotIn SecuritySubjectInORNotIn { set; get; }
         public ObservableCollection<int> SecuritySubjects { set; get; }
         //public bool ApplyOnEditMode  { set; get; }
-        public bool ApplyOnViewMode { set; get; }
+      //  public bool ApplyOnViewEditMode { set; get; }
+      //  public bool ApplyOnOnlyEditMode { set; get; }
         //     public bool HasOnLoadOnlyAction { get; set; }
         //    public bool HasDynamicAction { get; set; }
     }

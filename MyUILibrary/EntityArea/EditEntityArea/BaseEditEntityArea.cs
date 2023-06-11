@@ -298,20 +298,7 @@ namespace MyUILibrary.EntityArea
         //    }
         //}
 
-        List<EntityStateDTO> _EntityStates;
-        public List<EntityStateDTO> EntityStates1
-        {
-            get
-            {
-                if (_EntityStates == null)
-                {
-                    _EntityStates = AgentUICoreMediator.GetAgentUICoreMediator.entityStateManagerService.GetEntityStates(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester()
-                        , AreaInitializer.EntityID, SourceRelationColumnControl == null ? 0 : SourceRelationColumnControl.Relationship.PairRelationshipID);
 
-                }
-                return _EntityStates;
-            }
-        }
         //  I_SearchViewEntityArea _SearchViewEntityArea;
         // public I_SearchAndViewEntityArea SearchViewEntityArea { set; get; }
 
@@ -1818,7 +1805,7 @@ namespace MyUILibrary.EntityArea
                 stateAction.Title = item.Item1.Name + ">Hidden";
                 stateAction.UIEnablityDetails.Add(new UIEnablityDetailsDTO() { RelationshipID = item.Item1.ID, Hidden = true });
                 entityState.ActionActivities.Add(stateAction);
-                EntityStates1.Add(entityState);
+                AreaInitializer.ActionActivityManager.EntityStates1.Add(entityState);
             }
             if (SourceRelationColumnControl != null && SourceRelationColumnControl.Relationship is SubToSuperRelationshipDTO && (SourceRelationColumnControl.Relationship as SubToSuperRelationshipDTO).ISARelationship.InternalTable)
             {
@@ -2497,7 +2484,7 @@ namespace MyUILibrary.EntityArea
                 DR_SearchViewRequest request = new DR_SearchViewRequest(requester, searchItems);
                 if (SourceRelationColumnControl != null)
                     request.ToParentRelationshipID = ChildRelationshipInfoBinded.ToParentRelationshipID;
-              //  request.CheckEntityStates = true;
+                //  request.CheckEntityStates = true;
                 var dataViews = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(request).ResultDataItems;
                 if (datas.Count != dataViews.Count)
                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به برخی داده ها", "", Temp.InfoColor.Red);
@@ -2529,7 +2516,7 @@ namespace MyUILibrary.EntityArea
                     throw new Exception("asdasd");
                 }
                 var data = result.FirstOrDefault();
-                if(data.ParentRelationshipIsHidenOnLoad)
+                if (data.ParentRelationshipIsHidenOnLoad)
                 {
                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("داده انتخاب شده به رابطه انتخاب شده دسترسی ندارد", "", Temp.InfoColor.Red);
                     return;

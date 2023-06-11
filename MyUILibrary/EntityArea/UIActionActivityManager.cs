@@ -25,7 +25,20 @@ namespace MyUILibrary.EntityArea
             //     EditArea.DataItemUnShown += EditArea_DataItemUnShown;
 
         }
+        List<EntityStateDTO> _EntityStates;
+        public List<EntityStateDTO> EntityStates1
+        {
+            get
+            {
+                if (_EntityStates == null)
+                {
+                    _EntityStates = AgentUICoreMediator.GetAgentUICoreMediator.entityStateManagerService.GetEntityStates(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester()
+                        , EditArea.AreaInitializer.EntityID, EditArea.SourceRelationColumnControl == null ? 0 : EditArea.SourceRelationColumnControl.Relationship.PairRelationshipID);
 
+                }
+                return _EntityStates;
+            }
+        }
         private void EditArea_UIGenerated(object sender, EventArgs e)
         {
             CheckISADeterminerStates();
@@ -67,7 +80,7 @@ namespace MyUILibrary.EntityArea
                     //item.EntityState.ConditionOperator = AgentHelper.GetNotOperator(item.EntityState.ConditionOperator);
                     item.EntityState.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
 
-                    EditArea.EntityStates1.Add(item.EntityState);
+                   EntityStates1.Add(item.EntityState);
                 }
             }
 
@@ -93,7 +106,7 @@ namespace MyUILibrary.EntityArea
                         actionActivity.Type = Enum_ActionActivityType.UIEnablity;
                         actionActivity.UIEnablityDetails.Add(new UIEnablityDetailsDTO() { Hidden = true, RelationshipID = superToSubRel.ID });
                         state.ActionActivities.Add(actionActivity);
-                        EditArea.EntityStates1.Add(state);
+                        EntityStates1.Add(state);
                     }
                 }
             }
@@ -113,7 +126,7 @@ namespace MyUILibrary.EntityArea
                     actionActivity.Type = Enum_ActionActivityType.UIEnablity;
                     actionActivity.UIEnablityDetails.Add(new UIEnablityDetailsDTO() { Hidden = true, RelationshipID = subToSuperRel.PairRelationshipID });
                     state.ActionActivities.Add(actionActivity);
-                    EditArea.EntityStates1.Add(state);
+                    EntityStates1.Add(state);
 
 
                     //شرط اگر داده جدید باشد
@@ -128,7 +141,7 @@ namespace MyUILibrary.EntityArea
                     setDeterminerActionActivity.Type = Enum_ActionActivityType.ColumnValue;
                     setDeterminerActionActivity.UIColumnValue.Add(new UIColumnValueDTO() { ColumnID = subToSuperRel.DeterminerColumnID, ExactValue = subToSuperRel.DeterminerColumnValue, EvenHasValue = true });
                     setDeterminerState.ActionActivities.Add(setDeterminerActionActivity);
-                    EditArea.EntityStates1.Add(setDeterminerState);
+                    EntityStates1.Add(setDeterminerState);
 
                 }
 
@@ -157,7 +170,7 @@ namespace MyUILibrary.EntityArea
                         actionActivity.Type = Enum_ActionActivityType.UIEnablity;
                         actionActivity.UIEnablityDetails.Add(new UIEnablityDetailsDTO() { Hidden = true, RelationshipID = superToSubRel.ID });
                         state.ActionActivities.Add(actionActivity);
-                        EditArea.EntityStates1.Add(state);
+                        EntityStates1.Add(state);
                     }
                 }
             }
@@ -179,7 +192,7 @@ namespace MyUILibrary.EntityArea
                     actionActivity.Type = Enum_ActionActivityType.UIEnablity;
                     actionActivity.UIEnablityDetails.Add(new UIEnablityDetailsDTO() { Hidden = true, RelationshipID = subToSuperRel.PairRelationshipID });
                     state.ActionActivities.Add(actionActivity);
-                    EditArea.EntityStates1.Add(state);
+                    EntityStates1.Add(state);
 
 
                     //شرط اگر داده جدید باشد
@@ -195,7 +208,7 @@ namespace MyUILibrary.EntityArea
                     setDeterminerActionActivity.Type = Enum_ActionActivityType.ColumnValue;
                     setDeterminerActionActivity.UIColumnValue.Add(new UIColumnValueDTO() { ColumnID = subToSuperRel.SuperEntityDeterminerColumn.ID, ExactValue = subToSuperRel.DeterminerColumnValues.First().Value });//, EvenHasValue = true });
                     setDeterminerState.ActionActivities.Add(setDeterminerActionActivity);
-                    EditArea.EntityStates1.Add(setDeterminerState);
+                    EntityStates1.Add(setDeterminerState);
 
                 }
 
@@ -228,7 +241,7 @@ namespace MyUILibrary.EntityArea
                     actionActivity.UIColumnValueRange.FilterValueColumnID = item.DataEntryColumn.ColumnValueRange.TagColumnID;
                     //actionActivity.UIEnablityDetails.Add(new UIEnablityDetailsDTO() { Hidden = true, RelationshipID = superToSubRel.ID });
                     state.ActionActivities.Add(actionActivity);
-                    EditArea.EntityStates1.Add(state);
+                    EntityStates1.Add(state);
 
                 }
             }
@@ -238,42 +251,60 @@ namespace MyUILibrary.EntityArea
 
 
         //}
-        private List<EntityStateDTO> GetUIEntityStates()
+        private List<EntityStateDTO> GetUIEntityStates(DP_FormDataRepository dataItem)
         {
-            return EditArea.EntityStates1;
-
+            // UIActionActivityManager.GetUIEntityStates: ca2021c421dc
+            //   return EditArea.EntityStates1;
+            List<EntityStateDTO> list = new List<EntityStateDTO>();
+            foreach (var state in EntityStates1)
+            {
+                bool isValid = false;
+                if (StateHasDataViewAction(state, dataItem))
+                {
+                    if (dataItem.DataIsInEditMode() || dataItem.DataIsInViewMode())
+                        isValid = true;
+                }
+                else
+                {
+                    if (dataItem.DataIsInEditMode())
+                        isValid = true;
+                }
+                if (isValid)
+                    list.Add(state);
+            }
+            return list;
         }
-        private List<EntityStateDTO> GetEditModeUIEntityStates()
-        {
-            return EditArea.EntityStates1.Where(x => x.UIApplyState == Enum_UIApplyState.OnlyEditMode).ToList();
+        //private List<EntityStateDTO> GetEditModeUIEntityStates()
+        //{
+        //    return EditArea.EntityStates1.Where(x => x.UIApplyState == Enum_UIApplyState.OnlyEditMode).ToList();
 
-        }
-        private List<EntityStateDTO> GetEditViewEntityStates()
-        {
-            return EditArea.EntityStates1.Where(x => x.UIApplyState == Enum_UIApplyState.EditOrViewMode).ToList();
+        //}
+        //private List<EntityStateDTO> GetEditViewEntityStates()
+        //{
+        //    return EditArea.EntityStates1.Where(x => x.UIApplyState == Enum_UIApplyState.EditOrViewMode).ToList();
 
-        }
+        //}
         public void DataToShowInDataview(DP_FormDataRepository dataItem)
         {
-            // UIActionActivityManager.DataToShowInDataview: f3c425b1720a
 
-            if (GetEditModeUIEntityStates().Any() && dataItem.DataIsInEditMode())
+            foreach (var state in GetUIEntityStates(dataItem))
             {
-                foreach (var state in GetEditModeUIEntityStates())
-                {
-                    SetDataItemChangeMonitors(dataItem, state);
-                }
+                SetDataItemChangeMonitors(dataItem, state);
             }
-            else if (GetEditViewEntityStates().Any() && !dataItem.IsDBRelationship && (dataItem.DataIsInEditMode() || dataItem.DataIsInViewMode()))
-            {
-                foreach (var state in GetEditViewEntityStates())
-                {
-                    SetDataItemChangeMonitors(dataItem, state);
-                }
-            }
-
             CheckAndImposeEntityStates(dataItem);
         }
+
+        private bool StateHasDataViewAction(EntityStateDTO state, DP_FormDataRepository dataItem)
+        {
+            if (dataItem.ParantChildRelationshipData != null && !dataItem.IsDBRelationship)
+            {
+                if (state.ActionActivities.Any(x => x.UIEnablityDetails.Any(y => y.Hidden == true && y.RelationshipID != 0
+                && y.RelationshipID == dataItem.ParantChildRelationshipData.ToParentRelationshipID)))
+                    return true;
+            }
+            return false;
+        }
+
         //private UIActionActivityDTO GetReadonlyActionActivity()
         //{
         //    var newActionActivity = new UIActionActivityDTO();
@@ -326,27 +357,16 @@ namespace MyUILibrary.EntityArea
         {
             //UIActionActivityManager.CheckAndImposeEntityStates: 5a9f918cdb55
 
-            if (GetEditModeUIEntityStates().Any() && dataItem.DataIsInEditMode())
-            {
-                ResetActionActivities(dataItem, true);
-                foreach (var state in GetEditModeUIEntityStates())
-                {
-                    if (CheckEntityState(dataItem, state))
-                        DoStateActionActivity(state, dataItem, true);
-                }
-            }
-            if (GetEditViewEntityStates().Any() && !dataItem.IsDBRelationship && (dataItem.DataIsInEditMode() || dataItem.DataIsInViewMode()))
-            {
-                ResetActionActivities(dataItem, false);
-                foreach (var state in GetEditViewEntityStates())
-                {
-                    if (CheckEntityState(dataItem, state))
-                        DoStateActionActivity(state, dataItem, false);
-                }
-            }
 
+            ResetActionActivities(dataItem);
+
+            foreach (var state in GetUIEntityStates(dataItem))
+            {
+                if (CheckEntityState(dataItem, state))
+                    DoStateActionActivity(state, dataItem);
+            }
         }
-        public void DoStateActionActivity(EntityStateDTO state, DP_FormDataRepository dataItem, bool inEditMode)
+        public void DoStateActionActivity(EntityStateDTO state, DP_FormDataRepository dataItem)
         {
             // UIActionActivityManager.DoStateActionActivity: 9d894434cc60
             //    var dataItem = dataAndState.DataItem;
@@ -373,7 +393,7 @@ namespace MyUILibrary.EntityArea
                                     dataItem.ParentRelationshipIsHidenInUI = true;
                                     dataItem.ParentRelationshipIsHidenInUIText += (string.IsNullOrEmpty(dataItem.ParentRelationshipIsHidenInUIText) ? "" : ",") + state.Title;
                                 }
-                                else if (inEditMode)
+                                else if (dataItem.DataIsInEditMode())
                                 {
                                     var isHidden = ChildItemVisiblity(state, detail, dataItem, true);
                                     if (isHidden != null)
@@ -387,7 +407,7 @@ namespace MyUILibrary.EntityArea
                         }
                     }
                 }
-                else if (inEditMode && actionActivity.Type == Enum_ActionActivityType.ColumnValueRange)
+                else if (dataItem.DataIsInEditMode() && actionActivity.Type == Enum_ActionActivityType.ColumnValueRange)
                 {
                     //**29ec5b10-3bf3-49b4-8dfe-a4dc7f6869ad
                     //if (ActionActivityIsApliable(dataItem, actionActivity))
@@ -414,7 +434,7 @@ namespace MyUILibrary.EntityArea
                     //}
                     //}
                 }
-                else if (inEditMode && actionActivity.Type == Enum_ActionActivityType.ColumnValue)
+                else if (dataItem.DataIsInEditMode() && actionActivity.Type == Enum_ActionActivityType.ColumnValue)
                 {
                     //if (ActionActivityIsApliable(dataItem, actionActivity))
                     //{
@@ -439,11 +459,11 @@ namespace MyUILibrary.EntityArea
         }
 
 
-        public void ResetActionActivities(DP_FormDataRepository dataItem, bool inEditMode)
+        public void ResetActionActivities(DP_FormDataRepository dataItem)
         {
             // UIActionActivityManager.ResetActionActivities: 42b13c5915e5
             List<BaseColumnControl> hiddenControls = new List<BaseColumnControl>();
-            foreach (var state in GetUIEntityStates())
+            foreach (var state in GetUIEntityStates(dataItem))
             {
                 foreach (var actionActivity in state.ActionActivities)
                 {
@@ -461,7 +481,7 @@ namespace MyUILibrary.EntityArea
                                         dataItem.ParentRelationshipIsHidenInUIText = "";
                                     }
                                 }
-                                else if (inEditMode)
+                                else if (dataItem.DataIsInEditMode())
                                 {
                                     var isHidden = ChildItemVisiblity(state, detail, dataItem, false);
                                     if (isHidden != null)
@@ -572,7 +592,7 @@ namespace MyUILibrary.EntityArea
         public void DataPropertyRelationshipChanged(DP_FormDataRepository data, string usageKey)
         {
             // UIActionActivityManager.DataPropertyRelationshipChanged: b60b5cf2effa
-            if (GetUIEntityStates().Any(x => x.ID.ToString() == usageKey))
+            if (GetUIEntityStates(data).Any(x => x.ID.ToString() == usageKey))
             {
                 CheckAndImposeEntityStates(data);
             }
