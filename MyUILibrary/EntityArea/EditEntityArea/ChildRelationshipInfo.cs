@@ -428,12 +428,11 @@ namespace MyUILibrary.EntityArea
             {
                 SetTempTextChildRelationshipData();
             }
-
             foreach (var changeMonitorItem in GetChangeMonitorItemsFromSourceData())
             {
                 dataItem.AddChangeMonitorIfNotExists(changeMonitorItem);
             }
-
+            dataItem.EditEntityArea.AreaInitializer.ActionActivityManager.DataLoaded(dataItem);
 
 
             //CheckDataParentRelationship(dataItem);
@@ -1199,6 +1198,10 @@ namespace MyUILibrary.EntityArea
                     {
                         SetTempTextChildRelationshipData();
                     }
+                    foreach (var dataItem in RelatedData)
+                    {
+                        dataItem.EditEntityArea.AreaInitializer.ActionActivityManager.DataLoaded(dataItem);
+                    }
                 }
                 else
                 {
@@ -1554,6 +1557,8 @@ namespace MyUILibrary.EntityArea
                 ShowDataInChildRelationshipDataView(item);
                 foreach (var changeMonitor in item.ChangeMonitorItems)
                     item.SetChangeMonitor(changeMonitor);
+                item.EditEntityArea.AreaInitializer.ActionActivityManager.DataLoaded(item);
+
             }
 
 

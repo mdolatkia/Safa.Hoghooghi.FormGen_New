@@ -103,7 +103,7 @@ namespace MyUILibrary.EntityArea
         //void ResetActionActivities(DP_FormDataRepository dataItem);
         void CheckAndImposeEntityStates(DP_FormDataRepository data);
         // void SetExistingDataFirstLoadStates(DP_FormDataRepository dataItem);
-        void DataToShowInDataview(DP_FormDataRepository specificDate);
+        void DataLoaded(DP_FormDataRepository specificDate);
     }
 
     public interface I_UIFomulaManager : I_ChangeMonitor

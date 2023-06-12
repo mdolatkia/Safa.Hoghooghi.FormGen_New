@@ -2755,6 +2755,8 @@ namespace MyUILibrary.EntityArea
             else
                 SetTempText();
 
+            AreaInitializer.ActionActivityManager.DataLoaded(dataItem);
+
             DecideButtonsEnablity1();
 
             //   return result;
@@ -2778,7 +2780,7 @@ namespace MyUILibrary.EntityArea
                 childRelationshipInfo.SetBinding();
 
             }
-            AreaInitializer.ActionActivityManager.DataToShowInDataview(specificDate);
+          
             AreaInitializer.UIFomulaManager.DataToShowInDataview(specificDate);
             //if (result)
             //    OnDataItemShown(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });

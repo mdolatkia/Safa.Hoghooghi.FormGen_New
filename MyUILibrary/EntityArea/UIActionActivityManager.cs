@@ -21,9 +21,9 @@ namespace MyUILibrary.EntityArea
             EditArea = editArea;
             //EditArea.DataItemLoaded += EditArea_DataItemLoaded;
             //   EditArea.DataItemShown += EditArea_DataItemShown;
-            EditArea.UIGenerated += EditArea_UIGenerated;
+            //  EditArea.UIGenerated += EditArea_UIGenerated;
             //     EditArea.DataItemUnShown += EditArea_DataItemUnShown;
-
+            CreateCustomStates();
         }
         List<EntityStateDTO> _EntityStates;
         public List<EntityStateDTO> EntityStates1
@@ -39,8 +39,9 @@ namespace MyUILibrary.EntityArea
                 return _EntityStates;
             }
         }
-        private void EditArea_UIGenerated(object sender, EventArgs e)
+        private void CreateCustomStates()
         {
+            //  UIActionActivityManager.CreateCustomStates: 9d99f631a921
             CheckISADeterminerStates();
             CheckUnionDeterminerStates();
             CheckDirectDataSecurityStates();
@@ -72,17 +73,17 @@ namespace MyUILibrary.EntityArea
         {
 
             //اینجا این بدرد نمیخوره دیگه
-            if (AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.EntityHasDirectSecurities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID))
-            {
-                var dataDirectSecurity = AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.GetEntitySecurityDirects(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID);
-                foreach (var item in dataDirectSecurity)
-                {
-                    //item.EntityState.ConditionOperator = AgentHelper.GetNotOperator(item.EntityState.ConditionOperator);
-                    item.EntityState.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
+            //////if (AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.EntityHasDirectSecurities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID))
+            //////{
+            //////    var dataDirectSecurity = AgentUICoreMediator.GetAgentUICoreMediator.DataSecurityManager.GetEntitySecurityDirects(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EditArea.AreaInitializer.EntityID);
+            //////    foreach (var item in dataDirectSecurity)
+            //////    {
+            //////        //item.EntityState.ConditionOperator = AgentHelper.GetNotOperator(item.EntityState.ConditionOperator);
+            //////        item.EntityState.ActionActivities.Add(new UIActionActivityDTO() { Type = Enum_ActionActivityType.EntityReadonly });
 
-                   EntityStates1.Add(item.EntityState);
-                }
-            }
+            //////       EntityStates1.Add(item.EntityState);
+            //////    }
+            //////}
 
         }
 
@@ -284,9 +285,9 @@ namespace MyUILibrary.EntityArea
         //    return EditArea.EntityStates1.Where(x => x.UIApplyState == Enum_UIApplyState.EditOrViewMode).ToList();
 
         //}
-        public void DataToShowInDataview(DP_FormDataRepository dataItem)
+        public void DataLoaded(DP_FormDataRepository dataItem)
         {
-
+            // UIActionActivityManager.DataLoaded: 37a441f938c0
             foreach (var state in GetUIEntityStates(dataItem))
             {
                 SetDataItemChangeMonitors(dataItem, state);
