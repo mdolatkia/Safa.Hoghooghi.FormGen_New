@@ -28,6 +28,7 @@ namespace MyModelManager
 
         public List<CodeFunctionDTO> GetAllCodeFunctions(DR_Requester requester, string generalFilter, List<Enum_CodeFunctionParamType> paramTypes)
         {
+            //BizCodeFunction.GetAllCodeFunctions: 26a81b546118
             List<CodeFunctionDTO> result = new List<CodeFunctionDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
@@ -108,6 +109,7 @@ namespace MyModelManager
         }
         public int UpdateCodeFunctions(CodeFunctionDTO CodeFunction)
         {
+            // BizCodeFunction.22a0734b5c8e: 22a0734b5c8e
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var dbCodeFunction = projectContext.CodeFunction.FirstOrDefault(x => x.ID == CodeFunction.ID);

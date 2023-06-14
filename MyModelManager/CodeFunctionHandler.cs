@@ -15,7 +15,10 @@ namespace MyModelManager
     public class CodeFunctionHandler
     {
         BizCodeFunction bizCodeFunction = new BizCodeFunction();
-
+        public CodeFunctionHandler()
+        {
+            // CodeFunctionHandler: d1ee92e5176f
+        }
         //فانکشنها یکی شوند
         public LetterConvertToExternalResult GetLetterSendingCodeFunctionResult(DR_Requester resuester, int codeFunctionID, LetterDTO letter)
         {
@@ -69,17 +72,25 @@ namespace MyModelManager
             //   result.FormulaUsageParemeters = formulaUsageParemeters;
             return result;
         }
-        public FunctionResult GetCodeFunctionResult(DR_Requester resuester, int codeFunctionID, DP_DataRepository dataItem)
+        public FunctionResult GetCodeFunctionResultOneDataItem(DR_Requester resuester, int codeFunctionID, DP_DataRepository dataItem)
         {
-            var parameters = new List<object>();
             var codeFunction = bizCodeFunction.GetCodeFunction(resuester, codeFunctionID);
+
+            return GetCodeFunctionResultOneDataItem(resuester, codeFunction, dataItem);
+        }
+        public FunctionResult GetCodeFunctionResultOneDataItem(DR_Requester resuester, CodeFunctionDTO codeFunction, DP_DataRepository dataItem)
+        {
+            // CodeFunctionHandler.GetCodeFunctionResultOneDataItem: 2f03f2a5f5bf
+            var parameters = new List<object>();
+            //      var codeFunction = bizCodeFunction.GetCodeFunction(resuester, codeFunctionID);
             parameters.Add(new CodeFunctionParamOneDataItem(dataItem, resuester));
             return GetCodeFunctionResult(codeFunction, parameters);
         }
 
-        public FunctionResult GetCodeFunctionResult(DR_Requester resuester, int codeFunctionID, List<DP_DataRepository> allDataItems)
+        public FunctionResult GetCodeFunctionResultMultipleDataItems(DR_Requester resuester, CodeFunctionDTO codeFunction, List<DP_DataRepository> allDataItems)
         {
-            var codeFunction = bizCodeFunction.GetCodeFunction(resuester, codeFunctionID);
+            // CodeFunctionHandler.GetCodeFunctionResultMultipleDataItems: ad4b85c0fbe9
+            // var codeFunction = bizCodeFunction.GetCodeFunction(resuester, codeFunctionID);
             if (codeFunction.ParamType == ModelEntites.Enum_CodeFunctionParamType.ManyDataItems)
             {
                 var parameters = new List<object>() { new CodeFunctionParamManyDataItems(allDataItems, resuester) };
@@ -96,11 +107,10 @@ namespace MyModelManager
 
         private FunctionResult GetCodeFunctionResult(CodeFunctionDTO codeFunction, List<object> parameters)
         {
-            //FunctionResult result = new FunctionResult();
+            // CodeFunctionHandler.GetCodeFunctionResult: be5fc56a3296
             try
             {
                 return (FunctionResult)ReflectionHelper.CallMethod(codeFunction.Path, codeFunction.ClassName, codeFunction.FunctionName, parameters.ToArray());
-
             }
             catch (Exception ex)
             {

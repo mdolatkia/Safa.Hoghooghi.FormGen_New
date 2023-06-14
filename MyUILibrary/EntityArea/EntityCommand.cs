@@ -46,7 +46,7 @@ namespace MyUILibrary.EntityArea
             }
             if (data != null)
             {
-                var result = codeFunctionHandler.GetCodeFunctionResult(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EntityCommandDTO.CodeFunctionID, data);
+                var result = codeFunctionHandler.GetCodeFunctionResultOneDataItem(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EntityCommandDTO.CodeFunction, data);
                 if (result.Exception != null)
                 {
                     AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("خطا", result.Exception.Message, Temp.InfoColor.Red);

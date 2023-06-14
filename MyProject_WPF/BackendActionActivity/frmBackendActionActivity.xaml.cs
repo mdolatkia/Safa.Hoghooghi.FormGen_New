@@ -50,6 +50,7 @@ namespace MyProject_WPF
         int sentEntityID = 0;
         public frmBackendActionActivity(int actionActivityID, int entityID)
         {
+            // frmBackendActionActivity: dc969e183ee4
             InitializeComponent();
             sentEntityID = entityID;
             //Catalog = catalog;
@@ -124,7 +125,7 @@ namespace MyProject_WPF
             bool databaseFunctionVisiblity = true;
             if (cmbStep.SelectedItem != null)
             {
-                if ((Enum_EntityActionActivityStep)cmbStep.SelectedItem == Enum_EntityActionActivityStep.BeforeLoad
+                if ((Enum_EntityActionActivityStep)cmbStep.SelectedItem == Enum_EntityActionActivityStep.AfterDataFetch
                 || (Enum_EntityActionActivityStep)cmbStep.SelectedItem == Enum_EntityActionActivityStep.BeforeSave
                   || (Enum_EntityActionActivityStep)cmbStep.SelectedItem == Enum_EntityActionActivityStep.BeforeDelete)
                 {
@@ -235,7 +236,7 @@ namespace MyProject_WPF
                 if (!e.FilterBySelectedValue)
                 {
                     var list = bizDatabaseFunction.GetDatabaseFunctionEntities(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
-                    list = list.Where(x => x.DatabaseFunction.Type == Enum_DatabaseFunctionType.StoredProcedure).ToList();
+                  //  list = list.Where(x => x.DatabaseFunction.Type == Enum_DatabaseFunctionType.StoredProcedure).ToList();
                     e.ResultItemsSource = list;
                 }
                 else
@@ -277,19 +278,17 @@ namespace MyProject_WPF
 
         private Enum_CodeFunctionParamType? GetCodeFunctionParamType()
         {
-
+            //frmBackendActionActivity.GetCodeFunctionParamType: e6ae2a796812
             if (cmbStep.SelectedItem != null)
             {
-
                 var selectedItem = (Enum_EntityActionActivityStep)cmbStep.SelectedItem;
-                if (selectedItem == Enum_EntityActionActivityStep.BeforeLoad)
+                if (selectedItem == Enum_EntityActionActivityStep.AfterDataFetch)
                     return Enum_CodeFunctionParamType.ManyDataItems;
                 else if (selectedItem == Enum_EntityActionActivityStep.BeforeSave ||
                         selectedItem == Enum_EntityActionActivityStep.AfterSave ||
                         selectedItem == Enum_EntityActionActivityStep.BeforeDelete ||
                         selectedItem == Enum_EntityActionActivityStep.AfterDelete)
                     return Enum_CodeFunctionParamType.OneDataItem;
-
             }
             return null;
 

@@ -282,7 +282,7 @@ namespace MyProject_WPF
             {
                 if (!e.FilterBySelectedValue)
                 {
-                    var list = bizDatabaseFunction.GetDatabaseFunctionEntityByEntityID(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntity.SelectedValue);
+                    var list = bizDatabaseFunction.GetDatabaseFunctionEntities(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntity.SelectedValue);
                     e.ResultItemsSource = list;
                 }
                 else

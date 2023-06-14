@@ -158,13 +158,13 @@ namespace MyLogManager
                 }
                 if (item.EditDataItemExceptionLog != null)
                 {
-                    message.EditDataItemExceptionLog = new EditDataItemExceptionLogDTO();
-                    message.EditDataItemExceptionLog.AfterSaveActionExceptionMessage = item.EditDataItemExceptionLog.AfterSaveActionExceptionMessage;
+                    message.EditDataItemExtraLog = new EditDataItemExtraLogDTO();
+                    message.EditDataItemExtraLog.Message = item.EditDataItemExceptionLog.AfterSaveActionExceptionMessage;
                     //message.EditDataItemExceptionLog.BeforeSaveActionExceptionMessage = item.EditDataItemExceptionLog.BeforeSaveActionExceptionMessage;
                     //message.EditDataItemExceptionLog.DataUpdateExceptionMessage = item.EditDataItemExceptionLog.DataUpdateExceptionMessage;
-                    message.EditDataItemExceptionLog.DataUpdateQuery = item.EditDataItemExceptionLog.DataUpdateQuery;
+                    message.EditDataItemExtraLog.DataUpdateQuery = item.EditDataItemExceptionLog.DataUpdateQuery;
                     //message.EditDataItemExceptionLog.ForumulaUsageExceptionMessage = item.EditDataItemExceptionLog.FormulaUsageExceptionMessage;
-                    message.EditDataItemExceptionLog.ID = item.EditDataItemExceptionLog.ID;
+                    message.EditDataItemExtraLog.ID = item.EditDataItemExceptionLog.ID;
                 }
                 //if (item.ArchiveItemLog != null)
                 //{
@@ -238,14 +238,14 @@ namespace MyLogManager
             dbLog.PackageGuid = message.PackageGuid;
             dbLog.MainType = (short)message.MainType;
             dbLog.UserID = requester.Identity;
-            if (message.EditDataItemExceptionLog != null)
+            if (message.EditDataItemExtraLog != null)
             {
                 dbLog.EditDataItemExceptionLog = new EditDataItemExceptionLog();
-                dbLog.EditDataItemExceptionLog.AfterSaveActionExceptionMessage = message.EditDataItemExceptionLog.AfterSaveActionExceptionMessage;
+                dbLog.EditDataItemExceptionLog.AfterSaveActionExceptionMessage = message.EditDataItemExtraLog.Message;
                 //dbLog.EditDataItemExceptionLog.BeforeSaveActionExceptionMessage = message.EditDataItemExceptionLog.BeforeSaveActionExceptionMessage;
                 //dbLog.EditDataItemExceptionLog.DataUpdateExceptionMessage = message.EditDataItemExceptionLog.DataUpdateExceptionMessage;
                 //dbLog.EditDataItemExceptionLog.FormulaUsageExceptionMessage = message.EditDataItemExceptionLog.ForumulaUsageExceptionMessage;
-                dbLog.EditDataItemExceptionLog.DataUpdateQuery = message.EditDataItemExceptionLog.DataUpdateQuery;
+                dbLog.EditDataItemExceptionLog.DataUpdateQuery = message.EditDataItemExtraLog.DataUpdateQuery;
 
             }
             if (message.EditDataItemColumnDetails != null)

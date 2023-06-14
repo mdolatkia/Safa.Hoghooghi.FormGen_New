@@ -215,7 +215,7 @@ namespace MyModelCustomSetting
                     getHoursSpentCodeFunctoin.Path = @"E:\Safa.Hoghooghi.FormGen_New\MyTestImplLibrary\bin\Debug\MyTestImplLibrary.dll";
                     getHoursSpentCodeFunctoin.ClassName = "MyTestImplLibrary.DBProductService.ServiceItemHelper";
                     getHoursSpentCodeFunctoin.FunctionName = "GetHoursSpent";
-                    getHoursSpentCodeFunctoin.Type = (short)Enum_CodeFunctionParamType.KeyColumns;
+                    getHoursSpentCodeFunctoin.Type = (short)Enum_CodeFunctionParamType.SelectedColumns;
                     getHoursSpentCodeFunctoin.ReturnType = "System.Double";
                     getHoursSpentCodeFunctoin.Name = "محاسبه ساعات کار";
                     getHoursSpentCodeFunctoin.CodeFunctionParameter.Add(new CodeFunctionParameter() { DataType = "System.DateTime", ParamName = "start" });
@@ -843,11 +843,11 @@ namespace MyModelCustomSetting
                 unionServiceConclusionItem.IsTolatParticipation = false;
             }
 
-            var genericBeforeLoadBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.BeforeLoad && x.TableDrivedEntityID == null && x.Title == "اصلاح تاريخ تک رقمي");
+            var genericBeforeLoadBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.AfterDataFetch && x.TableDrivedEntityID == null && x.Title == "اصلاح تاريخ تک رقمي");
             if (genericBeforeLoadBackenActionActivity == null)
             {
                 genericBeforeLoadBackenActionActivity = new BackendActionActivity();
-                genericBeforeLoadBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.BeforeLoad;
+                genericBeforeLoadBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.AfterDataFetch;
                 genericBeforeLoadBackenActionActivity.Title = "اصلاح تاريخ تک رقمي";
                 genericBeforeLoadBackenActionActivity.Type = 0;
                 genericBeforeLoadBackenActionActivity.ResultSensetive = false;
@@ -862,12 +862,12 @@ namespace MyModelCustomSetting
             }
             if (realPerson != null)
             {
-                var beforeLoadBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.BeforeLoad && x.TableDrivedEntityID == realPerson.ID && x.Title == "اصلاح شماره ملی شخص حقیقی");
+                var beforeLoadBackenActionActivity = projectContext.BackendActionActivity.FirstOrDefault(x => x.StepType == (short)Enum_EntityActionActivityStep.AfterDataFetch && x.TableDrivedEntityID == realPerson.ID && x.Title == "اصلاح شماره ملی شخص حقیقی");
                 if (beforeLoadBackenActionActivity == null)
                 {
                     beforeLoadBackenActionActivity = new BackendActionActivity();
                     beforeLoadBackenActionActivity.TableDrivedEntityID = realPerson.ID;
-                    beforeLoadBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.BeforeLoad;
+                    beforeLoadBackenActionActivity.StepType = (short)Enum_EntityActionActivityStep.AfterDataFetch;
                     beforeLoadBackenActionActivity.Title = "اصلاح شماره ملی شخص حقیقی";
                     beforeLoadBackenActionActivity.Type = 0;
                     beforeLoadBackenActionActivity.ResultSensetive = false;

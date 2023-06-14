@@ -13,6 +13,7 @@ namespace ProxyLibrary
 
 
         public List<DP_DataRepository> EditPackages;
+        public List<DP_DataRepository> DeletePackages;
         //public List<DP_DataRepository> RemovedPackages;
 
         //public List<DataManager.DataPackage.DP_Package> DeletePackages;

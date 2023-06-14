@@ -1044,7 +1044,7 @@ namespace MyModelGenerator
                             function.RelatedSchema = reader["schema_name"].ToString();
                             function.Type = Enum_DatabaseFunctionType.Function;
 
-                            var columnReturnValue = new DatabaseFunctionColumnDTO();
+                            var columnReturnValue = new DatabaseFunctionParameterDTO();
                             function.DatabaseFunctionParameter.Add(columnReturnValue);
                             columnReturnValue.ParameterName = "ReturnValue";
                             columnReturnValue.DataType = reader["Data_Type"].ToString().Trim();
@@ -1058,7 +1058,7 @@ namespace MyModelGenerator
 
                                 while (readerFields.Read())
                                 {
-                                    var column = new DatabaseFunctionColumnDTO();
+                                    var column = new DatabaseFunctionParameterDTO();
                                     function.DatabaseFunctionParameter.Add(column);
                                     column.ParameterName = readerFields["Parameter_Name"].ToString();
                                     column.DataType = readerFields["Data_Type"].ToString();
@@ -1109,7 +1109,7 @@ namespace MyModelGenerator
                             function.RelatedSchema = reader["specific_schema"].ToString();
                             function.Type = Enum_DatabaseFunctionType.StoredProcedure;
 
-                            var columnReturnValue = new DatabaseFunctionColumnDTO();
+                            var columnReturnValue = new DatabaseFunctionParameterDTO();
                             function.DatabaseFunctionParameter.Add(columnReturnValue);
                             columnReturnValue.ParameterName = "ReturnValue";
                             columnReturnValue.DataType = "int";
@@ -1124,7 +1124,7 @@ namespace MyModelGenerator
                             {
                                 while (readerFields.Read())
                                 {
-                                    var column = new DatabaseFunctionColumnDTO();
+                                    var column = new DatabaseFunctionParameterDTO();
                                     function.DatabaseFunctionParameter.Add(column);
                                     column.ParameterName = readerFields["Parameter_Name"].ToString();
                                     column.DataType = readerFields["Data_Type"].ToString();

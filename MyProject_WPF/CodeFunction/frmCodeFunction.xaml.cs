@@ -39,6 +39,7 @@ namespace MyProject_WPF
         bool? ShowInFormula { set; get; }
         public frmCodeFunction(int codeFunctionID, Enum_CodeFunctionParamType codeFunctionParamType, bool? showInFormula = null)
         {
+            //frmCodeFunction: 6edc06fffe32
             InitializeComponent();
             ShowInFormula = showInFormula;
             //    EntityID = entityID;
@@ -55,7 +56,7 @@ namespace MyProject_WPF
                 lblExpectedParameter.Text = typeof(ProxyLibrary.CodeFunctionParamOneDataItem).ToString();
                 lblExpectedReturnValue.Text = typeof(FunctionResult).ToString();
             }
-            else if (CodeFunctionParamType == Enum_CodeFunctionParamType.KeyColumns)
+            else if (CodeFunctionParamType == Enum_CodeFunctionParamType.SelectedColumns)
             {
                 lblExpectedParameter.Text = "Primitive params";
                 lblExpectedReturnValue.Text = typeof(FunctionResult).ToString();
@@ -169,7 +170,8 @@ namespace MyProject_WPF
 
         private bool CheckMethodValidity()
         {
-         //   return true;
+
+            // frmCodeFunction.CheckMethodValidity: b4b3c26ca3d9
             if (lokFunctionName.SelectedItem != null)
             {
                 var method = (lokFunctionName.SelectedItem as ClassOrFunctionItem).Context as MethodInfo;
@@ -195,7 +197,7 @@ namespace MyProject_WPF
                                 return true;
                         }
                     }
-                    else if (CodeFunctionParamType == Enum_CodeFunctionParamType.KeyColumns)
+                    else if (CodeFunctionParamType == Enum_CodeFunctionParamType.SelectedColumns)
                     {
                         if (method.ReturnType.FullName != typeof(FunctionResult).FullName)
                             return false;

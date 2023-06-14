@@ -48,7 +48,7 @@ namespace MyModelManager
                 else if (formula.FormulaType == FormulaType.CodeFunction)
                 {
                     CodeFunctionHandler codeFunctionHandler = new CodeFunctionHandler();
-                    result = codeFunctionHandler.GetCodeFunctionResult(requester, formula.CodeFunctionID, mainDataItem);
+                    result = codeFunctionHandler.GetCodeFunctionResultOneDataItem(requester, formula.CodeFunctionID, mainDataItem);
                 }
                 else if (formula.FormulaType == FormulaType.DatabaseFunctionEntity)
                 {

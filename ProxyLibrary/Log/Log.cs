@@ -33,7 +33,7 @@ namespace ProxyLibrary
         public int Duration { get; set; }
         public string LocationInfo { get; set; }
         public Guid? PackageGuid { get; set; }
-        public EditDataItemExceptionLogDTO EditDataItemExceptionLog { get; set; }
+        public EditDataItemExtraLogDTO EditDataItemExtraLog { get; set; }
         public List<EditDataItemColumnDetailsDTO> EditDataItemColumnDetails { set; get; }
         public LetterItemLogDTO LetterItemLog { set; get; }
         //public ArchiveItemLogDTO ArchiveItemLog { set; get; }
@@ -41,12 +41,12 @@ namespace ProxyLibrary
         public string MajorFunctionExceptionMessage { set; get; }
         public int RelatedItemID { set; get; }
     }
-    public class EditDataItemExceptionLogDTO
+    public class EditDataItemExtraLogDTO
     {
         public int ID { get; set; }
         //public string DataUpdateExceptionMessage { get; set; }
         //public string BeforeSaveActionExceptionMessage { get; set; }
-        public string AfterSaveActionExceptionMessage { get; set; }
+        public string Message { get; set; }
         public string DataUpdateQuery { get; set; }
     }
     public class EditDataItemColumnDetailsDTO

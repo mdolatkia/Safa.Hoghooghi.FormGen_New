@@ -81,7 +81,8 @@ namespace MyModelManager
                 if (databaseID == 0)
                     listDatabaseFunction = projectContext.DatabaseFunction;
                 else
-                    listDatabaseFunction = projectContext.DatabaseFunction.Where(x => x.DBSchema.DatabaseInformationID == databaseID); if (type == Enum_DatabaseFunctionType.Function)
+                    listDatabaseFunction = projectContext.DatabaseFunction.Where(x => x.DBSchema.DatabaseInformationID == databaseID); 
+                if (type == Enum_DatabaseFunctionType.Function)
                     listDatabaseFunction = listDatabaseFunction.Where(x => x.Type == (short)Enum_DatabaseFunctionType.Function);
                 else if (type == Enum_DatabaseFunctionType.StoredProcedure)
                     listDatabaseFunction = listDatabaseFunction.Where(x => x.Type == (short)Enum_DatabaseFunctionType.StoredProcedure);
@@ -200,13 +201,13 @@ namespace MyModelManager
             return null;
         }
 
-        private List<DatabaseFunctionColumnDTO> ToDatabaseFunctionParameterDTO(DatabaseFunction cItem)
+        private List<DatabaseFunctionParameterDTO> ToDatabaseFunctionParameterDTO(DatabaseFunction cItem)
         {
             BizColumn bizColumn = new BizColumn();
-            List<DatabaseFunctionColumnDTO> result = new List<DatabaseFunctionColumnDTO>();
+            List<DatabaseFunctionParameterDTO> result = new List<DatabaseFunctionParameterDTO>();
             foreach (var column in cItem.DatabaseFunctionParameter)
             {
-                var item = new DatabaseFunctionColumnDTO()
+                var item = new DatabaseFunctionParameterDTO()
                 {
                     ID = column.ID,
                     DataType = column.DataType,
@@ -224,7 +225,7 @@ namespace MyModelManager
         }
 
 
-        public List<DatabaseFunctionColumnDTO> GetDatabaseFunctionParameters(int functionID)
+        public List<DatabaseFunctionParameterDTO> GetDatabaseFunctionParameters(int functionID)
         {
 
 
@@ -259,6 +260,7 @@ namespace MyModelManager
         }
         public List<DatabaseFunction_EntityDTO> GetDatabaseFunctionEntities(DR_Requester requester, int entityID)
         {
+            // BizDatabaseFunction:GetDatabaseFunctionEntities 5c860f83a5fd
             List<DatabaseFunction_EntityDTO> result = new List<DatabaseFunction_EntityDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
@@ -271,17 +273,17 @@ namespace MyModelManager
             }
             return result;
         }
-        public List<DatabaseFunction_EntityDTO> GetDatabaseFunctionEntityByEntityID(DR_Requester requester, int entityID)
-        {
-            List<DatabaseFunction_EntityDTO> result = new List<DatabaseFunction_EntityDTO>();
-            using (var projectContext = new DataAccess.MyIdeaEntities())
-            {
-                var DatabaseFunctions = projectContext.DatabaseFunction_TableDrivedEntity.Where(x => x.TableDrivedEntityID == entityID);
-                foreach (var item in DatabaseFunctions)
-                    result.Add(ToDatabaseFunction_EntityDTO(item, false));
-            }
-            return result;
-        }
+        //public List<DatabaseFunction_EntityDTO> GetDatabaseFunctionEntityByEntityID(DR_Requester requester, int entityID)
+        //{
+        //    List<DatabaseFunction_EntityDTO> result = new List<DatabaseFunction_EntityDTO>();
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
+        //    {
+        //        var DatabaseFunctions = projectContext.DatabaseFunction_TableDrivedEntity.Where(x => x.TableDrivedEntityID == entityID);
+        //        foreach (var item in DatabaseFunctions)
+        //            result.Add(ToDatabaseFunction_EntityDTO(item, false));
+        //    }
+        //    return result;
+        //}
         public void UpdateModel(int databaseID, List<DatabaseFunctionDTO> listNew, List<DatabaseFunctionDTO> listEdit, List<DatabaseFunctionDTO> listDeleted)
         {
             using (var projectContext = new DataAccess.MyIdeaEntities())
@@ -398,7 +400,7 @@ namespace MyModelManager
             {
                 var item = new DatabaseFunction_Entity_ColumnDTO();
                 item.ID = column.ID;
-                item.DatabaseFunctionParameterID = column.DatabaseFunctionParameterID;
+                item.DBFunctionParameterID = column.DatabaseFunctionParameterID;
                 item.DatabaseFunction_EntityID = column.DatabaseFunction_TableDrivedEntityID;
                 if (column.ColumnID != null)
                 {
@@ -407,8 +409,8 @@ namespace MyModelManager
                 }
                 if (column.FixedParamID != null)
                     item.FixedParam = (Enum_FixedParam)column.FixedParamID;
-                item.FunctionColumnDotNetType = bizColumn.GetColumnDotNetType(column.DatabaseFunctionParameter.DataType, false);
-                item.FunctionColumnParamName = column.DatabaseFunctionParameter.ParamName;
+                item.DBFunctionParamDotNetType = bizColumn.GetColumnDotNetType(column.DatabaseFunctionParameter.DataType, false);
+                item.DBFunctionParamName = column.DatabaseFunctionParameter.ParamName;
                 result.Add(item);
             }
             return result;
@@ -454,7 +456,7 @@ namespace MyModelManager
                         dbColumn.ColumnID = null;
                         dbColumn.FixedParamID = (short)column.FixedParam;
                     }
-                    dbColumn.DatabaseFunctionParameterID = column.DatabaseFunctionParameterID;
+                    dbColumn.DatabaseFunctionParameterID = column.DBFunctionParameterID;
                     dbDatabaseFunctionEntity.DatabaseFunction_TableDrivedEntity_Columns.Add(dbColumn);
                 }
                 if (dbDatabaseFunctionEntity.ID == 0)

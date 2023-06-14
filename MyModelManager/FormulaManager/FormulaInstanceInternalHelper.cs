@@ -150,7 +150,7 @@ namespace MyModelManager
                 m_properties.Add(propertyInfo.Name, propertyInfo);
             }
 
-            var databaseFunctionEntities = bizDatabaseFunction.GetDatabaseFunctionEntityByEntityID(requester, entity.ID);
+            var databaseFunctionEntities = bizDatabaseFunction.GetDatabaseFunctionEntities(requester, entity.ID);
             foreach (var dbfunction in databaseFunctionEntities)
             {
                 var name = "";

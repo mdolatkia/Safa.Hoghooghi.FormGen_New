@@ -14,6 +14,7 @@ namespace MyModelManager
     {
         public List<BackendActionActivityDTO> GetBackendActionActivities(int entityID, List<Enum_EntityActionActivityStep> BackendActionActivitySteps, bool genericOnes, bool withDetails)
         {
+            // BizBackendActionActivity.GetBackendActionActivities: 6a4380912411
             List<BackendActionActivityDTO> result = new List<BackendActionActivityDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {

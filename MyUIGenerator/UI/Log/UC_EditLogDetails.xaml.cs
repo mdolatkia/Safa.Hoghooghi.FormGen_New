@@ -68,7 +68,7 @@ namespace MyUIGenerator.View
             dtgColumnFormulaParamters.ItemsSource = formulaUsageParemeters;
         }
 
-        public void AddExceptionLogs(List<EditDataItemExceptionLogDTO> exceptions)
+        public void AddExceptionLogs(List<EditDataItemExtraLogDTO> exceptions)
         {
             dtgExceptions.ItemsSource = exceptions;
         }

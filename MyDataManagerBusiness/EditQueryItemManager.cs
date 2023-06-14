@@ -39,6 +39,7 @@ namespace MyDataEditManagerBusiness
         }
         public List<QueryItem> GetQueryItems(DR_Requester requester, List<DP_DataRepository> listData)
         {
+            //delete ها هم باید اضافه بشن
             ListData = listData;
 
             List<QueryItem> allQueryItems = new List<QueryItem>();

@@ -2577,7 +2577,7 @@ namespace ModelEntites
     {
         //AsRootForm اضافه شد به اسامی زیرا اگر انتیتی فرم شروع کننده باشه صدا زده میشوند و اگر از طریق فرم وابسته باشد صدا زده نمیشوند
         None,
-        BeforeLoad,
+        AfterDataFetch,
         BeforeSave,
         AfterSave,
         BeforeDelete,
@@ -2838,7 +2838,7 @@ namespace ModelEntites
         public string FunctionName { set; get; }
 
         public Enum_CodeFunctionParamType ParamType { set; get; }
-        public string Catalog { set; get; }
+      //  public string Catalog { set; get; }
 
         public List<CodeFunctionColumnDTO> Parameters { set; get; }
         public string Name { get; set; }
@@ -2864,7 +2864,7 @@ namespace ModelEntites
     {
         ManyDataItems,
         OneDataItem,
-        KeyColumns,
+        SelectedColumns,
         CommandFunction,
         LetterFunction,
         LetterConvert
@@ -3241,7 +3241,7 @@ namespace ModelEntites
     {
         public DatabaseFunctionDTO()
         {
-            DatabaseFunctionParameter = new List<ModelEntites.DatabaseFunctionColumnDTO>();
+            DatabaseFunctionParameter = new List<ModelEntites.DatabaseFunctionParameterDTO>();
         }
         public int ID { set; get; }
         public string Name { set; get; }
@@ -3257,12 +3257,12 @@ namespace ModelEntites
         public Enum_DatabaseFunctionType Type { set; get; }
         public string Title { set; get; }
 
-        public List<DatabaseFunctionColumnDTO> DatabaseFunctionParameter { set; get; }
+        public List<DatabaseFunctionParameterDTO> DatabaseFunctionParameter { set; get; }
     }
 
-    public class DatabaseFunctionColumnDTO
+    public class DatabaseFunctionParameterDTO
     {
-        public DatabaseFunctionColumnDTO()
+        public DatabaseFunctionParameterDTO()
         {
 
         }
@@ -3308,12 +3308,12 @@ namespace ModelEntites
     {
 
         public int DatabaseFunction_EntityID { set; get; }
-        public int DatabaseFunctionParameterID { set; get; }
+        public int DBFunctionParameterID { set; get; }
         public int ColumnID { set; get; }
         public string ColumnName { set; get; }
-        public string FunctionDataType { set; get; }
-        public string FunctionColumnParamName { set; get; }
-        public Type FunctionColumnDotNetType { set; get; }
+        public string DBFunctionParamDataType { set; get; }
+        public string DBFunctionParamName { set; get; }
+        public Type DBFunctionParamDotNetType { set; get; }
 
         public Enum_FixedParam FixedParam { set; get; }
         public int ID { get; set; }

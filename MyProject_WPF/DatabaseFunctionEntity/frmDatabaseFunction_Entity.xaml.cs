@@ -32,6 +32,7 @@ namespace MyProject_WPF
         TableDrivedEntityDTO Entity { set; get; }
         public frmDatabaseFunction_Entity(int ID, int entityID)
         {
+            // frmDatabaseFunction_Entity: 5ae0fa3f28be
             InitializeComponent();
             //    DatabaseFunctionParamTypes = DatabaseFunctionParamTypes;
             Entity = bizEntity.GetTableDrivedEntity(MyProjectManager.GetMyProjectManager.GetRequester(), entityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
@@ -120,18 +121,18 @@ namespace MyProject_WPF
             var functionColumns = bizDatabaseFunction.GetDatabaseFunctionParameters(databaseFunctionID);
             SetDatabaseFunctionParametersToGrid(functionColumns, DatabaseFunctionEntity);
         }
-        private void SetDatabaseFunctionParametersToGrid(List<DatabaseFunctionColumnDTO> functionColumns, DatabaseFunction_EntityDTO DatabaseFunctionEntity)
+        private void SetDatabaseFunctionParametersToGrid(List<DatabaseFunctionParameterDTO> functionColumns, DatabaseFunction_EntityDTO DatabaseFunctionEntity)
         {
             dtgDatabaseFunctionParams.ItemsSource = null;
             List<DatabaseFunction_Entity_ColumnDTO> gridColumns = new List<DatabaseFunction_Entity_ColumnDTO>();
             foreach (var item in functionColumns.Where(x => x.InputOutput == Enum_DatabaseFunctionParameterType.Input || x.InputOutput == Enum_DatabaseFunctionParameterType.InputOutput))
             {
                 var row = new DatabaseFunction_Entity_ColumnDTO();
-                row.DatabaseFunctionParameterID = item.ID;
-                row.FunctionColumnParamName = item.ParameterName;
-                row.FunctionDataType = item.DataType;
-                row.FunctionColumnDotNetType = item.DotNetType;
-                var existingRow = DatabaseFunctionEntity.DatabaseFunctionEntityColumns.FirstOrDefault(x => x.FunctionColumnParamName == item.ParameterName);
+                row.DBFunctionParameterID = item.ID;
+                row.DBFunctionParamName = item.ParameterName;
+                row.DBFunctionParamDataType = item.DataType;
+                row.DBFunctionParamDotNetType = item.DotNetType;
+                var existingRow = DatabaseFunctionEntity.DatabaseFunctionEntityColumns.FirstOrDefault(x => x.DBFunctionParamName == item.ParameterName);
                 if (existingRow != null)
                 {
                     row.ColumnID = existingRow.ColumnID;

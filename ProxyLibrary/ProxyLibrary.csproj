@@ -100,6 +100,7 @@
     <Compile Include="Package\DP_NavigatoinTreeResult.cs" />
     <Compile Include="Package\Arg_PackageRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request\ActionActivityResult.cs" />
     <Compile Include="Request\LetterResult.cs" />
     <Compile Include="Request\ArchiveResult.cs" />
     <Compile Include="Request\ChildRelationshipData.cs" />

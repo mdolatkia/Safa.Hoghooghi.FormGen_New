@@ -26,13 +26,13 @@ namespace MyDataManager
         public DR_ResultEdit SendEditRequest(DR_EditRequest request)
         {
             EditRequestManager requestManager = new MyDataEditManagerBusiness.EditRequestManager();
-            return requestManager.Process(request);
+            return requestManager.ProcessEditRequest(request);
         }
 
         public DR_ResultDelete SendDeleteRequest(DR_DeleteRequest request)
         {
             EditRequestManager requestManager = new EditRequestManager();
-            return requestManager.Process(request as DR_DeleteRequest);
+            return requestManager.ProcessDeleteRequest(request as DR_DeleteRequest);
         }
         public DR_DeleteInquiryResult SendDeleteInquiryRequest(DR_DeleteInquiryRequest request)
         {

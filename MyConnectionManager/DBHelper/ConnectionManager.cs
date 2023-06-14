@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProxyLibrary;
+using ProxyLibrary.Request;
 
 namespace MyConnectionManager
 {
@@ -128,7 +129,7 @@ namespace MyConnectionManager
         //        return new TransactionalDBHelper();
         //    }
         //}
-       
+
         public static I_DBHelper GetDBHelperByEntityID(int entityID, bool withTransaction = false)
         {
             //کش شود
@@ -235,10 +236,12 @@ namespace MyConnectionManager
             DataItem = dataItem;
             QueryType = queryType;
             //ChildQueries = new List<MyConnectionManager.QueryItem>();
-         //   SetIdentities = new List<MyConnectionManager.SetIdentity>();
-         //   FKSources = new List<MyConnectionManager.FKToPK>();
+            //   SetIdentities = new List<MyConnectionManager.SetIdentity>();
+            //   FKSources = new List<MyConnectionManager.FKToPK>();
             TargetEntity = targetEntity;
             EditingProperties = editingProperties;
+            BeforeSaveActionActivitiesResult = new List<BackendActionActivityResult>();
+            AfterSaveActionActivitiesResult = new List<BackendActionActivityResult>();
         }
         public Enum_QueryItemType QueryType { get; set; }
         //public List<FKToPK> FKSources { get; set; }
@@ -248,11 +251,18 @@ namespace MyConnectionManager
         //public bool ShouldInserIdentityInChilds { set; get; }
         //public string IdentityParam { set; get; }
         public TableDrivedEntityDTO TargetEntity { set; get; }
-
+        public Enum_DR_SimpleResultType DataUpdateResult { set; get; }
+        public Exception DataUpdateException { set; get; }
         //public List<QueryItem> ChildQueries { set; get; }
         public DP_DataRepository DataItem { get; set; }
         //public bool ShouldWriteSimpleColumnsQuery { get; set; }
-      //  public List<SetIdentity> SetIdentities { set; get; }
+        //  public List<SetIdentity> SetIdentities { set; get; }
+        public List<BackendActionActivityResult> BeforeSaveActionActivitiesResult { set; get; }
+        public List<BackendActionActivityResult> AfterSaveActionActivitiesResult { set; get; }
+
+      //  public List<string> AfterSaveActionActivitiesMessage { set; get; }
+      //  public string AfterSaveActionActivitiesMessage { set; get; }
+        public string DataUpdateMessage { get; set; }
     }
     public enum Enum_QueryItemType
     {

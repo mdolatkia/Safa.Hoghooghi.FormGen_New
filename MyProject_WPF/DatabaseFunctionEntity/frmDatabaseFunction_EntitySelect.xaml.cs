@@ -68,7 +68,7 @@ namespace MyProject_WPF
 
         private void GetCodes()
         {
-            var listCodes = bizCode.GetDatabaseFunctionEntityByEntityID(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+            var listCodes = bizCode.GetDatabaseFunctionEntities(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
             dtgItems.ItemsSource = listCodes;
         }
         private void btnClose_Click(object sender, RoutedEventArgs e)

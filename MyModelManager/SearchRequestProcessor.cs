@@ -141,7 +141,8 @@ namespace MyDataSearchManagerBusiness
             result.Result = Enum_DR_ResultType.SeccessfullyDone;
 
             if (request.ToParentRelationshipID != 0)
-                DoBeforeLoadBackendActionActivities(request, result);
+                DoBeforeLoadUIActionActivities(request, result);
+
             //if(request.CheckStates)
             //{
             //    DataSearchStateManager dataSearchStateManager = new DataSearchStateManager(request.SearchDataItems.TargetEntityID);
@@ -1347,8 +1348,8 @@ namespace MyDataSearchManagerBusiness
             try
             {
                 result.ResultDataItems = GetFullDataResult(request.Requester, request.SearchDataItem);
-                DoBeforeLoadBackendActionActivities(request, result);
                 DoBeforeLoadUIActionActivities(request, result);
+                DoAfterDataFetchBackendActionActivities(request, result);
             }
             catch (Exception ex)
             {
@@ -1366,7 +1367,7 @@ namespace MyDataSearchManagerBusiness
                 bizEntityState.DoDataBeforeLoadActionActivities(request.Requester, result.ResultDataItems.Cast<DP_DataView>().ToList(), true, request.ToParentRelationshipID);
             }
         }
-        private void DoBeforeLoadBackendActionActivities(DR_SearchViewRequest request, DR_ResultSearchView result)
+        private void DoBeforeLoadUIActionActivities(DR_SearchViewRequest request, DR_ResultSearchView result)
         {
             if (result.ResultDataItems.Any())
             {
@@ -1395,17 +1396,19 @@ namespace MyDataSearchManagerBusiness
             return DataTableToDP_DataRepository(dataTable.Item1, dataTable.Item2, listView, dataviewDataTable, dataviewListView);
         }
 
-        public void DoBeforeLoadBackendActionActivities(DR_SearchEditRequest request, DR_ResultSearchFullData result)
+        public void DoAfterDataFetchBackendActionActivities(DR_SearchEditRequest request, DR_ResultSearchFullData result)
         {
+            // SearchRequestProcessor.DoAfterDataFetchBackendActionActivities: c263cf868047
             //بازدارنده بودن اقدام کنترل شود
             BizBackendActionActivity bizActionActivity = new BizBackendActionActivity();
-            var actionActivities = bizActionActivity.GetBackendActionActivities(request.SearchDataItem.TargetEntityID, new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.BeforeLoad }, true, true);
+            var actionActivities = bizActionActivity.GetBackendActionActivities(request.SearchDataItem.TargetEntityID, 
+                new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.AfterDataFetch }, true, true);
             CodeFunctionHandler codeFunctionHelper = new CodeFunctionHandler();
             foreach (var entityActionActivity in actionActivities)
             {
                 if (entityActionActivity.CodeFunctionID != 0)
                 {
-                    var resultFunction = codeFunctionHelper.GetCodeFunctionResult(request.Requester, entityActionActivity.CodeFunctionID, result.ResultDataItems);
+                    var resultFunction = codeFunctionHelper.GetCodeFunctionResultMultipleDataItems(request.Requester, entityActionActivity.CodeFunction, result.ResultDataItems);
                     if (resultFunction.Exception == null)
                     {
 

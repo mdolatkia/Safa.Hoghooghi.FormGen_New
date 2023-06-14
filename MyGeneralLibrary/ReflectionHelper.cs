@@ -98,6 +98,7 @@ namespace MyGeneralLibrary
 
         public static object CallMethod(string assemblyPath, string className, string function, object[] parameters)
         {
+            //ReflectionHelper.CallMethod :30fe1df83ac0
             Assembly assembly = Assembly.LoadFile(assemblyPath);
             Type type = assembly.GetType(className);
             if (type != null)

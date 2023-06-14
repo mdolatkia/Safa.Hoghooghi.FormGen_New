@@ -80,7 +80,7 @@ namespace MyModelManager
                     //formulaUsageParemeter.ParameterValue = (value != null ? value.ToString() : "<Null>");
                     //formulaUsageParemeters.Add(formulaUsageParemeter);
 
-                    parameters.Add(new Tuple<string, object>(column.FunctionColumnParamName, value));
+                    parameters.Add(new Tuple<string, object>(column.DBFunctionParamName, value));
                 }
             }
 
@@ -152,8 +152,8 @@ namespace MyModelManager
                     result.Result = null;
                     return result;
                 }
-                DatabaseFunctionColumnDTO outputParameter = null;
-                DatabaseFunctionColumnDTO returnValueParameter = databaseFunction.DatabaseFunctionParameter.FirstOrDefault(x => x.InputOutput == Enum_DatabaseFunctionParameterType.ReturnValue);
+                DatabaseFunctionParameterDTO outputParameter = null;
+                DatabaseFunctionParameterDTO returnValueParameter = databaseFunction.DatabaseFunctionParameter.FirstOrDefault(x => x.InputOutput == Enum_DatabaseFunctionParameterType.ReturnValue);
                 outputParameter = databaseFunction.DatabaseFunctionParameter.FirstOrDefault(x => x.InputOutput == Enum_DatabaseFunctionParameterType.InputOutput || x.InputOutput == Enum_DatabaseFunctionParameterType.Output);
                 if (outputParameter == null)
                 {
@@ -230,7 +230,7 @@ namespace MyModelManager
 
             return "";
         }
-        private IDataParameter ToDbParameter(DatabaseFunctionColumnDTO column, object value)
+        private IDataParameter ToDbParameter(DatabaseFunctionParameterDTO column, object value)
         {
             IDataParameter result = new SqlParameter();
             if (column.InputOutput == Enum_DatabaseFunctionParameterType.Input)
@@ -247,7 +247,7 @@ namespace MyModelManager
             return result;
         }
 
-        private DbType GetDbType(DatabaseFunctionColumnDTO column)
+        private DbType GetDbType(DatabaseFunctionParameterDTO column)
         {
             if (column.DataType == "bigint")
                 return DbType.Int64;

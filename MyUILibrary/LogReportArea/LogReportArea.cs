@@ -87,7 +87,7 @@ namespace MyUILibrary.EntityArea
                 EditLogReportDetailsView.ColmnSelected += EditLogReportDetailsView_ColmnSelected;
                 var window = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow();
                 EditLogReportDetailsView.AddColumnEditLogs(logData.EditDataItemColumnDetails);
-                EditLogReportDetailsView.AddExceptionLogs(new List<EditDataItemExceptionLogDTO>() { logData.EditDataItemExceptionLog });
+                EditLogReportDetailsView.AddExceptionLogs(new List<EditDataItemExtraLogDTO>() { logData.EditDataItemExtraLog });
                 window.ShowDialog(EditLogReportDetailsView, "جزئیات", Enum_WindowSize.Maximized);
             }
             else

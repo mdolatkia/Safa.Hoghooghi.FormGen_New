@@ -46,7 +46,7 @@ namespace MyUILibraryInterfaces.LogReportArea
         event EventHandler<EditDataItemColumnDetailsDTO> ColmnSelected;
         bool ColumnParameterVisibility { set; get; }
         event EventHandler ExitRequested;
-        void AddExceptionLogs(List<EditDataItemExceptionLogDTO> exceptions);
+        void AddExceptionLogs(List<EditDataItemExtraLogDTO> exceptions);
         void AddColumnEditLogs(List<EditDataItemColumnDetailsDTO> columns);
         bool OldValueColumnVisibility { set; get; }
 

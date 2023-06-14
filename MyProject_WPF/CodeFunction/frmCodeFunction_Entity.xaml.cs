@@ -84,7 +84,7 @@ namespace MyProject_WPF
         private void LokCodeFunction_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
         {
             var selectedItem = lokCodeFunction.SelectedItem as CodeFunctionDTO;
-            frmCodeFunction view = new frmCodeFunction((selectedItem == null ? 0 : selectedItem.ID), Enum_CodeFunctionParamType.KeyColumns);
+            frmCodeFunction view = new frmCodeFunction((selectedItem == null ? 0 : selectedItem.ID), Enum_CodeFunctionParamType.SelectedColumns);
             view.CodeFunctionUpdated += View_CodeFunctionUpdated;
             MyProjectManager.GetMyProjectManager.ShowDialog(view, "تعریف کد", Enum_WindowSize.Big);
         }
@@ -102,7 +102,7 @@ namespace MyProject_WPF
                 if (!e.FilterBySelectedValue)
                 {
                     List<Enum_CodeFunctionParamType> paramTypes = null;
-                    var paramType = Enum_CodeFunctionParamType.KeyColumns;
+                    var paramType = Enum_CodeFunctionParamType.SelectedColumns;
                     paramTypes = new List<Enum_CodeFunctionParamType>() { paramType };
 
                     var list = bizCodeFunction.GetAllCodeFunctions(MyProjectManager.GetMyProjectManager.GetRequester(), e.SingleFilterValue, paramTypes);
