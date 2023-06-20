@@ -47,7 +47,7 @@ namespace MyUILibraryInterfaces.DataMenuArea
         public string Tooltip { set; get; }
         public string Title { set; get; }
         public List<DataMenuUI> SubMenus { set; get; }
-        public DataMenu DataMenu { set; get; }
+        public DataMenuDTO DataMenu { set; get; }
         //public DP_DataView IsViewTargetDataItem { get; set; }
     }
 

@@ -1681,14 +1681,14 @@ namespace ModelEntites
     {
         public string DataMenuSettingName { set; get; }
 
-        public List<DataMenu> DataMenus { set; get; }
+        public List<DataMenuDTO> DataMenus { set; get; }
     }
-    public class DataMenu
+    public class DataMenuDTO
     {
         //public event EventHandler MenuClicked;
-        public DataMenu()
+        public DataMenuDTO()
         {
-            SubMenus = new List<DataMenu>();
+            SubMenus = new List<DataMenuDTO>();
         }
         public DP_DataView DataItem { set; get; }
         //public void OnMenuClicked()
@@ -1698,7 +1698,7 @@ namespace ModelEntites
         //}
         public string Tooltip { set; get; }
         public string Title { set; get; }
-        public List<DataMenu> SubMenus { set; get; }
+        public List<DataMenuDTO> SubMenus { set; get; }
         public DataMenuType Type { set; get; }
         //   public DP_DataView ViewRelTargetDataItem { get; set; }
         public DataLinkDTO Datalink { get; set; }

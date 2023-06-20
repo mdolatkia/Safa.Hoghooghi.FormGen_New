@@ -235,11 +235,13 @@ namespace MyUILibrary
 
         private void GridViewMenu_Clicked(object sender, EventArgs e)
         {
+            // AgentUICoreMediator.GridViewMenu_Clicked: b3e382bbfc54
             ShowDataViewGridViewArea(0, "گرید داده", false, true, false, null, false, 0, null, null);
         }
 
         private void DataViewMenu_Clicked(object sender, EventArgs e)
         {
+            //AgentUICoreMediator.GridViewMenu_Clicked: 2fb728ad84e4
             ShowDataViewGridViewArea(0, "نمای داده", false, true, true, null, false, 0, null, null);
         }
 
@@ -715,6 +717,7 @@ namespace MyUILibrary
         }
         private void ShowSearchableReportArea(EntityReportDTO report, bool dialog, DP_SearchRepositoryMain initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
         {
+            // AgentUICoreMediator.ShowSearchableReportArea: 7851111b911c
             DP_SearchRepositoryMain advanceSearchRepository = null;
             PreDefinedSearchDTO preDefinedSearch = null;
             if (initializeSearchRepository == null)
@@ -922,7 +925,7 @@ namespace MyUILibrary
         //}
         public void ShowDataViewGridViewArea(int entityId, string title, bool dialog, bool userCanChangeSearch, bool dataViewOrGridView, DP_SearchRepositoryMain initializeSearchRepository, bool showInitializeSearchRepository, int dataMenuSettingID, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
         {
-
+            // AgentUICoreMediator.ShowDataViewGridViewArea: 564d6ae87497
             if (hostDataViewArea != null)
             {
                 hostDataViewArea.DataViewAreaContainer.AddDataViewAreaFromOutSide(entityId, title, initializeSearchRepository, defaultDataViewItem, dataViewOrGridView, dataMenuSettingID);
@@ -952,6 +955,7 @@ namespace MyUILibrary
         }
         internal void ShowMenuArea(DataMenuAreaInitializer menuInitializer)
         {
+            // AgentUICoreMediator.ShowMenuArea: d9a11fdedec0
             //میشه بتدیل به گت بشه و برای هر آبجکت که استفاده میکنده ذخیره بشه
             var menuArea = new MyUILibrary.DataMenuArea.DataMenuArea(menuInitializer);
             if (menuArea != null)

@@ -18,6 +18,7 @@ namespace MyUILibrary.DataMenuArea
         DataMenuAreaInitializer AreaInitializer { set; get; }
         public DataMenuArea(DataMenuAreaInitializer initializer)
         {
+            // DataMenuArea: 6f727758aef9
             AreaInitializer = initializer;
         }
         List<DataMenuUI> Menus = null;
@@ -35,7 +36,7 @@ namespace MyUILibrary.DataMenuArea
             else
                 return Menus;
         }
-        private void AddUIMenu(List<DataMenuUI> menus, List<DataMenu> dataMenus)
+        private void AddUIMenu(List<DataMenuUI> menus, List<DataMenuDTO> dataMenus)
         {
             foreach (var item in dataMenus)
             {

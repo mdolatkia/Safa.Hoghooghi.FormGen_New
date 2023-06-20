@@ -22,6 +22,7 @@ namespace MyUILibrary.DataViewArea
         public I_GeneralEntitySearchArea GeneralEntitySearchArea { set; get; }
         public void SetAreaInitializerSpecialized(DataViewAreaInitializer initParam)
         {
+            // GridViewArea.SetAreaInitializerSpecialized: dbedc44acc58
             //GridViewSetting = AgentUICoreMediator.GetAgentUICoreMediator.GridViewManager.GetGridViewSetting(initParam.EntityID);
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetViewOfGridViewArea();
             View.InfoClicked += View_InfoClicked;
@@ -141,6 +142,7 @@ namespace MyUILibrary.DataViewArea
         }
         public void SetItems(List<DP_DataView> resultDataItems)
         {
+            // GridViewArea.SetItems: 26be2f98a31d
             ManageView();
             View.RemoveDataContainers();
             foreach (var item in resultDataItems)

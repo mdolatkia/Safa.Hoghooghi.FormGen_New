@@ -29,6 +29,7 @@ namespace MyUILibrary.DataViewArea
 
         public void SetAreaInitializerSpecialized(DataViewAreaInitializer initParam)
         {
+            // DataViewArea.SetAreaInitializerSpecialized: 1bf8ccdeb8b2
             //DataViewSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataViewManager.GetDataViewSetting(initParam.EntityID);
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetViewOfDataViewArea();
         }
@@ -125,6 +126,7 @@ namespace MyUILibrary.DataViewArea
 
         public void SetItems(List<DP_DataView> resultDataItems)
         {
+            // DataViewArea.SetItems: 2d5a40e5e8a0
             List<I_DataViewItem> list = new List<I_DataViewItem>();
 
             foreach (var item in resultDataItems)

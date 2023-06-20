@@ -12,6 +12,11 @@ namespace MyUILibrary.DataViewArea
 {
     public class DataArea : I_DataArea
     {
+        public DataArea()
+        {
+            // DataArea : fc9a3ffeda2a
+        }
+
         public int MaxDataItems = 5;
         public I_View_DataArea View
         {
@@ -33,7 +38,34 @@ namespace MyUILibrary.DataViewArea
             set; get;
         }
         DP_SearchRepositoryMain SearchRepository { set; get; }
+        public void SetAreaInitializer(DataViewAreaInitializer initParam)
+        {
+            // DataArea.SetAreaInitializer: ab8f1a14b83a
+            AreaInitializer = initParam;
+            if (this is I_DataViewArea)
+                (this as I_DataViewArea).SetAreaInitializerSpecialized(initParam);
+            else if (this is I_GridViewArea)
+                (this as I_GridViewArea).SetAreaInitializerSpecialized(initParam);
 
+            View.EntityListViewChanged += View_EntityListViewChanged;
+            View.OrderColumnsChanged += View_OrderColumnsChanged;
+
+            if (AreaInitializer.DataMenuSettingID != 0)
+                DataMenuSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDataMenuSetting(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.DataMenuSettingID);
+            else
+                DataMenuSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDefaultDataMenuSetting(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+
+            if (DataMenuSetting != null && DataMenuSetting.EntityListViewID != 0)
+                SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), DataMenuSetting.EntityListViewID);
+            else
+                SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetOrCreateEntityListViewDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+
+            SetEntitiyListViews();
+            SetEntityOrderColumns();
+
+            //ManageSecurity();
+
+        }
         public void GetDataItemsBySearchRepository(DP_SearchRepositoryMain searchRepository)
         {
             SearchRepository = searchRepository;
@@ -180,33 +212,7 @@ namespace MyUILibrary.DataViewArea
         {
             set; get;
         }
-        public void SetAreaInitializer(DataViewAreaInitializer initParam)
-        {
-            AreaInitializer = initParam;
-            if (this is I_DataViewArea)
-                (this as I_DataViewArea).SetAreaInitializerSpecialized(initParam);
-            else if (this is I_GridViewArea)
-                (this as I_GridViewArea).SetAreaInitializerSpecialized(initParam);
 
-            View.EntityListViewChanged += View_EntityListViewChanged;
-            View.OrderColumnsChanged += View_OrderColumnsChanged;
-
-            if (AreaInitializer.DataMenuSettingID != 0)
-                DataMenuSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDataMenuSetting(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.DataMenuSettingID);
-            else
-                DataMenuSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDefaultDataMenuSetting(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
-
-            if (DataMenuSetting != null && DataMenuSetting.EntityListViewID != 0)
-                SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), DataMenuSetting.EntityListViewID);
-            else
-                SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetOrCreateEntityListViewDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
-
-            SetEntitiyListViews();
-            SetEntityOrderColumns();
-
-            //ManageSecurity();
-
-        }
 
         private void View_OrderColumnsChanged(object sender, EventArgs e)
         {

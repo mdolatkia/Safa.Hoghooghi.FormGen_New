@@ -176,7 +176,7 @@ namespace MyModelManager
         public DataMenuResult GetDataMenu(DR_Requester requester, DP_DataView dataItem, int dataMenuSettingID)
         {
             DataMenuResult result = new DataMenuResult();
-            List<DataMenu> resultMenus = new List<DataMenu>();
+            List<DataMenuDTO> resultMenus = new List<DataMenuDTO>();
             result.DataMenus = resultMenus;
             var entityID = dataItem.TargetEntityID;
             var simpleEntity = bizTableDrivedEntity.GetSimpleEntity(requester, entityID);
@@ -262,7 +262,7 @@ namespace MyModelManager
                         var relationshipReportRootMenu = AddMenu(resultMenus, "گزارش داده های مرتبط", "", DataMenuType.Folder, null);
                         foreach (var group in dataMenuSetting.SearchableReportRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
-                            DataMenu parentGroupMenu = GetGroupMenu(relationshipReportRootMenu, group.Key);
+                            DataMenuDTO parentGroupMenu = GetGroupMenu(relationshipReportRootMenu, group.Key);
                             foreach (var rel in group)
                             {
                                 var menu = AddMenu(parentGroupMenu.SubMenus, rel.SearchableReportReport.ReportTitle, "", DataMenuType.RelationshipTailSearchableReport, dataItem);
@@ -276,7 +276,7 @@ namespace MyModelManager
                         var dataViewRootMenu = AddMenu(resultMenus, "نمایش داده های مرتبط", "", DataMenuType.Folder, null);
                         foreach (var group in dataMenuSetting.DataViewRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
-                            DataMenu parentGroupMenu = GetGroupMenu(dataViewRootMenu, group.Key);
+                            DataMenuDTO parentGroupMenu = GetGroupMenu(dataViewRootMenu, group.Key);
                             foreach (var rel in group)
                             {
                                 var dataViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.RelationshipTail.TargetEntityAlias, rel.RelationshipTail.EntityPath, DataMenuType.RelationshipTailDataView, dataItem);
@@ -290,7 +290,7 @@ namespace MyModelManager
                         var gridViewRootMenu = AddMenu(resultMenus, "گرید داده های مرتبط", "", DataMenuType.Folder, null);
                         foreach (var group in dataMenuSetting.GridViewRelationships.GroupBy(x => x.Group1 ?? ""))
                         {
-                            DataMenu parentGroupMenu = GetGroupMenu(gridViewRootMenu, group.Key);
+                            DataMenuDTO parentGroupMenu = GetGroupMenu(gridViewRootMenu, group.Key);
                             foreach (var rel in group)
                             {
                                 var gridViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.RelationshipTail.TargetEntityAlias, rel.RelationshipTail.EntityPath, DataMenuType.RelationshipTailDataGrid, dataItem);
@@ -304,7 +304,7 @@ namespace MyModelManager
                         var gridViewRootMenu = AddMenu(resultMenus, "گزارشات مورد داده", "", DataMenuType.Folder, null);
                         foreach (var group in dataMenuSetting.DataItemReports.GroupBy(x => x.Group1 ?? ""))
                         {
-                            DataMenu parentGroupMenu = GetGroupMenu(gridViewRootMenu, group.Key);
+                            DataMenuDTO parentGroupMenu = GetGroupMenu(gridViewRootMenu, group.Key);
                             foreach (var rel in group)
                             {
                                 var gridViewRelMenu = AddMenu(parentGroupMenu.SubMenus, rel.EntityDataItemReport.ReportTitle, "", DataMenuType.DataItemReport, dataItem);
@@ -340,7 +340,7 @@ namespace MyModelManager
 
         //}
 
-        private DataMenu GetGroupMenu(DataMenu parentMenu, string key)
+        private DataMenuDTO GetGroupMenu(DataMenuDTO parentMenu, string key)
         {
             if (string.IsNullOrEmpty(key))
                 return parentMenu;
@@ -380,9 +380,9 @@ namespace MyModelManager
             return true;
         }
 
-        private DataMenu AddMenu(List<DataMenu> result, string title, string tooltip, DataMenuType type, DP_DataView dataItem)
+        private DataMenuDTO AddMenu(List<DataMenuDTO> result, string title, string tooltip, DataMenuType type, DP_DataView dataItem)
         {
-            var dataMenu = new DataMenu();
+            var dataMenu = new DataMenuDTO();
             dataMenu.Title = title;
             dataMenu.Tooltip = tooltip;
             dataMenu.Type = type;

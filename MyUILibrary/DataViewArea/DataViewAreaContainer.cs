@@ -25,6 +25,7 @@ namespace MyUILibrary.DataViewArea
 
         public DataViewAreaContainer(DataViewAreaContainerInitializer initParam)
         {
+            // DataViewAreaContainer: d5ab5f7eafbd
             DataViewAreas = new List<I_DataArea>();
 
             AreaInitializer = initParam;
@@ -177,6 +178,7 @@ namespace MyUILibrary.DataViewArea
         }
         private void AddDataViewArea(int entityID, string title, DP_SearchRepositoryMain searchRepository, int dataMenuSettingID, bool dataViewOrGridView)
         {
+            // DataViewAreaContainer.AddDataViewArea: 3e2a0df94502
             DataArea dataArea = null;
             if (dataViewOrGridView)
                 dataArea = new DataViewArea();
@@ -224,6 +226,7 @@ namespace MyUILibrary.DataViewArea
 
         private void SetLinks()
         {
+            // DataViewAreaContainer.SetLinks: 214a299796b1
             var lastindex = DataViewAreas.IndexOf(CurrentDataViewArea);
             if (lastindex != -1)
             {
