@@ -30,6 +30,7 @@ namespace MyModelManager
         //}
         public FunctionResult CalculateFormula(int formulaID, DP_BaseData dataItem, DR_Requester requester, List<int> usedFormulaIDs = null)
         {
+            // FormulaFunctionHandler.CalculateFormula: c7e4de07ae7a
             FunctionResult result = null;
             var formula = bizFormula.GetFormula(requester, formulaID, true);
             var mainDataItem = GetMainDateItem(requester, dataItem);

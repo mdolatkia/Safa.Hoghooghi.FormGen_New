@@ -52,28 +52,28 @@ namespace MyModelManager
             return result;
         }
 
-        public List<CodeFunctionDTO> GetCodeFunctions(List<Enum_CodeFunctionParamType> paramTypes)
-        {
-            List<CodeFunctionDTO> result = new List<CodeFunctionDTO>();
-            using (var projectContext = new DataAccess.MyIdeaEntities())
-            {
-                IQueryable<CodeFunction> listCodeFunction;
-                // if (string.IsNullOrEmpty(catalog))
-                listCodeFunction = projectContext.CodeFunction;
-                // else
-                //    listCodeFunction = projectContext.CodeFunction.Where(x => x.Catalog == catalog);
-                if (paramTypes != null && paramTypes.Any())
-                {
-                    List<short> list = new List<short>();
-                    paramTypes.ForEach(x => list.Add((short)x));
-                    listCodeFunction = listCodeFunction.Where(x => list.Contains(x.Type));
-                }
-                foreach (var item in listCodeFunction)
-                    result.Add(ToCodeFunctionDTO(item, false));
+        //public List<CodeFunctionDTO> GetCodeFunctions(List<Enum_CodeFunctionParamType> paramTypes)
+        //{
+        //    List<CodeFunctionDTO> result = new List<CodeFunctionDTO>();
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
+        //    {
+        //        IQueryable<CodeFunction> listCodeFunction;
+        //        // if (string.IsNullOrEmpty(catalog))
+        //        listCodeFunction = projectContext.CodeFunction;
+        //        // else
+        //        //    listCodeFunction = projectContext.CodeFunction.Where(x => x.Catalog == catalog);
+        //        if (paramTypes != null && paramTypes.Any())
+        //        {
+        //            List<short> list = new List<short>();
+        //            paramTypes.ForEach(x => list.Add((short)x));
+        //            listCodeFunction = listCodeFunction.Where(x => list.Contains(x.Type));
+        //        }
+        //        foreach (var item in listCodeFunction)
+        //            result.Add(ToCodeFunctionDTO(item, false));
 
-            }
-            return result;
-        }
+        //    }
+        //    return result;
+        //}
         public CodeFunctionDTO GetCodeFunction(DR_Requester requester, int CodeFunctionsID)
         {
             List<CodeFunctionDTO> result = new List<CodeFunctionDTO>();

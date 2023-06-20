@@ -25,7 +25,7 @@ namespace ProxyLibrary
     //    public string Message { set; get; }
     //    public Object Result { set; get; }
     //}
-    public class LetterConvertToExternalResult : FunctionResult
+    public class LetterFunctionResult : FunctionResult
     {
         //public bool ExternalResult { set; get; }
         //public string Message { set; get; }

@@ -33,7 +33,7 @@ namespace MyUILibrary.EntityArea
                 ShowPreDefinedSearch(newAreaInitializer.PreDefinedSearchMessage);
 
             AddCommands();
-           
+
 
         }
 
@@ -144,7 +144,7 @@ namespace MyUILibrary.EntityArea
                 else
                 {
                     var propertyControl = new SimpleSearchColumnControl(AgentUICoreMediator.GetAgentUICoreMediator.UIManager, searchcolumn);
-                    
+
                     if (!string.IsNullOrEmpty(propertyControl.EntitySearchColumn.Tooltip))
                         propertyControl.LabelControlManager.SetTooltip(propertyControl.EntitySearchColumn.Tooltip);
 
@@ -296,11 +296,7 @@ namespace MyUILibrary.EntityArea
                 var value = property.ControlManager.GetUIControlManager().GetValue();
                 if (PropertyHasValue(property, value))
                 {
-                    LogicPhraseDTO logic = null;
-                    if (property.EntitySearchColumn.RelationshipTail == null)
-                        logic = columnsSearchRepository;
-                    else
-                        logic = AgentHelper.GetOrCreateSearchRepositoryFromRelationshipTail(columnsSearchRepository, property.EntitySearchColumn.RelationshipTail);
+                    LogicPhraseDTO logic = AgentHelper.GetOrCreateSearchRepositoryFromRelationshipTail(columnsSearchRepository, property.EntitySearchColumn.RelationshipTail);
 
                     SearchProperty searchProperty = new SearchProperty(property.Column);
                     //    searchProperty.SearchColumnID = property.EntitySearchColumn != null ? property.EntitySearchColumn.ID : 0;

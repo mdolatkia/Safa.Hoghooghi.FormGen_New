@@ -370,7 +370,7 @@ namespace MyUILibrary.EntityArea
 
         private void ValidateUnionRelationships(DP_FormDataRepository data)
         {
-        //UIValidationManager.ValidateUnionRelationships: e50167077e44
+            //UIValidationManager.ValidateUnionRelationships: e50167077e44
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
                 if (relationshipControl.Relationship.TypeEnum == Enum_RelationshipType.SubUnionToUnion)
@@ -520,42 +520,65 @@ namespace MyUILibrary.EntityArea
         }
         private void ValidateRelationshipFilters(DP_FormDataRepository data)
         {
+
+            // UIValidationManager.ValidateRelationshipFilters: 8b0044b51038
             //اینجا هم بحث realdata یا relateddata چک بشه
             //
             foreach (var relationshipControl in EditArea.RelationshipColumnControls)
             {
-                var childRel = data.ChildRelationshipDatas.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
-                if (!childRel.IsHiddenOnState)
+                if (relationshipControl.GenericEditNdTypeArea.RelationshipFilters != null && relationshipControl.GenericEditNdTypeArea.RelationshipFilters.Any())
                 {
-                    if (relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect
-                    || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect
-                    || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.Select)
+                    var childRel = data.ChildRelationshipDatas.First(x => x.Relationship.ID == relationshipControl.Relationship.ID);
+                    if (!childRel.IsHiddenOnState && childRel.RelatedData.Any())
                     {
-                        if (relationshipControl.GenericEditNdTypeArea!=null && relationshipControl.GenericEditNdTypeArea.RelationshipFilters != null)
+                        if (relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectDirect
+                        || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.CreateSelectInDirect
+                        || relationshipControl.GenericEditNdTypeArea.AreaInitializer.IntracionMode == IntracionMode.Select)
                         {
-                            if (relationshipControl.GenericEditNdTypeArea.RelationshipFilters.Any())
+                            foreach (var filter in relationshipControl.GenericEditNdTypeArea.RelationshipFilters)
                             {
-                                foreach (var filter in relationshipControl.GenericEditNdTypeArea.RelationshipFilters)
-                                {
-                                    if (data.ChildRelationshipDatas.Any(x => x.Relationship.ID == filter.RelationshipID && x.RelatedData.Any()))
-                                    {
-                                        bool searchAndValueColumnsareEqual = false;
+                                var searchRepository = new DP_SearchRepositoryMain(relationshipControl.GenericEditNdTypeArea.AreaInitializer.EntityID);
+                                DP_SearchRepositoryRelationship searchColumnSearchRepository = AgentHelper.GetOrCreateSearchRepositoryFromRelationshipTail(searchRepository, filter.SearchRelationshipTail);
+                                var searchColumn = new SearchProperty(filter.SearchColumn) { NotIgnoreZeroValue = true };
+                                searchColumn.Value = data.GetValueSomeHow(filter.ValueRelationshipTail, filter.ValueColumnID);
+                                searchColumnSearchRepository.Phrases.Add(searchColumn);
 
-                                        var value = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetValueSomeHow(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), data, filter.ValueRelationshipTail, filter.ValueColumnID);
-                                        foreach (var searchData in data.ChildRelationshipDatas.First(x => x.Relationship.ID == filter.RelationshipID && x.RelatedData.Any()).RelatedData)
-                                        {
-                                            var searchValue = searchData.GetProperty(filter.SearchColumnID);
-                                            if (searchValue != null)
-                                                if (searchValue.Value == value)
-                                                    searchAndValueColumnsareEqual = true;
-                                        }
-                                        if (!searchAndValueColumnsareEqual)
-                                        {
-                                            var message = "فیلتر رابطه برای رابطه به نام" + " " + relationshipControl.Relationship.Alias + " " + "رعایت نشده است";
-                                            AddColumnControlValidationMessage(relationshipControl, message, data);
-                                        }
+                                LogicPhraseDTO phrase = new LogicPhraseDTO();
+                                phrase.AndOrType = AndOREqualType.Or;
+                                foreach (var relatedData in childRel.RelatedData)
+                                {
+                                    LogicPhraseDTO keyColumns = new LogicPhraseDTO();
+
+                                    foreach (var keyColumn in relatedData.KeyProperties)
+                                    {
+                                        keyColumns.Phrases.Add(new SearchProperty(keyColumn.Column, keyColumn.Value));
                                     }
+                                    phrase.Phrases.Add(keyColumns);
                                 }
+                                searchRepository.Phrases.Add(phrase);
+
+
+                                var requester = AgentUICoreMediator.GetAgentUICoreMediator.GetRequester();
+                                DR_SearchKeysOnlyRequest request = new DR_SearchKeysOnlyRequest(requester, searchRepository);
+                                var result = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchKeysOnlyRequest(request);
+
+
+                                //  var message = "";
+                                foreach (var relatedData in childRel.RelatedData)
+                                {
+                                    var message = "فیلتر رابطه برای رابطه به نام" + "رعایت نشده است";
+                                    if (!result.ResultDataItems.Any(x => AgentHelper.DataItemsAreEqual(x, relatedData)))
+                                        message += (message == "" ? "" : Environment.NewLine) + relatedData.Info;
+                                    AddColumnControlValidationMessage(relationshipControl, message, data);
+                                }
+
+
+                                //if(message!=null)
+                                //  {
+                                //   //   var message = "فیلتر رابطه برای رابطه به نام" + " " + relationshipControl.Relationship.Alias + " " + "رعایت نشده است";
+
+                                //  }
+
                             }
                         }
                     }

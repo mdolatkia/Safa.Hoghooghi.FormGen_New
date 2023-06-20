@@ -44,6 +44,7 @@ namespace MyProject_WPF
         //}
         public frmFormula(int formulaID, int entityID)
         {
+            // frmFormula: 893137ad1c61
             InitializeComponent();
             //FormulaIntention = formulaIntention;
             //EntityID = entityID;

@@ -71,11 +71,11 @@ namespace MyProject_WPF
                 lblExpectedParameter.Text = typeof(ProxyLibrary.LetterFunctionParam).ToString();
                 lblExpectedReturnValue.Text = typeof(FunctionResult).ToString();
             }
-            else if (CodeFunctionParamType == Enum_CodeFunctionParamType.LetterConvert)
-            {
-                lblExpectedParameter.Text = typeof(ProxyLibrary.LetterFunctionParam).ToString();
-                lblExpectedReturnValue.Text = typeof(ProxyLibrary.LetterConvertToExternalResult).ToString();
-            }
+            //else if (CodeFunctionParamType == Enum_CodeFunctionParamType.LetterConvert)
+            //{
+            //    lblExpectedParameter.Text = typeof(ProxyLibrary.LetterFunctionParam).ToString();
+            //    lblExpectedReturnValue.Text = typeof(ProxyLibrary.LetterConvertToExternalResult).ToString();
+            //}
             //Catalog = catalog;
             //if (CodeFunctionParamType != Enum_CodeFunctionParamType.KeyColumns)
             //    HideColumn();
@@ -230,16 +230,16 @@ namespace MyProject_WPF
                                 return true;
                         }
                     }
-                    else if (CodeFunctionParamType == Enum_CodeFunctionParamType.LetterConvert)
-                    {
-                        if (method.ReturnType.FullName != typeof(ProxyLibrary.LetterConvertToExternalResult).FullName)
-                            return false;
-                        if (method.GetParameters().Count() == 1)
-                        {
-                            if (method.GetParameters().First().ParameterType == typeof(ProxyLibrary.LetterFunctionParam))
-                                return true;
-                        }
-                    }
+                    //else if (CodeFunctionParamType == Enum_CodeFunctionParamType.LetterConvert)
+                    //{
+                    //    if (method.ReturnType.FullName != typeof(ProxyLibrary.LetterConvertToExternalResult).FullName)
+                    //        return false;
+                    //    if (method.GetParameters().Count() == 1)
+                    //    {
+                    //        if (method.GetParameters().First().ParameterType == typeof(ProxyLibrary.LetterFunctionParam))
+                    //            return true;
+                    //    }
+                    //}
                 }
             }
             return false;

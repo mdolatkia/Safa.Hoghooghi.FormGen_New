@@ -23,6 +23,7 @@ namespace MyModelManager
 
         public static Dictionary<string, MyPropertyInfo> GetProperties(DR_Requester requester, TableDrivedEntityDTO entity, MyPropertyInfo parentPropetyInfo, bool definition)
         {
+            // FormulaInstanceInternalHelper.GetProperties: 40d8aa25e83f
             Dictionary<string, MyPropertyInfo> m_properties = new Dictionary<string, MyPropertyInfo>();
             //روابط
             foreach (var relationship in entity.Relationships.OrderBy(x => x.Name))

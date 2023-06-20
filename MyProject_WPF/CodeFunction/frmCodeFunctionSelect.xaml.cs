@@ -50,7 +50,7 @@ namespace MyProject_WPF
 
         private void GetCodes()
         {
-            var listCodes = bizCode.GetCodeFunctions(CodeFunctionParamType);
+            var listCodes = bizCode.GetAllCodeFunctions(MyProjectManager.GetMyProjectManager.GetRequester(), "", CodeFunctionParamType);
             dtgItems.ItemsSource = listCodes;
         }
         private void btnClose_Click(object sender, RoutedEventArgs e)

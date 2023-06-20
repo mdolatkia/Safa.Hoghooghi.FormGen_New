@@ -159,7 +159,7 @@ namespace MyDataItemManager
                         {
                             if (letterSetting.BeforeLetterLoadCodeID != 0)
                             {
-                                var result = codeFunctionHandler.GetCodeFunctionResult(requester, letterSetting.BeforeLetterLoadCodeID, letetr);
+                                var result = codeFunctionHandler.GetCodeFunctionLetterResult(requester, letterSetting.BeforeLetterLoadCodeID, letetr);
                                 if (result.Exception == null)
                                 {
 
@@ -278,7 +278,7 @@ namespace MyDataItemManager
             {
                 if (letterSetting.BeforeLetterSaveCodeID != 0)
                 {
-                    var resultFunction = codeFunctionHandler.GetCodeFunctionResult(requester, letterSetting.BeforeLetterSaveCodeID, message);
+                    var resultFunction = codeFunctionHandler.GetCodeFunctionLetterResult(requester, letterSetting.BeforeLetterSaveCodeID, message);
                     if (resultFunction.Exception != null)
                     {
                         var logResult = bizLogManager.AddLog(GetBeforeUpdateExceptionLog(message, resultFunction.Exception, isNew ? DataLogType.LetterInsert : DataLogType.LetterUpdate), requester);
@@ -371,7 +371,7 @@ namespace MyDataItemManager
                 {
                     if (letterSetting.AfterLetterSaveCodeID != 0)
                     {
-                        var resultFunction = codeFunctionHandler.GetCodeFunctionResult(requester, letterSetting.AfterLetterSaveCodeID, message);
+                        var resultFunction = codeFunctionHandler.GetCodeFunctionLetterResult(requester, letterSetting.AfterLetterSaveCodeID, message);
                         if (resultFunction.Exception != null)
                         {
                             afterSaveException = true;

@@ -39,7 +39,7 @@ namespace MyProject_WPF
             if (ID == 0)
             {
                 CodeFunctionEntity = new CodeFunction_EntityDTO();
-                //lokCodeFunction.ItemsSource = bizCodeFunction.GetCodeFunctionsByEntityID(MyProjectManager.GetMyProjectManager.GetRequester(), Entity.ID);
+                //lokCodeFunction.ItemsSou rce = bizCodeFunction.GetCodeFunctionsByEntityID(MyProjectManager.GetMyProjectManager.GetRequester(), Entity.ID);
             }
             else
             {
@@ -157,7 +157,7 @@ namespace MyProject_WPF
                 var row = new CodeFunction_Entity_ColumnDTO();
                 row.CodeFunctionParameterID = item.ID;
                 row.FunctionColumnParamName = item.ParameterName;
-                row.FunctionDataType = item.DataType;
+                row.FunctionColumnDataType = item.DataType;
                 row.FunctionColumnDotNetType = item.DotNetType;
                 var existingRow = codeFunctionEntity.CodeFunctionEntityColumns.FirstOrDefault(x => x.FunctionColumnParamName == item.ParameterName);
                 if (existingRow != null)

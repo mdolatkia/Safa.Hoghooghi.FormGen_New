@@ -2310,7 +2310,7 @@ namespace MyModelCustomSetting
                     letterCodeFunctoin.Path = @"E:\Safa.Hoghooghi.FormGen_New\MyTestImplLibrary\bin\Debug\MyTestImplLibrary.dll";
                     letterCodeFunctoin.ClassName = "MyTestImplLibrary.LetterCodes";
                     letterCodeFunctoin.FunctionName = "ConvertToExternal";
-                    letterCodeFunctoin.Type = (short)Enum_CodeFunctionParamType.LetterConvert;
+                    letterCodeFunctoin.Type = (short)Enum_CodeFunctionParamType.LetterFunction;
                     letterCodeFunctoin.ReturnType = "ProxyLibrary.LetterConvertToExternalResult";
                     letterCodeFunctoin.Name = "تبدیل به خارجی";
                 }

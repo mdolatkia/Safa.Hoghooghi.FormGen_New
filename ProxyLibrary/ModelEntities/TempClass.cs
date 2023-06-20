@@ -2866,8 +2866,9 @@ namespace ModelEntites
         OneDataItem,
         SelectedColumns,
         CommandFunction,
-        LetterFunction,
-        LetterConvert
+        LetterFunction
+            //,
+       // LetterConvert
     }
     public class EntityRelationshipTailDTO
     {
@@ -3347,7 +3348,7 @@ namespace ModelEntites
         public int CodeFunctionParameterID { set; get; }
         public int ColumnID { set; get; }
         public string ColumnName { set; get; }
-        public string FunctionDataType { set; get; }
+        public string FunctionColumnDataType { set; get; }
         public string FunctionColumnParamName { set; get; }
         public Type FunctionColumnDotNetType { set; get; }
         public int ID { get; set; }

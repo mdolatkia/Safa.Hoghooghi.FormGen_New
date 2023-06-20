@@ -20,33 +20,51 @@ namespace MyModelManager
             // CodeFunctionHandler: d1ee92e5176f
         }
         //فانکشنها یکی شوند
-        public LetterConvertToExternalResult GetLetterSendingCodeFunctionResult(DR_Requester resuester, int codeFunctionID, LetterDTO letter)
-        {
-            var codeFunction = bizCodeFunction.GetCodeFunction(resuester, codeFunctionID);
-            if (codeFunction.ParamType == ModelEntites.Enum_CodeFunctionParamType.LetterConvert)
-            {
-                var parameters = new List<object>();
-                parameters.Add(new LetterFunctionParam(letter, resuester));
-                return GetLetterSendingCodeFunctionResult(codeFunction, parameters);
+        //public LetterFunctionResult GetLetterSendingCodeFunctionResult(DR_Requester resuester, int codeFunctionID, LetterDTO letter)
+        //{
+        //    var codeFunction = bizCodeFunction.GetCodeFunction(resuester, codeFunctionID);
+        //    if (codeFunction.ParamType == ModelEntites.Enum_CodeFunctionParamType.LetterConvert)
+        //    {
+        //        var parameters = new List<object>();
+        //        parameters.Add(new LetterFunctionParam(letter, resuester));
+        //        return GetLetterSendingCodeFunctionResult(codeFunction, parameters);
 
-            }
-            else
-                return null;
-        }
-        public FunctionResult GetCodeFunctionResult(DR_Requester resuester, int codeFunctionID, LetterDTO letter)
+        //    }
+        //    else
+        //        return null;
+        //}
+        public LetterFunctionResult GetCodeFunctionLetterResult(DR_Requester resuester, int codeFunctionID, LetterDTO letter)
         {
+            // CodeFunctionHandler.GetCodeFunctionLetterResult: a3b47f316b22
             var codeFunction = bizCodeFunction.GetCodeFunction(resuester, codeFunctionID);
             if (codeFunction.ParamType == ModelEntites.Enum_CodeFunctionParamType.LetterFunction)
             {
                 var parameters = new List<object>();
                 parameters.Add(new LetterFunctionParam(letter, resuester));
-                return GetCodeFunctionResult(codeFunction, parameters);
+                return GetLetterFunctionResult(codeFunction, parameters);
             }
             else
                 return null;
         }
+
+        private LetterFunctionResult GetLetterFunctionResult(CodeFunctionDTO codeFunction, List<object> parameters)
+        {
+            try
+            {
+                var result = ReflectionHelper.CallMethod(codeFunction.Path, codeFunction.ClassName, codeFunction.FunctionName, parameters.ToArray());
+                return (LetterFunctionResult)result;
+            }
+            catch (Exception ex)
+            {
+                LetterFunctionResult result = new LetterFunctionResult();
+                result.Exception = ex;
+                return result;
+            }
+        }
+
         public FunctionResult GetCodeFunctionEntityResult(DR_Requester resuester, int codeFunctionEntityID, DP_DataRepository dataItem)
         {
+            // CodeFunctionHandler.GetCodeFunctionEntityResult: f1bb53724318
             var codeFunctionEntity = bizCodeFunction.GetCodeFunctionEntity(resuester, codeFunctionEntityID);
             var parameters = new List<object>();
             //var formulaUsageParemeters = new List<FormulaUsageParemetersDTO>();
@@ -120,20 +138,7 @@ namespace MyModelManager
             }
             // return result;
         }
-        private LetterConvertToExternalResult GetLetterSendingCodeFunctionResult(CodeFunctionDTO codeFunction, List<object> parameters)
-        {
-            try
-            {
-                var result = ReflectionHelper.CallMethod(codeFunction.Path, codeFunction.ClassName, codeFunction.FunctionName, parameters.ToArray());
-                return (LetterConvertToExternalResult)result;
-            }
-            catch (Exception ex)
-            {
-                LetterConvertToExternalResult result = new LetterConvertToExternalResult();
-                result.Exception = ex;
-                return result;
-            }
-        }
+     
 
         //private CommandFunctionResult GetCommandFunctionResult(CodeFunctionDTO codeFunction, List<object> parameters)
         //{

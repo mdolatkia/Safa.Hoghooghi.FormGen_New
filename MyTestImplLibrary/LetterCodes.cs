@@ -10,27 +10,27 @@ namespace MyTestImplLibrary
 {
     class LetterCodes
     {
-        public FunctionResult BeforeLoad(LetterFunctionParam Param)
+        public LetterFunctionResult BeforeLoad(LetterFunctionParam Param)
         {
-            FunctionResult result = new FunctionResult();
+            LetterFunctionResult result = new LetterFunctionResult();
             Param.Letter.Desc += "BeforeLoad,";
             return result;
         }
-        public FunctionResult BeforeSave(LetterFunctionParam Param)
+        public LetterFunctionResult BeforeSave(LetterFunctionParam Param)
         {
-            FunctionResult result = new FunctionResult();
+            LetterFunctionResult result = new LetterFunctionResult();
             Param.Letter.Desc += "BeforeSave,";
             return result;
         }
-        public FunctionResult AfterSave(LetterFunctionParam Param)
+        public LetterFunctionResult AfterSave(LetterFunctionParam Param)
         {
-            FunctionResult result = new FunctionResult();
+            LetterFunctionResult result = new LetterFunctionResult();
             Param.Letter.Desc += "AfterSave,";
             return result;
         }
-        public FunctionResult ExternalCode(LetterFunctionParam Param)
+        public LetterFunctionResult ExternalCode(LetterFunctionParam Param)
         {
-            FunctionResult result = new FunctionResult();
+            LetterFunctionResult result = new LetterFunctionResult();
             Param.Letter.Title = " عنوان خارجی";
             Param.Letter.LetterDate = DateTime.Now - TimeSpan.FromDays(1);
             Param.Letter.AttechedFile = new ModelEntites.FileRepositoryDTO();
@@ -42,9 +42,9 @@ namespace MyTestImplLibrary
         }
 
 
-        public LetterConvertToExternalResult ConvertToExternal(LetterFunctionParam Param)
+        public LetterFunctionResult ConvertToExternal(LetterFunctionParam Param)
         {
-            LetterConvertToExternalResult result = new LetterConvertToExternalResult();
+            LetterFunctionResult result = new LetterFunctionResult();
             result.ExternalCode = "1111";
             result.Result = true;
             return result;

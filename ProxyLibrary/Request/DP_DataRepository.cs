@@ -1200,6 +1200,11 @@ namespace ProxyLibrary
         {
             Column = column;
         }
+        public SearchProperty(ColumnDTO column, object value)
+        {
+            Column = column;
+            Value = value;
+        }
         public ColumnDTO Column;
         private int _ColumnID;
         public int ID;

@@ -53,11 +53,11 @@ namespace MyProject_WPF
             frmCodeFunction view;
             if (lookup.SelectedItem == null)
             {
-                view = new frmCodeFunction(0, Enum_CodeFunctionParamType.LetterConvert);
+                view = new frmCodeFunction(0, Enum_CodeFunctionParamType.LetterFunction);
             }
             else
             {
-                view = new frmCodeFunction((int)lookup.SelectedValue, Enum_CodeFunctionParamType.LetterConvert);
+                view = new frmCodeFunction((int)lookup.SelectedValue, Enum_CodeFunctionParamType.LetterFunction);
             }
             view.CodeFunctionUpdated += (sender1, e1) => View_ConvertCodeFunctionUpdated(sender1, e1, lookup);
             MyProjectManager.GetMyProjectManager.ShowDialog(view, "تنظیمات نامه", Enum_WindowSize.Big);
@@ -101,7 +101,7 @@ namespace MyProject_WPF
 
         private void SetCodeFunctions()
         {
-            var codeFunctions = bizCodeFunction.GetCodeFunctions(new List<Enum_CodeFunctionParamType>() { Enum_CodeFunctionParamType.LetterFunction });
+            var codeFunctions = bizCodeFunction.GetAllCodeFunctions(MyProjectManager.GetMyProjectManager.GetRequester(), "", new List<Enum_CodeFunctionParamType>() { Enum_CodeFunctionParamType.LetterFunction });
             lokAfterSave.DisplayMember = "Name";
             lokAfterSave.SelectedValueMember = "ID";
             lokAfterSave.ItemsSource = codeFunctions;
@@ -118,7 +118,7 @@ namespace MyProject_WPF
         }
         private void SetConvertCodeFunctions()
         {
-            var codeFunctions = bizCodeFunction.GetCodeFunctions(new List<Enum_CodeFunctionParamType>() { Enum_CodeFunctionParamType.LetterConvert });
+            var codeFunctions = bizCodeFunction.GetAllCodeFunctions(MyProjectManager.GetMyProjectManager.GetRequester(), "", new List<Enum_CodeFunctionParamType>() { Enum_CodeFunctionParamType.LetterFunction });
             lokConvert.DisplayMember = "Name";
             lokConvert.SelectedValueMember = "ID";
             lokConvert.ItemsSource = codeFunctions;

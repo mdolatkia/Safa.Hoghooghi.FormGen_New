@@ -32,6 +32,7 @@ namespace MyProject_WPF
         //int EntityCommandID { set; get; }
         public frmEntityCommand(int entityID, int entityCommandID)
         {
+            // frmEntityCommand: f7d70c177b8c
             InitializeComponent();
             //    EntityID = entityID;
             // EntityCommandID = entityCommandID;

@@ -110,7 +110,7 @@ namespace MyUILibrary.EntityArea
             }
             if (LetterSetting != null && LetterSetting.LetterSendToExternalCodeID != 0)
             {
-                var result = codeFunctionHandler.GetLetterSendingCodeFunctionResult(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), LetterSetting.LetterSendToExternalCodeID, LetterMessage);
+                var result = codeFunctionHandler.GetCodeFunctionLetterResult(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), LetterSetting.LetterSendToExternalCodeID, LetterMessage);
                 if (result.Exception == null)
                 {
 
@@ -151,7 +151,7 @@ namespace MyUILibrary.EntityArea
                 View.UpdateMessage();
                 LetterDTO sendingLetter = new LetterDTO();
                 sendingLetter.ExternalCode = e.ExternalCode;
-                var result = codeFunctionHandler.GetCodeFunctionResult(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), LetterSetting.LetterExternalInfoCodeID, sendingLetter);
+                var result = codeFunctionHandler.GetCodeFunctionLetterResult(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), LetterSetting.LetterExternalInfoCodeID, sendingLetter);
                 if (result.Exception == null)
                 {
                     if (!string.IsNullOrEmpty(sendingLetter.Title))

@@ -559,7 +559,7 @@ namespace MyUILibrary.EntityArea
             {
                 //initializer.EditAreaDataManager = new EditAreaDataManager();
                 initializer.ActionActivityManager = new UIActionActivityManager(result);
-                initializer.RelationshipFilterManager = new RelationshipFilterManager(result);
+                //   initializer.RelationshipFilterManager = new RelationshipFilterManager(result);
                 initializer.EntityAreaLogManager = new EntityAreaLogManager();
                 initializer.UIFomulaManager = new UIFomulaManager(result as BaseEditEntityArea);
                 initializer.UIValidationManager = new UIValidationManager(result as BaseEditEntityArea);
@@ -688,33 +688,29 @@ namespace MyUILibrary.EntityArea
             ViewEntityArea.AddData(result);
 
         }
-        public List<Tuple<int, object>> LastFilterValues = new List<Tuple<int, object>>();
-        public List<Tuple<int, object>> CurrentValues = new List<Tuple<int, object>>();
+        //  public List<Tuple<int, object>> LastFilterValues = new List<Tuple<int, object>>();
+        // public List<Tuple<int, object>> CurrentValues = new List<Tuple<int, object>>();
         private List<DP_DataView> GetDataViewItemsFromSearchResult(DP_SearchRepositoryMain searchItems)
         {
             //BaseEditEntityArea.GetDataViewItemsFromSearchResult: 7e4651a61540
-            CalculateFilterValues();
-            if (FilterCalculationError != null)
-            {
-                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("خطا در جستجو", FilterCalculationError.Message, Temp.InfoColor.Red);
-                return null;
-            }
-            LastFilterValues.Clear();
-            foreach (var item in CurrentValues)
-                LastFilterValues.Add(new Tuple<int, object>(item.Item1, item.Item2));
+            //CalculateFilterValues();
+            //if (FilterCalculationError != null)
+            //{
+            //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("خطا در جستجو", FilterCalculationError.Message, Temp.InfoColor.Red);
+            //    return null;
+            //}
+            //LastFilterValues.Clear();
+            //foreach (var item in CurrentValues)
+            //    LastFilterValues.Add(new Tuple<int, object>(item.Item1, item.Item2));
 
             if (RelationshipFilters != null)
             {
                 foreach (var filter in RelationshipFilters)
                 {
-                    var valueRow = CurrentValues.FirstOrDefault(x => x.Item1 == filter.ID);
-                    if (valueRow == null)
-                        return null;
                     DP_SearchRepositoryRelationship searchItem = CreateSearchItem(searchItems, filter.SearchRelationshipTail);
                     var searchColumn = new SearchProperty(filter.SearchColumn) { NotIgnoreZeroValue = true };
                     searchItem.Phrases.Add(searchColumn);
-                    searchColumn.Value = valueRow.Item2;
-
+                    searchColumn.Value = ChildRelationshipInfoBinded.SourceData.GetValueSomeHow(filter.ValueRelationshipTail, filter.ValueColumnID);
                 }
             }
 
@@ -788,20 +784,18 @@ namespace MyUILibrary.EntityArea
         List<RelationshipFilterDTO> _RelationshipFilters;
         public List<RelationshipFilterDTO> RelationshipFilters
         {
+            // BaseEditEntityArea.RelationshipFilters: ab2ed0528c76
             get
             {
-                //////if (_RelationshipFilters == null)
-                //////{
-                //////    if (AreaInitializer.SourceEditArea.ChildRelationshipInfo != null)
-                //////    {
-                //////        if (AreaInitializer.SourceEditArea.SourceRelationColumnControl != null)
-                //////        {
-                //////            _RelationshipFilters = AgentUICoreMediator.GetAgentUICoreMediator.relationshipFilterManagerService.GetRelationshipFilters(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.SourceEditArea.SourceRelationColumnControl.Relationship.ID);
-                //////        }
-                //////    }
-                //////    else
-                //////        return null;
-                //////}
+                if (_RelationshipFilters == null)
+                {
+                    if (SourceRelationColumnControl != null)
+                    {
+                        _RelationshipFilters = AgentUICoreMediator.GetAgentUICoreMediator.relationshipFilterManagerService.GetRelationshipFilters(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), SourceRelationColumnControl.Relationship.ID);
+                    }
+                    else
+                        return null;
+                }
                 return _RelationshipFilters;
             }
             set
@@ -843,33 +837,33 @@ namespace MyUILibrary.EntityArea
 
         //}
 
-        Exception FilterCalculationError = null;
-        private void CalculateFilterValues()
-        {
-            FilterCalculationError = null;
-            CurrentValues.Clear();
-            try
-            {
-                //////if (AreaInitializer.SourceEditArea.ChildRelationshipInfo != null)
-                //////{
-                //////    if (RelationshipFilters != null && RelationshipFilters.Any())
-                //////    {
-                //////        foreach (var filter in RelationshipFilters)
-                //////        {
-                //////            var value = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetValueSomeHow(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.SourceEditArea.ChildRelationshipInfo.SourceData, filter.ValueRelationshipTail, filter.ValueColumnID);
-                //////            if (value != null && !string.IsNullOrEmpty(value.ToString()))
-                //////            {
-                //////                CurrentValues.Add(new Tuple<int, object>(filter.ID, value));
-                //////            }
-                //////        }
-                //////    }
-                //////}
-            }
-            catch (Exception ex)
-            {
-                FilterCalculationError = ex;
-            }
-        }
+        //Exception FilterCalculationError = null;
+        //private void CalculateFilterValues()
+        //{
+        //    FilterCalculationError = null;
+        //    CurrentValues.Clear();
+        //    try
+        //    {
+        //        //////if (AreaInitializer.SourceEditArea.ChildRelationshipInfo != null)
+        //        //////{
+        //        //////    if (RelationshipFilters != null && RelationshipFilters.Any())
+        //        //////    {
+        //        //////        foreach (var filter in RelationshipFilters)
+        //        //////        {
+        //        //////            var value = AgentUICoreMediator.GetAgentUICoreMediator.formulaManager.GetValueSomeHow(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.SourceEditArea.ChildRelationshipInfo.SourceData, filter.ValueRelationshipTail, filter.ValueColumnID);
+        //        //////            if (value != null && !string.IsNullOrEmpty(value.ToString()))
+        //        //////            {
+        //        //////                CurrentValues.Add(new Tuple<int, object>(filter.ID, value));
+        //        //////            }
+        //        //////        }
+        //        //////    }
+        //        //////}
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        FilterCalculationError = ex;
+        //    }
+        //}
 
         //public void SelectFromParent(RelationshipDTO relationship, DP_DataRepository parentDataItem, Dictionary<int, object> colAndValues)
         //{
@@ -2780,7 +2774,7 @@ namespace MyUILibrary.EntityArea
                 childRelationshipInfo.SetBinding();
 
             }
-          
+
             AreaInitializer.UIFomulaManager.DataToShowInDataview(specificDate);
             //if (result)
             //    OnDataItemShown(new EditAreaDataItemLoadedArg() { DataItem = specificDate, InEditMode = true });
@@ -3200,7 +3194,7 @@ namespace MyUILibrary.EntityArea
             bool enableDisableDataSection = true;
             if (GetDataList().Any(x => x.IsUseLessBecauseNewAndReadonly))
             {
-                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("موجودیت فقط خواندنی می باشد و امکان ثبت داده وجود ندارد", FilterCalculationError.Message, Temp.InfoColor.Red);
+                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("موجودیت فقط خواندنی می باشد و امکان ثبت داده وجود ندارد", "", Temp.InfoColor.Red);
                 enableDisableDataSection = false;
             }
             if (DataView != null)

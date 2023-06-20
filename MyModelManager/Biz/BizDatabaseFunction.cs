@@ -246,18 +246,18 @@ namespace MyModelManager
                 return ToDatabaseFunction_EntityDTO(DatabaseFunctions, true);
             }
         }
-        public DatabaseFunction_EntityDTO GetDatabaseFunctionEntity(int functionID, int entityID)
-        {
+        //public DatabaseFunction_EntityDTO GetDatabaseFunctionEntity(int functionID, int entityID)
+        //{
 
-            using (var projectContext = new DataAccess.MyIdeaEntities())
-            {
-                var DatabaseFunctions = projectContext.DatabaseFunction_TableDrivedEntity.FirstOrDefault(x => x.TableDrivedEntityID == entityID && x.DatabaseFunctionID == functionID);
-                if (DatabaseFunctions != null)
-                    return ToDatabaseFunction_EntityDTO(DatabaseFunctions, true);
-                else
-                    return null;
-            }
-        }
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
+        //    {
+        //        var DatabaseFunctions = projectContext.DatabaseFunction_TableDrivedEntity.FirstOrDefault(x => x.TableDrivedEntityID == entityID && x.DatabaseFunctionID == functionID);
+        //        if (DatabaseFunctions != null)
+        //            return ToDatabaseFunction_EntityDTO(DatabaseFunctions, true);
+        //        else
+        //            return null;
+        //    }
+        //}
         public List<DatabaseFunction_EntityDTO> GetDatabaseFunctionEntities(DR_Requester requester, int entityID)
         {
             // BizDatabaseFunction:GetDatabaseFunctionEntities 5c860f83a5fd

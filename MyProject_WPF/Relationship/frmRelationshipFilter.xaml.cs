@@ -34,6 +34,7 @@ namespace MyProject_WPF
         RelationshipFilterDTO Message { set; get; }
         public frmRelationshipFilter(int relatoinshipID)
         {
+            // frmRelationshipFilter: 272cb9095085
             InitializeComponent();
             RelatoinshipID = relatoinshipID;
             BizRelationship bizRelationship = new BizRelationship();
@@ -180,7 +181,6 @@ namespace MyProject_WPF
             colValueRelationshipTail.DisplayMemberPath = "EntityPath";
             colValueRelationshipTail.SelectedValueMemberPath = "ID";
             colValueRelationshipTail.ItemsSource = bizEntityRelationshipTail.GetEntityRelationshipTails(MyProjectManager.GetMyProjectManager.GetRequester(), Relatoinship.EntityID1);
-
         }
 
         //private void SetSearchRelationshipTails()
@@ -205,11 +205,9 @@ namespace MyProject_WPF
         //}
         private void btnSaveAndSelect_Click(object sender, RoutedEventArgs e)
         {
-
             //باید رابطه ولیو یک به چند داخلش نباشد.چند به یک  میشود باشد
             bizRelationshipFilter.UpdateRelationshipFilters(RelatoinshipID, dtgRelationshipFilterColumns.ItemsSource as List<RelationshipFilterDTO>);
             MessageBox.Show("اطلاعات ثبت شد");
-
         }
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)
