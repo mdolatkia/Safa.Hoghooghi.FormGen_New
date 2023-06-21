@@ -315,16 +315,6 @@
           <Property Name="Group1" Type="varchar" MaxLength="128" />
           <Property Name="EntityDataItemReportID" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="DataMenuDataViewRelationship">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="EntityRelationshipTailID" Type="int" Nullable="false" />
-          <Property Name="Group1" Type="varchar" MaxLength="128" />
-          <Property Name="DataMenuSettingID" Type="int" Nullable="false" />
-          <Property Name="TargetDataMenuSettingID" Type="int" />
-        </EntityType>
         <EntityType Name="DataMenuForViewEntity">
           <Key>
             <PropertyRef Name="ID" />
@@ -333,16 +323,6 @@
           <Property Name="DataMenuSettingID" Type="int" Nullable="false" />
           <Property Name="RelationshipID" Type="int" Nullable="false" />
           <Property Name="TargetDataMenuSettingID" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="DataMenuGridViewRelationship">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="EntityRelationshipTailID" Type="int" Nullable="false" />
-          <Property Name="Group1" Type="varchar" MaxLength="128" />
-          <Property Name="DataMenuSettingID" Type="int" Nullable="false" />
-          <Property Name="TargetDataMenuSettingID" Type="int" />
         </EntityType>
         <EntityType Name="DataMenuSearchableReportRelationship">
           <Key>
@@ -445,6 +425,7 @@
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="DataMenuSettingID" Type="int" Nullable="false" />
+          <Property Name="EntityListViewID" Type="int" Nullable="false" />
           <Property Name="temp" Type="nchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="EntityDeterminer">
@@ -484,6 +465,7 @@
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="DataMenuSettingID" Type="int" Nullable="false" />
+          <Property Name="EntityListViewID" Type="int" Nullable="false" />
           <Property Name="temp" Type="nchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="EntityListReport">
@@ -1722,30 +1704,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_DataMenuDataViewRelationship_DataMenuSetting">
-          <End Role="DataMenuSetting" Type="Self.DataMenuSetting" Multiplicity="1" />
-          <End Role="DataMenuDataViewRelationship" Type="Self.DataMenuDataViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DataMenuSetting">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuDataViewRelationship">
-              <PropertyRef Name="DataMenuSettingID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DataMenuDataViewRelationship_DataMenuSetting1">
-          <End Role="DataMenuSetting" Type="Self.DataMenuSetting" Multiplicity="0..1" />
-          <End Role="DataMenuDataViewRelationship" Type="Self.DataMenuDataViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DataMenuSetting">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuDataViewRelationship">
-              <PropertyRef Name="TargetDataMenuSettingID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_DataMenuDirectReportRelationship_DataMenuSetting">
           <End Role="DataMenuSetting" Type="Self.DataMenuSetting" Multiplicity="1" />
           <End Role="DataMenuDataItemReportRelationship" Type="Self.DataMenuDataItemReportRelationship" Multiplicity="*" />
@@ -1803,30 +1761,6 @@
             </Principal>
             <Dependent Role="DataMenuForViewEntity">
               <PropertyRef Name="RelationshipID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DataMenuGridViewRelationship_DataMenuSetting">
-          <End Role="DataMenuSetting" Type="Self.DataMenuSetting" Multiplicity="1" />
-          <End Role="DataMenuGridViewRelationship" Type="Self.DataMenuGridViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DataMenuSetting">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuGridViewRelationship">
-              <PropertyRef Name="DataMenuSettingID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DataMenuGridViewRelationship_DataMenuSetting1">
-          <End Role="DataMenuSetting" Type="Self.DataMenuSetting" Multiplicity="0..1" />
-          <End Role="DataMenuGridViewRelationship" Type="Self.DataMenuGridViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DataMenuSetting">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuGridViewRelationship">
-              <PropertyRef Name="TargetDataMenuSettingID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1962,6 +1896,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EntityDataViewReport_EntityListView">
+          <End Role="EntityListView" Type="Self.EntityListView" Multiplicity="1" />
+          <End Role="EntityDataViewReport" Type="Self.EntityDataViewReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityListView">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityDataViewReport">
+              <PropertyRef Name="EntityListViewID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_EntityDataViewReport_EntitySearchableReport">
           <End Role="EntitySearchableReport" Type="Self.EntitySearchableReport" Multiplicity="1" />
           <End Role="EntityDataViewReport" Type="Self.EntityDataViewReport" Multiplicity="0..1" />
@@ -2034,18 +1980,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntityGridViewRelationships_EntityRelationshipTail">
-          <End Role="EntityRelationshipTail" Type="Self.EntityRelationshipTail" Multiplicity="1" />
-          <End Role="DataMenuGridViewRelationship" Type="Self.DataMenuGridViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuGridViewRelationship">
-              <PropertyRef Name="EntityRelationshipTailID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_EntityGridViewReport_DataMenuSetting">
           <End Role="DataMenuSetting" Type="Self.DataMenuSetting" Multiplicity="1" />
           <End Role="EntityGridViewReport" Type="Self.EntityGridViewReport" Multiplicity="*" />
@@ -2055,6 +1989,18 @@
             </Principal>
             <Dependent Role="EntityGridViewReport">
               <PropertyRef Name="DataMenuSettingID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntityGridViewReport_EntityListView">
+          <End Role="EntityListView" Type="Self.EntityListView" Multiplicity="1" />
+          <End Role="EntityGridViewReport" Type="Self.EntityGridViewReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityListView">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityGridViewReport">
+              <PropertyRef Name="EntityListViewID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2271,18 +2217,6 @@
             </Principal>
             <Dependent Role="EntityState">
               <PropertyRef Name="FormulaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntityStateConditionValues_EntityState">
-          <End Role="EntityState" Type="Self.EntityState" Multiplicity="1" />
-          <End Role="EntityStateValues" Type="Self.EntityStateValues" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityState">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntityStateValues">
-              <PropertyRef Name="EntityStateID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2882,6 +2816,18 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EntityStateSecuritySubject">
+              <PropertyRef Name="EntityStateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState">
+          <End Role="EntityState" Type="Self.EntityState" Multiplicity="1" />
+          <End Role="EntityStateValues" Type="Self.EntityStateValues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityState">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityStateValues">
               <PropertyRef Name="EntityStateID" />
             </Dependent>
           </ReferentialConstraint>
@@ -3519,18 +3465,6 @@
             </Principal>
             <Dependent Role="EntityCommand">
               <PropertyRef Name="ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKEntityData184784">
-          <End Role="EntityRelationshipTail" Type="Self.EntityRelationshipTail" Multiplicity="1" />
-          <End Role="DataMenuDataViewRelationship" Type="Self.DataMenuDataViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuDataViewRelationship">
-              <PropertyRef Name="EntityRelationshipTailID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4982,9 +4916,7 @@
           <EntitySet Name="DataLinkDefinition" EntityType="Self.DataLinkDefinition" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DataLinkDefinition_EntityRelationshipTail" EntityType="Self.DataLinkDefinition_EntityRelationshipTail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DataMenuDataItemReportRelationship" EntityType="Self.DataMenuDataItemReportRelationship" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="DataMenuDataViewRelationship" EntityType="Self.DataMenuDataViewRelationship" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DataMenuForViewEntity" EntityType="Self.DataMenuForViewEntity" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="DataMenuGridViewRelationship" EntityType="Self.DataMenuGridViewRelationship" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DataMenuSearchableReportRelationship" EntityType="Self.DataMenuSearchableReportRelationship" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DataMenuSetting" EntityType="Self.DataMenuSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DateColumnType" EntityType="Self.DateColumnType" Schema="dbo" store:Type="Tables" />
@@ -5186,14 +5118,6 @@
             <End Role="EntityRelationshipTailDataMenu" EntitySet="EntityRelationshipTailDataMenu" />
             <End Role="DataLinkDefinition_EntityRelationshipTail" EntitySet="DataLinkDefinition_EntityRelationshipTail" />
           </AssociationSet>
-          <AssociationSet Name="FK_DataMenuDataViewRelationship_DataMenuSetting" Association="Self.FK_DataMenuDataViewRelationship_DataMenuSetting">
-            <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
-            <End Role="DataMenuDataViewRelationship" EntitySet="DataMenuDataViewRelationship" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DataMenuDataViewRelationship_DataMenuSetting1" Association="Self.FK_DataMenuDataViewRelationship_DataMenuSetting1">
-            <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
-            <End Role="DataMenuDataViewRelationship" EntitySet="DataMenuDataViewRelationship" />
-          </AssociationSet>
           <AssociationSet Name="FK_DataMenuDirectReportRelationship_DataMenuSetting" Association="Self.FK_DataMenuDirectReportRelationship_DataMenuSetting">
             <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
             <End Role="DataMenuDataItemReportRelationship" EntitySet="DataMenuDataItemReportRelationship" />
@@ -5213,14 +5137,6 @@
           <AssociationSet Name="FK_DataMenuForViewEntity_Relationship" Association="Self.FK_DataMenuForViewEntity_Relationship">
             <End Role="Relationship" EntitySet="Relationship" />
             <End Role="DataMenuForViewEntity" EntitySet="DataMenuForViewEntity" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DataMenuGridViewRelationship_DataMenuSetting" Association="Self.FK_DataMenuGridViewRelationship_DataMenuSetting">
-            <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
-            <End Role="DataMenuGridViewRelationship" EntitySet="DataMenuGridViewRelationship" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DataMenuGridViewRelationship_DataMenuSetting1" Association="Self.FK_DataMenuGridViewRelationship_DataMenuSetting1">
-            <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
-            <End Role="DataMenuGridViewRelationship" EntitySet="DataMenuGridViewRelationship" />
           </AssociationSet>
           <AssociationSet Name="FK_DataMenuReportRelationship_DataMenuSetting" Association="Self.FK_DataMenuReportRelationship_DataMenuSetting">
             <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
@@ -5266,6 +5182,10 @@
             <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
             <End Role="EntityDataViewReport" EntitySet="EntityDataViewReport" />
           </AssociationSet>
+          <AssociationSet Name="FK_EntityDataViewReport_EntityListView" Association="Self.FK_EntityDataViewReport_EntityListView">
+            <End Role="EntityListView" EntitySet="EntityListView" />
+            <End Role="EntityDataViewReport" EntitySet="EntityDataViewReport" />
+          </AssociationSet>
           <AssociationSet Name="FK_EntityDataViewReport_EntitySearchableReport" Association="Self.FK_EntityDataViewReport_EntitySearchableReport">
             <End Role="EntitySearchableReport" EntitySet="EntitySearchableReport" />
             <End Role="EntityDataViewReport" EntitySet="EntityDataViewReport" />
@@ -5290,12 +5210,12 @@
             <End Role="EntitySearchableReport" EntitySet="EntitySearchableReport" />
             <End Role="EntityExternalReport" EntitySet="EntityExternalReport" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntityGridViewRelationships_EntityRelationshipTail" Association="Self.FK_EntityGridViewRelationships_EntityRelationshipTail">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="DataMenuGridViewRelationship" EntitySet="DataMenuGridViewRelationship" />
-          </AssociationSet>
           <AssociationSet Name="FK_EntityGridViewReport_DataMenuSetting" Association="Self.FK_EntityGridViewReport_DataMenuSetting">
             <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
+            <End Role="EntityGridViewReport" EntitySet="EntityGridViewReport" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntityGridViewReport_EntityListView" Association="Self.FK_EntityGridViewReport_EntityListView">
+            <End Role="EntityListView" EntitySet="EntityListView" />
             <End Role="EntityGridViewReport" EntitySet="EntityGridViewReport" />
           </AssociationSet>
           <AssociationSet Name="FK_EntityGridViewReport_EntitySearchableReport" Association="Self.FK_EntityGridViewReport_EntitySearchableReport">
@@ -5369,10 +5289,6 @@
           <AssociationSet Name="FK_EntityState_Formula" Association="Self.FK_EntityState_Formula">
             <End Role="Formula" EntitySet="Formula" />
             <End Role="EntityState" EntitySet="EntityState" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntityStateConditionValues_EntityState" Association="Self.FK_EntityStateConditionValues_EntityState">
-            <End Role="EntityState" EntitySet="EntityState" />
-            <End Role="EntityStateValues" EntitySet="EntityStateValues" />
           </AssociationSet>
           <AssociationSet Name="FK_Formula_CodeFunction" Association="Self.FK_Formula_CodeFunction">
             <End Role="CodeFunction" EntitySet="CodeFunction" />
@@ -5573,6 +5489,10 @@
           <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" Association="Self.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
             <End Role="EntityState" EntitySet="EntityState" />
             <End Role="EntityStateSecuritySubject" EntitySet="EntityStateSecuritySubject" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState" Association="Self.FK_TableDrivedEntityStateValues_TableDrivedEntityState">
+            <End Role="EntityState" EntitySet="EntityState" />
+            <End Role="EntityStateValues" EntitySet="EntityStateValues" />
           </AssociationSet>
           <AssociationSet Name="FK_UIColumnValue_Formula" Association="Self.FK_UIColumnValue_Formula">
             <End Role="Formula" EntitySet="Formula" />
@@ -5785,10 +5705,6 @@
           <AssociationSet Name="FKEntityComm678513" Association="Self.FKEntityComm678513">
             <End Role="SecurityObject" EntitySet="SecurityObject" />
             <End Role="EntityCommand" EntitySet="EntityCommand" />
-          </AssociationSet>
-          <AssociationSet Name="FKEntityData184784" Association="Self.FKEntityData184784">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="DataMenuDataViewRelationship" EntitySet="DataMenuDataViewRelationship" />
           </AssociationSet>
           <AssociationSet Name="FKEntityGrou453852" Association="Self.FKEntityGrou453852">
             <End Role="EntityGroup" EntitySet="EntityGroup" />
@@ -6299,9 +6215,7 @@
           <EntitySet Name="DataLinkDefinition" EntityType="MyIdeaModel.DataLinkDefinition" />
           <EntitySet Name="DataLinkDefinition_EntityRelationshipTail" EntityType="MyIdeaModel.DataLinkDefinition_EntityRelationshipTail" />
           <EntitySet Name="DataMenuDataItemReportRelationship" EntityType="MyIdeaModel.DataMenuDataItemReportRelationship" />
-          <EntitySet Name="DataMenuDataViewRelationship" EntityType="MyIdeaModel.DataMenuDataViewRelationship" />
           <EntitySet Name="DataMenuForViewEntity" EntityType="MyIdeaModel.DataMenuForViewEntity" />
-          <EntitySet Name="DataMenuGridViewRelationship" EntityType="MyIdeaModel.DataMenuGridViewRelationship" />
           <EntitySet Name="DataMenuSearchableReportRelationship" EntityType="MyIdeaModel.DataMenuSearchableReportRelationship" />
           <EntitySet Name="DataMenuSetting" EntityType="MyIdeaModel.DataMenuSetting" />
           <EntitySet Name="DateColumnType" EntityType="MyIdeaModel.DateColumnType" />
@@ -6790,18 +6704,6 @@
             <End Role="EntityDataItemReport" EntitySet="EntityDataItemReport" />
             <End Role="DataMenuDataItemReportRelationship" EntitySet="DataMenuDataItemReportRelationship" />
           </AssociationSet>
-          <AssociationSet Name="FK_DataMenuDataViewRelationship_DataMenuSetting" Association="MyIdeaModel.FK_DataMenuDataViewRelationship_DataMenuSetting">
-            <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
-            <End Role="DataMenuDataViewRelationship" EntitySet="DataMenuDataViewRelationship" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DataMenuDataViewRelationship_DataMenuSetting1" Association="MyIdeaModel.FK_DataMenuDataViewRelationship_DataMenuSetting1">
-            <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
-            <End Role="DataMenuDataViewRelationship" EntitySet="DataMenuDataViewRelationship" />
-          </AssociationSet>
-          <AssociationSet Name="FKEntityData184784" Association="MyIdeaModel.FKEntityData184784">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="DataMenuDataViewRelationship" EntitySet="DataMenuDataViewRelationship" />
-          </AssociationSet>
           <AssociationSet Name="FK_DataMenuForViewEntity_DataMenuSetting" Association="MyIdeaModel.FK_DataMenuForViewEntity_DataMenuSetting">
             <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
             <End Role="DataMenuForViewEntity" EntitySet="DataMenuForViewEntity" />
@@ -6813,18 +6715,6 @@
           <AssociationSet Name="FK_DataMenuForViewEntity_Relationship" Association="MyIdeaModel.FK_DataMenuForViewEntity_Relationship">
             <End Role="Relationship" EntitySet="Relationship" />
             <End Role="DataMenuForViewEntity" EntitySet="DataMenuForViewEntity" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DataMenuGridViewRelationship_DataMenuSetting" Association="MyIdeaModel.FK_DataMenuGridViewRelationship_DataMenuSetting">
-            <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
-            <End Role="DataMenuGridViewRelationship" EntitySet="DataMenuGridViewRelationship" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DataMenuGridViewRelationship_DataMenuSetting1" Association="MyIdeaModel.FK_DataMenuGridViewRelationship_DataMenuSetting1">
-            <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
-            <End Role="DataMenuGridViewRelationship" EntitySet="DataMenuGridViewRelationship" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EntityGridViewRelationships_EntityRelationshipTail" Association="MyIdeaModel.FK_EntityGridViewRelationships_EntityRelationshipTail">
-            <End Role="EntityRelationshipTail" EntitySet="EntityRelationshipTail" />
-            <End Role="DataMenuGridViewRelationship" EntitySet="DataMenuGridViewRelationship" />
           </AssociationSet>
           <AssociationSet Name="FK_DataMenuReportRelationship_DataMenuSetting" Association="MyIdeaModel.FK_DataMenuReportRelationship_DataMenuSetting">
             <End Role="DataMenuSetting" EntitySet="DataMenuSetting" />
@@ -6922,6 +6812,10 @@
             <End Role="EntityDataItemReport" EntitySet="EntityDataItemReport" />
             <End Role="GraphDefinition" EntitySet="GraphDefinition" />
           </AssociationSet>
+          <AssociationSet Name="FK_EntityDataViewReport_EntityListView" Association="MyIdeaModel.FK_EntityDataViewReport_EntityListView">
+            <End Role="EntityListView" EntitySet="EntityListView" />
+            <End Role="EntityDataViewReport" EntitySet="EntityDataViewReport" />
+          </AssociationSet>
           <AssociationSet Name="FK_EntityDataViewReport_EntitySearchableReport" Association="MyIdeaModel.FK_EntityDataViewReport_EntitySearchableReport">
             <End Role="EntitySearchableReport" EntitySet="EntitySearchableReport" />
             <End Role="EntityDataViewReport" EntitySet="EntityDataViewReport" />
@@ -6937,6 +6831,10 @@
           <AssociationSet Name="FK_EntityExternalReport_EntitySearchableReport" Association="MyIdeaModel.FK_EntityExternalReport_EntitySearchableReport">
             <End Role="EntitySearchableReport" EntitySet="EntitySearchableReport" />
             <End Role="EntityExternalReport" EntitySet="EntityExternalReport" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntityGridViewReport_EntityListView" Association="MyIdeaModel.FK_EntityGridViewReport_EntityListView">
+            <End Role="EntityListView" EntitySet="EntityListView" />
+            <End Role="EntityGridViewReport" EntitySet="EntityGridViewReport" />
           </AssociationSet>
           <AssociationSet Name="FK_EntityGridViewReport_EntitySearchableReport" Association="MyIdeaModel.FK_EntityGridViewReport_EntitySearchableReport">
             <End Role="EntitySearchableReport" EntitySet="EntitySearchableReport" />
@@ -7094,10 +6992,6 @@
             <End Role="Formula" EntitySet="Formula" />
             <End Role="EntityState" EntitySet="EntityState" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntityStateConditionValues_EntityState" Association="MyIdeaModel.FK_EntityStateConditionValues_EntityState">
-            <End Role="EntityState" EntitySet="EntityState" />
-            <End Role="EntityStateValues" EntitySet="EntityStateValues" />
-          </AssociationSet>
           <AssociationSet Name="FK_FormulaItems_TableDrivedEntityState" Association="MyIdeaModel.FK_FormulaItems_TableDrivedEntityState">
             <End Role="EntityState" EntitySet="EntityState" />
             <End Role="FormulaItems" EntitySet="FormulaItems" />
@@ -7105,6 +6999,10 @@
           <AssociationSet Name="FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" Association="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState">
             <End Role="EntityState" EntitySet="EntityState" />
             <End Role="EntityStateSecuritySubject" EntitySet="EntityStateSecuritySubject" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState" Association="MyIdeaModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState">
+            <End Role="EntityState" EntitySet="EntityState" />
+            <End Role="EntityStateValues" EntitySet="EntityStateValues" />
           </AssociationSet>
           <AssociationSet Name="FKEntityStat936255" Association="MyIdeaModel.FKEntityStat936255">
             <End Role="EntityState" EntitySet="EntityState" />
@@ -7997,19 +7895,6 @@
           <NavigationProperty Name="DataMenuSetting" Relationship="MyIdeaModel.FK_DataMenuDirectReportRelationship_DataMenuSetting" FromRole="DataMenuDataItemReportRelationship" ToRole="DataMenuSetting" />
           <NavigationProperty Name="EntityDataItemReport" Relationship="MyIdeaModel.FK_DataMenuDirectReportRelationship_EntityDirectlReport" FromRole="DataMenuDataItemReportRelationship" ToRole="EntityDataItemReport" />
         </EntityType>
-        <EntityType Name="DataMenuDataViewRelationship">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EntityRelationshipTailID" Type="Int32" Nullable="false" />
-          <Property Name="Group1" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="DataMenuSettingID" Type="Int32" Nullable="false" />
-          <Property Name="TargetDataMenuSettingID" Type="Int32" />
-          <NavigationProperty Name="DataMenuSetting" Relationship="MyIdeaModel.FK_DataMenuDataViewRelationship_DataMenuSetting" FromRole="DataMenuDataViewRelationship" ToRole="DataMenuSetting" />
-          <NavigationProperty Name="DataMenuSetting1" Relationship="MyIdeaModel.FK_DataMenuDataViewRelationship_DataMenuSetting1" FromRole="DataMenuDataViewRelationship" ToRole="DataMenuSetting" />
-          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyIdeaModel.FKEntityData184784" FromRole="DataMenuDataViewRelationship" ToRole="EntityRelationshipTail" />
-        </EntityType>
         <EntityType Name="DataMenuForViewEntity">
           <Key>
             <PropertyRef Name="ID" />
@@ -8021,19 +7906,6 @@
           <NavigationProperty Name="DataMenuSetting" Relationship="MyIdeaModel.FK_DataMenuForViewEntity_DataMenuSetting" FromRole="DataMenuForViewEntity" ToRole="DataMenuSetting" />
           <NavigationProperty Name="DataMenuSetting1" Relationship="MyIdeaModel.FK_DataMenuForViewEntity_DataMenuSetting1" FromRole="DataMenuForViewEntity" ToRole="DataMenuSetting" />
           <NavigationProperty Name="Relationship" Relationship="MyIdeaModel.FK_DataMenuForViewEntity_Relationship" FromRole="DataMenuForViewEntity" ToRole="Relationship" />
-        </EntityType>
-        <EntityType Name="DataMenuGridViewRelationship">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EntityRelationshipTailID" Type="Int32" Nullable="false" />
-          <Property Name="Group1" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="DataMenuSettingID" Type="Int32" Nullable="false" />
-          <Property Name="TargetDataMenuSettingID" Type="Int32" />
-          <NavigationProperty Name="DataMenuSetting" Relationship="MyIdeaModel.FK_DataMenuGridViewRelationship_DataMenuSetting" FromRole="DataMenuGridViewRelationship" ToRole="DataMenuSetting" />
-          <NavigationProperty Name="DataMenuSetting1" Relationship="MyIdeaModel.FK_DataMenuGridViewRelationship_DataMenuSetting1" FromRole="DataMenuGridViewRelationship" ToRole="DataMenuSetting" />
-          <NavigationProperty Name="EntityRelationshipTail" Relationship="MyIdeaModel.FK_EntityGridViewRelationships_EntityRelationshipTail" FromRole="DataMenuGridViewRelationship" ToRole="EntityRelationshipTail" />
         </EntityType>
         <EntityType Name="DataMenuSearchableReportRelationship">
           <Key>
@@ -8060,12 +7932,8 @@
           <NavigationProperty Name="DataLinkDefinition" Relationship="MyIdeaModel.FK_DataLinkDefinition_DataMenuSetting" FromRole="DataMenuSetting" ToRole="DataLinkDefinition" />
           <NavigationProperty Name="DataLinkDefinition1" Relationship="MyIdeaModel.FK_DataLinkDefinition_DataMenuSetting1" FromRole="DataMenuSetting" ToRole="DataLinkDefinition" />
           <NavigationProperty Name="DataMenuDataItemReportRelationship" Relationship="MyIdeaModel.FK_DataMenuDirectReportRelationship_DataMenuSetting" FromRole="DataMenuSetting" ToRole="DataMenuDataItemReportRelationship" />
-          <NavigationProperty Name="DataMenuDataViewRelationship" Relationship="MyIdeaModel.FK_DataMenuDataViewRelationship_DataMenuSetting" FromRole="DataMenuSetting" ToRole="DataMenuDataViewRelationship" />
-          <NavigationProperty Name="DataMenuDataViewRelationship1" Relationship="MyIdeaModel.FK_DataMenuDataViewRelationship_DataMenuSetting1" FromRole="DataMenuSetting" ToRole="DataMenuDataViewRelationship" />
           <NavigationProperty Name="DataMenuForViewEntity" Relationship="MyIdeaModel.FK_DataMenuForViewEntity_DataMenuSetting" FromRole="DataMenuSetting" ToRole="DataMenuForViewEntity" />
           <NavigationProperty Name="DataMenuForViewEntity1" Relationship="MyIdeaModel.FK_DataMenuForViewEntity_DataMenuSetting1" FromRole="DataMenuSetting" ToRole="DataMenuForViewEntity" />
-          <NavigationProperty Name="DataMenuGridViewRelationship" Relationship="MyIdeaModel.FK_DataMenuGridViewRelationship_DataMenuSetting" FromRole="DataMenuSetting" ToRole="DataMenuGridViewRelationship" />
-          <NavigationProperty Name="DataMenuGridViewRelationship1" Relationship="MyIdeaModel.FK_DataMenuGridViewRelationship_DataMenuSetting1" FromRole="DataMenuSetting" ToRole="DataMenuGridViewRelationship" />
           <NavigationProperty Name="DataMenuSearchableReportRelationship" Relationship="MyIdeaModel.FK_DataMenuReportRelationship_DataMenuSetting" FromRole="DataMenuSetting" ToRole="DataMenuSearchableReportRelationship" />
           <NavigationProperty Name="EntityListView" Relationship="MyIdeaModel.FK_DataMenuSetting_EntityListView" FromRole="DataMenuSetting" ToRole="EntityListView" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FK_DataMenuSetting_TableDrivedEntity" FromRole="DataMenuSetting" ToRole="TableDrivedEntity" />
@@ -8184,8 +8052,10 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="DataMenuSettingID" Type="Int32" Nullable="false" />
+          <Property Name="EntityListViewID" Type="Int32" Nullable="false" />
           <Property Name="temp" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="DataMenuSetting" Relationship="MyIdeaModel.FK_EntityDataViewReport_DataMenuSetting" FromRole="EntityDataViewReport" ToRole="DataMenuSetting" />
+          <NavigationProperty Name="EntityListView" Relationship="MyIdeaModel.FK_EntityDataViewReport_EntityListView" FromRole="EntityDataViewReport" ToRole="EntityListView" />
           <NavigationProperty Name="EntitySearchableReport" Relationship="MyIdeaModel.FK_EntityDataViewReport_EntitySearchableReport" FromRole="EntityDataViewReport" ToRole="EntitySearchableReport" />
         </EntityType>
         <EntityType Name="EntityDeterminer">
@@ -8231,8 +8101,10 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="DataMenuSettingID" Type="Int32" Nullable="false" />
+          <Property Name="EntityListViewID" Type="Int32" Nullable="false" />
           <Property Name="temp" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="DataMenuSetting" Relationship="MyIdeaModel.FK_EntityGridViewReport_DataMenuSetting" FromRole="EntityGridViewReport" ToRole="DataMenuSetting" />
+          <NavigationProperty Name="EntityListView" Relationship="MyIdeaModel.FK_EntityGridViewReport_EntityListView" FromRole="EntityGridViewReport" ToRole="EntityListView" />
           <NavigationProperty Name="EntitySearchableReport" Relationship="MyIdeaModel.FK_EntityGridViewReport_EntitySearchableReport" FromRole="EntityGridViewReport" ToRole="EntitySearchableReport" />
         </EntityType>
         <EntityType Name="EntityListReport">
@@ -8285,6 +8157,8 @@
           <NavigationProperty Name="DataMenuSetting" Relationship="MyIdeaModel.FK_DataMenuSetting_EntityListView" FromRole="EntityListView" ToRole="DataMenuSetting" />
           <NavigationProperty Name="EntityChartReport" Relationship="MyIdeaModel.FK_EntityChartReport_EntityListView" FromRole="EntityListView" ToRole="EntityChartReport" />
           <NavigationProperty Name="EntityCrosstabReport" Relationship="MyIdeaModel.FK_EntityCrosstabReport_EntityListView1" FromRole="EntityListView" ToRole="EntityCrosstabReport" />
+          <NavigationProperty Name="EntityDataViewReport" Relationship="MyIdeaModel.FK_EntityDataViewReport_EntityListView" FromRole="EntityListView" ToRole="EntityDataViewReport" />
+          <NavigationProperty Name="EntityGridViewReport" Relationship="MyIdeaModel.FK_EntityGridViewReport_EntityListView" FromRole="EntityListView" ToRole="EntityGridViewReport" />
           <NavigationProperty Name="EntityListReport" Relationship="MyIdeaModel.FKEntityList713545" FromRole="EntityListView" ToRole="EntityListReport" />
           <NavigationProperty Name="LetterTemplate" Relationship="MyIdeaModel.FK_LetterTemplate_EntityListView" FromRole="EntityListView" ToRole="LetterTemplate" />
           <NavigationProperty Name="EntityListViewColumns" Relationship="MyIdeaModel.FKEntityList123966" FromRole="EntityListView" ToRole="EntityListViewColumns" />
@@ -8329,8 +8203,6 @@
           <NavigationProperty Name="EntityLetterRelationshipTails" Relationship="MyIdeaModel.FKEntityLett6931" FromRole="EntityRelationshipTail" ToRole="EntityLetterRelationshipTails" />
           <NavigationProperty Name="ColumnValueRange" Relationship="MyIdeaModel.FK_ColumnValueRange_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="ColumnValueRange" />
           <NavigationProperty Name="DataLinkDefinition_EntityRelationshipTail" Relationship="MyIdeaModel.FKDataLinkDe804570" FromRole="EntityRelationshipTail" ToRole="DataLinkDefinition_EntityRelationshipTail" />
-          <NavigationProperty Name="DataMenuDataViewRelationship" Relationship="MyIdeaModel.FKEntityData184784" FromRole="EntityRelationshipTail" ToRole="DataMenuDataViewRelationship" />
-          <NavigationProperty Name="DataMenuGridViewRelationship" Relationship="MyIdeaModel.FK_EntityGridViewRelationships_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="DataMenuGridViewRelationship" />
           <NavigationProperty Name="DataMenuSearchableReportRelationship" Relationship="MyIdeaModel.FK_EntityReportDataMenuRelationships_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="DataMenuSearchableReportRelationship" />
           <NavigationProperty Name="EntityListReportSubs" Relationship="MyIdeaModel.FK_EntityListReportSubs_EntityRelationshipTail" FromRole="EntityRelationshipTail" ToRole="EntityListReportSubs" />
           <NavigationProperty Name="EntityListViewColumns" Relationship="MyIdeaModel.FKEntityList705975" FromRole="EntityRelationshipTail" ToRole="EntityListViewColumns" />
@@ -8447,9 +8319,9 @@
           <NavigationProperty Name="EntityRelationshipTail" Relationship="MyIdeaModel.FK_EntityState_EntityRelationshipTail" FromRole="EntityState" ToRole="EntityRelationshipTail" />
           <NavigationProperty Name="EntitySecurityDirect" Relationship="MyIdeaModel.FK_EntitySecurityDirect_TableDrivedEntityState" FromRole="EntityState" ToRole="EntitySecurityDirect" />
           <NavigationProperty Name="Formula" Relationship="MyIdeaModel.FK_EntityState_Formula" FromRole="EntityState" ToRole="Formula" />
-          <NavigationProperty Name="EntityStateValues" Relationship="MyIdeaModel.FK_EntityStateConditionValues_EntityState" FromRole="EntityState" ToRole="EntityStateValues" />
           <NavigationProperty Name="FormulaItems" Relationship="MyIdeaModel.FK_FormulaItems_TableDrivedEntityState" FromRole="EntityState" ToRole="FormulaItems" />
           <NavigationProperty Name="EntityStateSecuritySubject" Relationship="MyIdeaModel.FK_TableDrivedEntityStateSecuritySubject_TableDrivedEntityState" FromRole="EntityState" ToRole="EntityStateSecuritySubject" />
+          <NavigationProperty Name="EntityStateValues" Relationship="MyIdeaModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState" FromRole="EntityState" ToRole="EntityStateValues" />
           <NavigationProperty Name="EntityState_UIActionActivity" Relationship="MyIdeaModel.FKEntityStat936255" FromRole="EntityState" ToRole="EntityState_UIActionActivity" />
           <NavigationProperty Name="TableDrivedEntity" Relationship="MyIdeaModel.FKTableDrive764829" FromRole="EntityState" ToRole="TableDrivedEntity" />
         </EntityType>
@@ -8481,7 +8353,7 @@
           <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="EntityStateID" Type="Int32" Nullable="false" />
           <Property Name="ReservedValue" Type="Int16" />
-          <NavigationProperty Name="EntityState" Relationship="MyIdeaModel.FK_EntityStateConditionValues_EntityState" FromRole="EntityStateValues" ToRole="EntityState" />
+          <NavigationProperty Name="EntityState" Relationship="MyIdeaModel.FK_TableDrivedEntityStateValues_TableDrivedEntityState" FromRole="EntityStateValues" ToRole="EntityState" />
         </EntityType>
         <EntityType Name="EntityUIComposition">
           <Key>
@@ -10724,42 +10596,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_DataMenuDataViewRelationship_DataMenuSetting">
-          <End Type="MyIdeaModel.DataMenuSetting" Role="DataMenuSetting" Multiplicity="1" />
-          <End Type="MyIdeaModel.DataMenuDataViewRelationship" Role="DataMenuDataViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DataMenuSetting">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuDataViewRelationship">
-              <PropertyRef Name="DataMenuSettingID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DataMenuDataViewRelationship_DataMenuSetting1">
-          <End Type="MyIdeaModel.DataMenuSetting" Role="DataMenuSetting" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.DataMenuDataViewRelationship" Role="DataMenuDataViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DataMenuSetting">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuDataViewRelationship">
-              <PropertyRef Name="TargetDataMenuSettingID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKEntityData184784">
-          <End Type="MyIdeaModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="1" />
-          <End Type="MyIdeaModel.DataMenuDataViewRelationship" Role="DataMenuDataViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuDataViewRelationship">
-              <PropertyRef Name="EntityRelationshipTailID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_DataMenuForViewEntity_DataMenuSetting">
           <End Type="MyIdeaModel.DataMenuSetting" Role="DataMenuSetting" Multiplicity="1" />
           <End Type="MyIdeaModel.DataMenuForViewEntity" Role="DataMenuForViewEntity" Multiplicity="*" />
@@ -10793,42 +10629,6 @@
             </Principal>
             <Dependent Role="DataMenuForViewEntity">
               <PropertyRef Name="RelationshipID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DataMenuGridViewRelationship_DataMenuSetting">
-          <End Type="MyIdeaModel.DataMenuSetting" Role="DataMenuSetting" Multiplicity="1" />
-          <End Type="MyIdeaModel.DataMenuGridViewRelationship" Role="DataMenuGridViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DataMenuSetting">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuGridViewRelationship">
-              <PropertyRef Name="DataMenuSettingID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DataMenuGridViewRelationship_DataMenuSetting1">
-          <End Type="MyIdeaModel.DataMenuSetting" Role="DataMenuSetting" Multiplicity="0..1" />
-          <End Type="MyIdeaModel.DataMenuGridViewRelationship" Role="DataMenuGridViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DataMenuSetting">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuGridViewRelationship">
-              <PropertyRef Name="TargetDataMenuSettingID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntityGridViewRelationships_EntityRelationshipTail">
-          <End Type="MyIdeaModel.EntityRelationshipTail" Role="EntityRelationshipTail" Multiplicity="1" />
-          <End Type="MyIdeaModel.DataMenuGridViewRelationship" Role="DataMenuGridViewRelationship" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityRelationshipTail">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="DataMenuGridViewRelationship">
-              <PropertyRef Name="EntityRelationshipTailID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11120,6 +10920,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EntityDataViewReport_EntityListView">
+          <End Type="MyIdeaModel.EntityListView" Role="EntityListView" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntityDataViewReport" Role="EntityDataViewReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityListView">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityDataViewReport">
+              <PropertyRef Name="EntityListViewID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_EntityDataViewReport_EntitySearchableReport">
           <End Type="MyIdeaModel.EntitySearchableReport" Role="EntitySearchableReport" Multiplicity="1" />
           <End Type="MyIdeaModel.EntityDataViewReport" Role="EntityDataViewReport" Multiplicity="0..1" />
@@ -11165,6 +10977,18 @@
             </Principal>
             <Dependent Role="EntityExternalReport">
               <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntityGridViewReport_EntityListView">
+          <End Type="MyIdeaModel.EntityListView" Role="EntityListView" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntityGridViewReport" Role="EntityGridViewReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityListView">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityGridViewReport">
+              <PropertyRef Name="EntityListViewID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11636,18 +11460,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntityStateConditionValues_EntityState">
-          <End Type="MyIdeaModel.EntityState" Role="EntityState" Multiplicity="1" />
-          <End Type="MyIdeaModel.EntityStateValues" Role="EntityStateValues" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntityState">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EntityStateValues">
-              <PropertyRef Name="EntityStateID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_FormulaItems_TableDrivedEntityState">
           <End Type="MyIdeaModel.EntityState" Role="EntityState" Multiplicity="0..1" />
           <End Type="MyIdeaModel.FormulaItems" Role="FormulaItems" Multiplicity="*" />
@@ -11668,6 +11480,18 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EntityStateSecuritySubject">
+              <PropertyRef Name="EntityStateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableDrivedEntityStateValues_TableDrivedEntityState">
+          <End Type="MyIdeaModel.EntityState" Role="EntityState" Multiplicity="1" />
+          <End Type="MyIdeaModel.EntityStateValues" Role="EntityStateValues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntityState">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EntityStateValues">
               <PropertyRef Name="EntityStateID" />
             </Dependent>
           </ReferentialConstraint>
@@ -13414,34 +13238,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="DataMenuDataViewRelationship">
-            <EntityTypeMapping TypeName="MyIdeaModel.DataMenuDataViewRelationship">
-              <MappingFragment StoreEntitySet="DataMenuDataViewRelationship">
-                <ScalarProperty Name="TargetDataMenuSettingID" ColumnName="TargetDataMenuSettingID" />
-                <ScalarProperty Name="DataMenuSettingID" ColumnName="DataMenuSettingID" />
-                <ScalarProperty Name="Group1" ColumnName="Group1" />
-                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="DataMenuForViewEntity">
             <EntityTypeMapping TypeName="MyIdeaModel.DataMenuForViewEntity">
               <MappingFragment StoreEntitySet="DataMenuForViewEntity">
                 <ScalarProperty Name="TargetDataMenuSettingID" ColumnName="TargetDataMenuSettingID" />
                 <ScalarProperty Name="RelationshipID" ColumnName="RelationshipID" />
                 <ScalarProperty Name="DataMenuSettingID" ColumnName="DataMenuSettingID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DataMenuGridViewRelationship">
-            <EntityTypeMapping TypeName="MyIdeaModel.DataMenuGridViewRelationship">
-              <MappingFragment StoreEntitySet="DataMenuGridViewRelationship">
-                <ScalarProperty Name="TargetDataMenuSettingID" ColumnName="TargetDataMenuSettingID" />
-                <ScalarProperty Name="DataMenuSettingID" ColumnName="DataMenuSettingID" />
-                <ScalarProperty Name="Group1" ColumnName="Group1" />
-                <ScalarProperty Name="EntityRelationshipTailID" ColumnName="EntityRelationshipTailID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -13556,6 +13358,7 @@
             <EntityTypeMapping TypeName="MyIdeaModel.EntityDataViewReport">
               <MappingFragment StoreEntitySet="EntityDataViewReport">
                 <ScalarProperty Name="temp" ColumnName="temp" />
+                <ScalarProperty Name="EntityListViewID" ColumnName="EntityListViewID" />
                 <ScalarProperty Name="DataMenuSettingID" ColumnName="DataMenuSettingID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
@@ -13600,6 +13403,7 @@
             <EntityTypeMapping TypeName="MyIdeaModel.EntityGridViewReport">
               <MappingFragment StoreEntitySet="EntityGridViewReport">
                 <ScalarProperty Name="temp" ColumnName="temp" />
+                <ScalarProperty Name="EntityListViewID" ColumnName="EntityListViewID" />
                 <ScalarProperty Name="DataMenuSettingID" ColumnName="DataMenuSettingID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

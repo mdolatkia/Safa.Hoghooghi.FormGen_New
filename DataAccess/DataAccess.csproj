@@ -193,13 +193,7 @@
     <Compile Include="DataMenuDataItemReportRelationship.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataMenuDataViewRelationship.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Include="DataMenuForViewEntity.cs">
-      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DataMenuGridViewRelationship.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="DataMenuSearchableReportRelationship.cs">

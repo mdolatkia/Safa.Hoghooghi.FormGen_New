@@ -24,7 +24,7 @@ namespace MyUILibraryInterfaces.DataViewArea
     }
     public interface I_DataArea
     {
-        DataMenuSettingDTO DataMenuSetting { set; get; }
+    //    DataMenuSettingDTO DataMenuSetting { set; get; }
         I_DataViewAreaContainer DataViewAreaContainer { set; get; }
         DataViewAreaInitializer AreaInitializer { set; get; }
         void SetAreaInitializer(DataViewAreaInitializer initParam);
@@ -126,6 +126,8 @@ namespace MyUILibraryInterfaces.DataViewArea
         public string Title { set; get; }
         public int EntityID { set; get; }
         public int DataMenuSettingID { get; set; }
+
+        public int EntityListViewID { get; set; }
         //public TableDrivedEntityDTO Entitiy { set; get; }
         //public DP_SearchRepositoryMain SearchRepository { set; get; }
     }

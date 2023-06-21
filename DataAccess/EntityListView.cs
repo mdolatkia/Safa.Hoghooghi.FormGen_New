@@ -20,6 +20,8 @@ namespace DataAccess
             this.DataMenuSetting = new HashSet<DataMenuSetting>();
             this.EntityChartReport = new HashSet<EntityChartReport>();
             this.EntityCrosstabReport = new HashSet<EntityCrosstabReport>();
+            this.EntityDataViewReport = new HashSet<EntityDataViewReport>();
+            this.EntityGridViewReport = new HashSet<EntityGridViewReport>();
             this.EntityListReport = new HashSet<EntityListReport>();
             this.LetterTemplate = new HashSet<LetterTemplate>();
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
@@ -36,6 +38,10 @@ namespace DataAccess
         public virtual ICollection<EntityChartReport> EntityChartReport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityCrosstabReport> EntityCrosstabReport { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntityDataViewReport> EntityDataViewReport { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntityGridViewReport> EntityGridViewReport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityListReport> EntityListReport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

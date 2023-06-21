@@ -34,6 +34,7 @@ namespace MyProject_WPF
         {
             InitializeComponent();
             EntityID = entityID;
+            SetDataViewList();
             //  SetSubReports();
             //    SetSubReportRelationships();
             SetEntityPreDefinedSearchList();
@@ -49,7 +50,13 @@ namespace MyProject_WPF
             }
 
         }
-
+        private void SetDataViewList()
+        {
+            BizEntityListView bizEntityListView = new BizEntityListView();
+            lokEntityListView.DisplayMember = "Title";
+            lokEntityListView.SelectedValueMember = "ID";
+            lokEntityListView.ItemsSource = bizEntityListView.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+        }
         private void SetEntityPreDefinedSearchList()
         {
             if (lokSearchRepository.ItemsSource == null)
@@ -144,7 +151,7 @@ namespace MyProject_WPF
             txtReportName.Text = Message.ReportTitle;
             lokDataMenuSetting.SelectedValue = Message.DataMenuSettingID;
             lokSearchRepository.SelectedValue = Message.SearchRepositoryID;
-
+            lokEntityListView.SelectedValue = Message.EntityListViewID;
             //  dtgSubReports.ItemsSource = Message.EntityDataViewReportSubs;
             //SetGridSearch();
         }
@@ -162,6 +169,11 @@ namespace MyProject_WPF
                 MessageBox.Show("لطفا ابتدا لیست ستونها را ثبت و انتخاب نمایید");
                 return;
             }
+            if (lokEntityListView.SelectedItem == null)
+            {
+                MessageBox.Show("لطفا ابتدا لیست ستونها را ثبت و انتخاب نمایید");
+                return;
+            }
             if (txtReportName.Text == "")
             {
                 MessageBox.Show("عنوان مناسب تعریف نشده است");
@@ -170,6 +182,8 @@ namespace MyProject_WPF
             Message.TableDrivedEntityID = EntityID;
             Message.ReportTitle = txtReportName.Text;
             Message.DataMenuSettingID = (int)lokDataMenuSetting.SelectedValue;
+
+            Message.EntityListViewID = (int)lokEntityListView.SelectedValue;
 
             if (lokSearchRepository.SelectedItem != null)
                 Message.SearchRepositoryID = (int)lokSearchRepository.SelectedValue;

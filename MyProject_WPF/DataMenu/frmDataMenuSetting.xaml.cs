@@ -38,10 +38,11 @@ namespace MyProject_WPF
 
         public frmDataMenuSetting(int entityID, int dataMenuSettingID)
         {
+            // frmDataMenuSetting: 3ebf70a010fe
             InitializeComponent();
             EntityID = entityID;
             SetRelationshipTails();
-            SetDataViewList();
+          //  SetDataViewList();
             SetDataItemReports();
             if (dataMenuSettingID == 0)
             {
@@ -54,8 +55,8 @@ namespace MyProject_WPF
             SetTabVisiblities();
             SetBaseTables();
 
-            ControlHelper.GenerateContextMenu(dtgDataGridRelationships);
-            ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
+            //ControlHelper.GenerateContextMenu(dtgDataGridRelationships);
+            //ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
             ControlHelper.GenerateContextMenu(dtgReportRelationships);
             ControlHelper.GenerateContextMenu(dtgDataItemReport);
 
@@ -63,22 +64,22 @@ namespace MyProject_WPF
             dtgReportRelationships.RowLoaded += DtgColumns_RowLoaded;
             dtgReportRelationships.CellEditEnded += DtgConditions_CellEditEnded;
 
-            dtgDataViewRelationships.RowLoaded += DtgColumns_RowLoaded;
-            dtgDataViewRelationships.CellEditEnded += DtgConditions_CellEditEnded;
+            //dtgDataViewRelationships.RowLoaded += DtgColumns_RowLoaded;
+            //dtgDataViewRelationships.CellEditEnded += DtgConditions_CellEditEnded;
 
-            dtgDataGridRelationships.RowLoaded += DtgColumns_RowLoaded;
-            dtgDataGridRelationships.CellEditEnded += DtgConditions_CellEditEnded;
+            //dtgDataGridRelationships.RowLoaded += DtgColumns_RowLoaded;
+            //dtgDataGridRelationships.CellEditEnded += DtgConditions_CellEditEnded;
 
             colReportRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
-            colDataViewRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
-            colDataGridRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
+            //colDataViewRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
+            //colDataGridRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
 
-            colDataGridRelTargetDataMenuSetting.NewItemEnabled = true;
-            colDataViewRelTargetDataMenuSetting.NewItemEnabled = true;
-            colDataGridRelTargetDataMenuSetting.EditItemEnabled = true;
-            colDataViewRelTargetDataMenuSetting.EditItemEnabled = true;
-            colDataViewRelTargetDataMenuSetting.EditItemClicked += ColDataGridRelTargetDataMenuSetting_EditItemClicked;
-            colDataGridRelTargetDataMenuSetting.EditItemClicked += ColDataGridRelTargetDataMenuSetting_EditItemClicked;
+            //colDataGridRelTargetDataMenuSetting.NewItemEnabled = true;
+            //colDataViewRelTargetDataMenuSetting.NewItemEnabled = true;
+            //colDataGridRelTargetDataMenuSetting.EditItemEnabled = true;
+            //colDataViewRelTargetDataMenuSetting.EditItemEnabled = true;
+            //colDataViewRelTargetDataMenuSetting.EditItemClicked += ColDataGridRelTargetDataMenuSetting_EditItemClicked;
+            //colDataGridRelTargetDataMenuSetting.EditItemClicked += ColDataGridRelTargetDataMenuSetting_EditItemClicked;
 
             lokRelationship.SelectionChanged += LokRelationship_SelectionChanged;
             lokDataMenuSetting.EditItemClicked += LokDataMenuSetting_EditItemClicked;
@@ -111,8 +112,8 @@ namespace MyProject_WPF
             //** 71a75126-c643-4bbd-b001-8605f9c20cc9
             if (Entity.IsView)
             {
-                tabDataGridRelationships.Visibility = Visibility.Collapsed;
-                tabDataViewRelationships.Visibility = Visibility.Collapsed;
+                //tabDataGridRelationships.Visibility = Visibility.Collapsed;
+                //tabDataViewRelationships.Visibility = Visibility.Collapsed;
                 tabDataItemReport.Visibility = Visibility.Collapsed;
                 tabReportRelationships.Visibility = Visibility.Collapsed;
                 tabView.IsSelected = true;
@@ -164,38 +165,38 @@ namespace MyProject_WPF
             colDataItemReport.ItemsSource = reports;
         }
 
-        private void ColDataGridRelTargetDataMenuSetting_EditItemClicked(object sender, EditItemClickEventArg e)
-        {
-            if (e.DataConext is DataMenuDataViewRelationshipDTO)
-            {
-                var context = e.DataConext as DataMenuDataViewRelationshipDTO;
-                if (context.RelationshipTailID != 0)
-                {
-                    var tail = bizEntityRelationshipTail.GetEntityRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), context.RelationshipTailID);
-                    frmDataMenuSetting frm = new frmDataMenuSetting(tail.TargetEntityID, context.TargetDataMenuSettingID);
-                    MyProjectManager.GetMyProjectManager.ShowDialog(frm, "رابطه های مرتبط");
-                    frm.DataUpdated += (sender1, e1) => Frm_TailSelected(sender1, e1, sender as MyStaticLookup, context);
-                }
-            }
-            else if (e.DataConext is DataMenuGridViewRelationshipDTO)
-            {
-                var context = e.DataConext as DataMenuGridViewRelationshipDTO;
-                var tail = bizEntityRelationshipTail.GetEntityRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), context.RelationshipTailID);
-                frmDataMenuSetting frm = new frmDataMenuSetting(tail.TargetEntityID, context.TargetDataMenuSettingID);
-                MyProjectManager.GetMyProjectManager.ShowDialog(frm, "رابطه های مرتبط");
-                frm.DataUpdated += (sender1, e1) => Frm_TailSelected(sender1, e1, sender as MyStaticLookup, context);
-            }
-        }
-        private void Frm_TailSelected(object sender1, int e1, MyStaticLookup myStaticLookup, DataMenuDataViewRelationshipDTO dataContext)
-        {
-            SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), dataContext);
-            myStaticLookup.SelectedValue = e1;
-        }
-        private void Frm_TailSelected(object sender1, int e1, MyStaticLookup myStaticLookup, DataMenuGridViewRelationshipDTO dataContext)
-        {
-            SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), dataContext);
-            myStaticLookup.SelectedValue = e1;
-        }
+        //private void ColDataGridRelTargetDataMenuSetting_EditItemClicked(object sender, EditItemClickEventArg e)
+        //{
+        //    if (e.DataConext is DataMenuDataViewRelationshipDTO)
+        //    {
+        //        var context = e.DataConext as DataMenuDataViewRelationshipDTO;
+        //        if (context.RelationshipTailID != 0)
+        //        {
+        //            var tail = bizEntityRelationshipTail.GetEntityRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), context.RelationshipTailID);
+        //            frmDataMenuSetting frm = new frmDataMenuSetting(tail.TargetEntityID, context.TargetDataMenuSettingID);
+        //            MyProjectManager.GetMyProjectManager.ShowDialog(frm, "رابطه های مرتبط");
+        //            frm.DataUpdated += (sender1, e1) => Frm_TailSelected(sender1, e1, sender as MyStaticLookup, context);
+        //        }
+        //    }
+        //    else if (e.DataConext is DataMenuGridViewRelationshipDTO)
+        //    {
+        //        var context = e.DataConext as DataMenuGridViewRelationshipDTO;
+        //        var tail = bizEntityRelationshipTail.GetEntityRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), context.RelationshipTailID);
+        //        frmDataMenuSetting frm = new frmDataMenuSetting(tail.TargetEntityID, context.TargetDataMenuSettingID);
+        //        MyProjectManager.GetMyProjectManager.ShowDialog(frm, "رابطه های مرتبط");
+        //        frm.DataUpdated += (sender1, e1) => Frm_TailSelected(sender1, e1, sender as MyStaticLookup, context);
+        //    }
+        //}
+        //private void Frm_TailSelected(object sender1, int e1, MyStaticLookup myStaticLookup, DataMenuDataViewRelationshipDTO dataContext)
+        //{
+        //    SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), dataContext);
+        //    myStaticLookup.SelectedValue = e1;
+        //}
+        //private void Frm_TailSelected(object sender1, int e1, MyStaticLookup myStaticLookup, DataMenuGridViewRelationshipDTO dataContext)
+        //{
+        //    SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), dataContext);
+        //    myStaticLookup.SelectedValue = e1;
+        //}
 
 
         private void SetRelationshipTails()
@@ -203,26 +204,26 @@ namespace MyProject_WPF
             BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
             var relationshipTails = bizEntityRelationshipTail.GetEntityRelationshipTails(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
 
-            colDataGridRelationshipTail.DisplayMemberPath = "EntityPath";
-            colDataGridRelationshipTail.SelectedValueMemberPath = "ID";
-            colDataGridRelationshipTail.ItemsSource = relationshipTails;
+            //colDataGridRelationshipTail.DisplayMemberPath = "EntityPath";
+            //colDataGridRelationshipTail.SelectedValueMemberPath = "ID";
+            //colDataGridRelationshipTail.ItemsSource = relationshipTails;
 
-            colDataViewRelationshipTail.DisplayMemberPath = "EntityPath";
-            colDataViewRelationshipTail.SelectedValueMemberPath = "ID";
-            colDataViewRelationshipTail.ItemsSource = relationshipTails;
+            //colDataViewRelationshipTail.DisplayMemberPath = "EntityPath";
+            //colDataViewRelationshipTail.SelectedValueMemberPath = "ID";
+            //colDataViewRelationshipTail.ItemsSource = relationshipTails;
 
             colReportRelationshipTail.DisplayMemberPath = "EntityPath";
             colReportRelationshipTail.SelectedValueMemberPath = "ID";
             colReportRelationshipTail.ItemsSource = relationshipTails;
 
         }
-        private void SetDataViewList()
-        {
-            BizEntityListView bizEntityListView = new BizEntityListView();
-            lokEntityDataView.DisplayMember = "Title";
-            lokEntityDataView.SelectedValueMember = "ID";
-            lokEntityDataView.ItemsSource = bizEntityListView.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
-        }
+        //private void SetDataViewList()
+        //{
+        //    BizEntityListView bizEntityListView = new BizEntityListView();
+        //    lokEntityDataView.DisplayMember = "Title";
+        //    lokEntityDataView.SelectedValueMember = "ID";
+        //    lokEntityDataView.ItemsSource = bizEntityListView.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+        //}
         private void DtgColumns_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
         {
             if (e.DataElement is DataMenuSearchableReportRelationshipDTO)
@@ -231,18 +232,18 @@ namespace MyProject_WPF
                 if (data.vwReports == null || data.vwReports.Count == 0)
                     SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), data);
             }
-            else if (e.DataElement is DataMenuDataViewRelationshipDTO)
-            {
-                var data = (e.DataElement as DataMenuDataViewRelationshipDTO);
-                if (data.vwDataMenuSettings == null || data.vwDataMenuSettings.Count == 0)
-                    SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), data);
-            }
-            else if (e.DataElement is DataMenuGridViewRelationshipDTO)
-            {
-                var data = (e.DataElement as DataMenuGridViewRelationshipDTO);
-                if (data.vwDataMenuSettings == null || data.vwDataMenuSettings.Count == 0)
-                    SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), data);
-            }
+            //else if (e.DataElement is DataMenuDataViewRelationshipDTO)
+            //{
+            //    var data = (e.DataElement as DataMenuDataViewRelationshipDTO);
+            //    if (data.vwDataMenuSettings == null || data.vwDataMenuSettings.Count == 0)
+            //        SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), data);
+            //}
+            //else if (e.DataElement is DataMenuGridViewRelationshipDTO)
+            //{
+            //    var data = (e.DataElement as DataMenuGridViewRelationshipDTO);
+            //    if (data.vwDataMenuSettings == null || data.vwDataMenuSettings.Count == 0)
+            //        SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), data);
+            //}
         }
 
         private void DtgConditions_CellEditEnded(object sender, Telerik.Windows.Controls.GridViewCellEditEndedEventArgs e)
@@ -255,22 +256,22 @@ namespace MyProject_WPF
                     SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), condition);
                 }
             }
-            else if (e.Cell.Column == colDataViewRelationshipTail)
-            {
-                if (e.Cell.DataContext is DataMenuDataViewRelationshipDTO)
-                {
-                    var condition = (e.Cell.DataContext as DataMenuDataViewRelationshipDTO);
-                    SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), condition);
-                }
-            }
-            else if (e.Cell.Column == colDataGridRelationshipTail)
-            {
-                if (e.Cell.DataContext is DataMenuGridViewRelationshipDTO)
-                {
-                    var condition = (e.Cell.DataContext as DataMenuGridViewRelationshipDTO);
-                    SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), condition);
-                }
-            }
+            //else if (e.Cell.Column == colDataViewRelationshipTail)
+            //{
+            //    if (e.Cell.DataContext is DataMenuDataViewRelationshipDTO)
+            //    {
+            //        var condition = (e.Cell.DataContext as DataMenuDataViewRelationshipDTO);
+            //        SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), condition);
+            //    }
+            //}
+            //else if (e.Cell.Column == colDataGridRelationshipTail)
+            //{
+            //    if (e.Cell.DataContext is DataMenuGridViewRelationshipDTO)
+            //    {
+            //        var condition = (e.Cell.DataContext as DataMenuGridViewRelationshipDTO);
+            //        SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), condition);
+            //    }
+            //}
         }
 
         private void SetRelationshipReports(DR_Requester requester, DataMenuSearchableReportRelationshipDTO condition)
@@ -284,26 +285,26 @@ namespace MyProject_WPF
             condition.vwReports = reports;
         }
 
-        private void SetRelationshipDataMenus(DR_Requester requester, DataMenuDataViewRelationshipDTO condition)
-        {
-            if (condition.RelationshipTailID == 0)
-                return;
-            colDataViewRelTargetDataMenuSetting.DisplayMemberPath = "Name";
-            colDataViewRelTargetDataMenuSetting.SelectedValueMemberPath = "ID";
-            //    var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(condition.EntityRelationshipTailID);
-            var items = bizDataMenuSetting.GetDataMenusOfRelationshipTail(requester, condition.RelationshipTailID);
-            condition.vwDataMenuSettings = items;
-        }
-        private void SetRelationshipDataMenus(DR_Requester requester, DataMenuGridViewRelationshipDTO condition)
-        {
-            if (condition.RelationshipTailID == 0)
-                return;
-            colDataGridRelTargetDataMenuSetting.DisplayMemberPath = "Name";
-            colDataGridRelTargetDataMenuSetting.SelectedValueMemberPath = "ID";
-            //    var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(condition.EntityRelationshipTailID);
-            var items = bizDataMenuSetting.GetDataMenusOfRelationshipTail(requester, condition.RelationshipTailID);
-            condition.vwDataMenuSettings = items;
-        }
+        //private void SetRelationshipDataMenus(DR_Requester requester, DataMenuDataViewRelationshipDTO condition)
+        //{
+        //    if (condition.RelationshipTailID == 0)
+        //        return;
+        //    colDataViewRelTargetDataMenuSetting.DisplayMemberPath = "Name";
+        //    colDataViewRelTargetDataMenuSetting.SelectedValueMemberPath = "ID";
+        //    //    var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(condition.EntityRelationshipTailID);
+        //    var items = bizDataMenuSetting.GetDataMenusOfRelationshipTail(requester, condition.RelationshipTailID);
+        //    condition.vwDataMenuSettings = items;
+        //}
+        //private void SetRelationshipDataMenus(DR_Requester requester, DataMenuGridViewRelationshipDTO condition)
+        //{
+        //    if (condition.RelationshipTailID == 0)
+        //        return;
+        //    colDataGridRelTargetDataMenuSetting.DisplayMemberPath = "Name";
+        //    colDataGridRelTargetDataMenuSetting.SelectedValueMemberPath = "ID";
+        //    //    var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(condition.EntityRelationshipTailID);
+        //    var items = bizDataMenuSetting.GetDataMenusOfRelationshipTail(requester, condition.RelationshipTailID);
+        //    condition.vwDataMenuSettings = items;
+        //}
         private void ColRelationshipTail_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
         {
             frmEntityRelationshipTail frm = null;
@@ -329,8 +330,8 @@ namespace MyProject_WPF
             else
                 btnSetDataMenuSetting.IsEnabled = true;
             dtgReportRelationships.ItemsSource = Message.SearchableReportRelationships;
-            dtgDataViewRelationships.ItemsSource = Message.DataViewRelationships;
-            dtgDataGridRelationships.ItemsSource = Message.GridViewRelationships;
+          //  dtgDataViewRelationships.ItemsSource = Message.DataViewRelationships;
+          //  dtgDataGridRelationships.ItemsSource = Message.GridViewRelationships;
             dtgDataItemReport.ItemsSource = Message.DataItemReports;
             txtName.Text = Message.Name;
             lokRelationship.SelectedValue = Message.RelationshipID;
@@ -340,7 +341,6 @@ namespace MyProject_WPF
                 SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), item);
             }
 
-            lokEntityDataView.SelectedValue = Message.EntityListViewID;
             if (Message.IconContent != null)
             {
                 grdExisting.Visibility = Visibility.Visible;
@@ -377,40 +377,40 @@ namespace MyProject_WPF
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var item in Message.DataViewRelationships)
-            {
-                if (item.RelationshipTailID != 0)
-                {
-                    var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), item.RelationshipTailID);
-                    BizTableDrivedEntity bizTableDrivedEntity = new MyModelManager.BizTableDrivedEntity();
-                    var entity = bizTableDrivedEntity.GetSimpleEntity(MyProjectManager.GetMyProjectManager.GetRequester(), relationshipTail.TargetEntityID);
-                    var linkedServerMessage = bizEntityRelationshipTail.CheckLinkedServers(entity, relationshipTail.ReverseRelationshipTail);
-                    if (linkedServerMessage != "")
-                    {
-                        var message = "اشکال در تعریف نمایش داده و لینک سرور برای موجودیت" + " " + string.IsNullOrEmpty(relationshipTail.TargetEntityAlias);
-                        message += Environment.NewLine + linkedServerMessage;
-                        MessageBox.Show(message);
-                        return;
-                    }
-                }
-            }
-            foreach (var item in Message.GridViewRelationships)
-            {
-                if (item.RelationshipTailID != 0)
-                {
-                    var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), item.RelationshipTailID);
-                    BizTableDrivedEntity bizTableDrivedEntity = new MyModelManager.BizTableDrivedEntity();
-                    var entity = bizTableDrivedEntity.GetSimpleEntity(MyProjectManager.GetMyProjectManager.GetRequester(), relationshipTail.TargetEntityID);
-                    var linkedServerMessage = bizEntityRelationshipTail.CheckLinkedServers(entity, relationshipTail.ReverseRelationshipTail);
-                    if (linkedServerMessage != "")
-                    {
-                        var message = "اشکال در تعریف گرید داده و لینک سرور برای موجودیت" + " " + string.IsNullOrEmpty(relationshipTail.TargetEntityAlias);
-                        message += Environment.NewLine + linkedServerMessage;
-                        MessageBox.Show(message);
-                        return;
-                    }
-                }
-            }
+            //foreach (var item in Message.DataViewRelationships)
+            //{
+            //    if (item.RelationshipTailID != 0)
+            //    {
+            //        var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), item.RelationshipTailID);
+            //        BizTableDrivedEntity bizTableDrivedEntity = new MyModelManager.BizTableDrivedEntity();
+            //        var entity = bizTableDrivedEntity.GetSimpleEntity(MyProjectManager.GetMyProjectManager.GetRequester(), relationshipTail.TargetEntityID);
+            //        var linkedServerMessage = bizEntityRelationshipTail.CheckLinkedServers(entity, relationshipTail.ReverseRelationshipTail);
+            //        if (linkedServerMessage != "")
+            //        {
+            //            var message = "اشکال در تعریف نمایش داده و لینک سرور برای موجودیت" + " " + string.IsNullOrEmpty(relationshipTail.TargetEntityAlias);
+            //            message += Environment.NewLine + linkedServerMessage;
+            //            MessageBox.Show(message);
+            //            return;
+            //        }
+            //    }
+            //}
+            //foreach (var item in Message.GridViewRelationships)
+            //{
+            //    if (item.RelationshipTailID != 0)
+            //    {
+            //        var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), item.RelationshipTailID);
+            //        BizTableDrivedEntity bizTableDrivedEntity = new MyModelManager.BizTableDrivedEntity();
+            //        var entity = bizTableDrivedEntity.GetSimpleEntity(MyProjectManager.GetMyProjectManager.GetRequester(), relationshipTail.TargetEntityID);
+            //        var linkedServerMessage = bizEntityRelationshipTail.CheckLinkedServers(entity, relationshipTail.ReverseRelationshipTail);
+            //        if (linkedServerMessage != "")
+            //        {
+            //            var message = "اشکال در تعریف گرید داده و لینک سرور برای موجودیت" + " " + string.IsNullOrEmpty(relationshipTail.TargetEntityAlias);
+            //            message += Environment.NewLine + linkedServerMessage;
+            //            MessageBox.Show(message);
+            //            return;
+            //        }
+            //    }
+            //}
             foreach (var item in Message.SearchableReportRelationships)
             {
                 if (item.RelationshipTailID != 0)
@@ -456,10 +456,7 @@ namespace MyProject_WPF
             {
                 Message.IconContent = File.ReadAllBytes(txtFilePath.Text);
             }
-            if (lokEntityDataView.SelectedItem != null)
-                Message.EntityListViewID = (int)lokEntityDataView.SelectedValue;
-            else
-                Message.EntityListViewID = 0;
+          
             Message.EntityID = EntityID;
             Message.Name = txtName.Text;
 

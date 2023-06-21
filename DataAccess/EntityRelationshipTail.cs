@@ -21,8 +21,6 @@ namespace DataAccess
             this.EntityLetterRelationshipTails = new HashSet<EntityLetterRelationshipTails>();
             this.ColumnValueRange = new HashSet<ColumnValueRange>();
             this.DataLinkDefinition_EntityRelationshipTail = new HashSet<DataLinkDefinition_EntityRelationshipTail>();
-            this.DataMenuDataViewRelationship = new HashSet<DataMenuDataViewRelationship>();
-            this.DataMenuGridViewRelationship = new HashSet<DataMenuGridViewRelationship>();
             this.DataMenuSearchableReportRelationship = new HashSet<DataMenuSearchableReportRelationship>();
             this.EntityListReportSubs = new HashSet<EntityListReportSubs>();
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
@@ -48,10 +46,6 @@ namespace DataAccess
         public virtual ICollection<ColumnValueRange> ColumnValueRange { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataLinkDefinition_EntityRelationshipTail> DataLinkDefinition_EntityRelationshipTail { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

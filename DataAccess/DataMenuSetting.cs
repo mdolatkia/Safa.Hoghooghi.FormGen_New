@@ -20,12 +20,8 @@ namespace DataAccess
             this.DataLinkDefinition = new HashSet<DataLinkDefinition>();
             this.DataLinkDefinition1 = new HashSet<DataLinkDefinition>();
             this.DataMenuDataItemReportRelationship = new HashSet<DataMenuDataItemReportRelationship>();
-            this.DataMenuDataViewRelationship = new HashSet<DataMenuDataViewRelationship>();
-            this.DataMenuDataViewRelationship1 = new HashSet<DataMenuDataViewRelationship>();
             this.DataMenuForViewEntity = new HashSet<DataMenuForViewEntity>();
             this.DataMenuForViewEntity1 = new HashSet<DataMenuForViewEntity>();
-            this.DataMenuGridViewRelationship = new HashSet<DataMenuGridViewRelationship>();
-            this.DataMenuGridViewRelationship1 = new HashSet<DataMenuGridViewRelationship>();
             this.DataMenuSearchableReportRelationship = new HashSet<DataMenuSearchableReportRelationship>();
             this.EntityDataViewReport = new HashSet<EntityDataViewReport>();
             this.EntityGridViewReport = new HashSet<EntityGridViewReport>();
@@ -47,17 +43,9 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataMenuDataItemReportRelationship> DataMenuDataItemReportRelationship { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataMenuDataViewRelationship> DataMenuDataViewRelationship1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataMenuForViewEntity> DataMenuForViewEntity { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataMenuForViewEntity> DataMenuForViewEntity1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataMenuGridViewRelationship> DataMenuGridViewRelationship1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
         public virtual EntityListView EntityListView { get; set; }

@@ -2321,19 +2321,19 @@ namespace MyModelCustomSetting
             DataMenuSetting conclusionDataMenuSetting = null;
             if (serviceConclusion != null)
             {
-                conclusionDataMenuSetting = new DataMenuSetting();
-                serviceConclusion.DataMenuSetting1 = conclusionDataMenuSetting;
-                conclusionDataMenuSetting.Name = "تنظیمات منوی صورتحساب و جزئیات";
-                conclusionDataMenuSetting.TableDrivedEntityID = serviceConclusion.ID;
-                if (serviceConclusion.EntityListView.FirstOrDefault(x => x.IsDefault == true) != null)
-                    conclusionDataMenuSetting.EntityListViewID = serviceConclusion.EntityListView.FirstOrDefault(x => x.IsDefault == true).ID;
+                //conclusionDataMenuSetting = new DataMenuSetting();
+                //serviceConclusion.DataMenuSetting1 = conclusionDataMenuSetting;
+                //conclusionDataMenuSetting.Name = "تنظیمات منوی صورتحساب و جزئیات";
+                //conclusionDataMenuSetting.TableDrivedEntityID = serviceConclusion.ID;
+                //if (serviceConclusion.EntityListView.FirstOrDefault(x => x.IsDefault == true) != null)
+                //    conclusionDataMenuSetting.EntityListViewID = serviceConclusion.EntityListView.FirstOrDefault(x => x.IsDefault == true).ID;
 
-                var conclusionToItemsRelMenu = new DataMenuGridViewRelationship();
-                var conclusionToItems = serviceConclusion.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusionItem.ID);
-                var tailconclusionToItemsRel = GetRelationshipTail(projectContext, serviceConclusion, serviceConclusionItem, conclusionToItems.ID.ToString());
-                conclusionToItemsRelMenu.EntityRelationshipTail = tailconclusionToItemsRel;
-                conclusionToItemsRelMenu.TargetDataMenuSettingID = null;
-                conclusionDataMenuSetting.DataMenuGridViewRelationship.Add(conclusionToItemsRelMenu);
+                //var conclusionToItemsRelMenu = new DataMenuGridViewRelationship();
+                //var conclusionToItems = serviceConclusion.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusionItem.ID);
+                //var tailconclusionToItemsRel = GetRelationshipTail(projectContext, serviceConclusion, serviceConclusionItem, conclusionToItems.ID.ToString());
+                //conclusionToItemsRelMenu.EntityRelationshipTail = tailconclusionToItemsRel;
+                //conclusionToItemsRelMenu.TargetDataMenuSettingID = null;
+                //conclusionDataMenuSetting.DataMenuGridViewRelationship.Add(conclusionToItemsRelMenu);
             }
             NavigationTree mnuReportFolder = null;
             var mnuMain = projectContext.NavigationTree.FirstOrDefault(x => x.ItemIdentity == databaseID);
@@ -2821,20 +2821,27 @@ namespace MyModelCustomSetting
                     var serviceRequestToServiceConclusion = serviceRequest.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusion.ID);
                     tailCustomerToConclusion = GetRelationshipTail(projectContext, customer, serviceConclusion, customerToServiceRequest.ID + "," + serviceRequestToServiceConclusion.ID);
 
-                    var dataViewRel = new DataMenuDataViewRelationship();
-                    dataViewRel.EntityRelationshipTail = tailCustomerToConclusion;
-                    dataViewRel.DataMenuSetting1 = conclusionDataMenuSetting;
-                    customerDataMenuSetting.DataMenuDataViewRelationship.Add(dataViewRel);
+                    //var dataViewRel = new DataMenuDataViewRelationship();
+                    //dataViewRel.EntityRelationshipTail = tailCustomerToConclusion;
+                    //dataViewRel.DataMenuSetting1 = conclusionDataMenuSetting;
+                    //customerDataMenuSetting.DataMenuDataViewRelationship.Add(dataViewRel);
 
-                    var dataGridRel = new DataMenuGridViewRelationship();
-                    dataGridRel.EntityRelationshipTail = tailCustomerToConclusion;
-                    dataGridRel.DataMenuSetting1 = conclusionDataMenuSetting;
-                    customerDataMenuSetting.DataMenuGridViewRelationship.Add(dataGridRel);
+                    //var dataGridRel = new DataMenuGridViewRelationship();
+                    //dataGridRel.EntityRelationshipTail = tailCustomerToConclusion;
+                    //dataGridRel.DataMenuSetting1 = conclusionDataMenuSetting;
+                    //customerDataMenuSetting.DataMenuGridViewRelationship.Add(dataGridRel);
 
                     var conclusionDataViewReportRel = new DataMenuSearchableReportRelationship();
                     conclusionDataViewReportRel.EntityRelationshipTail = tailCustomerToConclusion;
                     conclusionDataViewReportRel.EntitySearchableReport = dataViewReport.EntitySearchableReport;
                     customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionDataViewReportRel);
+
+                    var conclusionGridViewReportRel = new DataMenuSearchableReportRelationship();
+                    conclusionGridViewReportRel.EntityRelationshipTail = tailCustomerToConclusion;
+                    conclusionGridViewReportRel.EntitySearchableReport = gridViewReport.EntitySearchableReport;
+                    customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionGridViewReportRel);
+                    
+
 
                     var conclusionListReportRel = new DataMenuSearchableReportRelationship();
                     conclusionListReportRel.EntityRelationshipTail = tailCustomerToConclusion;

@@ -50,13 +50,13 @@ namespace MyUILibrary.DataViewArea
             View.EntityListViewChanged += View_EntityListViewChanged;
             View.OrderColumnsChanged += View_OrderColumnsChanged;
 
-            if (AreaInitializer.DataMenuSettingID != 0)
-                DataMenuSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDataMenuSetting(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.DataMenuSettingID);
-            else
-                DataMenuSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDefaultDataMenuSetting(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
+            //if (AreaInitializer.DataMenuSettingID != 0)
+            //    DataMenuSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDataMenuSetting(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.DataMenuSettingID);
+            //else
+            //    DataMenuSetting = AgentUICoreMediator.GetAgentUICoreMediator.DataMenuManager.GetDefaultDataMenuSetting(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
 
-            if (DataMenuSetting != null && DataMenuSetting.EntityListViewID != 0)
-                SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), DataMenuSetting.EntityListViewID);
+            if (AreaInitializer.EntityListViewID != 0)
+                SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityListViewID);
             else
                 SelectedListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetOrCreateEntityListViewDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
 
@@ -208,10 +208,10 @@ namespace MyUILibrary.DataViewArea
         //    //    }
         //    //}
         //}
-        public DataMenuSettingDTO DataMenuSetting
-        {
-            set; get;
-        }
+        //public DataMenuSettingDTO DataMenuSetting
+        //{
+        //    set; get;
+        //}
 
 
         private void View_OrderColumnsChanged(object sender, EventArgs e)

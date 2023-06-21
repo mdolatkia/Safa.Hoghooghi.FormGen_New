@@ -56,9 +56,7 @@ namespace DataAccess
         public virtual DbSet<DataLinkDefinition> DataLinkDefinition { get; set; }
         public virtual DbSet<DataLinkDefinition_EntityRelationshipTail> DataLinkDefinition_EntityRelationshipTail { get; set; }
         public virtual DbSet<DataMenuDataItemReportRelationship> DataMenuDataItemReportRelationship { get; set; }
-        public virtual DbSet<DataMenuDataViewRelationship> DataMenuDataViewRelationship { get; set; }
         public virtual DbSet<DataMenuForViewEntity> DataMenuForViewEntity { get; set; }
-        public virtual DbSet<DataMenuGridViewRelationship> DataMenuGridViewRelationship { get; set; }
         public virtual DbSet<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
         public virtual DbSet<DataMenuSetting> DataMenuSetting { get; set; }
         public virtual DbSet<DateColumnType> DateColumnType { get; set; }
