@@ -12,21 +12,21 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class DataLinkDefinition
+    public partial class DataMenuRelationshipTail
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public DataLinkDefinition()
+        public DataMenuRelationshipTail()
         {
-            this.DataLinkDefinition_EntityRelationshipTail = new HashSet<DataLinkDefinition_EntityRelationshipTail>();
+            this.DataMenuRelTailSearchableReports = new HashSet<DataMenuRelTailSearchableReports>();
         }
     
         public int ID { get; set; }
-        public int SecondSideEntityID { get; set; }
-        public Nullable<bool> NotJointEntities { get; set; }
+        public int EntityRelationshipTailID { get; set; }
+        public int DataMenuSettingID { get; set; }
     
-        public virtual EntityDataItemReport EntityDataItemReport { get; set; }
-        public virtual TableDrivedEntity TableDrivedEntity { get; set; }
+        public virtual DataMenuSetting DataMenuSetting { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataLinkDefinition_EntityRelationshipTail> DataLinkDefinition_EntityRelationshipTail { get; set; }
+        public virtual ICollection<DataMenuRelTailSearchableReports> DataMenuRelTailSearchableReports { get; set; }
+        public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
     }
 }

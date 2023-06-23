@@ -24,7 +24,6 @@ namespace DataAccess
     
         public int ID { get; set; }
         public short ChartType { get; set; }
-        public int EntityListViewID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CharetReportCategories> CharetReportCategories { get; set; }
@@ -32,7 +31,6 @@ namespace DataAccess
         public virtual ICollection<CharetReportSeries> CharetReportSeries { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CharetReportValues> CharetReportValues { get; set; }
-        public virtual EntityListView EntityListView { get; set; }
         public virtual EntitySearchableReport EntitySearchableReport { get; set; }
     }
 }

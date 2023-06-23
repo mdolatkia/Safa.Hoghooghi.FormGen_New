@@ -17,12 +17,7 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntityListView()
         {
-            this.DataMenuSetting = new HashSet<DataMenuSetting>();
-            this.EntityChartReport = new HashSet<EntityChartReport>();
-            this.EntityCrosstabReport = new HashSet<EntityCrosstabReport>();
-            this.EntityDataViewReport = new HashSet<EntityDataViewReport>();
-            this.EntityGridViewReport = new HashSet<EntityGridViewReport>();
-            this.EntityListReport = new HashSet<EntityListReport>();
+            this.EntityReport = new HashSet<EntityReport>();
             this.LetterTemplate = new HashSet<LetterTemplate>();
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
         }
@@ -33,17 +28,7 @@ namespace DataAccess
         public Nullable<bool> IsDefault { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataMenuSetting> DataMenuSetting { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntityChartReport> EntityChartReport { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntityCrosstabReport> EntityCrosstabReport { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntityDataViewReport> EntityDataViewReport { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntityGridViewReport> EntityGridViewReport { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntityListReport> EntityListReport { get; set; }
+        public virtual ICollection<EntityReport> EntityReport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LetterTemplate> LetterTemplate { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

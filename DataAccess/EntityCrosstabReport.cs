@@ -23,7 +23,6 @@ namespace DataAccess
         }
     
         public int ID { get; set; }
-        public int EntityListViewID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CrosstabReportColumns> CrosstabReportColumns { get; set; }
@@ -32,6 +31,5 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CrosstabReportValues> CrosstabReportValues { get; set; }
         public virtual EntitySearchableReport EntitySearchableReport { get; set; }
-        public virtual EntityListView EntityListView { get; set; }
     }
 }

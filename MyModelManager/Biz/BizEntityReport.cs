@@ -36,7 +36,7 @@ namespace MyModelManager
                     if (DataIsAccessable(requester, dbItem))
                     {
                         var nItem = new EntityReportDTO();
-                        ToEntityReportDTO( requester, dbItem, nItem, false);
+                        ToEntityReportDTO(requester, dbItem, nItem, false);
                         result.Add(nItem);
                     }
                 }
@@ -54,7 +54,7 @@ namespace MyModelManager
                 if (DataIsAccessable(requester, dbItem))
                 {
                     var nItem = new EntityReportDTO();
-                    ToEntityReportDTO( requester, dbItem, nItem, withDetails);
+                    ToEntityReportDTO(requester, dbItem, nItem, withDetails);
                     return nItem;
                 }
                 else
@@ -123,6 +123,7 @@ namespace MyModelManager
                         }
 
                     }
+                    entityReportDTO.EntityListViewID = entityReport.EntityListViewID ?? 0;
                 }
             }
             if (entityReport.EntityDataItemReport != null)

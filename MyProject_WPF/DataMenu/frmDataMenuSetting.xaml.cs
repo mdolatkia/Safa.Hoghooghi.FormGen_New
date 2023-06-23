@@ -42,7 +42,7 @@ namespace MyProject_WPF
             InitializeComponent();
             EntityID = entityID;
             SetRelationshipTails();
-          //  SetDataViewList();
+            //  SetDataViewList();
             SetDataItemReports();
             if (dataMenuSettingID == 0)
             {
@@ -57,12 +57,13 @@ namespace MyProject_WPF
 
             //ControlHelper.GenerateContextMenu(dtgDataGridRelationships);
             //ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
-            ControlHelper.GenerateContextMenu(dtgReportRelationships);
+            ControlHelper.GenerateContextMenu(dtgRelationships);
+            ControlHelper.GenerateContextMenu(dtgRelationshipReports);
             ControlHelper.GenerateContextMenu(dtgDataItemReport);
 
             //ControlHelper.GenerateContextMenu(dtgExternalReports);
-            dtgReportRelationships.RowLoaded += DtgColumns_RowLoaded;
-            dtgReportRelationships.CellEditEnded += DtgConditions_CellEditEnded;
+            dtgRelationships.SelectionChanged += DtgRelationships_SelectionChanged;
+            dtgRelationships.CellEditEnded += DtgConditions_CellEditEnded;
 
             //dtgDataViewRelationships.RowLoaded += DtgColumns_RowLoaded;
             //dtgDataViewRelationships.CellEditEnded += DtgConditions_CellEditEnded;
@@ -85,6 +86,11 @@ namespace MyProject_WPF
             lokDataMenuSetting.EditItemClicked += LokDataMenuSetting_EditItemClicked;
             lokDataMenuSetting.EditItemEnabled = true;
             lokDataMenuSetting.NewItemEnabled = true;
+        }
+
+        private void DtgRelationships_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
+        {
+            SetRelationshipReports();
         }
 
         private void LokDataMenuSetting_EditItemClicked(object sender, EditItemClickEventArg e)
@@ -224,37 +230,34 @@ namespace MyProject_WPF
         //    lokEntityDataView.SelectedValueMember = "ID";
         //    lokEntityDataView.ItemsSource = bizEntityListView.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
         //}
-        private void DtgColumns_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
-        {
-            if (e.DataElement is DataMenuSearchableReportRelationshipDTO)
-            {
-                var data = (e.DataElement as DataMenuSearchableReportRelationshipDTO);
-                if (data.vwReports == null || data.vwReports.Count == 0)
-                    SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), data);
-            }
-            //else if (e.DataElement is DataMenuDataViewRelationshipDTO)
-            //{
-            //    var data = (e.DataElement as DataMenuDataViewRelationshipDTO);
-            //    if (data.vwDataMenuSettings == null || data.vwDataMenuSettings.Count == 0)
-            //        SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), data);
-            //}
-            //else if (e.DataElement is DataMenuGridViewRelationshipDTO)
-            //{
-            //    var data = (e.DataElement as DataMenuGridViewRelationshipDTO);
-            //    if (data.vwDataMenuSettings == null || data.vwDataMenuSettings.Count == 0)
-            //        SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), data);
-            //}
-        }
+        //private void DtgColumns_RowLoaded(object sender, Telerik.Windows.Controls.GridView.RowLoadedEventArgs e)
+        //{
+        //    if (e.DataElement is DataMenuSearchableReportRelationshipDTO)
+        //    {
+        //        var data = (e.DataElement as DataMenuSearchableReportRelationshipDTO);
+        //        if (data.vwReports == null || data.vwReports.Count == 0)
+        //            SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), data);
+        //    }
+        //    //else if (e.DataElement is DataMenuDataViewRelationshipDTO)
+        //    //{
+        //    //    var data = (e.DataElement as DataMenuDataViewRelationshipDTO);
+        //    //    if (data.vwDataMenuSettings == null || data.vwDataMenuSettings.Count == 0)
+        //    //        SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), data);
+        //    //}
+        //    //else if (e.DataElement is DataMenuGridViewRelationshipDTO)
+        //    //{
+        //    //    var data = (e.DataElement as DataMenuGridViewRelationshipDTO);
+        //    //    if (data.vwDataMenuSettings == null || data.vwDataMenuSettings.Count == 0)
+        //    //        SetRelationshipDataMenus(MyProjectManager.GetMyProjectManager.GetRequester(), data);
+        //    //}
+        //}
 
         private void DtgConditions_CellEditEnded(object sender, Telerik.Windows.Controls.GridViewCellEditEndedEventArgs e)
         {
             if (e.Cell.Column == colReportRelationshipTail)
             {
-                if (e.Cell.DataContext is DataMenuSearchableReportRelationshipDTO)
-                {
-                    var condition = (e.Cell.DataContext as DataMenuSearchableReportRelationshipDTO);
-                    SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), condition);
-                }
+
+                SetRelationshipReports();
             }
             //else if (e.Cell.Column == colDataViewRelationshipTail)
             //{
@@ -274,15 +277,30 @@ namespace MyProject_WPF
             //}
         }
 
-        private void SetRelationshipReports(DR_Requester requester, DataMenuSearchableReportRelationshipDTO condition)
+        private void SetRelationshipReports()
         {
-            if (condition.RelationshipTailID == 0)
-                return;
-            colReports.DisplayMemberPath = "ReportTitle";
-            colReports.SelectedValueMemberPath = "ID";
-            //    var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(condition.EntityRelationshipTailID);
-            var reports = bizEntitySearchableReport.GetEntityReportsOfRelationshipTail(requester, condition.RelationshipTailID);
-            condition.vwReports = reports;
+            if (dtgRelationships.SelectedItem is DataMenuRelationshipTailDTO)
+            {
+
+                var item = dtgRelationships.SelectedItem as DataMenuRelationshipTailDTO;
+                if (item.RelationshipTailID != 0)
+                {
+                    colReports.DisplayMemberPath = "ReportTitle";
+                    colReports.SelectedValueMemberPath = "ID";
+                    //    var relationshipTail = bizEntityRelationshipTail.GetEntityRelationshipTail(condition.EntityRelationshipTailID);
+                    colReports.ItemsSource = bizEntitySearchableReport.GetEntityReportsOfRelationshipTail(MyProjectManager.GetMyProjectManager.GetRequester(), item.RelationshipTailID);
+                }
+                else
+                {
+                    colReports.ItemsSource = null;
+                }
+                dtgRelationshipReports.ItemsSource = item.SearchableReports;
+            }
+
+            else
+            {
+                dtgRelationshipReports.ItemsSource = null;
+            }
         }
 
         //private void SetRelationshipDataMenus(DR_Requester requester, DataMenuDataViewRelationshipDTO condition)
@@ -329,17 +347,15 @@ namespace MyProject_WPF
                 btnSetDataMenuSetting.IsEnabled = false;
             else
                 btnSetDataMenuSetting.IsEnabled = true;
-            dtgReportRelationships.ItemsSource = Message.SearchableReportRelationships;
-          //  dtgDataViewRelationships.ItemsSource = Message.DataViewRelationships;
-          //  dtgDataGridRelationships.ItemsSource = Message.GridViewRelationships;
+            dtgRelationships.ItemsSource = Message.RelationshipTails;
+            SetRelationshipReports();
+            //  dtgDataViewRelationships.ItemsSource = Message.DataViewRelationships;
+            //  dtgDataGridRelationships.ItemsSource = Message.GridViewRelationships;
             dtgDataItemReport.ItemsSource = Message.DataItemReports;
             txtName.Text = Message.Name;
             lokRelationship.SelectedValue = Message.RelationshipID;
             lokDataMenuSetting.SelectedValue = Message.TargetDataMenuSettingID;
-            foreach (var item in Message.SearchableReportRelationships)
-            {
-                SetRelationshipReports(MyProjectManager.GetMyProjectManager.GetRequester(), item);
-            }
+
 
             if (Message.IconContent != null)
             {
@@ -456,7 +472,7 @@ namespace MyProject_WPF
             {
                 Message.IconContent = File.ReadAllBytes(txtFilePath.Text);
             }
-          
+
             Message.EntityID = EntityID;
             Message.Name = txtName.Text;
 

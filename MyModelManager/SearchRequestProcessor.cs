@@ -1402,7 +1402,7 @@ namespace MyDataSearchManagerBusiness
             //بازدارنده بودن اقدام کنترل شود
             BizBackendActionActivity bizActionActivity = new BizBackendActionActivity();
             var actionActivities = bizActionActivity.GetBackendActionActivities(request.SearchDataItem.TargetEntityID, 
-                new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.AfterDataFetch }, true, true);
+                new List<Enum_EntityActionActivityStep>() { Enum_EntityActionActivityStep.AfterDataFetch }, true, , DetailsDepth.WithDetailsAndObjects);
             CodeFunctionHandler codeFunctionHelper = new CodeFunctionHandler();
             foreach (var entityActionActivity in actionActivities)
             {

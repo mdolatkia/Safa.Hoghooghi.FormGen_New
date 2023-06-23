@@ -21,7 +21,7 @@ namespace DataAccess
             this.EntityLetterRelationshipTails = new HashSet<EntityLetterRelationshipTails>();
             this.ColumnValueRange = new HashSet<ColumnValueRange>();
             this.DataLinkDefinition_EntityRelationshipTail = new HashSet<DataLinkDefinition_EntityRelationshipTail>();
-            this.DataMenuSearchableReportRelationship = new HashSet<DataMenuSearchableReportRelationship>();
+            this.DataMenuRelationshipTail = new HashSet<DataMenuRelationshipTail>();
             this.EntityListReportSubs = new HashSet<EntityListReportSubs>();
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
             this.EntityGroup_Relationship = new HashSet<EntityGroup_Relationship>();
@@ -47,7 +47,7 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataLinkDefinition_EntityRelationshipTail> DataLinkDefinition_EntityRelationshipTail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
+        public virtual ICollection<DataMenuRelationshipTail> DataMenuRelationshipTail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityListReportSubs> EntityListReportSubs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

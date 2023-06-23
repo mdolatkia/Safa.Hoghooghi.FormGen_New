@@ -20,7 +20,6 @@ namespace DataAccess
         public int TableDrivedEntityID { get; set; }
         public int DataMenuSettingID { get; set; }
     
-        public virtual DataMenuSetting DataMenuSetting { get; set; }
         public virtual EntityRelationshipTailDataMenu EntityRelationshipTailDataMenu { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
     }

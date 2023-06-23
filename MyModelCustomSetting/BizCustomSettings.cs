@@ -2514,7 +2514,7 @@ namespace MyModelCustomSetting
                 conclusionListReport.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 conclusionListReport.EntitySearchableReport.EntityListReport = new EntityListReport();
-                conclusionListReport.EntitySearchableReport.EntityListReport.EntityListView = serviceConclusaionListView;
+                conclusionListReport.EntityListView = serviceConclusaionListView;
 
                 projectContext.EntityReport.Add(conclusionListReport);
 
@@ -2535,7 +2535,7 @@ namespace MyModelCustomSetting
                 listReportGrouped.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 listReportGrouped.EntitySearchableReport.EntityListReport = new EntityListReport();
-                listReportGrouped.EntitySearchableReport.EntityListReport.EntityListView = serviceConclusaionListView;
+                listReportGrouped.EntityListView = serviceConclusaionListView;
                 if (listColumnBrandTitle != null)
                 {
                     listReportGrouped.EntitySearchableReport.EntityListReport.ReportGroups.Add(new ReportGroups() { EntityListViewColumns = listColumnBrandTitle });
@@ -2562,7 +2562,7 @@ namespace MyModelCustomSetting
                     //conclusionItemlistReport.EntitySearchableReport.SearchRepositoryID=
 
                     conclusionItemlistReport.EntitySearchableReport.EntityListReport = new EntityListReport();
-                    conclusionItemlistReport.EntitySearchableReport.EntityListReport.EntityListViewID = serviceConclusionItem.EntityListView.First(x => x.IsDefault == true).ID;
+                    conclusionItemlistReport.EntityListViewID = serviceConclusionItem.EntityListView.First(x => x.IsDefault == true).ID;
 
                     projectContext.EntityReport.Add(conclusionItemlistReport);
 
@@ -2582,7 +2582,7 @@ namespace MyModelCustomSetting
                 listReportWithSubs.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 listReportWithSubs.EntitySearchableReport.EntityListReport = new EntityListReport();
-                listReportWithSubs.EntitySearchableReport.EntityListReport.EntityListView = serviceConclusaionListView;
+                listReportWithSubs.EntityListView = serviceConclusaionListView;
 
                 var listViewColumnID = serviceConclusaionListView.EntityListViewColumns.FirstOrDefault(x => x.Column.Name == "ID");
                 if (serviceConclusionItem.EntityListView.FirstOrDefault(x => x.IsDefault == true) != null)
@@ -2625,7 +2625,7 @@ namespace MyModelCustomSetting
 
                 conclusionChartColumn.EntitySearchableReport.EntityChartReport = new EntityChartReport();
                 conclusionChartColumn.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Column;
-                conclusionChartColumn.EntitySearchableReport.EntityChartReport.EntityListView = serviceConclusaionListView;
+                conclusionChartColumn.EntityListView = serviceConclusaionListView;
 
                 conclusionChartColumn.EntitySearchableReport.EntityChartReport.CharetReportCategories.Add(new CharetReportCategories() { EntityListViewColumns = listColumnBrandTitle });
                 conclusionChartColumn.EntitySearchableReport.EntityChartReport.CharetReportSeries.Add(new CharetReportSeries() { EntityListViewColumns = listColumnOffice });
@@ -2648,7 +2648,7 @@ namespace MyModelCustomSetting
 
                 conclusionChartPie.EntitySearchableReport.EntityChartReport = new EntityChartReport();
                 conclusionChartPie.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Pie;
-                conclusionChartPie.EntitySearchableReport.EntityChartReport.EntityListView = serviceConclusaionListView;
+                conclusionChartPie.EntityListView = serviceConclusaionListView;
 
                 // conclusionChartPie.EntitySearchableReport.EntityChartReport.CharetReportCategories.Add(new CharetReportCategories() { EntityListViewColumns = listColumnBrandTitle });
                 conclusionChartPie.EntitySearchableReport.EntityChartReport.CharetReportSeries.Add(new CharetReportSeries() { EntityListViewColumns = listColumnBrandTitle });
@@ -2672,7 +2672,7 @@ namespace MyModelCustomSetting
 
                 conclusionChartLine.EntitySearchableReport.EntityChartReport = new EntityChartReport();
                 conclusionChartLine.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Line;
-                conclusionChartLine.EntitySearchableReport.EntityChartReport.EntityListView = serviceConclusaionListView;
+                conclusionChartLine.EntityListView = serviceConclusaionListView;
 
                 conclusionChartLine.EntitySearchableReport.EntityChartReport.CharetReportCategories.Add(new CharetReportCategories() { EntityListViewColumns = listColumnBrandTitle });
                 conclusionChartLine.EntitySearchableReport.EntityChartReport.CharetReportSeries.Add(new CharetReportSeries() { EntityListViewColumns = listColumnOffice });
@@ -2696,7 +2696,7 @@ namespace MyModelCustomSetting
 
                 conclusionChartRadar.EntitySearchableReport.EntityChartReport = new EntityChartReport();
                 conclusionChartRadar.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Radar;
-                conclusionChartRadar.EntitySearchableReport.EntityChartReport.EntityListView = serviceConclusaionListView;
+                conclusionChartRadar.EntityListView = serviceConclusaionListView;
 
                 conclusionChartRadar.EntitySearchableReport.EntityChartReport.CharetReportCategories.Add(new CharetReportCategories() { EntityListViewColumns = listColumnBrandTitle });
                 conclusionChartRadar.EntitySearchableReport.EntityChartReport.CharetReportSeries.Add(new CharetReportSeries() { EntityListViewColumns = listColumnOffice });
@@ -2727,7 +2727,7 @@ namespace MyModelCustomSetting
 
                     viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport = new EntityChartReport();
                     viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.ChartType = (short)ChartType.Pie;
-                    viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.EntityListView = viewServiceRequest.EntityListView.First(x => x.IsDefault == true);
+                    viewServiceRequestChartRadar.EntityListView = viewServiceRequest.EntityListView.First(x => x.IsDefault == true);
 
                     //   viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.CharetReportCategories.Add(new CharetReportCategories() { EntityListViewColumns = brandTitle });
                     viewServiceRequestChartRadar.EntitySearchableReport.EntityChartReport.CharetReportSeries.Add(new CharetReportSeries() { EntityListViewColumns = brandTitle });
@@ -2750,7 +2750,7 @@ namespace MyModelCustomSetting
                 conclusionCrossTab.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 conclusionCrossTab.EntitySearchableReport.EntityCrosstabReport = new EntityCrosstabReport();
-                conclusionCrossTab.EntitySearchableReport.EntityCrosstabReport.EntityListView = serviceConclusaionListView;
+                conclusionCrossTab.EntityListView = serviceConclusaionListView;
 
                 conclusionCrossTab.EntitySearchableReport.EntityCrosstabReport.CrosstabReportColumns.Add(new CrosstabReportColumns() { EntityListViewColumns = listColumnBrandTitle });
                 conclusionCrossTab.EntitySearchableReport.EntityCrosstabReport.CrosstabReportColumns.Add(new CrosstabReportColumns() { EntityListViewColumns = listColumnModel });

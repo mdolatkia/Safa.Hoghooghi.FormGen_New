@@ -12,25 +12,19 @@ namespace MyModelManager
 {
     public class BizBackendActionActivity
     {
-        public List<BackendActionActivityDTO> GetBackendActionActivities(int entityID, List<Enum_EntityActionActivityStep> BackendActionActivitySteps, bool genericOnes, bool withDetails)
+        public List<BackendActionActivityDTO> GetBackendActionActivities(int entityID, List<Enum_EntityActionActivityStep> BackendActionActivitySteps, DetailsDepth detailsDepth)
         {
             // BizBackendActionActivity.GetBackendActionActivities: 6a4380912411
             List<BackendActionActivityDTO> result = new List<BackendActionActivityDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var listBackendActionActivity = projectContext.BackendActionActivity as IQueryable<BackendActionActivity>;
-                if (genericOnes)
-                {
-                    //اینجا درست بشه
-                    if (entityID != 0)
-                        listBackendActionActivity = listBackendActionActivity.Where(x => x.TableDrivedEntityID == null || x.TableDrivedEntityID == entityID);
-                    else
-                        listBackendActionActivity = listBackendActionActivity.Where(x => x.TableDrivedEntityID == null);
-                }
+
+                //اینجا درست بشه
+                if (entityID != 0)
+                    listBackendActionActivity = listBackendActionActivity.Where(x => x.TableDrivedEntityID == entityID);
                 else
-                {
-                    listBackendActionActivity.Where(x => x.TableDrivedEntityID == entityID);
-                }
+                    listBackendActionActivity = listBackendActionActivity.Where(x => x.TableDrivedEntityID == null);
 
 
                 //if (BackendActionActivityTypes != null && BackendActionActivityTypes.Any())
@@ -49,60 +43,66 @@ namespace MyModelManager
                 }
 
                 foreach (var item in listBackendActionActivity)
-                    result.Add(ToBackendActionActivityDTO(item, withDetails));
+                    result.Add(ToBackendActionActivityDTO(item, detailsDepth));
 
             }
             return result;
         }
-        public List<BackendActionActivityDTO> GetAllActionActivities(DR_Requester requester, string generalFilter)
-        {
-            List<BackendActionActivityDTO> result = new List<BackendActionActivityDTO>();
-            using (var projectContext = new DataAccess.MyIdeaEntities())
-            {
-                var listBackendActionActivity = projectContext.BackendActionActivity as IQueryable<BackendActionActivity>; ;
+        //public List<BackendActionActivityDTO> GetAllActionActivities(DR_Requester requester, string generalFilter)
+        //{
+        //    List<BackendActionActivityDTO> result = new List<BackendActionActivityDTO>();
+        //    using (var projectContext = new DataAccess.MyIdeaEntities())
+        //    {
+        //        var listBackendActionActivity = projectContext.BackendActionActivity as IQueryable<BackendActionActivity>; ;
 
-                if (generalFilter != "")
-                    listBackendActionActivity = listBackendActionActivity.Where(x => x.ID.ToString() == generalFilter || x.Title.Contains(generalFilter));
-                foreach (var item in listBackendActionActivity)
-                    result.Add(ToBackendActionActivityDTO(item, false));
+        //        if (generalFilter != "")
+        //            listBackendActionActivity = listBackendActionActivity.Where(x => x.ID.ToString() == generalFilter || x.Title.Contains(generalFilter));
+        //        foreach (var item in listBackendActionActivity)
+        //            result.Add(ToBackendActionActivityDTO(item, DetailsDepth.SimpleInfo));
 
-            }
-            return result;
-        }
+        //    }
+        //    return result;
+        //}
         public BackendActionActivityDTO GetBackendActionActivity(int BackendActionActivitysID)
         {
             List<BackendActionActivityDTO> result = new List<BackendActionActivityDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
                 var BackendActionActivitys = projectContext.BackendActionActivity.First(x => x.ID == BackendActionActivitysID);
-                return ToBackendActionActivityDTO(BackendActionActivitys, true);
+                return ToBackendActionActivityDTO(BackendActionActivitys, DetailsDepth.WithDetails);
             }
         }
-        public BackendActionActivityDTO ToBackendActionActivityDTO(BackendActionActivity item, bool withDetails)
+        public BackendActionActivityDTO ToBackendActionActivityDTO(BackendActionActivity item, DetailsDepth detailsDepth)
         {
             BackendActionActivityDTO result = new BackendActionActivityDTO();
             result.Type = (Enum_ActionActivityType)item.Type;
 
 
-            if (withDetails && result.Type == Enum_ActionActivityType.DatabaseFunction)
+            if (detailsDepth != DetailsDepth.SimpleInfo && result.Type == Enum_ActionActivityType.DatabaseFunction)
             {
                 result.DatabaseFunctionEntityID = item.DatabaseFunctionEntityID ?? 0;
-                BizDatabaseFunction bizDatabaseFunction = new MyModelManager.BizDatabaseFunction();
-                result.DatabaseFunctionEntity = bizDatabaseFunction.ToDatabaseFunction_EntityDTO(item.DatabaseFunction_TableDrivedEntity, withDetails);
+                if (detailsDepth == DetailsDepth.WithDetailsAndObjects)
+                {
+                    BizDatabaseFunction bizDatabaseFunction = new MyModelManager.BizDatabaseFunction();
+                    result.DatabaseFunctionEntity = bizDatabaseFunction.ToDatabaseFunction_EntityDTO(item.DatabaseFunction_TableDrivedEntity, withDetails);
+                }
             }
 
-            if (withDetails && result.Type == Enum_ActionActivityType.CodeFunction)
+            if (detailsDepth != DetailsDepth.SimpleInfo && result.Type == Enum_ActionActivityType.CodeFunction)
             {
                 result.CodeFunctionID = item.CodeFunctionID ?? 0;
-                BizCodeFunction bizCodeFunction = new MyModelManager.BizCodeFunction();
-                if (item.CodeFunction != null)
-                    result.CodeFunction = bizCodeFunction.ToCodeFunctionDTO(item.CodeFunction, withDetails);
+                if (detailsDepth == DetailsDepth.WithDetailsAndObjects)
+                {
+                    BizCodeFunction bizCodeFunction = new MyModelManager.BizCodeFunction();
+                    if (item.CodeFunction != null)
+                        result.CodeFunction = bizCodeFunction.ToCodeFunctionDTO(item.CodeFunction, true);
+                }
             }
 
 
             result.ID = item.ID;
             result.EntityID = item.TableDrivedEntityID ?? 0;
-            if(item.TableDrivedEntity!=null)
+            if (item.TableDrivedEntity != null)
             {
                 result.EntityAlias = item.TableDrivedEntity.Alias;
             }
@@ -171,5 +171,10 @@ namespace MyModelManager
         UIActions,
         All
     }
-
+    public enum DetailsDepth
+    {
+        SimpleInfo,
+        WithDetails,
+        WithDetailsAndObjects
+    }
 }

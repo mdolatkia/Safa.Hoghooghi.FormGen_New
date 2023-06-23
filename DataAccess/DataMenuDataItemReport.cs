@@ -12,16 +12,14 @@ namespace DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class DataMenuSearchableReportRelationship
+    public partial class DataMenuDataItemReport
     {
         public int ID { get; set; }
-        public int EntityRelationshipTailID { get; set; }
-        public string Group1 { get; set; }
-        public int EntitySearchableReportID { get; set; }
         public int DataMenuSettingID { get; set; }
+        public string Group1 { get; set; }
+        public int EntityDataItemReportID { get; set; }
     
         public virtual DataMenuSetting DataMenuSetting { get; set; }
-        public virtual EntityRelationshipTail EntityRelationshipTail { get; set; }
-        public virtual EntitySearchableReport EntitySearchableReport { get; set; }
+        public virtual EntityDataItemReport EntityDataItemReport { get; set; }
     }
 }

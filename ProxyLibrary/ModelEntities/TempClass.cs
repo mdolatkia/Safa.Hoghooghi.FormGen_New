@@ -1259,6 +1259,7 @@ namespace ModelEntites
 
         //public EntityPreDefinedSearchDTO EntityPreDefinedSearch { set; get; }
         public string ReportTitle { get; set; }
+        public int EntityListViewID { get; set; }
     }
     public class EntitySearchableReportDTO : EntityReportDTO
     {
@@ -1599,25 +1600,27 @@ namespace ModelEntites
     {
         public DataMenuSettingDTO()
         {
-            SearchableReportRelationships = new List<DataMenuSearchableReportRelationshipDTO>();
-        //    DataViewRelationships = new List<DataMenuDataViewRelationshipDTO>();
-         //   GridViewRelationships = new List<ModelEntites.DataMenuGridViewRelationshipDTO>();
+            RelationshipTails = new List<DataMenuRelationshipTailDTO>();
             DataItemReports = new List<DataMenuDataItemReportDTO>();
         }
         public int ID { set; get; }
         public string Name { set; get; }
         public int EntityID { set; get; }
 
+        public bool AllowDataEntry { set; get; }
+        public bool AllowArchive { set; get; }
+        public bool AllowLetter { set; get; }
+        public bool AllowWorkflowReport { set; get; }
         //public List<DataMenuDataViewRelationshipDTO> DataViewRelationships { set; get; }
-        public List<DataMenuSearchableReportRelationshipDTO> SearchableReportRelationships { set; get; }
+        public List<DataMenuRelationshipTailDTO> RelationshipTails { set; get; }
         //public List<DataMenuGridViewRelationshipDTO> GridViewRelationships { set; get; }
         public List<DataMenuDataItemReportDTO> DataItemReports { set; get; }
         public int RelationshipID { set; get; }
-        public RelationshipDTO Relationship { set; get; }
+      //  public RelationshipDTO Relationship { set; get; }
         public int TargetDataMenuSettingID { set; get; }
-        public DataMenuSettingDTO DataMenuSetting { set; get; }
+       // public DataMenuSettingDTO DataMenuSetting { set; get; }
         public byte[] IconContent { set; get; }
-      //  public int EntityListViewID { set; get; }
+        //  public int EntityListViewID { set; get; }
 
     }
 
@@ -1637,19 +1640,31 @@ namespace ModelEntites
     //    public List<DataMenuSettingDTO> vwDataMenuSettings { set; get; }
 
     //}
-
-    public class DataMenuSearchableReportRelationshipDTO
+    public class DataMenuRelationshipTailDTO
+    {
+        public DataMenuRelationshipTailDTO()
+        {
+            SearchableReports = new List<DataMenuRelTailSearchableReportsDTO>();
+        }
+        public int RelationshipTailID { set; get; }
+        public string RelationshipTailTitle { set; get; }
+        public int DataMenuSettingID { set; get; }
+        public List<DataMenuRelTailSearchableReportsDTO> SearchableReports { set; get; }
+        public int ID { get; set; }
+    }
+    public class DataMenuRelTailSearchableReportsDTO
     {
         public List<EntitySearchableReportDTO> vwReports { set; get; }
 
-        public DataMenuSearchableReportRelationshipDTO()
+        public DataMenuRelTailSearchableReportsDTO()
         {
 
         }
         public int EntitySearchableReportID { set; get; }
-        public EntitySearchableReportDTO SearchableReportReport { set; get; }
-        public int RelationshipTailID { set; get; }
-        public EntityRelationshipTailDTO RelationshipTail { set; get; }
+        public string ReportTitle { set; get; }
+
+        public int DataMenuRelationshipTailID { set; get; }
+        //   public EntityRelationshipTailDTO RelationshipTail { set; get; }
         public string Group1 { set; get; }
         public string Group2 { set; get; }
         public int ID { get; set; }
@@ -1674,8 +1689,9 @@ namespace ModelEntites
     {
         public int ID { get; set; }
         public string Group1 { get; set; }
+        public string ReportTitle { set; get; }
         public int EntityDataItemReportID { get; set; }
-        public EntityDataItemReportDTO EntityDataItemReport { set; get; }
+     //   public EntityDataItemReportDTO EntityDataItemReport { set; get; }
     }
 
     public class DataMenuResult
@@ -1704,9 +1720,9 @@ namespace ModelEntites
         //   public DP_DataView ViewRelTargetDataItem { get; set; }
         public DataLinkDTO Datalink { get; set; }
         public GraphDTO Graph { get; set; }
-        public DataMenuSearchableReportRelationshipDTO SearchableReportRelationshipTail { get; set; }
-        public EntityRelationshipTailDTO DataviewRelationshipTail { get; set; }
-        public EntityRelationshipTailDTO GridviewRelationshipTail { get; set; }
+        public DataMenuSearchableReportRelationshipDTO SearchableReports { get; set; }
+        //  public EntityRelationshipTailDTO DataviewRelationshipTail { get; set; }
+        //    public EntityRelationshipTailDTO GridviewRelationshipTail { get; set; }
         public EntityDataItemReportDTO DataItemReport { get; set; }
         public int TargetDataMenuSettingID { get; set; }
     }
@@ -1714,8 +1730,8 @@ namespace ModelEntites
     public enum DataMenuType
     {
         //   DataLink,
-     //   RelationshipTailDataGrid,
-     //   RelationshipTailDataView,
+        //   RelationshipTailDataGrid,
+        //   RelationshipTailDataView,
         RelationshipTailSearchableReport,
         Archive,
         Form,
@@ -2613,7 +2629,7 @@ namespace ModelEntites
         public int EntityID { set; get; }
         public Enum_ActionActivityType Type { set; get; }
         public UIColumnValueRangeDTO UIColumnValueRange { set; get; }
-      
+
 
         //  public List<UIColumnValueRangeResetDTO> UIColumnValueRangeReset { set; get; }
         //    public bool OnlyOnLoad { get; set; }
@@ -2839,7 +2855,7 @@ namespace ModelEntites
         public string FunctionName { set; get; }
 
         public Enum_CodeFunctionParamType ParamType { set; get; }
-      //  public string Catalog { set; get; }
+        //  public string Catalog { set; get; }
 
         public List<CodeFunctionColumnDTO> Parameters { set; get; }
         public string Name { get; set; }
@@ -2868,8 +2884,8 @@ namespace ModelEntites
         SelectedColumns,
         CommandFunction,
         LetterFunction
-            //,
-       // LetterConvert
+        //,
+        // LetterConvert
     }
     public class EntityRelationshipTailDTO
     {
@@ -2975,8 +2991,8 @@ namespace ModelEntites
         public InORNotIn SecuritySubjectInORNotIn { set; get; }
         public ObservableCollection<int> SecuritySubjects { set; get; }
         //public bool ApplyOnEditMode  { set; get; }
-      //  public bool ApplyOnViewEditMode { set; get; }
-      //  public bool ApplyOnOnlyEditMode { set; get; }
+        //  public bool ApplyOnViewEditMode { set; get; }
+        //  public bool ApplyOnOnlyEditMode { set; get; }
         //     public bool HasOnLoadOnlyAction { get; set; }
         //    public bool HasDynamicAction { get; set; }
     }

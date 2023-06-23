@@ -15,12 +15,8 @@ namespace DataAccess
     public partial class EntityGridViewReport
     {
         public int ID { get; set; }
-        public int DataMenuSettingID { get; set; }
-        public int EntityListViewID { get; set; }
         public string temp { get; set; }
     
-        public virtual DataMenuSetting DataMenuSetting { get; set; }
-        public virtual EntityListView EntityListView { get; set; }
         public virtual EntitySearchableReport EntitySearchableReport { get; set; }
     }
 }

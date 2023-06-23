@@ -22,9 +22,7 @@ namespace DataAccess
     
         public int ID { get; set; }
         public Nullable<bool> NotJointEntities { get; set; }
-        public Nullable<int> FirstSideDataMenuID { get; set; }
     
-        public virtual DataMenuSetting DataMenuSetting { get; set; }
         public virtual EntityDataItemReport EntityDataItemReport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GraphDefinition_EntityRelationshipTail> GraphDefinition_EntityRelationshipTail { get; set; }

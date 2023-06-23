@@ -63,7 +63,7 @@ namespace MyModelManager
             EntityListReportDTO result = new EntityListReportDTO();
             result.ID = item.ID;
             bizEntitySearchableReport.ToEntitySearchableReportDTO( requester, item.EntitySearchableReport, result, withDetails);
-            result.EntityListViewID = item.EntityListViewID;
+            result.EntityListViewID = item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0;
 
             if (withDetails)
             {
@@ -71,10 +71,10 @@ namespace MyModelManager
 
                 BizEntityRelationshipTail bizEntityRelationshipTail = new MyModelManager.BizEntityRelationshipTail();
                 BizEntityListView bizEntityListView = new BizEntityListView();
-                result.EntityListView = bizEntityListView.GetEntityListView(requester, item.EntityListViewID);
+                result.EntityListView = bizEntityListView.GetEntityListView(requester, item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0);
                 if (result.EntityListView == null)
                 {
-                    throw new Exception("عدم دسترسی به لیست نمایش به شناسه" + " " + item.EntityListViewID);
+                    throw new Exception("عدم دسترسی به لیست نمایش به شناسه" + " " + (item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0));
                 }
                 foreach (var dbSubReport in item.EntityListReportSubs1)
                 {
@@ -131,7 +131,7 @@ namespace MyModelManager
                 else
                     bizEntitySearchableReport.ToUpdateEntitySearchableReport(dbEntitySpecifiedReport.EntitySearchableReport, message);
 
-                dbEntitySpecifiedReport.EntityListViewID = message.EntityListViewID;
+                dbEntitySpecifiedReport.EntitySearchableReport.EntityReport.EntityListViewID  = message.EntityListViewID;
                 while (dbEntitySpecifiedReport.EntityListReportSubs1.Any())
                 {
                     while (dbEntitySpecifiedReport.EntityListReportSubs1.First().EntityListReportSubsColumns.Any())

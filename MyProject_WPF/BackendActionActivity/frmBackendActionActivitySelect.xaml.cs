@@ -97,16 +97,16 @@ namespace MyProject_WPF
         private void GetEntityActionActivities(int entityID)
         {
             Message = new ObservableCollection<BackendActionActivityDTO>();
-            if (entityID == 0)
-            {
-                foreach (var item in bizActionActivity.GetAllActionActivities(MyProjectManager.GetMyProjectManager.GetRequester(), ""))
-                    Message.Add(item);
-            }
-            else
-            {
-                foreach (var item in bizActionActivity.GetBackendActionActivities(entityID, null, false, false))
-                    Message.Add(item);
-            }
+            //if (entityID == 0)
+            //{
+            //    foreach (var item in bizActionActivity.GetAllActionActivities(MyProjectManager.GetMyProjectManager.GetRequester(), ""))
+            //        Message.Add(item);
+            //}
+            //else
+            //{
+            foreach (var item in bizActionActivity.GetBackendActionActivities(entityID, null, DetailsDepth.SimpleInfo))
+                Message.Add(item);
+            // }
             dtgActionActivities.ItemsSource = Message;
         }
 

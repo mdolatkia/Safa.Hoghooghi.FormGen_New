@@ -17,7 +17,7 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntitySearchableReport()
         {
-            this.DataMenuSearchableReportRelationship = new HashSet<DataMenuSearchableReportRelationship>();
+            this.DataMenuRelTailSearchableReports = new HashSet<DataMenuRelTailSearchableReports>();
         }
     
         public int ID { get; set; }
@@ -25,7 +25,7 @@ namespace DataAccess
         public Nullable<int> SavedSearchRepositoryID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataMenuSearchableReportRelationship> DataMenuSearchableReportRelationship { get; set; }
+        public virtual ICollection<DataMenuRelTailSearchableReports> DataMenuRelTailSearchableReports { get; set; }
         public virtual EntityChartReport EntityChartReport { get; set; }
         public virtual EntityCrosstabReport EntityCrosstabReport { get; set; }
         public virtual EntityDataViewReport EntityDataViewReport { get; set; }

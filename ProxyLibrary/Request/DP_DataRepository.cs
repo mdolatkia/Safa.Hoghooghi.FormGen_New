@@ -1110,6 +1110,7 @@ namespace ProxyLibrary
 
         }
         public DP_SearchRepositoryMain SearchRepositoryMain { set; get; }
+      
     }
 
     public class SavedSearchRepositoryDTO

@@ -64,7 +64,7 @@ namespace MyDataEditManagerBusiness
                     listActionType.Add(Enum_EntityActionActivityStep.BeforeSave);
                 else if (queryItem.QueryType == Enum_QueryItemType.Delete)
                     listActionType.Add(Enum_EntityActionActivityStep.BeforeDelete);
-                var actionActivities = bizActionActivity.GetBackendActionActivities(queryItem.DataItem.TargetEntityID, listActionType, true, true);
+                var actionActivities = bizActionActivity.GetBackendActionActivities(queryItem.DataItem.TargetEntityID, listActionType, true, DetailsDepth.WithDetailsAndObjects);
                 if (actionActivities.Any())
                 {
                     foreach (var entityActionActivity in actionActivities)
@@ -112,7 +112,7 @@ namespace MyDataEditManagerBusiness
                     listActionType.Add(Enum_EntityActionActivityStep.AfterSave);
                 else if (queryItem.QueryType == Enum_QueryItemType.Delete)
                     listActionType.Add(Enum_EntityActionActivityStep.AfterSave);
-                var actionActivities = bizActionActivity.GetBackendActionActivities(queryItem.DataItem.TargetEntityID, listActionType, true, true);
+                var actionActivities = bizActionActivity.GetBackendActionActivities(queryItem.DataItem.TargetEntityID, listActionType, true, , DetailsDepth.WithDetailsAndObjects);
                 if (actionActivities.Any())
                 {
                     foreach (var entityActionActivity in actionActivities)

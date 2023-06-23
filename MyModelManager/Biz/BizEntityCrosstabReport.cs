@@ -70,15 +70,15 @@ namespace MyModelManager
         {
             EntityCrosstabReportDTO result = new EntityCrosstabReportDTO();
             result.ID = item.ID;
-            bizEntitySearchableReport.ToEntitySearchableReportDTO( requester, item.EntitySearchableReport, result, withDetails);
-            result.EntityListViewID = item.EntityListViewID;
+            bizEntitySearchableReport.ToEntitySearchableReportDTO(requester, item.EntitySearchableReport, result, withDetails);
+            result.EntityListViewID = item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0;
             if (withDetails)
             {
                 BizEntityListView bizEntityListView = new BizEntityListView();
-                result.EntityListView = bizEntityListView.GetEntityListView(requester, item.EntityListViewID);
+                result.EntityListView = bizEntityListView.GetEntityListView(requester, item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0);
                 if (result.EntityListView == null)
                 {
-                    throw new Exception("عدم دسترسی به لیست نمایش به شناسه" + " " + item.EntityListViewID);
+                    throw new Exception("عدم دسترسی به لیست نمایش به شناسه" + " " + (item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0));
                 }
                 BizEntityRelationshipTail bizEntityRelationshipTail = new MyModelManager.BizEntityRelationshipTail();
                 foreach (var sub in item.CrosstabReportColumns)
@@ -139,7 +139,7 @@ namespace MyModelManager
                 }
                 else
                     bizEntitySearchableReport.ToUpdateEntitySearchableReport(dbEntitySpecifiedReport.EntitySearchableReport, message);
-                dbEntitySpecifiedReport.EntityListViewID = message.EntityListViewID;
+                dbEntitySpecifiedReport.EntitySearchableReport.EntityReport.EntityListViewID  = message.EntityListViewID;
 
                 while (dbEntitySpecifiedReport.CrosstabReportColumns.Any())
                     projectContext.CrosstabReportColumns.Remove(dbEntitySpecifiedReport.CrosstabReportColumns.First());

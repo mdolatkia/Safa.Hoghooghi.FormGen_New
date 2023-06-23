@@ -17,7 +17,7 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntityDataItemReport()
         {
-            this.DataMenuDataItemReportRelationship = new HashSet<DataMenuDataItemReportRelationship>();
+            this.DataMenuDataItemReport = new HashSet<DataMenuDataItemReport>();
         }
     
         public int ID { get; set; }
@@ -25,7 +25,7 @@ namespace DataAccess
     
         public virtual DataLinkDefinition DataLinkDefinition { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DataMenuDataItemReportRelationship> DataMenuDataItemReportRelationship { get; set; }
+        public virtual ICollection<DataMenuDataItemReport> DataMenuDataItemReport { get; set; }
         public virtual EntityReport EntityReport { get; set; }
         public virtual EntityDirectlReport EntityDirectlReport { get; set; }
         public virtual GraphDefinition GraphDefinition { get; set; }

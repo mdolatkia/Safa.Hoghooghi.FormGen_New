@@ -18,9 +18,9 @@ namespace DataAccess
         public EntityState()
         {
             this.EntitySecurityDirect = new HashSet<EntitySecurityDirect>();
+            this.EntityStateValues = new HashSet<EntityStateValues>();
             this.FormulaItems = new HashSet<FormulaItems>();
             this.EntityStateSecuritySubject = new HashSet<EntityStateSecuritySubject>();
-            this.EntityStateValues = new HashSet<EntityStateValues>();
             this.EntityState_UIActionActivity = new HashSet<EntityState_UIActionActivity>();
         }
     
@@ -39,11 +39,11 @@ namespace DataAccess
         public virtual ICollection<EntitySecurityDirect> EntitySecurityDirect { get; set; }
         public virtual Formula Formula { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntityStateValues> EntityStateValues { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FormulaItems> FormulaItems { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityStateSecuritySubject> EntityStateSecuritySubject { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EntityStateValues> EntityStateValues { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityState_UIActionActivity> EntityState_UIActionActivity { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }

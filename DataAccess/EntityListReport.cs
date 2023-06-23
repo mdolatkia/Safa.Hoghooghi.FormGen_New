@@ -23,12 +23,10 @@ namespace DataAccess
         }
     
         public int ID { get; set; }
-        public int EntityListViewID { get; set; }
     
         public virtual EntitySearchableReport EntitySearchableReport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityListReportSubs> EntityListReportSubs { get; set; }
-        public virtual EntityListView EntityListView { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityListReportSubs> EntityListReportSubs1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

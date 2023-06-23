@@ -190,13 +190,16 @@
     <Compile Include="DataLog.cs">
       <DependentUpon>MyIdeaDataDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataMenuDataItemReportRelationship.cs">
+    <Compile Include="DataMenuDataItemReport.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="DataMenuForViewEntity.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataMenuSearchableReportRelationship.cs">
+    <Compile Include="DataMenuRelationshipTail.cs">
+      <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataMenuRelTailSearchableReports.cs">
       <DependentUpon>MyProjectDataAccess.tt</DependentUpon>
     </Compile>
     <Compile Include="DataMenuSetting.cs">
