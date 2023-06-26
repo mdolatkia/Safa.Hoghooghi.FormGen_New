@@ -10,20 +10,13 @@
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <TextBlock x:Name="lblEntitySelector" Text="موجودیت"></TextBlock>
-        <Grid x:Name="grdEntitySelector" Grid.Column="1"></Grid>
-        <TextBlock x:Name="lblDataSelector" Text="داده" Grid.Row="1"></TextBlock>
-        <Grid x:Name="grdDataSelector" Grid.Row="1" Grid.Column="1"></Grid>
-        <TextBlock x:Name="lblSearchRepository" Text="جستجو" Grid.Row="2"></TextBlock>
-        <Grid x:Name="grdSearchRepository" Grid.Row="2" Grid.Column="1"></Grid>
-
+        <TextBlock x:Name="lblSelector" Text="داده" Grid.Row="0"></TextBlock>
+        <Grid x:Name="grdSelector" Grid.Row="0" Grid.Column="1"></Grid>
     </Grid>
 
 </UserControl>

@@ -27,51 +27,19 @@ namespace MyUIGenerator.View
             InitializeComponent();
         }
 
-        public void AddEntitySelectorArea(object view)
+      
+        public void AddSelector(object view)
         {
-            grdEntitySelector.Children.Clear();
-            grdEntitySelector.Children.Add(view as UIElement);
+            grdSelector.Children.Clear();
+            grdSelector.Children.Add(view as UIElement);
         }
-        public void SetEntitySelectorTitle(string title)
+        public void SetSelectorTitle(string title)
         {
-            lblEntitySelector.Text = title;
-        }
-        public void AddDataSelector(object view)
-        {
-            grdDataSelector.Children.Clear();
-            grdDataSelector.Children.Add(view as UIElement);
-        }
-        public void SetDataSelectorTitle(string title)
-        {
-            lblDataSelector.Text = title;
+            lblSelector.Text = title;
         }
 
-        public void RemoveDataSelector()
-        {
-            grdDataSelector.Children.Clear();
-        }
+       
 
-        public void RemoveEntitySelector()
-        {
-            lblEntitySelector.Visibility = Visibility.Collapsed;
-            grdEntitySelector.Children.Clear();
-        }
-
-        public void SetSearchRepositoyTitle(string title)
-        {
-            lblSearchRepository.Text = title;
-        }
-
-        public void RemoveSearchRepositoy()
-        {
-            lblSearchRepository.Visibility = Visibility.Collapsed;
-            grdSearchRepository.Children.Clear();
-        }
-
-        public void AddSearchRepository(I_View_SearchEntityArea searchView)
-        {
-            grdSearchRepository.Children.Clear();
-            grdSearchRepository.Children.Add(searchView as UIElement);
-        }
+      
     }
 }

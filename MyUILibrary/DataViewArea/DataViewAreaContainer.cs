@@ -20,7 +20,7 @@ namespace MyUILibrary.DataViewArea
         public bool SecurityEdit { set; get; }
         // public object MainView { set; get; }
 
-        public I_GeneralEntityDataSelectArea GeneralEntityDataSelectArea { set; get; }
+        public I_GeneralEntityDataSearchArea GeneralEntityDataSearchArea { set; get; }
 
         public DataViewAreaContainer(DataViewAreaContainerInitializer initParam)
         {
@@ -30,42 +30,40 @@ namespace MyUILibrary.DataViewArea
             AreaInitializer = initParam;
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetViewOfDataViewAreaContainer();
 
-            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer(Enum_EntityDataPurpose.SearchRepository);
-            selectAreaInitializer.EntityListViewID = AreaInitializer.EntityListViewID;
+            AddFirstDataViewArea();
+
+            EntityDataSearchAreaInitializer selectAreaInitializer = new EntityDataSearchAreaInitializer();
             selectAreaInitializer.EntitySearchID = AreaInitializer.EntitySearchID;
             selectAreaInitializer.EntityID = AreaInitializer.EntityID;
-            if (AreaInitializer.EntityID != 0)
-                selectAreaInitializer.HideEntitySelector = true;
 
             selectAreaInitializer.AdvancedSearchDTOMessage = initParam.AdvanceSearchRepository;
             selectAreaInitializer.PreDefinedSearchMessage = initParam.PreDefinedSearch;
             selectAreaInitializer.UserCanChangeSearchRepository = AreaInitializer.UserCanChangeSearchRepository;
             selectAreaInitializer.SearchInitially = initParam.SearchInitially;
 
-            GeneralEntityDataSelectArea = new GeneralEntityDataSelectArea();
-            GeneralEntityDataSelectArea.SearchRepositoryChanged += GeneralEntitySearchArea_SearchDataDefined;
-            GeneralEntityDataSelectArea.EntityChanged += GeneralEntitySearchArea_EntitySelected;
-            GeneralEntityDataSelectArea.SetAreaInitializer(selectAreaInitializer);
-            View.AddGenerealSearchAreaView(GeneralEntityDataSelectArea.View);
-
+            GeneralEntityDataSearchArea = new GeneralEntityDataSearchArea();
+            GeneralEntityDataSearchArea.SearchRepositoryChanged += GeneralEntitySearchArea_SearchDataDefined;
+            GeneralEntityDataSearchArea.SetAreaInitializer(selectAreaInitializer);
+            View.AddGenerealSearchAreaView(GeneralEntityDataSearchArea.View);
+          
 
         }
-        private void GeneralEntitySearchArea_EntitySelected(object sender, int? e)
-        {
-            if (e == null)
-            {
-                DataViewAreas.Clear();
-                CurrentDataViewArea = null;
-                SetLinks();
-                View.ClearDataView();
-                View.EnableDisable(false);
-            }
-            else
-            {
-                View.EnableDisable(true);
-                AddFirstDataViewArea();
-            }
-        }
+        //private void GeneralEntitySearchArea_EntitySelected(object sender, int? e)
+        //{
+        //    if (e == null)
+        //    {
+        //        DataViewAreas.Clear();
+        //        CurrentDataViewArea = null;
+        //        SetLinks();
+        //        View.ClearDataView();
+        //        View.EnableDisable(false);
+        //    }
+        //    else
+        //    {
+        //        View.EnableDisable(true);
+              
+        //    }
+        //}
 
         private void GeneralEntitySearchArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
         {
@@ -152,7 +150,7 @@ namespace MyUILibrary.DataViewArea
         {
             DataViewAreas.Clear();
             CurrentDataViewArea = null;
-            AddDataViewArea(GeneralEntityDataSelectArea.SelectedEntity.ID, GeneralEntityDataSelectArea.SelectedEntity.Alias, null, AreaInitializer.DataMenuSettingID, AreaInitializer.EntityListViewID, AreaInitializer.DataViewOrGridView);
+            AddDataViewArea(AreaInitializer.EntityID, GeneralEntityDataSearchArea.Entity.Alias, null, AreaInitializer.DataMenuSettingID, AreaInitializer.EntityListViewID, AreaInitializer.DataViewOrGridView);
             FirstDataView = DataViewAreas[0];
         }
         public void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepositoryMain searchRepository, I_DataViewItem causingDataViewItem, bool dataViewOrGridView, int dataMenuSettingID, int entityListViewID)

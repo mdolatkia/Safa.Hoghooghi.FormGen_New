@@ -19,7 +19,7 @@ namespace MyUILibraryInterfaces.DataViewArea
         //    void SetAreaInitializer(DataViewAreaContainerInitializer initParam);
         //I_SearchEntityArea SearchEntityArea { set; get; }
         //DP_SearchRepositoryMain SearchRepository { set; get; }
-        I_GeneralEntityDataSelectArea GeneralEntityDataSelectArea { set; get; }
+        I_GeneralEntityDataSearchArea GeneralEntityDataSearchArea { set; get; }
         void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepositoryMain searchRepository, I_DataViewItem defaultDataViewItem, bool dataViewOrGridView, int dataMenuSettingID, int entityListViewID);
     }
     public interface I_DataArea

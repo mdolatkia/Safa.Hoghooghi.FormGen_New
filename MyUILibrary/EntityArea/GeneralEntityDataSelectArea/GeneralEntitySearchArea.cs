@@ -6,123 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 using MyUILibrary.EntityArea;
 using ProxyLibrary;
-using ModelEntites;
 using MyCommonWPFControls;
+using ModelEntites;
+using MyUILibrary.EntityArea.Commands;
 
-namespace MyUILibrary.EntitySearchArea
+namespace MyUILibrary.EntitySelectArea
 {
-    public class GeneralEntitySearchArea : I_GeneralEntitySearchArea
+    public class GeneralEntityDataSearchArea : I_GeneralEntityDataSearchArea
     {
         MySearchLookup entitySearchLookup;
-
-        public GeneralEntitySearchAreaInitializer AreaInitializer { set; get; }
-
-        public GeneralEntitySearchArea()
-        {
-            //** GeneralEntitySearchArea: 33b533adf734
-            View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfGeneralEntitySearchArea();
-            entitySearchLookup = new MySearchLookup();
-            entitySearchLookup.DisplayMember = "Alias";
-            entitySearchLookup.SelectedValueMember = "ID";
-            entitySearchLookup.SearchFilterChanged += EntitySearchLookup_SearchFilterChanged;
-            entitySearchLookup.SelectionChanged += EntitySearchLookup_SelectionChanged;
-            View.AddEntitySelector(entitySearchLookup, "موجودیتها");
-        }
-        public void SetInitializer(GeneralEntitySearchAreaInitializer areaInitializer)
-        {
-            AreaInitializer = areaInitializer;
-            View.AddExternalArea(areaInitializer.ExternalView);
-            if (areaInitializer.LockEntitySelector)
-                entitySearchLookup.IsEnabledLookup = false;
-            if (areaInitializer.EntityID != 0)
-            {
-                entitySearchLookup.SelectedValue = areaInitializer.EntityID;
-            }
-            View.SearchLinkClicked += View_SearchLinkClicked;
-            //View.AddExternalArea(AreaInitializer.ExternalView);
-        }
-        private void EntitySearchLookup_SearchFilterChanged(object sender, SearchFilterArg e)
-        {
-            if (!string.IsNullOrEmpty(e.SingleFilterValue))
-            {
-                if (e.FilterBySelectedValue)
-                {
-                    var entity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetSimpleEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), Convert.ToInt32(e.SingleFilterValue), AreaInitializer.SpecificActions);
-                    if (entity != null)
-                        e.ResultItemsSource = new List<TableDrivedEntityDTO> { entity };
-                }
-                else
-                {
-                    var entities = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.SearchEntities(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), e.SingleFilterValue, AreaInitializer.SpecificActions);
-                    e.ResultItemsSource = entities;
-                }
-            }
-        }
-        private void EntitySearchLookup_SelectionChanged(object sender, SelectionChangedArg e)
-        {
-
-            if (e.SelectedItem != null)
-            {
-                var entity = e.SelectedItem as TableDrivedEntityDTO;
-               
-                var searchViewInitializer = new SearchAreaInitializer();
-                searchViewInitializer.EntityID = entity.ID;
-            
-                searchViewInitializer.AdvancedSearchDTOMessage = AreaInitializer.AdvancedSearchDTOMessage;
-                searchViewInitializer.PreDefinedSearchMessage = AreaInitializer.PreDefinedSearchMessage;
-                //if (AreaInitializer.PreDefinedSearch != null)
-                //{
-                // ////   searchViewInitializer.EntitySearchID = AreaInitializer.PreDefinedSearch.EntitySearchID;
-                //////اینجا چطور؟؟؟
-                //}
-                SearchArea = new SearchEntityArea(searchViewInitializer);
-         
-                SearchArea.SearchDataDefined += SearchArea_SearchDataDefined;
-
-                if (EntitySelected != null)
-                    EntitySelected(this, entity.ID);
-            }
-            else
-            {
-                SearchArea = null;
-             
-
-                if (EntitySelected != null)
-                    EntitySelected(this, null);
-             
-            }
-        }
-
-        private void View_SearchLinkClicked(object sender, EventArgs e)
-        {
-            if (SearchArea != null)
-                AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetDialogWindow().ShowDialog(SearchArea.SearchView, "جستجو", Enum_WindowSize.Big);
-        }
-        public event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;
-        public event EventHandler<int?> EntitySelected;
-
-        private void SearchArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
-        {
-            AgentUICoreMediator.GetAgentUICoreMediator.UIManager.CloseDialog(SearchArea.SearchView);
-            if (SearchDataDefined != null)
-                SearchDataDefined(this, e);
-        }
+        public EntityDataSearchAreaInitializer EntityDataSearchAreaInitializer { set; get; }
 
 
-        public TableDrivedEntityDTO SelectedEntity
-        {
-            get
-            {
-                return entitySearchLookup.SelectedItem as TableDrivedEntityDTO;
-            }
-        }
-        public void EnableDisableSearchArea(bool enable)
-        {
-            View.EnableDisableSearchLink(enable);
-        }
-
-
-        public I_View_GeneralEntitySearchArea View
+        public I_View_GeneralEntityDataSelectArea View
         {
             set; get;
         }
@@ -131,15 +27,59 @@ namespace MyUILibrary.EntitySearchArea
         {
             set; get;
         }
-        TableDrivedEntityDTO _FullEntity;
-        public TableDrivedEntityDTO FullEntity
+        public TableDrivedEntityDTO Entity { set; get; }
+
+        public void SetAreaInitializer(EntityDataSearchAreaInitializer entityDataSearchAreaInitializer)
         {
-            get
+            //تو این ویوی کاربردی مثلا آرشیو به این اصلی اضافه میشه ولی تو جنرال سرچ ویو اینجا به کاربردی مثلا دیتا ویو اضافه میشه. کدوم بهتره؟ اصلاح بشه
+            EntityDataSearchAreaInitializer = entityDataSearchAreaInitializer;
+            View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfGeneralEntityDataSelectArea();
+
+            if (EntityDataSearchAreaInitializer.EntityID != 0)
             {
-                if (_FullEntity == null)
-                    _FullEntity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetFullEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
-                return _FullEntity;
+                Entity = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetSimpleEntity(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EntityDataSearchAreaInitializer.EntityID);
+                View.SetSelectorTitle(Entity.Alias);
+                var searchViewInitializer = new SearchAreaInitializer();
+                searchViewInitializer.EntityID = Entity.ID;
+                searchViewInitializer.EntitySearchID = EntityDataSearchAreaInitializer.EntitySearchID;
+                if (!EntityDataSearchAreaInitializer.UserCanChangeSearchRepository)
+                {
+                    SearchArea.SearchView.DisableEnable(false);
+                }
+                if (firstTime)
+                {
+                    searchViewInitializer.AdvancedSearchDTOMessage = EntityDataSearchAreaInitializer.AdvancedSearchDTOMessage;
+                    searchViewInitializer.PreDefinedSearchMessage = EntityDataSearchAreaInitializer.PreDefinedSearchMessage;
+                }
+                SearchArea = new SearchEntityArea(searchViewInitializer);
+                View.AddSelector(SearchArea.SearchView);
+                SearchArea.SearchDataDefined += SearchArea_SearchDataDefined;
+                if (firstTime)
+                {
+                    firstTime = false;
+                    if (EntityDataSearchAreaInitializer.SearchInitially)
+                    {
+                        if (searchViewInitializer.AdvancedSearchDTOMessage != null)
+                            SearchArea.AdvancedSearchEntityArea.ConfirmSearch();
+                        else if (searchViewInitializer.PreDefinedSearchMessage != null)
+                            SearchArea.SimpleSearchEntityArea.ConfirmSearch();
+                    }
+                }
             }
         }
+
+
+        bool firstTime = true;
+
+
+
+        public event EventHandler<DP_SearchRepositoryMain> SearchRepositoryChanged;
+
+        private void SearchArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
+        {
+            if (SearchRepositoryChanged != null)
+                SearchRepositoryChanged(this, e);
+        }
+
     }
 }

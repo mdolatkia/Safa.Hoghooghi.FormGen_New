@@ -56,10 +56,9 @@ namespace MyUILibrary.EntityArea
 
             //اینجا فعال بشه
 
-            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer(Enum_EntityDataPurpose.SelectData);
+            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer();
 
             selectAreaInitializer.EntityID = areaInitializer.EntityID;
-            selectAreaInitializer.HideEntitySelector = true;
             selectAreaInitializer.DataItem = areaInitializer.DataInstance;
             if (selectAreaInitializer.DataItem != null)
                 selectAreaInitializer.LockDataSelector = true;
@@ -88,8 +87,8 @@ namespace MyUILibrary.EntityArea
                 DataTreeArea.ContextMenuLoaded += DataTreeArea_ContextMenuLoaded;
                 DataTreeArea.DataAreaConfirmed += DataTreeArea_DataAreaConfirmed;
                 var dataTreeInistializer = new DataTreeAreaInitializer();
-                dataTreeInistializer.EntitiyID = GeneralEntityDataSelectArea.SelectedEntity.ID;
-                dataTreeInistializer.RelationshipTailsLoaded = GeneralEntityDataSelectArea.SelectedEntity.LoadArchiveRelatedItems;
+                dataTreeInistializer.EntitiyID = AreaInitializer.EntityID;
+                dataTreeInistializer.RelationshipTailsLoaded = GeneralEntityDataSelectArea.Entity.LoadArchiveRelatedItems;
                 dataTreeInistializer.FirstDataItem = e.First();
                 dataTreeInistializer.RelationshipTails = ArchiveRelationshipTails.Select(x => x.RelationshipTail).ToList();
                 DataTreeArea.SetAreaInitializer(dataTreeInistializer);
@@ -107,7 +106,7 @@ namespace MyUILibrary.EntityArea
         {
             get
             {
-                return AgentUICoreMediator.GetAgentUICoreMediator.ArchiveManager.GetArchiveRelationshipTails(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), GeneralEntityDataSelectArea.SelectedEntity.ID);
+                return AgentUICoreMediator.GetAgentUICoreMediator.ArchiveManager.GetArchiveRelationshipTails(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), GeneralEntityDataSelectArea.Entity.ID);
             }
         }
         I_DataTreeArea DataTreeArea { set; get; }

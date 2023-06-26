@@ -8,7 +8,7 @@ namespace MyUILibrary.EntityArea
 {
     public interface I_ExternalReportArea
     {
-        I_GeneralEntityDataSelectArea GeneralEntityDataSelectArea { set; get; }
+        I_GeneralEntityDataSearchArea GeneralEntityDataSearchArea { set; get; }
         ExternalReportAreaInitializer AreaInitializer { set; get; }
         //void SetAreaInitializer();
         //I_SearchEntityArea SearchEntityArea { set; get; }

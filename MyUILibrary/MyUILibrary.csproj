@@ -97,6 +97,7 @@
     <Compile Include="EntityArea\EditEntityArea\ChildRelationshipInfo.cs" />
     <Compile Include="EntityArea\EditEntityArea\ChildSimpleContorlProperty.cs" />
     <Compile Include="EntityArea\EditEntityArea\DP_FormDataRepository.cs" />
+    <Compile Include="EntityArea\GeneralEntityDataSelectArea\GeneralEntitySearchArea.cs" />
     <Compile Include="Graph\GraphArea.cs" />
     <Compile Include="DataLinkArea\DataLinkArea.cs" />
     <Compile Include="DataMenu\DataMenuArea.cs" />

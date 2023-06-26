@@ -166,18 +166,18 @@ namespace MyUILibrary
             workflowReportCartable.Clicked += WorkflowReportCartable_Clicked;
             I_MainFormMenu logReport = UIManager.AddMainFormMenu("گزارش لاگ", "images\\zoom_extend.png");
             logReport.Clicked += LogReport_Clicked;
-            I_MainFormMenu archiveMenu = UIManager.AddMainFormMenu("آرشیو", "images\\archive.png");
-            archiveMenu.Clicked += ArchiveMenu_Clicked;
-            I_MainFormMenu letterMenu = UIManager.AddMainFormMenu("نامه ها", "images\\document.png");
-            letterMenu.Clicked += LetterMenu_Clicked;
-            I_MainFormMenu dataViewMenu = UIManager.AddMainFormMenu("نمایش داده ها", "images\\folder.png");
-            dataViewMenu.Clicked += DataViewMenu_Clicked;
-            I_MainFormMenu gridViewMenu = UIManager.AddMainFormMenu("گرید داده ها", "images\\folder.png");
-            gridViewMenu.Clicked += GridViewMenu_Clicked;
-            I_MainFormMenu dataLinkMenu = UIManager.AddMainFormMenu("لینک داده ها", "images\\folder.png");
-            dataLinkMenu.Clicked += DataLinkMenu_Clicked;
-            I_MainFormMenu graphMenu = UIManager.AddMainFormMenu("گراف داده ها", "images\\folder.png");
-            graphMenu.Clicked += GraphMenu_Clicked;
+          //  I_MainFormMenu archiveMenu = UIManager.AddMainFormMenu("آرشیو", "images\\archive.png");
+         //   archiveMenu.Clicked += ArchiveMenu_Clicked;
+            //I_MainFormMenu letterMenu = UIManager.AddMainFormMenu("نامه ها", "images\\document.png");
+            //letterMenu.Clicked += LetterMenu_Clicked;
+            //I_MainFormMenu dataViewMenu = UIManager.AddMainFormMenu("نمایش داده ها", "images\\folder.png");
+            //dataViewMenu.Clicked += DataViewMenu_Clicked;
+            //I_MainFormMenu gridViewMenu = UIManager.AddMainFormMenu("گرید داده ها", "images\\folder.png");
+            //gridViewMenu.Clicked += GridViewMenu_Clicked;
+            //I_MainFormMenu dataLinkMenu = UIManager.AddMainFormMenu("لینک داده ها", "images\\folder.png");
+            //dataLinkMenu.Clicked += DataLinkMenu_Clicked;
+            //I_MainFormMenu graphMenu = UIManager.AddMainFormMenu("گراف داده ها", "images\\folder.png");
+            //graphMenu.Clicked += GraphMenu_Clicked;
 
             I_MainFormMenu exitMenu = UIManager.AddMainFormMenu("خروج", "images\\close.png");
             exitMenu.Clicked += ExitMenu_Clicked;
@@ -224,36 +224,36 @@ namespace MyUILibrary
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ActivatePane("کارتابل");
         }
 
-        private void DataLinkMenu_Clicked(object sender, EventArgs e)
-        {
-            ShowDataLinkArea(0, 0, false, "لینک داده ها", null);
-        }
-        private void GraphMenu_Clicked(object sender, EventArgs e)
-        {
-            ShowGraphArea(0, 0, false, "گراف داده ها", null);
-        }
+        //private void DataLinkMenu_Clicked(object sender, EventArgs e)
+        //{
+        //    ShowDataLinkArea(0, 0, false, "لینک داده ها", null);
+        //}
+        //private void GraphMenu_Clicked(object sender, EventArgs e)
+        //{
+        //    ShowGraphArea(0, 0, false, "گراف داده ها", null);
+        //}
 
-        private void GridViewMenu_Clicked(object sender, EventArgs e)
-        {
-            // AgentUICoreMediator.GridViewMenu_Clicked: b3e382bbfc54
-            ShowDataViewGridViewArea(0, "گرید داده", false, true, false, null, null, false, 0, 0, 0, null, null);
-        }
+        //private void GridViewMenu_Clicked(object sender, EventArgs e)
+        //{
+        //    // AgentUICoreMediator.GridViewMenu_Clicked: b3e382bbfc54
+        //    ShowDataViewGridViewArea(0, "گرید داده", false, true, false, null, null, false, 0, 0, 0, null, null);
+        //}
 
-        private void DataViewMenu_Clicked(object sender, EventArgs e)
-        {
-            //AgentUICoreMediator.GridViewMenu_Clicked: 2fb728ad84e4
-            ShowDataViewGridViewArea(0, "نمای داده", false, true, true, null, null, false, 0, 0, 0, null, null);
-        }
+        //private void DataViewMenu_Clicked(object sender, EventArgs e)
+        //{
+        //    //AgentUICoreMediator.GridViewMenu_Clicked: 2fb728ad84e4
+        //    ShowDataViewGridViewArea(0, "نمای داده", false, true, true, null, null, false, 0, 0, 0, null, null);
+        //}
 
-        private void LetterMenu_Clicked(object sender, EventArgs e)
-        {
-            ShowLetterArea(0, "نامه ها", false);
-        }
+        //private void LetterMenu_Clicked(object sender, EventArgs e)
+        //{
+        //    ShowLetterArea(0, "نامه ها", false);
+        //}
 
-        private void ArchiveMenu_Clicked(object sender, EventArgs e)
-        {
-            ShowArchiveArea(0, "آرشیو", false);
-        }
+        //private void ArchiveMenu_Clicked(object sender, EventArgs e)
+        //{
+        //    ShowArchiveArea(0, "آرشیو", false);
+        //}
 
         private void LogReport_Clicked(object sender, EventArgs e)
         {

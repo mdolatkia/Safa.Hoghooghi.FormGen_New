@@ -43,10 +43,10 @@ namespace MyUILibrary.EntityArea
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + areaInitializer.ReportID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
                 return;
             }
-            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer(Enum_EntityDataPurpose.SelectData);
+            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer();
             selectAreaInitializer.EntityID = EntityDirectReport.TableDrivedEntityID;
-            selectAreaInitializer.HideEntitySelector = true;
             selectAreaInitializer.EntityListViewID = EntityDirectReport.EntityListViewID;
+            selectAreaInitializer.EntitySearchID = EntityDirectReport.EntitySearchID;
             selectAreaInitializer.DataItem = areaInitializer.DataInstance;
             if (selectAreaInitializer.DataItem != null)
                 selectAreaInitializer.LockDataSelector = true;

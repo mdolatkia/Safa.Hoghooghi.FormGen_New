@@ -28,7 +28,7 @@ namespace MyUILibrary.EntityArea
         public bool SecurityNoAccess { set; get; }
         public bool SecurityReadonly { set; get; }
         public bool SecurityEdit { set; get; }
-        public I_GeneralEntityDataSelectArea GeneralEntityDataSelectArea { set; get; }
+        public I_GeneralEntityDataSearchArea GeneralEntityDataSearchArea { set; get; }
         public object MainView { set; get; }
         public InternalReportArea(InternalReportAreaInitializer initParam)
         {
@@ -45,22 +45,19 @@ namespace MyUILibrary.EntityArea
             View.OrderColumnsChanged += View_OrderColumnsChanged;
             View.ExceptionThrown += View_ExceptionThrown;
 
-            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer(Enum_EntityDataPurpose.SearchRepository);
+            EntityDataSearchAreaInitializer selectAreaInitializer = new EntityDataSearchAreaInitializer();
             selectAreaInitializer.EntityID = AreaInitializer.Report.TableDrivedEntityID;
-            if (AreaInitializer.Report.TableDrivedEntityID != 0)
-                selectAreaInitializer.HideEntitySelector = true;
 
-            selectAreaInitializer.EntityListViewID = AreaInitializer.Report.EntityListViewID;
             selectAreaInitializer.EntitySearchID = AreaInitializer.Report.EntitySearchID;
             selectAreaInitializer.AdvancedSearchDTOMessage = initParam.Report.AdvancedSearch?.SearchRepositoryMain;
             selectAreaInitializer.PreDefinedSearchMessage = initParam.Report.PreDefinedSearch;
             selectAreaInitializer.UserCanChangeSearchRepository = AreaInitializer.UserCanChangeSearch;
             selectAreaInitializer.SearchInitially = initParam.SearchInitially;
 
-            GeneralEntityDataSelectArea = new GeneralEntityDataSelectArea();
-            GeneralEntityDataSelectArea.SearchRepositoryChanged += GeneralEntitySearchArea_SearchDataDefined;
-            GeneralEntityDataSelectArea.SetAreaInitializer(selectAreaInitializer);
-            View.AddGenerealSearchAreaView(GeneralEntityDataSelectArea.View);
+            GeneralEntityDataSearchArea = new GeneralEntityDataSearchArea();
+            GeneralEntityDataSearchArea.SearchRepositoryChanged += GeneralEntitySearchArea_SearchDataDefined;
+            GeneralEntityDataSearchArea.SetAreaInitializer(selectAreaInitializer);
+            View.AddGenerealSearchAreaView(GeneralEntityDataSearchArea.View);
 
 
             if (initParam.Report.SearchableReportType == SearchableReportType.ListReport)
