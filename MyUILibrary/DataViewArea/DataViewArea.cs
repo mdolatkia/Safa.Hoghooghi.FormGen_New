@@ -11,7 +11,6 @@ using ModelEntites;
 
 using MyUILibraryInterfaces.DataMenuArea;
 using MyUILibraryInterfaces.EntityArea;
-using MyUILibrary.EntitySearchArea;
 
 
 namespace MyUILibrary.DataViewArea

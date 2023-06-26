@@ -108,10 +108,11 @@ namespace MyUIGenerator.View
             throw new NotImplementedException();
         }
 
-        //public void AddGenerealSearchAreaView(object view)
-        //{
-        //    grdSearch.Children.Add(view as UIElement);
-        //}
+        public void AddGenerealSearchAreaView(object view)
+        {
+            grdSearch.Children.Clear();
+            grdSearch.Children.Add(view as UIElement);
+        }
 
         //public void SetReportSource(ReportSource reportSource)
         //{

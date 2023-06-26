@@ -216,10 +216,10 @@ namespace MyUILibrary.EntityArea
             {
                 if (_EntityListView == null)
                 {
-                    //if (ViewInitializer.EntityListViewID != 0)
-                    //    _EntityListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), ViewInitializer.EntityListViewID);
-                    //else
-                    _EntityListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetOrCreateEntityListViewDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), ViewInitializer.EntityID);
+                    if (ViewInitializer.EntityListViewID != 0)
+                        _EntityListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetEntityListView(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), ViewInitializer.EntityListViewID);
+                    else
+                        _EntityListView = AgentUICoreMediator.GetAgentUICoreMediator.EntityListViewManager.GetOrCreateEntityListViewDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), ViewInitializer.EntityID);
                 }
 
 

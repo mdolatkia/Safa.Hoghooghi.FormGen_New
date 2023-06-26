@@ -16,9 +16,10 @@ namespace MyUILibrary.EntityArea
     public interface I_EditEntityArea
     {
         RelationshipColumnControlGeneral SourceRelationColumnControl { set; get; }
-        event EventHandler<EditAreaDataItemLoadedArg> DataItemShown;
+        //event EventHandler<EditAreaDataItemLoadedArg> DataItemShown;
         event EventHandler UIGenerated;
         event EventHandler DataViewGenerated;
+        event EventHandler DataItemsCleared;
         DataEntryEntityDTO DataEntryEntity { get; }
         I_View_Area FirstView { get; }
         void ClearUIData(DP_FormDataRepository dataItem);
@@ -152,7 +153,7 @@ namespace MyUILibrary.EntityArea
     {
         void CheckContainersVisiblity(List<BaseColumnControl> hiddenControls);
 
-        event EventHandler<EditAreaDataItemArg> DataItemSelected;
+        event EventHandler<List<DP_FormDataRepository>> DataItemSelected;
         //     List<UIControlComposition> UIControlPackageTree { set; get; }
         //bool ShowDataInDataView(DP_FormDataRepository relatedData);
 
@@ -169,7 +170,7 @@ namespace MyUILibrary.EntityArea
     public interface I_EditEntityAreaMultipleData : I_EditEntityArea
     {
         //void GenerateUIComposition(List<EntityUICompositionDTO> UICompositions);
-        event EventHandler<EditAreaDataItemArg> DataItemRemoved;
+        event EventHandler<List<DP_FormDataRepository>> DataItemRemoved;
         void RemoveDataContainers();
         //  void RemoveData(List<DP_FormDataRepository> datas);
 
@@ -1040,10 +1041,10 @@ namespace MyUILibrary.EntityArea
     {
         public I_EditEntityArea GeneratedEditArea { set; get; }
     }
-    public class EditAreaDataItemArg : EventArgs
-    {
-        public DP_FormDataRepository DataItem { set; get; }
-    }
+    //public class EditAreaDataItemArg : EventArgs
+    //{
+    //    public List<DP_FormDataRepository> DataItems { set; get; }
+    //}
     public class EditAreaDataItemLoadedArg : EventArgs
     {
         public bool InEditMode { set; get; }

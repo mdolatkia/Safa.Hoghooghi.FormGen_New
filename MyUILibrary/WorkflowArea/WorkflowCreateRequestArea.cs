@@ -95,7 +95,7 @@ namespace MyUILibrary.WorkflowArea
 
         }
 
-        private void SearchEditEntityArea_DataItemSelected(object sender, EditAreaDataItemArg e)
+        private void SearchEditEntityArea_DataItemSelected(object sender, List<DP_FormDataRepository> e)
         {
             CheckWorkflowTitle();
         }

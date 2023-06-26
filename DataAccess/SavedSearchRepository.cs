@@ -24,11 +24,13 @@ namespace DataAccess
         public bool IsPreDefinedOrAdvanced { get; set; }
         public string Title { get; set; }
         public int TableDrivedEntityID { get; set; }
+        public Nullable<int> EntitySearchID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntitySearchableReport> EntitySearchableReport { get; set; }
         public virtual SaveAdvancedSearch SaveAdvancedSearch { get; set; }
         public virtual SavedPreDefinedSearch SavedPreDefinedSearch { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
+        public virtual EntitySearch EntitySearch { get; set; }
     }
 }

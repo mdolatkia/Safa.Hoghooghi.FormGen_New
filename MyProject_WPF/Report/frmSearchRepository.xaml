@@ -33,12 +33,12 @@
         <Grid Grid.Row="1" x:Name="grdSearch">
             <TabControl>
                 <TabItem Name="tabPreDefined" Header="جستجوی از پیش تعریف شده">
-                    <Grid  x:Name="grdPredefined">
-                        <Grid.RowDefinitions>
+                    <Grid  x:Name="grdPreDefinedView">
+                        <!--<Grid.RowDefinitions>
                             <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid Margin="10">
+                        </Grid.RowDefinitions>-->
+                        <!--<Grid Margin="10">
 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"></ColumnDefinition>
@@ -48,8 +48,8 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0"  Text="نوع جستجو"/>
                             <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" NewItemEnabled="True" EditItemEnabled="True"  x:Name="lokEntitySearch"  />
-                        </Grid>
-                        <Grid Grid.Row="1" x:Name="grdPreDefinedView"></Grid>
+                        </Grid>-->
+                        <!--<Grid Grid.Row="1" x:Name="grdPreDefinedView"></Grid>-->
                     </Grid>
                 </TabItem>
                 <TabItem Name="tabAdvanced" Header="جستجوی پیشرفته">

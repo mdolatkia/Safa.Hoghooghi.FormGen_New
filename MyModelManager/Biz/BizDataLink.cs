@@ -28,7 +28,7 @@ namespace MyModelManager
                 if (!DataIsAccessable(requester, dbItem))
                     return null;
                 else
-                    return ToDataLinkDTO( requester, dbItem, true);
+                    return ToDataLinkDTO(requester, dbItem, true);
             }
         }
         BizTableDrivedEntity bizTableDrivedEntity = new BizTableDrivedEntity();
@@ -61,7 +61,7 @@ namespace MyModelManager
                 foreach (var dbItem in items)
                 {
                     if (DataIsAccessable(requester, dbItem))
-                        result.Add(ToDataLinkDTO( requester, dbItem, false));
+                        result.Add(ToDataLinkDTO(requester, dbItem, false));
                 }
             }
 
@@ -78,7 +78,7 @@ namespace MyModelManager
                 foreach (var dbItem in items)
                 {
                     if (DataIsAccessable(requester, dbItem))
-                        result.Add(ToDataLinkDTO( requester, dbItem, false));
+                        result.Add(ToDataLinkDTO(requester, dbItem, false));
                 }
             }
             return result;
@@ -89,11 +89,12 @@ namespace MyModelManager
         private DataLinkDTO ToDataLinkDTO(DR_Requester requester, DataLinkDefinition item, bool withDetails)
         {
             DataLinkDTO result = new DataLinkDTO();
-            bizEntityReport.ToEntityReportDTO( requester, item.EntityDataItemReport.EntityReport, result, withDetails);
+            bizEntityReport.ToEntityReportDTO(requester, item.EntityDataItemReport.EntityReport, result, withDetails);
             result.SecondSideEntityID = item.SecondSideEntityID;
             result.NotJointEntities = item.NotJointEntities == true;
-            result.FirstSideDataMenuID = item.FirstSideDataMenuID ?? 0;
+            // result.FirstSideDataMenuID = item.FirstSideDataMenuID ?? 0;
             result.SecondSideDataMenuID = item.SecondSideDataMenuID ?? 0;
+            result.SecondSideListViewID= item.SecondSideListViewID ?? 0;
             if (withDetails)
             {
                 BizEntityRelationshipTail bizEntityRelationshipTail = new MyModelManager.BizEntityRelationshipTail();
@@ -105,7 +106,7 @@ namespace MyModelManager
                     rel.RelationshipTailID = dbRel.EntityRelationshipTailID;
                     rel.EntityRelationshipTailDataMenuID = dbRel.EntityRelationshipTailDataMenuID ?? 0;
                     if (rel.EntityRelationshipTailDataMenuID != 0)
-                        rel.EntityRelationshipTailDataMenu = bizEntityRelationshipTailListView.ToEntityRelationshipTailDataMenuDTO(dbRel.EntityRelationshipTailDataMenu,true);
+                        rel.EntityRelationshipTailDataMenu = bizEntityRelationshipTailListView.ToEntityRelationshipTailDataMenuDTO(dbRel.EntityRelationshipTailDataMenu, true);
                     //   rel.FromFirstSideToSecondSide = dbRel.FromFirstSideToSecondSide;
                     rel.ID = dbRel.ID;
                     rel.RelationshipTail = bizEntityRelationshipTail.ToEntityRelationshipTailDTO(dbRel.EntityRelationshipTail);
@@ -137,14 +138,20 @@ namespace MyModelManager
                 dbEntity.SecondSideEntityID = message.SecondSideEntityID;
                 dbEntity.NotJointEntities = message.NotJointEntities;
 
-                if (message.FirstSideDataMenuID != 0)
-                    dbEntity.FirstSideDataMenuID = message.FirstSideDataMenuID;
+                if (message.DataMenuSettingID != 0)
+                    dbEntity.EntityDataItemReport.EntityReport.DataMenuSettingID = message.DataMenuSettingID;
                 else
-                    dbEntity.FirstSideDataMenuID = null;
+                    dbEntity.EntityDataItemReport.EntityReport.DataMenuSettingID = null;
+
                 if (message.SecondSideDataMenuID != 0)
                     dbEntity.SecondSideDataMenuID = message.SecondSideDataMenuID;
                 else
                     dbEntity.SecondSideDataMenuID = null;
+
+                if (message.SecondSideListViewID != 0)
+                    dbEntity.SecondSideListViewID = message.SecondSideListViewID;
+                else
+                    dbEntity.SecondSideListViewID = null;
 
                 while (dbEntity.DataLinkDefinition_EntityRelationshipTail.Any())
                     projectContext.DataLinkDefinition_EntityRelationshipTail.Remove(dbEntity.DataLinkDefinition_EntityRelationshipTail.First());

@@ -44,7 +44,7 @@ namespace MyModelManager
                 foreach (var item in listEntityReport)
                 {
                     var nItem = new EntitySearchableReportDTO();
-                    ToEntitySearchableReportDTO( requester, item, nItem, false);
+                    ToEntitySearchableReportDTO(requester, item, nItem, false);
                     result.Add(nItem);
                 }
             }
@@ -63,9 +63,9 @@ namespace MyModelManager
 
         //    return result;
         //}
-        internal void ToEntitySearchableReportDTO(DR_Requester requester, EntitySearchableReport entitySearchableReport, EntitySearchableReportDTO entitySearchableReportDTO,bool withDetails)
+        internal void ToEntitySearchableReportDTO(DR_Requester requester, EntitySearchableReport entitySearchableReport, EntitySearchableReportDTO entitySearchableReportDTO, bool withDetails)
         {
-            bizEntityReport.ToEntityReportDTO( requester, entitySearchableReport.EntityReport, entitySearchableReportDTO,  withDetails);
+            bizEntityReport.ToEntityReportDTO(requester, entitySearchableReport.EntityReport, entitySearchableReportDTO, withDetails);
             //entitySearchableReportDTO.SearchRepositoryID = entitySearchableReport.SearchRepositoryID ?? 0;
             //if (entitySearchableReport.SearchRepository != null)
             //    entitySearchableReportDTO.SearchRepository = bizSearchRepository.ToSearchRepositoryDTO(entitySearchableReport.SearchRepository);
@@ -77,12 +77,14 @@ namespace MyModelManager
             var result = new EntitySearchableReport();
             result.EntityReport = bizEntityReport.ToNewEntityReport(message);
             result.SavedSearchRepositoryID = message.SearchRepositoryID == 0 ? (Int32?)null : message.SearchRepositoryID;
+            result.EntitySearchID = message.EntitySearchID == 0 ? (Int32?)null : message.EntitySearchID;
             result.SearchableReportType = (short)message.SearchableReportType;
             return result;
         }
         internal void ToUpdateEntitySearchableReport(EntitySearchableReport entitySearchableReport, EntitySearchableReportDTO message)
         {
             bizEntityReport.ToUpdateEntityReport(entitySearchableReport.EntityReport, message);
+            entitySearchableReport.EntitySearchID = message.EntitySearchID == 0 ? (Int32?)null : message.EntitySearchID;
             entitySearchableReport.SavedSearchRepositoryID = message.SearchRepositoryID == 0 ? (Int32?)null : message.SearchRepositoryID;
         }
     }

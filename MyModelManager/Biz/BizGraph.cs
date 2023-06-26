@@ -89,7 +89,7 @@ namespace MyModelManager
             GraphDTO result = new GraphDTO();
             bizEntityReport.ToEntityReportDTO( requester, item.EntityDataItemReport.EntityReport, result, withDetails);
             result.NotJointEntities = item.NotJointEntities == true;
-            result.FirstSideDataMenuID = item.FirstSideDataMenuID ?? 0;
+          
             if (withDetails)
             {
                 BizEntityRelationshipTail bizEntityRelationshipTail = new MyModelManager.BizEntityRelationshipTail();
@@ -129,10 +129,10 @@ namespace MyModelManager
                 else
                     bizEntityDataItemReport.ToUpdateEntityDataItemReport(dbEntity.EntityDataItemReport, message);
 
-                if (message.FirstSideDataMenuID != 0)
-                    dbEntity.FirstSideDataMenuID = message.FirstSideDataMenuID;
+                if (message.DataMenuSettingID != 0)
+                    dbEntity.EntityDataItemReport.EntityReport.DataMenuSettingID = message.DataMenuSettingID;
                 else
-                    dbEntity.FirstSideDataMenuID = null;
+                    dbEntity.EntityDataItemReport.EntityReport.DataMenuSettingID = null;
 
                 dbEntity.NotJointEntities = message.NotJointEntities;
                 while (dbEntity.GraphDefinition_EntityRelationshipTail.Any())

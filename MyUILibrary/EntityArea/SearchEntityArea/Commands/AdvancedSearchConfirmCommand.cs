@@ -28,8 +28,8 @@ namespace MyUILibrary.EntityArea.Commands
             //Enabled = false;
             //try
             //{
-            var searchRepository = SearchArea.GetSearchRepository();
-            SearchArea.OnSearchDataDefined(searchRepository);
+            SearchArea.ConfirmSearch();
+          
             //Enabled = true;
             //var command = new AG_CommandExecutionRe
         }

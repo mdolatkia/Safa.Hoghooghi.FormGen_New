@@ -8,9 +8,13 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <telerik:RadRibbonView TitleBarVisibility="Collapsed"   Background="White" ContentHeight="60" x:Name="Ribbon" 
+        <Grid x:Name="grdSearch" Grid.Row="0">
+
+        </Grid>
+        <telerik:RadRibbonView TitleBarVisibility="Collapsed"  Grid.Row="1"  Background="White" ContentHeight="60" x:Name="Ribbon" 
 				BackstageClippingElement="{Binding ElementName=LayoutRoot}"  ApplicationButtonVisibility="Collapsed"  MinimizeButtonVisibility="Visible"
 				QuickAccessToolBarPosition="NotHosted" telerik:KeyTipService.IsKeyTipsEnabled="True">
             <telerik:RadRibbonView.Items>
@@ -50,7 +54,7 @@
                 </telerik:RadRibbonTab>
             </telerik:RadRibbonView.Items>
         </telerik:RadRibbonView>
-        <Grid Grid.Row="1" x:Name="grdMain">
+        <Grid Grid.Row="2" x:Name="grdMain">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition  MaxWidth="250" Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="5"></ColumnDefinition>

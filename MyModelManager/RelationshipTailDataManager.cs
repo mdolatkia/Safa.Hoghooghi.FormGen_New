@@ -20,11 +20,14 @@ namespace MyRelationshipDataManager
         //    return bizRelationshipTail.GetEntityRelationshipTail(id);
         //}
         //مهم اینه که داده مبدا از ویو نباشد
+        public DP_SearchRepositoryMain GetTargetSearchItemFromRelationshipTail(DR_Requester requester, DP_BaseData firstDataItem, int relationshipTailID)
+        {
+            var tail = bizRelationshipTail.GetEntityRelationshipTail(requester, relationshipTailID);
+            return GetTargetSearchItemFromRelationshipTail(firstDataItem, tail);
+        }
         public DP_SearchRepositoryMain GetTargetSearchItemFromRelationshipTail(DP_BaseData firstDataItem, EntityRelationshipTailDTO relationshipTail)
         {
-
             var linkedRelationshipTails = GetLinkedRelationshipTails(relationshipTail.ReverseRelationshipTail);
-
             DP_SearchRepositoryMain result = new DP_SearchRepositoryMain(firstDataItem.TargetEntityID);
             foreach (var column in firstDataItem.KeyProperties)
                 result.Phrases.Add(new SearchProperty(column.Column) { Value = column.Value });
@@ -34,7 +37,7 @@ namespace MyRelationshipDataManager
             return result;
         }
 
-        private void GetSourceSideSearchItemFromRelationshipTail(LinkedListNode<EntityRelationshipTailDTO> linkedListNode, LogicPhraseDTO logicPhrase )
+        private void GetSourceSideSearchItemFromRelationshipTail(LinkedListNode<EntityRelationshipTailDTO> linkedListNode, LogicPhraseDTO logicPhrase)
         {
 
             if (linkedListNode != null)

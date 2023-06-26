@@ -20,7 +20,9 @@ namespace DataAccess
         public string Description { get; set; }
         public Nullable<short> ReportType { get; set; }
         public Nullable<int> EntityListViewID { get; set; }
+        public Nullable<int> DataMenuSettingID { get; set; }
     
+        public virtual DataMenuSetting DataMenuSetting { get; set; }
         public virtual EntityDataItemReport EntityDataItemReport { get; set; }
         public virtual EntityListView EntityListView { get; set; }
         public virtual EntitySearchableReport EntitySearchableReport { get; set; }

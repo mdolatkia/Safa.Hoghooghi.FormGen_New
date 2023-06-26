@@ -34,7 +34,6 @@ namespace MyProject_WPF
         {
             InitializeComponent();
             EntityID = entityID;
-            SetEntityPreDefinedSearchList();
             if (entityListReportID != 0)
             {
                 GetEntityExternalReport(entityListReportID);
@@ -46,52 +45,20 @@ namespace MyProject_WPF
             }
 
         }
-        private void SetEntityPreDefinedSearchList()
-        {
-            if (lokSearchRepository.ItemsSource == null)
-            {
-                lokSearchRepository.EditItemClicked += LokEntityPreDefined_EditItemClicked; ;
-            }
-            BizSearchRepository biz = new BizSearchRepository();
-            lokSearchRepository.DisplayMember = "Title";
-            lokSearchRepository.SelectedValueMember = "ID";
-            lokSearchRepository.ItemsSource = biz.GetSearchRepositories(EntityID);
-        }
-        private void LokEntityPreDefined_EditItemClicked(object sender, EditItemClickEventArg e)
-        {
-            var lookup = (sender as MyStaticLookup);
-            frmSearchRepository view;
-
-            if (lookup.SelectedItem == null)
-            {
-                view = new frmSearchRepository(EntityID, 0);
-            }
-            else
-            {
-                view = new frmSearchRepository(EntityID, (int)lookup.SelectedValue);
-            }
-            view.EntityPreDefinedSearchUpdated += (sender1, e1) => View_EntityPreDefinedSearchUpdated(sender1, e1, lookup);
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "تنظیمات نامه", Enum_WindowSize.Maximized);
-        }
-
-        private void View_EntityPreDefinedSearchUpdated(object sender, EntityPreDefinedSearchUpdatedArg e, MyStaticLookup lookup)
-        {
-            SetEntityPreDefinedSearchList();
-            lookup.SelectedValue = e.ID;
-        }
+       
         private void ShowMessage()
         {
-            txtReportName.Text = Message.ReportTitle;
+            frmSearchableReport.EntityListViewVisiblity(false);
+            frmSearchableReport.ShowMessage(Message);
             txtURL.Text = Message.URL;
-            lokSearchRepository.SelectedValue = Message.SearchRepositoryID;
+          
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
 
-            if (txtReportName.Text == "")
+            if (!frmSearchableReport.FillMessage(Message))
             {
-                MessageBox.Show("عنوان مناسب تعریف نشده است");
                 return;
             }
             if (txtURL.Text == "")
@@ -99,12 +66,8 @@ namespace MyProject_WPF
                 MessageBox.Show("آدرس مناسب تعریف نشده است");
                 return;
             }
-            if (lokSearchRepository.SelectedItem != null)
-                Message.SearchRepositoryID = (int)lokSearchRepository.SelectedValue;
-            else
-                Message.SearchRepositoryID = 0;
+          
             Message.TableDrivedEntityID = EntityID;
-            Message.ReportTitle = txtReportName.Text;
             Message.URL = txtURL.Text;
             bizEntityExternalReport.UpdateEntityExternalReports(MyProjectManager.GetMyProjectManager.GetRequester(), Message);
             MessageBox.Show("اطلاعات ثبت شد");

@@ -10,6 +10,7 @@ using ProxyLibrary;
 using MyUILibraryInterfaces.DataTreeArea;
 using MyUILibrary.DataTreeArea;
 using MyUILibraryInterfaces.EntityArea;
+using MyUILibrary.EntitySelectArea;
 
 namespace MyUILibrary.EntityArea
 {
@@ -22,13 +23,15 @@ namespace MyUILibrary.EntityArea
         public bool SecurityReadonly { set; get; }
         public bool SecurityEdit { set; get; }
 
-        public I_EntitySelectArea EntitySelectArea { set; get; }
-        public object MainView
-        {
-            set; get;
-        }
+        public I_GeneralEntityDataSelectArea GeneralEntityDataSelectArea { set; get; }
+        //public object MainView
+        //{
+        //    set; get;
+        //}
         EntityDirectReportDTO EntityDirectReport { set; get; }
         public DirectReportAreaInitializer AreaInitializer { set; get; }
+        public object View { set; get; }
+
         public DirectReportArea(DirectReportAreaInitializer areaInitializer)
         {
             //DirectReportArea: 93d179c8164c
@@ -40,25 +43,27 @@ namespace MyUILibrary.EntityArea
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + areaInitializer.ReportID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
                 return;
             }
-            MyUILibraryInterfaces.EntityArea.EntitySelectAreaInitializer selectAreaInitializer = new MyUILibraryInterfaces.EntityArea.EntitySelectAreaInitializer();
+            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer(Enum_EntityDataPurpose.SelectData);
             selectAreaInitializer.EntityID = EntityDirectReport.TableDrivedEntityID;
-            selectAreaInitializer.LockEntitySelector = true;
-            EntitySelectArea = new EntitySelectArea.EntitySelectArea(selectAreaInitializer);
-            EntitySelectArea.DataItemSelected += EntitySelectArea_DataItemSelected;
-            MainView = EntitySelectArea.View;
-            if (areaInitializer.DataInstance != null)
-            {
-                EntitySelectArea.EnableDisableSelectArea(false);
-                EntitySelectArea.SelectData(areaInitializer.DataInstance);
-            }
+            selectAreaInitializer.HideEntitySelector = true;
+            selectAreaInitializer.EntityListViewID = EntityDirectReport.EntityListViewID;
+            selectAreaInitializer.DataItem = areaInitializer.DataInstance;
+            if (selectAreaInitializer.DataItem != null)
+                selectAreaInitializer.LockDataSelector = true;
+            GeneralEntityDataSelectArea = new GeneralEntityDataSelectArea();
+            GeneralEntityDataSelectArea.DataItemChanged += EntitySelectArea_DataItemSelected;
+
+            GeneralEntityDataSelectArea.SetAreaInitializer(selectAreaInitializer);
+            View = GeneralEntityDataSelectArea.View;
         }
 
-        private void EntitySelectArea_DataItemSelected(object sender, EditAreaDataItemArg e)
+        private void EntitySelectArea_DataItemSelected(object sender, List<DP_FormDataRepository> e)
         {
             var url = EntityDirectReport.URL;
-            if (e.DataItem != null)
+            if (e != null && e.Any())
             {
-                foreach (var item in e.DataItem.KeyProperties)
+                var dataItem = e.First();
+                foreach (var item in dataItem.KeyProperties)
                 {
                     var paramCol = EntityDirectReport.EntityDirectlReportParameters.FirstOrDefault(x => x.ColumnID == item.ColumnID);
                     if (paramCol != null)

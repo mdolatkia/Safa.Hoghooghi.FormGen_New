@@ -195,7 +195,7 @@ namespace MyUILibrary.GraphArea
                 if (FirstSideEditEntityAreaResult.Item1 != null)
                 {
                     FirstSideEditEntityArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                 //   FirstSideEditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
+                    //   FirstSideEditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
                     View.SetFirstSideEntityView(FirstSideEditEntityArea.TemporaryDisplayView, FirstSideEditEntityArea.SimpleEntity.Alias);
                     FirstSideEditEntityArea.DataItemSelected += FirstSideEditEntityArea_DataItemSelected;
                 }
@@ -219,9 +219,9 @@ namespace MyUILibrary.GraphArea
             }
         }
 
-        private void FirstSideEditEntityArea_DataItemSelected(object sender, EditAreaDataItemArg e)
+        private void FirstSideEditEntityArea_DataItemSelected(object sender, List<DP_FormDataRepository> e)
         {
-            if (e.DataItem != null)
+            if (e != null)
             {
                 View_GraphConfirmed(null, null);
             }

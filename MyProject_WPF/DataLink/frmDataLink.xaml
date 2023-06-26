@@ -17,6 +17,7 @@
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
 
             </Grid.RowDefinitions>
@@ -44,11 +45,16 @@
             <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="2" x:Name="lokFirstDataMenu" Grid.Column="1" />
             <TextBlock Grid.Column="2" Grid.Row="2" Text="تنظیمات منوی دوم"/>
             <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="3" x:Name="lokSecondDataMenu" />
-            
+          
+            <TextBlock Text="لیست نمایش اول" Grid.Row="3"/>
+            <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="3" x:Name="lokFirstListView" Grid.Column="1" />
+            <TextBlock Grid.Column="2" Grid.Row="3" Text="لیست نمایش دوم"/>
+            <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="3" Grid.Column="3" x:Name="lokSecondListView" />
 
-            <TextBlock Grid.Row="3" VerticalAlignment="Top" Text="رشته روابط"></TextBlock>
 
-            <telerik:RadGridView x:Name="dtgRelationships" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="1" AutoGenerateColumns="False">
+            <TextBlock Grid.Row="4" VerticalAlignment="Top" Text="رشته روابط"></TextBlock>
+
+            <telerik:RadGridView x:Name="dtgRelationships" Grid.Row="4" Grid.ColumnSpan="3" Grid.Column="1" AutoGenerateColumns="False">
                 <telerik:RadGridView.Columns>
                     <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}"  x:Name="colRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
                     <MyCommonWPFControls:MyStaticLookupColumn ItemsSourceBinding="{Binding tmpEntityRelationshipTailDataMenus}" DataMemberBinding="{Binding EntityRelationshipTailDataMenuID}"  x:Name="colRelationshipTailDataMenu" Header="تنظیمات منو"></MyCommonWPFControls:MyStaticLookupColumn>

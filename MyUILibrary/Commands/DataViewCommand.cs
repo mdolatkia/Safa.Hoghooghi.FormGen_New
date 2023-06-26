@@ -27,7 +27,11 @@ namespace MyUILibrary.EntityArea.Commands
         {
             if (EditArea != null)
             {
-                var searchDP = EditArea.SearchEntityArea?.LastSearch;
+                DP_SearchRepositoryMain searchDP = null;
+                if (EditArea.SearchEntityArea != null)
+                {
+                    searchDP = EditArea.SearchEntityArea.LastSearchRepository;
+                }
                 //if (searchDP != null)
                 //{
                 //if (packageArea.DataViewArea == null)
@@ -36,7 +40,7 @@ namespace MyUILibrary.EntityArea.Commands
                 //}
                 //else
                 //{
-                AgentUICoreMediator.GetAgentUICoreMediator.ShowDataViewGridViewArea(EditArea.AreaInitializer.EntityID, EditArea.SimpleEntity.Alias, false, true, true, searchDP, true, 0, null, null);
+                AgentUICoreMediator.GetAgentUICoreMediator.ShowDataViewGridViewArea(EditArea.AreaInitializer.EntityID, EditArea.SimpleEntity.Alias, false, true, true, searchDP, null, true, 0, EditArea.AreaInitializer.EntityListViewID, EditArea.AreaInitializer.EntitySearchID, null, null);
                 //}
 
                 //}

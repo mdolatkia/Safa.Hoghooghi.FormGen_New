@@ -63,7 +63,7 @@
                                 <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}" EditItemEnabled="True" NewItemEnabled="True" x:Name="colReportRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
                             </telerik:RadGridView.Columns>
                         </telerik:RadGridView>
-                        <telerik:RadGridView x:Name="dtgRelationshipReports" AutoGenerateColumns="False">
+                        <telerik:RadGridView Grid.Row="1" x:Name="dtgRelationshipReports" AutoGenerateColumns="False">
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewComboBoxColumn x:Name="colReports" ItemsSourceBinding="{Binding vwReports}" Header="گزارشات" DataMemberBinding="{Binding EntitySearchableReportID}" />
                                 <telerik:GridViewDataColumn DataMemberBinding="{Binding Group1}"></telerik:GridViewDataColumn>

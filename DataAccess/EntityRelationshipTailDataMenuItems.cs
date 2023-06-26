@@ -18,8 +18,11 @@ namespace DataAccess
         public int EntityRelationshipTailDataMenuID { get; set; }
         public string Path { get; set; }
         public int TableDrivedEntityID { get; set; }
-        public int DataMenuSettingID { get; set; }
+        public Nullable<int> DataMenuSettingID { get; set; }
+        public Nullable<int> EntityListViewID { get; set; }
     
+        public virtual DataMenuSetting DataMenuSetting { get; set; }
+        public virtual EntityListView EntityListView { get; set; }
         public virtual EntityRelationshipTailDataMenu EntityRelationshipTailDataMenu { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
     }

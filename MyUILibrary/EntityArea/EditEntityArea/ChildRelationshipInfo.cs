@@ -1513,7 +1513,7 @@ namespace MyUILibrary.EntityArea
             //   CheckRelationshipLabel();
             //foreach (var item in GetDataList())
             //{
-            //    OnDataItemUnShown(new EditAreaDataItemArg() { DataItem = item });
+            //    OnDataItemUnShown(new List<DP_FormDataRepository>() { DataItem = item });
             //}
         }
         private void ConvertDataViewToFullDataAndShow(int entityID, List<DP_FormDataRepository> dataItems, I_EditEntityArea editEntityArea)

@@ -35,20 +35,24 @@ namespace MyProject_WPF
         BizSearchRepository bizSearchRepository = new BizSearchRepository();
         public event EventHandler<EntityPreDefinedSearchUpdatedArg> EntityPreDefinedSearchUpdated;
         int EntityID { set; get; }
+        int EntitySearchID { set; get; }
         //int SearchEntityID { set; get; }
-        public frmSearchRepository(int entityID, int savedSearchRepositoryID)
+        public frmSearchRepository(int entityID, int entitySearchID, int savedSearchRepositoryID)
         {
             // frmSearchRepository: 6ee975bba1ca
             InitializeComponent();
             EntityID = entityID;
-
+            EntitySearchID = entitySearchID;
             MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.SetUIManager(new UIManager());
             var userInfo = new MyUILibrary.UserInfo();
             userInfo.AdminSecurityInfo = new MyUILibrary.AdminSecurityInfo() { IsActive = true, ByPassSecurity = true };
             MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.UserInfo = userInfo;
 
-            SetEntitySearchList();
-            lokEntitySearch.SelectionChanged += LokEntitySearch_SelectionChanged;
+            //  SetEntitySearchList();
+            //  lokEntitySearch.SelectionChanged += LokEntitySearch_SelectionChanged;
+            if (EntitySearchID != 0)
+                CrearePreDefinedSearchArea();
+
             CreateAdvanceSearchArea();
 
             if (savedSearchRepositoryID != 0)
@@ -62,6 +66,19 @@ namespace MyProject_WPF
 
         }
 
+        private void CrearePreDefinedSearchArea()
+        {
+            //  int entitySearchID = lokEntitySearch.SelectedItem == null ? 0 : (int)lokEntitySearch.SelectedValue;
+
+            var searchViewInitializer = new SearchAreaInitializer();
+            searchViewInitializer.EntityID = EntityID;
+            searchViewInitializer.ForSave = true;
+            searchViewInitializer.EntitySearchID = EntitySearchID;
+            EntityDefinedSearchArea = new EntityDefinedSearchArea(searchViewInitializer);
+            EntityDefinedSearchArea.FormulaSelectionRequested += EntityDefinedSearchArea_FormulaSelectionRequested;
+            grdPreDefinedView.Children.Add(EntityDefinedSearchArea.SimpleSearchView as UIElement);
+        }
+
         private void CreateAdvanceSearchArea()
         {
             var searchViewInitializer = new SearchAreaInitializer();
@@ -73,24 +90,16 @@ namespace MyProject_WPF
 
         }
 
-        private void LokEntitySearch_SelectionChanged(object sender, SelectionChangedArg e)
-        {
-            //** 2c7b2d28-f3af-4d68-9ca9-9b6218afd23c
-            grdPreDefinedView.Children.Clear();
-            if (lokEntitySearch.SelectedItem != null)
-            {
-                int entitySearchID = lokEntitySearch.SelectedItem == null ? 0 : (int)lokEntitySearch.SelectedValue;
+        //private void LokEntitySearch_SelectionChanged(object sender, SelectionChangedArg e)
+        //{
+        //    //** 2c7b2d28-f3af-4d68-9ca9-9b6218afd23c
+        //    grdPreDefinedView.Children.Clear();
+        //    if (lokEntitySearch.SelectedItem != null)
+        //    {
 
-                var searchViewInitializer = new SearchAreaInitializer();
-                searchViewInitializer.EntityID = EntityID;
-                searchViewInitializer.ForSave = true;
-                searchViewInitializer.EntitySearchID = entitySearchID;
-                EntityDefinedSearchArea = new EntityDefinedSearchArea(searchViewInitializer);
-                EntityDefinedSearchArea.FormulaSelectionRequested += EntityDefinedSearchArea_FormulaSelectionRequested;
-                grdPreDefinedView.Children.Add(EntityDefinedSearchArea.SimpleSearchView as UIElement);
-            }
+        //    }
 
-        }
+        //}
 
         private void EntityDefinedSearchArea_FormulaSelectionRequested(object sender, SimpleSearchColumnControl e)
         {
@@ -126,38 +135,38 @@ namespace MyProject_WPF
 
         }
 
-        private void SetEntitySearchList()
-        {
-            if (lokEntitySearch.ItemsSource == null)
-            {
-                lokEntitySearch.EditItemClicked += LokEntitySearch_EditItemClicked; ;
-            }
-            BizEntitySearch biz = new BizEntitySearch();
-            lokEntitySearch.DisplayMember = "Title";
-            lokEntitySearch.SelectedValueMember = "ID";
-            lokEntitySearch.ItemsSource = biz.GetEntitySearchs(MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EntityID);
-        }
+        //private void SetEntitySearchList()
+        //{
+        //    if (lokEntitySearch.ItemsSource == null)
+        //    {
+        //        lokEntitySearch.EditItemClicked += LokEntitySearch_EditItemClicked; ;
+        //    }
+        //    BizEntitySearch biz = new BizEntitySearch();
+        //    lokEntitySearch.DisplayMember = "Title";
+        //    lokEntitySearch.SelectedValueMember = "ID";
+        //    lokEntitySearch.ItemsSource = biz.GetEntitySearchs(MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EntityID);
+        //}
 
-        private void LokEntitySearch_EditItemClicked(object sender, EditItemClickEventArg e)
-        {
-            var lookup = (sender as MyStaticLookup);
-            frmEntitySearch view;
-            if (lookup.SelectedItem == null)
-            {
-                view = new frmEntitySearch(EntityID, 0);
-            }
-            else
-            {
-                view = new frmEntitySearch(EntityID, (int)lookup.SelectedValue);
-            }
-            view.EntitySearchUpdated += (sender1, e1) => View_EntitySearchUpdated(sender1, e1, lookup);
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "تنظیمات نامه");
-        }
-        private void View_EntitySearchUpdated(object sender, EntitySearchUpdatedArg e, MyStaticLookup lookup)
-        {
-            SetEntitySearchList();
-            lookup.SelectedValue = e.ID;
-        }
+        //private void LokEntitySearch_EditItemClicked(object sender, EditItemClickEventArg e)
+        //{
+        //    var lookup = (sender as MyStaticLookup);
+        //    frmEntitySearch view;
+        //    if (lookup.SelectedItem == null)
+        //    {
+        //        view = new frmEntitySearch(EntityID, 0);
+        //    }
+        //    else
+        //    {
+        //        view = new frmEntitySearch(EntityID, (int)lookup.SelectedValue);
+        //    }
+        //    view.EntitySearchUpdated += (sender1, e1) => View_EntitySearchUpdated(sender1, e1, lookup);
+        //    MyProjectManager.GetMyProjectManager.ShowDialog(view, "تنظیمات نامه");
+        //}
+        //private void View_EntitySearchUpdated(object sender, EntitySearchUpdatedArg e, MyStaticLookup lookup)
+        //{
+        //    SetEntitySearchList();
+        //    lookup.SelectedValue = e.ID;
+        //}
 
 
         private void ShowPreDefinedSearchMessage()
@@ -166,7 +175,7 @@ namespace MyProject_WPF
 
             txtTitle.Text = PreDefinedSearchMessage.Title;
             optPreDefined.IsChecked = true;
-            lokEntitySearch.SelectedValue = PreDefinedSearchMessage.EntitySearchID;
+            //  lokEntitySearch.SelectedValue = PreDefinedSearchMessage.EntitySearchID;
             EntityDefinedSearchArea.ShowPreDefinedSearch(PreDefinedSearchMessage);
         }
         private void ShowAdvancedSearchMessage()
@@ -191,20 +200,25 @@ namespace MyProject_WPF
 
             if (optPreDefined.IsChecked == true)
             {
+                if (EntitySearchID==0)
+                {
+                    MessageBox.Show("شناسه ترکیب جستجو مشخص نشده است");
+                    return;
+                }
                 var message = EntityDefinedSearchArea.GetSearchRepositoryForSave();
                 if (!message.SimpleSearchProperties.Any() && !message.RelationshipSearchProperties.Any())
                 {
                     MessageBox.Show("مقدار پیش فرضی مشخص نشده است");
                     return;
                 }
-                if (lokEntitySearch.SelectedValue == null)
-                {
-                    MessageBox.Show("نوع جستجو مشخص نشده است");
-                    return;
-                }
+                //if (lokEntitySearch.SelectedValue == null)
+                //{
+                //    MessageBox.Show("نوع جستجو مشخص نشده است");
+                //    return;
+                //}
                 message.Title = txtTitle.Text;
                 message.EntityID = EntityID;
-                message.EntitySearchID = (int)lokEntitySearch.SelectedValue;
+                message.EntitySearchID = EntitySearchID;// (int)lokEntitySearch.SelectedValue;
                 message.ID = PreDefinedSearchMessage.ID;
                 PreDefinedSearchMessage.ID = bizSearchRepository.UpdatePreDefinedSearch(message);
                 MessageBox.Show("اطلاعات ثبت شد");
@@ -259,9 +273,17 @@ namespace MyProject_WPF
             optPreDefined.IsEnabled = true;
             optAdvanced.IsEnabled = true;
 
-            optPreDefined.IsChecked = true;
+            if (EntitySearchID != 0)
+            {
+                optPreDefined.IsChecked = true;
+            }
+            else
+            {
+                optPreDefined.IsEnabled = false;
+                optAdvanced.IsChecked = true;
+            }
             txtTitle.Text = "";
-            lokEntitySearch.SelectedValue = 0;
+            //lokEntitySearch.SelectedValue = 0;
             PreDefinedSearchMessage = new PreDefinedSearchDTO();
             AdvancedSearchDTOMessage = new AdvancedSearchDTO();
         }

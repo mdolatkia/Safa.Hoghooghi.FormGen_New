@@ -20,6 +20,7 @@ namespace MyUILibrary.EntityArea
     }
     public interface I_EntityArchiveArea
     {
+        I_View_ArchiveArea View { set; get; }
         //I_EntitySelectArea EntitySelectArea { set; get; }
         ArchiveAreaInitializer AreaInitializer { set; get; }
         //DP_DataRepository MainDataInstance { set; get; }
@@ -27,7 +28,7 @@ namespace MyUILibrary.EntityArea
 
         //I_View_EntitySelectArea SelectAreaView { set; get; }
 
-        object MainView { set; get; }
+      
         //void ShowDataItemArchives(DP_DataRepository dataInstance, bool loadRelatedItems);
     }
 
@@ -74,6 +75,7 @@ namespace MyUILibrary.EntityArea
 
         void ClearFilteredTags();
         void ShowFilteredTags(string title);
+        void AddGenerealSearchAreaView(object view);
     }
     public interface I_View_AddArchiveItems
     {

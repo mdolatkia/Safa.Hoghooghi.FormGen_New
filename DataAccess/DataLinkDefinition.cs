@@ -23,8 +23,12 @@ namespace DataAccess
         public int ID { get; set; }
         public int SecondSideEntityID { get; set; }
         public Nullable<bool> NotJointEntities { get; set; }
+        public Nullable<int> SecondSideDataMenuID { get; set; }
+        public Nullable<int> SecondSideListViewID { get; set; }
     
+        public virtual DataMenuSetting DataMenuSetting { get; set; }
         public virtual EntityDataItemReport EntityDataItemReport { get; set; }
+        public virtual EntityListView EntityListView { get; set; }
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DataLinkDefinition_EntityRelationshipTail> DataLinkDefinition_EntityRelationshipTail { get; set; }

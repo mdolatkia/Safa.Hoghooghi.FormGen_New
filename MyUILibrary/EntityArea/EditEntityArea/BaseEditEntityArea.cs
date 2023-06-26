@@ -19,11 +19,12 @@ namespace MyUILibrary.EntityArea
     public abstract class BaseEditEntityArea : I_EditEntityArea
     {
         //  public UIControlComposition UIControlComposition { set; get; }
-        public event EventHandler<EditAreaDataItemArg> DataItemSelected;
+        public event EventHandler DataItemsCleared;
+        public event EventHandler<List<DP_FormDataRepository>> DataItemSelected;
 
         //   public event EventHandler<EditAreaGeneratedArg> RelationshipAreaGenerated;
         //public event EventHandler<EditAreaDataItemLoadedArg> DataItemLoaded;
-        public event EventHandler<EditAreaDataItemLoadedArg> DataItemShown;
+        //   public event EventHandler<EditAreaDataItemLoadedArg> DataItemShown;
         public RelationshipColumnControlGeneral SourceRelationColumnControl { set; get; }
         public event EventHandler<DisableEnableChangedArg> DisableEnableChanged;
         public event EventHandler DataViewGenerated;
@@ -918,6 +919,7 @@ namespace MyUILibrary.EntityArea
                     //** BaseEditEntityArea.SearchEntityArea: 54e3b4a36ac9
                     var searchViewInitializer = new SearchAreaInitializer();
                     searchViewInitializer.EntityID = AreaInitializer.EntityID;
+                    searchViewInitializer.EntitySearchID = AreaInitializer.EntitySearchID;
                     _SearchEntityArea = new SearchEntityArea(searchViewInitializer);
                     _SearchEntityArea.SearchDataDefined += SearchEntityArea_SearchDataDefined;
 
@@ -942,6 +944,7 @@ namespace MyUILibrary.EntityArea
                     //** BaseEditEntityArea.ViewEntityArea: 81a1c5c88a88
                     var viewAreaInitializer = new ViewEntityAreaInitializer();
                     viewAreaInitializer.EntityID = AreaInitializer.EntityID;
+                    viewAreaInitializer.EntityListViewID = AreaInitializer.EntityListViewID;
                     viewAreaInitializer.MultipleSelection = this is I_EditEntityAreaMultipleData;
                     _ViewEntityArea = new ViewEntityArea(viewAreaInitializer);
                     _ViewEntityArea.DataSelected += ViewEntityArea_DataSelected;
@@ -2498,10 +2501,11 @@ namespace MyUILibrary.EntityArea
                     //    AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("عدم دسترسی به داده و یا داده های وابسته", data.ViewInfo, Temp.InfoColor.Red);
                     //else
                     //{
-                    if (DataItemSelected != null)
-                        DataItemSelected(this, new EditAreaDataItemArg() { DataItem = data });
+
                     //}
                 }
+                if (DataItemSelected != null)
+                    DataItemSelected(this, result);
             }
             else
             {
@@ -2614,8 +2618,12 @@ namespace MyUILibrary.EntityArea
                 RemoveData(dataItem, dataRemoveOnly);
             }
 
+            if (SourceRelationColumnControl == null)
+            {
+                if (DataItemsCleared != null)
+                    DataItemsCleared(this, new EventArgs());
+            }
             return true;
-
             //}
             //else
             //    return false;

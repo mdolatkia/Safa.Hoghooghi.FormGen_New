@@ -15,6 +15,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
 
             </Grid.RowDefinitions>
@@ -36,10 +37,12 @@
             <CheckBox  Grid.Row="0"  x:Name="chkNotJoint" HorizontalAlignment="Stretch" Grid.Column="3"></CheckBox>
             <TextBlock Text="تنظیمات منوی اول" Grid.Row="1" Grid.Column="2"/>
             <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="1" x:Name="lokFirstDataMenu" Grid.Column="3" />
+            <TextBlock Text="تنظیمات منوی اول" Grid.Row="2" Grid.Column="0"/>
+            <MyCommonWPFControls:MyStaticLookup HorizontalAlignment="Stretch" Grid.Row="2" x:Name="lokEntityListView" Grid.Column="1" />
 
-            <TextBlock Grid.Row="2" VerticalAlignment="Top" Text="رشته روابط"></TextBlock>
+            <TextBlock Grid.Row="3" VerticalAlignment="Top" Text="رشته روابط"></TextBlock>
 
-            <telerik:RadGridView x:Name="dtgRelationships" Grid.Row="2" Grid.ColumnSpan="3" Grid.Column="1" AutoGenerateColumns="False">
+            <telerik:RadGridView x:Name="dtgRelationships" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="1" AutoGenerateColumns="False">
                 <telerik:RadGridView.Columns>
                     <MyCommonWPFControls:MyStaticLookupColumn DataMemberBinding="{Binding RelationshipTailID}"  x:Name="colRelationshipTail" Header="رشته رابطه"></MyCommonWPFControls:MyStaticLookupColumn>
                     <MyCommonWPFControls:MyStaticLookupColumn ItemsSourceBinding="{Binding tmpEntityRelationshipTailDataMenus}" DataMemberBinding="{Binding EntityRelationshipTailDataMenuID}"  x:Name="colRelationshipTailDataMenu" Header="تنظیمات منو"></MyCommonWPFControls:MyStaticLookupColumn>

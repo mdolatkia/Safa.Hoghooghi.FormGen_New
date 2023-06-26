@@ -57,17 +57,17 @@ namespace MyUILibrary.EntityArea
             {
                 if (_EntitySearch == null)
                 {
-                    int entitySearchID = 0;
-                    if (AreaInitializer.PreDefinedSearchMessage != null)
-                        entitySearchID = AreaInitializer.PreDefinedSearchMessage.EntitySearchID;
-                    else
-                    {
-                        //این حالت فقط موقع تعریف پیش می آید
-                        entitySearchID = AreaInitializer.EntitySearchID;
-                    }
+                    //int entitySearchID = 0;
+                    //if (AreaInitializer.PreDefinedSearchMessage != null)
+                    //    entitySearchID = AreaInitializer.PreDefinedSearchMessage.EntitySearchID;
+                    //else
+                    //{
+                    //    //این حالت فقط موقع تعریف پیش می آید
+                    //    entitySearchID = AreaInitializer.EntitySearchID;
+                    //}
 
-                    if (entitySearchID != 0)
-                        _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), entitySearchID);
+                    if (AreaInitializer.EntitySearchID != 0)
+                        _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetEntitySearch(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntitySearchID);
                     else
                         _EntitySearch = AgentUICoreMediator.GetAgentUICoreMediator.DataSearchManager.GetOrCreateEntitySearchDTO(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.EntityID);
                 }
@@ -426,7 +426,11 @@ namespace MyUILibrary.EntityArea
                 SearchDataDefined(this, searchData);
             }
         }
-
+        public void ConfirmSearch()
+        {
+            var searchRepository = GetSearchRepository();
+            OnSearchDataDefined(searchRepository);
+        }
 
     }
 }

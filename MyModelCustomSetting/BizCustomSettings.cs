@@ -457,7 +457,7 @@ namespace MyModelCustomSetting
                                 readonlyRelationships.Title = "فقط خواندنی سازی روابط";
                                 readonlyRelationships.TableDrivedEntityID = serviceConclusionItem.ID;
 
-                                
+
                                 readonlyRelationships.ColumnID = confirmedColumn.ID;
                                 readonlyRelationships.EntityStateValues.Add(new EntityStateValues() { Value = "true" });
 
@@ -2467,7 +2467,7 @@ namespace MyModelCustomSetting
                 dataViewReport.EntitySearchableReport.SearchableReportType = (short)SearchableReportType.DataView;
                 dataViewReport.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
                 dataViewReport.EntitySearchableReport.EntityDataViewReport = new EntityDataViewReport();
-                dataViewReport.EntitySearchableReport.EntityDataViewReport.DataMenuSetting = conclusionDataMenuSetting;
+                dataViewReport.DataMenuSetting = conclusionDataMenuSetting;
 
 
 
@@ -2492,7 +2492,7 @@ namespace MyModelCustomSetting
                 gridViewReport.EntitySearchableReport.SavedSearchRepository = serviceConclusionSearchRepository.SavedSearchRepository;
 
                 gridViewReport.EntitySearchableReport.EntityGridViewReport = new EntityGridViewReport();
-                gridViewReport.EntitySearchableReport.EntityGridViewReport.DataMenuSetting = conclusionDataMenuSetting;
+                gridViewReport.DataMenuSetting = conclusionDataMenuSetting;
 
 
 
@@ -2815,7 +2815,7 @@ namespace MyModelCustomSetting
                     customerDataMenuSetting = new DataMenuSetting();
                     customerDataMenuSetting.Name = "تنظیمات منوی مشتری و صورتحساب";
                     customerDataMenuSetting.TableDrivedEntityID = customer.ID;
-                    customerDataMenuSetting.EntityListViewID = customer.EntityListView.First(x => x.IsDefault == true).ID;
+                    //  customerDataMenuSetting.EntityListViewID = customer.EntityListView.First(x => x.IsDefault == true).ID;
                     projectContext.DataMenuSetting.Add(customerDataMenuSetting);
                     var customerToServiceRequest = customer.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceRequest.ID);
                     var serviceRequestToServiceConclusion = serviceRequest.Relationship.FirstOrDefault(x => x.TableDrivedEntityID2 == serviceConclusion.ID);
@@ -2831,32 +2831,43 @@ namespace MyModelCustomSetting
                     //dataGridRel.DataMenuSetting1 = conclusionDataMenuSetting;
                     //customerDataMenuSetting.DataMenuGridViewRelationship.Add(dataGridRel);
 
-                    var conclusionDataViewReportRel = new DataMenuSearchableReportRelationship();
-                    conclusionDataViewReportRel.EntityRelationshipTail = tailCustomerToConclusion;
-                    conclusionDataViewReportRel.EntitySearchableReport = dataViewReport.EntitySearchableReport;
-                    customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionDataViewReportRel);
+                    var menuTail = new DataMenuRelationshipTail() { EntityRelationshipTail = tailCustomerToConclusion };
+                    menuTail.DataMenuRelTailSearchableReports.Add(new DataMenuRelTailSearchableReports() { EntitySearchableReport = dataViewReport.EntitySearchableReport });
+                    menuTail.DataMenuRelTailSearchableReports.Add(new DataMenuRelTailSearchableReports() { EntitySearchableReport = gridViewReport.EntitySearchableReport });
+                    menuTail.DataMenuRelTailSearchableReports.Add(new DataMenuRelTailSearchableReports() { EntitySearchableReport = conclusionListReport.EntitySearchableReport });
+                    menuTail.DataMenuRelTailSearchableReports.Add(new DataMenuRelTailSearchableReports() { EntitySearchableReport = conclusionChartPie.EntitySearchableReport });
+                    menuTail.DataMenuRelTailSearchableReports.Add(new DataMenuRelTailSearchableReports() { EntitySearchableReport = customerDirectReport.EntitySearchableReport });
 
-                    var conclusionGridViewReportRel = new DataMenuSearchableReportRelationship();
-                    conclusionGridViewReportRel.EntityRelationshipTail = tailCustomerToConclusion;
-                    conclusionGridViewReportRel.EntitySearchableReport = gridViewReport.EntitySearchableReport;
-                    customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionGridViewReportRel);
-                    
+                    customerDataMenuSetting.DataMenuRelationshipTail.Add(menuTail);
+
+                    //menuTail.DataMenuRelTailSearchableReports.Add();
+
+                    //var conclusionDataViewReportRel = new DataMenuSearchableReportRelationship();
+                    //conclusionDataViewReportRel.EntityRelationshipTail = tailCustomerToConclusion;
+                    //conclusionDataViewReportRel.EntitySearchableReport = ;
+                    //customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionDataViewReportRel);
+
+                    //var conclusionGridViewReportRel = new DataMenuSearchableReportRelationship();
+                    //conclusionGridViewReportRel.EntityRelationshipTail = tailCustomerToConclusion;
+                    //conclusionGridViewReportRel.EntitySearchableReport = ;
+                    //customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionGridViewReportRel);
 
 
-                    var conclusionListReportRel = new DataMenuSearchableReportRelationship();
-                    conclusionListReportRel.EntityRelationshipTail = tailCustomerToConclusion;
-                    conclusionListReportRel.EntitySearchableReport = conclusionListReport.EntitySearchableReport;
-                    customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionListReportRel);
 
-                    var conclusionChartReportRel = new DataMenuSearchableReportRelationship();
-                    conclusionChartReportRel.EntityRelationshipTail = tailCustomerToConclusion;
-                    conclusionChartReportRel.EntitySearchableReport = conclusionChartPie.EntitySearchableReport;
-                    customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionChartReportRel);
+                    //var conclusionListReportRel = new DataMenuSearchableReportRelationship();
+                    //conclusionListReportRel.EntityRelationshipTail = tailCustomerToConclusion;
+                    //conclusionListReportRel.EntitySearchableReport = conclusionListReport.EntitySearchableReport;
+                    //customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionListReportRel);
+
+                    //var conclusionChartReportRel = new DataMenuSearchableReportRelationship();
+                    //conclusionChartReportRel.EntityRelationshipTail = tailCustomerToConclusion;
+                    //conclusionChartReportRel.EntitySearchableReport = conclusionChartPie.EntitySearchableReport;
+                    //customerDataMenuSetting.DataMenuSearchableReportRelationship.Add(conclusionChartReportRel);
 
 
-                    var directReportSetting = new DataMenuDataItemReportRelationship();
-                    directReportSetting.EntityDataItemReport = customerDirectReport.EntityDataItemReport;
-                    customerDataMenuSetting.DataMenuDataItemReportRelationship.Add(directReportSetting);
+                    //var directReportSetting = new DataMenuDataItemReportRelationship();
+                    //directReportSetting.EntityDataItemReport = customerDirectReport.EntityDataItemReport;
+                    //customerDataMenuSetting.DataMenuDataItemReportRelationship.Add(directReportSetting);
                 }
 
 
@@ -3000,7 +3011,7 @@ namespace MyModelCustomSetting
                 serviceRequestDataMenuSetting = new DataMenuSetting();
                 serviceRequestDataMenuSetting.Name = "تنظیمات منوی درخواست سرویس";
                 serviceRequestDataMenuSetting.TableDrivedEntityID = serviceRequest.ID;
-                serviceRequestDataMenuSetting.EntityListViewID = serviceRequest.EntityListView.First(x => x.IsDefault == true).ID;
+                //serviceRequestDataMenuSetting.EntityListViewID = serviceRequest.EntityListView.First(x => x.IsDefault == true).ID;
                 projectContext.DataMenuSetting.Add(serviceRequestDataMenuSetting);
             }
             if (viewServiceRequest != null)
@@ -3064,7 +3075,7 @@ namespace MyModelCustomSetting
                             viewServiceRequest.DataMenuSetting1 = viewServiceRequestDataMenuSetting;
                             viewServiceRequestDataMenuSetting.Name = "تنظیمات منوی نمای درخواست سرویس";
                             viewServiceRequestDataMenuSetting.TableDrivedEntityID = viewServiceRequest.ID;
-                            viewServiceRequestDataMenuSetting.EntityListViewID = viewServiceRequest.EntityListView.First(x => x.IsDefault == true).ID;
+                       //     viewServiceRequestDataMenuSetting.EntityListViewID = viewServiceRequest.EntityListView.First(x => x.IsDefault == true).ID;
                             var viewMenuSetting = new DataMenuForViewEntity();
                             viewMenuSetting.Relationship = viewServiceRequestToServiceRequest;
                             viewMenuSetting.DataMenuSetting1 = serviceRequestDataMenuSetting;
@@ -3488,7 +3499,7 @@ namespace MyModelCustomSetting
                 customerGraphReport.EntityDataItemReport = new EntityDataItemReport();
                 customerGraphReport.EntityDataItemReport.DataItemReportType = (short)DataItemReportType.GraphReport;
                 customerGraphReport.EntityDataItemReport.GraphDefinition = new GraphDefinition();
-                customerGraphReport.EntityDataItemReport.GraphDefinition.DataMenuSetting = customerDataMenuSetting;
+                customerGraphReport.DataMenuSetting = customerDataMenuSetting;
                 var customerToSrviceRequest = customer.Relationship.First(x => x.TableDrivedEntityID2 == serviceRequest.ID);
                 var serviceRequestToConclusion = serviceRequest.Relationship.First(x => x.TableDrivedEntityID2 == serviceConclusion.ID);
 
@@ -3548,7 +3559,7 @@ namespace MyModelCustomSetting
                 directSecurityFetchDataServiceRequest.EntityState.EntityStateValues.Add(new EntityStateValues() { ReservedValue = (short)SecurityReservedValue.OrganizationExternalKey });
                 directSecurityFetchDataServiceRequest.EntityState.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
                 directSecurityFetchDataServiceRequest.EntityState.ValueOpoerator = (short)Enum_EntityStateOperator.Equals;
-               // directSecurityFetchDataServiceRequest.EntityState.EntityState=;
+                // directSecurityFetchDataServiceRequest.EntityState.EntityState=;
 
                 //////EntityState 1 = new EntityState();
                 //////1.EntityStateSecuritySubject.Add(new EntityStateSecuritySubject() { SecuritySubject = roleRahbarKol.SecuritySubject });
@@ -3585,7 +3596,7 @@ namespace MyModelCustomSetting
                 directSecurityReadonly.EntityState = new EntityState();
                 directSecurityReadonly.EntityState.Title = "دسترسی اصلاح";
                 directSecurityReadonly.EntityState.TableDrivedEntityID = serviceRequest.ID;
-         //       directSecurityReadonly.EntityState.Operator = (short)AndOREqualType.Or;
+                //       directSecurityReadonly.EntityState.Operator = (short)AndOREqualType.Or;
                 directSecurityReadonly.EntityState.ColumnID = organizationPostIDColumn.ID;
                 directSecurityReadonly.EntityState.EntityStateValues.Add(new EntityStateValues() { ReservedValue = (short)SecurityReservedValue.OrganizationPostID });
                 directSecurityReadonly.EntityState.SecuritySubjectInOrNotIn = (short)InORNotIn.In;
@@ -3609,7 +3620,7 @@ namespace MyModelCustomSetting
                 directSecurityFetchDataServiceConclusion.EntityState = new EntityState();
                 directSecurityFetchDataServiceConclusion.EntityState.Title = "دسترسی داده";
                 directSecurityFetchDataServiceConclusion.EntityState.TableDrivedEntityID = serviceConclusion.ID;
-           //     directSecurityFetchDataServiceConclusion.EntityState.Operator = (short)AndOREqualType.Or;
+                //     directSecurityFetchDataServiceConclusion.EntityState.Operator = (short)AndOREqualType.Or;
 
                 directSecurityFetchDataServiceConclusion.Mode = (short)DataDirectSecurityMode.FetchData;
 

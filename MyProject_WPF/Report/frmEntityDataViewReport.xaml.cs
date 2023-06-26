@@ -34,10 +34,7 @@ namespace MyProject_WPF
         {
             InitializeComponent();
             EntityID = entityID;
-            SetDataViewList();
-            //  SetSubReports();
-            //    SetSubReportRelationships();
-            SetEntityPreDefinedSearchList();
+          
             SetDataMenuSetting();
             if (entityViewReportID != 0)
             {
@@ -50,46 +47,7 @@ namespace MyProject_WPF
             }
 
         }
-        private void SetDataViewList()
-        {
-            BizEntityListView bizEntityListView = new BizEntityListView();
-            lokEntityListView.DisplayMember = "Title";
-            lokEntityListView.SelectedValueMember = "ID";
-            lokEntityListView.ItemsSource = bizEntityListView.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
-        }
-        private void SetEntityPreDefinedSearchList()
-        {
-            if (lokSearchRepository.ItemsSource == null)
-            {
-                lokSearchRepository.EditItemClicked += LokEntityPreDefined_EditItemClicked; ;
-            }
-            BizSearchRepository biz = new BizSearchRepository();
-            lokSearchRepository.DisplayMember = "Title";
-            lokSearchRepository.SelectedValueMember = "ID";
-            lokSearchRepository.ItemsSource = biz.GetSearchRepositories(EntityID);
-        }
-        private void LokEntityPreDefined_EditItemClicked(object sender, EditItemClickEventArg e)
-        {
-            var lookup = (sender as MyStaticLookup);
-            frmSearchRepository view;
-
-            if (lookup.SelectedItem == null)
-            {
-                view = new frmSearchRepository(EntityID, 0);
-            }
-            else
-            {
-                view = new frmSearchRepository(EntityID, (int)lookup.SelectedValue);
-            }
-            view.EntityPreDefinedSearchUpdated += (sender1, e1) => View_EntityPreDefinedSearchUpdated(sender1, e1, lookup);
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "تنظیمات نامه", Enum_WindowSize.Maximized);
-        }
-
-        private void View_EntityPreDefinedSearchUpdated(object sender, EntityPreDefinedSearchUpdatedArg e, MyStaticLookup lookup)
-        {
-            SetEntityPreDefinedSearchList();
-            lookup.SelectedValue = e.ID;
-        }
+        
 
         private void SetDataMenuSetting()
         {
@@ -100,7 +58,7 @@ namespace MyProject_WPF
             BizDataMenuSetting biz = new BizDataMenuSetting();
             lokDataMenuSetting.DisplayMember = "Name";
             lokDataMenuSetting.SelectedValueMember = "ID";
-            lokDataMenuSetting.ItemsSource = biz.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+            lokDataMenuSetting.ItemsSource = biz.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID, DetailsDepth.SimpleInfo);
         }
 
         private void lokDataMenuSetting_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
@@ -148,10 +106,9 @@ namespace MyProject_WPF
 
         private void ShowMessage()
         {
-            txtReportName.Text = Message.ReportTitle;
+            frmSearchableReport.ShowMessage(Message);
             lokDataMenuSetting.SelectedValue = Message.DataMenuSettingID;
-            lokSearchRepository.SelectedValue = Message.SearchRepositoryID;
-            lokEntityListView.SelectedValue = Message.EntityListViewID;
+         
             //  dtgSubReports.ItemsSource = Message.EntityDataViewReportSubs;
             //SetGridSearch();
         }
@@ -164,31 +121,20 @@ namespace MyProject_WPF
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
+            if (!frmSearchableReport.FillMessage(Message))
+            {
+                return;
+            }
             if (lokDataMenuSetting.SelectedItem == null)
             {
                 MessageBox.Show("لطفا ابتدا لیست ستونها را ثبت و انتخاب نمایید");
                 return;
             }
-            if (lokEntityListView.SelectedItem == null)
-            {
-                MessageBox.Show("لطفا ابتدا لیست ستونها را ثبت و انتخاب نمایید");
-                return;
-            }
-            if (txtReportName.Text == "")
-            {
-                MessageBox.Show("عنوان مناسب تعریف نشده است");
-                return;
-            }
+          
             Message.TableDrivedEntityID = EntityID;
-            Message.ReportTitle = txtReportName.Text;
+         
             Message.DataMenuSettingID = (int)lokDataMenuSetting.SelectedValue;
-
-            Message.EntityListViewID = (int)lokEntityListView.SelectedValue;
-
-            if (lokSearchRepository.SelectedItem != null)
-                Message.SearchRepositoryID = (int)lokSearchRepository.SelectedValue;
-            else
-                Message.SearchRepositoryID = 0;
+        
             bizEntityDataViewReport.UpdateEntityDataViewReports(Message);
             MessageBox.Show("اطلاعات ثبت شد");
         }

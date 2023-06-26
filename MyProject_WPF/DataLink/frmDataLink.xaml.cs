@@ -72,7 +72,7 @@ namespace MyProject_WPF
             dtgRelationships.CellEditEnded += DtgRelationships_CellEditEnded;
             ControlHelper.GenerateContextMenu(dtgRelationships);
 
-       
+
         }
 
         private void LokSecondSideEntity_SelectionChanged(object sender, SelectionChangedArg e)
@@ -80,13 +80,20 @@ namespace MyProject_WPF
             if (e.SelectedItem != null)
             {
                 var entity = e.SelectedItem as TableDrivedEntityDTO;
-                var listSecond = bizEntityDataMenu.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), entity.ID);
+                var listSecond = bizEntityDataMenu.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), entity.ID, DetailsDepth.SimpleInfo);
                 lokSecondDataMenu.ItemsSource = listSecond;
                 lokSecondDataMenu.SelectedValueMember = "ID";
                 lokSecondDataMenu.DisplayMember = "Name";
 
                 if (Message.ID != 0)
                     lokSecondDataMenu.SelectedValue = Message.SecondSideDataMenuID;
+
+                BizEntityListView bizEntityListView = new BizEntityListView();
+                lokSecondListView.DisplayMember = "Title";
+                lokSecondListView.SelectedValueMember = "ID";
+                lokSecondListView.ItemsSource = bizEntityListView.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), entity.ID);
+
+
             }
             else
             {
@@ -99,13 +106,19 @@ namespace MyProject_WPF
             if (e.SelectedItem != null)
             {
                 var entity = e.SelectedItem as TableDrivedEntityDTO;
-                var listFirst = bizEntityDataMenu.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), entity.ID);
+                var listFirst = bizEntityDataMenu.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), entity.ID, DetailsDepth.SimpleInfo);
                 lokFirstDataMenu.ItemsSource = listFirst;
                 lokFirstDataMenu.SelectedValueMember = "ID";
                 lokFirstDataMenu.DisplayMember = "Name";
 
                 if (Message.ID != 0)
-                    lokFirstDataMenu.SelectedValue = Message.FirstSideDataMenuID;
+                    lokFirstDataMenu.SelectedValue = Message.DataMenuSettingID;
+
+                BizEntityListView bizEntityListView = new BizEntityListView();
+                lokFirstListView.DisplayMember = "Title";
+                lokFirstListView.SelectedValueMember = "ID";
+                lokFirstListView.ItemsSource = bizEntityListView.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), entity.ID);
+
             }
             else
             {
@@ -268,8 +281,10 @@ namespace MyProject_WPF
             }
             chkNotJoint.IsChecked = Message.NotJointEntities;
 
-            lokFirstDataMenu.SelectedValue = Message.FirstSideDataMenuID;
+            lokFirstDataMenu.SelectedValue = Message.DataMenuSettingID;
             lokSecondDataMenu.SelectedValue = Message.SecondSideDataMenuID;
+            lokFirstListView.SelectedValue = Message.EntityListViewID;
+            lokSecondListView.SelectedValue = Message.SecondSideListViewID;
 
             //}
             //else
@@ -286,7 +301,6 @@ namespace MyProject_WPF
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
 
-
             if (txtName.Text == "")
             {
                 MessageBox.Show("نام");
@@ -302,11 +316,31 @@ namespace MyProject_WPF
                 MessageBox.Show("موجودیت سمت دوم انتخاب نشده است");
                 return;
             }
+            if (lokFirstListView.SelectedItem == null)
+            {
+                MessageBox.Show("لیست نمایش اول انتخاب نشده است");
+                return;
+            }
+            if (lokSecondListView.SelectedItem == null)
+            {
+                MessageBox.Show("لیست نمایش دوم انتخاب نشده است");
+                return;
+            }
+
+            Message.EntityListViewID = (int)lokFirstListView.SelectedValue;
+            Message.SecondSideListViewID = (int)lokSecondListView.SelectedValue;
 
             if (lokFirstDataMenu.SelectedItem != null)
-                Message.FirstSideDataMenuID = (int)lokFirstDataMenu.SelectedValue;
+                Message.DataMenuSettingID = (int)lokFirstDataMenu.SelectedValue;
+            else
+                Message.DataMenuSettingID = 0;
+
             if (lokSecondDataMenu.SelectedItem != null)
                 Message.SecondSideDataMenuID = (int)lokSecondDataMenu.SelectedValue;
+            else
+                Message.SecondSideDataMenuID = 0;
+
+
 
             foreach (var item in Message.RelationshipsTails)
             {

@@ -315,6 +315,9 @@
     <Compile Include="DrivedEntities\frmEditSubEntity.xaml.cs">
       <DependentUpon>frmEditSubEntity.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Report\frmEntitySearchableReport.xaml.cs">
+      <DependentUpon>frmEntitySearchableReport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SearchView\frmEntitySearch.xaml.cs">
       <DependentUpon>frmEntitySearch.xaml</DependentUpon>
     </Compile>
@@ -717,6 +720,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="DrivedEntities\frmEditSubEntity.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Report\frmEntitySearchableReport.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

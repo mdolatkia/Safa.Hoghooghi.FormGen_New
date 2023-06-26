@@ -17,8 +17,10 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntitySearch()
         {
+            this.EntitySearchableReport = new HashSet<EntitySearchableReport>();
             this.SavedPreDefinedSearch = new HashSet<SavedPreDefinedSearch>();
             this.EntitySearchColumns = new HashSet<EntitySearchColumns>();
+            this.SavedSearchRepository = new HashSet<SavedSearchRepository>();
         }
     
         public int ID { get; set; }
@@ -28,8 +30,12 @@ namespace DataAccess
     
         public virtual TableDrivedEntity TableDrivedEntity { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntitySearchableReport> EntitySearchableReport { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SavedPreDefinedSearch> SavedPreDefinedSearch { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntitySearchColumns> EntitySearchColumns { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SavedSearchRepository> SavedSearchRepository { get; set; }
     }
 }

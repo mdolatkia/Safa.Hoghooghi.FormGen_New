@@ -34,7 +34,7 @@ namespace MyUILibrary.EntityArea
             if (newAreaInitializer.AdvancedSearchDTOMessage == null)
                 ClearSearchData();
             else
-                ShowSearchRepository(newAreaInitializer.AdvancedSearchDTOMessage.SearchRepositoryMain);
+                ShowSearchRepository(newAreaInitializer.AdvancedSearchDTOMessage);
 
 
         }
@@ -405,6 +405,12 @@ namespace MyUILibrary.EntityArea
             {
                 SearchDataDefined(this, searchData );
             }
+        }
+
+        public void ConfirmSearch()
+        {
+            var searchRepository = GetSearchRepository();
+            OnSearchDataDefined(searchRepository);
         }
     }
 }

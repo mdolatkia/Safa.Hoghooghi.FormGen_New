@@ -68,8 +68,6 @@ namespace MyModelManager
         {
             EntityGridViewReportDTO result = new EntityGridViewReportDTO();
             bizEntitySearchableReport.ToEntitySearchableReportDTO( requester, item.EntitySearchableReport, result, withDetails);
-            result.DataMenuSettingID = item.DataMenuSettingID;
-            result.EntityListViewID = item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0;
             return result;
         }
         public void UpdateEntityGridViewReports(EntityGridViewReportDTO message)
@@ -89,7 +87,10 @@ namespace MyModelManager
                     bizEntitySearchableReport.ToUpdateEntitySearchableReport(dbEntitySpecifiedReport.EntitySearchableReport, message);
 
 
-                dbEntitySpecifiedReport.DataMenuSettingID = message.DataMenuSettingID;
+                if (message.DataMenuSettingID != 0)
+                    dbEntitySpecifiedReport.EntitySearchableReport.EntityReport.DataMenuSettingID = message.DataMenuSettingID;
+                else
+                    dbEntitySpecifiedReport.EntitySearchableReport.EntityReport.DataMenuSettingID = null;
                 dbEntitySpecifiedReport.EntitySearchableReport.EntityReport.EntityListViewID  = message.EntityListViewID;
                 //while (dbEntityGridViewReport.EntityGridViewReportSubs1.Any())
                 //    projectContext.EntityGridViewReportSubs.Remove(dbEntityGridViewReport.EntityGridViewReportSubs1.First());

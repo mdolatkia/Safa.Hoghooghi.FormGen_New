@@ -31,7 +31,7 @@ namespace MyUILibrary.EntityArea
             //RelationshipColumnControls = new List<RelationshipColumnControl>();
         }
 
-        //event EventHandler<EditAreaDataItemArg> I_EditEntityAreaOneData.DataItemSelected
+        //event EventHandler<List<DP_FormDataRepository>> I_EditEntityAreaOneData.DataItemSelected
         //{
         //    add
         //    {

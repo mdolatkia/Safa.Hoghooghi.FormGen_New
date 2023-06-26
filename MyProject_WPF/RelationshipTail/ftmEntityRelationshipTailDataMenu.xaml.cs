@@ -27,6 +27,7 @@ namespace MyProject_WPF
     {
         BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
 
+        BizEntityListView bizEntityListView = new BizEntityListView();
         BizDataMenuSetting bizEntityDataMenu = new BizDataMenuSetting();
         BizEntityRelationshipTailDataMenu bizEntityRelationshipTailDataMenu = new BizEntityRelationshipTailDataMenu();
 
@@ -115,7 +116,10 @@ namespace MyProject_WPF
             foreach (var item in items)
             {
                 if (item.TableDrivedEntityID != 0)
-                    item.tmpDataMenus = bizEntityDataMenu.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), item.TableDrivedEntityID);
+                {
+                    item.tmpDataMenus = bizEntityDataMenu.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), item.TableDrivedEntityID, DetailsDepth.SimpleInfo);
+                    item.tmpListView = bizEntityListView.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), item.TableDrivedEntityID);
+                }
             }
 
 
@@ -153,6 +157,7 @@ namespace MyProject_WPF
                 if (fitem != null)
                 {
                     fitem.DataMenuSettingID = item.DataMenuSettingID;
+                    fitem.EntityListViewID = item.EntityListViewID;
                 }
             }
         }

@@ -74,7 +74,7 @@ namespace MyProject_WPF
             if (e.SelectedItem != null)
             {
                 var entity = e.SelectedItem as TableDrivedEntityDTO;
-                var listFirst = bizEntityDataMenu.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), entity.ID);
+                var listFirst = bizEntityDataMenu.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), entity.ID, DetailsDepth.SimpleInfo);
                 lokFirstDataMenu.ItemsSource = listFirst;
                 lokFirstDataMenu.SelectedValueMember = "ID";
                 lokFirstDataMenu.DisplayMember = "Name";
@@ -157,6 +157,13 @@ namespace MyProject_WPF
             lokFirstSideEntity.SelectedValueMember = "ID";
             lokFirstSideEntity.SearchFilterChanged += LokEntitiesFirst_SearchFilterChanged;
         }
+        private void SetEntityListViews()
+        {
+            BizEntityListView biz = new BizEntityListView();
+            lokEntityListView.DisplayMember = "Title";
+            lokEntityListView.SelectedValueMember = "ID";
+            lokEntityListView.ItemsSource = biz.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), FirstEntityID);
+        }
         private void LokEntitiesFirst_SearchFilterChanged(object sender, MyCommonWPFControls.SearchFilterArg e)
         {
             if (e.SingleFilterValue != null)
@@ -204,6 +211,7 @@ namespace MyProject_WPF
 
             //  var entity = bizTableDrivedEntity.GetTableDrivedEntity(EntityID, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships);
             lokFirstSideEntity.SelectedValue = Message.TableDrivedEntityID;
+            lokEntityListView.SelectedValue = Message.EntityListViewID;
             chkNotJoint.IsChecked = Message.NotJointEntities;
             if (Message.ID == 0)
             {
@@ -229,6 +237,11 @@ namespace MyProject_WPF
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
+            if (lokEntityListView.SelectedItem == null)
+            {
+                MessageBox.Show("لطفا ابتدا لیست ستونها را ثبت و انتخاب نمایید");
+                return;
+            }
             if (txtName.Text == "")
             {
                 MessageBox.Show("نام");
@@ -240,6 +253,7 @@ namespace MyProject_WPF
                 return;
             }
 
+            Message.EntityListViewID = (int)lokEntityListView.SelectedValue;
 
             foreach (var item in Message.RelationshipsTails)
             {

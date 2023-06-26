@@ -108,7 +108,11 @@ namespace MyUIGenerator.View
         {
             this.IsEnabled = enable;
         }
-
+        public void AddGenerealSearchAreaView(object view)
+        {
+            grdSearch.Children.Clear();
+            grdSearch.Children.Add(view as UIElement);
+        }
         public void ShowDataTree(I_DataTreeView view)
         {
             grdDataTree.Children.Clear();

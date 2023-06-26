@@ -146,7 +146,11 @@ namespace MyUIGenerator.View
             cmbSort.SelectedItem = list.FirstOrDefault();
         }
         //public event EventHandler SearchCommandRequested;
-
+        public void AddGenerealSearchAreaView(object view)
+        {
+            grdSearch.Children.Clear();
+            grdSearch.Children.Add(view as UIElement);
+        }
         public void SetReportSource(string reportEngine, ReportSource reportSource)
         {
             ReportViewer1.ReportEngineConnection = reportEngine;

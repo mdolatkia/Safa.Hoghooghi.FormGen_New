@@ -1153,16 +1153,14 @@ namespace MyUIGenerator
             return new frmDataTree();
         }
 
-        public I_View_EntitySelectArea GenerateViewOfEntityselectArea()
+        //public I_View_EntitySelectArea GenerateViewOfEntityselectArea()
+        //{
+        //    return new frmEntitySelector();
+        //}
+
+        public I_View_GeneralEntityDataSelectArea GenerateViewOfGeneralEntityDataSelectArea()
         {
-            return new frmEntitySelector();
-        }
-
-        public I_View_GeneralEntitySearchArea GenerateViewOfGeneralEntitySearchArea()
-        {
-
-            return new frmGeneralEntitySearch();
-
+            return new frmEntityDataSelector();
         }
 
         public void ShowMessage(string title, string message, List<ResultDetail> details = null)

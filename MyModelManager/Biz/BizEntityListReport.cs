@@ -63,18 +63,18 @@ namespace MyModelManager
             EntityListReportDTO result = new EntityListReportDTO();
             result.ID = item.ID;
             bizEntitySearchableReport.ToEntitySearchableReportDTO( requester, item.EntitySearchableReport, result, withDetails);
-            result.EntityListViewID = item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0;
 
             if (withDetails)
             {
-
-
                 BizEntityRelationshipTail bizEntityRelationshipTail = new MyModelManager.BizEntityRelationshipTail();
                 BizEntityListView bizEntityListView = new BizEntityListView();
-                result.EntityListView = bizEntityListView.GetEntityListView(requester, item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0);
-                if (result.EntityListView == null)
+                if (result.EntityListViewID != 0)
                 {
-                    throw new Exception("عدم دسترسی به لیست نمایش به شناسه" + " " + (item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0));
+                    result.EntityListView = bizEntityListView.GetEntityListView(requester, result.EntityListViewID);
+                }
+                else
+                {
+                    throw new Exception("لیست نمایش نامشخص است");
                 }
                 foreach (var dbSubReport in item.EntityListReportSubs1)
                 {

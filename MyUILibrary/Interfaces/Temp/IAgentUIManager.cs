@@ -31,7 +31,7 @@ namespace MyUILibrary
         //void ShowTestReport(string reportEngine, object reportSource);
         I_View_EntityLettersArea GenerateViewOfEntityLettersArea();
         I_View_FormulaCalculationArea GetViewOfFormulaCalculationArea();
-        I_View_EntitySelectArea GenerateViewOfEntityselectArea();
+        I_View_GeneralEntityDataSelectArea GenerateViewOfGeneralEntityDataSelectArea();
         I_View_LetterArea GenerateViewOfLetterArea();
         I_View_ArchiveArea GenerateViewOfArchiveArea();
         //    void SetMenuItems(object contextMenu, List<ContextMenuItem> items);
@@ -98,7 +98,7 @@ namespace MyUILibrary
         I_View_ArchiveItemInfo GenerateViewOfArchiveItemInfo();
         //I_View_DataListReportArea GetViewOfDataListReportArea();
         I_View_SimpleSearchEntityArea GenerateViewOfSearchEntityArea(EntityUISettingDTO entityUISettingDTO);
-        I_View_GeneralEntitySearchArea GenerateViewOfGeneralEntitySearchArea();
+        //I_View_GeneralEntitySearchArea GenerateViewOfGeneralEntitySearchArea();
         I_View_SearchEntityArea GenerateViewOfSearchEntityArea();
 
         I_View_ViewEntityArea GenerateViewOfViewEntityArea();

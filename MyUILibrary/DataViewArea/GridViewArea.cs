@@ -9,7 +9,6 @@ using ModelEntites;
 
 using MyUILibraryInterfaces.DataMenuArea;
 using MyUILibraryInterfaces.EntityArea;
-using MyUILibrary.EntitySearchArea;
 
 using MyUILibraryInterfaces.DataViewArea;
 using MyUILibrary.DataViewArea;
@@ -19,7 +18,6 @@ namespace MyUILibrary.DataViewArea
     public class GridViewArea : DataArea, I_GridViewArea
     {
         public object MainView { set; get; }
-        public I_GeneralEntitySearchArea GeneralEntitySearchArea { set; get; }
         public void SetAreaInitializerSpecialized(DataViewAreaInitializer initParam)
         {
             // GridViewArea.SetAreaInitializerSpecialized: dbedc44acc58

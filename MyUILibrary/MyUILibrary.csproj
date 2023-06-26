@@ -144,7 +144,7 @@
     <Compile Include="Interfaces\EditEntityArea\Interfaces\I_View_EditEntityAreaInfo.cs" />
     <Compile Include="Interfaces\EditEntityArea\Temp.cs" />
     <Compile Include="Interfaces\EditPackageArea\EditPackageAreaInitializer.cs" />
-    <Compile Include="Interfaces\EntitySelectArea\I_EntitySelectArea.cs" />
+    <Compile Include="Interfaces\EntitySelectArea\I_GeneralEntityDataSelectArea.cs" />
     <Compile Include="Interfaces\GeneralEntitySearchArea\I_GeneralEntitySearchArea.cs" />
     <Compile Include="Interfaces\GridViewArea\I_GridViewArea.cs" />
     <Compile Include="Interfaces\LogReportArea\I_LogReportArea.cs" />
@@ -195,8 +195,7 @@
     <Compile Include="EntityArea\UIFomulaManager.cs" />
     <Compile Include="EntityArea\UIActionActivityManager.cs" />
     <Compile Include="EntityArea\ViewEntityArea\ViewEntityArea.cs" />
-    <Compile Include="GeneralEntitySearchArea\GeneralEntitySearchArea.cs" />
-    <Compile Include="EntitySelectArea\EntitySelectArea.cs" />
+    <Compile Include="EntityArea\GeneralEntityDataSelectArea\GeneralEntityDataSelectArea.cs" />
     <Compile Include="DataViewArea\GridViewArea.cs" />
     <Compile Include="Helper\AgentHelper.cs" />
     <Compile Include="Core\AgentUICoreMediator.cs" />
@@ -264,6 +263,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="EntitySelectArea\" />
     <Folder Include="ExternalReportArea\" />
     <Folder Include="GridView\" />
     <Folder Include="Images\" />

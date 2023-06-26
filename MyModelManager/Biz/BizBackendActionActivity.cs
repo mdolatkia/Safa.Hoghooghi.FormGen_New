@@ -84,7 +84,7 @@ namespace MyModelManager
                 if (detailsDepth == DetailsDepth.WithDetailsAndObjects)
                 {
                     BizDatabaseFunction bizDatabaseFunction = new MyModelManager.BizDatabaseFunction();
-                    result.DatabaseFunctionEntity = bizDatabaseFunction.ToDatabaseFunction_EntityDTO(item.DatabaseFunction_TableDrivedEntity, withDetails);
+                    result.DatabaseFunctionEntity = bizDatabaseFunction.ToDatabaseFunction_EntityDTO(item.DatabaseFunction_TableDrivedEntity, true);
                 }
             }
 

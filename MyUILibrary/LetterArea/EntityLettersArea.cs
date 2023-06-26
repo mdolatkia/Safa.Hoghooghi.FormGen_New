@@ -9,13 +9,14 @@ using MyUILibraryInterfaces.EntityArea;
 
 using MyUILibraryInterfaces.DataTreeArea;
 using MyUILibraryInterfaces.ContextMenu;
+using MyUILibrary.EntitySelectArea;
 
 namespace MyUILibrary.EntityArea
 {
     class EntityLettersArea : I_EntityLettersArea
     {
-        public I_EntitySelectArea EntitySelectArea { set; get; }
-        public object MainView { set; get; }
+        public I_GeneralEntityDataSelectArea GeneralEntityDataSelectArea { set; get; }
+    //    public object MainView { set; get; }
         public LettersAreaInitializer AreaInitializer { get; set; }
         //   public DP_DataView DataItem { set; get; }
         //public bool SecurityNoAccess { set; get; }
@@ -30,53 +31,50 @@ namespace MyUILibrary.EntityArea
             //var keyColumns = dataInstance.KeyProperties;
             //AgentUICoreMediator.GetAgentUICoreMediator.DataItemManager.SetDataItemDTO(dataInstance);
             //EntityID = entityId;
-            LetterView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfEntityLettersArea();
-            LetterView.NewLetterClicked += View_NewLetterClicked;
-            LetterView.EnableAdd = false;
-            LetterView.DataTreeRequested += View_DataTreeRequested;
+            View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfEntityLettersArea();
+            View.NewLetterClicked += View_NewLetterClicked;
+            View.EnableAdd = false;
+            View.DataTreeRequested += View_DataTreeRequested;
 
-            LetterView.ContextMenuLoaded += LetterView_ContextMenuLoaded;
-            MyUILibraryInterfaces.EntityArea.EntitySelectAreaInitializer selectAreaInitializer = new MyUILibraryInterfaces.EntityArea.EntitySelectAreaInitializer();
-            selectAreaInitializer.ExternalView = LetterView;
-            if (areaInitializer.EntityID != 0)
-                selectAreaInitializer.LockEntitySelector = true;
+            View.ContextMenuLoaded += LetterView_ContextMenuLoaded;
+            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer(Enum_EntityDataPurpose.SelectData);
+          
+         
             selectAreaInitializer.EntityID = areaInitializer.EntityID;
-            selectAreaInitializer.SpecificActions = new List<SecurityAction>() { SecurityAction.LetterView, SecurityAction.LetterEdit };
-            EntitySelectArea = new EntitySelectArea.EntitySelectArea(selectAreaInitializer);
-            EntitySelectArea.EntitySelected += EntitySelectArea_EntitySelected;
-            EntitySelectArea.DataItemSelected += SelectArea_DataItemSelected;
-            MainView = EntitySelectArea.View;
+            selectAreaInitializer.HideEntitySelector = true;
+            selectAreaInitializer.DataItem = areaInitializer.DataInstance;
+            if (selectAreaInitializer.DataItem != null)
+                selectAreaInitializer.LockDataSelector = true;
 
-            if (areaInitializer.DataInstance != null)
-            {
-                EntitySelectArea.EnableDisableSelectArea(false);
-                EntitySelectArea.SelectData(areaInitializer.DataInstance);
-            }
+            GeneralEntityDataSelectArea = new GeneralEntityDataSelectArea();
+            GeneralEntityDataSelectArea.DataItemChanged += SelectArea_DataItemSelected;
 
+            GeneralEntityDataSelectArea.SetAreaInitializer(selectAreaInitializer);
+            View.AddGenerealSearchAreaView(GeneralEntityDataSelectArea.View);
         }
 
 
 
-        private void EntitySelectArea_EntitySelected(object sender, int? entityID)
-        {
-            //if (entityID != null)
-            //    ApplySecurity();
-        }
+        //private void EntitySelectArea_EntitySelected(object sender, int? entityID)
+        //{
+        //    //if (entityID != null)
+        //    //    ApplySecurity();
+        //}
 
         //private void ApplySecurity()
         //{
         //    var permissions = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetEntityAssignedPermissions(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EntitySelectArea.SelectedEntity.ID, false);
         //    if (!permissions.GrantedActions.Any(x => x == SecurityAction.LetterEdit))
         //    {
-        //        LetterView.EnableAdd = false;
-        //        LetterView.EnableDelete = false;
-        //        LetterView.EnableEdit = false;
+        //        View.EnableAdd = false;
+        //        View.EnableDelete = false;
+        //        View.EnableEdit = false;
         //    }
         //    else
         //    {
-        //        LetterView.EnableAdd = true;
-        //        LetterView.EnableDelete = true;
-        //        LetterView.EnableEdit = true;
+        //        View.EnableAdd = true;
+        //        View.EnableDelete = true;
+        //        View.EnableEdit = true;
         //    }
         //}
 
@@ -124,9 +122,9 @@ namespace MyUILibrary.EntityArea
         }
         private void View_DataTreeRequested(object sender, EventArgs e)
         {
-            LetterView.DataTreeVisibility = !LetterView.DataTreeVisibility;
+            View.DataTreeVisibility = !View.DataTreeVisibility;
 
-            //       LetterView.ShowDataTree(DataTreeArea.View);
+            //       View.ShowDataTree(DataTreeArea.View);
         }
         //AssignedPermissionDTO _Permission;
         //public AssignedPermissionDTO Permission
@@ -175,9 +173,9 @@ namespace MyUILibrary.EntityArea
         //    {
         //        if (SecurityReadonly)
         //        {
-        //            LetterView.EnableDelete = false;
-        //            LetterView.EnableAdd = false;
-        //            LetterView.EnableEdit = false;
+        //            View.EnableDelete = false;
+        //            View.EnableAdd = false;
+        //            View.EnableEdit = false;
 
         //        }
         //        else if (SecurityEditAndDelete)
@@ -185,7 +183,7 @@ namespace MyUILibrary.EntityArea
         //        }
         //        else if (SecurityEdit)
         //        {
-        //            LetterView.EnableDelete = false;
+        //            View.EnableDelete = false;
         //        }
         //        else
         //        {
@@ -194,30 +192,30 @@ namespace MyUILibrary.EntityArea
         //        }
         //    }
         //}
-        private void SelectArea_DataItemSelected(object sender, EditAreaDataItemArg e)
+        private void SelectArea_DataItemSelected(object sender, List<DP_FormDataRepository> e)
         {
-            if (e.DataItem != null)
+            if (e != null)
             {
-                LetterView.EnableDisable(true);
+                View.EnableDisable(true);
                 DataTreeArea = new MyUILibrary.DataTreeArea.DataTreeArea();
                 DataTreeArea.ContextMenuLoaded += DataTreeArea_ContextMenuLoaded;
                 DataTreeArea.DataAreaConfirmed += DataTreeArea_DataAreaConfirmed;
                 var dataTreeInistializer = new DataTreeAreaInitializer();
-                dataTreeInistializer.EntitiyID = EntitySelectArea.SelectedEntity.ID;
-                dataTreeInistializer.RelationshipTailsLoaded = EntitySelectArea.SelectedEntity.LoadLetterRelatedItems;
-                dataTreeInistializer.FirstDataItem = e.DataItem;
+                dataTreeInistializer.EntitiyID = GeneralEntityDataSelectArea.SelectedEntity.ID;
+                dataTreeInistializer.RelationshipTailsLoaded = GeneralEntityDataSelectArea.SelectedEntity.LoadLetterRelatedItems;
+                dataTreeInistializer.FirstDataItem = e.First();
                 dataTreeInistializer.RelationshipTails = LetterRelationshipTails.Select(x => x.RelationshipTail).ToList();
                 DataTreeArea.SetAreaInitializer(dataTreeInistializer);
                 DataTreeArea.SelectAll();
-                LetterView.DataTreeAreaEnabled = true;
-                LetterView.ShowDataTree(DataTreeArea.View);
+                View.DataTreeAreaEnabled = true;
+                View.ShowDataTree(DataTreeArea.View);
                 if (dataTreeInistializer.RelationshipTailsLoaded)
-                    LetterView.ShowDataTree(DataTreeArea.View);
+                    View.ShowDataTree(DataTreeArea.View);
 
                 ShowLetters();
             }
             else
-                LetterView.EnableDisable(false);
+                View.EnableDisable(false);
         }
         //   List<LetterRelationshipTailDTO> _LetterRelationshipTails;
 
@@ -226,7 +224,7 @@ namespace MyUILibrary.EntityArea
             get
             {
 
-                return AgentUICoreMediator.GetAgentUICoreMediator.LetterManager.GetLetterRelationshipTails(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EntitySelectArea.SelectedEntity.ID);
+                return AgentUICoreMediator.GetAgentUICoreMediator.LetterManager.GetLetterRelationshipTails(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), GeneralEntityDataSelectArea.SelectedEntity.ID);
 
             }
         }
@@ -245,20 +243,20 @@ namespace MyUILibrary.EntityArea
             singleDataItem = null;
             var selectedDatas = DataTreeArea.GetSelectedDataItems();
             if (selectedDatas.Count == 0 || selectedDatas.Count > 1)
-                LetterView.EnableAdd = false;
+                View.EnableAdd = false;
             else
             {
                 var permissions = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetEntityAssignedPermissions(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), selectedDatas.First().TargetEntityID, false);
                 if (permissions.GrantedActions.Any(x => x == SecurityAction.LetterEdit))
                 {
                     singleDataItem = selectedDatas.First();
-                    LetterView.EnableAdd = true;
+                    View.EnableAdd = true;
                 }
                 else
-                    LetterView.EnableAdd = false;
+                    View.EnableAdd = false;
             }
             Letters = AgentUICoreMediator.GetAgentUICoreMediator.LetterManager.GetLetters(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), GetDataItemIds());
-            LetterView.ShowList(Letters);
+            View.ShowList(Letters);
         }
         private List<int> GetDataItemIds()
         {
@@ -346,7 +344,7 @@ namespace MyUILibrary.EntityArea
             set; get;
         }
 
-        public I_View_EntityLettersArea LetterView
+        public I_View_EntityLettersArea View
         {
             set; get;
         }

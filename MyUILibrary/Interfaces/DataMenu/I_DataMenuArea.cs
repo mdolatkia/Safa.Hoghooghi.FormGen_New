@@ -48,7 +48,7 @@ namespace MyUILibraryInterfaces.DataMenuArea
         public string Title { set; get; }
         public List<DataMenuUI> SubMenus { set; get; }
         public DataMenuDTO DataMenu { set; get; }
-        //public DP_DataView IsViewTargetDataItem { get; set; }
+        public DP_DataView DataItem { get; set; }
     }
 
 }

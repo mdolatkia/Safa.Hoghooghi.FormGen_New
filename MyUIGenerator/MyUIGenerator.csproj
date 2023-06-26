@@ -288,17 +288,14 @@
     <Compile Include="UI\Diagram\frmDiagram.xaml.cs">
       <DependentUpon>frmDiagram.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\EntitySelector\frmEntitySelector.xaml.cs">
-      <DependentUpon>frmEntitySelector.xaml</DependentUpon>
+    <Compile Include="UI\EntitySelector\frmEntityDataSelector.xaml.cs">
+      <DependentUpon>frmEntityDataSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Formula\UC_FormulaDataTree.xaml.cs">
       <DependentUpon>UC_FormulaDataTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Formula\UC_FormulaCalculationArea.xaml.cs">
       <DependentUpon>UC_FormulaCalculationArea.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\GeneralEntitySearch\frmEntitySelector.xaml.cs">
-      <DependentUpon>frmGeneralEntitySearch.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\DataView\frmGridView.xaml.cs">
       <DependentUpon>frmGridView.xaml</DependentUpon>
@@ -535,7 +532,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\EntitySelector\frmEntitySelector.xaml">
+    <Page Include="UI\EntitySelector\frmEntityDataSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -546,10 +543,6 @@
     <Page Include="UI\Formula\UC_FormulaCalculationArea.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\GeneralEntitySearch\frmGeneralEntitySearch.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\DataView\frmGridView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -786,6 +779,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UI\Controls\" />
+    <Folder Include="UI\GeneralEntitySearch\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

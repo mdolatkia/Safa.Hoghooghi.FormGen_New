@@ -6,7 +6,7 @@ using MyReportManager;
 using MyUILibrary;
 using MyUILibrary.EntityArea;
 using MyUILibrary.EntityArea.Commands;
-using MyUILibrary.EntitySearchArea;
+using MyUILibrary.EntitySelectArea;
 using MyUILibraryInterfaces.EntityArea;
 using ProxyLibrary;
 using System;
@@ -28,7 +28,7 @@ namespace MyUILibrary.EntityArea
         public bool SecurityNoAccess { set; get; }
         public bool SecurityReadonly { set; get; }
         public bool SecurityEdit { set; get; }
-        public I_GeneralEntitySearchArea GeneralEntitySearchArea { set; get; }
+        public I_GeneralEntityDataSelectArea GeneralEntityDataSelectArea { set; get; }
         public object MainView { set; get; }
         public InternalReportArea(InternalReportAreaInitializer initParam)
         {
@@ -41,31 +41,34 @@ namespace MyUILibrary.EntityArea
             //}
 
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfInternalReportArea();
-            View.Title = AreaInitializer.Title;
+            View.Title = AreaInitializer.Report.ReportTitle;
             View.OrderColumnsChanged += View_OrderColumnsChanged;
             View.ExceptionThrown += View_ExceptionThrown;
 
-            GeneralEntitySearchAreaInitializer selectAreaInitializer = new GeneralEntitySearchAreaInitializer();
-            selectAreaInitializer.ExternalView = View;
-            selectAreaInitializer.EntityID = AreaInitializer.EntityID;
-            if (AreaInitializer.EntityID != 0)
-                selectAreaInitializer.LockEntitySelector = true;
-            //////if (initParam.InitialSearchRepository != null && !initParam.ShowInitializeSearchRepository)
-            //////    selectAreaInitializer.PreDefinedSearch = AreaInitializer.InitialSearchRepository;
-            GeneralEntitySearchArea = new GeneralEntitySearchArea();
-            GeneralEntitySearchArea.SearchDataDefined += GeneralEntitySearchArea_SearchDataDefined;
-            GeneralEntitySearchArea.SetInitializer(selectAreaInitializer);
-            GeneralEntitySearchArea.EnableDisableSearchArea(AreaInitializer.UserCanChangeSearch);
-            MainView = GeneralEntitySearchArea.View;
-            //View.AddGenerealSearchAreaView(GeneralEntitySearchArea.View);
+            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer(Enum_EntityDataPurpose.SearchRepository);
+            selectAreaInitializer.EntityID = AreaInitializer.Report.TableDrivedEntityID;
+            if (AreaInitializer.Report.TableDrivedEntityID != 0)
+                selectAreaInitializer.HideEntitySelector = true;
 
-            if (initParam.ReportType == SearchableReportType.ListReport)
+            selectAreaInitializer.EntityListViewID = AreaInitializer.Report.EntityListViewID;
+            selectAreaInitializer.EntitySearchID = AreaInitializer.Report.EntitySearchID;
+            selectAreaInitializer.AdvancedSearchDTOMessage = initParam.Report.AdvancedSearch?.SearchRepositoryMain;
+            selectAreaInitializer.PreDefinedSearchMessage = initParam.Report.PreDefinedSearch;
+            selectAreaInitializer.UserCanChangeSearchRepository = AreaInitializer.UserCanChangeSearch;
+            selectAreaInitializer.SearchInitially = initParam.SearchInitially;
+
+            GeneralEntityDataSelectArea = new GeneralEntityDataSelectArea();
+            GeneralEntityDataSelectArea.SearchRepositoryChanged += GeneralEntitySearchArea_SearchDataDefined;
+            GeneralEntityDataSelectArea.SetAreaInitializer(selectAreaInitializer);
+            View.AddGenerealSearchAreaView(GeneralEntityDataSelectArea.View);
+
+
+            if (initParam.Report.SearchableReportType == SearchableReportType.ListReport)
                 SetEntityOrderColumns();
             else
                 View.OrderColumnsVisibility = false;
 
-            if (AreaInitializer.InitialSearchRepository != null && initParam.ShowInitializeSearchRepository)
-                SetReport(AreaInitializer.InitialSearchRepository);
+
         }
 
 
@@ -79,9 +82,9 @@ namespace MyUILibrary.EntityArea
         {
             View.OrderColumnsVisibility = true;
             List<EntityListViewColumnsDTO> listColumns = null;
-            if (AreaInitializer.ReportType == SearchableReportType.ListReport)
+            if (AreaInitializer.Report.SearchableReportType == SearchableReportType.ListReport)
             {
-                var report = AgentUICoreMediator.GetAgentUICoreMediator.ReportManager.GetListReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.ReportID);
+                var report = AgentUICoreMediator.GetAgentUICoreMediator.ReportManager.GetListReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.Report.ID);
                 listColumns = report.EntityListView.EntityListViewAllColumns;
             }
             //else if (AreaInitializer.Report.Type == ReportType.ListReportGrouped)
@@ -176,7 +179,7 @@ namespace MyUILibrary.EntityArea
             {
 
                 var request = new RR_ReportSourceRequest(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester());
-                request.ReportID = AreaInitializer.ReportID;
+                request.ReportID = AreaInitializer.Report.ID;
                 request.SearchDataItems = searchRepository;
                 if (View.OrderColumnsVisibility)
                 {

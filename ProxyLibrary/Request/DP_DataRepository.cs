@@ -1118,6 +1118,7 @@ namespace ProxyLibrary
         public int ID { set; get; }
         public string Title { set; get; }
         public int EntityID { set; get; }
+       // public int EntitySearchID { set; get; }
         public bool IsPreDefinedOrAdvanced { get; set; }
 
 

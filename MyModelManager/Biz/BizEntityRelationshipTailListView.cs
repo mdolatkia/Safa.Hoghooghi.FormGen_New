@@ -54,7 +54,7 @@ namespace MyModelManager
         {
             EntityRelationshipTailDataMenuDTO result = new EntityRelationshipTailDataMenuDTO();
             result.ID = item.ID;
-          
+
             result.EntityRelationshipTailID = item.EntityRelationshipTailID;
             result.Name = item.Name;
             foreach (var fitem in item.EntityRelationshipTailDataMenuItems)
@@ -62,7 +62,8 @@ namespace MyModelManager
                 result.Items.Add(new EntityRelationshipTailDataMenuItemsDTO()
                 {
                     ID = fitem.ID,
-                    DataMenuSettingID = fitem.DataMenuSettingID,
+                    DataMenuSettingID = fitem.DataMenuSettingID ?? 0,
+                    EntityListViewID = fitem.EntityListViewID ?? 0,
                     Path = fitem.Path,
                     TableDrivedEntityID = fitem.TableDrivedEntityID
                 });
@@ -82,16 +83,17 @@ namespace MyModelManager
                 }
                 else
                     dbItem = projectContext.EntityRelationshipTailDataMenu.First(x => x.ID == message.ID);
-           
+
                 dbItem.Name = message.Name;
                 dbItem.EntityRelationshipTailID = message.EntityRelationshipTailID;
                 while (dbItem.EntityRelationshipTailDataMenuItems.Any())
                     projectContext.EntityRelationshipTailDataMenuItems.Remove(dbItem.EntityRelationshipTailDataMenuItems.First());
-                foreach (var fitem in message.Items.Where(x=>x.DataMenuSettingID!=0))
+                foreach (var fitem in message.Items.Where(x => x.DataMenuSettingID != 0 || x.EntityListViewID != 0))
                 {
                     dbItem.EntityRelationshipTailDataMenuItems.Add(new EntityRelationshipTailDataMenuItems()
                     {
-                        DataMenuSettingID = fitem.DataMenuSettingID,
+                        DataMenuSettingID = fitem.DataMenuSettingID == 0 ? null : (int?)fitem.DataMenuSettingID,
+                        EntityListViewID = fitem.EntityListViewID == 0 ? null : (int?)fitem.EntityListViewID,
                         Path = fitem.Path,
                         TableDrivedEntityID = fitem.TableDrivedEntityID
                     });

@@ -13,18 +13,18 @@ namespace MyUILibraryInterfaces.DataViewArea
 
     public interface I_DataViewAreaContainer
     {
-        object MainView { set; get; }
+     //   object MainView { set; get; }
         I_View_DataViewAreaContainer View { set; get; }
         DataViewAreaContainerInitializer AreaInitializer { set; get; }
         //    void SetAreaInitializer(DataViewAreaContainerInitializer initParam);
         //I_SearchEntityArea SearchEntityArea { set; get; }
         //DP_SearchRepositoryMain SearchRepository { set; get; }
-        I_GeneralEntitySearchArea GeneralEntitySearchArea { set; get; }
-        void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepositoryMain searchRepository, I_DataViewItem defaultDataViewItem, bool dataViewOrGridView, int dataMenuSettingID);
+        I_GeneralEntityDataSelectArea GeneralEntityDataSelectArea { set; get; }
+        void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepositoryMain searchRepository, I_DataViewItem defaultDataViewItem, bool dataViewOrGridView, int dataMenuSettingID, int entityListViewID);
     }
     public interface I_DataArea
     {
-    //    DataMenuSettingDTO DataMenuSetting { set; get; }
+        //    DataMenuSettingDTO DataMenuSetting { set; get; }
         I_DataViewAreaContainer DataViewAreaContainer { set; get; }
         DataViewAreaInitializer AreaInitializer { set; get; }
         void SetAreaInitializer(DataViewAreaInitializer initParam);
@@ -55,8 +55,9 @@ namespace MyUILibraryInterfaces.DataViewArea
     }
     public interface I_View_DataViewAreaContainer
     {
+
         void AddDataViewArea(object view);
-        // void AddGenerealSearchAreaView(object view);
+        void AddGenerealSearchAreaView(object view);
         void ShowLinks(List<DataViewLink> links);
         void EnableDisable(bool v);
         void ClearDataView();
@@ -136,11 +137,15 @@ namespace MyUILibraryInterfaces.DataViewArea
         public string Title { set; get; }
         public int EntityID { set; get; }
         public bool DataViewOrGridView { set; get; }
-        public DP_SearchRepositoryMain InitialSearchRepository { set; get; }
+        //     public DP_SearchRepositoryMain InitialSearchRepository { set; get; }
+        public DP_SearchRepositoryMain AdvanceSearchRepository { get; internal set; }
+        public PreDefinedSearchDTO PreDefinedSearch { get; internal set; }
         public bool UserCanChangeSearchRepository { get; set; }
         //public DP_SearchRepositoryMain PreDefinedSearch { get; set; }
-        public bool ShowInitializeSearchRepository { get; set; }
+        public bool SearchInitially { get; set; }
         public int DataMenuSettingID { get; set; }
+        public int EntityListViewID { get; internal set; }
+        public int EntitySearchID { get; internal set; }
         //public bool InitialSearchShouldBeIncluded { get; set; }
     }
     public class DataViewAreaRequestedArg : EventArgs

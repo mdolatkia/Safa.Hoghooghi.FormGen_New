@@ -26,7 +26,7 @@ namespace MyUILibrary.EntityArea
 
 
         public event EventHandler<DataUpdatedArg> Updated;
-        public event EventHandler<EditAreaDataItemArg> DataItemRemoved;
+        public event EventHandler<List<DP_FormDataRepository>> DataItemRemoved;
         public EditEntityAreaMultipleData(TableDrivedEntityDTO simpleEntity) : base(simpleEntity)
         {
             //SimpleColumnControls = new List<SimpleColumnControl>();

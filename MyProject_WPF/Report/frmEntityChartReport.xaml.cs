@@ -34,6 +34,7 @@ namespace MyProject_WPF
         {
             get
             {
+
                 if (Message == null)
                     return 0;
                 else
@@ -46,11 +47,10 @@ namespace MyProject_WPF
             Message = new ModelEntites.EntityChartReportDTO();
             EntityID = entityID;
             //  SetValueColumns();
-            SetEntityListViews();
-            SetSearchRepositoryList();
             SetChartTypes();
             SetFunctoinTypes();
             SetSeriesArrangeTypes();
+            frmSearchableReport.EntityListViewChanged += FrmSearchableReport_EntityListViewChanged;
             if (chartReportID != 0)
             {
                 GetEntityChartReport(chartReportID);
@@ -60,7 +60,6 @@ namespace MyProject_WPF
                 Message = new EntityChartReportDTO();
                 ShowMessage();
             }
-            lokEntityListView.SelectionChanged += LokEntityListView_SelectionChanged;
 
 
             cmbChartType.SelectionChanged += CmbChartType_SelectionChanged;
@@ -69,91 +68,24 @@ namespace MyProject_WPF
             ControlHelper.GenerateContextMenu(dtgSeries);
             ControlHelper.GenerateContextMenu(dtgValues);
         }
-        private void SetSearchRepositoryList()
-        {
-            if (lokSearchRepository.ItemsSource == null)
-            {
-                lokSearchRepository.EditItemClicked += LokEntityPreDefined_EditItemClicked; ;
-            }
-            BizSearchRepository biz = new BizSearchRepository();
-            lokSearchRepository.DisplayMember = "Title";
-            lokSearchRepository.SelectedValueMember = "ID";
-            lokSearchRepository.ItemsSource = biz.GetSearchRepositories(EntityID);
-        }
-        private void LokEntityPreDefined_EditItemClicked(object sender, EditItemClickEventArg e)
-        {
-            var lookup = (sender as MyStaticLookup);
-            frmSearchRepository view;
 
-            if (lookup.SelectedItem == null)
-            {
-                view = new frmSearchRepository(EntityID, 0);
-            }
-            else
-            {
-                view = new frmSearchRepository(EntityID, (int)lookup.SelectedValue);
-            }
-            view.EntityPreDefinedSearchUpdated += (sender1, e1) => View_EntityPreDefinedSearchUpdated(sender1, e1, lookup);
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "تنظیمات نامه", Enum_WindowSize.Maximized);
-        }
-
-        private void View_EntityPreDefinedSearchUpdated(object sender, EntityPreDefinedSearchUpdatedArg e, MyStaticLookup lookup)
+        private void FrmSearchableReport_EntityListViewChanged(object sender, EntityListViewDTO e)
         {
-            SetSearchRepositoryList();
-            lookup.SelectedValue = e.ID;
-        }
-        private void SetEntityListViews()
-        {
-            if (lokEntityListView.ItemsSource == null)
-            {
-                lokEntityListView.EditItemClicked += LokEntityListView_EditItemClicked;
-            }
-            BizEntityListView biz = new BizEntityListView();
-            lokEntityListView.DisplayMember = "Title";
-            lokEntityListView.SelectedValueMember = "ID";
-            lokEntityListView.ItemsSource = biz.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
-        }
-        private void LokEntityListView_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
-        {
-            var lookup = (sender as MyStaticLookup);
-            frmEntityListView view;
-            if (lookup.SelectedItem == null)
-            {
-                view = new frmEntityListView(EntityID, 0);
-            }
-            else
-            {
-                view = new frmEntityListView(EntityID, (int)lookup.SelectedValue);
-            }
-            view.EntityListViewUpdated += (sender1, e1) => View_EntityListViewUpdated(sender1, e1, lookup);
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "تنظیمات نامه", Enum_WindowSize.Big);
-        }
-        private void View_EntityListViewUpdated(object sender, EntityListViewUpdatedArg e, MyStaticLookup lookup)
-        {
-            SetEntityListViews();
-            lookup.SelectedValue = e.ID;
-        }
-        private void LokEntityListView_SelectionChanged(object sender, SelectionChangedArg e)
-        {
-            if (lokEntityListView.SelectedItem != null)
+            if (e != null)
             {
                 BizEntityListView biz = new BizEntityListView();
-                var listView = biz.GetEntityListView(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntityListView.SelectedValue);
+                var listView = biz.GetEntityListView(MyProjectManager.GetMyProjectManager.GetRequester(), e.ID);
                 SetCategoryColumns(listView.EntityListViewAllColumns);
                 SetSeriesColumns(listView.EntityListViewAllColumns);
                 SetValuesColumns(listView.EntityListViewAllColumns);
             }
+            else
+            {
+                SetCategoryColumns(null);
+                SetSeriesColumns(null);
+                SetValuesColumns(null);
+            }
         }
-        //private void SetValueColumns()
-        //{
-        //    BizTableDrivedEntity biz = new BizTableDrivedEntity();
-        //    var entity = biz.GetTableDrivedEntity(EntityID, EntityColumnInfoType.WithSimpleColumns, EntityRelationshipInfoType.WithoutRelationships);
-        //    colValue.DisplayMemberPath = "Name";
-        //    colValue.SelectedValueMemberPath = "ID";
-        //    colValue.ItemsSource = entity.Columns; ;
-        //}
-
-
 
         private void SetSeriesColumns(List<EntityListViewColumnsDTO> columns)
         {
@@ -263,15 +195,11 @@ namespace MyProject_WPF
         }
         private void ShowMessage()
         {
-            txtTitle.Text = Message.ReportTitle;
+            frmSearchableReport.ShowMessage(Message);
             dtgSeries.ItemsSource = Message.EntityChartReportSeries;
-            lokEntityListView.SelectedValue = Message.EntityListViewID;
             dtgCategories.ItemsSource = Message.EntityChartReportCategories;
             dtgValues.ItemsSource = Message.EntityChartReportValues;
             cmbChartType.SelectedItem = Message.ChartType;
-            lokSearchRepository.SelectedValue = Message.SearchRepositoryID;
-
-
         }
 
         //private void DtgColumns_Drop(object sender, DragEventArgs e)
@@ -365,14 +293,8 @@ namespace MyProject_WPF
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            if (lokEntityListView.SelectedItem == null)
+            if (!frmSearchableReport.FillMessage(Message))
             {
-                MessageBox.Show("لطفا ابتدا لیست ستونها را ثبت و انتخاب نمایید");
-                return;
-            }
-            if (txtTitle.Text == "")
-            {
-                MessageBox.Show("عنوان مناسب تعریف نشده است");
                 return;
             }
             if ((ChartType)cmbChartType.SelectedItem == ChartType.Column)
@@ -401,14 +323,8 @@ namespace MyProject_WPF
                 MessageBox.Show("فیلد مقداری تعریف نشده است");
                 return;
             }
-            Message.EntityListViewID = (int)lokEntityListView.SelectedValue;
-            if (lokSearchRepository.SelectedItem != null)
-                Message.SearchRepositoryID = (int)lokSearchRepository.SelectedValue;
-            else
-                Message.SearchRepositoryID = 0;
-         Message.ChartType = (ChartType)cmbChartType.SelectedItem;
+            Message.ChartType = (ChartType)cmbChartType.SelectedItem;
             Message.TableDrivedEntityID = EntityID;
-            Message.ReportTitle = txtTitle.Text;
             Message.ID = bizEntityChartReport.UpdateEntityChartReports(Message);
             MessageBox.Show("اطلاعات ثبت شد");
         }

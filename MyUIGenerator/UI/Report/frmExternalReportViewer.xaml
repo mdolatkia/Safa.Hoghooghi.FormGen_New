@@ -8,10 +8,14 @@
              d:DesignHeight="400" d:DesignWidth="600" FlowDirection="RightToLeft">
     <Grid  x:Name="grdArea" >
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Background="#FF12678F" >
+        <Grid x:Name="grdSearch" Grid.Row="0">
+
+        </Grid>
+        <Grid Grid.Row="1" Background="#FF12678F" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
@@ -28,7 +32,7 @@
                 <!--<Grid Name="grdSearch"  Grid.Column="2"></Grid>-->
             </Grid>
         </Grid>
-        <WebBrowser x:Name="browser" Grid.Row="1" />
+        <WebBrowser x:Name="browser" Grid.Row="2" />
 
     </Grid>
 

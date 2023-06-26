@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 using MyUILibrary.EntityArea;
 using ProxyLibrary;
 using ModelEntites;
-using MyUILibrary.EntitySearchArea;
 using MyUILibraryInterfaces.EntityArea;
-
+using MyUILibrary.EntitySelectArea;
 
 namespace MyUILibrary.DataViewArea
 {
@@ -19,9 +18,9 @@ namespace MyUILibrary.DataViewArea
         public bool SecurityNoAccess { set; get; }
         public bool SecurityReadonly { set; get; }
         public bool SecurityEdit { set; get; }
-        public object MainView { set; get; }
+        // public object MainView { set; get; }
 
-        public I_GeneralEntitySearchArea GeneralEntitySearchArea { set; get; }
+        public I_GeneralEntityDataSelectArea GeneralEntityDataSelectArea { set; get; }
 
         public DataViewAreaContainer(DataViewAreaContainerInitializer initParam)
         {
@@ -31,38 +30,25 @@ namespace MyUILibrary.DataViewArea
             AreaInitializer = initParam;
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GetViewOfDataViewAreaContainer();
 
-            GeneralEntitySearchAreaInitializer selectAreaInitializer = new GeneralEntitySearchAreaInitializer();
-            selectAreaInitializer.ExternalView = View;
+            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer(Enum_EntityDataPurpose.SearchRepository);
+            selectAreaInitializer.EntityListViewID = AreaInitializer.EntityListViewID;
+            selectAreaInitializer.EntitySearchID = AreaInitializer.EntitySearchID;
             selectAreaInitializer.EntityID = AreaInitializer.EntityID;
             if (AreaInitializer.EntityID != 0)
-                selectAreaInitializer.LockEntitySelector = true;
-            //اینجا باید عوض شه و هر دو حالت جستجو
-            //////if (initParam.InitialSearchRepository != null && !initParam.ShowInitializeSearchRepository)
-            //////    selectAreaInitializer.PreDefinedSearch = AreaInitializer.InitialSearchRepository;
-            ///
-            GeneralEntitySearchArea = new GeneralEntitySearchArea();
-            GeneralEntitySearchArea.SearchDataDefined += GeneralEntitySearchArea_SearchDataDefined;
-            GeneralEntitySearchArea.EntitySelected += GeneralEntitySearchArea_EntitySelected;
-            GeneralEntitySearchArea.SetInitializer(selectAreaInitializer);
-            MainView = GeneralEntitySearchArea.View;
+                selectAreaInitializer.HideEntitySelector = true;
 
-            //      AddFirstDataViewArea();
-            //   View.AddGenerealSearchAreaView(GeneralEntitySearchArea.View);
+            selectAreaInitializer.AdvancedSearchDTOMessage = initParam.AdvanceSearchRepository;
+            selectAreaInitializer.PreDefinedSearchMessage = initParam.PreDefinedSearch;
+            selectAreaInitializer.UserCanChangeSearchRepository = AreaInitializer.UserCanChangeSearchRepository;
+            selectAreaInitializer.SearchInitially = initParam.SearchInitially;
 
-            //    ManageSecurity();
-            //SecurityEdit = true;
-            //if (!SecurityNoAccess && (SecurityReadonly || SecurityEdit))
-            //{
-            if (!AreaInitializer.UserCanChangeSearchRepository)
-            {
-                GeneralEntitySearchArea.EnableDisableSearchArea(false);
-            }
-            if (AreaInitializer.InitialSearchRepository != null && initParam.ShowInitializeSearchRepository)
-            {
-                GeneralEntitySearchArea_SearchDataDefined(this,  AreaInitializer.InitialSearchRepository);
-            }
-            //    //    دیتا ویوها با سرچ یا بدون سرچ بصورت سکوریتی آبجت ذخبره شود برای دسترسی و منو
-            //}
+            GeneralEntityDataSelectArea = new GeneralEntityDataSelectArea();
+            GeneralEntityDataSelectArea.SearchRepositoryChanged += GeneralEntitySearchArea_SearchDataDefined;
+            GeneralEntityDataSelectArea.EntityChanged += GeneralEntitySearchArea_EntitySelected;
+            GeneralEntityDataSelectArea.SetAreaInitializer(selectAreaInitializer);
+            View.AddGenerealSearchAreaView(GeneralEntityDataSelectArea.View);
+
+
         }
         private void GeneralEntitySearchArea_EntitySelected(object sender, int? e)
         {
@@ -166,17 +152,17 @@ namespace MyUILibrary.DataViewArea
         {
             DataViewAreas.Clear();
             CurrentDataViewArea = null;
-            AddDataViewArea(GeneralEntitySearchArea.SelectedEntity.ID, GeneralEntitySearchArea.SelectedEntity.Alias, null, AreaInitializer.DataMenuSettingID, AreaInitializer.DataViewOrGridView);
+            AddDataViewArea(GeneralEntityDataSelectArea.SelectedEntity.ID, GeneralEntityDataSelectArea.SelectedEntity.Alias, null, AreaInitializer.DataMenuSettingID, AreaInitializer.EntityListViewID, AreaInitializer.DataViewOrGridView);
             FirstDataView = DataViewAreas[0];
         }
-        public void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepositoryMain searchRepository, I_DataViewItem causingDataViewItem, bool dataViewOrGridView, int dataMenuSettingID)
+        public void AddDataViewAreaFromOutSide(int entityID, string title, DP_SearchRepositoryMain searchRepository, I_DataViewItem causingDataViewItem, bool dataViewOrGridView, int dataMenuSettingID, int entityListViewID)
         {
             if (CurrentDataViewArea != null && CurrentDataViewArea is I_DataViewArea)
                 (CurrentDataViewArea as I_DataViewArea).DefaultDataViewItem = causingDataViewItem;
 
-            AddDataViewArea(entityID, title, searchRepository, dataMenuSettingID, dataViewOrGridView);
+            AddDataViewArea(entityID, title, searchRepository, dataMenuSettingID, entityListViewID, dataViewOrGridView);
         }
-        private void AddDataViewArea(int entityID, string title, DP_SearchRepositoryMain searchRepository, int dataMenuSettingID, bool dataViewOrGridView)
+        private void AddDataViewArea(int entityID, string title, DP_SearchRepositoryMain searchRepository, int dataMenuSettingID, int entityListViewID, bool dataViewOrGridView)
         {
             // DataViewAreaContainer.AddDataViewArea: 3e2a0df94502
             DataArea dataArea = null;
@@ -192,6 +178,7 @@ namespace MyUILibrary.DataViewArea
             //  firstInit.UserCanChangeSearch = userCanChangeSearch;
             //   firstInit.SearchRepository = searchRepository;
             firstInit.DataMenuSettingID = dataMenuSettingID;
+            firstInit.EntityListViewID = entityListViewID;
             firstInit.EntityID = entityID;
             firstInit.Title = title;
             //firstInit.CausingRelationship = causingRelationship;

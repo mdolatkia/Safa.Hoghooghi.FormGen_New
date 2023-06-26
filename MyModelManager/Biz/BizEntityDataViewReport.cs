@@ -56,8 +56,7 @@ namespace MyModelManager
         {
             EntityDataViewReportDTO result = new EntityDataViewReportDTO();
             bizEntitySearchableReport.ToEntitySearchableReportDTO( requester, item.EntitySearchableReport, result, withDetails);
-            result.DataMenuSettingID = item.DataMenuSettingID;
-            result.EntityListViewID = item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0;
+         
             //         result.SearchRepositoryID = item.EntitySearchableReport.SearchRepositoryID ?? 0;
             return result;
         }
@@ -78,7 +77,11 @@ namespace MyModelManager
                 else
                     bizEntitySearchableReport.ToUpdateEntitySearchableReport(dbEntitySpecifiedReport.EntitySearchableReport, message);
 
-                dbEntitySpecifiedReport.DataMenuSettingID = message.DataMenuSettingID;
+                if (message.DataMenuSettingID != 0)
+                    dbEntitySpecifiedReport.EntitySearchableReport.EntityReport.DataMenuSettingID = message.DataMenuSettingID;
+                else
+                    dbEntitySpecifiedReport.EntitySearchableReport.EntityReport.DataMenuSettingID = null;
+
                 dbEntitySpecifiedReport.EntitySearchableReport.EntityReport.EntityListViewID  = message.EntityListViewID;
                 //    dbEntitySpecifiedReport.EntitySearchableReport.SearchRepositoryID = message.SearchRepositoryID;
                 //while (dbEntityDataViewReport.EntityDataViewReportSubs1.Any())

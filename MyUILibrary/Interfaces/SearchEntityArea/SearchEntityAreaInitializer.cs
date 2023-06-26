@@ -33,7 +33,7 @@ namespace MyUILibrary.EntityArea
         // public DP_SearchRepositoryMain PreDefinedSearch { get; set; }
 
         public PreDefinedSearchDTO PreDefinedSearchMessage { set; get; }
-        public AdvancedSearchDTO AdvancedSearchDTOMessage { set; get; }
+        public DP_SearchRepositoryMain AdvancedSearchDTOMessage { set; get; }
 
 
         //  public EntitySearchDTO SearchEntity { get; set; }

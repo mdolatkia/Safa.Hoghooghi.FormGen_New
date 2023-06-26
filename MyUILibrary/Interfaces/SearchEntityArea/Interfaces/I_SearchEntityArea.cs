@@ -13,14 +13,15 @@ namespace MyUILibrary.EntityArea
     }
     public interface I_SearchEntityArea : I_BaseSearchEntityArea
     {
-        void OnSearchDataDefined(DP_SearchRepositoryMain logicPhrase);
-        DP_SearchRepositoryMain LastSearch { set; get; }
+        void OnSearchDataDefined(DP_SearchRepositoryMain logicPhrase ,bool? advancedSearchOrSimple = null);
+        DP_SearchRepositoryMain LastSearchRepository { set; get; }
+
 
         event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;
         I_View_SearchEntityArea SearchView { get; }
         I_EntityDefinedSearchArea SimpleSearchEntityArea { set; get; }
-        I_AdvancedSearchEntityArea AdvancedSearchEntityAre { set; get; }
-        bool IsSimpleSearchActiveOrAdvancedSearch { get; }
+        I_AdvancedSearchEntityArea AdvancedSearchEntityArea { set; get; }
+        bool? LastSearchIsSimpleOrAdvanced { get; }
         //     void ShowSearchRepository(DP_SearchRepositoryMain searchRepository);
 
     }
@@ -48,6 +49,8 @@ namespace MyUILibrary.EntityArea
         event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;
 
         PreDefinedSearchDTO GetSearchRepositoryForSave();
+        void ConfirmSearch();
+
         //List<I_Command> SearchCommands
         //{
         //    get;
@@ -96,6 +99,8 @@ namespace MyUILibrary.EntityArea
         DP_SearchRepositoryMain GetSearchRepository();
 
         bool ShowSearchRepository(DP_SearchRepositoryMain item);
+        void ConfirmSearch();
+
         //  void ApplyPreDefinedSearch(EntityPreDefinedSearchDTO message);
 
         event EventHandler<DP_SearchRepositoryMain> SearchDataDefined;

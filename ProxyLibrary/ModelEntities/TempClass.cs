@@ -1260,6 +1260,8 @@ namespace ModelEntites
         //public EntityPreDefinedSearchDTO EntityPreDefinedSearch { set; get; }
         public string ReportTitle { get; set; }
         public int EntityListViewID { get; set; }
+        public int DataMenuSettingID { get; set; }
+        public int EntitySearchID { get; set; }
     }
     public class EntitySearchableReportDTO : EntityReportDTO
     {
@@ -1302,7 +1304,6 @@ namespace ModelEntites
         }
 
 
-        public int EntityListViewID { set; get; }
         public EntityListViewDTO EntityListView { set; get; }
         public List<EntityListReportSubsDTO> EntityListReportSubs { set; get; }
         public List<ReportGroupDTO> ReportGroups { set; get; }
@@ -1313,8 +1314,7 @@ namespace ModelEntites
         {
         }
 
-        public int DataMenuSettingID { set; get; }
-        public int EntityListViewID { get; set; }
+
     }
     public class EntityDataLinkReportDTO : EntityReportDTO
     {
@@ -1331,8 +1331,7 @@ namespace ModelEntites
         {
         }
 
-        public int DataMenuSettingID { set; get; }
-        public int EntityListViewID { get; set; }
+
 
     }
     //public class EntityListReportGroupedDTO : EntityReportDTO
@@ -1513,7 +1512,6 @@ namespace ModelEntites
         public List<EntityChartReportSerieDTO> EntityChartReportSeries { set; get; }
         public List<EntityChartReportCategoryDTO> EntityChartReportCategories { set; get; }
         public List<EntityChartReportValueDTO> EntityChartReportValues { set; get; }
-        public int EntityListViewID { get; set; }
         public EntityListViewDTO EntityListView { get; set; }
     }
 
@@ -1600,7 +1598,7 @@ namespace ModelEntites
     {
         public DataMenuSettingDTO()
         {
-            RelationshipTails = new List<DataMenuRelationshipTailDTO>();
+            ReportRelationshipTails = new List<DataMenuReportRelationshipTailDTO>();
             DataItemReports = new List<DataMenuDataItemReportDTO>();
         }
         public int ID { set; get; }
@@ -1612,13 +1610,13 @@ namespace ModelEntites
         public bool AllowLetter { set; get; }
         public bool AllowWorkflowReport { set; get; }
         //public List<DataMenuDataViewRelationshipDTO> DataViewRelationships { set; get; }
-        public List<DataMenuRelationshipTailDTO> RelationshipTails { set; get; }
+        public List<DataMenuReportRelationshipTailDTO> ReportRelationshipTails { set; get; }
         //public List<DataMenuGridViewRelationshipDTO> GridViewRelationships { set; get; }
         public List<DataMenuDataItemReportDTO> DataItemReports { set; get; }
         public int RelationshipID { set; get; }
-      //  public RelationshipDTO Relationship { set; get; }
+        //  public RelationshipDTO Relationship { set; get; }
         public int TargetDataMenuSettingID { set; get; }
-       // public DataMenuSettingDTO DataMenuSetting { set; get; }
+        // public DataMenuSettingDTO DataMenuSetting { set; get; }
         public byte[] IconContent { set; get; }
         //  public int EntityListViewID { set; get; }
 
@@ -1640,9 +1638,9 @@ namespace ModelEntites
     //    public List<DataMenuSettingDTO> vwDataMenuSettings { set; get; }
 
     //}
-    public class DataMenuRelationshipTailDTO
+    public class DataMenuReportRelationshipTailDTO
     {
-        public DataMenuRelationshipTailDTO()
+        public DataMenuReportRelationshipTailDTO()
         {
             SearchableReports = new List<DataMenuRelTailSearchableReportsDTO>();
         }
@@ -1691,7 +1689,7 @@ namespace ModelEntites
         public string Group1 { get; set; }
         public string ReportTitle { set; get; }
         public int EntityDataItemReportID { get; set; }
-     //   public EntityDataItemReportDTO EntityDataItemReport { set; get; }
+        //   public EntityDataItemReportDTO EntityDataItemReport { set; get; }
     }
 
     public class DataMenuResult
@@ -1699,6 +1697,8 @@ namespace ModelEntites
         public string DataMenuSettingName { set; get; }
 
         public List<DataMenuDTO> DataMenus { set; get; }
+        public DP_DataView NewData { set; get; }
+
     }
     public class DataMenuDTO
     {
@@ -1707,7 +1707,7 @@ namespace ModelEntites
         {
             SubMenus = new List<DataMenuDTO>();
         }
-        public DP_DataView DataItem { set; get; }
+        // public DP_DataView DataItem { set; get; }
         //public void OnMenuClicked()
         //{
         //    if (MenuClicked != null)
@@ -1718,13 +1718,15 @@ namespace ModelEntites
         public List<DataMenuDTO> SubMenus { set; get; }
         public DataMenuType Type { set; get; }
         //   public DP_DataView ViewRelTargetDataItem { get; set; }
-        public DataLinkDTO Datalink { get; set; }
-        public GraphDTO Graph { get; set; }
-        public DataMenuSearchableReportRelationshipDTO SearchableReports { get; set; }
+        //public DataLinkDTO Datalink { get; set; }
+        //public GraphDTO Graph { get; set; }
+        //  public DataMenuSearchableReportRelationshipDTO SearchableReports { get; set; }
         //  public EntityRelationshipTailDTO DataviewRelationshipTail { get; set; }
         //    public EntityRelationshipTailDTO GridviewRelationshipTail { get; set; }
-        public EntityDataItemReportDTO DataItemReport { get; set; }
-        public int TargetDataMenuSettingID { get; set; }
+        // public EntityDataItemReportDTO DataItemReport { get; set; }
+        //public int TargetDataMenuSettingID { get; set; }
+        public int RelationshipTailID { get; set; }
+        public int ReportID { get; set; }
     }
 
     public enum DataMenuType
@@ -1776,7 +1778,7 @@ namespace ModelEntites
 
         public List<CrosstabReportColumnDTO> Columns { set; get; }
         public EntityListViewDTO EntityListView { get; set; }
-        public int EntityListViewID { get; set; }
+
         public List<CrosstabReportRowDTO> Rows { set; get; }
         public List<CrosstabReportValueDTO> Values { set; get; }
 
@@ -2052,8 +2054,9 @@ namespace ModelEntites
         public bool NotJointEntities { set; get; }
         public List<DataLinkRelationshipTailDTO> RelationshipsTails { set; get; }
 
-        public int FirstSideDataMenuID { set; get; }
+        //  public int FirstSideDataMenuID { set; get; }
         public int SecondSideDataMenuID { set; get; }
+        public int SecondSideListViewID { set; get; }
     }
     public class DataLinkRelationshipTailDTO
     {
@@ -2946,7 +2949,9 @@ namespace ModelEntites
     {
         public int ID { set; get; }
         public List<DataMenuSettingDTO> tmpDataMenus { set; get; }
+        public List<EntityListViewDTO> tmpListView { set; get; }
         public int DataMenuSettingID { set; get; }
+        public int EntityListViewID { set; get; }
         public int TableDrivedEntityID { set; get; }
         public string EntityName { set; get; }
         public string Path { set; get; }

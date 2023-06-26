@@ -10,11 +10,15 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Background="#FFA9C9DC">
+        <Grid x:Name="grdSearch" Grid.Row="0">
+         
+        </Grid>
+        <Grid Background="#FFA9C9DC" Grid.Row="1">
             <StackPanel Height="40" Grid.Column="1" x:Name="pnlLinks"></StackPanel>
         </Grid>
-        <Grid Grid.Row="1" x:Name="grdViews"></Grid>
+        <Grid Grid.Row="2" x:Name="grdViews"></Grid>
     </Grid>
 </UserControl>

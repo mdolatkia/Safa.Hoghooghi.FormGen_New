@@ -57,7 +57,8 @@
                     <telerik:RadGridView.Columns>
                         <telerik:GridViewDataColumn Header="مسیر" IsReadOnly="True" DataMemberBinding="{Binding Path}" />
                         <telerik:GridViewDataColumn Header="موجودیت" DataMemberBinding="{Binding EntityName}" />
-                        <MyCommonWPFControls:MyStaticLookupColumn ItemsSourceBinding="{Binding tmpDataMenus}"  x:Name="colDataMenu" Header="لیست نمایش" DataMemberBinding="{Binding DataMenuSettingID}" />
+                        <MyCommonWPFControls:MyStaticLookupColumn ItemsSourceBinding="{Binding tmpDataMenus}"  x:Name="colListView" Header="لیست نمایش" DataMemberBinding="{Binding DataMenuSettingID}" />
+                        <MyCommonWPFControls:MyStaticLookupColumn ItemsSourceBinding="{Binding tmpListView}"  x:Name="colDataMenu" Header="تنظیمات منو" DataMemberBinding="{Binding EntityListViewID}" />
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
             </Grid>

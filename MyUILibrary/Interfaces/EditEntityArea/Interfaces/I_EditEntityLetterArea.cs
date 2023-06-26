@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using MyUILibraryInterfaces.DataTreeArea;
 using MyUILibraryInterfaces.ContextMenu;
+using MyUILibraryInterfaces.EntityArea;
 
 namespace MyUILibrary.EntityArea
 {
@@ -35,12 +36,13 @@ namespace MyUILibrary.EntityArea
     }
     public interface I_EntityLettersArea
     {
+        I_View_EntityLettersArea View { set; get; }
         //int EntityID { set; get; }
         //DP_DataRepository DataItem { set; get; }
         LettersAreaInitializer AreaInitializer { set; get; }
         //List<LetterDTO> Letters { set; get; }
         //I_View_EntityLettersArea View { set; get; }
-        object MainView { set; get; }
+  //      object MainView { set; get; }
         //I_EditEntityLetterArea EditLetterArea { set; get; }
     }
     public interface I_View_LetterArea
@@ -118,6 +120,7 @@ namespace MyUILibrary.EntityArea
         void ShowList(List<LetterDTO> letter);
         void EnableDisable(bool v);
         void ShowDataTree(I_DataTreeView view);
+        void AddGenerealSearchAreaView(object view);
     }
     public class LetterConfirmedArg : EventArgs
     {

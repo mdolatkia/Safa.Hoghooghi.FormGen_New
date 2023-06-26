@@ -105,9 +105,12 @@ namespace MyModelManager
             entityReportDTO.ReportType = (ReportType)entityReport.ReportType;
             entityReportDTO.TableDrivedEntityID = entityReport.TableDrivedEntityID;
             entityReportDTO.ReportTitle = entityReport.Title;
+            entityReportDTO.DataMenuSettingID = entityReport.DataMenuSettingID ?? 0;
+            entityReportDTO.EntityListViewID = entityReport.EntityListViewID ?? 0;
             if (entityReport.EntitySearchableReport != null)
             {
                 entityReportDTO.SearchableReportType = (SearchableReportType)entityReport.EntitySearchableReport.SearchableReportType;
+                entityReportDTO.EntitySearchID = entityReport.EntitySearchableReport.EntitySearchID??0;
                 if (withDetails == true)
                 {
                     if (entityReport.EntitySearchableReport.SavedSearchRepository != null)
@@ -123,7 +126,6 @@ namespace MyModelManager
                         }
 
                     }
-                    entityReportDTO.EntityListViewID = entityReport.EntityListViewID ?? 0;
                 }
             }
             if (entityReport.EntityDataItemReport != null)

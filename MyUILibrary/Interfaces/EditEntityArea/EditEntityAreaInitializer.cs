@@ -36,7 +36,10 @@ namespace MyUILibrary.EntityArea
         //        return TemplateEntity.Alias;
         //    }
         //}
-    //    public I_EditAreaDataManager EditAreaDataManager { set; get; }
+        //    public I_EditAreaDataManager EditAreaDataManager { set; get; }
+
+        public int EntityListViewID { set; get; }
+
         public I_UIActionActivityManager ActionActivityManager { set; get; }
         public I_RelationshipFilterManager RelationshipFilterManager { get; set; }
 
@@ -72,6 +75,7 @@ namespace MyUILibrary.EntityArea
         public I_UIFomulaManager UIFomulaManager { get; set; }
         public I_UIValidationManager UIValidationManager { get; set; }
         public DataEntryRelationshipDTO DataEntryRelationship { get; internal set; }
+        public int EntitySearchID { get; internal set; }
         //   public int EntitySearchID { get; internal set; }
 
         //  public bool RemoveInfo { get; set; }

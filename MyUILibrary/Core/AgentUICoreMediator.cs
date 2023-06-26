@@ -127,8 +127,8 @@ namespace MyUILibrary
         }
         private void LoginForm_LoginRequested(object sender, LoginRequestedArg e)
         {
-        //AgentUICoreMediator.LoginForm_LoginRequested: 99b51194b636
-           var result = AgentUICoreMediator.GetAgentUICoreMediator.securityManagerService.Login(e.UserName, e.Password);
+            //AgentUICoreMediator.LoginForm_LoginRequested: 99b51194b636
+            var result = AgentUICoreMediator.GetAgentUICoreMediator.securityManagerService.Login(e.UserName, e.Password);
             if (result.Successful)
             {
                 UIManager.PrepareMainForm();
@@ -236,13 +236,13 @@ namespace MyUILibrary
         private void GridViewMenu_Clicked(object sender, EventArgs e)
         {
             // AgentUICoreMediator.GridViewMenu_Clicked: b3e382bbfc54
-            ShowDataViewGridViewArea(0, "گرید داده", false, true, false, null, false, 0, null, null);
+            ShowDataViewGridViewArea(0, "گرید داده", false, true, false, null, null, false, 0, 0, 0, null, null);
         }
 
         private void DataViewMenu_Clicked(object sender, EventArgs e)
         {
             //AgentUICoreMediator.GridViewMenu_Clicked: 2fb728ad84e4
-            ShowDataViewGridViewArea(0, "نمای داده", false, true, true, null, false, 0, null, null);
+            ShowDataViewGridViewArea(0, "نمای داده", false, true, true, null, null, false, 0, 0, 0, null, null);
         }
 
         private void LetterMenu_Clicked(object sender, EventArgs e)
@@ -466,9 +466,9 @@ namespace MyUILibrary
         List<NavigationItemDTO> allNavigationTreeItems { set; get; }
 
 
-     
+
         private void ShowNavigationTree()
-        {  
+        {
             //** AgentUICoreMediator.ShowNavigationTree: 39c7547dd08c
             allNavigationTreeItems = navigationTreeManagerService.GetNavigationTree(GetRequester());
             UIManager.ClearNavigationTree();
@@ -519,11 +519,11 @@ namespace MyUILibrary
             }
             else if (item.ObjectCategory == DatabaseObjectCategory.DataView)
             {
-                ShowDataViewGridViewArea(Convert.ToInt32(item.ObjectIdentity), item.Title, false, true, true, null, false, 0, null, null);
+                ShowDataViewGridViewArea(Convert.ToInt32(item.ObjectIdentity), item.Title, false, true, true, null, null, false, 0, 0, 0, null, null);
             }
             else if (item.ObjectCategory == DatabaseObjectCategory.GridView)
             {
-                ShowDataViewGridViewArea(Convert.ToInt32(item.ObjectIdentity), item.Title, false, true, false, null, false, 0, null, null);
+                ShowDataViewGridViewArea(Convert.ToInt32(item.ObjectIdentity), item.Title, false, true, false, null, null, false, 0, 0, 0, null, null);
             }
         }
 
@@ -677,6 +677,7 @@ namespace MyUILibrary
         }
         private void ShowDataItemReport(EntityReportDTO report, bool dialog, DP_DataView dataItem)
         {
+            // AgentUICoreMediator.ShowDataItemReport: b49c8fb13aaf
             if (report.DataItemReportType == DataItemReportType.DirectReport)
             {
                 ShowDirectReport(report, dialog, dataItem);
@@ -697,12 +698,12 @@ namespace MyUILibrary
             areaInitializer.DataInstance = dataItem;
 
             var area = new DirectReportArea(areaInitializer);
-            if (area.MainView != null)
+            if (area.View != null)
             {
                 if (!dialog)
-                    UIManager.ShowPane(area.MainView, "گزارش");
+                    UIManager.ShowPane(area.View, "گزارش");
                 else
-                    UIManager.GetDialogWindow().ShowDialog(area.MainView, "گزارش", Enum_WindowSize.Maximized);
+                    UIManager.GetDialogWindow().ShowDialog(area.View, "گزارش", Enum_WindowSize.Maximized);
             }
         }
         public void ShowSearchableReportArea(int reportID, bool dialog, DP_SearchRepositoryMain initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
@@ -718,53 +719,44 @@ namespace MyUILibrary
         private void ShowSearchableReportArea(EntityReportDTO report, bool dialog, DP_SearchRepositoryMain initializeSearchRepository, bool userCanChangeSearch, bool showInitializeSearchRepository, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
         {
             // AgentUICoreMediator.ShowSearchableReportArea: 7851111b911c
-            DP_SearchRepositoryMain advanceSearchRepository = null;
-            PreDefinedSearchDTO preDefinedSearch = null;
-            if (initializeSearchRepository == null)
-            {
-                advanceSearchRepository = report.AdvancedSearch.SearchRepositoryMain;
-                preDefinedSearch = report.PreDefinedSearch;
 
-            }
-            else
+            if (initializeSearchRepository != null)
             {
-                advanceSearchRepository = initializeSearchRepository;
+                report.PreDefinedSearch = null;
+                report.AdvancedSearch = new AdvancedSearchDTO() { EntityID = initializeSearchRepository.TargetEntityID, SearchRepositoryMain = initializeSearchRepository };
             }
 
             //اینجا باید عوض شه یعنی هم 
             //advanceSearchRepository در نظر گرفته شه و هم preDefinedSearch
             if (report.SearchableReportType == SearchableReportType.DataView)
             {
-                var dvreport = ReportManager.GetDataViewReport(GetRequester(), report.ID);
-                if (dvreport == null)
-                {
-                    UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + report.ID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
-                    return;
-                }
-
-                ShowDataViewGridViewArea(report.TableDrivedEntityID, report.ReportTitle, dialog, userCanChangeSearch, true, initializeSearchRepository, showInitializeSearchRepository, dvreport.DataMenuSettingID, hostDataViewArea, defaultDataViewItem);
+                //var dvreport = ReportManager.GetDataViewReport(GetRequester(), report.ID);
+                //if (dvreport == null)
+                //{
+                //    UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + report.ID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
+                //    return;
+                //}
+                //اینجا میشد بجای شناسه منو و شناسه لیست نمایش شناسه گزارش ارسال بشه و بعدا آن شناسه ها از گزارش خوانده بشوند
+                ShowDataViewGridViewArea(report.TableDrivedEntityID, report.ReportTitle, dialog, userCanChangeSearch, true, report.AdvancedSearch.SearchRepositoryMain, report.PreDefinedSearch, showInitializeSearchRepository, report.DataMenuSettingID, report.EntityListViewID, report.EntitySearchID, hostDataViewArea, defaultDataViewItem);
 
             }
             else if (report.SearchableReportType == SearchableReportType.GridView)
             {
-                var dvreport = ReportManager.GetGridViewReport(GetRequester(), report.ID);
-                if (dvreport == null)
-                {
-                    UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + report.ID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
-                    return;
-                }
+                //var dvreport = ReportManager.GetGridViewReport(GetRequester(), report.ID);
+                //if (dvreport == null)
+                //{
+                //    UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + report.ID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
+                //    return;
+                //}
 
-                ShowDataViewGridViewArea(report.TableDrivedEntityID, report.ReportTitle, dialog, userCanChangeSearch, false, initializeSearchRepository, showInitializeSearchRepository, dvreport.DataMenuSettingID, hostDataViewArea, defaultDataViewItem);
+                ShowDataViewGridViewArea(report.TableDrivedEntityID, report.ReportTitle, dialog, userCanChangeSearch, false, report.AdvancedSearch.SearchRepositoryMain, report.PreDefinedSearch, showInitializeSearchRepository, report.DataMenuSettingID, report.EntityListViewID, report.EntitySearchID, hostDataViewArea, defaultDataViewItem);
             }
             else if (report.SearchableReportType == SearchableReportType.ExternalReport)
             {
                 ExternalReportAreaInitializer initializer = new ExternalReportAreaInitializer();
-                initializer.ReportID = report.ID;
+                initializer.Report = report;
                 initializer.UserCanChangeSearch = userCanChangeSearch;
-                initializer.EntityID = report.TableDrivedEntityID;
-                initializer.Title = report.ReportTitle;
-                initializer.InitialSearchRepository = initializeSearchRepository;
-                initializer.ShowInitializeSearchRepository = showInitializeSearchRepository;
+                initializer.SearchInitially = showInitializeSearchRepository;
                 I_ExternalReportArea reportArea = new ExternalReportArea(initializer);
                 if (reportArea.View != null)
                 {
@@ -784,21 +776,22 @@ namespace MyUILibrary
                 // ShowListChartCrosstabReport(report, report.SearchableReportType, userCanChangeSearch, initializeSearchRepository, showInitializeSearchRepository, dialog);
 
                 InternalReportAreaInitializer initializer = new InternalReportAreaInitializer();
-                initializer.ReportID = report.ID;
-                initializer.ReportType = report.SearchableReportType;
+                initializer.Report = report;
+                //initializer.ReportType = report.SearchableReportType;
                 initializer.UserCanChangeSearch = userCanChangeSearch;
-                initializer.EntityID = report.TableDrivedEntityID;
-                initializer.InitialSearchRepository = initializeSearchRepository;
-                initializer.Title = report.ReportTitle;
-                initializer.ShowInitializeSearchRepository = showInitializeSearchRepository;
+              //  initializer.EntityID = report.TableDrivedEntityID;
+             //   initializer.AdvanceSearchRepository = initializeSearchRepository;
+               // initializer.PreDefinedSearch = preDefinedSearch;
+              //  initializer.Title = report.ReportTitle;
+                initializer.SearchInitially = showInitializeSearchRepository;
 
                 I_InternalReportArea reportArea = new InternalReportArea(initializer);
-                if (reportArea.MainView != null)
+                if (reportArea.View != null)
                 {
                     if (!dialog)
-                        UIManager.ShowPane(reportArea.MainView, report.ReportTitle);
+                        UIManager.ShowPane(reportArea.View, report.ReportTitle);
                     else
-                        UIManager.GetDialogWindow().ShowDialog(reportArea.MainView, report.ReportTitle, Enum_WindowSize.Maximized);
+                        UIManager.GetDialogWindow().ShowDialog(reportArea.View, report.ReportTitle, Enum_WindowSize.Maximized);
                 }
 
             }
@@ -862,7 +855,7 @@ namespace MyUILibrary
 
         public void ShowDataLinkArea(int entityId, int dataLinkID, bool dialog, string title, DP_DataView firstData)// چون جایی نداریم فعلا که دوتا داده انتخاب کنیم و ارتباطشون رو بخوایم, DP_DataView otherData)
         {
-
+            // AgentUICoreMediator.ShowDataLinkArea: 5724caaed8ec
             var initializer = new MyUILibraryInterfaces.DataLinkArea.DataLinkAreaInitializer();
             initializer.DataLinkID = dataLinkID;
             initializer.EntityID = entityId;
@@ -923,12 +916,12 @@ namespace MyUILibrary
 
 
         //}
-        public void ShowDataViewGridViewArea(int entityId, string title, bool dialog, bool userCanChangeSearch, bool dataViewOrGridView, DP_SearchRepositoryMain initializeSearchRepository, bool showInitializeSearchRepository, int dataMenuSettingID, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
+        public void ShowDataViewGridViewArea(int entityId, string title, bool dialog, bool userCanChangeSearch, bool dataViewOrGridView, DP_SearchRepositoryMain advanceSearchRepository, PreDefinedSearchDTO preDefinedSearch, bool searchInitially, int dataMenuSettingID, int entityListViewID, int entitySearchID, I_DataArea hostDataViewArea, I_DataViewItem defaultDataViewItem)
         {
             // AgentUICoreMediator.ShowDataViewGridViewArea: 564d6ae87497
             if (hostDataViewArea != null)
             {
-                hostDataViewArea.DataViewAreaContainer.AddDataViewAreaFromOutSide(entityId, title, initializeSearchRepository, defaultDataViewItem, dataViewOrGridView, dataMenuSettingID);
+                hostDataViewArea.DataViewAreaContainer.AddDataViewAreaFromOutSide(entityId, title, advanceSearchRepository, defaultDataViewItem, dataViewOrGridView, dataMenuSettingID, entityListViewID);
             }
             else
             {
@@ -938,15 +931,18 @@ namespace MyUILibrary
                 initializer.Title = title;
                 initializer.DataViewOrGridView = dataViewOrGridView;
                 initializer.DataMenuSettingID = dataMenuSettingID;
+                initializer.EntityListViewID = entityListViewID;
+                initializer.EntitySearchID = entitySearchID;
                 //   initializer.PreDefinedSearch = preDefinedSearch;
-                initializer.ShowInitializeSearchRepository = showInitializeSearchRepository;
+                //  initializer.ShowInitializeSearchRepository = searchInitially;
                 initializer.UserCanChangeSearchRepository = userCanChangeSearch;
-                initializer.InitialSearchRepository = initializeSearchRepository;
+                initializer.AdvanceSearchRepository = advanceSearchRepository;
+                initializer.PreDefinedSearch = preDefinedSearch;
                 I_DataViewAreaContainer dataViewAreaContainer = new DataViewAreaContainer(initializer);
                 if (dataViewAreaContainer.View != null)
                 {
                     if (!dialog)
-                        UIManager.ShowPane(dataViewAreaContainer.MainView, title);
+                        UIManager.ShowPane(dataViewAreaContainer.View, title);
                     else
                         UIManager.GetDialogWindow().ShowDialog(dataViewAreaContainer.View, title, Enum_WindowSize.Maximized);
                 }
@@ -976,12 +972,12 @@ namespace MyUILibrary
 
             var editLetterArea = new EntityLettersArea(areaInitializer);
 
-            if (editLetterArea.MainView != null)
+            if (editLetterArea.View != null)
             {
                 if (!dialog)
-                    UIManager.ShowPane(editLetterArea.MainView, title);
+                    UIManager.ShowPane(editLetterArea.View, title);
                 else
-                    UIManager.GetDialogWindow().ShowDialog(editLetterArea.MainView, title, Enum_WindowSize.Maximized);
+                    UIManager.GetDialogWindow().ShowDialog(editLetterArea.View, title, Enum_WindowSize.Maximized);
             }
 
         }
@@ -1002,12 +998,12 @@ namespace MyUILibrary
             //var entity = tableDrivedEntityManagerService.GetEntity(request, EntityColumnInfoType.WithoutColumn, EntityRelationshipInfoType.WithoutRelationships);
             //if (initializeData != null)
             //    editArchiveArea.ShowDataItemArchives(initializeData, entity.Entity.LoadArchiveRelatedItems);
-            if (editArchiveArea.MainView != null)
+            if (editArchiveArea.View != null)
             {
                 if (!dialog)
-                    UIManager.ShowPane(editArchiveArea.MainView, title);
+                    UIManager.ShowPane(editArchiveArea.View, title);
                 else
-                    UIManager.GetDialogWindow().ShowDialog(editArchiveArea.MainView, title, Enum_WindowSize.Maximized);
+                    UIManager.GetDialogWindow().ShowDialog(editArchiveArea.View, title, Enum_WindowSize.Maximized);
             }
 
         }

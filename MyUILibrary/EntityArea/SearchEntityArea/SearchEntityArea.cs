@@ -39,13 +39,19 @@ namespace MyUILibrary.EntityArea
                     SimpleSearchEntityArea.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
                     SearchView.AddSimpleSearchView(SimpleSearchEntityArea.SimpleSearchView);
 
-                    AdvancedSearchEntityAre = new AdvancedSearchEntityArea(AreaInitializer);
-                    AdvancedSearchEntityAre.SearchDataDefined += SimpleSearchEntityArea_SearchDataDefined;
-                    SearchView.AddAdvancedSearchView(AdvancedSearchEntityAre.AdvancedSearchView);
+                    AdvancedSearchEntityArea = new AdvancedSearchEntityArea(AreaInitializer);
+                    AdvancedSearchEntityArea.SearchDataDefined += AdvancedSearchEntityArea_SearchDataDefined;
+                    SearchView.AddAdvancedSearchView(AdvancedSearchEntityArea.AdvancedSearchView);
                 }
                 return _SearchView;
             }
         }
+
+        private void AdvancedSearchEntityArea_SearchDataDefined(object sender, DP_SearchRepositoryMain e)
+        {
+            OnSearchDataDefined(e, true);
+        }
+
         //I_View_SearchEntityArea _SearchView;
         //public I_View_SearchEntityArea SearchView
         //{
@@ -65,7 +71,7 @@ namespace MyUILibrary.EntityArea
             set; get;
         }
 
-        public I_AdvancedSearchEntityArea AdvancedSearchEntityAre
+        public I_AdvancedSearchEntityArea AdvancedSearchEntityArea
         {
             set; get;
         }
@@ -105,9 +111,9 @@ namespace MyUILibrary.EntityArea
         //    return null; 
         //}
 
-        public bool IsSimpleSearchActiveOrAdvancedSearch
+        public bool? LastSearchIsSimpleOrAdvanced
         {
-            get { return SearchView.IsSimpleSearchActiveOrAdvancedSearch; }
+            set; get;
         }
         //public void ShowPreDefinedSearch(EntityPreDefinedSearchDTO message)
         //{
@@ -126,10 +132,10 @@ namespace MyUILibrary.EntityArea
             //}
             //OnSearchDataDefined(searchData);
 
-            OnSearchDataDefined(e);
+            OnSearchDataDefined(e, false);
         }
-        public DP_SearchRepositoryMain LastSearch { set; get; }
-        public void OnSearchDataDefined(DP_SearchRepositoryMain searchData)
+        public DP_SearchRepositoryMain LastSearchRepository { set; get; }
+        public void OnSearchDataDefined(DP_SearchRepositoryMain searchData, bool? advancedSearchOrSimple = null)
         {
             //کاربردهای این متد گفته شود در داکیومنت
 
@@ -145,8 +151,8 @@ namespace MyUILibrary.EntityArea
             //if (SearchDataDefined != null)
             //    SearchDataDefined(this, searchData);
 
-            LastSearch = searchData;
-
+            LastSearchRepository = searchData;
+            LastSearchIsSimpleOrAdvanced = advancedSearchOrSimple;
             if (SearchDataDefined != null)
                 SearchDataDefined(this, searchData);
         }

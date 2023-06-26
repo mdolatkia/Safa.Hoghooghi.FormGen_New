@@ -13,6 +13,17 @@ namespace MyModelManager
     public class BizSearchRepository
     {
         BizColumn bizColumn = new BizColumn();
+        public List<SavedSearchRepositoryDTO> GetSearchRepositoriesBySearchID(int entitySearchID)
+        {
+            List<SavedSearchRepositoryDTO> result = new List<SavedSearchRepositoryDTO>();
+            using (var projectContext = new DataAccess.MyIdeaEntities())
+            {
+                var listEntityReport = projectContext.SavedSearchRepository.Where(x =>x.SavedPreDefinedSearch!=null && x.SavedPreDefinedSearch.EntitySearchID == entitySearchID);
+                foreach (var item in listEntityReport)
+                    result.Add(ToSavedSearchRepositoryDTO(item));
+            }
+            return result;
+        }
         public List<SavedSearchRepositoryDTO> GetSearchRepositories(int entityID)
         {
             List<SavedSearchRepositoryDTO> result = new List<SavedSearchRepositoryDTO>();

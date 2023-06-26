@@ -17,6 +17,8 @@ namespace DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EntityListView()
         {
+            this.DataLinkDefinition = new HashSet<DataLinkDefinition>();
+            this.EntityRelationshipTailDataMenuItems = new HashSet<EntityRelationshipTailDataMenuItems>();
             this.EntityReport = new HashSet<EntityReport>();
             this.LetterTemplate = new HashSet<LetterTemplate>();
             this.EntityListViewColumns = new HashSet<EntityListViewColumns>();
@@ -27,6 +29,10 @@ namespace DataAccess
         public string Title { get; set; }
         public Nullable<bool> IsDefault { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DataLinkDefinition> DataLinkDefinition { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EntityRelationshipTailDataMenuItems> EntityRelationshipTailDataMenuItems { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EntityReport> EntityReport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

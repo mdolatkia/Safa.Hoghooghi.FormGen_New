@@ -52,6 +52,7 @@ namespace MyUILibrary.DataLinkArea
         I_View_Diagram Diagram;
         public DataLinkArea(DataLinkAreaInitializer initParam)
         {
+            // DataLinkArea: bea25435199e
             AreaInitializer = initParam;
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfDataLinkArea();
             Diagram = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfDiagram();
@@ -191,6 +192,7 @@ namespace MyUILibrary.DataLinkArea
             {
                 EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
                 editEntityAreaInitializer1.EntityID = SelectedDataLink.TableDrivedEntityID;
+                editEntityAreaInitializer1.EntityListViewID = SelectedDataLink.EntityListViewID;
                 editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
                 editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
                 var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
@@ -209,6 +211,7 @@ namespace MyUILibrary.DataLinkArea
                 }
                 EditEntityAreaInitializer editEntityAreaInitializer2 = new EditEntityAreaInitializer();
                 editEntityAreaInitializer2.EntityID = SelectedDataLink.SecondSideEntityID;
+                editEntityAreaInitializer1.EntityListViewID = SelectedDataLink.SecondSideListViewID;
                 editEntityAreaInitializer2.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
                 editEntityAreaInitializer2.DataMode = CommonDefinitions.UISettings.DataMode.One;
                 var SecondSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer2);
@@ -255,6 +258,7 @@ namespace MyUILibrary.DataLinkArea
 
         private void View_DataLinkConfirmed(object sender, EventArgs e)
         {
+            //DataLinkArea.View_DataLinkConfirmed: de827c8ac8f0
             if (SelectedDataLink == null ||
                 FirstSideEditEntityArea.AreaInitializer.Datas.Count == 0
                 || SecondSideEditEntityArea.AreaInitializer.Datas.Count == 0)
@@ -263,7 +267,7 @@ namespace MyUILibrary.DataLinkArea
             OtherData = SecondSideEditEntityArea.AreaInitializer.Datas[0];
             List<DataLinkItem> dataLinkItems = new List<DataLinkItem>();
 
-            var fItems = new List<DataLinkItemGroup>();
+            var foundItems = new List<DataLinkItemGroup>();
             //البته از هر دو طرف میشه به طرف دیگر رسید
             //بهتره همین طور باشه چون برای لینک سرورها کافیه سرورهای طرف اول به طرف دوم لینک داشته باشد
             //اینطوری مفهوم تر است
@@ -289,7 +293,7 @@ namespace MyUILibrary.DataLinkArea
                         //البته از هر دو طرف میشه به طرف دیگر رسید
                         //بهتره همین طور باشه چون برای لینک سرورها کافیه  در تیل سرورهای طرف اول هر رابطه به طرف دوم رابطه لینک داشته باشد
                         //اینطوری مفهوم تر است
-                        fItems.Add(GetIncludedDataLinkItems(tail.RelationshipTail, SelectedDataLink, FirstData, OtherData, 0, tail.EntityRelationshipTailDataMenu));
+                        foundItems.Add(GetIncludedDataLinkItems(tail.RelationshipTail, SelectedDataLink, FirstData, OtherData, 0, tail.EntityRelationshipTailDataMenu));
                     }
                 }
                 else
@@ -298,11 +302,11 @@ namespace MyUILibrary.DataLinkArea
                 }
             }
 
-            var tail1 = SelectedDataLink.RelationshipsTails.First();
+           // var tail1 = SelectedDataLink.RelationshipsTails.First();
             //    tail1.EntityRelationshipTailListView.FirstSideListViewID
             var firstSidelinkItem = new MyUILibrary.DataLinkArea.DataLinkItem();
             firstSidelinkItem.DataItem = FirstData;
-            firstSidelinkItem.View = GetDataViewItem(firstSidelinkItem.DataItem, SelectedDataLink.FirstSideDataMenuID);
+            firstSidelinkItem.View = GetDataViewItem(firstSidelinkItem.DataItem, SelectedDataLink.DataMenuSettingID);
             firstSidelinkItem.View.IsRoot = true;
             firstSidelinkItem.IsFixed = true;
 
@@ -313,12 +317,13 @@ namespace MyUILibrary.DataLinkArea
             secondSidelinkItem.View.IsRoot = true;
             secondSidelinkItem.IsFixed = true;
 
-            foreach (var pitem in fItems)
+            foreach (var pitem in foundItems)
+            {
                 foreach (var item in pitem.Items)
                 {
                     item.View = GetDataViewItem(item.DataItem, item.DataMenuID);
                 }
-
+            }
             //////List<DataLinkRelation> allRelations = new List<DataLinkRelation>();
             //////List<DataLinkItem> allItems = new List<DataLinkItem>();
             //////allItems.Add(firstSidelinkItem);
@@ -362,7 +367,7 @@ namespace MyUILibrary.DataLinkArea
 
             Diagram.AddView(firstSidelinkItem.View);
             Diagram.AddView(secondSidelinkItem.View);
-            foreach (var pitem in fItems)
+            foreach (var pitem in foundItems)
             {
                 foreach (var item in pitem.Items)
                 {

@@ -45,10 +45,11 @@ namespace MyUIGenerator.View
             this.IsEnabled = enable;
         }
 
-        //public void AddGenerealSearchAreaView(object view)
-        //{
-        //    grdSearch.Children.Add(view as UIElement);
-        //}
+        public void AddGenerealSearchAreaView(object view)
+        {
+            grdSearch.Children.Clear();
+            grdSearch.Children.Add(view as UIElement);
+        }
 
         public void ShowLinks(List<DataViewLink> links)
         {

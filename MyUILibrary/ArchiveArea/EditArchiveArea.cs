@@ -11,6 +11,7 @@ using MyUILibraryInterfaces.DataTreeArea;
 using MyUILibrary.DataTreeArea;
 using MyUILibraryInterfaces.EntityArea;
 using MyUILibraryInterfaces.ContextMenu;
+using MyUILibrary.EntitySelectArea;
 
 namespace MyUILibrary.EntityArea
 {
@@ -19,15 +20,8 @@ namespace MyUILibrary.EntityArea
 
         //public DataItemDTO DataItem { set; get; }
         public List<DataItemDTO> RelatedItems { set; get; }
-        //public bool SecurityNoAccess { set; get; }
-        //public bool SecurityReadonly { set; get; }
-        //public bool SecurityEdit { set; get; }
-        //public List<TableDrivedEntityDTO> Entities = new List<TableDrivedEntityDTO>();
-        //public I_View_EntitySelectArea SelectAreaView
-        //{
-        //    set; get;
-        //}
-        public I_EntitySelectArea EntitySelectArea { set; get; }
+
+        public I_GeneralEntityDataSelectArea GeneralEntityDataSelectArea { set; get; }
         public object MainView
         {
             set; get;
@@ -39,81 +33,81 @@ namespace MyUILibrary.EntityArea
             AreaInitializer = areaInitializer;
             FilteredArchiveTags = new List<int>();
 
-            ArchiveView = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfArchiveArea();
-            ArchiveView.ArchiveItemAddNewRequested += View_AddNewRequested;
-            ArchiveView.ArchiveItemDoubleCliked += View_ArchiveItemDoubleCliked;
-            ArchiveView.ArchiveItemRightCliked += View_ArchiveItemRightCliked;
-            ArchiveView.ArchiveItemsDeleteRequested += View_ArchiveItemDeleteRequested;
-            ArchiveView.ArchiveItemInfoRequested += View_ArchiveItemInfoRequested;
-            ArchiveView.FolderDoubleClicked += View_FolderDoubleCliked;
-            ArchiveView.MultipleArchiveItemsInfoRequested += View_MultipleArchiveItemsInfoRequested;
-            ArchiveView.FolderOrItemsTabChanged += View_FolderOrItemsTabChanged;
-            ArchiveView.ArchiveItemViewRequested += View_ArchiveItemViewRequested;
-            ArchiveView.DataTreeRequested += View_DataTreeRequested;
-            ArchiveView.ArchiveItemDownloadRequested += View_ArchiveItemDownloadRequested;
-            ArchiveView.ArchiveItemSelectedModeChanged += View_ArchiveItemSelectedModeChanged;
-            //ArchiveView.ArchiveTagRequested += View_ArchiveTagRequested;
-            ArchiveView.ArchiveTagFilterRequested += View_ArchiveTagFilterRequested;
-            ArchiveView.ArchiveTagFilterClearRequested += View_ArchiveTagFilterClearRequested;
-            ArchiveView.ArchiveItemAdd = false;
-            ArchiveView.ArchiveItemDelete = false;
-            ArchiveView.FilteresClear = false;
-            ArchiveView.EnableDisable(false);
+            View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfArchiveArea();
+            View.ArchiveItemAddNewRequested += View_AddNewRequested;
+            View.ArchiveItemDoubleCliked += View_ArchiveItemDoubleCliked;
+            View.ArchiveItemRightCliked += View_ArchiveItemRightCliked;
+            View.ArchiveItemsDeleteRequested += View_ArchiveItemDeleteRequested;
+            View.ArchiveItemInfoRequested += View_ArchiveItemInfoRequested;
+            View.FolderDoubleClicked += View_FolderDoubleCliked;
+            View.MultipleArchiveItemsInfoRequested += View_MultipleArchiveItemsInfoRequested;
+            View.FolderOrItemsTabChanged += View_FolderOrItemsTabChanged;
+            View.ArchiveItemViewRequested += View_ArchiveItemViewRequested;
+            View.DataTreeRequested += View_DataTreeRequested;
+            View.ArchiveItemDownloadRequested += View_ArchiveItemDownloadRequested;
+            View.ArchiveItemSelectedModeChanged += View_ArchiveItemSelectedModeChanged;
+            //View.ArchiveTagRequested += View_ArchiveTagRequested;
+            View.ArchiveTagFilterRequested += View_ArchiveTagFilterRequested;
+            View.ArchiveTagFilterClearRequested += View_ArchiveTagFilterClearRequested;
+            View.ArchiveItemAdd = false;
+            View.ArchiveItemDelete = false;
+            View.FilteresClear = false;
+            View.EnableDisable(false);
 
-            MyUILibraryInterfaces.EntityArea.EntitySelectAreaInitializer selectAreaInitializer = new MyUILibraryInterfaces.EntityArea.EntitySelectAreaInitializer();
-            selectAreaInitializer.ExternalView = ArchiveView;
+            //اینجا فعال بشه
+
+            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer(Enum_EntityDataPurpose.SelectData);
+
             selectAreaInitializer.EntityID = areaInitializer.EntityID;
-            selectAreaInitializer.SpecificActions = new List<SecurityAction>() { SecurityAction.ArchiveView, SecurityAction.ArchiveEdit };
-            if (areaInitializer.EntityID != 0)
-                selectAreaInitializer.LockEntitySelector = true;
-            EntitySelectArea = new EntitySelectArea.EntitySelectArea(selectAreaInitializer);
-            EntitySelectArea.DataItemSelected += EntitySelectArea_DataItemSelected;
-            MainView = EntitySelectArea.View;
+            selectAreaInitializer.HideEntitySelector = true;
+            selectAreaInitializer.DataItem = areaInitializer.DataInstance;
+            if (selectAreaInitializer.DataItem != null)
+                selectAreaInitializer.LockDataSelector = true;
 
-            //    ManageSecurity();
-            //SecurityEdit = true;
 
-            if (areaInitializer.DataInstance != null)
-            {
-                EntitySelectArea.EnableDisableSelectArea(false);
-                EntitySelectArea.SelectData(areaInitializer.DataInstance);
-            }
+            GeneralEntityDataSelectArea = new GeneralEntityDataSelectArea();
+            GeneralEntityDataSelectArea.DataItemChanged += EntitySelectArea_DataItemSelected;
 
+            GeneralEntityDataSelectArea.SetAreaInitializer(selectAreaInitializer);
+            View.AddGenerealSearchAreaView(GeneralEntityDataSelectArea.View);
+
+
+          
 
         }
 
-        private void EntitySelectArea_DataItemSelected(object sender, EditAreaDataItemArg e)
+        private void EntitySelectArea_DataItemSelected(object sender, List<DP_FormDataRepository> e)
         {
-            if (e.DataItem != null)
+            if (e != null && e.Any())
             {
                 // MainDataInstance = dataInstance;
 
-                ArchiveView.EnableDisable(true);
+                View.EnableDisable(true);
                 //WithRelatedItems = withRelatedItems;
                 DataTreeArea = new MyUILibrary.DataTreeArea.DataTreeArea();
                 DataTreeArea.ContextMenuLoaded += DataTreeArea_ContextMenuLoaded;
                 DataTreeArea.DataAreaConfirmed += DataTreeArea_DataAreaConfirmed;
                 var dataTreeInistializer = new DataTreeAreaInitializer();
-                dataTreeInistializer.EntitiyID = EntitySelectArea.SelectedEntity.ID;
-                dataTreeInistializer.RelationshipTailsLoaded = EntitySelectArea.SelectedEntity.LoadArchiveRelatedItems;
-                dataTreeInistializer.FirstDataItem = e.DataItem;
+                dataTreeInistializer.EntitiyID = GeneralEntityDataSelectArea.SelectedEntity.ID;
+                dataTreeInistializer.RelationshipTailsLoaded = GeneralEntityDataSelectArea.SelectedEntity.LoadArchiveRelatedItems;
+                dataTreeInistializer.FirstDataItem = e.First();
                 dataTreeInistializer.RelationshipTails = ArchiveRelationshipTails.Select(x => x.RelationshipTail).ToList();
                 DataTreeArea.SetAreaInitializer(dataTreeInistializer);
                 DataTreeArea.SelectAll();
-                ArchiveView.DataTreeAreaEnabled = true;
+                View.DataTreeAreaEnabled = true;
                 //  if (loadRelatedItems)
-                ArchiveView.ShowDataTree(DataTreeArea.View);
+                View.ShowDataTree(DataTreeArea.View);
                 ShowFolders(true);
             }
             else
-                ArchiveView.EnableDisable(false);
+                View.EnableDisable(false);
 
         }
         List<ArchiveRelationshipTailDTO> ArchiveRelationshipTails
         {
             get
             {
-                return AgentUICoreMediator.GetAgentUICoreMediator.ArchiveManager.GetArchiveRelationshipTails(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), EntitySelectArea.SelectedEntity.ID);
+                return AgentUICoreMediator.GetAgentUICoreMediator.ArchiveManager.GetArchiveRelationshipTails(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), GeneralEntityDataSelectArea.SelectedEntity.ID);
             }
         }
         I_DataTreeArea DataTreeArea { set; get; }
@@ -155,14 +149,14 @@ namespace MyUILibrary.EntityArea
             //////    bool allowEdit = false;
             //////    if (Permission.SecurityObjectID == e.DataTreeItem.DataItem.TargetEntityID)
             //////    {
-            //////        allowView = Permission.GrantedActions.Any(x => x == SecurityAction.ArchiveView);
+            //////        allowView = Permission.GrantedActions.Any(x => x == SecurityAction.View);
             //////        allowEdit = Permission.GrantedActions.Any(x => x == SecurityAction.ArchiveEdit);
             //////    }
             //////    else if (ArchiveRelationshipTails.Any(x => x.RelationshipTail.TargetEntityID == e.DataTreeItem.DataItem.TargetEntityID))
             //////    {
             //////        //دسترسی درست شود
             //////        var arcTail = ArchiveRelationshipTails.First(x => x.RelationshipTail.TargetEntityID == e.DataTreeItem.DataItem.TargetEntityID);
-            //////        //allowView = arcTail.Permission.GrantedActions.Any(x => x == SecurityAction.ArchiveView);
+            //////        //allowView = arcTail.Permission.GrantedActions.Any(x => x == SecurityAction.View);
             //////        //allowEdit = arcTail.Permission.GrantedActions.Any(x => x == SecurityAction.ArchiveEdit);
             //////    }
             //////    //if (allowView)
@@ -189,14 +183,14 @@ namespace MyUILibrary.EntityArea
         }
         private void View_DataTreeRequested(object sender, EventArgs e)
         {
-            ArchiveView.DataTreeVisibility = !ArchiveView.DataTreeVisibility;
+            View.DataTreeVisibility = !View.DataTreeVisibility;
         }
 
 
         //List<Tuple<ArchiveRelationshipTailDTO, List<DataItemDTO>>> ArchiveRelationshipTailDatas = new List<Tuple<ArchiveRelationshipTailDTO, List<DataItemDTO>>>();
         private void View_ArchiveItemDownloadRequested(object sender, EventArgs e)
         {
-            var selectedItems = ArchiveView.SelectedArchiveItems;
+            var selectedItems = View.SelectedArchiveItems;
             if (selectedItems.Count <= 10)
             {
                 foreach (var archiveItemDataItem in selectedItems)
@@ -217,7 +211,7 @@ namespace MyUILibrary.EntityArea
 
         private void View_ArchiveItemViewRequested(object sender, EventArgs e)
         {
-            var selectedItems = ArchiveView.SelectedArchiveItems;
+            var selectedItems = View.SelectedArchiveItems;
             if (selectedItems.Count > 1)
             {
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("تنها یک مورد به منظور نمایش انتخاب شود");
@@ -231,7 +225,7 @@ namespace MyUILibrary.EntityArea
 
         //private void ManageSecurity()
         //{
-        //    if (!Permission.GrantedActions.Any(x => x == SecurityAction.ArchiveView || x == SecurityAction.ArchiveEdit))
+        //    if (!Permission.GrantedActions.Any(x => x == SecurityAction.View || x == SecurityAction.ArchiveEdit))
         //    {
         //        SecurityNoAccess = true;
         //    }
@@ -241,7 +235,7 @@ namespace MyUILibrary.EntityArea
         //        {
         //            SecurityEdit = true;
         //        }
-        //        else if (Permission.GrantedActions.Any(x => x == SecurityAction.ArchiveView))
+        //        else if (Permission.GrantedActions.Any(x => x == SecurityAction.View))
         //        {
         //            SecurityReadonly = true;
         //        }
@@ -262,8 +256,8 @@ namespace MyUILibrary.EntityArea
         //    {
         //        if (SecurityReadonly)
         //        {
-        //            ArchiveView.ArchiveItemDelete = false;
-        //            ArchiveView.ArchiveItemAdd = false;
+        //            View.ArchiveItemDelete = false;
+        //            View.ArchiveItemAdd = false;
 
         //        }
         //    }
@@ -312,35 +306,35 @@ namespace MyUILibrary.EntityArea
             bool archiveItemDelete = false;
             bool archiveItemView = false;
             bool archiveItemDownload = false;
-            if (ArchiveView.FolderTabIsSelected == true)
+            if (View.FolderTabIsSelected == true)
             {
                 archiveItemInfo = false;
                 multipleArchiveItemInfo = false;
                 archiveItemDelete = false;
             }
-            else if (ArchiveView.ArchiveItemsTabIsSelected == true)
+            else if (View.ArchiveItemsTabIsSelected == true)
             {
-                if (ArchiveView.ArchiveItemsSelectedMode == ArchiveItemSelectedMode.None)
+                if (View.ArchiveItemsSelectedMode == ArchiveItemSelectedMode.None)
                 {
                     archiveItemInfo = false;
                     multipleArchiveItemInfo = false;
                     archiveItemDelete = false;
                 }
-                else if (ArchiveView.ArchiveItemsSelectedMode == ArchiveItemSelectedMode.One)
+                else if (View.ArchiveItemsSelectedMode == ArchiveItemSelectedMode.One)
                 {
                     archiveItemInfo = true;
                     multipleArchiveItemInfo = false;
-                    archiveItemDelete = CheckArchiveItemsDeleteEnabled(ArchiveView.SelectedArchiveItems);
-                    var selectedItem = ArchiveView.SelectedArchiveItems.FirstOrDefault();
+                    archiveItemDelete = CheckArchiveItemsDeleteEnabled(View.SelectedArchiveItems);
+                    var selectedItem = View.SelectedArchiveItems.FirstOrDefault();
                     if (selectedItem != null && GetArchiveItemViewer(selectedItem.MainType, selectedItem.FileType) != null)
                         archiveItemView = true;
                     archiveItemDownload = true;
                 }
-                else if (ArchiveView.ArchiveItemsSelectedMode == ArchiveItemSelectedMode.Multiple)
+                else if (View.ArchiveItemsSelectedMode == ArchiveItemSelectedMode.Multiple)
                 {
                     archiveItemInfo = false;
                     multipleArchiveItemInfo = true;
-                    archiveItemDelete = CheckArchiveItemsDeleteEnabled(ArchiveView.SelectedArchiveItems);
+                    archiveItemDelete = CheckArchiveItemsDeleteEnabled(View.SelectedArchiveItems);
                     archiveItemDownload = true;
                 }
             }
@@ -350,11 +344,11 @@ namespace MyUILibrary.EntityArea
                 multipleArchiveItemInfo = false;
                 archiveItemDelete = false;
             }
-            ArchiveView.ArchiveItemDownload = archiveItemDownload;
-            ArchiveView.ArchiveItemView = archiveItemView;
-            ArchiveView.ArchiveItemInfo = archiveItemInfo;
-            ArchiveView.MultipleArchiveItemInfo = multipleArchiveItemInfo;
-            ArchiveView.ArchiveItemDelete = archiveItemDelete;
+            View.ArchiveItemDownload = archiveItemDownload;
+            View.ArchiveItemView = archiveItemView;
+            View.ArchiveItemInfo = archiveItemInfo;
+            View.MultipleArchiveItemInfo = multipleArchiveItemInfo;
+            View.ArchiveItemDelete = archiveItemDelete;
 
         }
 
@@ -376,7 +370,7 @@ namespace MyUILibrary.EntityArea
 
         private void View_MultipleArchiveItemsInfoRequested(object sender, EventArgs e)
         {
-            var selectedItems = ArchiveView.SelectedArchiveItems;
+            var selectedItems = View.SelectedArchiveItems;
             if (selectedItems.Count > 0)
             {
                 if (ViewMultipleArchiveInfo == null)
@@ -454,7 +448,7 @@ namespace MyUILibrary.EntityArea
 
         private void View_ArchiveItemInfoRequested(object sender, EventArgs e)
         {
-            var selectedItems = ArchiveView.SelectedArchiveItems;
+            var selectedItems = View.SelectedArchiveItems;
             if (selectedItems.Count > 0)
             {
                 var first = selectedItems.First();
@@ -510,7 +504,7 @@ namespace MyUILibrary.EntityArea
 
         private void View_ArchiveItemDeleteRequested(object sender, EventArgs e)
         {
-            var selectedItems = ArchiveView.SelectedArchiveItems;
+            var selectedItems = View.SelectedArchiveItems;
             if (selectedItems.Count > 0)
             {
                 var selectedCount = selectedItems.Count;
@@ -604,12 +598,12 @@ namespace MyUILibrary.EntityArea
                 {
                     title += (title == "" ? "" : ",") + archiveTag.Name;
                 }
-                ArchiveView.ShowFilteredTags(title);
+                View.ShowFilteredTags(title);
             }
             else
-                ArchiveView.ClearFilteredTags();
+                View.ClearFilteredTags();
 
-            ArchiveView.FilteresClear = FilteredArchiveTags.Any();
+            View.FilteresClear = FilteredArchiveTags.Any();
 
             RefreshFoldersAndItems();
         }
@@ -622,9 +616,9 @@ namespace MyUILibrary.EntityArea
 
         //private void View_ArchiveTagRequested(object sender, EventArgs e)
         //{
-        //    if (ArchiveView.SelectedArchiveItems.Count > 0)
+        //    if (View.SelectedArchiveItems.Count > 0)
         //    {
-        //        var archiveItem = ArchiveView.SelectedArchiveItems.First();
+        //        var archiveItem = View.SelectedArchiveItems.First();
         //        if (ViewArchiveTag == null)
         //        {
         //            ViewArchiveTag = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfArchiveTag();
@@ -659,12 +653,12 @@ namespace MyUILibrary.EntityArea
             var selectedDatas = DataTreeArea.GetSelectedDataItems();
             if (selectedDatas.Count == 0 || selectedDatas.Count > 1)
             {
-                ArchiveView.ArchiveItemAdd = false;
+                View.ArchiveItemAdd = false;
                 foreach (var item in selectedDatas.GroupBy(x => x.TargetEntityID))
                 {
                     var permissions = AgentUICoreMediator.GetAgentUICoreMediator.tableDrivedEntityManagerService.GetEntityAssignedPermissions(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), item.Key, false);
                     if (permissions.GrantedActions.Any(x => x == SecurityAction.ArchiveEdit))
-                        ArchiveView.ArchiveItemDelete = true;
+                        View.ArchiveItemDelete = true;
                 }
             }
             else
@@ -673,13 +667,13 @@ namespace MyUILibrary.EntityArea
                 if (permissions.GrantedActions.Any(x => x == SecurityAction.ArchiveEdit))
                 {
                     singleDataItem = selectedDatas.First();
-                    ArchiveView.ArchiveItemAdd = true;
-                    ArchiveView.ArchiveItemDelete = true;
+                    View.ArchiveItemAdd = true;
+                    View.ArchiveItemDelete = true;
                 }
                 else
                 {
-                    ArchiveView.ArchiveItemAdd = false;
-                    ArchiveView.ArchiveItemDelete = false;
+                    View.ArchiveItemAdd = false;
+                    View.ArchiveItemDelete = false;
                 }
             }
 
@@ -717,8 +711,8 @@ namespace MyUILibrary.EntityArea
                 ValidFolders.Add(folder);
             }
 
-            ArchiveView.ClearFolders();
-            ArchiveView.ShowFolders(ValidFolders, activateFolderTab);
+            View.ClearFolders();
+            View.ShowFolders(ValidFolders, activateFolderTab);
         }
         List<TableDrivedEntityDTO> entities = new List<TableDrivedEntityDTO>();
 
@@ -776,14 +770,14 @@ namespace MyUILibrary.EntityArea
 
                 item.Color = GetSimpleEntity(item.DatItem.TargetEntityID).Color;
             }
-            ArchiveView.ShowArchiveItems(title, ArchivedItems, activateFileTab);
+            View.ShowArchiveItems(title, ArchivedItems, activateFileTab);
 
             foreach (var archiveItem in ArchivedItems)
             {
                 if (FilteredArchiveTags != null && FilteredArchiveTags.Any())
-                    ArchiveView.ChangeArchiveItemVisibility(archiveItem, archiveItem.TagIDs.Any(y => FilteredArchiveTags.Contains(y)));
+                    View.ChangeArchiveItemVisibility(archiveItem, archiveItem.TagIDs.Any(y => FilteredArchiveTags.Contains(y)));
                 else
-                    ArchiveView.ChangeArchiveItemVisibility(archiveItem, true);
+                    View.ChangeArchiveItemVisibility(archiveItem, true);
             }
         }
 
@@ -1081,7 +1075,7 @@ namespace MyUILibrary.EntityArea
         {
             set; get;
         }
-        public I_View_ArchiveArea ArchiveView
+        public I_View_ArchiveArea View
         {
             set; get;
         }

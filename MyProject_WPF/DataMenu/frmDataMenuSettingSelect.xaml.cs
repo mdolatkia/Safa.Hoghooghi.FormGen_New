@@ -74,7 +74,7 @@ namespace MyProject_WPF
 
         private void GetDataMenuSettings()
         {
-            var listEntityListViews = bizDataMenuSetting.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
+            var listEntityListViews = bizDataMenuSetting.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID, DetailsDepth.SimpleInfo);
             dtgItems.ItemsSource = listEntityListViews;
         }
         private void btnClose_Click(object sender, RoutedEventArgs e)

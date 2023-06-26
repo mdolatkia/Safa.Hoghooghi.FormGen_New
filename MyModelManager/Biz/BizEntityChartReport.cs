@@ -77,15 +77,17 @@ namespace MyModelManager
             result.ID = item.ID;
             bizEntitySearchableReport.ToEntitySearchableReportDTO(requester, item.EntitySearchableReport, result, withDetails);
             result.ChartType = (ChartType)item.ChartType;
-            result.EntityListViewID = item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0;
 
             if (withDetails)
             {
                 BizEntityListView bizEntityListView = new BizEntityListView();
-                result.EntityListView = bizEntityListView.GetEntityListView(requester, item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0);
-                if (result.EntityListView == null)
+                if (result.EntityListViewID != 0)
                 {
-                    throw new Exception("عدم دسترسی به لیست نمایش به شناسه" + " " + (item.EntitySearchableReport.EntityReport.EntityListViewID ?? 0));
+                    result.EntityListView = bizEntityListView.GetEntityListView(requester, result.EntityListViewID);
+                }
+                else
+                {
+                    throw new Exception("لیست نمایش نامشخص است");
                 }
                 BizEntityRelationshipTail bizEntityRelationshipTail = new MyModelManager.BizEntityRelationshipTail();
                 foreach (var sub in item.CharetReportSeries)
@@ -144,7 +146,7 @@ namespace MyModelManager
                 else
                     bizEntitySearchableReport.ToUpdateEntitySearchableReport(dbEntitySpecifiedReport.EntitySearchableReport, message);
                 dbEntitySpecifiedReport.ChartType = (Int16)message.ChartType;
-                dbEntitySpecifiedReport.EntitySearchableReport.EntityReport.EntityListViewID  = message.EntityListViewID;
+                dbEntitySpecifiedReport.EntitySearchableReport.EntityReport.EntityListViewID = message.EntityListViewID;
 
                 while (dbEntitySpecifiedReport.CharetReportCategories.Any())
                     projectContext.CharetReportCategories.Remove(dbEntitySpecifiedReport.CharetReportCategories.First());

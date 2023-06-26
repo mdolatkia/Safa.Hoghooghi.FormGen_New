@@ -57,13 +57,16 @@ namespace MyProject_WPF
 
             //ControlHelper.GenerateContextMenu(dtgDataGridRelationships);
             //ControlHelper.GenerateContextMenu(dtgDataViewRelationships);
-            ControlHelper.GenerateContextMenu(dtgRelationships);
             ControlHelper.GenerateContextMenu(dtgRelationshipReports);
+            ControlHelper.GenerateContextMenu(dtgRelationships);
             ControlHelper.GenerateContextMenu(dtgDataItemReport);
 
             //ControlHelper.GenerateContextMenu(dtgExternalReports);
             dtgRelationships.SelectionChanged += DtgRelationships_SelectionChanged;
             dtgRelationships.CellEditEnded += DtgConditions_CellEditEnded;
+
+            colReportRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
+
 
             //dtgDataViewRelationships.RowLoaded += DtgColumns_RowLoaded;
             //dtgDataViewRelationships.CellEditEnded += DtgConditions_CellEditEnded;
@@ -71,7 +74,6 @@ namespace MyProject_WPF
             //dtgDataGridRelationships.RowLoaded += DtgColumns_RowLoaded;
             //dtgDataGridRelationships.CellEditEnded += DtgConditions_CellEditEnded;
 
-            colReportRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
             //colDataViewRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
             //colDataGridRelationshipTail.EditItemClicked += ColRelationshipTail_EditItemClicked;
 
@@ -145,7 +147,7 @@ namespace MyProject_WPF
 
         private void SetRelationshipDataMenus(DR_Requester dR_Requester, int entityID2)
         {
-            var list = bizDataMenuSetting.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), entityID2);
+            var list = bizDataMenuSetting.GetDataMenuSettings(MyProjectManager.GetMyProjectManager.GetRequester(), entityID2, DetailsDepth.SimpleInfo);
             lokDataMenuSetting.DisplayMember = "Name";
             lokDataMenuSetting.SelectedValueMember = "ID";
             lokDataMenuSetting.ItemsSource = list;
@@ -279,10 +281,10 @@ namespace MyProject_WPF
 
         private void SetRelationshipReports()
         {
-            if (dtgRelationships.SelectedItem is DataMenuRelationshipTailDTO)
+            if (dtgRelationships.SelectedItem is DataMenuReportRelationshipTailDTO)
             {
 
-                var item = dtgRelationships.SelectedItem as DataMenuRelationshipTailDTO;
+                var item = dtgRelationships.SelectedItem as DataMenuReportRelationshipTailDTO;
                 if (item.RelationshipTailID != 0)
                 {
                     colReports.DisplayMemberPath = "ReportTitle";
@@ -338,7 +340,7 @@ namespace MyProject_WPF
 
         private void GetDataMenuSetting(int ID)
         {
-            Message = bizDataMenuSetting.GetDataMenuSetting(MyProjectManager.GetMyProjectManager.GetRequester(), ID, true);
+            Message = bizDataMenuSetting.GetDataMenuSetting(MyProjectManager.GetMyProjectManager.GetRequester(), ID, DetailsDepth.WithDetails);
             ShowMessage();
         }
         private void ShowMessage()
@@ -347,7 +349,7 @@ namespace MyProject_WPF
                 btnSetDataMenuSetting.IsEnabled = false;
             else
                 btnSetDataMenuSetting.IsEnabled = true;
-            dtgRelationships.ItemsSource = Message.RelationshipTails;
+            dtgRelationships.ItemsSource = Message.ReportRelationshipTails;
             SetRelationshipReports();
             //  dtgDataViewRelationships.ItemsSource = Message.DataViewRelationships;
             //  dtgDataGridRelationships.ItemsSource = Message.GridViewRelationships;
@@ -427,7 +429,7 @@ namespace MyProject_WPF
             //        }
             //    }
             //}
-            foreach (var item in Message.SearchableReportRelationships)
+            foreach (var item in Message.ReportRelationshipTails)
             {
                 if (item.RelationshipTailID != 0)
                 {
@@ -442,14 +444,19 @@ namespace MyProject_WPF
                         MessageBox.Show(message);
                         return;
                     }
+                    foreach (var report in item.SearchableReports)
+                    {
+                        if (report.EntitySearchableReportID == 0)
+                        {
+                            var message = "اشکال در تعریف گزارشات مرتبط";
+                            message += Environment.NewLine + "گزارش مرتبط اجباری می باشد";
+                            MessageBox.Show(message);
+                            return;
+                        }
+                    }
                 }
-                if (item.EntitySearchableReportID == 0)
-                {
-                    var message = "اشکال در تعریف گزارشات مرتبط";
-                    message += Environment.NewLine + "گزارش مرتبط اجباری می باشد";
-                    MessageBox.Show(message);
-                    return;
-                }
+
+
             }
             if (Entity.IsView)
             {
@@ -463,11 +470,7 @@ namespace MyProject_WPF
                 }
 
             }
-            if (Message.SearchableReportRelationships.Any(x => x.RelationshipTailID == 0))
-            {
-                MessageBox.Show("انتخاب رابطه و گزارش برای لیست گزارشات اجباری می باشد");
-                return;
-            }
+
             if (txtFilePath.Text != "")
             {
                 Message.IconContent = File.ReadAllBytes(txtFilePath.Text);

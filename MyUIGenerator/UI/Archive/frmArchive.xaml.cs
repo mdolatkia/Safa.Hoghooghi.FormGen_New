@@ -261,7 +261,11 @@ namespace MyUIGenerator.View
             btnArchiveTagFilter.Foreground = new SolidColorBrush(Colors.Red);
             ToolTipService.SetToolTip(btnArchiveTagFilter, title);
         }
-
+        public void AddGenerealSearchAreaView(object view)
+        {
+            grdSearch.Children.Clear();
+            grdSearch.Children.Add(view as UIElement);
+        }
         public void EnableDisable(bool enable)
         {
             this.IsEnabled = enable;

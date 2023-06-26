@@ -37,11 +37,10 @@ namespace MyProject_WPF
             InitializeComponent();
             EntityID = entityID;
             //    SetSubReports();
-            SetEntityPreDefinedSearchList();
+
 
             SetSubReportRelationshipTails();
-            SetEntityListViews();
-            lokEntityListView.SelectionChanged += LokEntityListView_SelectionChanged;
+            frmSearchableReport.EntityListViewChanged += FrmSearchableReport_EntityListViewChanged;
             if (entityListReportID != 0)
             {
                 GetEntityEntityListReport(entityListReportID);
@@ -56,48 +55,17 @@ namespace MyProject_WPF
             dtgSubReports.CellEditEnded += DtgSubReports_CellEditEnded;
             dtgSubReports.RowLoaded += DtgSubReports_RowLoaded;
         }
-        private void SetEntityPreDefinedSearchList()
-        {
-            if (lokSearchRepository.ItemsSource == null)
-            {
-                lokSearchRepository.EditItemClicked += LokEntityPreDefined_EditItemClicked; ;
-            }
-            BizSearchRepository biz = new BizSearchRepository();
-            lokSearchRepository.DisplayMember = "Title";
-            lokSearchRepository.SelectedValueMember = "ID";
-            lokSearchRepository.ItemsSource = biz.GetSearchRepositories(EntityID);
-        }
-        private void LokEntityPreDefined_EditItemClicked(object sender, EditItemClickEventArg e)
-        {
-            var lookup = (sender as MyStaticLookup);
-            frmSearchRepository view;
 
-            if (lookup.SelectedItem == null)
-            {
-                view = new frmSearchRepository(EntityID, 0);
-            }
-            else
-            {
-                view = new frmSearchRepository(EntityID, (int)lookup.SelectedValue);
-            }
-            view.EntityPreDefinedSearchUpdated += (sender1, e1) => View_EntityPreDefinedSearchUpdated(sender1, e1, lookup);
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "تنظیمات نامه", Enum_WindowSize.Maximized);
-        }
-
-        private void View_EntityPreDefinedSearchUpdated(object sender, EntityPreDefinedSearchUpdatedArg e, MyStaticLookup lookup)
+        private void FrmSearchableReport_EntityListViewChanged(object sender, EntityListViewDTO e)
         {
-            SetEntityPreDefinedSearchList();
-            lookup.SelectedValue = e.ID;
-        }
-        private void LokEntityListView_SelectionChanged(object sender, SelectionChangedArg e)
-        {
-            if (lokEntityListView.SelectedItem != null)
+            if (e != null)
             {
                 BizEntityListView biz = new BizEntityListView();
-                var listView = biz.GetEntityListView(MyProjectManager.GetMyProjectManager.GetRequester(), (int)lokEntityListView.SelectedValue);
+                var listView = biz.GetEntityListView(MyProjectManager.GetMyProjectManager.GetRequester(), e.ID);
                 SetGroupColumns(listView.EntityListViewAllColumns);
             }
         }
+
         private void SetGroupColumns(List<EntityListViewColumnsDTO> columns)
         {
             var rel = dtgGroups.Columns[0] as GridViewComboBoxColumn;
@@ -142,10 +110,9 @@ namespace MyProject_WPF
         }
 
 
-
         private void buttonClick(object sender1, RoutedEventArgs e1, GridViewRowItem row, EntityListReportSubsDTO data)
         {
-            if (lokEntityListView.SelectedItem == null)
+            if (frmSearchableReport.lokEntityListView.SelectedItem == null)
             {
                 MessageBox.Show("لیست نمایشی اصلی انتخاب نشده است");
                 return;
@@ -156,7 +123,7 @@ namespace MyProject_WPF
                 return;
             }
             var childListView = bizEntityListReport.GetEntityListReport(MyProjectManager.GetMyProjectManager.GetRequester(), data.EntityListReportID, true);
-            frmEntitySubListReportColumns frm = new MyProject_WPF.frmEntitySubListReportColumns(data.SubsColumnsDTO, (int)lokEntityListView.SelectedValue, childListView.EntityListViewID);
+            frmEntitySubListReportColumns frm = new MyProject_WPF.frmEntitySubListReportColumns(data.SubsColumnsDTO, (int)frmSearchableReport.lokEntityListView.SelectedValue, childListView.EntityListViewID);
             var dialog = MyProjectManager.GetMyProjectManager.ShowDialog(frm, "frmEntitySubListReportColumns", Enum_WindowSize.Big);
             dialog.Closed += (sender, e) => Dialog_Closed(sender, e, row);
         }
@@ -193,38 +160,7 @@ namespace MyProject_WPF
             }
         }
 
-        private void SetEntityListViews()
-        {
-            if (lokEntityListView.ItemsSource == null)
-            {
-                lokEntityListView.EditItemClicked += LokEntityListView_EditItemClicked;
-            }
-            BizEntityListView biz = new BizEntityListView();
-            lokEntityListView.DisplayMember = "Title";
-            lokEntityListView.SelectedValueMember = "ID";
-            lokEntityListView.ItemsSource = biz.GetEntityListViews(MyProjectManager.GetMyProjectManager.GetRequester(), EntityID);
-        }
 
-        private void LokEntityListView_EditItemClicked(object sender, MyCommonWPFControls.EditItemClickEventArg e)
-        {
-            var lookup = (sender as MyStaticLookup);
-            frmEntityListView view;
-            if (lookup.SelectedItem == null)
-            {
-                view = new frmEntityListView(EntityID, 0);
-            }
-            else
-            {
-                view = new frmEntityListView(EntityID, (int)lookup.SelectedValue);
-            }
-            view.EntityListViewUpdated += (sender1, e1) => View_EntityListViewUpdated(sender1, e1, lookup);
-            MyProjectManager.GetMyProjectManager.ShowDialog(view, "تنظیمات نامه", Enum_WindowSize.Big);
-        }
-        private void View_EntityListViewUpdated(object sender, EntityListViewUpdatedArg e, MyStaticLookup lookup)
-        {
-            SetEntityListViews();
-            lookup.SelectedValue = e.ID;
-        }
         private void SetSubReportRelationshipTails()
         {
             BizEntityRelationshipTail bizEntityRelationshipTail = new BizEntityRelationshipTail();
@@ -249,11 +185,10 @@ namespace MyProject_WPF
 
         private void ShowMessage()
         {
-            txtReportName.Text = Message.ReportTitle;
+            frmSearchableReport.ShowMessage(Message);
             dtgSubReports.ItemsSource = Message.EntityListReportSubs;
             dtgGroups.ItemsSource = Message.ReportGroups;
-            lokEntityListView.SelectedValue = Message.EntityListViewID;
-            lokSearchRepository.SelectedValue = Message.SearchRepositoryID;
+         
 
             foreach (var item in Message.EntityListReportSubs)
                 SetSubListReports(item);
@@ -263,24 +198,11 @@ namespace MyProject_WPF
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            if (lokEntityListView.SelectedItem == null)
+            if (!frmSearchableReport.FillMessage(Message))
             {
-                MessageBox.Show("لطفا ابتدا لیست ستونها را ثبت و انتخاب نمایید");
                 return;
             }
-            if (txtReportName.Text == "")
-            {
-                MessageBox.Show("عنوان مناسب تعریف نشده است");
-                return;
-            }
-            if (lokSearchRepository.SelectedItem != null)
-                Message.SearchRepositoryID = (int)lokSearchRepository.SelectedValue;
-            else
-                Message.SearchRepositoryID = 0;
-
             Message.TableDrivedEntityID = EntityID;
-            Message.ReportTitle = txtReportName.Text;
-            Message.EntityListViewID = (int)lokEntityListView.SelectedValue;
             bizEntityListReport.UpdateEntityListReports(Message);
             MessageBox.Show("اطلاعات ثبت شد");
         }

@@ -29,12 +29,14 @@ namespace MyUILibrary.EntityArea
         void SetOrderColumns(List<Tuple<int, string>> columns);
         bool OrderColumnsVisibility { set; get; }
         void SetReportSource(string reportEngine, ReportSource reportSource);
-    //    void AddGenerealSearchAreaView(object view);
+        void AddGenerealSearchAreaView(object view);
+        //    void AddGenerealSearchAreaView(object view);
     }
 
     public interface I_View_ExternalReportArea : I_View_ReportArea
     {
         void SetReportSource(string URL);
-     //   void AddGenerealSearchAreaView(object view);
+        void AddGenerealSearchAreaView(object view);
+        //   void AddGenerealSearchAreaView(object view);
     }
 }

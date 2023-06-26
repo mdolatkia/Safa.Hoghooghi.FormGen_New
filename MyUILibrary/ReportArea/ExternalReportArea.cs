@@ -6,7 +6,7 @@ using MyReportManager;
 using MyUILibrary;
 using MyUILibrary.EntityArea;
 using MyUILibrary.EntityArea.Commands;
-using MyUILibrary.EntitySearchArea;
+using MyUILibrary.EntitySelectArea;
 using MyUILibraryInterfaces.EntityArea;
 using ProxyLibrary;
 using System;
@@ -28,41 +28,35 @@ namespace MyUILibrary.EntityArea
         public bool SecurityNoAccess { set; get; }
         public bool SecurityReadonly { set; get; }
         public bool SecurityEdit { set; get; }
-        public I_GeneralEntitySearchArea GeneralEntitySearchArea { set; get; }
+        public I_GeneralEntityDataSelectArea GeneralEntityDataSelectArea { set; get; }
         public object MainView { set; get; }
         public ExternalReportArea(ExternalReportAreaInitializer initParam)
         {
             AreaInitializer = initParam;
 
-         
+
 
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfExternalReportArea();
-            View.Title = AreaInitializer.Title;
+            View.Title = AreaInitializer.Report.ReportTitle;
 
 
-            GeneralEntitySearchAreaInitializer selectAreaInitializer = new GeneralEntitySearchAreaInitializer();
-            selectAreaInitializer.ExternalView = View;
-            selectAreaInitializer.EntityID = AreaInitializer.EntityID;
-            if (AreaInitializer.EntityID != 0)
-                selectAreaInitializer.LockEntitySelector = true;
-            //////if (initParam.InitialSearchRepository != null && !initParam.ShowInitializeSearchRepository)
-            //////    selectAreaInitializer.PreDefinedSearch = AreaInitializer.InitialSearchRepository;
-            GeneralEntitySearchArea = new GeneralEntitySearchArea();
-            GeneralEntitySearchArea.SearchDataDefined += GeneralEntitySearchArea_SearchDataDefined;
-            GeneralEntitySearchArea.SetInitializer(selectAreaInitializer);
+            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer(Enum_EntityDataPurpose.SearchRepository);
+            selectAreaInitializer.EntityID = AreaInitializer.Report.TableDrivedEntityID;
+            if (AreaInitializer.Report.TableDrivedEntityID != 0)
+                selectAreaInitializer.HideEntitySelector = true;
 
-            GeneralEntitySearchArea.EnableDisableSearchArea(AreaInitializer.UserCanChangeSearch);
-            MainView = GeneralEntitySearchArea.View;
-            //View.AddGenerealSearchAreaView(GeneralEntitySearchArea.View);
+            selectAreaInitializer.EntityListViewID = AreaInitializer.Report.EntityListViewID;
+            selectAreaInitializer.EntitySearchID = AreaInitializer.Report.EntitySearchID;
+            selectAreaInitializer.AdvancedSearchDTOMessage = AreaInitializer.Report.AdvancedSearch?.SearchRepositoryMain;
+            selectAreaInitializer.PreDefinedSearchMessage = AreaInitializer.Report.PreDefinedSearch;
+            selectAreaInitializer.UserCanChangeSearchRepository = AreaInitializer.UserCanChangeSearch;
+            selectAreaInitializer.SearchInitially = initParam.SearchInitially;
 
-            //ManageSecurity();
-            //if (!SecurityNoAccess && (SecurityReadonly || SecurityEdit))
-            //{
-            if (AreaInitializer.InitialSearchRepository != null && initParam.ShowInitializeSearchRepository)
-            {
-                SetReport(AreaInitializer.InitialSearchRepository);
-            }
-            //}
+            GeneralEntityDataSelectArea = new GeneralEntityDataSelectArea();
+            GeneralEntityDataSelectArea.SearchRepositoryChanged += GeneralEntitySearchArea_SearchDataDefined;
+            GeneralEntityDataSelectArea.SetAreaInitializer(selectAreaInitializer);
+            View.AddGenerealSearchAreaView(GeneralEntityDataSelectArea.View);
+
         }
 
 
@@ -141,8 +135,8 @@ namespace MyUILibrary.EntityArea
                 //xr_
                 //شروع میشه اینزرت میکنه.رو دیتای سنگین تست شود که روش خوبی هست یا نه
                 var reportKey = AgentUICoreMediator.GetAgentUICoreMediator.ReportManager.GetExternalReportKey(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(),
-                    AreaInitializer.ReportID, AreaInitializer.EntityID, searchRepository);
-                EntityExternalReportDTO report = AgentUICoreMediator.GetAgentUICoreMediator.ReportManager.GetExternalReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(),AreaInitializer.ReportID);
+                    AreaInitializer.Report.ID, AreaInitializer.Report.TableDrivedEntityID, searchRepository);
+                EntityExternalReportDTO report = AgentUICoreMediator.GetAgentUICoreMediator.ReportManager.GetExternalReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), AreaInitializer.Report.ID);
 
                 var url = report.URL;
                 if (url.Contains("?"))
