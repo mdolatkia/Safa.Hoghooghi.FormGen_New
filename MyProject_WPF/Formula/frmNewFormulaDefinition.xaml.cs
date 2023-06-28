@@ -31,6 +31,8 @@ using System.Windows.Threading;
 using MyUILibrary.EntityArea;
 using MyUIGenerator;
 using System.Windows.Documents;
+using MyUILibraryInterfaces.EntityArea;
+using MyUILibrary.EntitySelectArea;
 
 namespace MyProject_WPF
 {
@@ -255,17 +257,12 @@ namespace MyProject_WPF
                 MyUILibrary.AgentUICoreMediator.GetAgentUICoreMediator.UserInfo = userInfo;
 
 
-                EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
-                editEntityAreaInitializer1.EntityID = EntityID;
-                editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
-                editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
-                var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
-                if (FirstSideEditEntityAreaResult.Item1 != null && FirstSideEditEntityAreaResult.Item1 is I_EditEntityAreaOneData)
-                {
-                    EditEntityArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                //    EditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
-                    grdSelectData.Children.Add(EditEntityArea.TemporaryDisplayView as UIElement);
-                }
+                EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer();
+                selectAreaInitializer.EntityID = EntityID;
+                var editEntityArea = new GeneralEntityDataSelectArea();
+                editEntityArea.SetAreaInitializer(selectAreaInitializer);
+                grdSelectData.Children.Add(editEntityArea.View as UIElement);
+          
             }
         }
         private void TxtFormula_KeyUp(object sender, KeyEventArgs e)

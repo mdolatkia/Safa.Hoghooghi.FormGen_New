@@ -43,6 +43,8 @@ namespace MyUILibrary.EntityArea
                 AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowInfo("دسترسی به گزارش به شناسه" + " " + areaInitializer.ReportID + " " + "امکانپذیر نمی باشد", "", Temp.InfoColor.Red);
                 return;
             }
+
+
             EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer();
             selectAreaInitializer.EntityID = EntityDirectReport.TableDrivedEntityID;
             selectAreaInitializer.EntityListViewID = EntityDirectReport.EntityListViewID;

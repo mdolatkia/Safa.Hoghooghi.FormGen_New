@@ -116,17 +116,16 @@ namespace MyUIGenerator.View
         //}
         public void ClearEntityViews()
         {
-            grdSetting.Children.Remove(FirstEntity);
-            grdSetting.Children.Remove(SecondEntity);
+            grdFirstData.Children.Clear();
+            //  grdSetting.Children.Remove(SecondEntity);
         }
         UIElement FirstEntity;
-        UIElement SecondEntity;
-        public void SetFirstSideEntityView(I_View_TemporaryView view, string title)
+        // UIElement SecondEntity;
+        public void SetFirstSideEntityView(object view)
         {
+            grdFirstData.Children.Clear();
             FirstEntity = view as UIElement;
-            lblFirstSide.Text = title;
-            Grid.SetColumn(FirstEntity, 1);
-            grdSetting.Children.Add(FirstEntity);
+            grdFirstData.Children.Add(FirstEntity);
         }
 
         private void btnConfirm_Click(object sender, RoutedEventArgs e)

@@ -121,20 +121,18 @@ namespace MyUIGenerator.View
         }
         UIElement FirstEntity;
         UIElement SecondEntity;
-        public void SetFirstSideEntityView(I_View_TemporaryView view, string title)
+        public void SetFirstSideEntityView(object view)
         {
+            grdFirstData.Children.Clear();
             FirstEntity = view as UIElement;
-            lblFirstSide.Text = title;
-            Grid.SetColumn(FirstEntity, 1);
-            grdSetting.Children.Add(FirstEntity);
+            grdFirstData.Children.Add(FirstEntity);
         }
 
-        public void SetSecondSideEntityView(I_View_TemporaryView view, string title)
+        public void SetSecondSideEntityView(object view)
         {
-            SecondEntity = view as UIElement;
-            lblSecondSide.Text = title;
-            Grid.SetColumn(SecondEntity, 3);
-            grdSetting.Children.Add(SecondEntity);
+            grdSecondData.Children.Clear();
+               SecondEntity = view as UIElement;
+            grdSecondData.Children.Add(SecondEntity);
         }
 
         private void btnConfirm_Click(object sender, RoutedEventArgs e)

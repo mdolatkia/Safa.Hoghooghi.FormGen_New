@@ -35,8 +35,8 @@ namespace MyUILibraryInterfaces.DataLinkArea
    //     event EventHandler DataLinkChanged;
      //   object SelectedDataLink { get; set; }
         void ClearEntityViews();
-        void SetFirstSideEntityView(I_View_TemporaryView view,string title);
-        void SetSecondSideEntityView(I_View_TemporaryView view,string title);
+        void SetFirstSideEntityView(object view);
+        void SetSecondSideEntityView(object view);
         //object GenerateTailPanel();
         //void AddDataLinkItems(List<I_DataViewItem> views);
         //void AddLink(I_DataViewItem view1, I_DataViewItem view2);
@@ -76,7 +76,7 @@ namespace MyUILibraryInterfaces.DataLinkArea
         //     event EventHandler DataLinkChanged;
         //   object SelectedDataLink { get; set; }
         void ClearEntityViews();
-        void SetFirstSideEntityView(I_View_TemporaryView view, string title);
+        void SetFirstSideEntityView(object view);
        
         void AddDiagramView(object diagram);
       

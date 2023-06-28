@@ -5,7 +5,9 @@ using ModelEntites;
 using MyUILibrary;
 using MyUILibrary.EntityArea;
 using MyUILibrary.EntityArea.Commands;
+using MyUILibrary.EntitySelectArea;
 using MyUILibrary.Temp;
+using MyUILibraryInterfaces.EntityArea;
 using ProxyLibrary;
 using System;
 using System.Collections.Generic;
@@ -118,21 +120,19 @@ namespace MyUILibrary.EntityArea
                     if (searchcolumn.RelationshipTail != null)
                     {
 
+                        EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer();
+                        selectAreaInitializer.EntityID = searchcolumn.RelationshipTail.TargetEntityID;
+                        selectAreaInitializer.DataMode = CommonDefinitions.UISettings.DataMode.Multiple;
+                        var FirstSideEditEntityArea = new GeneralEntityDataSelectArea();
+                        FirstSideEditEntityArea.SetAreaInitializer(selectAreaInitializer);
 
-                        EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
-                        editEntityAreaInitializer1.EntityID = searchcolumn.RelationshipTail.TargetEntityID;
-                        editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
-                        editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.Multiple;
-                        var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
-                        if (FirstSideEditEntityAreaResult.Item1 != null)
-                        {
-                            var propertyControl = new RelationshipSearchColumnControl(AgentUICoreMediator.GetAgentUICoreMediator.UIManager, FirstSideEditEntityAreaResult.Item1, searchcolumn);
+                        var propertyControl = new RelationshipSearchColumnControl(AgentUICoreMediator.GetAgentUICoreMediator.UIManager, FirstSideEditEntityArea.DataArea, searchcolumn);
 
-                            if (!string.IsNullOrEmpty(propertyControl.EntitySearchColumn.Tooltip))
-                                propertyControl.LabelControlManager.SetTooltip(propertyControl.EntitySearchColumn.Tooltip);
-                            RelationshipColumnControls.Add(propertyControl);
-                            SimpleSearchView.AddView(propertyControl.LabelControlManager, propertyControl.ControlManager);
-                        }
+                        if (!string.IsNullOrEmpty(propertyControl.EntitySearchColumn.Tooltip))
+                            propertyControl.LabelControlManager.SetTooltip(propertyControl.EntitySearchColumn.Tooltip);
+                        RelationshipColumnControls.Add(propertyControl);
+                        SimpleSearchView.AddView(propertyControl.LabelControlManager, propertyControl.ControlManager);
+
 
                         ////اینجا چیه بررسی شود چرا اینجا؟
                         //if (propertyControl.EditNdTypeArea.SimpleEntity.SearchInitially == true)

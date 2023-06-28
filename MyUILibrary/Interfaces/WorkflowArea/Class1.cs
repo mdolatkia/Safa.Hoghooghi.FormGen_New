@@ -93,7 +93,7 @@ namespace MyUILibrary.WorkflowArea
         event EventHandler CloseRequested;
         void ShowMessage(string message);
         List<OrganizationPostDTO> CreatorOrganizationPosts { set; }
-        I_View_TemporaryView SearchView { set; get; }
+        void SetDataSelector(object view);
         List<WFStateDTO> States { set; }
         ProcessDTO SelectedProcess { get; }
         DateTime? Date { get; set; }
@@ -103,7 +103,7 @@ namespace MyUILibrary.WorkflowArea
         //List<RequestFileDTO> RequestFiles { get; }
         List<RequestNoteDTO> RequestNotes { get; }
 
-        void RemoveEntitySelector();
+        void RemoveDataSelector();
 
     }
     public interface I_View_RequestAction : I_View_WorkflowTransition

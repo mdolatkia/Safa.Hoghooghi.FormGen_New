@@ -2,7 +2,9 @@
 using MyGeneralLibrary;
 
 using MyUILibrary.EntityArea;
+using MyUILibrary.EntitySelectArea;
 using MyUILibrary.Temp;
+using MyUILibraryInterfaces.EntityArea;
 using MyWorkflowService;
 using ProxyLibrary;
 using ProxyLibrary.Workflow;
@@ -67,26 +69,17 @@ namespace MyUILibrary.WorkflowArea
             var proccess = ProcessList.First(x => x.ID == e.ProcessID);
             if (proccess.EntityID != 0)
             {
-                EditEntityAreaInitializer editEntityAreaInitializer = new EditEntityAreaInitializer();
-                editEntityAreaInitializer.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
-                editEntityAreaInitializer.DataMode = CommonDefinitions.UISettings.DataMode.One;
-                editEntityAreaInitializer.EntityID = proccess.EntityID;
-                var searchEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer);
-                if (searchEditEntityAreaResult.Item1 == null)
-                {
-                    if (!string.IsNullOrEmpty(searchEditEntityAreaResult.Item2))
-                        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage(searchEditEntityAreaResult.Item2);
-                    return;
+                EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer();
+                selectAreaInitializer.EntityID = proccess.EntityID;
+                var editEntityArea = new GeneralEntityDataSelectArea();
+                editEntityArea.DataItemChanged += EditEntityArea_DataItemChanged;
+                editEntityArea.SetAreaInitializer(selectAreaInitializer);
+                (sender as I_View_WorkflowRequestCreator).SetDataSelector(editEntityArea.View);
 
-                }
-                SearchEditEntityArea = searchEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                //SearchEditEntityArea.SetAreaInitializer(editEntityAreaInitializer);
-                SearchEditEntityArea.DataItemSelected += SearchEditEntityArea_DataItemSelected;
-                (sender as I_View_WorkflowRequestCreator).SearchView = SearchEditEntityArea.TemporaryDisplayView;
             }
             else
             {
-                View.RemoveEntitySelector();
+                View.RemoveDataSelector();
             }
             CheckWorkflowTitle();
             //var adminRoles = workflowService.GetProcessAdminRoles(e.ProcessID);
@@ -95,10 +88,12 @@ namespace MyUILibrary.WorkflowArea
 
         }
 
-        private void SearchEditEntityArea_DataItemSelected(object sender, List<DP_FormDataRepository> e)
+        private void EditEntityArea_DataItemChanged(object sender, List<DP_FormDataRepository> e)
         {
             CheckWorkflowTitle();
         }
+
+      
 
         private void CheckWorkflowTitle()
         {

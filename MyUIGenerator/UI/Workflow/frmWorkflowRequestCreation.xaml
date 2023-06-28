@@ -35,8 +35,10 @@
             <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" x:Name="txtTitle"></TextBox>
             <TextBlock Grid.Row="2" Grid.Column="2" Text="تاریخ"></TextBlock>
             <DatePicker Grid.Row="2" HorizontalAlignment="Left" Grid.Column="3" Width="120"  IsEnabled="False" x:Name="txtDate"></DatePicker>
-            <TextBlock Grid.Row="2" IsEnabled="False" Text="انتخاب موجودیت"></TextBlock>
-            <TextBox  Grid.Row="2" Grid.Column="1" IsEnabled="False"></TextBox>
+            <Grid x:Name="grdData" Grid.Row="2" Grid.ColumnSpan="2">
+            <!--<TextBlock Grid.Row="2" IsEnabled="False" Text="انتخاب موجودیت"></TextBlock>
+            <TextBox  Grid.Row="2" Grid.Column="1" IsEnabled="False"></TextBox>-->
+            </Grid>
             <TextBlock Grid.Row="3" IsEnabled="False" Text="نقش درخواست دهنده"></TextBlock>
             <ComboBox HorizontalAlignment="Stretch" x:Name="cmbRequesterRole" SelectionChanged="cmbRequesterRole_SelectionChanged" Grid.Row="3" Grid.Column="1" />
             <!--<TextBlock Grid.Row="5" VerticalAlignment="Top" IsEnabled="False" Text="راهبران/کاربران هدف"></TextBlock>-->

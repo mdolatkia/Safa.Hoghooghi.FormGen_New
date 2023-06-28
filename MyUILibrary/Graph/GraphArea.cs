@@ -13,6 +13,8 @@ using MyUILibraryInterfaces.DataMenuArea;
 using MyCommonWPFControls;
 using MyUILibraryInterfaces.DataLinkArea;
 using MyRelationshipDataManager;
+using MyUILibraryInterfaces.EntityArea;
+using MyUILibrary.EntitySelectArea;
 
 namespace MyUILibrary.GraphArea
 {
@@ -187,45 +189,30 @@ namespace MyUILibrary.GraphArea
             View.ClearEntityViews();
             if (SelectedGraph != null)
             {
-                EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
-                editEntityAreaInitializer1.EntityID = SelectedGraph.TableDrivedEntityID;
-                editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
-                editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
-                var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
-                if (FirstSideEditEntityAreaResult.Item1 != null)
-                {
-                    FirstSideEditEntityArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                    //   FirstSideEditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
-                    View.SetFirstSideEntityView(FirstSideEditEntityArea.TemporaryDisplayView, FirstSideEditEntityArea.SimpleEntity.Alias);
-                    FirstSideEditEntityArea.DataItemSelected += FirstSideEditEntityArea_DataItemSelected;
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(FirstSideEditEntityAreaResult.Item2))
-                        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage(FirstSideEditEntityAreaResult.Item2);
-                    return;
 
-                }
+                EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer();
+                selectAreaInitializer.EntityID = SelectedGraph.TableDrivedEntityID;
+                selectAreaInitializer.DataItem = FirstData;
+                var FirstSideEditEntityArea = new GeneralEntityDataSelectArea();
+                FirstSideEditEntityArea.SetAreaInitializer(selectAreaInitializer);
+                FirstSideEditEntityArea.DataItemChanged += FirstSideEditEntityArea_DataItemChanged;
+                View.SetFirstSideEntityView(FirstSideEditEntityArea.View);
 
-                if (FirstData != null)
-                {
-                    if (SelectedGraph.TableDrivedEntityID == FirstData.TargetEntityID)
-                    {
-                        FirstSideEditEntityArea.ClearData();
-                        FirstSideEditEntityArea.ShowDataFromExternalSource(FirstData);
-                    }
-                }
+
+
 
             }
         }
 
-        private void FirstSideEditEntityArea_DataItemSelected(object sender, List<DP_FormDataRepository> e)
+        private void FirstSideEditEntityArea_DataItemChanged(object sender, List<DP_FormDataRepository> e)
         {
-            if (e != null)
+            if (e != null && e.Any())
             {
                 View_GraphConfirmed(null, null);
             }
         }
+
+
 
         private void View_GraphConfirmed(object sender, EventArgs e)
         {

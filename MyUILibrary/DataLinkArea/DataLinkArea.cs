@@ -14,6 +14,8 @@ using MyUILibraryInterfaces.DataMenuArea;
 
 using MyCommonWPFControls;
 using MyRelationshipDataManager;
+using MyUILibraryInterfaces.EntityArea;
+using MyUILibrary.EntitySelectArea;
 
 namespace MyUILibrary.DataLinkArea
 {
@@ -190,53 +192,33 @@ namespace MyUILibrary.DataLinkArea
             View.ClearEntityViews();
             if (SelectedDataLink != null)
             {
-                EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
-                editEntityAreaInitializer1.EntityID = SelectedDataLink.TableDrivedEntityID;
-                editEntityAreaInitializer1.EntityListViewID = SelectedDataLink.EntityListViewID;
-                editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
-                editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
-                var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
-                if (FirstSideEditEntityAreaResult.Item1 != null)
-                {
-                    FirstSideEditEntityArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                //    FirstSideEditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
-                    View.SetFirstSideEntityView(FirstSideEditEntityArea.TemporaryDisplayView, FirstSideEditEntityArea.SimpleEntity.Alias);
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(FirstSideEditEntityAreaResult.Item2))
-                        AgentUICoreMediator.GetAgentUICoreMediator.UIManager.ShowMessage(FirstSideEditEntityAreaResult.Item2);
-                    return;
 
-                }
-                EditEntityAreaInitializer editEntityAreaInitializer2 = new EditEntityAreaInitializer();
-                editEntityAreaInitializer2.EntityID = SelectedDataLink.SecondSideEntityID;
-                editEntityAreaInitializer1.EntityListViewID = SelectedDataLink.SecondSideListViewID;
-                editEntityAreaInitializer2.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
-                editEntityAreaInitializer2.DataMode = CommonDefinitions.UISettings.DataMode.One;
-                var SecondSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer2);
-                if (SecondSideEditEntityAreaResult.Item1 != null)
-                {
-                    SecondSideEditEntityArea = SecondSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-          //          SecondSideEditEntityArea.SetAreaInitializer(editEntityAreaInitializer2);
-                    View.SetSecondSideEntityView(SecondSideEditEntityArea.TemporaryDisplayView, SecondSideEditEntityArea.SimpleEntity.Alias);
-                }
-                else
-                    return;
+                EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer();
+                selectAreaInitializer.EntityID = SelectedDataLink.TableDrivedEntityID;
+                var FirstSideEditEntityArea = new GeneralEntityDataSelectArea();
+                FirstSideEditEntityArea.SetAreaInitializer(selectAreaInitializer);
+                View.SetFirstSideEntityView(FirstSideEditEntityArea.View);
+
+                EntityDataSelectAreaInitializer selectAreaInitializer2 = new EntityDataSelectAreaInitializer();
+                selectAreaInitializer2.EntityID = SelectedDataLink.SecondSideEntityID;
+                var SecondSideEditEntityArea = new GeneralEntityDataSelectArea();
+                SecondSideEditEntityArea.SetAreaInitializer(selectAreaInitializer2);
+                View.SetSecondSideEntityView(SecondSideEditEntityArea.View);
+
+
+
                 bool firstDataSetToFirst = false;
                 bool firstDataSetToSecond = false;
                 if (FirstData != null)
                 {
                     if (SelectedDataLink.TableDrivedEntityID == FirstData.TargetEntityID)
                     {
-                        FirstSideEditEntityArea.ClearData();
-                        FirstSideEditEntityArea.ShowDataFromExternalSource(FirstData);
+                        FirstSideEditEntityArea.DataArea.SelectData(new List<DP_BaseData>() { FirstData });
                         firstDataSetToFirst = true;
                     }
                     else if (SelectedDataLink.SecondSideEntityID == FirstData.TargetEntityID)
                     {
-                        SecondSideEditEntityArea.ClearData();
-                        SecondSideEditEntityArea.ShowDataFromExternalSource(FirstData);
+                        SecondSideEditEntityArea.DataArea.SelectData(new List<DP_BaseData>() { FirstData });
                         firstDataSetToSecond = true;
                     }
                 }
@@ -244,13 +226,11 @@ namespace MyUILibrary.DataLinkArea
                 {
                     if (!firstDataSetToFirst && SelectedDataLink.TableDrivedEntityID == OtherData.TargetEntityID)
                     {
-                        FirstSideEditEntityArea.ClearData();
-                        FirstSideEditEntityArea.ShowDataFromExternalSource(OtherData);
+                        FirstSideEditEntityArea.DataArea.SelectData(new List<DP_BaseData>() { OtherData });
                     }
                     else if (!firstDataSetToSecond && SelectedDataLink.SecondSideEntityID == OtherData.TargetEntityID)
                     {
-                        SecondSideEditEntityArea.ClearData();
-                        SecondSideEditEntityArea.ShowDataFromExternalSource(OtherData);
+                        SecondSideEditEntityArea.DataArea.SelectData(new List<DP_BaseData>() { OtherData });
                     }
                 }
             }
@@ -302,7 +282,7 @@ namespace MyUILibrary.DataLinkArea
                 }
             }
 
-           // var tail1 = SelectedDataLink.RelationshipsTails.First();
+            // var tail1 = SelectedDataLink.RelationshipsTails.First();
             //    tail1.EntityRelationshipTailListView.FirstSideListViewID
             var firstSidelinkItem = new MyUILibrary.DataLinkArea.DataLinkItem();
             firstSidelinkItem.DataItem = FirstData;
@@ -553,7 +533,7 @@ namespace MyUILibrary.DataLinkArea
                 //searchRequest.EntityID = parentTail.RelationshipTargetEntityID;
                 var searchResult = AgentUICoreMediator.GetAgentUICoreMediator.requestRegistration.SendSearchViewRequest(searchRequest);
 
-                if(parentDataLinkItem!=null)
+                if (parentDataLinkItem != null)
                 {
                     parentDataLinkItem.TailPath = relationshipTail.RelationshipIDPath;
                     if (relationshipTailDataMenuDTO != null)
@@ -587,7 +567,7 @@ namespace MyUILibrary.DataLinkArea
                             found = new DataLinkItem();
                             found.DataItem = item;
                             found.Level = level;
-                          
+
                             result.Items.Add(found);
                             allItems.Add(found);
                         }

@@ -36,17 +36,13 @@
         <Grid Background="#FF12678F" Grid.Row="1" HorizontalAlignment="Stretch" x:Name="grdSetting" VerticalAlignment="Bottom">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Name="lblFirstSide" Text="موجودیت سمت اول" Grid.Column="0"></TextBlock>
-            <TextBlock  Name="lblSecondSide" Text="موجودیت سمت دوم" Grid.Column="2"></TextBlock>
-            <Button x:Name="btnConfirm" Content="تایید" Width="80" Grid.Column="6" Click="btnConfirm_Click"></Button>
+            <Grid x:Name="grdFirstData"></Grid>
+            <Grid x:Name="grdSecondData" Grid.Column="1" ></Grid>
+      
+            <Button x:Name="btnConfirm" Content="تایید" Width="80" Grid.Column="2" Click="btnConfirm_Click"></Button>
         </Grid>
       
         <Grid Grid.Row="2" x:Name="grdDiagram">

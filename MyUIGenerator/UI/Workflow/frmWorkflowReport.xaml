@@ -43,8 +43,8 @@
                 <!--<TextBlock Text="موجودیت" Grid.Row="1"></TextBlock>
                 <Grid x:Name="grdEntity"  Grid.Row="1" Grid.Column="1">
                 </Grid>-->
-                <TextBlock Text="داده" Grid.Column="0" Grid.Row="1"></TextBlock>
-                <Grid x:Name="grdData"  Grid.Column="1" Grid.Row="1" >
+                <!--<TextBlock Text="داده" Grid.Column="0" Grid.Row="1"></TextBlock>-->
+                <Grid x:Name="grdData"  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" >
                 </Grid>
                 <TextBlock Text="در وضعیت" Grid.Column="2" Grid.Row="1"></TextBlock>
                 <ComboBox Name="cmbCurrentState" HorizontalAlignment="Stretch" Grid.Column="3" Grid.Row="1"></ComboBox>

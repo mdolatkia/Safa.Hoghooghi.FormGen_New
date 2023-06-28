@@ -39,9 +39,10 @@
                 <DatePicker Name="txtFromData" Grid.Column="3"></DatePicker>
                 <TextBlock Text="تاریخ تا" Grid.Column="4"></TextBlock>
                 <DatePicker  Name="txtToData" Grid.Column="5"></DatePicker>
-                <TextBlock Text="داده" Grid.Row="1"></TextBlock>
-                <Grid x:Name="grdData"  Grid.Row="1" Grid.Column="1">
+                <Grid x:Name="grdData" Grid.Row="1" Grid.ColumnSpan="2">
+                    
                 </Grid>
+              
                 <TextBlock Text="نوع عملیات" Grid.Column="2" Grid.Row="1"></TextBlock>
                 <ComboBox Name="cmbMainType" HorizontalAlignment="Stretch" Grid.Column="3" Grid.Row="1"></ComboBox>
                 <TextBlock Text="کاربر" Grid.Column="4" Grid.Row="1"></TextBlock>

@@ -9,12 +9,13 @@ using ProxyLibrary;
 using MyCommonWPFControls;
 using ModelEntites;
 using MyUILibrary.EntityArea.Commands;
+using CommonDefinitions.UISettings;
 
 namespace MyUILibrary.EntitySelectArea
 {
     public class GeneralEntityDataSelectArea : I_GeneralEntityDataSelectArea
     {
-        MySearchLookup entitySearchLookup;
+        // MySearchLookup entitySearchLookup;
         public EntityDataSelectAreaInitializer EntityDataSelectAreaInitializer { set; get; }
         public TableDrivedEntityDTO Entity { set; get; }
 
@@ -22,15 +23,15 @@ namespace MyUILibrary.EntitySelectArea
         {
             set; get;
         }
-        I_EditEntityAreaOneData SelectDataArea
+        public I_EditEntityAreaOneData DataArea
         {
             set; get;
         }
 
-        public void SetAreaInitializer(EntityDataSelectAreaInitializer entityDataSelectAreaInitializer)
+        public void SetAreaInitializer(EntityDataSelectAreaInitializer areaInitializer)
         {
             //تو این ویوی کاربردی مثلا آرشیو به این اصلی اضافه میشه ولی تو جنرال سرچ ویو اینجا به کاربردی مثلا دیتا ویو اضافه میشه. کدوم بهتره؟ اصلاح بشه
-            EntityDataSelectAreaInitializer = entityDataSelectAreaInitializer;
+            EntityDataSelectAreaInitializer = areaInitializer;
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfGeneralEntityDataSelectArea();
 
             if (EntityDataSelectAreaInitializer.EntityID != 0)
@@ -42,21 +43,21 @@ namespace MyUILibrary.EntitySelectArea
                 EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
                 editEntityAreaInitializer1.EntityID = Entity.ID;
                 editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
-                editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
+                editEntityAreaInitializer1.DataMode = (EntityDataSelectAreaInitializer.DataMode == DataMode.Multiple | EntityDataSelectAreaInitializer.DataMode == DataMode.Multiple) ? DataMode.Multiple : DataMode.One;
                 editEntityAreaInitializer1.EntityListViewID = EntityDataSelectAreaInitializer.EntityListViewID;
                 var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
                 if (FirstSideEditEntityAreaResult.Item1 != null && FirstSideEditEntityAreaResult.Item1 is I_EditEntityAreaOneData)
                 {
-                    SelectDataArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-                    SelectDataArea.DataItemSelected += FirstSideEditEntityArea_DataItemSelected;
-                    SelectDataArea.DataItemsCleared += SelectDataArea_DataItemsCleared;
-                    View.AddSelector(SelectDataArea.TemporaryDisplayView);
+                    DataArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
+                    DataArea.DataItemSelected += FirstSideEditEntityArea_DataItemSelected;
+                    DataArea.DataItemsCleared += SelectDataArea_DataItemsCleared;
+                    View.AddSelector(DataArea.TemporaryDisplayView);
                     if (EntityDataSelectAreaInitializer.LockDataSelector)
-                        SelectDataArea.FirstView.EnableDisable(false);
+                        DataArea.FirstView.EnableDisable(false);
                 }
                 if (EntityDataSelectAreaInitializer.DataItem != null && firstTime)
                 {
-                    SelectDataArea.SelectData(new List<DP_BaseData>() { EntityDataSelectAreaInitializer.DataItem });
+                    DataArea.SelectData(new List<DP_BaseData>() { EntityDataSelectAreaInitializer.DataItem });
                 }
                 firstTime = false;
 
@@ -64,13 +65,13 @@ namespace MyUILibrary.EntitySelectArea
 
         }
 
-        public TableDrivedEntityDTO SelectedEntity
-        {
-            get
-            {
-                return entitySearchLookup.SelectedItem as TableDrivedEntityDTO;
-            }
-        }
+        //public TableDrivedEntityDTO SelectedEntity
+        //{
+        //    get
+        //    {
+        //        return entitySearchLookup.SelectedItem as TableDrivedEntityDTO;
+        //    }
+        //}
 
 
         bool firstTime = true;
@@ -80,8 +81,8 @@ namespace MyUILibrary.EntitySelectArea
         {
             get
             {
-                if (SelectDataArea != null && SelectDataArea.GetDataList().Any())
-                    return SelectDataArea.GetDataList().First();
+                if (DataArea != null && DataArea.GetDataList().Any())
+                    return DataArea.GetDataList().First();
                 else
                     return null;
             }

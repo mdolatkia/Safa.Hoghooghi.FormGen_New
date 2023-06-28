@@ -3,7 +3,9 @@ using MyCommonWPFControls;
 using MyDataManagerService;
 
 using MyUILibrary.EntityArea;
+using MyUILibrary.EntitySelectArea;
 using MyUILibraryInterfaces.DataMenuArea;
+using MyUILibraryInterfaces.EntityArea;
 using MyWorkflowService;
 using ProxyLibrary;
 using ProxyLibrary.Workflow;
@@ -159,17 +161,12 @@ namespace MyUILibrary.WorkflowArea
         private void AddDataSelector(int entityID)
         {
             //** WorkflowReportArea.AddDataSelector: c283f53e955b
-            EditEntityAreaInitializer editEntityAreaInitializer1 = new EditEntityAreaInitializer();
-            editEntityAreaInitializer1.EntityID = entityID;
-            editEntityAreaInitializer1.IntracionMode = CommonDefinitions.UISettings.IntracionMode.Select;
-            editEntityAreaInitializer1.DataMode = CommonDefinitions.UISettings.DataMode.One;
-            var FirstSideEditEntityAreaResult = BaseEditEntityArea.GetEditEntityArea(editEntityAreaInitializer1);
-            if (FirstSideEditEntityAreaResult.Item1 != null && FirstSideEditEntityAreaResult.Item1 is I_EditEntityAreaOneData)
-            {
-                EditEntityArea = FirstSideEditEntityAreaResult.Item1 as I_EditEntityAreaOneData;
-             //   EditEntityArea.SetAreaInitializer(editEntityAreaInitializer1);
-                View.AddDataSelector(EditEntityArea.TemporaryDisplayView);
-            }
+
+            EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer();
+            selectAreaInitializer.EntityID = entityID;
+            var editEntityArea = new GeneralEntityDataSelectArea();
+            editEntityArea.SetAreaInitializer(selectAreaInitializer);
+            View.AddDataSelector(editEntityArea.View);
         }
 
         private void ProcessSearchLookup_SearchFilterChanged(object sender, SearchFilterArg e)

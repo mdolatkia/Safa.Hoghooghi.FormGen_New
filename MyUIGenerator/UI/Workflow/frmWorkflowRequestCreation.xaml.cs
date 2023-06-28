@@ -89,38 +89,21 @@ namespace MyUIGenerator.View
         }
 
 
-        public void RemoveEntitySelector()
+        public void RemoveDataSelector()
         {
-            if (_SearchView != null)
-            {
-                grdForm.Children.Remove(_SearchView as UIElement);
-            }
+            grdData.Children.Clear();
         }
 
         public void ShowMessage(string message)
         {
             MessageBox.Show(message);
         }
-
-        I_View_TemporaryView _SearchView;
-        public I_View_TemporaryView SearchView
+        public void SetDataSelector(object view)
         {
-            set
-            {
-                if (_SearchView != null)
-                {
-                    grdForm.Children.Remove(_SearchView as UIElement);
-                }
-                _SearchView = value;
-                Grid.SetRow(_SearchView as UIElement, 2);
-                Grid.SetColumn(_SearchView as UIElement, 1);
-                grdForm.Children.Add(_SearchView as UIElement);
-            }
-            get
-            {
-                return _SearchView;
-            }
+            grdData.Children.Clear();
+            grdData.Children.Add(view as UIElement);
         }
+      
 
         public List<WFStateDTO> States
         {

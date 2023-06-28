@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ProxyLibrary;
 using ModelEntites;
-
+using CommonDefinitions.UISettings;
 
 namespace MyUILibraryInterfaces.EntityArea
 {
@@ -18,8 +18,9 @@ namespace MyUILibraryInterfaces.EntityArea
         EntityDataSelectAreaInitializer EntityDataSelectAreaInitializer { set; get; }
         I_View_GeneralEntityDataSelectArea View { set; get; }
         DP_FormDataRepository SelectedData { get; }
-      
-      
+        I_EditEntityAreaOneData DataArea { set; get; }
+
+
     }
     public interface I_GeneralEntityDataSearchArea
     {
@@ -28,7 +29,7 @@ namespace MyUILibraryInterfaces.EntityArea
         TableDrivedEntityDTO Entity { set; get; }
         EntityDataSearchAreaInitializer EntityDataSearchAreaInitializer { set; get; }
         I_View_GeneralEntityDataSelectArea View { set; get; }
-     
+
     }
     public interface I_View_GeneralEntityDataSelectArea
     {
@@ -40,16 +41,16 @@ namespace MyUILibraryInterfaces.EntityArea
     {
         public EntityDataSelectAreaInitializer()
         {
-          
+
         }
-     
+
         public bool HideSearchRepository { set; get; }
-      
+        public DataMode DataMode { set; get; }
         public int EntityID { set; get; }
-       
+
         public bool LockDataSelector { set; get; }
         public DP_DataView DataItem { set; get; }
-       // public Enum_EntityDataPurpose EntityDataPurpose { set; get; }
+        // public Enum_EntityDataPurpose EntityDataPurpose { set; get; }
         public int EntityListViewID { set; get; }
         public int EntitySearchID { get; internal set; }
     }
