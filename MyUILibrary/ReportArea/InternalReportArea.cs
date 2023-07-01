@@ -32,6 +32,7 @@ namespace MyUILibrary.EntityArea
         public object MainView { set; get; }
         public InternalReportArea(InternalReportAreaInitializer initParam)
         {
+            // InternalReportArea: 70ccd62b36bf
             AreaInitializer = initParam;
             //var entityReport = AgentUICoreMediator.GetAgentUICoreMediator.ReportManager.GetReport(AgentUICoreMediator.GetAgentUICoreMediator.GetRequester(), initParam.ReportID);
             //if (entityReport == null)

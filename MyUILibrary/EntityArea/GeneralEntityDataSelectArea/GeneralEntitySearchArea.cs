@@ -17,7 +17,10 @@ namespace MyUILibrary.EntitySelectArea
         MySearchLookup entitySearchLookup;
         public EntityDataSearchAreaInitializer EntityDataSearchAreaInitializer { set; get; }
 
-
+        public GeneralEntityDataSearchArea()
+        {
+            // GeneralEntityDataSearchArea: 33b533adf734
+        }
         public I_View_GeneralEntityDataSelectArea View
         {
             set; get;
@@ -31,6 +34,7 @@ namespace MyUILibrary.EntitySelectArea
 
         public void SetAreaInitializer(EntityDataSearchAreaInitializer entityDataSearchAreaInitializer)
         {
+            // GeneralEntitySearchArea.SetAreaInitializer: 68b475eb2fc9
             //تو این ویوی کاربردی مثلا آرشیو به این اصلی اضافه میشه ولی تو جنرال سرچ ویو اینجا به کاربردی مثلا دیتا ویو اضافه میشه. کدوم بهتره؟ اصلاح بشه
             EntityDataSearchAreaInitializer = entityDataSearchAreaInitializer;
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfGeneralEntityDataSelectArea();

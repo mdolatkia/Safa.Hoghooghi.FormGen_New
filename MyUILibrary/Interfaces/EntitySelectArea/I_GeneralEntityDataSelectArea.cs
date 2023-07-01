@@ -64,7 +64,7 @@ namespace MyUILibraryInterfaces.EntityArea
 
         }
 
-        public bool HideSearchRepository { set; get; }
+        //public bool HideSearchRepository { set; get; }
         public int EntityID { set; get; }
         //public int EntityListViewID { set; get; }
         public DP_SearchRepositoryMain AdvancedSearchDTOMessage { get; internal set; }
