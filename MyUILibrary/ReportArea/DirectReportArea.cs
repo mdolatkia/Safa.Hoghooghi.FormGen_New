@@ -49,7 +49,7 @@ namespace MyUILibrary.EntityArea
             selectAreaInitializer.EntityID = EntityDirectReport.TableDrivedEntityID;
             selectAreaInitializer.EntityListViewID = EntityDirectReport.EntityListViewID;
             selectAreaInitializer.EntitySearchID = EntityDirectReport.EntitySearchID;
-            selectAreaInitializer.DataItem = areaInitializer.DataInstance;
+            selectAreaInitializer.DataItem = new List<DP_BaseData>() { areaInitializer.DataInstance };
             if (selectAreaInitializer.DataItem != null)
                 selectAreaInitializer.LockDataSelector = true;
             GeneralEntityDataSelectArea = new GeneralEntityDataSelectArea();

@@ -59,7 +59,7 @@ namespace MyUILibrary.EntityArea
             EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer();
 
             selectAreaInitializer.EntityID = areaInitializer.EntityID;
-            selectAreaInitializer.DataItem = areaInitializer.DataInstance;
+            selectAreaInitializer.DataItem = new List<DP_BaseData>() { areaInitializer.DataInstance };
             if (selectAreaInitializer.DataItem != null)
                 selectAreaInitializer.LockDataSelector = true;
 
@@ -71,7 +71,7 @@ namespace MyUILibrary.EntityArea
             View.AddGenerealSearchAreaView(GeneralEntityDataSelectArea.View);
 
 
-          
+
 
         }
 

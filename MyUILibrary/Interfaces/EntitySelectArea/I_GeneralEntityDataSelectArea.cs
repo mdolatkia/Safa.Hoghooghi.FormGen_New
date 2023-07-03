@@ -44,12 +44,12 @@ namespace MyUILibraryInterfaces.EntityArea
 
         }
 
-        public bool HideSearchRepository { set; get; }
+    //    public bool HideSearchRepository { set; get; }
         public DataMode DataMode { set; get; }
         public int EntityID { set; get; }
 
         public bool LockDataSelector { set; get; }
-        public DP_DataView DataItem { set; get; }
+        public List<DP_BaseData> DataItem { set; get; }
         // public Enum_EntityDataPurpose EntityDataPurpose { set; get; }
         public int EntityListViewID { set; get; }
         public int EntitySearchID { get; internal set; }

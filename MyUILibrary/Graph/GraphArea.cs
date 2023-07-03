@@ -52,6 +52,8 @@ namespace MyUILibrary.GraphArea
         I_View_Diagram Diagram;
         public GraphArea(GraphAreaInitializer initParam)
         {
+            // GraphArea: 345e6d8d6b50
+
             AreaInitializer = initParam;
             View = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfGraphArea();
             Diagram = AgentUICoreMediator.GetAgentUICoreMediator.UIManager.GenerateViewOfDiagram();
@@ -189,18 +191,13 @@ namespace MyUILibrary.GraphArea
             View.ClearEntityViews();
             if (SelectedGraph != null)
             {
-
                 EntityDataSelectAreaInitializer selectAreaInitializer = new EntityDataSelectAreaInitializer();
                 selectAreaInitializer.EntityID = SelectedGraph.TableDrivedEntityID;
-                selectAreaInitializer.DataItem = FirstData;
+                selectAreaInitializer.DataItem = new List<DP_BaseData>() { FirstData };
                 var FirstSideEditEntityArea = new GeneralEntityDataSelectArea();
                 FirstSideEditEntityArea.SetAreaInitializer(selectAreaInitializer);
                 FirstSideEditEntityArea.DataItemChanged += FirstSideEditEntityArea_DataItemChanged;
                 View.SetFirstSideEntityView(FirstSideEditEntityArea.View);
-
-
-
-
             }
         }
 
@@ -216,6 +213,7 @@ namespace MyUILibrary.GraphArea
 
         private void View_GraphConfirmed(object sender, EventArgs e)
         {
+            // GraphArea.View_GraphConfirmed: 7e587b91fe10
             if (SelectedGraph == null ||
                 FirstSideEditEntityArea.AreaInitializer.Datas.Count == 0
              )
@@ -240,7 +238,7 @@ namespace MyUILibrary.GraphArea
                 //البته از هر دو طرف میشه به طرف دیگر رسید
                 //بهتره همین طور باشه چون برای لینک سرورها کافیه  در تیل سرورهای طرف اول هر رابطه به طرف دوم رابطه لینک داشته باشد
                 //اینطوری مفهوم تر است
-                fItems.Add(GetIncludedGraphItems(tail.RelationshipTail, SelectedGraph, FirstData, 0, tail.EntityRelationshipTailDataMenu));
+                fItems.Add( GetIncludedGraphItems(tail.RelationshipTail, SelectedGraph, FirstData, 0, tail.EntityRelationshipTailDataMenu));
             }
 
             var firstSidelinkItem = new MyUILibrary.GraphArea.GraphItem();
@@ -411,6 +409,7 @@ namespace MyUILibrary.GraphArea
         private GraphItemGroups GetIncludedGraphItems(EntityRelationshipTailDTO relationshipTail, GraphDTO selectedGraph, DP_DataView relationshipFirstData, int level
           , EntityRelationshipTailDataMenuDTO relationshipTailDataMenuDTO, GraphItem parentGraphItem = null, GraphItemGroups result = null, List<GraphItem> allItems = null)
         {
+            // GraphArea.GetIncludedGraphItems: 26b159bf0620
             if (result == null)
                 result = new GraphItemGroups();
             if (relationshipTail != null)

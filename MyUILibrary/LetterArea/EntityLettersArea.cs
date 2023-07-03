@@ -41,7 +41,7 @@ namespace MyUILibrary.EntityArea
           
          
             selectAreaInitializer.EntityID = areaInitializer.EntityID;
-            selectAreaInitializer.DataItem = areaInitializer.DataInstance;
+            selectAreaInitializer.DataItem = new List<DP_BaseData>() { areaInitializer.DataInstance };
             if (selectAreaInitializer.DataItem != null)
                 selectAreaInitializer.LockDataSelector = true;
 

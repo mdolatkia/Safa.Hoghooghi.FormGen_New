@@ -876,6 +876,7 @@ namespace MyUILibrary
 
         public void ShowGraphArea(int entityId, int GraphID, bool dialog, string title, DP_DataView firstData)
         {
+            // AgentUICoreMediator.ShowGraphArea: d5800d9426b5
             var initializer = new GraphAreaInitializer();
             initializer.GraphID = GraphID;
             initializer.EntityID = entityId;

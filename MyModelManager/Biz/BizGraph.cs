@@ -52,6 +52,7 @@ namespace MyModelManager
 
         public List<GraphDTO> GetGraphByEntitiyID(DR_Requester requester, int entitiyID)
         {
+
             List<GraphDTO> result = new List<GraphDTO>();
             using (var projectContext = new DataAccess.MyIdeaEntities())
             {
